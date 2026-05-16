@@ -1,0 +1,123 @@
+[
+  {
+    "slug": "costruzione",
+    "name": "Costruzione",
+    "interventions": [
+      "ampliare-casa",
+      "costruire-casa",
+      "costruire-piscina",
+      "costruire-villa",
+      "realizzare-nuova-costruzione",
+      "sopraelevare-edificio"
+    ]
+  },
+  {
+    "slug": "facciate",
+    "name": "Facciate",
+    "interventions": [
+      "fare-cappotto-termico",
+      "fare-intonaco-esterno",
+      "rifare-balcone",
+      "rifare-ballatoio",
+      "rifare-cornicione",
+      "rifare-facciata",
+      "rifare-scale",
+      "rifare-terrazzo",
+      "ripristinare-facciata",
+      "ripristinare-frontalini",
+      "ripristinare-sottobalcone",
+      "tinteggiare-esterni"
+    ]
+  },
+  {
+    "slug": "idraulica",
+    "name": "Idraulica",
+    "interventions": [
+      "cambiare-rubinetto",
+      "perdita-acqua",
+      "sostituire-sanitari",
+      "sostituire-tubi"
+    ]
+  },
+  {
+    "slug": "impermeabilizzazioni",
+    "name": "Impermeabilizzazioni",
+    "interventions": [
+      "impermeabilizzare-bagno",
+      "impermeabilizzare-balcone",
+      "impermeabilizzare-piscina",
+      "impermeabilizzare-terrazzo",
+      "posare-guaina-bituminosa"
+    ]
+  },
+  {
+    "slug": "muratura",
+    "name": "Muratura",
+    "interventions": [
+      "aprire-chiudere-vano",
+      "consolidare-muratura",
+      "costruire-tramezzo",
+      "fare-demolizioni",
+      "fare-intonaco",
+      "fare-opere-murarie",
+      "fare-rasatura",
+      "riparare-muratura",
+      "ripristinare-muro",
+      "stuccare-muro"
+    ]
+  },
+  {
+    "slug": "pavimenti",
+    "name": "Pavimenti",
+    "interventions": [
+      "fare-massetto",
+      "fare-sottofondo",
+      "livellare-pavimento",
+      "posare-pavimento",
+      "posare-piastrelle",
+      "posare-rivestimento"
+    ]
+  },
+  {
+    "slug": "ristrutturazione",
+    "name": "Ristrutturazione",
+    "interventions": [
+      "abbassare-soffitto",
+      "fare-botola-cartongesso",
+      "fare-cassonetto-cartongesso",
+      "fare-controparete-cartongesso",
+      "fare-lavori-cartongesso",
+      "fare-libreria-cartongesso",
+      "fare-nicchia-cartongesso",
+      "fare-parete-attrezzata-cartongesso",
+      "fare-parete-cartongesso",
+      "fare-veletta-cartongesso",
+      "rifare-bagno",
+      "rifare-cucina",
+      "riparare-cartongesso",
+      "ristrutturare-appartamento",
+      "ristrutturare-casa",
+      "ristrutturare-piscina",
+      "rivestire-piscina",
+      "tinteggiare-interni",
+      "tinteggiare-pareti"
+    ],
+    "aliases": [
+      "lavori di ristrutturazione",
+      "ristrutturare immobile",
+      "ristrutturazioni edili"
+    ]
+  },
+  {
+    "slug": "tetti",
+    "name": "Tetti",
+    "interventions": [
+      "fare-copertura-edile",
+      "fare-lattoneria",
+      "installare-scossaline",
+      "rifare-tetto",
+      "riparare-tetto",
+      "sostituire-grondaie"
+    ]
+  }
+]

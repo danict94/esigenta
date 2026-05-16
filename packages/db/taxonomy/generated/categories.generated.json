@@ -1,0 +1,130 @@
+[
+  {
+    "slug": "cartongessista",
+    "name": "Cartongessista",
+    "sectorSlug": "edilizia",
+    "services": [
+      "botole-cartongesso",
+      "cartongesso",
+      "cassonetti-cartongesso",
+      "contropareti-cartongesso",
+      "controsoffitti",
+      "librerie-cartongesso",
+      "nicchie-cartongesso",
+      "pareti-attrezzate-cartongesso",
+      "pareti-cartongesso",
+      "riparazioni-cartongesso",
+      "velette-cartongesso"
+    ]
+  },
+  {
+    "slug": "elettricista",
+    "name": "Elettricista",
+    "sectorSlug": "impianti",
+    "services": [
+      "citofoni",
+      "illuminazione",
+      "impianto-elettrico",
+      "interruttori",
+      "lampadari",
+      "prese-elettriche",
+      "quadro-elettrico",
+      "riparazione-guasti-elettrici",
+      "salvavita",
+      "videocitofoni"
+    ]
+  },
+  {
+    "slug": "idraulico",
+    "name": "Idraulico",
+    "sectorSlug": "impianti",
+    "services": [
+      "installazione-rubinetteria",
+      "installazione-sanitari",
+      "riparazione-perdite-acqua",
+      "sostituzione-tubi"
+    ]
+  },
+  {
+    "slug": "imbianchino",
+    "name": "Imbianchino",
+    "sectorSlug": "edilizia",
+    "services": [
+      "rasature",
+      "stuccature-murarie",
+      "tinteggiatura-esterni",
+      "tinteggiatura-interni",
+      "tinteggiatura-pareti"
+    ]
+  },
+  {
+    "slug": "impresa-edile",
+    "name": "Impresa edile",
+    "sectorSlug": "edilizia",
+    "services": [
+      "ampliamenti-edili",
+      "apertura-chiusura-vani",
+      "consolidamenti-murari",
+      "coperture-edili",
+      "costruzione-case",
+      "costruzione-piscine",
+      "costruzione-tramezzi",
+      "costruzione-ville",
+      "demolizioni",
+      "grondaie",
+      "guaina-bituminosa",
+      "impermeabilizzazione-bagno",
+      "impermeabilizzazione-balconi",
+      "impermeabilizzazione-piscine",
+      "impermeabilizzazione-terrazzi",
+      "intonaci",
+      "intonaci-esterni",
+      "isolamento-cappotto",
+      "lattoneria",
+      "livellamento-pavimenti",
+      "massetti",
+      "nuove-costruzioni",
+      "opere-murarie",
+      "posa-pavimenti",
+      "posa-piastrelle",
+      "posa-rivestimenti",
+      "rasature",
+      "rifacimento-balconi",
+      "rifacimento-ballatoi",
+      "rifacimento-cornicioni",
+      "rifacimento-facciate",
+      "rifacimento-scale",
+      "rifacimento-terrazzi",
+      "rifacimento-tetto",
+      "riparazione-tetto",
+      "riparazioni-muratura",
+      "ripristino-facciate",
+      "ripristino-frontalini",
+      "ripristino-muri",
+      "ripristino-sottobalconi",
+      "ristrutturazione-appartamento",
+      "ristrutturazione-bagno",
+      "ristrutturazione-casa",
+      "ristrutturazione-cucina",
+      "ristrutturazione-piscine",
+      "rivestimento-piscine",
+      "scossaline",
+      "sopraelevazioni",
+      "sottofondi",
+      "stuccature-murarie"
+    ]
+  },
+  {
+    "slug": "sicurezza-elettronica",
+    "name": "Sicurezza elettronica",
+    "sectorSlug": "impianti",
+    "services": [
+      "controllo-accessi",
+      "installazione-antifurto",
+      "sensori-allarme",
+      "telecamere-sicurezza",
+      "videoregistratori",
+      "videosorveglianza"
+    ]
+  }
+]

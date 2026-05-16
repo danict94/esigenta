@@ -1,50 +1,56 @@
+import Link from 'next/link'
+
+import { Button, Container } from '@fixpro/ui'
+
 export function Navbar() {
   return (
-    <header className="border-b border-neutral-200">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6 lg:px-8">
-        <div className="text-lg font-semibold tracking-tight">
+    <header className="border-b border-border-primary">
+      <Container size="xl" className="flex h-16 items-center justify-between">
+        <Link
+          href="/"
+          className="text-lg font-semibold tracking-tight"
+        >
           FixPro
-        </div>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          <a
-            href="#"
-            className="text-sm text-neutral-600 transition-colors hover:text-neutral-950"
+          <Link
+            href="/trova-professionisti"
+            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
             Trova professionisti
-          </a>
+          </Link>
 
-          <a
-            href="#"
-            className="text-sm text-neutral-600 transition-colors hover:text-neutral-950"
+          <Link
+            href="/come-funziona"
+            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
             Come funziona
-          </a>
+          </Link>
 
-          <a
-            href="#"
-            className="text-sm text-neutral-600 transition-colors hover:text-neutral-950"
+          <Link
+            href="/richieste/accesso"
+            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
-            Per le imprese
-          </a>
+            Le mie richieste
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href="#"
-            className="text-sm text-neutral-700 transition-colors hover:text-neutral-950"
+          <Link
+            href="/area-impresa/accedi"
+            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
             Accedi
-          </a>
+          </Link>
 
-          <a
-            href="#"
-            className="rounded-full bg-neutral-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
-          >
-            Inizia
-          </a>
+          <Link href="/area-impresa">
+            <Button>
+              Sei un professionista?
+            </Button>
+          </Link>
         </div>
-      </div>
+      </Container>
     </header>
   )
 }

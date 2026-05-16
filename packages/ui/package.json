@@ -3,13 +3,30 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+
+  "exports": {
+    ".": "./src/index.ts",
+    "./globals.css": "./src/styles/globals.css"
+  },
+
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.14.0",
     "tailwind-merge": "^3.5.0"
+  },
+
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.3"
   }
 }

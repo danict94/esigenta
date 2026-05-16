@@ -1,0 +1,35 @@
+{
+  "name": "@fixpro/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "taxonomy:build": "tsx taxonomy/orchestrator/build-taxonomy.ts",
+    "taxonomy:generate": "tsx taxonomy/orchestrator/generate-taxonomy.ts",
+    "taxonomy:seed": "tsx taxonomy/orchestrator/seed-taxonomy.ts",
+    "admin:bootstrap": "tsx src/identity/bootstrap-super-admin.ts",
+    "seed:auth": "tsx seed/seed_auth.ts",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:pull": "prisma db pull"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
+    "prisma": "^7.8.0",
+    "tsx": "^4.21.0"
+  },
+  "dependencies": {
+    "@better-auth/prisma-adapter": "^1.6.11",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "better-auth": "^1.6.11",
+    "pg": "^8.20.0",
+    "resend": "^6.12.3"
+  }
+}

@@ -1,0 +1,338 @@
+[
+  {
+    "slug": "ampliamenti-edili",
+    "name": "Ampliamenti edili"
+  },
+  {
+    "slug": "apertura-chiusura-vani",
+    "name": "Apertura e chiusura vani"
+  },
+  {
+    "slug": "botole-cartongesso",
+    "name": "Botole in cartongesso"
+  },
+  {
+    "slug": "cartongesso",
+    "name": "Cartongesso"
+  },
+  {
+    "slug": "cassonetti-cartongesso",
+    "name": "Cassonetti in cartongesso"
+  },
+  {
+    "slug": "citofoni",
+    "name": "Citofoni"
+  },
+  {
+    "slug": "consolidamenti-murari",
+    "name": "Consolidamenti murari"
+  },
+  {
+    "slug": "controllo-accessi",
+    "name": "Controllo accessi"
+  },
+  {
+    "slug": "contropareti-cartongesso",
+    "name": "Contropareti in cartongesso"
+  },
+  {
+    "slug": "controsoffitti",
+    "name": "Controsoffitti"
+  },
+  {
+    "slug": "coperture-edili",
+    "name": "Coperture edili"
+  },
+  {
+    "slug": "costruzione-case",
+    "name": "Costruzione case"
+  },
+  {
+    "slug": "costruzione-piscine",
+    "name": "Costruzione piscine"
+  },
+  {
+    "slug": "costruzione-tramezzi",
+    "name": "Costruzione tramezzi"
+  },
+  {
+    "slug": "costruzione-ville",
+    "name": "Costruzione ville"
+  },
+  {
+    "slug": "demolizioni",
+    "name": "Demolizioni"
+  },
+  {
+    "slug": "grondaie",
+    "name": "Grondaie"
+  },
+  {
+    "slug": "guaina-bituminosa",
+    "name": "Guaina bituminosa"
+  },
+  {
+    "slug": "illuminazione",
+    "name": "Illuminazione"
+  },
+  {
+    "slug": "impermeabilizzazione-bagno",
+    "name": "Impermeabilizzazione bagno"
+  },
+  {
+    "slug": "impermeabilizzazione-balconi",
+    "name": "Impermeabilizzazione balconi"
+  },
+  {
+    "slug": "impermeabilizzazione-piscine",
+    "name": "Impermeabilizzazione piscine"
+  },
+  {
+    "slug": "impermeabilizzazione-terrazzi",
+    "name": "Impermeabilizzazione terrazzi"
+  },
+  {
+    "slug": "impianto-elettrico",
+    "name": "Impianto elettrico"
+  },
+  {
+    "slug": "installazione-antifurto",
+    "name": "Installazione antifurto"
+  },
+  {
+    "slug": "installazione-rubinetteria",
+    "name": "Installazione rubinetteria"
+  },
+  {
+    "slug": "installazione-sanitari",
+    "name": "Installazione sanitari"
+  },
+  {
+    "slug": "interruttori",
+    "name": "Interruttori"
+  },
+  {
+    "slug": "intonaci",
+    "name": "Intonaci"
+  },
+  {
+    "slug": "intonaci-esterni",
+    "name": "Intonaci esterni"
+  },
+  {
+    "slug": "isolamento-cappotto",
+    "name": "Isolamento a cappotto"
+  },
+  {
+    "slug": "lampadari",
+    "name": "Lampadari"
+  },
+  {
+    "slug": "lattoneria",
+    "name": "Lattoneria"
+  },
+  {
+    "slug": "librerie-cartongesso",
+    "name": "Librerie in cartongesso"
+  },
+  {
+    "slug": "livellamento-pavimenti",
+    "name": "Livellamento pavimenti"
+  },
+  {
+    "slug": "massetti",
+    "name": "Massetti"
+  },
+  {
+    "slug": "nicchie-cartongesso",
+    "name": "Nicchie in cartongesso"
+  },
+  {
+    "slug": "nuove-costruzioni",
+    "name": "Nuove costruzioni"
+  },
+  {
+    "slug": "opere-murarie",
+    "name": "Opere murarie"
+  },
+  {
+    "slug": "pareti-attrezzate-cartongesso",
+    "name": "Pareti attrezzate in cartongesso"
+  },
+  {
+    "slug": "pareti-cartongesso",
+    "name": "Pareti in cartongesso"
+  },
+  {
+    "slug": "posa-pavimenti",
+    "name": "Posa pavimenti"
+  },
+  {
+    "slug": "posa-piastrelle",
+    "name": "Posa piastrelle"
+  },
+  {
+    "slug": "posa-rivestimenti",
+    "name": "Posa rivestimenti"
+  },
+  {
+    "slug": "prese-elettriche",
+    "name": "Prese elettriche"
+  },
+  {
+    "slug": "quadro-elettrico",
+    "name": "Quadro elettrico"
+  },
+  {
+    "slug": "rasature",
+    "name": "Rasature"
+  },
+  {
+    "slug": "rifacimento-balconi",
+    "name": "Rifacimento balconi"
+  },
+  {
+    "slug": "rifacimento-ballatoi",
+    "name": "Rifacimento ballatoi"
+  },
+  {
+    "slug": "rifacimento-cornicioni",
+    "name": "Rifacimento cornicioni"
+  },
+  {
+    "slug": "rifacimento-facciate",
+    "name": "Rifacimento facciate"
+  },
+  {
+    "slug": "rifacimento-scale",
+    "name": "Rifacimento scale"
+  },
+  {
+    "slug": "rifacimento-terrazzi",
+    "name": "Rifacimento terrazzi"
+  },
+  {
+    "slug": "rifacimento-tetto",
+    "name": "Rifacimento tetto"
+  },
+  {
+    "slug": "riparazione-guasti-elettrici",
+    "name": "Riparazione guasti elettrici"
+  },
+  {
+    "slug": "riparazione-perdite-acqua",
+    "name": "Riparazione perdite acqua"
+  },
+  {
+    "slug": "riparazione-tetto",
+    "name": "Riparazione tetto"
+  },
+  {
+    "slug": "riparazioni-cartongesso",
+    "name": "Riparazioni cartongesso"
+  },
+  {
+    "slug": "riparazioni-muratura",
+    "name": "Riparazioni muratura"
+  },
+  {
+    "slug": "ripristino-facciate",
+    "name": "Ripristino facciate"
+  },
+  {
+    "slug": "ripristino-frontalini",
+    "name": "Ripristino frontalini"
+  },
+  {
+    "slug": "ripristino-muri",
+    "name": "Ripristino muri"
+  },
+  {
+    "slug": "ripristino-sottobalconi",
+    "name": "Ripristino sottobalconi"
+  },
+  {
+    "slug": "ristrutturazione-appartamento",
+    "name": "Ristrutturazione appartamento"
+  },
+  {
+    "slug": "ristrutturazione-bagno",
+    "name": "Ristrutturazione bagno"
+  },
+  {
+    "slug": "ristrutturazione-casa",
+    "name": "Ristrutturazione casa"
+  },
+  {
+    "slug": "ristrutturazione-cucina",
+    "name": "Ristrutturazione cucina"
+  },
+  {
+    "slug": "ristrutturazione-piscine",
+    "name": "Ristrutturazione piscine"
+  },
+  {
+    "slug": "rivestimento-piscine",
+    "name": "Rivestimento piscine"
+  },
+  {
+    "slug": "salvavita",
+    "name": "Salvavita"
+  },
+  {
+    "slug": "scossaline",
+    "name": "Scossaline"
+  },
+  {
+    "slug": "sensori-allarme",
+    "name": "Sensori allarme"
+  },
+  {
+    "slug": "sopraelevazioni",
+    "name": "Sopraelevazioni"
+  },
+  {
+    "slug": "sostituzione-tubi",
+    "name": "Sostituzione tubi"
+  },
+  {
+    "slug": "sottofondi",
+    "name": "Sottofondi"
+  },
+  {
+    "slug": "stuccature-murarie",
+    "name": "Stuccature murarie"
+  },
+  {
+    "slug": "telecamere-sicurezza",
+    "name": "Telecamere di sicurezza"
+  },
+  {
+    "slug": "tinteggiatura-esterni",
+    "name": "Tinteggiatura esterni"
+  },
+  {
+    "slug": "tinteggiatura-interni",
+    "name": "Tinteggiatura interni"
+  },
+  {
+    "slug": "tinteggiatura-pareti",
+    "name": "Tinteggiatura pareti"
+  },
+  {
+    "slug": "velette-cartongesso",
+    "name": "Velette in cartongesso"
+  },
+  {
+    "slug": "videocitofoni",
+    "name": "Videocitofoni"
+  },
+  {
+    "slug": "videoregistratori",
+    "name": "Videoregistratori"
+  },
+  {
+    "slug": "videosorveglianza",
+    "name": "Videosorveglianza"
+  }
+]

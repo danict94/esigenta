@@ -1,0 +1,15 @@
+{
+  "extends": "../config/typescript/base.json",
+
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true
+  },
+
+  "include": [
+    "prisma.config.ts",
+    "src/**/*.ts",
+    "seed/**/*.ts",
+    "taxonomy/**/*.ts"
+  ]
+}

@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "@fixpro/ui/globals.css";
+
+@source "../../../../packages/ui/src";
