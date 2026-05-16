@@ -636,6 +636,9 @@ model Request {
   @@index([customerId])
   @@index([interventionSlug])
   @@index([city])
+  @@index([status, createdAt])
+  @@index([customerId, createdAt])
+  @@index([latitude, longitude])
 }
 
 model RequestRequiredService {
