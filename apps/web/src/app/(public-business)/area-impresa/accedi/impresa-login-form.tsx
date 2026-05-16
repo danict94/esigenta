@@ -1,6 +1,8 @@
 "use client"
 
 import {
+  useEffect,
+  useRef,
   useState,
 } from "react"
 import {
@@ -20,6 +22,8 @@ import {
 export function ImpresaLoginForm() {
   const router =
     useRouter()
+  const passwordInputRef =
+    useRef<HTMLInputElement>(null)
 
   const [email, setEmail] =
     useState("")
@@ -41,11 +45,28 @@ export function ImpresaLoginForm() {
     setError(null)
     setIsSubmitting(true)
 
+    const formData =
+      new FormData(event.currentTarget)
+    const submittedEmail =
+      String(
+        formData.get("email") ?? email,
+      ).trim()
+    const submittedPassword =
+      String(
+        formData.get("password") ?? password,
+      )
+
+    if (!submittedEmail || !submittedPassword) {
+      setError("Inserisci email e password.")
+      setIsSubmitting(false)
+      return
+    }
+
     try {
       const result =
         await authClient.signIn.email({
-          email,
-          password,
+          email: submittedEmail,
+          password: submittedPassword,
         })
 
       if (result.error) {
@@ -68,8 +89,38 @@ export function ImpresaLoginForm() {
     }
   }
 
+  useEffect(() => {
+    function clearAutofilledPassword() {
+      setPassword("")
+
+      if (passwordInputRef.current) {
+        passwordInputRef.current.value = ""
+      }
+    }
+
+    clearAutofilledPassword()
+
+    const timers = [
+      window.setTimeout(
+        clearAutofilledPassword,
+        50,
+      ),
+      window.setTimeout(
+        clearAutofilledPassword,
+        250,
+      ),
+    ]
+
+    return () => {
+      timers.forEach((timer) =>
+        window.clearTimeout(timer),
+      )
+    }
+  }, [])
+
   return (
     <form
+      autoComplete="off"
       onSubmit={handleSubmit}
       className="flex flex-col gap-5"
     >
@@ -83,8 +134,11 @@ export function ImpresaLoginForm() {
 
         <input
           id="email"
+          name="email"
           type="email"
-          autoComplete="email"
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
           required
           value={email}
           onChange={(event) =>
@@ -107,8 +161,10 @@ export function ImpresaLoginForm() {
 
         <input
           id="password"
+          ref={passwordInputRef}
+          name="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="off"
           required
           value={password}
           onChange={(event) =>
