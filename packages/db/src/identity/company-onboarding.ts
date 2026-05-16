@@ -1,4 +1,4 @@
-import {
+﻿import {
   Prisma,
 } from "@prisma/client"
 
@@ -298,7 +298,7 @@ export async function createCompanyForUser({
       membershipId:
         membership.id,
       message:
-        "Questo utente ha gia un profilo impresa.",
+        "Questo account è già collegato a un'impresa. Accedi all'area impresa.",
     }
   }
 
@@ -382,3 +382,4 @@ export async function createCompanyForUser({
     throw error
   }
 }
+

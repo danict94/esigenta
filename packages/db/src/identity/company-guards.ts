@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   CompanyMemberRole,
 } from "@prisma/client"
 
@@ -24,7 +24,7 @@ export class CompanyAuthorizationError extends Error {
 export class AmbiguousCompanyMembershipError extends Error {
   constructor() {
     super(
-      "Multiple company memberships found. Select a company explicitly.",
+      "Questo account risulta collegato a più imprese. Per la release FixPro supporta una sola impresa per account.",
     )
     this.name =
       "AmbiguousCompanyMembershipError"
@@ -140,3 +140,4 @@ export async function requireDefaultCompanyMembershipFromUser(
 
   return membership
 }
+
