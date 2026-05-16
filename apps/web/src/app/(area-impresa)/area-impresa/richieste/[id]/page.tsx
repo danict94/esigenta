@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 
 import { PageShell } from "@fixpro/ui";
 
-import { prisma } from "@fixpro/db";
+import {
+  getAvailableRequestForCompany,
+  prisma,
+} from "@fixpro/db";
+
+import { requireDefaultCompanyMembership } from "../../../../../auth/server";
 
 import {
   RequestDetailCard,
@@ -529,10 +534,20 @@ export default async function RequestDetailPage({
 }: RequestDetailPageProps) {
   const { id } = await params;
 
-  const request = await prisma.request.findFirst({
+  const membership = await requireDefaultCompanyMembership();
+
+  const visibility = await getAvailableRequestForCompany({
+    companyId: membership.companyId,
+    requestId: id,
+  });
+
+  if (!visibility.ok || !visibility.request) {
+    notFound();
+  }
+
+  const request = await prisma.request.findUnique({
     where: {
-      id,
-      status: "APPROVED",
+      id: visibility.request.id,
     },
     select: {
       requestCode: true,

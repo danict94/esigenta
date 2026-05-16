@@ -1,6 +1,10 @@
+import Link from "next/link";
+
 import { PageShell } from "@fixpro/ui";
 
-import { prisma } from "@fixpro/db";
+import { listAvailableRequestsForCompany } from "@fixpro/db";
+
+import { requireDefaultCompanyMembership } from "../../../../auth/server";
 
 import { RequestListCard } from "../_components/request-list-card";
 
@@ -106,15 +110,17 @@ function formatLocationLabel({
   return cityWithProvince || postalCode || "Località non specificata";
 }
 
+function getMatchLabel(matchLevel: "selected_service" | "category") {
+  return matchLevel === "selected_service"
+    ? "Molto compatibile"
+    : "Nella tua categoria";
+}
+
 export default async function RichiestePage() {
-  const requests = await prisma.request.findMany({
-    where: {
-      status: "APPROVED",
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 68,
+  const membership = await requireDefaultCompanyMembership();
+
+  const result = await listAvailableRequestsForCompany({
+    companyId: membership.companyId,
   });
 
   return (
@@ -126,7 +132,7 @@ export default async function RichiestePage() {
               type="button"
               className="inline-flex w-fit items-center gap-2 text-lg font-semibold text-text-primary"
             >
-              Valverde - 40 km
+              Nel tuo raggio operativo
               <span className="text-text-secondary" aria-hidden="true">
                 ⌄
               </span>
@@ -171,7 +177,7 @@ export default async function RichiestePage() {
               </h1>
 
               <p className="mt-1 text-sm text-text-secondary">
-                {requests.length} richieste
+                {result.ok ? result.requests.length : 0} richieste
               </p>
             </div>
 
@@ -187,15 +193,58 @@ export default async function RichiestePage() {
             </button>
           </div>
 
-          {requests.length === 0 ? (
+          {!result.ok ? (
+            <div className="rounded-md border border-border-primary bg-surface-primary p-8">
+              <p className="text-base font-semibold text-text-primary">
+                {result.code === "missing_category"
+                  ? "Categoria impresa non configurata"
+                  : "Sede operativa incompleta"}
+              </p>
+
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
+                {result.message}
+              </p>
+
+              <Link
+                href={
+                  result.code === "missing_category"
+                    ? "/area-impresa/configura-servizi"
+                    : "/area-impresa/richieste"
+                }
+                className="mt-5 inline-flex text-sm font-medium text-brand-primary"
+              >
+                {result.code === "missing_category"
+                  ? "Vai alla configurazione servizi"
+                  : "Torna alla dashboard"}
+              </Link>
+            </div>
+          ) : (
+            <>
+              {!result.hasSelectedServices ? (
+                <div className="rounded-md border border-border-primary bg-surface-secondary p-5">
+                  <p className="text-sm font-semibold text-text-primary">
+                    Seleziona i servizi che offri per vedere prima le richieste
+                    più adatte.
+                  </p>
+
+                  <Link
+                    href="/area-impresa/configura-servizi"
+                    className="mt-3 inline-flex text-sm font-medium text-brand-primary"
+                  >
+                    Configura servizi
+                  </Link>
+                </div>
+              ) : null}
+
+              {result.requests.length === 0 ? (
             <div className="rounded-md border border-border-primary bg-surface-primary p-8">
               <p className="text-sm text-text-secondary">
                 Nessuna richiesta disponibile al momento.
               </p>
             </div>
-          ) : (
+              ) : (
             <div className="space-y-4">
-              {requests.map((request) => {
+              {result.requests.map((request) => {
                 const structuredData = getStructuredData(
                   request.structuredData,
                 );
@@ -215,12 +264,15 @@ export default async function RichiestePage() {
                       address: request.address,
                     })}
                     createdAt={formatFreshness(request.createdAt)}
+                    matchLabel={getMatchLabel(request.matchLevel)}
                     description={description}
                     surfaceArea={surfaceArea}
                   />
                 );
               })}
             </div>
+              )}
+            </>
           )}
         </section>
       </div>

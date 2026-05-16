@@ -72,9 +72,21 @@ export {
   listPendingRequests,
 } from "./list-pending-requests"
 
+export {
+  getAvailableRequestForCompany,
+  listAvailableRequestsForCompany,
+} from "./list-available-requests-for-company"
+
 export type {
   PendingModerationRequest,
 } from "./list-pending-requests"
+
+export type {
+  AvailableCompanyRequest,
+  CompanyRequestMatchLevel,
+  GetAvailableRequestForCompanyResult,
+  ListAvailableRequestsForCompanyResult,
+} from "./list-available-requests-for-company"
 
 export {
   getRequestById,

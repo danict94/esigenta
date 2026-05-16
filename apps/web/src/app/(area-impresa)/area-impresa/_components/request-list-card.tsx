@@ -5,6 +5,7 @@ export type RequestListCardProps = {
   intervention: string;
   location: string;
   createdAt: string;
+  matchLabel?: string;
   description?: string | null;
   surfaceArea?: string | number | null;
 };
@@ -21,7 +22,7 @@ function formatSurfaceArea(value?: string | number | null) {
   }
 
   if (/^\d+([,.]\d+)?$/.test(raw)) {
-    return `${raw} m²`;
+    return `${raw} mq`;
   }
 
   return raw;
@@ -103,6 +104,7 @@ export function RequestListCard({
   intervention,
   location,
   createdAt,
+  matchLabel,
   description,
   surfaceArea,
 }: RequestListCardProps) {
@@ -121,6 +123,12 @@ export function RequestListCard({
         />
 
         <div className="px-5 py-5 pl-6 md:px-6 md:pl-7">
+          {matchLabel ? (
+            <p className="mb-3 inline-flex rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-xs font-medium text-text-primary">
+              {matchLabel}
+            </p>
+          ) : null}
+
           <h2 className="line-clamp-1 text-xl font-semibold tracking-tight text-brand-primary transition-colors group-hover:text-brand-primary-hover md:text-2xl">
             {title}
           </h2>
