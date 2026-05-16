@@ -292,6 +292,11 @@ model Company {
   services    CompanyService[]
   memberships CompanyMembership[]
 
+  creditAccount      CompanyCreditAccount?
+  creditOrders       CreditOrder[]
+  creditTransactions CompanyCreditTransaction[]
+  requestUnlocks     RequestUnlock[]
+
   @@index([city])
   @@index([postalCode])
   @@index([latitude, longitude])
@@ -348,8 +353,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  companyMemberships CompanyMembership[]
-  adminProfile       AdminProfile?
+  companyMemberships      CompanyMembership[]
+  adminProfile            AdminProfile?
+  adminCreditTransactions CompanyCreditTransaction[] @relation("CreditAdminActor")
 
   sessions Session[]
   accounts Account[]
@@ -599,7 +605,9 @@ model Request {
    * Only preparation.
    */
 
-  creditCost Int?
+  creditCost  Int?
+  maxUnlocks  Int?
+  unlockCount Int  @default(0)
 
   ///////////////////////////////////////////////////////////
   // TIMESTAMPS
@@ -612,8 +620,10 @@ model Request {
   // RELATIONS
   ///////////////////////////////////////////////////////////
 
-  requiredServices RequestRequiredService[]
-  accessTokens     CustomerAccessToken[]
+  requiredServices   RequestRequiredService[]
+  accessTokens       CustomerAccessToken[]
+  unlocks            RequestUnlock[]
+  creditTransactions CompanyCreditTransaction[]
 
   ///////////////////////////////////////////////////////////
   // INDEXES
@@ -628,6 +638,8 @@ model Request {
   @@index([status, createdAt])
   @@index([customerId, createdAt])
   @@index([latitude, longitude])
+  @@index([status, creditCost])
+  @@index([unlockCount])
 }
 
 model RequestRequiredService {
@@ -658,6 +670,183 @@ enum CompanyMemberRole {
   OWNER
   MANAGER
   STAFF
+}
+
+model CreditPackage {
+  id String @id @default(cuid())
+
+  name        String
+  description String?
+
+  credits    Int
+  priceCents Int
+  currency   String @default("EUR")
+
+  status    CreditPackageStatus @default(ACTIVE)
+  sortOrder Int                 @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders CreditOrder[]
+
+  @@index([status, sortOrder])
+  @@index([createdAt])
+}
+
+model CompanyCreditAccount {
+  id String @id @default(cuid())
+
+  companyId String  @unique
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  balance Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions CompanyCreditTransaction[]
+}
+
+model CreditOrder {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  packageId String?
+  package   CreditPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  status CreditOrderStatus @default(PENDING)
+
+  credits     Int
+  amountCents Int
+  currency    String @default("EUR")
+
+  provider                String?
+  providerCheckoutId      String?   @unique
+  providerPaymentIntentId String?   @unique
+  providerEventId         String?
+  paidAt                  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions CompanyCreditTransaction[]
+
+  @@index([companyId, status])
+  @@index([packageId])
+  @@index([createdAt])
+}
+
+model CompanyCreditTransaction {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  accountId String
+  account   CompanyCreditAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  type   CreditTransactionType
+  status CreditTransactionStatus @default(COMPLETED)
+
+  /**
+   * Positive amounts add credits.
+   * Negative amounts subtract credits.
+   */
+  amount       Int
+  balanceAfter Int
+
+  requestId String?
+  request   Request? @relation(fields: [requestId], references: [id], onDelete: SetNull)
+
+  creditOrderId String?
+  creditOrder   CreditOrder? @relation(fields: [creditOrderId], references: [id], onDelete: SetNull)
+
+  /**
+   * Refund transactions must point to the original transaction.
+   * Example:
+   * REFUND.relatedTransactionId -> REQUEST_UNLOCK transaction id.
+   */
+  relatedTransactionId String?                   @unique
+  relatedTransaction   CompanyCreditTransaction? @relation("CreditTransactionReversal", fields: [relatedTransactionId], references: [id], onDelete: SetNull)
+  reversalTransaction  CompanyCreditTransaction? @relation("CreditTransactionReversal")
+
+  adminUserId String?
+  adminUser   User?   @relation("CreditAdminActor", fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  reason         String?
+  metadata       Json?
+  idempotencyKey String? @unique
+
+  createdAt DateTime @default(now())
+
+  unlockChargeFor RequestUnlock? @relation("RequestUnlockCharge")
+  unlockRefundFor RequestUnlock? @relation("RequestUnlockRefund")
+
+  @@index([companyId, createdAt])
+  @@index([accountId, createdAt])
+  @@index([requestId])
+  @@index([creditOrderId])
+  @@index([type, status])
+  @@index([adminUserId])
+}
+
+model RequestUnlock {
+  id String @id @default(cuid())
+
+  requestId String
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  creditCost Int
+
+  creditTransactionId String                   @unique
+  creditTransaction   CompanyCreditTransaction @relation("RequestUnlockCharge", fields: [creditTransactionId], references: [id], onDelete: Restrict)
+
+  refundedAt DateTime?
+
+  refundTransactionId String?                   @unique
+  refundTransaction   CompanyCreditTransaction? @relation("RequestUnlockRefund", fields: [refundTransactionId], references: [id], onDelete: SetNull)
+
+  refundReason String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([requestId, companyId])
+  @@index([requestId, createdAt])
+  @@index([companyId, createdAt])
+  @@index([refundedAt])
+}
+
+enum CreditPackageStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CreditOrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum CreditTransactionType {
+  PACKAGE_PURCHASE
+  REQUEST_UNLOCK
+  ADMIN_ADJUSTMENT
+  REFUND
+}
+
+enum CreditTransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REVERSED
 }
 
 enum AdminRole {
