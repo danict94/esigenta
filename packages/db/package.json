@@ -12,6 +12,7 @@
     "taxonomy:seed": "tsx taxonomy/orchestrator/seed-taxonomy.ts",
     "admin:bootstrap": "tsx src/identity/bootstrap-super-admin.ts",
     "seed:auth": "tsx seed/seed_auth.ts",
+    "seed:credit-packages": "tsx seed/seed_credit_packages.ts",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
