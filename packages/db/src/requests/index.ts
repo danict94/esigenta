@@ -97,6 +97,15 @@ export type {
 } from "./get-request-by-id"
 
 export {
+  updateRequestCommercialSettings,
+} from "./request-commercial-settings"
+
+export type {
+  UpdateRequestCommercialSettingsInput,
+  UpdateRequestCommercialSettingsResult,
+} from "./request-commercial-settings"
+
+export {
   reviewRequest,
 } from "./review-request"
 

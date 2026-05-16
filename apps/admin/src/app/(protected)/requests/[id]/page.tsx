@@ -3,7 +3,11 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 
-import { getRequestById, reviewRequest } from "@fixpro/db";
+import {
+  getRequestById,
+  reviewRequest,
+  updateRequestCommercialSettings,
+} from "@fixpro/db";
 import { Badge, Button, Card, PageShell } from "@fixpro/ui";
 
 import { requireAdmin } from "../../../../auth/server";
@@ -124,6 +128,24 @@ function getStatusLabel(status: string) {
   }
 
   return status;
+}
+
+function parseOptionalInteger(value: FormDataEntryValue | null) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed ? Number(trimmed) : null;
+}
+
+function formatCreditCost(value: number | null) {
+  return value === null ? "Non impostato" : `${value} crediti`;
+}
+
+function formatMaxUnlocks(value: number | null) {
+  return value === null ? "Non impostato" : `${value} imprese`;
 }
 
 function formatKey(key: string) {
@@ -300,6 +322,27 @@ async function reviewRequestAction(formData: FormData) {
   revalidatePath(`/requests/${requestId}`);
 }
 
+async function updateCommercialSettingsAction(formData: FormData) {
+  "use server";
+
+  await requireAdmin();
+
+  const requestId = String(formData.get("requestId") ?? "");
+
+  const result = await updateRequestCommercialSettings({
+    requestId,
+    creditCost: parseOptionalInteger(formData.get("creditCost")),
+    maxUnlocks: parseOptionalInteger(formData.get("maxUnlocks")),
+  });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+}
+
 function DetailSection({
   eyebrow,
   title,
@@ -339,6 +382,9 @@ function FieldBlock({
     </div>
   );
 }
+
+const inputClass =
+  "h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus";
 
 export default async function RequestDetailPage({
   params,
@@ -581,7 +627,89 @@ export default async function RequestDetailPage({
           </DetailSection>
         </main>
 
-        <aside className="lg:sticky lg:top-6">
+        <aside className="grid gap-6 lg:sticky lg:top-6">
+          <Card className="p-5">
+            <div>
+              <p className="text-sm font-medium text-text-muted">
+                Crediti
+              </p>
+
+              <h2 className="mt-1 text-xl font-semibold text-text-primary">
+                Impostazioni commerciali
+              </h2>
+            </div>
+
+            <dl className="mt-5 grid gap-3">
+              <div className="border border-border-primary bg-surface-secondary p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Costo attuale
+                </dt>
+                <dd className="mt-2 text-sm font-semibold text-text-primary">
+                  {formatCreditCost(request.creditCost)}
+                </dd>
+              </div>
+
+              <div className="border border-border-primary bg-surface-secondary p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Limite sblocchi
+                </dt>
+                <dd className="mt-2 text-sm font-semibold text-text-primary">
+                  {formatMaxUnlocks(request.maxUnlocks)}
+                </dd>
+              </div>
+
+              <div className="border border-border-primary bg-surface-secondary p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Sblocchi attuali
+                </dt>
+                <dd className="mt-2 text-sm font-semibold text-text-primary">
+                  {request.unlockCount}
+                </dd>
+              </div>
+            </dl>
+
+            <form
+              action={updateCommercialSettingsAction}
+              className="mt-5 grid gap-4 border-t border-border-primary pt-5"
+            >
+              <input type="hidden" name="requestId" value={request.id} />
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-text-primary">
+                  Costo in crediti
+                </span>
+                <input
+                  name="creditCost"
+                  type="number"
+                  min={1}
+                  step={1}
+                  defaultValue={request.creditCost ?? ""}
+                  placeholder="Non impostato"
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-text-primary">
+                  Limite massimo imprese
+                </span>
+                <input
+                  name="maxUnlocks"
+                  type="number"
+                  min={1}
+                  step={1}
+                  defaultValue={request.maxUnlocks ?? ""}
+                  placeholder="Non impostato"
+                  className={inputClass}
+                />
+              </label>
+
+              <Button type="submit" variant="secondary">
+                Salva impostazioni commerciali
+              </Button>
+            </form>
+          </Card>
+
           <Card className="p-5">
             <div>
               <p className="text-sm font-medium text-text-muted">

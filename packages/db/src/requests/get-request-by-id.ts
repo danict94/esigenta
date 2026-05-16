@@ -43,6 +43,9 @@ export type ModerationRequestDetail = {
   latitude: number | null
   longitude: number | null
   structuredData: Prisma.JsonValue | null
+  creditCost: number | null
+  maxUnlocks: number | null
+  unlockCount: number
   createdAt: Date
   intervention: ModerationRequestIntervention | null
   requiredServices: ModerationRequestService[]
@@ -101,6 +104,9 @@ export async function getRequestById(
       latitude: true,
       longitude: true,
       structuredData: true,
+      creditCost: true,
+      maxUnlocks: true,
+      unlockCount: true,
       createdAt: true,
       requiredServices: {
         select: {
