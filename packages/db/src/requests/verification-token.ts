@@ -1,11 +1,14 @@
 /**
- * FixPro V2 - Request Verification Tokens
+ * FixPro V2 - Customer soft-access tokens
  *
- * Single-use token helpers.
+ * Single-use token helpers used by request verification,
+ * request status links and future customer review links.
  *
  * IMPORTANT:
- * Token hashes are stored inside Request.structuredData
- * for the MVP to avoid adding tables or schema fields.
+ * Raw tokens are never persisted.
+ * Token hashes are stored in CustomerAccessToken for new flows.
+ * Legacy Request.structuredData verification snapshots are read only
+ * as backward compatibility for old requests.
  */
 
 import {
@@ -70,3 +73,4 @@ export function verifyTokenHash({
     incoming,
   )
 }
+

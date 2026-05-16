@@ -679,5 +679,7 @@ enum AdminRole {
 enum CustomerTokenPurpose {
   REQUEST_VERIFICATION
   REQUEST_STATUS
+
+  /// Reserved for the future customer review flow.
   REVIEW_ACCESS
 }
