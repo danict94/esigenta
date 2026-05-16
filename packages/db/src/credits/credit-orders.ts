@@ -43,10 +43,19 @@ export type MarkCreditOrderCheckoutCreatedInput = {
   providerPaymentIntentId?: string | null
 }
 
+export type MarkCreditOrderCheckoutTerminalInput = {
+  creditOrderId: string
+}
+
 export type MarkCreditOrderCheckoutCreatedData = {
   orderId: string
   providerCheckoutId: string
   providerPaymentIntentId: string | null
+}
+
+export type MarkCreditOrderCheckoutTerminalData = {
+  orderId: string
+  updated: boolean
 }
 
 function normalizeRequiredText(
@@ -241,4 +250,66 @@ export async function markCreditOrderCheckoutCreated({
         updated.providerPaymentIntentId,
     },
   }
+}
+
+async function markPendingCreditOrderStatus({
+  creditOrderId,
+  status,
+}: {
+  creditOrderId: string
+  status: "FAILED" | "CANCELLED"
+}): Promise<
+  CreditLedgerResult<MarkCreditOrderCheckoutTerminalData>
+> {
+  const normalizedCreditOrderId =
+    normalizeRequiredText(creditOrderId)
+
+  if (!normalizedCreditOrderId) {
+    return {
+      ok: false,
+      code: "invalid_credit_order_id",
+      message: "Ordine crediti non valido.",
+    }
+  }
+
+  const result =
+    await prisma.creditOrder.updateMany({
+      where: {
+        id: normalizedCreditOrderId,
+        status: "PENDING",
+      },
+      data: {
+        status,
+      },
+    })
+
+  return {
+    ok: true,
+    data: {
+      orderId:
+        normalizedCreditOrderId,
+      updated:
+        result.count > 0,
+    },
+  }
+}
+
+export async function markCreditOrderCheckoutFailed(
+  input: MarkCreditOrderCheckoutTerminalInput,
+) {
+  return markPendingCreditOrderStatus({
+    creditOrderId:
+      input.creditOrderId,
+    status: "FAILED",
+  })
+}
+
+export async function markCreditOrderCheckoutCancelled(
+  input: MarkCreditOrderCheckoutTerminalInput,
+) {
+  return markPendingCreditOrderStatus({
+    creditOrderId:
+      input.creditOrderId,
+    status: "CANCELLED",
+  })
 }

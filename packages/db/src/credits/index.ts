@@ -12,13 +12,17 @@ export type {
 export {
   createPendingCreditOrder,
   listActiveCreditPackagesForPurchase,
+  markCreditOrderCheckoutCancelled,
   markCreditOrderCheckoutCreated,
+  markCreditOrderCheckoutFailed,
 } from "./credit-orders"
 
 export type {
   CreatePendingCreditOrderInput,
   MarkCreditOrderCheckoutCreatedData,
   MarkCreditOrderCheckoutCreatedInput,
+  MarkCreditOrderCheckoutTerminalData,
+  MarkCreditOrderCheckoutTerminalInput,
   PendingCreditOrderCheckoutData,
   PurchasableCreditPackage,
 } from "./credit-orders"
