@@ -283,6 +283,7 @@ async function reviewRequestAction(formData: FormData) {
 
   const requestId = String(formData.get("requestId") ?? "");
   const status = String(formData.get("status") ?? "");
+  const moderationNotes = String(formData.get("moderationNotes") ?? "").trim();
 
   if (!requestId || (status !== "APPROVED" && status !== "REJECTED")) {
     throw new Error("Invalid moderation action.");
@@ -291,6 +292,8 @@ async function reviewRequestAction(formData: FormData) {
   await reviewRequest({
     requestId,
     status,
+    moderationNotes:
+      moderationNotes || null,
   });
 
   revalidatePath("/requests");
@@ -608,16 +611,54 @@ export default async function RequestDetailPage({
             </div>
 
             {request.status === "PENDING_REVIEW" ? (
-              <div className="mt-5 space-y-3">
-                <form action={reviewRequestAction}>
+              <div className="mt-5 space-y-4">
+                <form action={reviewRequestAction} className="space-y-3">
                   <input type="hidden" name="requestId" value={request.id} />
                   <input type="hidden" name="status" value="APPROVED" />
-                  <Button type="submit">Approva pubblicazione</Button>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="approve-moderation-notes"
+                      className="text-sm font-medium text-text-primary"
+                    >
+                      Nota moderazione
+                    </label>
+
+                    <textarea
+                      id="approve-moderation-notes"
+                      name="moderationNotes"
+                      rows={3}
+                      placeholder="Nota interna opzionale per la revisione."
+                      className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
+                    />
+                  </div>
+
+                  <Button type="submit">
+                    Approva pubblicazione
+                  </Button>
                 </form>
 
-                <form action={reviewRequestAction}>
+                <form action={reviewRequestAction} className="space-y-3 border-t border-border-primary pt-4">
                   <input type="hidden" name="requestId" value={request.id} />
                   <input type="hidden" name="status" value="REJECTED" />
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="reject-moderation-notes"
+                      className="text-sm font-medium text-text-primary"
+                    >
+                      Motivo rifiuto
+                    </label>
+
+                    <textarea
+                      id="reject-moderation-notes"
+                      name="moderationNotes"
+                      rows={3}
+                      placeholder="Motivo interno o nota editoriale."
+                      className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
+                    />
+                  </div>
+
                   <Button type="submit" variant="secondary">
                     Rifiuta richiesta
                   </Button>
