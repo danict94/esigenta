@@ -1,8 +1,6 @@
 "use client"
 
 import {
-  useEffect,
-  useRef,
   useState,
 } from "react"
 import {
@@ -22,14 +20,15 @@ import {
 export function ImpresaLoginForm() {
   const router =
     useRouter()
-  const passwordInputRef =
-    useRef<HTMLInputElement>(null)
 
   const [email, setEmail] =
     useState("")
 
   const [password, setPassword] =
     useState("")
+
+  const [isPasswordEditable, setIsPasswordEditable] =
+    useState(false)
 
   const [error, setError] =
     useState<string | null>(null)
@@ -42,31 +41,27 @@ export function ImpresaLoginForm() {
   ) {
     event.preventDefault()
 
-    setError(null)
-    setIsSubmitting(true)
-
-    const formData =
-      new FormData(event.currentTarget)
     const submittedEmail =
-      String(
-        formData.get("email") ?? email,
-      ).trim()
+      email.trim()
     const submittedPassword =
-      String(
-        formData.get("password") ?? password,
-      )
+      password
+
+    setError(null)
 
     if (!submittedEmail || !submittedPassword) {
       setError("Inserisci email e password.")
-      setIsSubmitting(false)
       return
     }
+
+    setIsSubmitting(true)
 
     try {
       const result =
         await authClient.signIn.email({
-          email: submittedEmail,
-          password: submittedPassword,
+          email:
+            submittedEmail,
+          password:
+            submittedPassword,
         })
 
       if (result.error) {
@@ -89,35 +84,6 @@ export function ImpresaLoginForm() {
     }
   }
 
-  useEffect(() => {
-    function clearAutofilledPassword() {
-      setPassword("")
-
-      if (passwordInputRef.current) {
-        passwordInputRef.current.value = ""
-      }
-    }
-
-    clearAutofilledPassword()
-
-    const timers = [
-      window.setTimeout(
-        clearAutofilledPassword,
-        50,
-      ),
-      window.setTimeout(
-        clearAutofilledPassword,
-        250,
-      ),
-    ]
-
-    return () => {
-      timers.forEach((timer) =>
-        window.clearTimeout(timer),
-      )
-    }
-  }, [])
-
   return (
     <form
       autoComplete="off"
@@ -136,7 +102,7 @@ export function ImpresaLoginForm() {
           id="email"
           name="email"
           type="email"
-          autoComplete="off"
+          autoComplete="username"
           autoCapitalize="none"
           spellCheck={false}
           required
@@ -161,12 +127,15 @@ export function ImpresaLoginForm() {
 
         <input
           id="password"
-          ref={passwordInputRef}
-          name="password"
+          name="company-login-password"
           type="password"
-          autoComplete="off"
+          autoComplete="new-password"
           required
+          readOnly={!isPasswordEditable}
           value={password}
+          onFocus={() =>
+            setIsPasswordEditable(true)
+          }
           onChange={(event) =>
             setPassword(event.target.value)
           }
