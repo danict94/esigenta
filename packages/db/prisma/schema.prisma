@@ -20,8 +20,6 @@ model Sector {
   updatedAt DateTime @updatedAt
 
   categories Category[]
-
-  @@index([slug])
 }
 
 model Category {
@@ -52,7 +50,6 @@ model Category {
   services CategoryService[]
   aliases  CategoryAlias[]
 
-  @@index([slug])
   @@index([sectorId])
 }
 
@@ -88,7 +85,6 @@ model Service {
   companyServices         CompanyService[]
   requestRequiredServices RequestRequiredService[]
 
-  @@index([slug])
   @@index([name])
 }
 
@@ -121,7 +117,6 @@ model Intervention {
 
   aliases InterventionAlias[]
 
-  @@index([slug])
   @@index([name])
 }
 
@@ -154,7 +149,6 @@ model Domain {
 
   aliases DomainAlias[]
 
-  @@index([slug])
   @@index([name])
 }
 
@@ -172,7 +166,6 @@ model InterventionAlias {
 
   createdAt DateTime @default(now())
 
-  @@index([value])
   @@index([interventionId])
 }
 
@@ -186,7 +179,6 @@ model ServiceAlias {
 
   createdAt DateTime @default(now())
 
-  @@index([value])
   @@index([serviceId])
 }
 
@@ -200,7 +192,6 @@ model CategoryAlias {
 
   createdAt DateTime @default(now())
 
-  @@index([value])
   @@index([categoryId])
 }
 
@@ -214,7 +205,6 @@ model DomainAlias {
 
   createdAt DateTime @default(now())
 
-  @@index([value])
   @@index([domainId])
 }
 
@@ -302,7 +292,6 @@ model Company {
   services    CompanyService[]
   memberships CompanyMembership[]
 
-  @@index([vatNumber])
   @@index([city])
   @@index([postalCode])
   @@index([latitude, longitude])
