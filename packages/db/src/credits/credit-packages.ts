@@ -12,6 +12,7 @@ export type CreditPackageFormInput = {
   description?: string | null
   credits: number
   priceCents: number
+  validityDays: number
   currency?: string | null
   status?: CreditPackageStatus
   sortOrder?: number
@@ -99,6 +100,7 @@ function normalizePackageInput(
         description: string | null
         credits: number
         priceCents: number
+        validityDays: number
         currency: string
         status: CreditPackageStatus
         sortOrder: number
@@ -145,6 +147,18 @@ function normalizePackageInput(
     }
   }
 
+  const validityDays =
+    normalizePositiveInt(input.validityDays)
+
+  if (!validityDays) {
+    return {
+      ok: false,
+      code: "invalid_credit_package_validity",
+      message:
+        "La validità del pacchetto deve essere almeno di 1 giorno.",
+    }
+  }
+
   return {
     ok: true,
     value: {
@@ -153,6 +167,7 @@ function normalizePackageInput(
         normalizeText(input.description),
       credits,
       priceCents,
+      validityDays,
       currency:
         normalizeCurrency(input.currency),
       status:
@@ -182,6 +197,7 @@ export async function listCreditPackages() {
       description: true,
       credits: true,
       priceCents: true,
+      validityDays: true,
       currency: true,
       status: true,
       sortOrder: true,

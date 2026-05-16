@@ -24,7 +24,7 @@ function parseInteger(
   fallback = 0,
 ) {
   const parsed =
-    Number.parseInt(String(value ?? ""), 10)
+    Number(String(value ?? "").trim())
 
   return Number.isFinite(parsed)
     ? parsed
@@ -75,6 +75,10 @@ async function createPackageAction(
         parseInteger(
           formData.get("priceCents"),
         ),
+      validityDays:
+        parseInteger(
+          formData.get("validityDays"),
+        ),
       currency:
         String(
           formData.get("currency") ?? "EUR",
@@ -121,6 +125,10 @@ async function updatePackageAction(
       priceCents:
         parseInteger(
           formData.get("priceCents"),
+        ),
+      validityDays:
+        parseInteger(
+          formData.get("validityDays"),
         ),
       currency:
         String(
@@ -243,6 +251,17 @@ export default async function CreditPackagesPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Validità giorni">
+                <input
+                  name="validityDays"
+                  type="number"
+                  min={1}
+                  defaultValue={30}
+                  required
+                  className={inputClass}
+                />
+              </Field>
+
               <Field label="Valuta">
                 <input
                   name="currency"
@@ -336,7 +355,8 @@ export default async function CreditPackagesPage() {
                               creditPackage.priceCents,
                             currency:
                               creditPackage.currency,
-                          })}
+                          })}{" "}
+                          · {creditPackage.validityDays} giorni
                         </span>
                       </div>
 
@@ -395,6 +415,19 @@ export default async function CreditPackagesPage() {
                         min={1}
                         defaultValue={
                           creditPackage.priceCents
+                        }
+                        required
+                        className={inputClass}
+                      />
+                    </Field>
+
+                    <Field label="Validità giorni">
+                      <input
+                        name="validityDays"
+                        type="number"
+                        min={1}
+                        defaultValue={
+                          creditPackage.validityDays
                         }
                         required
                         className={inputClass}

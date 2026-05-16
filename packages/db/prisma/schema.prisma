@@ -682,6 +682,8 @@ model CreditPackage {
   priceCents Int
   currency   String @default("EUR")
 
+  validityDays Int @default(30)
+
   status    CreditPackageStatus @default(ACTIVE)
   sortOrder Int                 @default(0)
 
@@ -691,6 +693,7 @@ model CreditPackage {
   orders CreditOrder[]
 
   @@index([status, sortOrder])
+  @@index([status, validityDays])
   @@index([createdAt])
 }
 
@@ -702,10 +705,18 @@ model CompanyCreditAccount {
 
   balance Int @default(0)
 
+  /**
+   * Credit validity is enforced lazily by future mutative credit operations.
+   * No cron or scheduled expiration worker is part of this release path.
+   */
+  expiresAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   transactions CompanyCreditTransaction[]
+
+  @@index([expiresAt])
 }
 
 model CreditOrder {
@@ -728,6 +739,8 @@ model CreditOrder {
   providerPaymentIntentId String?   @unique
   providerEventId         String?
   paidAt                  DateTime?
+  validFrom               DateTime?
+  validUntil              DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -737,6 +750,7 @@ model CreditOrder {
   @@index([companyId, status])
   @@index([packageId])
   @@index([createdAt])
+  @@index([validUntil])
 }
 
 model CompanyCreditTransaction {
@@ -755,8 +769,12 @@ model CompanyCreditTransaction {
    * Positive amounts add credits.
    * Negative amounts subtract credits.
    */
-  amount       Int
-  balanceAfter Int
+  amount        Int
+  balanceBefore Int @default(0)
+  balanceAfter  Int
+
+  expiresAtBefore DateTime?
+  expiresAtAfter  DateTime?
 
   requestId String?
   request   Request? @relation(fields: [requestId], references: [id], onDelete: SetNull)
@@ -766,6 +784,7 @@ model CompanyCreditTransaction {
 
   /**
    * Refund transactions must point to the original transaction.
+   * The unique relatedTransactionId prevents refunding the same source transaction twice.
    * Example:
    * REFUND.relatedTransactionId -> REQUEST_UNLOCK transaction id.
    */
@@ -840,6 +859,7 @@ enum CreditTransactionType {
   REQUEST_UNLOCK
   ADMIN_ADJUSTMENT
   REFUND
+  CREDIT_EXPIRATION
 }
 
 enum CreditTransactionStatus {
