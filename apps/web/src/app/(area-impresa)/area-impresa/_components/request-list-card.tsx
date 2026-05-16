@@ -1,5 +1,12 @@
 import Link from "next/link";
 
+import {
+  formatCreditCost,
+  formatUnlockAvailability,
+  getCommercialStatusLabel,
+  getRequestCommercialState,
+} from "./request-commercial-display";
+
 export type RequestListCardProps = {
   id: string;
   intervention: string;
@@ -8,6 +15,9 @@ export type RequestListCardProps = {
   matchLabel?: string;
   description?: string | null;
   surfaceArea?: string | number | null;
+  creditCost: number | null;
+  maxUnlocks: number | null;
+  unlockCount: number;
 };
 
 function formatSurfaceArea(value?: string | number | null) {
@@ -107,11 +117,19 @@ export function RequestListCard({
   matchLabel,
   description,
   surfaceArea,
+  creditCost,
+  maxUnlocks,
+  unlockCount,
 }: RequestListCardProps) {
   const title = buildTitle({
     intervention,
     description,
     surfaceArea,
+  });
+  const commercialState = getRequestCommercialState({
+    creditCost,
+    maxUnlocks,
+    unlockCount,
   });
 
   return (
@@ -147,6 +165,20 @@ export function RequestListCard({
             <span className="inline-flex items-center gap-2">
               <ClockIcon />
               <span>{createdAt}</span>
+            </span>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-medium">
+            <span className="rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-text-primary">
+              {formatCreditCost(creditCost)}
+            </span>
+
+            <span className="rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-text-primary">
+              {formatUnlockAvailability(commercialState.availableUnlockSlots)}
+            </span>
+
+            <span className="rounded-full border border-border-primary bg-surface-primary px-3 py-1 text-text-secondary">
+              {getCommercialStatusLabel(commercialState)}
             </span>
           </div>
         </div>

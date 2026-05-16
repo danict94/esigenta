@@ -2,6 +2,12 @@ import type { ReactNode } from "react";
 
 import { Card, cn } from "@fixpro/ui";
 
+import {
+  formatCreditCost,
+  formatUnlockAvailability,
+  getRequestCommercialState,
+} from "./request-commercial-display";
+
 export type RequestFormDetail = {
   label: string;
   value: string;
@@ -24,10 +30,9 @@ export type RequestDetailCardProps = {
   customerEmail?: string | null;
   customerPhone?: string | null;
 
-  creditCost?: number | null;
-
-  interestedCount?: number;
-  maxInterestedCount?: number;
+  creditCost: number | null;
+  maxUnlocks: number | null;
+  unlockCount: number;
 };
 
 const maskChar = "\u2022";
@@ -339,6 +344,46 @@ function LockedContactRow({
   );
 }
 
+function formatMaxUnlocks(value: number | null) {
+  return value === null ? "Non impostato" : `${value} imprese`;
+}
+
+function getUnlockStatusLabel({
+  isCommerciallyConfigured,
+  isSoldOut,
+}: {
+  isCommerciallyConfigured: boolean;
+  isSoldOut: boolean;
+}) {
+  if (!isCommerciallyConfigured) {
+    return "Non ancora acquistabile";
+  }
+
+  if (isSoldOut) {
+    return "Posti terminati";
+  }
+
+  return "Disponibile per lo sblocco";
+}
+
+function getUnlockStatusMessage({
+  isCommerciallyConfigured,
+  isSoldOut,
+}: {
+  isCommerciallyConfigured: boolean;
+  isSoldOut: boolean;
+}) {
+  if (!isCommerciallyConfigured) {
+    return "Questa richiesta non è ancora pronta per lo sblocco.";
+  }
+
+  if (isSoldOut) {
+    return "Il limite di imprese per questa richiesta è stato raggiunto.";
+  }
+
+  return "La richiesta è configurata, ma lo sblocco operativo non è ancora attivo.";
+}
+
 export function RequestDetailCard({
   requestCode,
   title,
@@ -352,10 +397,15 @@ export function RequestDetailCard({
   customerEmail,
   customerPhone,
   creditCost,
-  interestedCount = 0,
-  maxInterestedCount = 5,
+  maxUnlocks,
+  unlockCount,
 }: RequestDetailCardProps) {
   const hasDetails = formDetails.length > 0;
+  const commercialState = getRequestCommercialState({
+    creditCost,
+    maxUnlocks,
+    unlockCount,
+  });
   const cityWithProvince = [city, province]
     .map((part) => part?.trim())
     .filter(Boolean)
@@ -392,7 +442,8 @@ export function RequestDetailCard({
           <div className="mt-3 flex items-center gap-3">
             <UsersIcon />
             <p className="text-sm font-semibold text-text-primary">
-              {interestedCount}/{maxInterestedCount} professionisti interessati
+              {unlockCount}
+              {maxUnlocks === null ? "" : `/${maxUnlocks}`} professionisti interessati
             </p>
           </div>
         </section>
@@ -448,11 +499,51 @@ export function RequestDetailCard({
 
       <aside className="lg:sticky lg:top-24">
         <Card className="p-6 shadow-sm">
-          <p className="text-sm font-medium text-text-muted">Costo richiesta</p>
-
-          <p className="mt-2 text-2xl font-semibold tracking-tight text-text-primary">
-            {typeof creditCost === "number" ? `${creditCost} crediti` : "Da definire"}
+          <p className="text-sm font-medium text-text-muted">
+            Crediti
           </p>
+
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+            Sblocco richiesta
+          </h2>
+
+          <div className="mt-4 inline-flex rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-xs font-medium text-text-primary">
+            {getUnlockStatusLabel(commercialState)}
+          </div>
+
+          <p className="mt-3 text-sm leading-6 text-text-secondary">
+            {getUnlockStatusMessage(commercialState)}
+          </p>
+
+          <dl className="mt-5 grid gap-3 border-t border-border-primary pt-5">
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-sm text-text-muted">Costo in crediti</dt>
+              <dd className="text-sm font-semibold text-text-primary">
+                {formatCreditCost(creditCost)}
+              </dd>
+            </div>
+
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-sm text-text-muted">Limite imprese</dt>
+              <dd className="text-sm font-semibold text-text-primary">
+                {formatMaxUnlocks(maxUnlocks)}
+              </dd>
+            </div>
+
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-sm text-text-muted">Sblocchi attuali</dt>
+              <dd className="text-sm font-semibold text-text-primary">
+                {unlockCount}
+              </dd>
+            </div>
+
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-sm text-text-muted">Posti disponibili</dt>
+              <dd className="text-sm font-semibold text-text-primary">
+                {formatUnlockAvailability(commercialState.availableUnlockSlots)}
+              </dd>
+            </div>
+          </dl>
 
           <div className="mt-8">
             <h2 className="text-sm font-semibold text-text-primary">
@@ -473,7 +564,7 @@ export function RequestDetailCard({
               "mt-6 inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary opacity-70",
             )}
           >
-            Sblocca contatto
+            Sblocco non ancora attivo
           </button>
 
           <p className="mt-3 text-xs leading-5 text-text-muted">

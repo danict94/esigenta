@@ -560,6 +560,8 @@ export default async function RequestDetailPage({
       address: true,
       postalCode: true,
       creditCost: true,
+      maxUnlocks: true,
+      unlockCount: true,
       structuredData: true,
       createdAt: true,
     },
@@ -606,8 +608,8 @@ export default async function RequestDetailPage({
         customerEmail={request.customerEmail}
         customerPhone={request.customerPhone}
         creditCost={request.creditCost}
-        interestedCount={0}
-        maxInterestedCount={5}
+        maxUnlocks={request.maxUnlocks}
+        unlockCount={request.unlockCount}
       />
     </PageShell>
   );

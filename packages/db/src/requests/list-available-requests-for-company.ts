@@ -22,6 +22,9 @@ export type AvailableCompanyRequest = {
   latitude: number | null
   longitude: number | null
   structuredData: Prisma.JsonValue | null
+  creditCost: number | null
+  maxUnlocks: number | null
+  unlockCount: number
   createdAt: Date
   matchLevel: CompanyRequestMatchLevel
 }
@@ -291,6 +294,9 @@ async function loadAvailableRequestsForCompany({
         latitude: true,
         longitude: true,
         structuredData: true,
+        creditCost: true,
+        maxUnlocks: true,
+        unlockCount: true,
         createdAt: true,
         requiredServices: {
           select: {

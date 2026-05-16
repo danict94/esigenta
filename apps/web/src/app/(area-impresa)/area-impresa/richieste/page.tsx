@@ -267,6 +267,9 @@ export default async function RichiestePage() {
                     matchLabel={getMatchLabel(request.matchLevel)}
                     description={description}
                     surfaceArea={surfaceArea}
+                    creditCost={request.creditCost}
+                    maxUnlocks={request.maxUnlocks}
+                    unlockCount={request.unlockCount}
                   />
                 );
               })}
