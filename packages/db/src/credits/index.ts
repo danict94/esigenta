@@ -10,6 +10,20 @@ export type {
 } from "./credit-packages"
 
 export {
+  createPendingCreditOrder,
+  listActiveCreditPackagesForPurchase,
+  markCreditOrderCheckoutCreated,
+} from "./credit-orders"
+
+export type {
+  CreatePendingCreditOrderInput,
+  MarkCreditOrderCheckoutCreatedData,
+  MarkCreditOrderCheckoutCreatedInput,
+  PendingCreditOrderCheckoutData,
+  PurchasableCreditPackage,
+} from "./credit-orders"
+
+export {
   debitCompanyCredits,
   ensureCompanyCreditAccountFresh,
   getCompanyCreditAccountSummary,

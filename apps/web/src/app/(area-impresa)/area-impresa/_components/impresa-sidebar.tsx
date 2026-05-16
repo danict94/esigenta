@@ -56,7 +56,7 @@ const accountNavigation: NavigationItem[] = [
   {
     label: "Crediti",
     href: "/area-impresa/crediti",
-    enabled: false,
+    enabled: true,
   },
 ]
 
