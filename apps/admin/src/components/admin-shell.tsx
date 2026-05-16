@@ -19,6 +19,7 @@ type AdminNavItem = {
 const navItems: AdminNavItem[] = [
   { label: "Dashboard", href: "/", enabled: true },
   { label: "Richieste", href: "/requests", enabled: true },
+  { label: "Crediti", href: "/crediti/pacchetti", enabled: true },
   { label: "Imprese", href: "/companies", enabled: false },
   { label: "Assistenza", href: "/support", enabled: false },
   { label: "Qualità", href: "/quality", enabled: false },

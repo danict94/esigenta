@@ -8,6 +8,8 @@ export * from "./auth"
 
 export * from "./identity"
 
+export * from "./credits"
+
 export { prisma } from "./prisma/client"
 
 export type {
