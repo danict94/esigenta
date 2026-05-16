@@ -280,6 +280,13 @@ model Company {
   operatingRadiusKm Int     @default(30)
 
   /**
+   * ONBOARDING CONTEXT ONLY
+   * Captures the professional category selected in the public signup flow.
+   * Matching must remain based on CompanyService, never this field.
+   */
+  onboardingCategorySlug String?
+
+  /**
    * IMPORTANT
    * Company capabilities are defined ONLY by:
    * CompanyService
@@ -299,6 +306,7 @@ model Company {
   @@index([city])
   @@index([postalCode])
   @@index([latitude, longitude])
+  @@index([onboardingCategorySlug])
   @@index([createdAt])
 }
 

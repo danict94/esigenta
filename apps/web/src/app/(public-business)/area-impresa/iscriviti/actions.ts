@@ -21,6 +21,7 @@ export type CompleteCompanyOnboardingInput = {
   name: string
   vatNumber: string
   phone: string
+  categorySlug?: string
   address?: string
   city?: string
   postalCode?: string
@@ -139,6 +140,18 @@ export async function completeCompanyOnboardingAction(
     }
   }
 
+  const onboardingCategorySlug =
+    normalizeOptionalText(input.categorySlug)
+
+  if (!onboardingCategorySlug) {
+    return {
+      ok: false,
+      code: "invalid_company_category",
+      message:
+        "Seleziona la categoria professionale dalla pagina professionisti.",
+    }
+  }
+
   const operatingRadiusKm =
     normalizeOperatingRadiusKm(
       input.operatingRadiusKm,
@@ -183,6 +196,7 @@ export async function completeCompanyOnboardingAction(
   try {
     const result =
       await createCompanyForCurrentUser({
+        onboardingCategorySlug,
         company: {
           name: name.value,
           vatNumber: vatNumber.value,

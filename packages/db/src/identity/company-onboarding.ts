@@ -40,7 +40,7 @@ export type CreateCompanyProfileInput = {
 
 export type CreateCompanyForUserInput = {
   userId: string
-  serviceIds?: string[]
+  onboardingCategorySlug?: string
   company: CreateCompanyProfileInput
 }
 
@@ -190,28 +190,16 @@ function normalizeCompanyProfile(
   }
 }
 
-function normalizeServiceIds(
-  serviceIds: string[] | undefined,
-): string[] {
-  return Array.from(
-    new Set(
-      (serviceIds ?? [])
-        .map((serviceId) =>
-          serviceId.trim(),
-        )
-        .filter(Boolean),
-    ),
-  )
-}
-
 function buildCompanyCreateData({
   company,
-  serviceIds,
+  onboardingCategorySlug,
 }: {
   company: ReturnType<
     typeof normalizeCompanyProfile
   >
-  serviceIds: string[]
+  onboardingCategorySlug:
+    | string
+    | undefined
 }): Prisma.CompanyCreateInput {
   return {
     name: company.name,
@@ -274,24 +262,17 @@ function buildCompanyCreateData({
             company.longitude,
         }
       : {}),
-    services: {
-      create:
-        serviceIds.map(
-          (serviceId) => ({
-            service: {
-              connect: {
-                id: serviceId,
-              },
-            },
-          }),
-        ),
-    },
+    ...(onboardingCategorySlug
+      ? {
+          onboardingCategorySlug,
+        }
+      : {}),
   }
 }
 
 export async function createCompanyForUser({
   userId,
-  serviceIds,
+  onboardingCategorySlug,
   company,
 }: CreateCompanyForUserInput): Promise<CreateCompanyForUserResult> {
   const memberships =
@@ -324,8 +305,8 @@ export async function createCompanyForUser({
   const normalizedCompany =
     normalizeCompanyProfile(company)
 
-  const normalizedServiceIds =
-    normalizeServiceIds(serviceIds)
+  const normalizedOnboardingCategorySlug =
+    normalizeText(onboardingCategorySlug)
 
   const existingCompany =
     await prisma.company.findUnique({
@@ -355,8 +336,8 @@ export async function createCompanyForUser({
             data: buildCompanyCreateData({
               company:
                 normalizedCompany,
-              serviceIds:
-                normalizedServiceIds,
+              onboardingCategorySlug:
+                normalizedOnboardingCategorySlug,
             }),
             select: {
               id: true,

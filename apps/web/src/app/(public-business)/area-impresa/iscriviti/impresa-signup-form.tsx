@@ -30,6 +30,7 @@ type InitialCompanyInput = {
 }
 
 type ImpresaSignupFormProps = {
+  categorySlug?: string
   initialCompany?: InitialCompanyInput
   hasValidLeadLocation: boolean
 }
@@ -48,6 +49,7 @@ function hasText(value: string) {
 }
 
 export function ImpresaSignupForm({
+  categorySlug,
   initialCompany = {},
   hasValidLeadLocation,
 }: ImpresaSignupFormProps) {
@@ -87,6 +89,13 @@ export function ImpresaSignupForm({
     if (!hasValidLeadLocation) {
       setError(
         "Seleziona prima la città dalla pagina professionisti.",
+      )
+      return
+    }
+
+    if (!categorySlug) {
+      setError(
+        "Seleziona prima la categoria professionale dalla pagina professionisti.",
       )
       return
     }
@@ -145,6 +154,7 @@ export function ImpresaSignupForm({
           name: companyName,
           vatNumber,
           phone,
+          categorySlug,
           operatingRadiusKm,
           ...(initialCompany.address
             ? {

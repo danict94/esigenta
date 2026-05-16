@@ -65,6 +65,9 @@ export default async function AreaImpresaSignupPage({
         longitude !== null,
     )
 
+  const hasValidLeadCategory =
+    Boolean(categorySlug)
+
   const hasLeadContext =
     Boolean(
       categorySlug ||
@@ -196,6 +199,26 @@ export default async function AreaImpresaSignupPage({
               </Card>
             ) : null}
 
+            {!hasValidLeadCategory ? (
+              <Card className="mt-6 p-5">
+                <p className="text-sm font-medium text-text-primary">
+                  Seleziona prima la categoria professionale
+                </p>
+
+                <p className="mt-3 text-sm leading-6 text-text-secondary">
+                  Per creare il profilo impresa serve la categoria scelta
+                  nella pagina professionisti.
+                </p>
+
+                <Link
+                  href="/area-impresa"
+                  className="mt-4 inline-flex text-sm font-medium text-brand-primary"
+                >
+                  Torna alla pagina professionisti
+                </Link>
+              </Card>
+            ) : null}
+
             <div className="mt-6 text-sm text-text-secondary">
               Hai già un profilo?{" "}
               <Link
@@ -225,6 +248,9 @@ export default async function AreaImpresaSignupPage({
 
             <div className="mt-8">
               <ImpresaSignupForm
+                categorySlug={
+                  categorySlug ?? undefined
+                }
                 initialCompany={initialCompany}
                 hasValidLeadLocation={hasValidLeadLocation}
               />

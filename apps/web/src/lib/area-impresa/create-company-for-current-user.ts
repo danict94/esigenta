@@ -10,7 +10,7 @@ import {
 } from "../../auth/server"
 
 export type CreateCompanyForCurrentUserInput = {
-  serviceIds?: string[]
+  onboardingCategorySlug?: string
   company: CreateCompanyProfileInput
 }
 
@@ -23,7 +23,7 @@ export type CreateCompanyForCurrentUserResult =
 
 export async function createCompanyForCurrentUser({
   company,
-  serviceIds,
+  onboardingCategorySlug,
 }: CreateCompanyForCurrentUserInput): Promise<CreateCompanyForCurrentUserResult> {
   const user =
     await requireUser()
@@ -32,6 +32,6 @@ export async function createCompanyForCurrentUser({
     userId:
       user.id,
     company,
-    serviceIds,
+    onboardingCategorySlug,
   })
 }
