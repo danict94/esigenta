@@ -292,10 +292,11 @@ model Company {
   services    CompanyService[]
   memberships CompanyMembership[]
 
-  creditAccount      CompanyCreditAccount?
-  creditOrders       CreditOrder[]
-  creditTransactions CompanyCreditTransaction[]
-  requestUnlocks     RequestUnlock[]
+  creditAccount        CompanyCreditAccount?
+  creditOrders         CreditOrder[]
+  creditTransactions   CompanyCreditTransaction[]
+  requestUnlocks       RequestUnlock[]
+  creditRefundRequests CreditRefundRequest[]
 
   @@index([city])
   @@index([postalCode])
@@ -353,9 +354,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  companyMemberships      CompanyMembership[]
-  adminProfile            AdminProfile?
-  adminCreditTransactions CompanyCreditTransaction[] @relation("CreditAdminActor")
+  companyMemberships           CompanyMembership[]
+  adminProfile                 AdminProfile?
+  adminCreditTransactions      CompanyCreditTransaction[] @relation("CreditAdminActor")
+  reviewedCreditRefundRequests CreditRefundRequest[]      @relation("CreditRefundReviewAdmin")
 
   sessions Session[]
   accounts Account[]
@@ -620,10 +622,11 @@ model Request {
   // RELATIONS
   ///////////////////////////////////////////////////////////
 
-  requiredServices   RequestRequiredService[]
-  accessTokens       CustomerAccessToken[]
-  unlocks            RequestUnlock[]
-  creditTransactions CompanyCreditTransaction[]
+  requiredServices     RequestRequiredService[]
+  accessTokens         CustomerAccessToken[]
+  unlocks              RequestUnlock[]
+  creditTransactions   CompanyCreditTransaction[]
+  creditRefundRequests CreditRefundRequest[]
 
   ///////////////////////////////////////////////////////////
   // INDEXES
@@ -801,8 +804,9 @@ model CompanyCreditTransaction {
 
   createdAt DateTime @default(now())
 
-  unlockChargeFor RequestUnlock? @relation("RequestUnlockCharge")
-  unlockRefundFor RequestUnlock? @relation("RequestUnlockRefund")
+  unlockChargeFor      RequestUnlock?        @relation("RequestUnlockCharge")
+  unlockRefundFor      RequestUnlock?        @relation("RequestUnlockRefund")
+  creditRefundRequests CreditRefundRequest[]
 
   @@index([companyId, createdAt])
   @@index([accountId, createdAt])
@@ -831,7 +835,8 @@ model RequestUnlock {
   refundTransactionId String?                   @unique
   refundTransaction   CompanyCreditTransaction? @relation("RequestUnlockRefund", fields: [refundTransactionId], references: [id], onDelete: SetNull)
 
-  refundReason String?
+  refundReason  String?
+  refundRequest CreditRefundRequest?
 
   createdAt DateTime @default(now())
 
@@ -839,6 +844,58 @@ model RequestUnlock {
   @@index([requestId, createdAt])
   @@index([companyId, createdAt])
   @@index([refundedAt])
+}
+
+model CreditRefundRequest {
+  id String @id @default(cuid())
+
+  requestUnlockId String        @unique
+  requestUnlock   RequestUnlock @relation(fields: [requestUnlockId], references: [id], onDelete: Cascade)
+
+  requestId String
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  creditTransactionId String
+  creditTransaction   CompanyCreditTransaction @relation(fields: [creditTransactionId], references: [id], onDelete: Restrict)
+
+  status      CreditRefundRequestStatus @default(PENDING_REVIEW)
+  reason      CreditRefundRequestReason
+  description String
+
+  companyContactAttempted Boolean   @default(false)
+  lastContactAttemptAt    DateTime?
+
+  reviewedAt            DateTime?
+  reviewedByAdminUserId String?
+  reviewedByAdminUser   User?     @relation("CreditRefundReviewAdmin", fields: [reviewedByAdminUserId], references: [id], onDelete: SetNull)
+  adminNotes            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([companyId, createdAt])
+  @@index([requestId])
+  @@index([reviewedByAdminUserId])
+}
+
+enum CreditRefundRequestStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum CreditRefundRequestReason {
+  CUSTOMER_NOT_RESPONDING
+  INVALID_CONTACTS
+  REQUEST_ALREADY_RESOLVED
+  INVALID_OR_SPAM_REQUEST
+  DUPLICATE_REQUEST
+  OTHER
 }
 
 enum CreditPackageStatus {

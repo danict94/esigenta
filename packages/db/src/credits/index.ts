@@ -28,6 +28,17 @@ export type {
 } from "./credit-orders"
 
 export {
+  createCreditRefundRequest,
+  listCreditRefundRequestsForAdminReview,
+} from "./credit-refund-requests"
+
+export type {
+  AdminCreditRefundRequestReviewItem,
+  CreateCreditRefundRequestData,
+  CreateCreditRefundRequestInput,
+} from "./credit-refund-requests"
+
+export {
   debitCompanyCredits,
   ensureCompanyCreditAccountFresh,
   getCompanyCreditAccountSummary,

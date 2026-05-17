@@ -5,9 +5,11 @@ import { notFound } from "next/navigation";
 import { PageShell } from "@fixpro/ui";
 
 import {
+  createCreditRefundRequest,
   getAvailableRequestForCompany,
   prisma,
   unlockRequestForCompany,
+  type CreateCreditRefundRequestInput,
 } from "@fixpro/db";
 
 import { requireDefaultCompanyMembership } from "../../../../../auth/server";
@@ -43,6 +45,38 @@ async function unlockRequestAction(formData: FormData) {
   }
 
   revalidatePath("/area-impresa/richieste");
+  revalidatePath(`/area-impresa/richieste/${requestId}`);
+}
+
+async function createRefundRequestAction(formData: FormData) {
+  "use server";
+
+  const membership = await requireDefaultCompanyMembership();
+  const requestId = String(formData.get("requestId") ?? "").trim();
+  const requestUnlockId = String(formData.get("requestUnlockId") ?? "").trim();
+  const lastContactAttemptValue = String(
+    formData.get("lastContactAttemptAt") ?? "",
+  ).trim();
+  const lastContactAttemptAt = lastContactAttemptValue
+    ? new Date(`${lastContactAttemptValue}T00:00:00`)
+    : null;
+
+  const result = await createCreditRefundRequest({
+    companyId: membership.companyId,
+    requestUnlockId,
+    reason: String(
+      formData.get("reason") ?? "",
+    ) as CreateCreditRefundRequestInput["reason"],
+    description: String(formData.get("description") ?? ""),
+    companyContactAttempted:
+      formData.get("companyContactAttempted") === "on",
+    lastContactAttemptAt,
+  });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
   revalidatePath(`/area-impresa/richieste/${requestId}`);
 }
 
@@ -590,6 +624,26 @@ export default async function RequestDetailPage({
   }
 
   const hasUnlocked = visibility.request.hasUnlocked;
+  const requestUnlockRefundState =
+    hasUnlocked && visibility.request.requestUnlockId
+      ? await prisma.requestUnlock.findUnique({
+          where: {
+            id: visibility.request.requestUnlockId,
+          },
+          select: {
+            id: true,
+            refundedAt: true,
+            refundTransactionId: true,
+            refundRequest: {
+              select: {
+                id: true,
+                status: true,
+                createdAt: true,
+              },
+            },
+          },
+        })
+      : null;
   const customerContact = hasUnlocked
     ? await prisma.request.findUnique({
         where: {
@@ -657,6 +711,26 @@ export default async function RequestDetailPage({
             : null
         }
         unlockAction={unlockRequestAction}
+        refundRequestAction={createRefundRequestAction}
+        requestUnlockRefundedAt={
+          requestUnlockRefundState?.refundedAt
+            ? formatDate(requestUnlockRefundState.refundedAt)
+            : null
+        }
+        requestUnlockRefundTransactionId={
+          requestUnlockRefundState?.refundTransactionId ?? null
+        }
+        refundRequest={
+          requestUnlockRefundState?.refundRequest
+            ? {
+                id: requestUnlockRefundState.refundRequest.id,
+                status: requestUnlockRefundState.refundRequest.status,
+                createdAt: formatDate(
+                  requestUnlockRefundState.refundRequest.createdAt,
+                ),
+              }
+            : null
+        }
       />
     </PageShell>
   );

@@ -19,6 +19,12 @@ export type CustomerContactDetail = {
   phone?: string | null;
 };
 
+export type RefundRequestDetail = {
+  id: string;
+  status: string;
+  createdAt: string;
+};
+
 export type RequestDetailCardProps = {
   requestCode?: string | null;
   title: string;
@@ -42,6 +48,10 @@ export type RequestDetailCardProps = {
   requestUnlockId?: string | null;
   unlockedAt?: string | null;
   unlockAction: (formData: FormData) => Promise<void>;
+  refundRequestAction: (formData: FormData) => Promise<void>;
+  requestUnlockRefundedAt?: string | null;
+  requestUnlockRefundTransactionId?: string | null;
+  refundRequest?: RefundRequestDetail | null;
 };
 
 function Icon({ children }: { children: ReactNode }) {
@@ -330,6 +340,33 @@ function formatMaxUnlocks(value: number | null) {
   return value === null ? "Non impostato" : `${value} imprese`;
 }
 
+const refundReasonOptions = [
+  {
+    value: "CUSTOMER_NOT_RESPONDING",
+    label: "Cliente non risponde",
+  },
+  {
+    value: "INVALID_CONTACTS",
+    label: "Contatti errati o non funzionanti",
+  },
+  {
+    value: "REQUEST_ALREADY_RESOLVED",
+    label: "Richiesta gi\u00e0 risolta",
+  },
+  {
+    value: "INVALID_OR_SPAM_REQUEST",
+    label: "Richiesta non valida, spam o falsa",
+  },
+  {
+    value: "DUPLICATE_REQUEST",
+    label: "Richiesta duplicata",
+  },
+  {
+    value: "OTHER",
+    label: "Altro motivo da valutare",
+  },
+] as const;
+
 function getUnlockStatusLabel({
   hasUnlocked,
   isCommerciallyConfigured,
@@ -393,8 +430,13 @@ export function RequestDetailCard({
   maxUnlocks,
   unlockCount,
   hasUnlocked,
+  requestUnlockId,
   unlockedAt,
   unlockAction,
+  refundRequestAction,
+  requestUnlockRefundedAt,
+  requestUnlockRefundTransactionId,
+  refundRequest,
 }: RequestDetailCardProps) {
   const hasDetails = formDetails.length > 0;
   const commercialState = getRequestCommercialState({
@@ -414,6 +456,13 @@ export function RequestDetailCard({
     commercialState.isCommerciallyConfigured &&
     !commercialState.isSoldOut &&
     !hasUnlocked;
+  const hasRefundedUnlock =
+    Boolean(requestUnlockRefundedAt || requestUnlockRefundTransactionId);
+  const canRequestRefund =
+    hasUnlocked &&
+    Boolean(requestUnlockId) &&
+    !hasRefundedUnlock &&
+    !refundRequest;
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start">
@@ -579,6 +628,113 @@ export function RequestDetailCard({
               </div>
             )}
           </div>
+
+          {hasUnlocked ? (
+            <div className="mt-6 border-t border-border-primary pt-6">
+              {hasRefundedUnlock ? (
+                <div className="rounded-md border border-border-primary bg-surface-secondary p-4">
+                  <p className="text-sm font-semibold text-text-primary">
+                    Crediti rimborsati
+                  </p>
+                  {requestUnlockRefundedAt ? (
+                    <p className="mt-1 text-xs text-text-muted">
+                      Rimborso registrato il {requestUnlockRefundedAt}
+                    </p>
+                  ) : null}
+                </div>
+              ) : refundRequest ? (
+                <div className="rounded-md border border-border-primary bg-surface-secondary p-4">
+                  <p className="text-sm font-semibold text-text-primary">
+                    Richiesta rimborso in revisione
+                  </p>
+                  <p className="mt-1 text-xs text-text-muted">
+                    Inviata il {refundRequest.createdAt}
+                  </p>
+                </div>
+              ) : canRequestRefund ? (
+                <form action={refundRequestAction} className="grid gap-4">
+                  <input type="hidden" name="requestId" value={requestId} />
+                  <input
+                    type="hidden"
+                    name="requestUnlockId"
+                    value={requestUnlockId ?? ""}
+                  />
+
+                  <div>
+                    <h2 className="text-sm font-semibold text-text-primary">
+                      Richiedi rimborso
+                    </h2>
+                    <p className="mt-2 text-xs leading-5 text-text-muted">
+                      La richiesta sar\u00e0 verificata dal team FixPro. Il
+                      rimborso non \u00e8 automatico.
+                    </p>
+                  </div>
+
+                  <label className="grid gap-2">
+                    <span className="text-sm font-medium text-text-primary">
+                      Motivo
+                    </span>
+                    <select
+                      name="reason"
+                      required
+                      className="h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors focus:border-border-focus"
+                    >
+                      {refundReasonOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <p className="text-xs leading-5 text-text-muted">
+                    Puoi richiedere il rimborso se hai provato a contattare il
+                    cliente e non hai ricevuto risposta.
+                  </p>
+
+                  <label className="grid gap-2">
+                    <span className="text-sm font-medium text-text-primary">
+                      Descrizione
+                    </span>
+                    <textarea
+                      name="description"
+                      required
+                      minLength={20}
+                      rows={4}
+                      className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-3 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
+                      placeholder="Spiega cosa hai verificato e perch\u00e9 chiedi la revisione."
+                    />
+                  </label>
+
+                  <label className="flex items-start gap-3 text-sm leading-6 text-text-secondary">
+                    <input
+                      type="checkbox"
+                      name="companyContactAttempted"
+                      className="mt-1 h-4 w-4 rounded border-border-primary"
+                    />
+                    <span>
+                      Confermo di aver provato a contattare il cliente
+                    </span>
+                  </label>
+
+                  <label className="grid gap-2">
+                    <span className="text-sm font-medium text-text-primary">
+                      Ultimo tentativo contatto
+                    </span>
+                    <input
+                      type="date"
+                      name="lastContactAttemptAt"
+                      className="h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors focus:border-border-focus"
+                    />
+                  </label>
+
+                  <Button type="submit" variant="secondary">
+                    Invia richiesta rimborso
+                  </Button>
+                </form>
+              ) : null}
+            </div>
+          ) : null}
 
           <div className="mt-6">
             <p className="mb-3 text-xs font-medium text-text-muted">
