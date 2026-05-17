@@ -10,6 +10,7 @@ export const tokens = {
   },
 
   radius: {
+    none: "",
     sm: "rounded-md",
     md: "rounded-md",
     lg: "rounded-lg",
@@ -24,6 +25,7 @@ export const tokens = {
     sectionLg: "py-24",
     sectionXl: "py-32",
 
+    pageShell: "py-10 md:py-12",
     containerX: "px-4 md:px-6 lg:px-8",
   },
 
@@ -46,3 +48,9 @@ export const tokens = {
     surface: "shadow-surface",
   },
 } as const
+
+export type ContainerToken = keyof typeof tokens.containers
+export type RadiusToken = keyof typeof tokens.radius
+export type SpacingToken = keyof typeof tokens.spacing
+export type TypographyToken = keyof typeof tokens.typography
+export type ShadowToken = keyof typeof tokens.shadows

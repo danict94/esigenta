@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   ReactNode,
 } from "react"
 import {
@@ -16,6 +16,7 @@ import {
   Button,
   Card,
   PageShell,
+  Textarea,
 } from "@fixpro/ui"
 
 import {
@@ -238,10 +239,9 @@ export default async function AdminCreditRefundRequestsPage() {
                           <span className="text-sm font-medium text-text-primary">
                             Note admin
                           </span>
-                          <textarea
+                          <Textarea
                             name="adminNotes"
                             rows={4}
-                            className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-3 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
                             placeholder="Sintesi della verifica e decisione."
                           />
                         </label>
@@ -386,3 +386,4 @@ export default async function AdminCreditRefundRequestsPage() {
     </PageShell>
   )
 }
+

@@ -1,14 +1,28 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type {
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react"
 
-import { cn } from "../lib/cn";
+import { cn } from "../lib/cn"
+import {
+  tokens,
+} from "../styles/tokens"
 
-type ButtonVariant = "primary" | "secondary";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+
+type ButtonSize =
+  | "sm"
+  | "md"
+  | "lg"
 
 export type ButtonProps = {
-  variant?: ButtonVariant;
-  className?: string;
-  children: ReactNode;
-} & ButtonHTMLAttributes<HTMLButtonElement>;
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+  children: ReactNode
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
 const variants: Record<ButtonVariant, string> = {
   primary:
@@ -16,10 +30,17 @@ const variants: Record<ButtonVariant, string> = {
 
   secondary:
     "border border-border-primary bg-surface-primary text-text-primary hover:border-border-focus",
-};
+}
+
+const sizes: Record<ButtonSize, string> = {
+  sm: "h-10 px-4 text-sm",
+  md: "h-12 px-5 text-sm",
+  lg: "h-14 px-6 text-base",
+}
 
 export function Button({
   variant = "primary",
+  size = "md",
   className,
   children,
   ...props
@@ -27,7 +48,9 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex h-12 items-center justify-center rounded-md px-5 text-sm font-medium transition-colors",
+        "inline-flex items-center justify-center font-medium transition-colors disabled:pointer-events-none disabled:opacity-60",
+        tokens.radius.md,
+        sizes[size],
         variants[variant],
         className,
       )}
@@ -35,5 +58,5 @@ export function Button({
     >
       {children}
     </button>
-  );
+  )
 }

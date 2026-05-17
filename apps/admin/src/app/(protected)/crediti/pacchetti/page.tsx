@@ -1,3 +1,6 @@
+﻿import type {
+  ReactNode,
+} from "react"
 import { revalidatePath } from "next/cache"
 
 import {
@@ -10,7 +13,9 @@ import {
   Badge,
   Button,
   Card,
+  Input,
   PageShell,
+  Textarea,
 } from "@fixpro/ui"
 
 import {
@@ -157,7 +162,7 @@ function Field({
   children,
 }: {
   label: string
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <label className="grid gap-2">
@@ -169,11 +174,8 @@ function Field({
   )
 }
 
-const inputClass =
-  "h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
-
-const textareaClass =
-  "min-h-24 w-full resize-none rounded-md border border-border-primary bg-surface-primary px-3 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
+const selectClass =
+  "h-12 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors focus:border-border-focus disabled:cursor-not-allowed disabled:opacity-60"
 
 export default async function CreditPackagesPage() {
   const packages =
@@ -211,74 +213,67 @@ export default async function CreditPackagesPage() {
             className="mt-6 grid gap-4"
           >
             <Field label="Nome">
-              <input
+              <Input
                 name="name"
                 required
                 placeholder="Starter"
-                className={inputClass}
               />
             </Field>
 
             <Field label="Descrizione">
-              <textarea
+              <Textarea
                 name="description"
                 placeholder="Pacchetto introduttivo per nuove imprese."
-                className={textareaClass}
               />
             </Field>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Crediti">
-                <input
+                <Input
                   name="credits"
                   type="number"
                   min={1}
                   required
-                  className={inputClass}
                 />
               </Field>
 
               <Field label="Prezzo centesimi">
-                <input
+                <Input
                   name="priceCents"
                   type="number"
                   min={1}
                   required
                   placeholder="9900"
-                  className={inputClass}
                 />
               </Field>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Validità giorni">
-                <input
+                <Input
                   name="validityDays"
                   type="number"
                   min={1}
                   defaultValue={30}
                   required
-                  className={inputClass}
                 />
               </Field>
 
               <Field label="Valuta">
-                <input
+                <Input
                   name="currency"
                   defaultValue="EUR"
                   maxLength={3}
                   required
-                  className={inputClass}
                 />
               </Field>
 
               <Field label="Ordine">
-                <input
+                <Input
                   name="sortOrder"
                   type="number"
                   min={0}
                   defaultValue={0}
-                  className={inputClass}
                 />
               </Field>
             </div>
@@ -287,7 +282,7 @@ export default async function CreditPackagesPage() {
               <select
                 name="status"
                 defaultValue="ACTIVE"
-                className={inputClass}
+                className={selectClass}
               >
                 <option value="ACTIVE">
                   Attivo
@@ -374,29 +369,27 @@ export default async function CreditPackagesPage() {
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <Field label="Nome">
-                      <input
+                      <Input
                         name="name"
                         defaultValue={
                           creditPackage.name
                         }
                         required
-                        className={inputClass}
                       />
                     </Field>
 
                     <Field label="Descrizione">
-                      <input
+                      <Input
                         name="description"
                         defaultValue={
                           creditPackage.description ??
                           ""
                         }
-                        className={inputClass}
                       />
                     </Field>
 
                     <Field label="Crediti">
-                      <input
+                      <Input
                         name="credits"
                         type="number"
                         min={1}
@@ -404,12 +397,11 @@ export default async function CreditPackagesPage() {
                           creditPackage.credits
                         }
                         required
-                        className={inputClass}
                       />
                     </Field>
 
                     <Field label="Prezzo centesimi">
-                      <input
+                      <Input
                         name="priceCents"
                         type="number"
                         min={1}
@@ -417,12 +409,11 @@ export default async function CreditPackagesPage() {
                           creditPackage.priceCents
                         }
                         required
-                        className={inputClass}
                       />
                     </Field>
 
                     <Field label="Validità giorni">
-                      <input
+                      <Input
                         name="validityDays"
                         type="number"
                         min={1}
@@ -430,31 +421,28 @@ export default async function CreditPackagesPage() {
                           creditPackage.validityDays
                         }
                         required
-                        className={inputClass}
                       />
                     </Field>
 
                     <Field label="Valuta">
-                      <input
+                      <Input
                         name="currency"
                         defaultValue={
                           creditPackage.currency
                         }
                         maxLength={3}
                         required
-                        className={inputClass}
                       />
                     </Field>
 
                     <Field label="Ordine">
-                      <input
+                      <Input
                         name="sortOrder"
                         type="number"
                         min={0}
                         defaultValue={
                           creditPackage.sortOrder
                         }
-                        className={inputClass}
                       />
                     </Field>
 
@@ -464,7 +452,7 @@ export default async function CreditPackagesPage() {
                         defaultValue={
                           creditPackage.status
                         }
-                        className={inputClass}
+                        className={selectClass}
                       >
                         <option value="ACTIVE">
                           Attivo
@@ -490,3 +478,4 @@ export default async function CreditPackagesPage() {
     </PageShell>
   )
 }
+

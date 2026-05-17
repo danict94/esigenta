@@ -1,7 +1,13 @@
-"use client";
+﻿"use client";
 
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+import {
+  Button,
+  Input,
+} from "@fixpro/ui";
 
 import { authClient } from "../../../auth/client";
 
@@ -21,7 +27,7 @@ export function AdminLoginForm() {
     useState(false);
 
   async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>,
+    event: FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
 
@@ -68,7 +74,7 @@ export function AdminLoginForm() {
           Email
         </label>
 
-        <input
+        <Input
           id="email"
           name="email"
           type="email"
@@ -78,7 +84,6 @@ export function AdminLoginForm() {
           onChange={(event) =>
             setEmail(event.target.value)
           }
-          className="w-full rounded-xl border border-border-subtle bg-white px-3 py-2 text-sm text-text-primary outline-none focus:border-text-primary"
         />
       </div>
 
@@ -90,7 +95,7 @@ export function AdminLoginForm() {
           Password
         </label>
 
-        <input
+        <Input
           id="password"
           name="password"
           type="password"
@@ -100,25 +105,24 @@ export function AdminLoginForm() {
           onChange={(event) =>
             setPassword(event.target.value)
           }
-          className="w-full rounded-xl border border-border-subtle bg-white px-3 py-2 text-sm text-text-primary outline-none focus:border-text-primary"
         />
       </div>
 
       {error ? (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="border border-border-focus bg-surface-secondary px-3 py-2 text-sm text-text-primary">
           {error}
         </p>
       ) : null}
 
-      <button
+      <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-xl bg-text-primary px-4 py-2 text-sm font-medium text-surface-primary disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full"
       >
         {isSubmitting
           ? "Accesso in corso..."
           : "Accedi"}
-      </button>
+      </Button>
     </form>
   );
 }

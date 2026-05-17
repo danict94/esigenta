@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
@@ -8,7 +8,14 @@ import {
   reviewRequest,
   updateRequestCommercialSettings,
 } from "@fixpro/db";
-import { Badge, Button, Card, PageShell } from "@fixpro/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  Input,
+  PageShell,
+  Textarea,
+} from "@fixpro/ui";
 
 import { requireAdmin } from "../../../../auth/server";
 
@@ -383,9 +390,6 @@ function FieldBlock({
   );
 }
 
-const inputClass =
-  "h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus";
-
 export default async function RequestDetailPage({
   params,
 }: RequestDetailPageProps) {
@@ -539,7 +543,7 @@ export default async function RequestDetailPage({
 
           <DetailSection eyebrow="Localizzazione" title="Luogo richiesta">
             <dl className="grid gap-5 md:grid-cols-2">
-              <FieldBlock label="Città">
+              <FieldBlock label="CittÃ ">
                 {request.city ?? "-"}
               </FieldBlock>
 
@@ -678,14 +682,13 @@ export default async function RequestDetailPage({
                 <span className="text-sm font-medium text-text-primary">
                   Costo in crediti
                 </span>
-                <input
+                <Input
                   name="creditCost"
                   type="number"
                   min={1}
                   step={1}
                   defaultValue={request.creditCost ?? ""}
                   placeholder="Non impostato"
-                  className={inputClass}
                 />
               </label>
 
@@ -693,14 +696,13 @@ export default async function RequestDetailPage({
                 <span className="text-sm font-medium text-text-primary">
                   Limite massimo imprese
                 </span>
-                <input
+                <Input
                   name="maxUnlocks"
                   type="number"
                   min={1}
                   step={1}
                   defaultValue={request.maxUnlocks ?? ""}
                   placeholder="Non impostato"
-                  className={inputClass}
                 />
               </label>
 
@@ -752,12 +754,11 @@ export default async function RequestDetailPage({
                       Nota moderazione
                     </label>
 
-                    <textarea
+                    <Textarea
                       id="approve-moderation-notes"
                       name="moderationNotes"
                       rows={3}
                       placeholder="Nota interna opzionale per la revisione."
-                      className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
                     />
                   </div>
 
@@ -778,12 +779,11 @@ export default async function RequestDetailPage({
                       Motivo rifiuto
                     </label>
 
-                    <textarea
+                    <Textarea
                       id="reject-moderation-notes"
                       name="moderationNotes"
                       rows={3}
                       placeholder="Motivo interno o nota editoriale."
-                      className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
                     />
                   </div>
 
@@ -798,14 +798,14 @@ export default async function RequestDetailPage({
                   Revisione chiusa
                 </p>
                 <p className="mt-2 text-sm leading-6 text-text-secondary">
-                  Questa richiesta ha già ricevuto una decisione editoriale.
+                  Questa richiesta ha giÃ  ricevuto una decisione editoriale.
                 </p>
               </div>
             )}
 
             <div className="mt-6 border-t border-border-primary pt-5">
               <p className="text-sm font-semibold text-text-primary">
-                Checklist qualità
+                Checklist qualitÃ 
               </p>
 
               <ul className="mt-3 space-y-2 text-sm leading-6 text-text-secondary">
@@ -822,3 +822,6 @@ export default async function RequestDetailPage({
     </PageShell>
   );
 }
+
+
+
