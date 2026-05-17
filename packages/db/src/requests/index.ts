@@ -114,3 +114,12 @@ export type {
   ReviewRequestInput,
   ReviewRequestResult,
 } from "./review-request"
+
+export {
+  unlockRequestForCompany,
+} from "./unlock-request-for-company"
+
+export type {
+  UnlockRequestForCompanyInput,
+  UnlockRequestForCompanyResult,
+} from "./unlock-request-for-company"

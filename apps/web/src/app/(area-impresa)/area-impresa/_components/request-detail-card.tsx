@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Card, cn } from "@fixpro/ui";
+import { Button, Card, cn } from "@fixpro/ui";
 
 import {
   formatCreditCost,
@@ -30,9 +30,12 @@ export type RequestDetailCardProps = {
   customerEmail?: string | null;
   customerPhone?: string | null;
 
+  requestId: string;
   creditCost: number | null;
   maxUnlocks: number | null;
   unlockCount: number;
+  hasUnlocked: boolean;
+  unlockAction: (formData: FormData) => Promise<void>;
 };
 
 const maskChar = "\u2022";
@@ -349,12 +352,18 @@ function formatMaxUnlocks(value: number | null) {
 }
 
 function getUnlockStatusLabel({
+  hasUnlocked,
   isCommerciallyConfigured,
   isSoldOut,
 }: {
+  hasUnlocked: boolean;
   isCommerciallyConfigured: boolean;
   isSoldOut: boolean;
 }) {
+  if (hasUnlocked) {
+    return "Richiesta già sbloccata";
+  }
+
   if (!isCommerciallyConfigured) {
     return "Non ancora acquistabile";
   }
@@ -367,12 +376,18 @@ function getUnlockStatusLabel({
 }
 
 function getUnlockStatusMessage({
+  hasUnlocked,
   isCommerciallyConfigured,
   isSoldOut,
 }: {
+  hasUnlocked: boolean;
   isCommerciallyConfigured: boolean;
   isSoldOut: boolean;
 }) {
+  if (hasUnlocked) {
+    return "Hai già sbloccato questa richiesta. I contatti resteranno nascosti fino al prossimo step operativo.";
+  }
+
   if (!isCommerciallyConfigured) {
     return "Questa richiesta non è ancora pronta per lo sblocco.";
   }
@@ -381,7 +396,7 @@ function getUnlockStatusMessage({
     return "Il limite di imprese per questa richiesta è stato raggiunto.";
   }
 
-  return "La richiesta è configurata, ma lo sblocco operativo non è ancora attivo.";
+  return "Usa i crediti del tuo saldo per sbloccare questa richiesta.";
 }
 
 export function RequestDetailCard({
@@ -396,9 +411,12 @@ export function RequestDetailCard({
   customerName,
   customerEmail,
   customerPhone,
+  requestId,
   creditCost,
   maxUnlocks,
   unlockCount,
+  hasUnlocked,
+  unlockAction,
 }: RequestDetailCardProps) {
   const hasDetails = formDetails.length > 0;
   const commercialState = getRequestCommercialState({
@@ -414,6 +432,10 @@ export function RequestDetailCard({
     cityWithProvince && postalCode
       ? `${cityWithProvince} - ${postalCode}`
       : cityWithProvince || postalCode || "Non specificato";
+  const canUnlock =
+    commercialState.isCommerciallyConfigured &&
+    !commercialState.isSoldOut &&
+    !hasUnlocked;
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start">
@@ -508,11 +530,17 @@ export function RequestDetailCard({
           </h2>
 
           <div className="mt-4 inline-flex rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-xs font-medium text-text-primary">
-            {getUnlockStatusLabel(commercialState)}
+            {getUnlockStatusLabel({
+              ...commercialState,
+              hasUnlocked,
+            })}
           </div>
 
           <p className="mt-3 text-sm leading-6 text-text-secondary">
-            {getUnlockStatusMessage(commercialState)}
+            {getUnlockStatusMessage({
+              ...commercialState,
+              hasUnlocked,
+            })}
           </p>
 
           <dl className="mt-5 grid gap-3 border-t border-border-primary pt-5">
@@ -557,18 +585,37 @@ export function RequestDetailCard({
             </dl>
           </div>
 
-          <button
-            type="button"
-            disabled
-            className={cn(
-              "mt-6 inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary opacity-70",
+          <div className="mt-6">
+            <p className="mb-3 text-xs font-medium text-text-muted">
+              Costo: {formatCreditCost(creditCost)}
+            </p>
+
+            {canUnlock ? (
+              <form action={unlockAction}>
+                <input type="hidden" name="requestId" value={requestId} />
+                <Button type="submit" className="w-full">
+                  Sblocca richiesta
+                </Button>
+              </form>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className={cn(
+                  "inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary opacity-70",
+                )}
+              >
+                {hasUnlocked
+                  ? "Richiesta gi\u00e0 sbloccata"
+                  : commercialState.isSoldOut
+                    ? "Posti terminati"
+                    : "Sblocco non disponibile"}
+              </button>
             )}
-          >
-            Sblocco non ancora attivo
-          </button>
+          </div>
 
           <p className="mt-3 text-xs leading-5 text-text-muted">
-            Sistema crediti in preparazione.
+            I contatti cliente non sono ancora visibili in questo step.
           </p>
         </Card>
       </aside>

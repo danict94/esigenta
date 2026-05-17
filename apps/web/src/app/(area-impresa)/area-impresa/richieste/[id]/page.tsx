@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 
 import { PageShell } from "@fixpro/ui";
@@ -6,6 +7,7 @@ import { PageShell } from "@fixpro/ui";
 import {
   getAvailableRequestForCompany,
   prisma,
+  unlockRequestForCompany,
 } from "@fixpro/db";
 
 import { requireDefaultCompanyMembership } from "../../../../../auth/server";
@@ -24,6 +26,25 @@ type RequestDetailPageProps = {
 };
 
 type JsonRecord = Record<string, unknown>;
+
+async function unlockRequestAction(formData: FormData) {
+  "use server";
+
+  const membership = await requireDefaultCompanyMembership();
+  const requestId = String(formData.get("requestId") ?? "").trim();
+
+  const result = await unlockRequestForCompany({
+    companyId: membership.companyId,
+    requestId,
+  });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/area-impresa/richieste");
+  revalidatePath(`/area-impresa/richieste/${requestId}`);
+}
 
 const italianProvinceCodes = new Set([
   "AG",
@@ -564,6 +585,15 @@ export default async function RequestDetailPage({
       unlockCount: true,
       structuredData: true,
       createdAt: true,
+      unlocks: {
+        where: {
+          companyId: membership.companyId,
+        },
+        select: {
+          id: true,
+        },
+        take: 1,
+      },
     },
   });
 
@@ -607,9 +637,12 @@ export default async function RequestDetailPage({
         customerName={request.customerName}
         customerEmail={request.customerEmail}
         customerPhone={request.customerPhone}
+        requestId={visibility.request.id}
         creditCost={request.creditCost}
         maxUnlocks={request.maxUnlocks}
         unlockCount={request.unlockCount}
+        hasUnlocked={request.unlocks.length > 0}
+        unlockAction={unlockRequestAction}
       />
     </PageShell>
   );

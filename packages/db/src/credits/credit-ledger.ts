@@ -527,16 +527,17 @@ export async function grantCreditsFromCreditOrder({
   }
 }
 
-export async function debitCompanyCredits({
-  companyId,
-  amount,
-  requestId,
-  idempotencyKey,
-  reason,
-  now = new Date(),
-}: DebitCompanyCreditsInput): Promise<
-  CreditLedgerResult<DebitCompanyCreditsData>
-> {
+export async function debitCompanyCreditsInTransaction(
+  tx: CreditTransactionClient,
+  {
+    companyId,
+    amount,
+    requestId,
+    idempotencyKey,
+    reason,
+    now = new Date(),
+  }: DebitCompanyCreditsInput,
+): Promise<CreditLedgerResult<DebitCompanyCreditsData>> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
 
@@ -569,124 +570,124 @@ export async function debitCompanyCredits({
     }
   }
 
-  const existingTransaction =
+  const transactionAlreadyCreated =
     await findTransactionByIdempotencyKey(
-      prisma,
+      tx,
       normalizedIdempotencyKey,
     )
 
-  if (existingTransaction) {
+  if (transactionAlreadyCreated) {
     return {
       ok: true,
       data: {
         accountId:
-          existingTransaction.accountId,
+          transactionAlreadyCreated.accountId,
         transactionId:
-          existingTransaction.id,
+          transactionAlreadyCreated.id,
         balanceAfter:
-          existingTransaction.balanceAfter,
+          transactionAlreadyCreated.balanceAfter,
         expiresAtAfter:
-          existingTransaction.expiresAtAfter,
+          transactionAlreadyCreated.expiresAtAfter,
       },
     }
   }
 
-  const result =
-    await prisma.$transaction(async (tx) => {
-      const transactionAlreadyCreated =
-        await findTransactionByIdempotencyKey(
-          tx,
+  const freshAccount =
+    await ensureCreditAccountFreshInTransaction(
+      tx,
+      {
+        companyId:
+          normalizedCompanyId,
+        now,
+      },
+    )
+
+  if (freshAccount.balance < amount) {
+    return {
+      ok: false,
+      code: "insufficient_credits",
+      message: "Crediti insufficienti.",
+    }
+  }
+
+  const balanceBefore =
+    freshAccount.balance
+  const balanceAfter =
+    balanceBefore - amount
+  const expiresAtBefore =
+    freshAccount.expiresAt
+
+  const transaction =
+    await tx.companyCreditTransaction.create({
+      data: {
+        companyId:
+          normalizedCompanyId,
+        accountId: freshAccount.id,
+        type: "REQUEST_UNLOCK",
+        status: "COMPLETED",
+        amount: -amount,
+        balanceBefore,
+        balanceAfter,
+        expiresAtBefore,
+        expiresAtAfter:
+          expiresAtBefore,
+        requestId:
+          requestId || null,
+        idempotencyKey:
           normalizedIdempotencyKey,
-        )
-
-      if (transactionAlreadyCreated) {
-        return {
-          ok: true as const,
-          data: {
-            accountId:
-              transactionAlreadyCreated.accountId,
-            transactionId:
-              transactionAlreadyCreated.id,
-            balanceAfter:
-              transactionAlreadyCreated.balanceAfter,
-            expiresAtAfter:
-              transactionAlreadyCreated.expiresAtAfter,
-          },
-        }
-      }
-
-      const freshAccount =
-        await ensureCreditAccountFreshInTransaction(
-          tx,
-          {
-            companyId:
-              normalizedCompanyId,
-            now,
-          },
-        )
-
-      if (freshAccount.balance < amount) {
-        return {
-          ok: false as const,
-          code: "insufficient_credits",
-          message: "Crediti insufficienti.",
-        }
-      }
-
-      const balanceBefore =
-        freshAccount.balance
-      const balanceAfter =
-        balanceBefore - amount
-      const expiresAtBefore =
-        freshAccount.expiresAt
-
-      const transaction =
-        await tx.companyCreditTransaction.create({
-          data: {
-            companyId:
-              normalizedCompanyId,
-            accountId: freshAccount.id,
-            type: "REQUEST_UNLOCK",
-            status: "COMPLETED",
-            amount: -amount,
-            balanceBefore,
-            balanceAfter,
-            expiresAtBefore,
-            expiresAtAfter:
-              expiresAtBefore,
-            requestId:
-              requestId || null,
-            idempotencyKey:
-              normalizedIdempotencyKey,
-            reason:
-              reason || null,
-          },
-          select: {
-            id: true,
-          },
-        })
-
-      await tx.companyCreditAccount.update({
-        where: {
-          id: freshAccount.id,
-        },
-        data: {
-          balance: balanceAfter,
-        },
-      })
-
-      return {
-        ok: true as const,
-        data: {
-          accountId: freshAccount.id,
-          transactionId:
-            transaction.id,
-          balanceAfter,
-          expiresAtAfter:
-            expiresAtBefore,
-        },
-      }
+        reason:
+          reason || null,
+      },
+      select: {
+        id: true,
+      },
     })
 
-  return result
+  await tx.companyCreditAccount.update({
+    where: {
+      id: freshAccount.id,
+    },
+    data: {
+      balance: balanceAfter,
+    },
+  })
+
+  return {
+    ok: true,
+    data: {
+      accountId: freshAccount.id,
+      transactionId:
+        transaction.id,
+      balanceAfter,
+      expiresAtAfter:
+        expiresAtBefore,
+    },
+  }
+}
+
+export async function debitCompanyCredits({
+  companyId,
+  amount,
+  requestId,
+  idempotencyKey,
+  reason,
+  now = new Date(),
+}: DebitCompanyCreditsInput): Promise<
+  CreditLedgerResult<DebitCompanyCreditsData>
+> {
+  return prisma.$transaction((tx) =>
+    debitCompanyCreditsInTransaction(
+      tx,
+      {
+        companyId,
+        amount,
+        requestId:
+          requestId ?? null,
+        idempotencyKey,
+        reason:
+          reason ?? null,
+        now,
+      },
+    ),
+  )
 }
