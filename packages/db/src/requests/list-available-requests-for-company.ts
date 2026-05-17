@@ -25,6 +25,9 @@ export type AvailableCompanyRequest = {
   creditCost: number | null
   maxUnlocks: number | null
   unlockCount: number
+  hasUnlocked: boolean
+  requestUnlockId: string | null
+  unlockedAt: Date | null
   createdAt: Date
   matchLevel: CompanyRequestMatchLevel
 }
@@ -58,9 +61,19 @@ export type GetAvailableRequestForCompanyResult =
     }
 
 type RequestWithServices =
-  Omit<AvailableCompanyRequest, "matchLevel"> & {
+  Omit<
+    AvailableCompanyRequest,
+    | "matchLevel"
+    | "hasUnlocked"
+    | "requestUnlockId"
+    | "unlockedAt"
+  > & {
     requiredServices: Array<{
       serviceId: string
+    }>
+    unlocks: Array<{
+      id: string
+      createdAt: Date
     }>
   }
 
@@ -138,13 +151,22 @@ function mapRequest({
 
   const {
     requiredServices,
+    unlocks,
     ...requestFields
   } = request
 
   void requiredServices
 
+  const unlock =
+    unlocks[0] ?? null
+
   return {
     ...requestFields,
+    hasUnlocked: Boolean(unlock),
+    requestUnlockId:
+      unlock?.id ?? null,
+    unlockedAt:
+      unlock?.createdAt ?? null,
     matchLevel,
   }
 }
@@ -298,6 +320,16 @@ async function loadAvailableRequestsForCompany({
         maxUnlocks: true,
         unlockCount: true,
         createdAt: true,
+        unlocks: {
+          where: {
+            companyId,
+          },
+          select: {
+            id: true,
+            createdAt: true,
+          },
+          take: 1,
+        },
         requiredServices: {
           select: {
             serviceId: true,

@@ -13,6 +13,12 @@ export type RequestFormDetail = {
   value: string;
 };
 
+export type CustomerContactDetail = {
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+};
+
 export type RequestDetailCardProps = {
   requestCode?: string | null;
   title: string;
@@ -26,50 +32,17 @@ export type RequestDetailCardProps = {
   description?: string | null;
   formDetails: RequestFormDetail[];
 
-  customerName?: string | null;
-  customerEmail?: string | null;
-  customerPhone?: string | null;
+  customerContact?: CustomerContactDetail | null;
 
   requestId: string;
   creditCost: number | null;
   maxUnlocks: number | null;
   unlockCount: number;
   hasUnlocked: boolean;
+  requestUnlockId?: string | null;
+  unlockedAt?: string | null;
   unlockAction: (formData: FormData) => Promise<void>;
 };
-
-const maskChar = "\u2022";
-
-function maskName(value?: string | null) {
-  if (!value) {
-    return "Disponibile dopo lo sblocco";
-  }
-
-  return value
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => `${part.charAt(0)}${maskChar.repeat(6)}`)
-    .join(" ");
-}
-
-function maskEmail(value?: string | null) {
-  if (!value || !value.includes("@")) {
-    return `${maskChar.repeat(6)}@${maskChar.repeat(6)}`;
-  }
-
-  const [name, domain] = value.split("@");
-
-  return `${name.charAt(0)}${maskChar.repeat(6)}@${domain}`;
-}
-
-function maskPhone(value?: string | null) {
-  const digits = value?.replace(/\D/g, "") ?? "";
-  const suffix = digits.slice(-2);
-
-  return `${maskChar.repeat(3)} ${maskChar.repeat(3)} ${maskChar.repeat(2)}${
-    suffix || maskChar.repeat(2)
-  }`;
-}
 
 function Icon({ children }: { children: ReactNode }) {
   return (
@@ -330,18 +303,24 @@ function DetailRow({
   );
 }
 
-function LockedContactRow({
+function formatContactValue(value?: string | null) {
+  const trimmed = value?.trim();
+
+  return trimmed || "Non disponibile";
+}
+
+function ContactRow({
   label,
   value,
 }: {
   label: string;
-  value: string;
+  value?: string | null;
 }) {
   return (
     <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 py-1.5">
       <dt className="text-sm text-text-muted">{label}</dt>
       <dd className="truncate text-right text-sm font-medium text-text-primary">
-        {value}
+        {formatContactValue(value)}
       </dd>
     </div>
   );
@@ -361,7 +340,7 @@ function getUnlockStatusLabel({
   isSoldOut: boolean;
 }) {
   if (hasUnlocked) {
-    return "Richiesta già sbloccata";
+    return "Richiesta sbloccata";
   }
 
   if (!isCommerciallyConfigured) {
@@ -385,7 +364,7 @@ function getUnlockStatusMessage({
   isSoldOut: boolean;
 }) {
   if (hasUnlocked) {
-    return "Hai già sbloccato questa richiesta. I contatti resteranno nascosti fino al prossimo step operativo.";
+    return "Hai sbloccato questa richiesta. I contatti cliente sono ora disponibili.";
   }
 
   if (!isCommerciallyConfigured) {
@@ -408,14 +387,13 @@ export function RequestDetailCard({
   createdAt,
   description,
   formDetails,
-  customerName,
-  customerEmail,
-  customerPhone,
+  customerContact,
   requestId,
   creditCost,
   maxUnlocks,
   unlockCount,
   hasUnlocked,
+  unlockedAt,
   unlockAction,
 }: RequestDetailCardProps) {
   const hasDetails = formDetails.length > 0;
@@ -575,14 +553,31 @@ export function RequestDetailCard({
 
           <div className="mt-8">
             <h2 className="text-sm font-semibold text-text-primary">
-              Contatto cliente
+              {hasUnlocked ? "Contatti cliente" : "Contatti protetti"}
             </h2>
 
-            <dl className="mt-4">
-              <LockedContactRow label="Nome" value={maskName(customerName)} />
-              <LockedContactRow label="Email" value={maskEmail(customerEmail)} />
-              <LockedContactRow label="Telefono" value={maskPhone(customerPhone)} />
-            </dl>
+            {hasUnlocked ? (
+              <>
+                {unlockedAt ? (
+                  <p className="mt-2 text-xs font-medium text-text-muted">
+                    Sbloccata il {unlockedAt}
+                  </p>
+                ) : null}
+
+                <dl className="mt-4">
+                  <ContactRow label="Nome" value={customerContact?.name} />
+                  <ContactRow label="Email" value={customerContact?.email} />
+                  <ContactRow label="Telefono" value={customerContact?.phone} />
+                </dl>
+              </>
+            ) : (
+              <div className="mt-4 rounded-md border border-border-primary bg-surface-secondary p-4">
+                <p className="text-sm leading-6 text-text-secondary">
+                  Sblocca la richiesta con i crediti per visualizzare i
+                  contatti del cliente.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="mt-6">
@@ -615,7 +610,9 @@ export function RequestDetailCard({
           </div>
 
           <p className="mt-3 text-xs leading-5 text-text-muted">
-            I contatti cliente non sono ancora visibili in questo step.
+            {hasUnlocked
+              ? "I dati sono visibili solo per questa impresa dopo lo sblocco."
+              : "Email e telefono restano protetti fino allo sblocco."}
           </p>
         </Card>
       </aside>

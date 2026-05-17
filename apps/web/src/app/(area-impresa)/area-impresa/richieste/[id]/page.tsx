@@ -574,9 +574,6 @@ export default async function RequestDetailPage({
       requestCode: true,
       status: true,
       interventionSlug: true,
-      customerName: true,
-      customerEmail: true,
-      customerPhone: true,
       city: true,
       address: true,
       postalCode: true,
@@ -585,21 +582,26 @@ export default async function RequestDetailPage({
       unlockCount: true,
       structuredData: true,
       createdAt: true,
-      unlocks: {
-        where: {
-          companyId: membership.companyId,
-        },
-        select: {
-          id: true,
-        },
-        take: 1,
-      },
     },
   });
 
   if (!request) {
     notFound();
   }
+
+  const hasUnlocked = visibility.request.hasUnlocked;
+  const customerContact = hasUnlocked
+    ? await prisma.request.findUnique({
+        where: {
+          id: visibility.request.id,
+        },
+        select: {
+          customerName: true,
+          customerEmail: true,
+          customerPhone: true,
+        },
+      })
+    : null;
 
   const intervention = formatInterventionLabel(request.interventionSlug);
   const province = resolveProvince({
@@ -634,14 +636,26 @@ export default async function RequestDetailPage({
         createdAt={formatDate(request.createdAt)}
         description={description}
         formDetails={formDetails}
-        customerName={request.customerName}
-        customerEmail={request.customerEmail}
-        customerPhone={request.customerPhone}
+        {...(hasUnlocked
+          ? {
+              customerContact: {
+                name: customerContact?.customerName ?? null,
+                email: customerContact?.customerEmail ?? null,
+                phone: customerContact?.customerPhone ?? null,
+              },
+            }
+          : {})}
         requestId={visibility.request.id}
         creditCost={request.creditCost}
         maxUnlocks={request.maxUnlocks}
         unlockCount={request.unlockCount}
-        hasUnlocked={request.unlocks.length > 0}
+        hasUnlocked={hasUnlocked}
+        requestUnlockId={visibility.request.requestUnlockId}
+        unlockedAt={
+          visibility.request.unlockedAt
+            ? formatDate(visibility.request.unlockedAt)
+            : null
+        }
         unlockAction={unlockRequestAction}
       />
     </PageShell>
