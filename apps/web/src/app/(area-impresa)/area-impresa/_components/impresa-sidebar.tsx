@@ -48,6 +48,12 @@ const accountNavigation: NavigationItem[] = [
     href: "/area-impresa/richieste-salvate",
     enabled: false,
   },
+ {
+    label: "configura servizi",
+    href: "/area-impresa/configura-servizi",
+    enabled: true,
+  },
+
   {
     label: "Profilo",
     href: "/area-impresa/profilo",
