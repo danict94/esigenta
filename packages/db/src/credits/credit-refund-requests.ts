@@ -15,6 +15,10 @@ import type {
   CreditLedgerResult,
 } from "./credit-ledger"
 
+import {
+  refundCompanyCreditsForRequestUnlockInTransaction,
+} from "./credit-ledger"
+
 export type CreateCreditRefundRequestInput = {
   companyId: string
   requestUnlockId: string
@@ -60,6 +64,30 @@ export type AdminCreditRefundRequestReviewItem = {
   companyRefundRequestsLast30Days: number
   companyApprovedRefundRequestsLast30Days: number
   companyRejectedRefundRequestsLast30Days: number
+  reviewedAt: Date | null
+  adminNotes: string | null
+  reviewedByAdminUser: {
+    id: string
+    email: string
+    name: string | null
+  } | null
+}
+
+export type ApproveCreditRefundRequestInput = {
+  creditRefundRequestId: string
+  adminUserId: string
+  adminNotes?: string | null
+}
+
+export type RejectCreditRefundRequestInput = {
+  creditRefundRequestId: string
+  adminUserId: string
+  adminNotes: string
+}
+
+export type ReviewCreditRefundRequestData = {
+  creditRefundRequestId: string
+  status: CreditRefundRequestStatus
 }
 
 const refundReasons: CreditRefundRequestReason[] = [
@@ -270,6 +298,257 @@ export async function createCreditRefundRequest({
   }
 }
 
+export async function approveCreditRefundRequest({
+  creditRefundRequestId,
+  adminUserId,
+  adminNotes,
+}: ApproveCreditRefundRequestInput): Promise<
+  CreditLedgerResult<ReviewCreditRefundRequestData>
+> {
+  const normalizedCreditRefundRequestId =
+    normalizeRequiredText(
+      creditRefundRequestId,
+    )
+  const normalizedAdminUserId =
+    normalizeRequiredText(adminUserId)
+  const normalizedAdminNotes =
+    adminNotes
+      ? normalizeRequiredText(adminNotes)
+      : null
+
+  if (!normalizedCreditRefundRequestId) {
+    return {
+      ok: false,
+      code: "invalid_credit_refund_request_id",
+      message:
+        "Richiesta rimborso non valida.",
+    }
+  }
+
+  if (!normalizedAdminUserId) {
+    return {
+      ok: false,
+      code: "invalid_admin_user_id",
+      message: "Admin non valido.",
+    }
+  }
+
+  const now =
+    new Date()
+
+  try {
+    return await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw<Array<{ id: string }>>`
+        SELECT "id"
+        FROM "CreditRefundRequest"
+        WHERE "id" = ${normalizedCreditRefundRequestId}
+        FOR UPDATE
+      `
+
+      const refundRequest =
+        await tx.creditRefundRequest.findUnique({
+          where: {
+            id: normalizedCreditRefundRequestId,
+          },
+          select: {
+            id: true,
+            status: true,
+            requestUnlockId: true,
+            reason: true,
+          },
+        })
+
+      if (!refundRequest) {
+        return {
+          ok: false as const,
+          code: "credit_refund_request_not_found",
+          message:
+            "Richiesta rimborso non trovata.",
+        }
+      }
+
+      if (
+        refundRequest.status !==
+        "PENDING_REVIEW"
+      ) {
+        return {
+          ok: false as const,
+          code: "credit_refund_request_not_pending",
+          message:
+            "Questa pratica non \u00e8 pi\u00f9 in revisione.",
+        }
+      }
+
+      const ledgerResult =
+        await refundCompanyCreditsForRequestUnlockInTransaction(
+          tx,
+          {
+            requestUnlockId:
+              refundRequest.requestUnlockId,
+            adminUserId:
+              normalizedAdminUserId,
+            reason:
+              normalizedAdminNotes ??
+              `Rimborso approvato: ${refundRequest.reason}`,
+            now,
+          },
+        )
+
+      if (!ledgerResult.ok) {
+        return ledgerResult
+      }
+
+      await tx.creditRefundRequest.update({
+        where: {
+          id: refundRequest.id,
+        },
+        data: {
+          status: "APPROVED",
+          reviewedAt: now,
+          reviewedByAdminUserId:
+            normalizedAdminUserId,
+          adminNotes:
+            normalizedAdminNotes,
+        },
+      })
+
+      return {
+        ok: true as const,
+        data: {
+          creditRefundRequestId:
+            refundRequest.id,
+          status: "APPROVED" as const,
+        },
+      }
+    })
+  } catch (error) {
+    if (
+      error instanceof
+        Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return {
+        ok: false,
+        code: "request_unlock_already_refunded",
+        message:
+          "Questo sblocco \u00e8 gi\u00e0 stato rimborsato.",
+      }
+    }
+
+    throw error
+  }
+}
+
+export async function rejectCreditRefundRequest({
+  creditRefundRequestId,
+  adminUserId,
+  adminNotes,
+}: RejectCreditRefundRequestInput): Promise<
+  CreditLedgerResult<ReviewCreditRefundRequestData>
+> {
+  const normalizedCreditRefundRequestId =
+    normalizeRequiredText(
+      creditRefundRequestId,
+    )
+  const normalizedAdminUserId =
+    normalizeRequiredText(adminUserId)
+  const normalizedAdminNotes =
+    normalizeRequiredText(adminNotes)
+
+  if (!normalizedCreditRefundRequestId) {
+    return {
+      ok: false,
+      code: "invalid_credit_refund_request_id",
+      message:
+        "Richiesta rimborso non valida.",
+    }
+  }
+
+  if (!normalizedAdminUserId) {
+    return {
+      ok: false,
+      code: "invalid_admin_user_id",
+      message: "Admin non valido.",
+    }
+  }
+
+  if (
+    !normalizedAdminNotes ||
+    normalizedAdminNotes.length < 3
+  ) {
+    return {
+      ok: false,
+      code: "invalid_admin_notes",
+      message:
+        "Inserisci una nota admin di almeno 3 caratteri.",
+    }
+  }
+
+  return prisma.$transaction(async (tx) => {
+    await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT "id"
+      FROM "CreditRefundRequest"
+      WHERE "id" = ${normalizedCreditRefundRequestId}
+      FOR UPDATE
+    `
+
+    const refundRequest =
+      await tx.creditRefundRequest.findUnique({
+        where: {
+          id: normalizedCreditRefundRequestId,
+        },
+        select: {
+          id: true,
+          status: true,
+        },
+      })
+
+    if (!refundRequest) {
+      return {
+        ok: false,
+        code: "credit_refund_request_not_found",
+        message:
+          "Richiesta rimborso non trovata.",
+      }
+    }
+
+    if (
+      refundRequest.status !==
+      "PENDING_REVIEW"
+    ) {
+      return {
+        ok: false,
+        code: "credit_refund_request_not_pending",
+        message:
+          "Questa pratica non \u00e8 pi\u00f9 in revisione.",
+      }
+    }
+
+    await tx.creditRefundRequest.update({
+      where: {
+        id: refundRequest.id,
+      },
+      data: {
+        status: "REJECTED",
+        reviewedAt: new Date(),
+        reviewedByAdminUserId:
+          normalizedAdminUserId,
+        adminNotes:
+          normalizedAdminNotes,
+      },
+    })
+
+    return {
+      ok: true,
+      data: {
+        creditRefundRequestId:
+          refundRequest.id,
+        status: "REJECTED",
+      },
+    }
+  })
+}
+
 export async function listCreditRefundRequestsForAdminReview(): Promise<
   AdminCreditRefundRequestReviewItem[]
 > {
@@ -286,7 +565,16 @@ export async function listCreditRefundRequestsForAdminReview(): Promise<
         description: true,
         companyContactAttempted: true,
         lastContactAttemptAt: true,
+        reviewedAt: true,
+        adminNotes: true,
         createdAt: true,
+        reviewedByAdminUser: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
         requestUnlock: {
           select: {
             id: true,

@@ -28,14 +28,19 @@ export type {
 } from "./credit-orders"
 
 export {
+  approveCreditRefundRequest,
   createCreditRefundRequest,
   listCreditRefundRequestsForAdminReview,
+  rejectCreditRefundRequest,
 } from "./credit-refund-requests"
 
 export type {
   AdminCreditRefundRequestReviewItem,
+  ApproveCreditRefundRequestInput,
   CreateCreditRefundRequestData,
   CreateCreditRefundRequestInput,
+  RejectCreditRefundRequestInput,
+  ReviewCreditRefundRequestData,
 } from "./credit-refund-requests"
 
 export {
@@ -43,6 +48,7 @@ export {
   ensureCompanyCreditAccountFresh,
   getCompanyCreditAccountSummary,
   grantCreditsFromCreditOrder,
+  refundCompanyCreditsForRequestUnlock,
 } from "./credit-ledger"
 
 export type {
@@ -54,4 +60,6 @@ export type {
   GetCompanyCreditAccountSummaryInput,
   GrantCreditsFromCreditOrderData,
   GrantCreditsFromCreditOrderInput,
+  RefundCompanyCreditsForRequestUnlockData,
+  RefundCompanyCreditsForRequestUnlockInput,
 } from "./credit-ledger"
