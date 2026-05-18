@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import {
   useMemo,
@@ -293,21 +293,6 @@ function isCapabilityAnswerComplete(
   return isFilled(value)
 }
 
-function getAnswerLabel(value: unknown) {
-  if (Array.isArray(value)) {
-    return `${value.length} file`
-  }
-
-  if (typeof value === 'string') {
-    return value
-  }
-
-  if (typeof value === 'number') {
-    return String(value)
-  }
-
-  return value ? 'Compilato' : 'Non compilato'
-}
 
 function countFilledAnswers(
   answers: RuntimeAnswers,

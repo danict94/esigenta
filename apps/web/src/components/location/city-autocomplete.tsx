@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import {
   useEffect,
@@ -368,12 +368,24 @@ export function CityAutocomplete({
   }, [onChange])
 
   useEffect(() => {
+    const nextAddress =
+      location.address
+
     if (
-      location.address &&
-      location.address !== inputValue
+      nextAddress &&
+      nextAddress !== inputValue
     ) {
-      setInputValue(location.address)
+      const syncInputTimeout =
+        window.setTimeout(() => {
+          setInputValue(nextAddress)
+        }, 0)
+
+      return () => {
+        window.clearTimeout(syncInputTimeout)
+      }
     }
+
+    return undefined
   }, [
     inputValue,
     location.address,
@@ -385,10 +397,16 @@ export function CityAutocomplete({
         .NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
     if (!apiKey) {
-      setMessage(
-        'Autocomplete indirizzi non configurato.',
-      )
-      return
+      const messageTimeout =
+        window.setTimeout(() => {
+          setMessage(
+            'Autocomplete indirizzi non configurato.',
+          )
+        }, 0)
+
+      return () => {
+        window.clearTimeout(messageTimeout)
+      }
     }
 
     let active = true

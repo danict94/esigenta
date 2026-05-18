@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   useEffect,
@@ -83,8 +83,14 @@ export function SearchBar({
       query.trim()
 
     if (!trimmedQuery) {
-      setResults(PRELOADED_RESULTS)
-      return
+      const resetResultsTimeout =
+        window.setTimeout(() => {
+          setResults(PRELOADED_RESULTS)
+        }, 0)
+
+      return () => {
+        window.clearTimeout(resetResultsTimeout)
+      }
     }
 
     if (debounceRef.current) {
