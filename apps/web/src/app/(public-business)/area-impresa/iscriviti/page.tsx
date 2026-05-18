@@ -130,8 +130,8 @@ export default async function AreaImpresaSignupPage({
             </h1>
 
             <p className="mt-4 max-w-xl text-base leading-7 text-text-secondary">
-              Raccontaci di più sulla tua azienda e crea l'accesso per
-              entrare nell'area impresa.
+              Raccontaci di più sulla tua azienda e crea l&apos;accesso per
+              entrare nell&apos;area impresa.
             </p>
 
             {hasLeadContext ? (
@@ -225,7 +225,7 @@ export default async function AreaImpresaSignupPage({
                 href="/area-impresa/accedi"
                 className="font-medium text-brand-primary"
               >
-                Accedi all'area impresa
+                Accedi all&apos;area impresa
               </Link>
             </div>
           </div>

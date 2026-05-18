@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import type {
   FormEvent,
@@ -220,7 +220,7 @@ export function CompanyLeadForm({
 
         <p className="text-xs leading-5 text-text-muted">
           Nel passaggio successivo completerai i dati aziendali e creerai
-          l'accesso impresa.
+          l&apos;accesso impresa.
         </p>
       </form>
     </Card>

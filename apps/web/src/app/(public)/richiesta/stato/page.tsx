@@ -1,3 +1,4 @@
+import Link from "next/link"
 import {
   Container,
   cn,
@@ -307,12 +308,12 @@ export default async function RequestStatusPage({
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <a
+                  <Link
                     href="/"
                     className={actionLinkClass}
                   >
                     Richiedi un nuovo intervento
-                  </a>
+                  </Link>
                 </div>
               </div>
             ) : (

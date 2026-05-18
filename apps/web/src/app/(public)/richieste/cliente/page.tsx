@@ -1,3 +1,4 @@
+import Link from "next/link"
 import {
   Container,
   cn,
@@ -153,24 +154,24 @@ export default async function CustomerRequestsPage({
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <a
+                  <Link
                     href="/"
                     className={primaryLinkClass}
                   >
                     Richiedi un intervento
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/richieste/accesso"
                     className={secondaryLinkClass}
                   >
                     Ricevi un nuovo link
-                  </a>
+                  </Link>
                 </div>
               </div>
             ) : (
               <div className="space-y-3">
                 {result.requests.map((request) => (
-                  <a
+                  <Link
                     key={request.requestId}
                     href={buildDetailHref({
                       requestId:
@@ -212,7 +213,7 @@ export default async function CustomerRequestsPage({
                         </p>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}

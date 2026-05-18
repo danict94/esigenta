@@ -515,7 +515,7 @@ export default async function ProfiloImpresaPage({
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-            L'account risulta autenticato, ma non è collegato a un profilo
+            L&apos;account risulta autenticato, ma non è collegato a un profilo
             impresa valido.
           </p>
         </Card>
@@ -575,8 +575,6 @@ export default async function ProfiloImpresaPage({
       },
     })
 
-  const protectedDataNote =
-    "Per modificare email o telefono è necessaria una verifica manuale del team FixPro."
   const savedMessage =
     params.saved === "1"
       ? "Profilo aggiornato."

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import {
   cn,
 } from '@fixpro/ui'
@@ -35,24 +36,24 @@ export function CustomerRequestsNav({
         className,
       )}
     >
-      <a
+      <Link
         href={buildHistoryHref(token)}
         className={linkClass}
       >
         Storico richieste
-      </a>
-      <a
+      </Link>
+      <Link
         href="/"
         className={linkClass}
       >
         Nuova richiesta
-      </a>
-      <a
+      </Link>
+      <Link
         href="/richieste/accesso"
         className={linkClass}
       >
         Ricevi un nuovo link
-      </a>
+      </Link>
     </nav>
   )
 }
