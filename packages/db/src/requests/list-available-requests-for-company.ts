@@ -11,6 +11,38 @@ export type CompanyRequestMatchLevel =
   | "selected_service"
   | "category"
 
+export type RequestDashboardSort =
+  | "recommended"
+  | "newest"
+  | "nearest"
+
+export type RequestDashboardFilters = {
+  q?: string | null
+  radiusKm?: number | null
+  categoryId?: string | null
+  serviceId?: string | null
+  sort?: RequestDashboardSort
+}
+
+export type RequestDashboardFilterOptions = {
+  categories: Array<{
+    id: string
+    name: string
+  }>
+  services: Array<{
+    id: string
+    name: string
+    categoryId: string
+  }>
+  active: {
+    q: string | null
+    radiusKm: number | null
+    categoryId: string | null
+    serviceId: string | null
+    sort: RequestDashboardSort
+  }
+}
+
 export type AvailableCompanyRequest = {
   id: string
   requestCode: string | null
@@ -37,6 +69,7 @@ export type ListAvailableRequestsForCompanyResult =
   | {
       ok: true
       hasSelectedServices: boolean
+      filters: RequestDashboardFilterOptions
       requests: AvailableCompanyRequest[]
     }
   | {
@@ -45,12 +78,14 @@ export type ListAvailableRequestsForCompanyResult =
         | "missing_category"
         | "missing_location"
       message: string
+      filters: RequestDashboardFilterOptions
     }
 
 export type GetAvailableRequestForCompanyResult =
   | {
       ok: true
       hasSelectedServices: boolean
+      filters: RequestDashboardFilterOptions
       request: AvailableCompanyRequest | null
     }
   | {
@@ -59,6 +94,7 @@ export type GetAvailableRequestForCompanyResult =
         | "missing_category"
         | "missing_location"
       message: string
+      filters: RequestDashboardFilterOptions
     }
 
 type RequestWithServices =
@@ -86,6 +122,72 @@ const visibleRequestStatuses: RequestStatus[] = [
   "APPROVED",
   "PUBLISHED",
 ]
+
+const allowedRadiusFilters = new Set([
+  10,
+  25,
+  50,
+])
+
+const allowedSortFilters =
+  new Set<RequestDashboardSort>([
+    "recommended",
+    "newest",
+    "nearest",
+  ])
+
+function normalizeReadModelFilters(
+  filters?: RequestDashboardFilters,
+): RequestDashboardFilterOptions["active"] {
+  const q =
+    typeof filters?.q === "string"
+      ? filters.q.trim().slice(0, 80)
+      : ""
+  const radiusKm =
+    typeof filters?.radiusKm === "number" &&
+    allowedRadiusFilters.has(
+      filters.radiusKm,
+    )
+      ? filters.radiusKm
+      : null
+  const sort =
+    filters?.sort &&
+    allowedSortFilters.has(filters.sort)
+      ? filters.sort
+      : "recommended"
+  const categoryId =
+    typeof filters?.categoryId === "string"
+      ? filters.categoryId.trim()
+      : ""
+  const serviceId =
+    typeof filters?.serviceId === "string"
+      ? filters.serviceId.trim()
+      : ""
+
+  return {
+    q: q || null,
+    radiusKm,
+    categoryId: categoryId || null,
+    serviceId: serviceId || null,
+    sort,
+  }
+}
+
+function createFilterOptions({
+  categories = [],
+  services = [],
+  active,
+}: {
+  categories?: RequestDashboardFilterOptions["categories"]
+  services?: RequestDashboardFilterOptions["services"]
+  active: RequestDashboardFilterOptions["active"]
+}): RequestDashboardFilterOptions {
+  return {
+    categories,
+    services,
+    active,
+  }
+}
 
 function toRadians(value: number) {
   return (value * Math.PI) / 180
@@ -195,7 +297,12 @@ function mapRequest({
   }
 }
 
-function sortVisibleRequests(
+type SortableAvailableCompanyRequest =
+  AvailableCompanyRequest & {
+    distanceKm: number
+  }
+
+function compareRecommendedRequests(
   left: AvailableCompanyRequest,
   right: AvailableCompanyRequest,
 ) {
@@ -214,13 +321,45 @@ function sortVisibleRequests(
   )
 }
 
+function sortVisibleRequests(
+  left: SortableAvailableCompanyRequest,
+  right: SortableAvailableCompanyRequest,
+  sort: RequestDashboardSort,
+) {
+  if (sort === "newest") {
+    return (
+      right.createdAt.getTime() -
+      left.createdAt.getTime()
+    )
+  }
+
+  if (sort === "nearest") {
+    const distanceDelta =
+      left.distanceKm - right.distanceKm
+
+    if (distanceDelta !== 0) {
+      return distanceDelta
+    }
+  }
+
+  return compareRecommendedRequests(left, right)
+}
+
 async function loadAvailableRequestsForCompany({
   companyId,
   requestId,
+  filters,
 }: {
   companyId: string
   requestId?: string
+  filters?: RequestDashboardFilters | undefined
 }): Promise<ListAvailableRequestsForCompanyResult> {
+  const normalizedFilters =
+    normalizeReadModelFilters(filters)
+  const emptyFilterOptions =
+    createFilterOptions({
+      active: normalizedFilters,
+    })
   const company =
     await prisma.company.findUnique({
       where: {
@@ -250,6 +389,7 @@ async function loadAvailableRequestsForCompany({
       code: "missing_category",
       message:
         "Configura le categorie operative del profilo impresa.",
+      filters: emptyFilterOptions,
     }
   }
 
@@ -265,6 +405,7 @@ async function loadAvailableRequestsForCompany({
       code: "missing_location",
       message:
         "Completa sede operativa e raggio d'azione dell'impresa.",
+      filters: emptyFilterOptions,
     }
   }
 
@@ -305,8 +446,27 @@ async function loadAvailableRequestsForCompany({
       code: "missing_category",
       message:
         "Configura le categorie operative del profilo impresa.",
+      filters: emptyFilterOptions,
     }
   }
+
+  const operationalCategoryIdSet =
+    new Set(operationalCategoryIds)
+  const operationalCategories =
+    await prisma.category.findMany({
+      where: {
+        id: {
+          in: operationalCategoryIds,
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    })
 
   const categoryServices =
     await prisma.categoryService.findMany({
@@ -316,7 +476,14 @@ async function loadAvailableRequestsForCompany({
         },
       },
       select: {
+        categoryId: true,
         serviceId: true,
+        service: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     })
 
@@ -331,6 +498,46 @@ async function loadAvailableRequestsForCompany({
     )
   const categoryServiceIdSet =
     new Set(categoryServiceIds)
+  const filterServices =
+    categoryServices
+      .map((categoryService) => ({
+        id: categoryService.service.id,
+        name: categoryService.service.name,
+        categoryId:
+          categoryService.categoryId,
+      }))
+      .sort((left, right) =>
+        left.name.localeCompare(
+          right.name,
+          "it",
+        ),
+      )
+  const activeCategoryId =
+    normalizedFilters.categoryId &&
+    operationalCategoryIdSet.has(
+      normalizedFilters.categoryId,
+    )
+      ? normalizedFilters.categoryId
+      : null
+  const activeServiceId =
+    normalizedFilters.serviceId &&
+    categoryServiceIdSet.has(
+      normalizedFilters.serviceId,
+    )
+      ? normalizedFilters.serviceId
+      : null
+  const activeFilters = {
+    ...normalizedFilters,
+    categoryId: activeCategoryId,
+    serviceId: activeServiceId,
+  }
+  const filterOptions =
+    createFilterOptions({
+      categories:
+        operationalCategories,
+      services: filterServices,
+      active: activeFilters,
+    })
 
   const selectedServiceIds =
     new Set(
@@ -344,6 +551,83 @@ async function loadAvailableRequestsForCompany({
       ok: true,
       hasSelectedServices:
         selectedServiceIds.size > 0,
+      filters: filterOptions,
+      requests: [],
+    }
+  }
+
+  const categoryFilteredServiceIds =
+    activeCategoryId
+      ? categoryServices
+          .filter(
+            (categoryService) =>
+              categoryService.categoryId ===
+              activeCategoryId,
+          )
+          .map(
+            (categoryService) =>
+              categoryService.serviceId,
+          )
+      : categoryServiceIds
+  const visibilityServiceIds =
+    activeServiceId
+      ? categoryFilteredServiceIds.includes(
+          activeServiceId,
+        )
+        ? [activeServiceId]
+        : []
+      : categoryFilteredServiceIds
+  const effectiveRadiusKm =
+    activeFilters.radiusKm === null
+      ? operatingRadiusKm
+      : Math.min(
+          activeFilters.radiusKm,
+          operatingRadiusKm,
+        )
+  const searchWhere: Prisma.RequestWhereInput =
+    activeFilters.q
+      ? {
+          OR: [
+            {
+              city: {
+                contains: activeFilters.q,
+                mode: "insensitive",
+              },
+            },
+            {
+              postalCode: {
+                contains: activeFilters.q,
+                mode: "insensitive",
+              },
+            },
+            {
+              address: {
+                contains: activeFilters.q,
+                mode: "insensitive",
+              },
+            },
+            {
+              interventionSlug: {
+                contains: activeFilters.q,
+                mode: "insensitive",
+              },
+            },
+            {
+              requestCode: {
+                contains: activeFilters.q,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }
+      : {}
+
+  if (visibilityServiceIds.length === 0) {
+    return {
+      ok: true,
+      hasSelectedServices:
+        selectedServiceIds.size > 0,
+      filters: filterOptions,
       requests: [],
     }
   }
@@ -359,6 +643,7 @@ async function loadAvailableRequestsForCompany({
         status: {
           in: visibleRequestStatuses,
         },
+        ...searchWhere,
         latitude: {
           not: null,
         },
@@ -368,7 +653,7 @@ async function loadAvailableRequestsForCompany({
         requiredServices: {
           some: {
             serviceId: {
-              in: categoryServiceIds,
+              in: visibilityServiceIds,
             },
           },
         },
@@ -417,7 +702,7 @@ async function loadAvailableRequestsForCompany({
 
   const visibleRequests =
     requests
-      .filter((request) => {
+      .flatMap((request) => {
         if (
           !hasValidNumber(
             request.latitude,
@@ -426,10 +711,10 @@ async function loadAvailableRequestsForCompany({
             request.longitude,
           )
         ) {
-          return false
+          return []
         }
 
-        return (
+        const distanceKm =
           getDistanceKm({
             fromLatitude:
               companyLatitude,
@@ -439,35 +724,64 @@ async function loadAvailableRequestsForCompany({
               request.latitude,
             toLongitude:
               request.longitude,
-          }) <=
-          operatingRadiusKm
-        )
+          })
+
+        return distanceKm <=
+          effectiveRadiusKm
+          ? [
+              {
+                request,
+                distanceKm,
+              },
+            ]
+          : []
       })
-      .map((request) =>
-        mapRequest({
+      .map(
+        ({
           request,
-          categoryServiceIds:
-            categoryServiceIdSet,
-          selectedServiceIds,
+          distanceKm,
+        }) => ({
+          ...mapRequest({
+            request,
+            categoryServiceIds:
+              categoryServiceIdSet,
+            selectedServiceIds,
+          }),
+          distanceKm,
         }),
       )
-      .sort(sortVisibleRequests)
+      .sort((left, right) =>
+        sortVisibleRequests(
+          left,
+          right,
+          activeFilters.sort,
+        ),
+      )
+      .map(({ distanceKm, ...request }) => {
+        void distanceKm
+
+        return request
+      })
 
   return {
     ok: true,
     hasSelectedServices:
       selectedServiceIds.size > 0,
+    filters: filterOptions,
     requests: visibleRequests,
   }
 }
 
 export async function listAvailableRequestsForCompany({
   companyId,
+  filters,
 }: {
   companyId: string
+  filters?: RequestDashboardFilters | undefined
 }): Promise<ListAvailableRequestsForCompanyResult> {
   return loadAvailableRequestsForCompany({
     companyId,
+    filters,
   })
 }
 
@@ -492,6 +806,7 @@ export async function getAvailableRequestForCompany({
     ok: true,
     hasSelectedServices:
       result.hasSelectedServices,
+    filters: result.filters,
     request:
       result.requests[0] ?? null,
   }

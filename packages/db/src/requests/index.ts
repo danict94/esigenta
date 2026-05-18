@@ -92,6 +92,9 @@ export type {
   CompanyRequestMatchLevel,
   GetAvailableRequestForCompanyResult,
   ListAvailableRequestsForCompanyResult,
+  RequestDashboardFilterOptions,
+  RequestDashboardFilters,
+  RequestDashboardSort,
 } from "./list-available-requests-for-company"
 
 export type {
