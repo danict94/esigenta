@@ -138,12 +138,14 @@ function hasValidNumber(
 
 function mapRequest({
   request,
+  categoryServiceIds,
   selectedServiceIds,
 }: {
   request: RequestWithServices
+  categoryServiceIds: Set<string>
   selectedServiceIds: Set<string>
 }): AvailableCompanyRequest {
-  const matchLevel =
+  const hasSelectedServiceMatch =
     selectedServiceIds.size > 0 &&
     request.requiredServices.some(
       (requiredService) =>
@@ -151,8 +153,21 @@ function mapRequest({
           requiredService.serviceId,
         ),
     )
-      ? "selected_service"
-      : "category"
+  const hasCategoryServiceMatch =
+    request.requiredServices.some(
+      (requiredService) =>
+        categoryServiceIds.has(
+          requiredService.serviceId,
+        ),
+    )
+  let matchLevel: CompanyRequestMatchLevel =
+    "category"
+
+  if (hasSelectedServiceMatch) {
+    matchLevel = "selected_service"
+  } else if (hasCategoryServiceMatch) {
+    matchLevel = "category"
+  }
 
   const {
     requiredServices,
@@ -216,6 +231,11 @@ async function loadAvailableRequestsForCompany({
         latitude: true,
         longitude: true,
         operatingRadiusKm: true,
+        categories: {
+          select: {
+            categoryId: true,
+          },
+        },
         services: {
           select: {
             serviceId: true,
@@ -224,12 +244,12 @@ async function loadAvailableRequestsForCompany({
       },
     })
 
-  if (!company?.onboardingCategorySlug) {
+  if (!company) {
     return {
       ok: false,
       code: "missing_category",
       message:
-        "Configura la categoria iniziale del profilo impresa.",
+        "Configura le categorie operative del profilo impresa.",
     }
   }
 
@@ -255,12 +275,44 @@ async function loadAvailableRequestsForCompany({
   const operatingRadiusKm =
     company.operatingRadiusKm
 
+  const savedCategoryIds =
+    company.categories.map(
+      (category) => category.categoryId,
+    )
+  const fallbackCategory =
+    savedCategoryIds.length === 0 &&
+    company.onboardingCategorySlug
+      ? await prisma.category.findUnique({
+          where: {
+            slug:
+              company.onboardingCategorySlug,
+          },
+          select: {
+            id: true,
+          },
+        })
+      : null
+  const operationalCategoryIds =
+    savedCategoryIds.length > 0
+      ? savedCategoryIds
+      : fallbackCategory
+        ? [fallbackCategory.id]
+        : []
+
+  if (operationalCategoryIds.length === 0) {
+    return {
+      ok: false,
+      code: "missing_category",
+      message:
+        "Configura le categorie operative del profilo impresa.",
+    }
+  }
+
   const categoryServices =
     await prisma.categoryService.findMany({
       where: {
-        category: {
-          slug:
-            company.onboardingCategorySlug,
+        categoryId: {
+          in: operationalCategoryIds,
         },
       },
       select: {
@@ -269,9 +321,16 @@ async function loadAvailableRequestsForCompany({
     })
 
   const categoryServiceIds =
-    categoryServices.map(
-      (service) => service.serviceId,
+    Array.from(
+      new Set(
+        categoryServices.map(
+          (service) =>
+            service.serviceId,
+        ),
+      ),
     )
+  const categoryServiceIdSet =
+    new Set(categoryServiceIds)
 
   const selectedServiceIds =
     new Set(
@@ -387,6 +446,8 @@ async function loadAvailableRequestsForCompany({
       .map((request) =>
         mapRequest({
           request,
+          categoryServiceIds:
+            categoryServiceIdSet,
           selectedServiceIds,
         }),
       )
