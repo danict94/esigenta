@@ -10,6 +10,8 @@ export * from "./identity"
 
 export * from "./credits"
 
+export * from "./company-contact-change-requests"
+
 export { prisma } from "./prisma/client"
 
 export type {

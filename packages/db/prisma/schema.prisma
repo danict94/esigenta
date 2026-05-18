@@ -259,6 +259,7 @@ model Company {
   name              String
   vatNumber         String  @unique
   phone             String
+  publicContactEmail String?
   website           String?
   address           String?
   street            String?
@@ -300,6 +301,8 @@ model Company {
   requestUnlocks       RequestUnlock[]
   savedRequests        CompanySavedRequest[]
   creditRefundRequests CreditRefundRequest[]
+  contactChangeRequests CompanyContactChangeRequest[]
+
 
   @@index([city])
   @@index([postalCode])
@@ -373,6 +376,8 @@ model User {
   adminProfile                 AdminProfile?
   adminCreditTransactions      CompanyCreditTransaction[] @relation("CreditAdminActor")
   reviewedCreditRefundRequests CreditRefundRequest[]      @relation("CreditRefundReviewAdmin")
+  companyContactChangeRequests         CompanyContactChangeRequest[] @relation("CompanyContactChangeRequestedBy")
+  reviewedCompanyContactChangeRequests CompanyContactChangeRequest[] @relation("CompanyContactChangeReviewedBy")
 
   sessions Session[]
   accounts Account[]
@@ -966,4 +971,46 @@ enum CustomerTokenPurpose {
 
   /// Reserved for the future customer review flow.
   REVIEW_ACCESS
+}
+
+enum CompanyContactChangeField {
+  PHONE
+  PUBLIC_CONTACT_EMAIL
+}
+
+enum CompanyContactChangeStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model CompanyContactChangeRequest {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  requestedByUserId String
+  requestedByUser   User @relation("CompanyContactChangeRequestedBy", fields: [requestedByUserId], references: [id], onDelete: Cascade)
+
+  field CompanyContactChangeField
+
+  currentValue   String?
+  requestedValue String
+
+  status CompanyContactChangeStatus @default(PENDING_REVIEW)
+
+  reviewedAt DateTime?
+  reviewedByAdminUserId String?
+  reviewedByAdminUser   User? @relation("CompanyContactChangeReviewedBy", fields: [reviewedByAdminUserId], references: [id], onDelete: SetNull)
+
+  adminNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, createdAt])
+  @@index([status, createdAt])
+  @@index([reviewedByAdminUserId])
 }
