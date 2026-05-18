@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import {
   useState,
@@ -10,6 +10,10 @@ import {
 } from "next/navigation"
 
 import {
+  Badge,
+  Button,
+  Card,
+  Container,
   cn,
 } from "@fixpro/ui"
 
@@ -48,12 +52,11 @@ const accountNavigation: NavigationItem[] = [
     href: "/area-impresa/richieste-salvate",
     enabled: false,
   },
- {
-    label: "configura servizi",
+  {
+    label: "Configura servizi",
     href: "/area-impresa/configura-servizi",
     enabled: true,
   },
-
   {
     label: "Profilo",
     href: "/area-impresa/profilo",
@@ -73,6 +76,22 @@ function isActivePath(
   return (
     pathname === href ||
     pathname.startsWith(`${href}/`)
+  )
+}
+
+function NavBadge({
+  value,
+}: {
+  value: string
+}) {
+  return (
+    <Badge
+      variant="danger"
+      size="sm"
+      className="absolute -right-1 top-1 min-h-4 px-1 text-[10px] leading-none"
+    >
+      {value}
+    </Badge>
   )
 }
 
@@ -98,9 +117,7 @@ function TopNavLink({
         {item.label}
 
         {item.badge ? (
-          <span className="absolute -right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
-            {item.badge}
-          </span>
+          <NavBadge value={item.badge} />
         ) : null}
       </span>
     )
@@ -121,14 +138,12 @@ function TopNavLink({
         {item.label}
 
         {active ? (
-          <span className="absolute -bottom-2 left-0 h-0.5 w-full rounded-full bg-brand-primary" />
+          <span className="absolute -bottom-2 left-0 h-0.5 w-full bg-brand-primary" />
         ) : null}
       </span>
 
       {item.badge ? (
-        <span className="absolute -right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
-          {item.badge}
-        </span>
+        <NavBadge value={item.badge} />
       ) : null}
     </Link>
   )
@@ -144,7 +159,7 @@ function AccountMenuItem({
   if (!item.enabled) {
     return (
       <span
-        className="block cursor-not-allowed px-5 py-3 text-sm font-medium text-text-primary"
+        className="block cursor-not-allowed px-5 py-3 text-sm font-medium text-text-muted"
         aria-disabled="true"
       >
         {item.label}
@@ -191,15 +206,15 @@ export function ImpresaSidebar({
 
   return (
     <header className="sticky top-0 z-40 border-b border-border-primary bg-surface-primary">
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <Container size="xl" className="flex h-20 items-center justify-between gap-4">
         <Link
-  href="/area-impresa/richieste"
-  className="inline-flex min-w-0 items-center"
->
-  <span className="truncate text-lg font-semibold tracking-tight text-text-primary">
-    FixPro
-  </span>
-</Link>
+          href="/area-impresa/richieste"
+          className="inline-flex min-w-0 items-center"
+        >
+          <span className="truncate text-lg font-semibold tracking-tight text-text-primary">
+            FixPro
+          </span>
+        </Link>
 
         <div className="hidden items-center gap-7 md:flex">
           <nav
@@ -215,10 +230,12 @@ export function ImpresaSidebar({
           </nav>
 
           <div className="relative">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               className={cn(
-                "inline-flex h-10 items-center gap-2 rounded-md border border-border-primary bg-surface-primary px-3 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-secondary",
+                "gap-2",
                 accountOpen
                   ? "bg-surface-secondary"
                   : null,
@@ -239,11 +256,11 @@ export function ImpresaSidebar({
               >
                 ▾
               </span>
-            </button>
+            </Button>
 
             {accountOpen ? (
-              <div
-                className="absolute right-0 top-12 w-64 rounded-xl border border-border-primary bg-surface-elevated py-3 shadow-lg"
+              <Card
+                className="absolute right-0 top-12 w-64 py-3 shadow-lg"
                 role="menu"
               >
                 <p className="px-5 pb-3 pt-2 text-xs font-medium uppercase tracking-wide text-text-muted">
@@ -265,22 +282,25 @@ export function ImpresaSidebar({
                     />
                   ))}
 
-                  <button
+                  <Button
                     type="button"
+                    variant="secondary"
                     onClick={handleLogout}
-                    className="block w-full px-5 py-3 text-left text-sm font-medium text-text-primary transition-colors hover:bg-surface-secondary"
+                    className="h-auto w-full justify-start border-0 bg-transparent px-5 py-3 text-left text-sm font-medium hover:bg-surface-secondary"
                   >
                     Esci
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             ) : null}
           </div>
         </div>
 
-        <button
+        <Button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border-primary bg-surface-primary text-text-primary transition-colors hover:bg-surface-secondary md:hidden"
+          variant="secondary"
+          size="sm"
+          className="h-10 w-10 px-0 md:hidden"
           aria-label={
             mobileOpen
               ? "Chiudi menu"
@@ -296,8 +316,8 @@ export function ImpresaSidebar({
             <span className="block h-0.5 w-4 bg-current" />
             <span className="block h-0.5 w-4 bg-current" />
           </span>
-        </button>
-      </div>
+        </Button>
+      </Container>
 
       {mobileOpen ? (
         <div className="border-t border-border-primary bg-surface-primary px-4 py-4 md:hidden">
@@ -336,13 +356,14 @@ export function ImpresaSidebar({
                 />
               ))}
 
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={handleLogout}
-                className="px-3 py-3 text-left text-sm font-medium text-text-primary transition-colors hover:bg-surface-secondary"
+                className="h-auto justify-start border-0 bg-transparent px-3 py-3 text-left text-sm font-medium hover:bg-surface-secondary"
               >
                 Esci
-              </button>
+              </Button>
             </div>
           </div>
         </div>

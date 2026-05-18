@@ -1,10 +1,14 @@
-'use client'
+﻿'use client'
 
 import {
   useEffect,
   useRef,
   useState,
 } from 'react'
+
+import {
+  Input,
+} from '@fixpro/ui'
 
 export type NormalizedLocation = {
   address?: string
@@ -477,7 +481,7 @@ export function CityAutocomplete({
 
   return (
     <div className="grid gap-2">
-      <input
+      <Input
         id={id}
         ref={inputRef}
         value={inputValue}
@@ -496,10 +500,7 @@ export function CityAutocomplete({
           )
         }}
         placeholder={placeholder}
-        className={
-          className ??
-          'h-12 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus'
-        }
+        className={className}
       />
 
       {message ? (
@@ -510,3 +511,4 @@ export function CityAutocomplete({
     </div>
   )
 }
+

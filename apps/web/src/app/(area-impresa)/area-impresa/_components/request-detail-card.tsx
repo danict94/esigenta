@@ -1,6 +1,13 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 
-import { Button, Card, cn } from "@fixpro/ui";
+import {
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  Select,
+  Textarea,
+} from "@fixpro/ui";
 
 import {
   formatCreditCost,
@@ -674,17 +681,16 @@ export function RequestDetailCard({
                     <span className="text-sm font-medium text-text-primary">
                       Motivo
                     </span>
-                    <select
+                    <Select
                       name="reason"
                       required
-                      className="h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors focus:border-border-focus"
                     >
                       {refundReasonOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   </label>
 
                   <p className="text-xs leading-5 text-text-muted">
@@ -696,21 +702,19 @@ export function RequestDetailCard({
                     <span className="text-sm font-medium text-text-primary">
                       Descrizione
                     </span>
-                    <textarea
+                    <Textarea
                       name="description"
                       required
                       minLength={20}
                       rows={4}
-                      className="w-full resize-none rounded-md border border-border-primary bg-surface-primary px-3 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
-                      placeholder="Spiega cosa hai verificato e perch\u00e9 chiedi la revisione."
+                      placeholder="Spiega cosa hai verificato e perché chiedi la revisione."
                     />
                   </label>
 
                   <label className="flex items-start gap-3 text-sm leading-6 text-text-secondary">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       name="companyContactAttempted"
-                      className="mt-1 h-4 w-4 rounded border-border-primary"
+                      className="mt-1"
                     />
                     <span>
                       Confermo di aver provato a contattare il cliente
@@ -721,10 +725,9 @@ export function RequestDetailCard({
                     <span className="text-sm font-medium text-text-primary">
                       Ultimo tentativo contatto
                     </span>
-                    <input
+                    <Input
                       type="date"
                       name="lastContactAttemptAt"
-                      className="h-11 w-full rounded-md border border-border-primary bg-surface-primary px-3 text-sm text-text-primary outline-none transition-colors focus:border-border-focus"
                     />
                   </label>
 
@@ -749,19 +752,17 @@ export function RequestDetailCard({
                 </Button>
               </form>
             ) : (
-              <button
+              <Button
                 type="button"
                 disabled
-                className={cn(
-                  "inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary opacity-70",
-                )}
+                className="w-full"
               >
                 {hasUnlocked
-                  ? "Richiesta gi\u00e0 sbloccata"
+                  ? "Richiesta già sbloccata"
                   : commercialState.isSoldOut
                     ? "Posti terminati"
                     : "Sblocco non disponibile"}
-              </button>
+              </Button>
             )}
           </div>
 
@@ -775,3 +776,4 @@ export function RequestDetailCard({
     </div>
   );
 }
+

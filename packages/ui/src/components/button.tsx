@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   ButtonHTMLAttributes,
   ReactNode,
 } from "react"
@@ -11,6 +11,7 @@ import {
 type ButtonVariant =
   | "primary"
   | "secondary"
+  | "ghost"
 
 type ButtonSize =
   | "sm"
@@ -30,6 +31,9 @@ const variants: Record<ButtonVariant, string> = {
 
   secondary:
     "border border-border-primary bg-surface-primary text-text-primary hover:border-border-focus",
+
+  ghost:
+    "border border-transparent bg-transparent text-text-secondary hover:bg-surface-secondary hover:text-text-primary",
 }
 
 const sizes: Record<ButtonSize, string> = {

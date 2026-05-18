@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import {
   type FormEvent,
@@ -11,6 +11,7 @@ import {
 import {
   Button,
   Input,
+  Select,
 } from "@fixpro/ui"
 
 import {
@@ -88,7 +89,7 @@ export function ImpresaSignupForm({
 
     if (!hasValidLeadLocation) {
       setError(
-        "Seleziona prima la città dalla pagina professionisti.",
+        "Seleziona prima la cittÃ  dalla pagina professionisti.",
       )
       return
     }
@@ -302,7 +303,7 @@ export function ImpresaSignupForm({
             Raggio d’azione
           </label>
 
-          <select
+          <Select
             id="operatingRadiusKm"
             required
             value={operatingRadiusKm}
@@ -311,7 +312,6 @@ export function ImpresaSignupForm({
                 Number(event.target.value),
               )
             }
-            className="h-12 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors focus:border-border-focus"
           >
             {operatingRadiusOptions.map(
               (option) => (
@@ -323,10 +323,10 @@ export function ImpresaSignupForm({
                 </option>
               ),
             )}
-          </select>
+          </Select>
 
           <p className="text-xs leading-5 text-text-muted">
-            Il raggio sarà calcolato dalla città selezionata nel passaggio
+            Il raggio sarÃ  calcolato dalla cittÃ  selezionata nel passaggio
             precedente. Potrai modificarlo più avanti.
           </p>
         </div>
@@ -415,3 +415,4 @@ export function ImpresaSignupForm({
     </form>
   )
 }
+

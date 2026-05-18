@@ -1,4 +1,4 @@
-import {
+﻿import {
   redirect,
 } from "next/navigation"
 
@@ -141,7 +141,7 @@ async function createCreditPackageCheckoutAction(
                 name:
                   `FixPro Crediti - ${order.name}`,
                 description:
-                  `${order.credits} crediti · validità ${order.validityDays} giorni`,
+                  `${order.credits} crediti Â· validitÃ  ${order.validityDays} giorni`,
               },
             },
             quantity: 1,
@@ -236,10 +236,10 @@ export default async function CompanyCreditsPage({
 
   return (
     <PageShell
-      size="xl"
+      size="lg"
       className="py-8 md:py-10"
     >
-      <section className="mx-auto grid max-w-6xl gap-6">
+      <section className="grid gap-6">
         <header className="border-b border-border-primary pb-7">
           <p className="text-sm font-medium text-text-muted">
             Crediti impresa
@@ -335,7 +335,7 @@ export default async function CompanyCreditsPage({
 
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-text-muted">
-                      Validità
+                      ValiditÃ 
                     </dt>
                     <dd className="font-semibold text-text-primary">
                       {creditPackage.validityDays} giorni
@@ -379,3 +379,4 @@ export default async function CompanyCreditsPage({
     </PageShell>
   )
 }
+

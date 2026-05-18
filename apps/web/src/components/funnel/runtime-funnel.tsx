@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import {
   useMemo,
@@ -7,6 +7,8 @@ import {
 
 import {
   Button,
+  Input,
+  Textarea,
   cn,
   tokens,
 } from '@fixpro/ui'
@@ -328,11 +330,7 @@ function renderCapabilityInput({
   capability: RuntimeCapability
   value: unknown
   onChange: (value: unknown) => void
-}) {
-  const inputClass =
-    'h-12 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus'
-
-  switch (capability.type) {
+}) {switch (capability.type) {
     case 'contact': {
       const contact =
         getContactAnswer(value)
@@ -383,7 +381,7 @@ function renderCapabilityInput({
             >
               <span>{field.label}</span>
 
-              <input
+              <Input
                 type={field.type}
                 autoComplete={
                   field.autoComplete
@@ -413,8 +411,7 @@ function renderCapabilityInput({
                 placeholder={
                   field.placeholder
                 }
-                className={inputClass}
-              />
+                    />
             </label>
           ))}
         </div>
@@ -438,7 +435,7 @@ function renderCapabilityInput({
                 value === option.value
 
               return (
-                <button
+                <Button
                   key={option.value}
                   type="button"
                   onClick={() => {
@@ -452,9 +449,7 @@ function renderCapabilityInput({
                       ? 'border-brand-primary bg-surface-elevated text-text-primary'
                       : 'border-border-primary bg-surface-primary text-text-secondary hover:border-border-focus',
                   )}
-                >
-                  {option.label}
-                </button>
+                >{option.label}</Button>
               )
             },
           )}
@@ -463,7 +458,7 @@ function renderCapabilityInput({
 
     case 'number':
       return (
-        <input
+        <Input
           type="number"
           min="0"
           value={
@@ -478,7 +473,6 @@ function renderCapabilityInput({
             )
           }}
           placeholder="Inserisci una stima"
-          className={inputClass}
         />
       )
 
@@ -490,7 +484,7 @@ function renderCapabilityInput({
           </span>
 
           <span className="text-xs text-text-muted">
-            Puoi selezionare una o piu immagini.
+            Puoi selezionare una o più immagini.
           </span>
 
           <input
@@ -521,7 +515,7 @@ function renderCapabilityInput({
 
     case 'text':
       return (
-        <input
+        <Input
           value={
             typeof value === 'string'
               ? value
@@ -533,13 +527,12 @@ function renderCapabilityInput({
             )
           }}
           placeholder="Scrivi qui"
-          className={inputClass}
         />
       )
 
     default:
       return (
-        <input
+        <Input
           value={
             typeof value === 'string'
               ? value
@@ -551,7 +544,6 @@ function renderCapabilityInput({
             )
           }}
           placeholder="Scrivi qui"
-          className={inputClass}
         />
       )
   }
@@ -917,7 +909,7 @@ export function RuntimeFunnel({
               Aggiungi qualche dettaglio utile
             </label>
 
-            <textarea
+            <Textarea
               value={
                 customerDescription
               }
@@ -927,9 +919,7 @@ export function RuntimeFunnel({
                 )
               }}
               rows={4}
-              placeholder="Descrivi brevemente il lavoro, se vuoi."
-              className="w-full resize-none border border-border-primary bg-surface-primary px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
-            />
+              placeholder="Descrivi brevemente il lavoro, se vuoi." />
           </div>
         ) : null}
 
@@ -940,8 +930,9 @@ export function RuntimeFunnel({
         ) : null}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={() => {
               if (stepIndex === 0) {
                 onReset()
@@ -953,12 +944,12 @@ export function RuntimeFunnel({
                   current - 1,
               )
             }}
-            className="h-12 px-4 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+            className="border-0 bg-transparent text-text-secondary hover:bg-transparent hover:text-text-primary"
           >
             {stepIndex === 0
               ? 'Cambia intervento'
               : 'Indietro'}
-          </button>
+          </Button>
 
           <Button
             type="button"
@@ -986,3 +977,6 @@ export function RuntimeFunnel({
     </div>
   )
 }
+
+
+

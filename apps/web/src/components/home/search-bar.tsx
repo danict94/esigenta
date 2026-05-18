@@ -1,21 +1,21 @@
-'use client'
+﻿"use client"
 
 import {
   useEffect,
   useMemo,
   useRef,
   useState,
-} from 'react'
+} from "react"
 
-import { Search } from 'lucide-react'
+import { Search } from "lucide-react"
 
 import {
   Button,
-  cn,
-  tokens,
-} from '@fixpro/ui'
+  Card,
+  Input,
+} from "@fixpro/ui"
 
-import type { TaxonomySearchResult } from '@fixpro/db'
+import type { TaxonomySearchResult } from "@fixpro/db"
 
 export type SearchBarSelection = {
   result: TaxonomySearchResult
@@ -30,58 +30,35 @@ type SearchBarProps = {
 
 const PRELOADED_RESULTS: TaxonomySearchResult[] = [
   {
-    id: 'preload-1',
-
-    type: 'INTERVENTION',
-
-    name: 'Rifare bagno',
-
-    slug: 'rifare-bagno',
-
+    id: "preload-1",
+    type: "INTERVENTION",
+    name: "Rifare bagno",
+    slug: "rifare-bagno",
     description: null,
-
     relevance: 100,
   },
-
   {
-    id: 'preload-2',
-
-    type: 'INTERVENTION',
-
-    name: 'Perdita acqua',
-
-    slug: 'perdita-acqua',
-
+    id: "preload-2",
+    type: "INTERVENTION",
+    name: "Perdita acqua",
+    slug: "perdita-acqua",
     description: null,
-
     relevance: 100,
   },
-
   {
-    id: 'preload-3',
-
-    type: 'CATEGORY',
-
-    name: 'Impresa edile',
-
-    slug: 'impresa-edile',
-
+    id: "preload-3",
+    type: "CATEGORY",
+    name: "Impresa edile",
+    slug: "impresa-edile",
     description: null,
-
     relevance: 60,
   },
-
   {
-    id: 'preload-4',
-
-    type: 'CATEGORY',
-
-    name: 'Idraulico',
-
-    slug: 'idraulico',
-
+    id: "preload-4",
+    type: "CATEGORY",
+    name: "Idraulico",
+    slug: "idraulico",
     description: null,
-
     relevance: 60,
   },
 ]
@@ -90,7 +67,7 @@ export function SearchBar({
   onInterventionSelect,
 }: SearchBarProps = {}) {
   const [query, setQuery] =
-    useState('')
+    useState("")
 
   const [results, setResults] =
     useState<TaxonomySearchResult[]>([])
@@ -101,33 +78,14 @@ export function SearchBar({
   const debounceRef =
     useRef<NodeJS.Timeout | null>(null)
 
-  /*
-  ============================================================
-  SEARCH
-  ============================================================
-  */
-
   useEffect(() => {
     const trimmedQuery =
       query.trim()
 
-    /*
-    ==========================================================
-    PRELOAD STATE
-    ==========================================================
-    */
-
     if (!trimmedQuery) {
       setResults(PRELOADED_RESULTS)
-
       return
     }
-
-    /*
-    ==========================================================
-    DEBOUNCE
-    ==========================================================
-    */
 
     if (debounceRef.current) {
       clearTimeout(debounceRef.current)
@@ -174,12 +132,6 @@ export function SearchBar({
     }
   }, [query])
 
-  /*
-  ============================================================
-  GROUPED RESULTS
-  ============================================================
-  */
-
   const groupedResults =
     useMemo(() => {
       return {
@@ -187,14 +139,14 @@ export function SearchBar({
           results.filter(
             (result) =>
               result.type ===
-              'INTERVENTION',
+              "INTERVENTION",
           ),
 
         categories:
           results.filter(
             (result) =>
               result.type ===
-              'CATEGORY',
+              "CATEGORY",
           ),
       }
     }, [results])
@@ -222,24 +174,19 @@ export function SearchBar({
     groupedResults.interventions[0]
 
   return (
-    <div
-      className={cn(
-        'bg-surface-elevated p-3',
-        tokens.shadows.surface,
-      )}
-    >
+    <Card className="p-3 shadow-surface">
       <div className="flex flex-col gap-3 md:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted" />
 
-          <input
+          <Input
             type="text"
             value={query}
             onFocus={() => {
               setIsFocused(true)
 
               if (
-                query.trim() === ''
+                query.trim() === ""
               ) {
                 setResults(
                   PRELOADED_RESULTS,
@@ -257,11 +204,11 @@ export function SearchBar({
               )
             }}
             placeholder="Di cosa hai bisogno?"
-            className="h-12 w-full border border-border-primary bg-surface-primary pl-12 pr-4 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus"
+            className="pl-12"
           />
 
           {showDropdown ? (
-            <div className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden border border-border-primary bg-surface-primary shadow-lg">
+            <Card className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden shadow-lg">
               <div className="max-h-[420px] overflow-y-auto">
                 {groupedResults
                   .interventions
@@ -276,15 +223,16 @@ export function SearchBar({
                         (
                           result,
                         ) => (
-                          <button
+                          <Button
                             key={`INTERVENTION-${result.id}`}
                             type="button"
+                            variant="ghost"
                             onClick={() => {
                               selectIntervention(
                                 result,
                               )
                             }}
-                            className="flex flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-surface-elevated"
+                            className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 text-left"
                           >
                             <span className="text-sm text-text-primary">
                               {
@@ -299,7 +247,7 @@ export function SearchBar({
                                 }
                               </span>
                             ) : null}
-                          </button>
+                          </Button>
                         ),
                       )}
                     </div>
@@ -319,10 +267,11 @@ export function SearchBar({
                         (
                           result,
                         ) => (
-                          <button
+                          <Button
                             key={`CATEGORY-${result.id}`}
                             type="button"
-                            className="flex flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-surface-elevated"
+                            variant="ghost"
+                            className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 text-left"
                           >
                             <span className="text-sm text-text-primary">
                               {
@@ -337,14 +286,14 @@ export function SearchBar({
                                 }
                               </span>
                             ) : null}
-                          </button>
+                          </Button>
                         ),
                       )}
                     </div>
                   </div>
                 ) : null}
               </div>
-            </div>
+            </Card>
           ) : null}
         </div>
 
@@ -364,6 +313,6 @@ export function SearchBar({
           Inizia il tuo progetto
         </Button>
       </div>
-    </div>
+    </Card>
   )
 }

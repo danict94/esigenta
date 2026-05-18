@@ -1,5 +1,8 @@
-"use client"
+﻿"use client"
 
+import type {
+  FormEvent,
+} from "react"
 import {
   useState,
 } from "react"
@@ -9,8 +12,7 @@ import {
 
 import {
   Button,
-  cn,
-  tokens,
+  Input,
 } from "@fixpro/ui"
 
 import {
@@ -37,7 +39,7 @@ export function ImpresaLoginForm() {
     useState(false)
 
   async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>,
+    event: FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault()
 
@@ -98,7 +100,7 @@ export function ImpresaLoginForm() {
           Email
         </label>
 
-        <input
+        <Input
           id="email"
           name="email"
           type="email"
@@ -110,10 +112,6 @@ export function ImpresaLoginForm() {
           onChange={(event) =>
             setEmail(event.target.value)
           }
-          className={cn(
-            "h-14 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus",
-            tokens.radius.lg,
-          )}
         />
       </div>
 
@@ -125,7 +123,7 @@ export function ImpresaLoginForm() {
           Password
         </label>
 
-        <input
+        <Input
           id="password"
           name="company-login-password"
           type="password"
@@ -139,20 +137,11 @@ export function ImpresaLoginForm() {
           onChange={(event) =>
             setPassword(event.target.value)
           }
-          className={cn(
-            "h-14 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus",
-            tokens.radius.lg,
-          )}
         />
       </div>
 
       {error ? (
-        <div
-          className={cn(
-            "border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700",
-            tokens.radius.md,
-          )}
-        >
+        <div className="border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
           {error}
         </div>
       ) : null}

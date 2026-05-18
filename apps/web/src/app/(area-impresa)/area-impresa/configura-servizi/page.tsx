@@ -1,9 +1,10 @@
-import Link from "next/link"
+﻿import Link from "next/link"
 
 import {
   Badge,
   Button,
   Card,
+  Checkbox,
   PageShell,
 } from "@fixpro/ui"
 import {
@@ -99,7 +100,7 @@ export default async function ConfiguraServiziPage({
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
             Questo profilo non ha una categoria di onboarding collegata.
             Puoi comunque entrare nell'area impresa; la configurazione
-            guidata dei servizi verrà completata in un passaggio successivo.
+            guidata dei servizi verrÃ  completata in un passaggio successivo.
           </p>
 
           <Link
@@ -193,7 +194,7 @@ export default async function ConfiguraServiziPage({
 
         <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
           Abbiamo usato la categoria scelta in fase di iscrizione come punto
-          di partenza. Il matching con le richieste userà i servizi
+          di partenza. Il matching con le richieste userÃ  i servizi
           confermati qui, non la categoria iniziale.
         </p>
 
@@ -231,14 +232,13 @@ export default async function ConfiguraServiziPage({
                     key={service.id}
                     className="flex cursor-pointer gap-4 border border-border-primary bg-surface-primary p-4 transition-colors hover:border-border-focus"
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       name="serviceIds"
                       value={service.id}
                       defaultChecked={selectedServiceIds.has(
                         service.id,
                       )}
-                      className="mt-1 h-4 w-4"
+                      className="mt-1"
                     />
 
                     <span>
@@ -268,3 +268,4 @@ export default async function ConfiguraServiziPage({
     </PageShell>
   )
 }
+

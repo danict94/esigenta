@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import type {
   FormEvent,
@@ -15,7 +15,7 @@ import {
 import {
   Button,
   Card,
-  cn,
+  Select,
 } from "@fixpro/ui"
 
 import {
@@ -87,7 +87,7 @@ export function CompanyLeadForm({
       location.longitude === undefined
     ) {
       setError(
-        "Seleziona la tua attività e scegli la città dai suggerimenti.",
+        "Seleziona la tua attivitÃ  e scegli la cittÃ  dai suggerimenti.",
       )
       return
     }
@@ -148,7 +148,7 @@ export function CompanyLeadForm({
           </p>
 
           <p className="mt-2 text-sm leading-6 text-text-secondary">
-            Seleziona la tua attività e la zona da cui vuoi iniziare a
+            Seleziona la tua attivitÃ  e la zona da cui vuoi iniziare a
             ricevere richieste.
           </p>
         </div>
@@ -161,7 +161,7 @@ export function CompanyLeadForm({
             Di cosa ti occupi?
           </label>
 
-          <select
+          <Select
             id="company-category"
             required
             value={categorySlug}
@@ -169,10 +169,7 @@ export function CompanyLeadForm({
               setCategorySlug(event.target.value)
               setError(null)
             }}
-            className={cn(
-              "h-12 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors focus:border-border-focus disabled:cursor-not-allowed disabled:opacity-60",
-              !categorySlug && "text-text-muted",
-            )}
+            className={!categorySlug ? "text-text-muted" : undefined}
           >
             <option value="">
               Seleziona la tua categoria
@@ -186,7 +183,7 @@ export function CompanyLeadForm({
                 {category.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <div className="space-y-2">
@@ -194,7 +191,7 @@ export function CompanyLeadForm({
             htmlFor="company-city"
             className="text-sm font-medium text-text-primary"
           >
-            In quale città lavori?
+            In quale cittÃ  lavori?
           </label>
 
           <CityAutocomplete
@@ -204,7 +201,7 @@ export function CompanyLeadForm({
               setLocation(nextLocation)
               setError(null)
             }}
-            placeholder="Cerca città o comune"
+            placeholder="Cerca cittÃ  o comune"
           />
         </div>
 
@@ -229,3 +226,4 @@ export function CompanyLeadForm({
     </Card>
   )
 }
+

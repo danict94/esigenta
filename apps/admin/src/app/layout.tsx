@@ -1,22 +1,32 @@
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
+﻿import type { Metadata } from "next"
+import type { ReactNode } from "react"
+import { Plus_Jakarta_Sans } from "next/font/google"
 
-import "./globals.css";
+import "./globals.css"
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta-sans",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "FixPro Admin",
-};
+}
 
 export default function AdminRootLayout({
   children,
 }: {
-  children: ReactNode;
+  children: ReactNode
 }) {
   return (
-    <html lang="it" className="h-full antialiased">
+    <html
+      lang="it"
+      className={`${plusJakartaSans.variable} h-full antialiased`}
+    >
       <body className="min-h-full bg-surface-primary font-sans text-text-primary">
         {children}
       </body>
     </html>
-  );
+  )
 }
