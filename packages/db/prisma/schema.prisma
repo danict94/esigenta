@@ -47,8 +47,9 @@ model Category {
   sectorId String
   sector   Sector @relation(fields: [sectorId], references: [id], onDelete: Cascade)
 
-  services CategoryService[]
-  aliases  CategoryAlias[]
+  services  CategoryService[]
+  aliases   CategoryAlias[]
+  companies CompanyCategory[]
 
   @@index([sectorId])
 }
@@ -290,6 +291,7 @@ model Company {
   updatedAt DateTime @updatedAt
 
   services    CompanyService[]
+  categories  CompanyCategory[]
   memberships CompanyMembership[]
 
   creditAccount        CompanyCreditAccount?
@@ -318,6 +320,18 @@ model CompanyService {
   @@id([companyId, serviceId])
   @@index([companyId])
   @@index([serviceId])
+}
+
+model CompanyCategory {
+  companyId  String
+  categoryId String
+  createdAt  DateTime @default(now())
+
+  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([companyId, categoryId])
+  @@index([categoryId])
 }
 
 ///////////////////////////////////////////////////////////

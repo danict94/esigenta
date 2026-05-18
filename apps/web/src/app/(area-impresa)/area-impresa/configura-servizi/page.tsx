@@ -1,10 +1,8 @@
-﻿import Link from "next/link"
+import Link from "next/link"
 
 import {
   Badge,
-  Button,
   Card,
-  Checkbox,
   PageShell,
 } from "@fixpro/ui"
 import {
@@ -18,6 +16,10 @@ import {
 import {
   saveCompanyServicesAction,
 } from "./actions"
+import {
+  CategoryServicesSelector,
+  type CategoryOption,
+} from "./category-services-selector"
 
 export const dynamic = "force-dynamic"
 
@@ -28,12 +30,12 @@ type ConfiguraServiziPageProps = {
 }
 
 const errorMessages: Record<string, string> = {
-  missing_services:
-    "Seleziona almeno un servizio prima di continuare.",
+  missing_categories:
+    "Seleziona almeno una categoria prima di continuare.",
+  too_many_categories:
+    "Puoi selezionare al massimo 6 categorie operative.",
   invalid_services:
-    "Uno o più servizi selezionati non appartengono alla categoria iniziale.",
-  missing_category:
-    "Non troviamo la categoria iniziale del profilo impresa.",
+    "Uno o più servizi selezionati non appartengono alle categorie selezionate.",
   company_not_found:
     "Non troviamo il profilo impresa collegato a questo account.",
 }
@@ -47,22 +49,60 @@ export default async function ConfiguraServiziPage({
       requireDefaultCompanyMembership(),
     ])
 
-  const company =
-    await prisma.company.findUnique({
-      where: {
-        id: membership.companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-        onboardingCategorySlug: true,
-        services: {
-          select: {
-            serviceId: true,
+  const [company, categories] =
+    await Promise.all([
+      prisma.company.findUnique({
+        where: {
+          id: membership.companyId,
+        },
+        select: {
+          id: true,
+          name: true,
+          onboardingCategorySlug: true,
+          categories: {
+            select: {
+              categoryId: true,
+            },
+          },
+          services: {
+            select: {
+              serviceId: true,
+            },
           },
         },
-      },
-    })
+      }),
+      prisma.category.findMany({
+        orderBy: {
+          name: "asc",
+        },
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          sector: {
+            select: {
+              name: true,
+            },
+          },
+          services: {
+            orderBy: {
+              service: {
+                name: "asc",
+              },
+            },
+            select: {
+              service: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+    ])
 
   if (!company) {
     return (
@@ -85,12 +125,12 @@ export default async function ConfiguraServiziPage({
     )
   }
 
-  if (!company.onboardingCategorySlug) {
+  if (categories.length === 0) {
     return (
       <PageShell size="lg">
         <Card className="p-8">
           <Badge variant="warning">
-            Categoria non disponibile
+            Categorie non disponibili
           </Badge>
 
           <h1 className="mt-5 text-2xl font-semibold tracking-tight text-text-primary">
@@ -98,9 +138,8 @@ export default async function ConfiguraServiziPage({
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-            Questo profilo non ha una categoria di onboarding collegata.
-            Puoi comunque entrare nell'area impresa; la configurazione
-            guidata dei servizi verrÃ  completata in un passaggio successivo.
+            Non ci sono categorie operative configurabili. Puoi comunque
+            entrare nell'area impresa.
           </p>
 
           <Link
@@ -114,70 +153,42 @@ export default async function ConfiguraServiziPage({
     )
   }
 
-  const category =
-    await prisma.category.findUnique({
-      where: {
-        slug:
-          company.onboardingCategorySlug,
-      },
-      select: {
-        slug: true,
-        name: true,
-        services: {
-          orderBy: {
-            service: {
-              name: "asc",
-            },
-          },
-          select: {
-            service: {
-              select: {
-                id: true,
-                slug: true,
-                name: true,
-                description: true,
-              },
-            },
-          },
-        },
-      },
-    })
-
-  if (!category || category.services.length === 0) {
-    return (
-      <PageShell size="lg">
-        <Card className="p-8">
-          <Badge variant="warning">
-            Servizi non disponibili
-          </Badge>
-
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-text-primary">
-            Nessun servizio collegato alla categoria
-          </h1>
-
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-            Non ci sono servizi configurabili per la categoria selezionata
-            durante l'iscrizione. Puoi proseguire nell'area impresa.
-          </p>
-
-          <Link
-            href="/area-impresa/richieste"
-            className="mt-6 inline-flex text-sm font-medium text-brand-primary"
-          >
-            Vai alle richieste
-          </Link>
-        </Card>
-      </PageShell>
-    )
-  }
-
-  const selectedServiceIds =
-    new Set(
-      company.services.map(
-        (service) => service.serviceId,
+  const categoryOptions: CategoryOption[] =
+    categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      sectorName:
+        category.sector?.name ?? null,
+      services: category.services.map(
+        ({ service }) => ({
+          id: service.id,
+          name: service.name,
+          description:
+            service.description ?? null,
+        }),
       ),
-    )
+    }))
 
+  const savedCategoryIds =
+    company.categories.map(
+      (category) => category.categoryId,
+    )
+  const onboardingCategoryId =
+    categories.find(
+      (category) =>
+        category.slug ===
+        company.onboardingCategorySlug,
+    )?.id ?? null
+  const initialCategoryIds =
+    savedCategoryIds.length > 0
+      ? savedCategoryIds
+      : onboardingCategoryId
+        ? [onboardingCategoryId]
+        : []
+  const selectedServiceIds =
+    company.services.map(
+      (service) => service.serviceId,
+    )
   const errorMessage =
     error ? errorMessages[error] : null
 
@@ -189,13 +200,12 @@ export default async function ConfiguraServiziPage({
         </Badge>
 
         <h1 className="mt-5 text-3xl font-semibold tracking-tight text-text-primary">
-          Conferma i servizi che offri
+          Configura categorie e servizi
         </h1>
 
         <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
-          Abbiamo usato la categoria scelta in fase di iscrizione come punto
-          di partenza. Il matching con le richieste userÃ  i servizi
-          confermati qui, non la categoria iniziale.
+          Scegli le categorie operative in cui lavori. I servizi sono
+          facoltativi e servono solo a raffinare la priorità delle richieste.
         </p>
 
         <Card className="mt-8 p-6">
@@ -210,9 +220,11 @@ export default async function ConfiguraServiziPage({
               </h2>
             </div>
 
-            <Badge variant="success">
-              {category.name}
-            </Badge>
+            {onboardingCategoryId ? (
+              <Badge variant="success">
+                Categoria suggerita
+              </Badge>
+            ) : null}
           </div>
 
           {errorMessage ? (
@@ -221,51 +233,20 @@ export default async function ConfiguraServiziPage({
             </div>
           ) : null}
 
-          <form
-            action={saveCompanyServicesAction}
-            className="mt-6 space-y-6"
-          >
-            <div className="grid gap-3">
-              {category.services.map(
-                ({ service }) => (
-                  <label
-                    key={service.id}
-                    className="flex cursor-pointer gap-4 border border-border-primary bg-surface-primary p-4 transition-colors hover:border-border-focus"
-                  >
-                    <Checkbox
-                      name="serviceIds"
-                      value={service.id}
-                      defaultChecked={selectedServiceIds.has(
-                        service.id,
-                      )}
-                      className="mt-1"
-                    />
-
-                    <span>
-                      <span className="block text-sm font-semibold text-text-primary">
-                        {service.name}
-                      </span>
-
-                      {service.description ? (
-                        <span className="mt-1 block text-sm leading-6 text-text-secondary">
-                          {service.description}
-                        </span>
-                      ) : null}
-                    </span>
-                  </label>
-                ),
-              )}
-            </div>
-
-            <div className="flex justify-end border-t border-border-primary pt-6">
-              <Button type="submit">
-                Salva servizi
-              </Button>
-            </div>
-          </form>
+          <CategoryServicesSelector
+            categories={categoryOptions}
+            initialCategoryIds={
+              initialCategoryIds
+            }
+            initialServiceIds={
+              selectedServiceIds
+            }
+            action={
+              saveCompanyServicesAction
+            }
+          />
         </Card>
       </div>
     </PageShell>
   )
 }
-

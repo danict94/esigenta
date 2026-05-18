@@ -28,6 +28,22 @@ function normalizeServiceIds(
   )
 }
 
+function normalizeCategoryIds(
+  values: FormDataEntryValue[],
+) {
+  return Array.from(
+    new Set(
+      values
+        .map((value) =>
+          typeof value === "string"
+            ? value.trim()
+            : "",
+        )
+        .filter(Boolean),
+    ),
+  )
+}
+
 function redirectWithError(code: string): never {
   redirect(
     `/area-impresa/configura-servizi?error=${encodeURIComponent(code)}`,
@@ -44,9 +60,17 @@ export async function saveCompanyServicesAction(
     normalizeServiceIds(
       formData.getAll("serviceIds"),
     )
+  const selectedCategoryIds =
+    normalizeCategoryIds(
+      formData.getAll("categoryIds"),
+    )
 
-  if (selectedServiceIds.length === 0) {
-    redirectWithError("missing_services")
+  if (selectedCategoryIds.length === 0) {
+    redirectWithError("missing_categories")
+  }
+
+  if (selectedCategoryIds.length > 6) {
+    redirectWithError("too_many_categories")
   }
 
   const company =
@@ -56,7 +80,6 @@ export async function saveCompanyServicesAction(
       },
       select: {
         id: true,
-        onboardingCategorySlug: true,
       },
     })
 
@@ -64,29 +87,45 @@ export async function saveCompanyServicesAction(
     redirectWithError("company_not_found")
   }
 
-  if (!company.onboardingCategorySlug) {
-    redirectWithError("missing_category")
-  }
-
-  const allowedServices =
-    await prisma.categoryService.findMany({
+  const selectedCategories =
+    await prisma.category.findMany({
       where: {
-        category: {
-          slug:
-            company.onboardingCategorySlug,
-        },
-        serviceId: {
-          in: selectedServiceIds,
+        id: {
+          in: selectedCategoryIds,
         },
       },
       select: {
+        id: true,
+      },
+    })
+
+  if (
+    selectedCategories.length !==
+    selectedCategoryIds.length
+  ) {
+    redirectWithError("missing_categories")
+  }
+
+  const selectedCategoryIdSet = new Set(
+    selectedCategoryIds,
+  )
+
+  const categoryServices =
+    await prisma.categoryService.findMany({
+      where: {
+        categoryId: {
+          in: selectedCategoryIds,
+        },
+      },
+      select: {
+        categoryId: true,
         serviceId: true,
       },
     })
 
   const allowedServiceIds =
     new Set(
-      allowedServices.map(
+      categoryServices.map(
         (service) => service.serviceId,
       ),
     )
@@ -98,28 +137,52 @@ export async function saveCompanyServicesAction(
     )
 
   if (
-    hasInvalidService ||
-    allowedServiceIds.size !==
-      selectedServiceIds.length
+    selectedServiceIds.length > 0 &&
+    hasInvalidService
   ) {
     redirectWithError("invalid_services")
   }
 
-  await prisma.$transaction([
-    prisma.companyService.deleteMany({
+  const validSelectedServiceIds =
+    selectedServiceIds.filter((serviceId) =>
+      allowedServiceIds.has(serviceId),
+    )
+
+  await prisma.$transaction(async (tx) => {
+    await tx.companyCategory.deleteMany({
       where: {
         companyId: company.id,
       },
-    }),
-    prisma.companyService.createMany({
-      data: selectedServiceIds.map(
-        (serviceId) => ({
+    })
+
+    await tx.companyService.deleteMany({
+      where: {
+        companyId: company.id,
+      },
+    })
+
+    await tx.companyCategory.createMany({
+      data: selectedCategoryIds
+        .filter((categoryId) =>
+          selectedCategoryIdSet.has(categoryId),
+        )
+        .map((categoryId) => ({
           companyId: company.id,
-          serviceId,
-        }),
-      ),
-    }),
-  ])
+          categoryId,
+        })),
+    })
+
+    if (validSelectedServiceIds.length > 0) {
+      await tx.companyService.createMany({
+        data: validSelectedServiceIds.map(
+          (serviceId) => ({
+            companyId: company.id,
+            serviceId,
+          }),
+        ),
+      })
+    }
+  })
 
   redirect("/area-impresa/richieste")
 }
