@@ -16,6 +16,7 @@ import {
 } from "@fixpro/ui"
 
 import {
+  createCompanyContactChangeRequest,
   getCompanyCreditAccountSummary,
   prisma,
 } from "@fixpro/db"
@@ -33,6 +34,7 @@ export const dynamic = "force-dynamic"
 
 type ProfiloPageProps = {
   searchParams?: Promise<{
+    contactRequested?: string
     error?: string
     saved?: string
   }>
@@ -56,6 +58,18 @@ const errorMessages: Record<string, string> = {
     "Inserisci latitudine e longitudine valide, oppure lascia entrambi i campi vuoti.",
   company_not_found:
     "Non troviamo il profilo impresa collegato a questo account.",
+  invalid_requested_value:
+    "Inserisci almeno un nuovo dato di contatto valido.",
+  invalid_phone:
+    "Inserisci un telefono aziendale valido.",
+  invalid_public_contact_email:
+    "Inserisci un'email pubblica aziendale valida.",
+  requested_value_unchanged:
+    "Non hai modificato telefono o email pubblica aziendale.",
+  company_contact_change_request_already_pending:
+    "Esiste gia una richiesta in revisione per questo dato.",
+  company_membership_not_found:
+    "Non puoi richiedere modifiche per questa impresa.",
 }
 
 function normalizeText(value: FormDataEntryValue | null) {
@@ -121,6 +135,23 @@ function normalizeCoordinate(
   return Number.isFinite(numberValue)
     ? numberValue
     : undefined
+}
+
+function normalizePublicContactEmail(
+  value: FormDataEntryValue | null,
+) {
+  return normalizeText(value).toLowerCase()
+}
+
+function isValidPhone(value: string) {
+  return value.length >= 5 && value.length <= 40
+}
+
+function isValidPublicContactEmail(value: string) {
+  return (
+    value.length <= 254 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+  )
 }
 
 async function updateCompanyProfileAction(
@@ -209,6 +240,142 @@ async function updateCompanyProfileAction(
   redirect("/area-impresa/profilo?saved=1")
 }
 
+async function requestCompanyContactChangeAction(
+  formData: FormData,
+) {
+  "use server"
+
+  const [
+    membership,
+    user,
+  ] =
+    await Promise.all([
+      requireDefaultCompanyMembership(),
+      requireUser(),
+    ])
+
+  const company =
+    await prisma.company.findUnique({
+      where: {
+        id: membership.companyId,
+      },
+      select: {
+        id: true,
+        phone: true,
+        publicContactEmail: true,
+      },
+    })
+
+  if (!company) {
+    redirectWithError("company_not_found")
+  }
+
+  const requestedPhone =
+    normalizeText(formData.get("phone"))
+  const requestedPublicContactEmail =
+    normalizePublicContactEmail(
+      formData.get("publicContactEmail"),
+    )
+
+  const shouldRequestPhoneChange =
+    requestedPhone.length > 0 &&
+    requestedPhone !== company.phone
+
+  const shouldRequestPublicContactEmailChange =
+    requestedPublicContactEmail.length > 0 &&
+    requestedPublicContactEmail !==
+      (company.publicContactEmail ?? "").toLowerCase()
+
+  if (
+    !shouldRequestPhoneChange &&
+    !shouldRequestPublicContactEmailChange
+  ) {
+    redirectWithError("requested_value_unchanged")
+  }
+
+  if (
+    shouldRequestPhoneChange &&
+    !isValidPhone(requestedPhone)
+  ) {
+    redirectWithError("invalid_phone")
+  }
+
+  if (
+    shouldRequestPublicContactEmailChange &&
+    !isValidPublicContactEmail(
+      requestedPublicContactEmail,
+    )
+  ) {
+    redirectWithError("invalid_public_contact_email")
+  }
+
+  const requestedFields: Array<
+    "PHONE" | "PUBLIC_CONTACT_EMAIL"
+  > = []
+
+  if (shouldRequestPhoneChange) {
+    requestedFields.push("PHONE")
+  }
+
+  if (shouldRequestPublicContactEmailChange) {
+    requestedFields.push("PUBLIC_CONTACT_EMAIL")
+  }
+
+  const pendingFields =
+    await prisma.companyContactChangeRequest.findMany({
+      where: {
+        companyId: company.id,
+        status: "PENDING_REVIEW",
+        field: {
+          in: requestedFields,
+        },
+      },
+      select: {
+        field: true,
+      },
+    })
+
+  if (pendingFields.length > 0) {
+    redirectWithError(
+      "company_contact_change_request_already_pending",
+    )
+  }
+
+  if (shouldRequestPhoneChange) {
+    const result =
+      await createCompanyContactChangeRequest({
+        companyId: company.id,
+        requestedByUserId: user.id,
+        field: "PHONE",
+        requestedValue: requestedPhone,
+      })
+
+    if (!result.ok) {
+      redirectWithError(result.code)
+    }
+  }
+
+  if (shouldRequestPublicContactEmailChange) {
+    const result =
+      await createCompanyContactChangeRequest({
+        companyId: company.id,
+        requestedByUserId: user.id,
+        field: "PUBLIC_CONTACT_EMAIL",
+        requestedValue:
+          requestedPublicContactEmail,
+      })
+
+    if (!result.ok) {
+      redirectWithError(result.code)
+    }
+  }
+
+  revalidatePath("/area-impresa/profilo")
+  redirect(
+    "/area-impresa/profilo?contactRequested=1",
+  )
+}
+
 function formatValue(value?: string | number | null) {
   if (
     value === null ||
@@ -225,6 +392,18 @@ function formatDate(date: Date) {
   return new Intl.DateTimeFormat("it-IT", {
     dateStyle: "medium",
   }).format(date)
+}
+
+function formatContactChangeField(field: string) {
+  if (field === "PHONE") {
+    return "Telefono aziendale"
+  }
+
+  if (field === "PUBLIC_CONTACT_EMAIL") {
+    return "Email pubblica aziendale"
+  }
+
+  return field
 }
 
 function ReadOnlyRow({
@@ -280,6 +459,7 @@ export default async function ProfiloImpresaPage({
         name: true,
         vatNumber: true,
         phone: true,
+        publicContactEmail: true,
         website: true,
         address: true,
         street: true,
@@ -377,11 +557,33 @@ export default async function ProfiloImpresaPage({
     company.services.map(
       ({ service }) => service,
     )
+  const pendingContactChangeRequests =
+    await prisma.companyContactChangeRequest.findMany({
+      where: {
+        companyId: company.id,
+        status: "PENDING_REVIEW",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        field: true,
+        currentValue: true,
+        requestedValue: true,
+        createdAt: true,
+      },
+    })
+
   const protectedDataNote =
     "Per modificare email o telefono è necessaria una verifica manuale del team FixPro."
   const savedMessage =
     params.saved === "1"
       ? "Profilo aggiornato."
+      : null
+  const contactRequestedMessage =
+    params.contactRequested === "1"
+      ? "Richiesta inviata. Il team FixPro la valutera prima di applicare la modifica."
       : null
   const errorMessage =
     params.error
@@ -414,6 +616,14 @@ export default async function ProfiloImpresaPage({
           </Card>
         ) : null}
 
+        {contactRequestedMessage ? (
+          <Card className="p-5">
+            <p className="text-sm font-semibold text-text-primary">
+              {contactRequestedMessage}
+            </p>
+          </Card>
+        ) : null}
+
         {errorMessage ? (
           <Card className="border-border-focus bg-surface-secondary p-5">
             <p className="text-sm font-semibold text-text-primary">
@@ -427,10 +637,10 @@ export default async function ProfiloImpresaPage({
             <h2 className="text-xl font-semibold tracking-tight text-text-primary">
               Dati aziendali
             </h2>
-
             <p className="mt-2 text-sm leading-6 text-text-secondary">
-              Questi dati identificano il profilo e non sono modificabili
-              direttamente da questa pagina.
+              Nome, partita IVA ed email account restano protetti.
+              Telefono ed email pubblica aziendale possono essere
+              modificati inviando una richiesta al team FixPro.
             </p>
           </div>
 
@@ -446,16 +656,80 @@ export default async function ProfiloImpresaPage({
             <ReadOnlyRow
               label="Email account"
               value={user.email}
-              note={protectedDataNote}
-            />
-            <ReadOnlyRow
-              label="Telefono aziendale"
-              value={company.phone}
-              note={protectedDataNote}
+              note="Email usata per accesso e autenticazione. Non viene modificata da questo flusso."
             />
           </dl>
-        </Card>
 
+          <form
+            action={requestCompanyContactChangeAction}
+            className="mt-6 grid gap-5 border-t border-border-primary pt-6"
+          >
+            <div className="grid gap-5 md:grid-cols-2">
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-text-secondary">
+                  Telefono aziendale
+                </span>
+                <Input
+                  name="phone"
+                  defaultValue={company.phone}
+                  placeholder="Telefono aziendale"
+                />
+                <span className="text-xs leading-5 text-text-muted">
+                  La modifica viene applicata solo dopo approvazione admin.
+                </span>
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-text-secondary">
+                  Email pubblica aziendale
+                </span>
+                <Input
+                  type="email"
+                  name="publicContactEmail"
+                  defaultValue={
+                    company.publicContactEmail ?? ""
+                  }
+                  placeholder="info@azienda.it"
+                />
+                <span className="text-xs leading-5 text-text-muted">
+                  Email aziendale di contatto, separata dall email account.
+                </span>
+              </label>
+            </div>
+
+            {pendingContactChangeRequests.length > 0 ? (
+              <div className="rounded-md border border-border-primary bg-surface-secondary p-4">
+                <p className="text-sm font-semibold text-text-primary">
+                  Richieste in revisione
+                </p>
+                <ul className="mt-3 grid gap-2">
+                  {pendingContactChangeRequests.map((request) => (
+                    <li
+                      key={request.id}
+                      className="text-sm leading-6 text-text-secondary"
+                    >
+                      <span className="font-medium text-text-primary">
+                        {formatContactChangeField(request.field)}
+                      </span>
+                      {": "}
+                      {formatValue(request.currentValue)}
+                      {" -> "}
+                      {formatValue(request.requestedValue)}
+                      {" · "}
+                      inviata il {formatDate(request.createdAt)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            <div className="flex justify-end">
+              <Button type="submit">
+                Invia richiesta di modifica
+              </Button>
+            </div>
+          </form>
+        </Card>
         <Card className="p-6">
           <div className="border-b border-border-primary pb-5">
             <h2 className="text-xl font-semibold tracking-tight text-text-primary">
