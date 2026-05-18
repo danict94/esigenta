@@ -25,6 +25,11 @@ const navItems: AdminNavItem[] = [
     href: "/crediti/rimborsi/richieste",
     enabled: true,
   },
+  {
+    label: "Modifiche contatto",
+    href: "/imprese/modifiche-contatto",
+    enabled: true,
+  },
   { label: "Imprese", href: "/companies", enabled: false },
   { label: "Assistenza", href: "/support", enabled: false },
   { label: "Qualità", href: "/quality", enabled: false },
