@@ -12,110 +12,20 @@ import { listAvailableRequestsForCompany } from "@fixpro/db"
 import { requireDefaultCompanyMembership } from "../../../../auth/server"
 
 import { RequestListCard } from "../_components/request-list-card"
+import {
+  formatFreshness,
+  formatInterventionLabel,
+  formatLocationLabel,
+  getDescription,
+  getStructuredData,
+  getSurfaceArea,
+} from "../_components/request-card-format"
+
+import {
+  toggleSavedRequestAction,
+} from "./actions"
 
 export const dynamic = "force-dynamic"
-
-function formatFreshness(date: Date) {
-  const now = Date.now()
-  const diffMs = Math.max(0, now - date.getTime())
-  const hours = Math.floor(diffMs / (1000 * 60 * 60))
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-
-  if (hours < 1) {
-    return "Ora"
-  }
-
-  if (hours < 24) {
-    return `${hours} h fa`
-  }
-
-  if (days === 1) {
-    return "1 gg fa"
-  }
-
-  if (days < 30) {
-    return `${days} gg fa`
-  }
-
-  return new Intl.DateTimeFormat("it-IT", {
-    dateStyle: "medium",
-  }).format(date)
-}
-
-function formatInterventionLabel(slug?: string | null) {
-  if (!slug) {
-    return "Richiesta"
-  }
-
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase())
-}
-
-function getStructuredData(value: unknown) {
-  return typeof value === "object" && value !== null
-    ? (value as Record<string, unknown>)
-    : null
-}
-
-function getDescription(structuredData: Record<string, unknown> | null) {
-  if (!structuredData) {
-    return null
-  }
-
-  if (typeof structuredData.description === "string") {
-    return structuredData.description
-  }
-
-  if (typeof structuredData.message === "string") {
-    return structuredData.message
-  }
-
-  if (typeof structuredData.details === "string") {
-    return structuredData.details
-  }
-
-  return null
-}
-
-function getSurfaceArea(structuredData: Record<string, unknown> | null) {
-  if (!structuredData) {
-    return null
-  }
-
-  const value = structuredData.surfaceArea ?? structuredData["surface-area"]
-
-  return typeof value === "string" || typeof value === "number" ? value : null
-}
-
-function extractProvinceFromAddress(address?: string | null) {
-  if (!address) {
-    return null
-  }
-
-  const match = address.toUpperCase().match(/\b([A-Z]{2})\b\s*$/)
-
-  return match?.[1] ?? null
-}
-
-function formatLocationLabel({
-  city,
-  postalCode,
-  address,
-}: {
-  city?: string | null
-  postalCode?: string | null
-  address?: string | null
-}) {
-  const province = extractProvinceFromAddress(address)
-  const cityWithProvince = [city, province].filter(Boolean).join(" ")
-
-  if (cityWithProvince && postalCode) {
-    return `${cityWithProvince} - ${postalCode}`
-  }
-
-  return cityWithProvince || postalCode || "Località non specificata"
-}
 
 function getMatchLabel(matchLevel: "selected_service" | "category") {
   return matchLevel === "selected_service"
@@ -279,6 +189,8 @@ export default async function RichiestePage() {
                       creditCost={request.creditCost}
                       maxUnlocks={request.maxUnlocks}
                       unlockCount={request.unlockCount}
+                      isSaved={request.isSaved}
+                      savedAction={toggleSavedRequestAction}
                     />
                   )
                 })}

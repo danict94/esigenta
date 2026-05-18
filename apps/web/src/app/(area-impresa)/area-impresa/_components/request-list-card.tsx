@@ -1,6 +1,13 @@
 import Link from "next/link";
 
 import {
+  Badge,
+  Button,
+  Card,
+  type BadgeProps,
+} from "@fixpro/ui";
+
+import {
   formatCreditCost,
   formatUnlockAvailability,
   getCommercialStatusLabel,
@@ -18,6 +25,12 @@ export type RequestListCardProps = {
   creditCost: number | null;
   maxUnlocks: number | null;
   unlockCount: number;
+  isSaved?: boolean;
+  savedAction?: (formData: FormData) => Promise<void>;
+  badges?: Array<{
+    label: string;
+    variant?: BadgeProps["variant"];
+  }>;
 };
 
 function formatSurfaceArea(value?: string | number | null) {
@@ -120,6 +133,9 @@ export function RequestListCard({
   creditCost,
   maxUnlocks,
   unlockCount,
+  isSaved = false,
+  savedAction,
+  badges = [],
 }: RequestListCardProps) {
   const title = buildTitle({
     intervention,
@@ -133,19 +149,48 @@ export function RequestListCard({
   });
 
   return (
-    <Link href={`/area-impresa/richieste/${id}`} className="group block">
-      <article className="relative overflow-hidden rounded-md border border-border-secondary bg-surface-primary transition-colors hover:border-border-focus">
-        <span
-          className="absolute inset-y-0 left-0 w-1 bg-brand-primary"
-          aria-hidden="true"
-        />
+    <Card className="relative overflow-hidden bg-surface-primary transition-colors hover:border-border-focus">
+      <span
+        className="absolute inset-y-0 left-0 w-1 bg-brand-primary"
+        aria-hidden="true"
+      />
 
-        <div className="px-5 py-5 pl-6 md:px-6 md:pl-7">
-          {matchLabel ? (
-            <p className="mb-3 inline-flex rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-xs font-medium text-text-primary">
-              {matchLabel}
-            </p>
+      <div className="px-5 py-5 pl-6 md:px-6 md:pl-7">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {matchLabel ? (
+              <Badge variant="warning" size="sm">
+                {matchLabel}
+              </Badge>
+            ) : null}
+
+            {badges.map((badge) => (
+              <Badge
+                key={badge.label}
+                variant={badge.variant ?? "neutral"}
+                size="sm"
+              >
+                {badge.label}
+              </Badge>
+            ))}
+          </div>
+
+          {savedAction ? (
+            <form action={savedAction}>
+              <Button
+                type="submit"
+                name="requestId"
+                value={id}
+                variant={isSaved ? "secondary" : "ghost"}
+                size="sm"
+              >
+                {isSaved ? "Salvata" : "Salva"}
+              </Button>
+            </form>
           ) : null}
+        </div>
+
+        <Link href={`/area-impresa/richieste/${id}`} className="group block">
 
           <h2 className="line-clamp-1 text-xl font-semibold tracking-tight text-brand-primary transition-colors group-hover:text-brand-primary-hover md:text-2xl">
             {title}
@@ -169,20 +214,20 @@ export function RequestListCard({
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-medium">
-            <span className="rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-text-primary">
+            <Badge variant="warning" size="sm">
               {formatCreditCost(creditCost)}
-            </span>
+            </Badge>
 
-            <span className="rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-text-primary">
+            <Badge variant="warning" size="sm">
               {formatUnlockAvailability(commercialState.availableUnlockSlots)}
-            </span>
+            </Badge>
 
-            <span className="rounded-full border border-border-primary bg-surface-primary px-3 py-1 text-text-secondary">
+            <Badge variant="neutral" size="sm">
               {getCommercialStatusLabel(commercialState)}
-            </span>
+            </Badge>
           </div>
-        </div>
-      </article>
-    </Link>
+        </Link>
+      </div>
+    </Card>
   );
 }

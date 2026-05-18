@@ -50,7 +50,12 @@ const accountNavigation: NavigationItem[] = [
   {
     label: "Richieste salvate",
     href: "/area-impresa/richieste-salvate",
-    enabled: false,
+    enabled: true,
+  },
+  {
+    label: "Richieste acquistate",
+    href: "/area-impresa/richieste-acquistate",
+    enabled: true,
   },
   {
     label: "Configura servizi",

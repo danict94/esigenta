@@ -296,6 +296,7 @@ model Company {
   creditOrders         CreditOrder[]
   creditTransactions   CompanyCreditTransaction[]
   requestUnlocks       RequestUnlock[]
+  savedRequests        CompanySavedRequest[]
   creditRefundRequests CreditRefundRequest[]
 
   @@index([city])
@@ -625,6 +626,7 @@ model Request {
   requiredServices     RequestRequiredService[]
   accessTokens         CustomerAccessToken[]
   unlocks              RequestUnlock[]
+  savedByCompanies     CompanySavedRequest[]
   creditTransactions   CompanyCreditTransaction[]
   creditRefundRequests CreditRefundRequest[]
 
@@ -844,6 +846,19 @@ model RequestUnlock {
   @@index([requestId, createdAt])
   @@index([companyId, createdAt])
   @@index([refundedAt])
+}
+
+model CompanySavedRequest {
+  companyId String
+  requestId String
+  createdAt DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@id([companyId, requestId])
+  @@index([requestId])
+  @@index([companyId, createdAt])
 }
 
 model CreditRefundRequest {

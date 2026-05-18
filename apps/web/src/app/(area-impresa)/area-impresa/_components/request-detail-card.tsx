@@ -1,6 +1,7 @@
 ﻿import type { ReactNode } from "react";
 
 import {
+  Badge,
   Button,
   Card,
   Checkbox,
@@ -48,6 +49,8 @@ export type RequestDetailCardProps = {
   customerContact?: CustomerContactDetail | null;
 
   requestId: string;
+  isSaved: boolean;
+  savedAction: (formData: FormData) => Promise<void>;
   creditCost: number | null;
   maxUnlocks: number | null;
   unlockCount: number;
@@ -433,6 +436,8 @@ export function RequestDetailCard({
   formDetails,
   customerContact,
   requestId,
+  isSaved,
+  savedAction,
   creditCost,
   maxUnlocks,
   unlockCount,
@@ -563,12 +568,12 @@ export function RequestDetailCard({
             Sblocco richiesta
           </h2>
 
-          <div className="mt-4 inline-flex rounded-full border border-border-primary bg-surface-secondary px-3 py-1 text-xs font-medium text-text-primary">
+          <Badge variant="warning" size="sm" className="mt-4">
             {getUnlockStatusLabel({
               ...commercialState,
               hasUnlocked,
             })}
-          </div>
+          </Badge>
 
           <p className="mt-3 text-sm leading-6 text-text-secondary">
             {getUnlockStatusMessage({
@@ -576,6 +581,20 @@ export function RequestDetailCard({
               hasUnlocked,
             })}
           </p>
+
+          <form action={savedAction} className="mt-5">
+            <Button
+              type="submit"
+              name="requestId"
+              value={requestId}
+              variant="secondary"
+              className="w-full"
+            >
+              {isSaved
+                ? "Rimuovi dai preferiti"
+                : "Salva nei preferiti"}
+            </Button>
+          </form>
 
           <dl className="mt-5 grid gap-3 border-t border-border-primary pt-5">
             <div className="flex items-center justify-between gap-4">

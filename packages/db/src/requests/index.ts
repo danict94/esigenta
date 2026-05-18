@@ -77,6 +77,12 @@ export {
   listAvailableRequestsForCompany,
 } from "./list-available-requests-for-company"
 
+export {
+  listCompanySavedRequests,
+  listCompanyUnlockedRequests,
+  toggleCompanySavedRequest,
+} from "./company-saved-requests"
+
 export type {
   PendingModerationRequest,
 } from "./list-pending-requests"
@@ -87,6 +93,12 @@ export type {
   GetAvailableRequestForCompanyResult,
   ListAvailableRequestsForCompanyResult,
 } from "./list-available-requests-for-company"
+
+export type {
+  CompanySavedRequestListItem,
+  CompanyUnlockedRequestListItem,
+  ToggleCompanySavedRequestResult,
+} from "./company-saved-requests"
 
 export {
   getRequestById,

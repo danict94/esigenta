@@ -18,6 +18,9 @@ import {
   RequestDetailCard,
   type RequestFormDetail,
 } from "../../_components/request-detail-card";
+import {
+  toggleSavedRequestAction,
+} from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -700,6 +703,8 @@ export default async function RequestDetailPage({
             }
           : {})}
         requestId={visibility.request.id}
+        isSaved={visibility.request.isSaved}
+        savedAction={toggleSavedRequestAction}
         creditCost={request.creditCost}
         maxUnlocks={request.maxUnlocks}
         unlockCount={request.unlockCount}
