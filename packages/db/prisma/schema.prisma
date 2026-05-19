@@ -300,6 +300,8 @@ model Company {
   creditTransactions   CompanyCreditTransaction[]
   requestUnlocks       RequestUnlock[]
   savedRequests        CompanySavedRequest[]
+  requestDispatches    RequestDispatch[]
+  notifications        CompanyNotification[]
   creditRefundRequests CreditRefundRequest[]
   contactChangeRequests CompanyContactChangeRequest[]
 
@@ -349,6 +351,28 @@ enum RequestStatus {
   REJECTED
   PUBLISHED
   CLOSED
+}
+
+enum RequestDispatchStatus {
+  CREATED
+  CANCELLED
+}
+
+enum CompanyNotificationType {
+  NEW_REQUEST_AVAILABLE
+}
+
+enum NotificationChannel {
+  EMAIL
+  WHATSAPP
+}
+
+enum NotificationDeliveryStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED
+  CANCELLED
 }
 
 model User {
@@ -646,6 +670,8 @@ model Request {
   accessTokens         CustomerAccessToken[]
   unlocks              RequestUnlock[]
   savedByCompanies     CompanySavedRequest[]
+  dispatches           RequestDispatch[]
+  companyNotifications CompanyNotification[]
   creditTransactions   CompanyCreditTransaction[]
   creditRefundRequests CreditRefundRequest[]
 
@@ -684,6 +710,93 @@ model RequestRequiredService {
   @@id([requestId, serviceId])
   @@index([requestId])
   @@index([serviceId])
+}
+
+///////////////////////////////////////////////////////////
+// REQUEST DISPATCH / NOTIFICATION LAYER
+///////////////////////////////////////////////////////////
+
+model RequestDispatch {
+  id String @id @default(cuid())
+
+  requestId String
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  status RequestDispatchStatus @default(CREATED)
+
+  matchedServiceIds Json?
+  distanceKm        Float?
+  matchReason       Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companyNotifications CompanyNotification[]
+  notificationDeliveries NotificationDelivery[]
+
+  @@unique([requestId, companyId])
+  @@index([requestId, createdAt])
+  @@index([companyId, createdAt])
+  @@index([status, createdAt])
+}
+
+model CompanyNotification {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  requestId String?
+  request   Request? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  requestDispatchId String?
+  requestDispatch   RequestDispatch? @relation(fields: [requestDispatchId], references: [id], onDelete: Cascade)
+
+  type CompanyNotificationType
+
+  title String
+  body  String
+
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, readAt, createdAt])
+  @@index([requestId])
+  @@index([requestDispatchId])
+}
+
+model NotificationDelivery {
+  id String @id @default(cuid())
+
+  requestDispatchId String
+  requestDispatch   RequestDispatch @relation(fields: [requestDispatchId], references: [id], onDelete: Cascade)
+
+  channel NotificationChannel
+  status  NotificationDeliveryStatus @default(PENDING)
+
+  recipient String?
+
+  provider          String?
+  providerMessageId String?
+
+  idempotencyKey String @unique
+
+  attemptCount Int @default(0)
+  lastError    String?
+
+  nextAttemptAt DateTime?
+  sentAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([requestDispatchId])
+  @@index([status, nextAttemptAt])
+  @@index([channel, status])
 }
 
 ///////////////////////////////////////////////////////////
