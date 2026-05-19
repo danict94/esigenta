@@ -206,6 +206,7 @@ export async function createRequestDispatchesForRequest(
       notificationsToCreate.length > 0
         ? await tx.companyNotification.createMany({
             data: notificationsToCreate,
+            skipDuplicates: true,
           })
         : {
             count: 0,
