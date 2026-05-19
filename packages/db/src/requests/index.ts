@@ -138,3 +138,17 @@ export type {
   UnlockRequestForCompanyInput,
   UnlockRequestForCompanyResult,
 } from "./unlock-request-for-company"
+
+export {
+  createRequestDispatchesForRequest,
+  resolveRequestDispatchCandidates,
+} from "./dispatch"
+
+export type {
+  CreateRequestDispatchesForRequestResult,
+  RequestDispatchCandidate,
+  RequestDispatchFailure,
+  RequestDispatchFailureCode,
+  RequestDispatchServiceSource,
+  ResolveRequestDispatchCandidatesResult,
+} from "./dispatch"
