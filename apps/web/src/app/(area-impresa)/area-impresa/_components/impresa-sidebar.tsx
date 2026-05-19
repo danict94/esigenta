@@ -35,6 +35,11 @@ const mainNavigation: NavigationItem[] = [
     enabled: true,
   },
   {
+    label: "Notifiche",
+    href: "/area-impresa/notifiche",
+    enabled: true,
+  },
+  {
     label: "Aggiornamenti",
     href: "/area-impresa/aggiornamenti",
     enabled: false,
@@ -98,6 +103,16 @@ function NavBadge({
       {value}
     </Badge>
   )
+}
+
+function formatUnreadNotificationCount(
+  count: number,
+) {
+  if (count <= 0) {
+    return null
+  }
+
+  return count > 99 ? "99+" : String(count)
 }
 
 function TopNavLink({
@@ -185,11 +200,28 @@ function AccountMenuItem({
 
 export function ImpresaSidebar({
   accountLabel,
+  unreadNotificationCount,
 }: {
   accountLabel: string
+  unreadNotificationCount: number
 }) {
   const router =
     useRouter()
+  const notificationBadge =
+    formatUnreadNotificationCount(
+      unreadNotificationCount,
+    )
+  const mainNavigationItems =
+    mainNavigation.map((item) =>
+      item.href ===
+        "/area-impresa/notifiche" &&
+      notificationBadge
+        ? {
+            ...item,
+            badge: notificationBadge,
+          }
+        : item,
+    )
 
   const [
     mobileOpen,
@@ -226,7 +258,7 @@ export function ImpresaSidebar({
             className="flex items-center gap-3"
             aria-label="Navigazione area impresa"
           >
-            {mainNavigation.map((item) => (
+            {mainNavigationItems.map((item) => (
               <TopNavLink
                 key={item.href}
                 item={item}
@@ -330,7 +362,7 @@ export function ImpresaSidebar({
             className="grid gap-1"
             aria-label="Menu area impresa"
           >
-            {mainNavigation.map((item) => (
+            {mainNavigationItems.map((item) => (
               <TopNavLink
                 key={item.href}
                 item={item}

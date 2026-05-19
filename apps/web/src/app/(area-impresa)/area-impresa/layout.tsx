@@ -11,6 +11,10 @@ import {
 } from "../../../auth/server"
 
 import {
+  countUnreadCompanyNotifications,
+} from "@fixpro/db"
+
+import {
   ImpresaSidebar,
 } from "./_components/impresa-sidebar"
 
@@ -64,9 +68,17 @@ export default async function AreaImpresaLayout({
 }: {
   children: ReactNode
 }) {
-  await requireAreaImpresaAccess()
-  const user =
-    await requireUser()
+  const membership =
+    await requireAreaImpresaAccess()
+  const [
+    user,
+    unreadNotificationCount,
+  ] = await Promise.all([
+    requireUser(),
+    countUnreadCompanyNotifications(
+      membership.companyId,
+    ),
+  ])
   const accountLabel =
     user.name || user.email
 
@@ -74,6 +86,9 @@ export default async function AreaImpresaLayout({
     <div className="min-h-screen bg-surface-primary text-text-primary">
       <ImpresaSidebar
         accountLabel={accountLabel}
+        unreadNotificationCount={
+          unreadNotificationCount
+        }
       />
       {children}
     </div>

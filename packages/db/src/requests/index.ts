@@ -169,3 +169,15 @@ export type {
   NotificationDeliveryTransitionResult,
   PendingEmailNotificationDelivery,
 } from "./notification-deliveries"
+
+export {
+  countUnreadCompanyNotifications,
+  listCompanyNotifications,
+  markCompanyNotificationRead,
+} from "./company-notifications"
+
+export type {
+  CompanyNotificationListItem,
+  MarkCompanyNotificationReadInput,
+  MarkCompanyNotificationReadResult,
+} from "./company-notifications"
