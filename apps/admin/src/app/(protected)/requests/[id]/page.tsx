@@ -18,6 +18,9 @@ import {
 } from "@fixpro/ui";
 
 import { requireAdmin } from "../../../../auth/server";
+import {
+  processRequestEmailDeliveriesForRequest,
+} from "../../../../lib/notifications/process-request-email-deliveries";
 
 export const dynamic = "force-dynamic";
 
@@ -329,12 +332,18 @@ async function reviewRequestAction(formData: FormData) {
     throw new Error("Invalid moderation action.");
   }
 
-  await reviewRequest({
+  const reviewResult = await reviewRequest({
     requestId,
     status,
     moderationNotes:
       moderationNotes || null,
   });
+
+  if (reviewResult.status === "PUBLISHED") {
+    await processRequestEmailDeliveriesForRequest(
+      requestId,
+    );
+  }
 
   revalidatePath("/requests");
   revalidatePath(`/requests/${requestId}`);

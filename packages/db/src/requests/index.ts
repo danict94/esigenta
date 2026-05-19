@@ -155,3 +155,17 @@ export type {
   RequestDispatchServiceSource,
   ResolveRequestDispatchCandidatesResult,
 } from "./dispatch"
+
+export {
+  listPendingEmailNotificationDeliveriesForRequest,
+  markNotificationDeliveryFailed,
+  markNotificationDeliverySending,
+  markNotificationDeliverySent,
+} from "./notification-deliveries"
+
+export type {
+  MarkNotificationDeliveryFailedInput,
+  MarkNotificationDeliverySentInput,
+  NotificationDeliveryTransitionResult,
+  PendingEmailNotificationDelivery,
+} from "./notification-deliveries"
