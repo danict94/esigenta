@@ -110,7 +110,7 @@ function formatInterventionLabel(slug?: string | null) {
 }
 
 function getStatusBadgeVariant(status: string) {
-  if (status === "APPROVED") {
+  if (status === "APPROVED" || status === "PUBLISHED") {
     return "success";
   }
 
@@ -124,6 +124,10 @@ function getStatusBadgeVariant(status: string) {
 function getStatusLabel(status: string) {
   if (status === "APPROVED") {
     return "Approvata";
+  }
+
+  if (status === "PUBLISHED") {
+    return "Pubblicata";
   }
 
   if (status === "REJECTED") {
@@ -314,7 +318,14 @@ async function reviewRequestAction(formData: FormData) {
   const status = String(formData.get("status") ?? "");
   const moderationNotes = String(formData.get("moderationNotes") ?? "").trim();
 
-  if (!requestId || (status !== "APPROVED" && status !== "REJECTED")) {
+  if (
+    !requestId ||
+    (
+      status !== "APPROVED" &&
+      status !== "PUBLISHED" &&
+      status !== "REJECTED"
+    )
+  ) {
     throw new Error("Invalid moderation action.");
   }
 
@@ -744,7 +755,7 @@ export default async function RequestDetailPage({
               <div className="mt-5 space-y-4">
                 <form action={reviewRequestAction} className="space-y-3">
                   <input type="hidden" name="requestId" value={request.id} />
-                  <input type="hidden" name="status" value="APPROVED" />
+                  <input type="hidden" name="status" value="PUBLISHED" />
 
                   <div className="space-y-2">
                     <label

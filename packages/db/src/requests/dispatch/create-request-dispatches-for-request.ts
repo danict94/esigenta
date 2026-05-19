@@ -84,190 +84,210 @@ export async function createRequestDispatchesForRequest(
     }
   }
 
-  return prisma.$transaction(async (tx) => {
-    await lockRequestDispatchCreation({
+  return prisma.$transaction((tx) =>
+    createRequestDispatchesForRequestWithClient(
       tx,
-      requestId: normalizedRequestId,
-    })
+      normalizedRequestId,
+    ),
+  )
+}
 
-    const resolved =
-      await resolveRequestDispatchCandidatesWithClient(
-        tx,
-        normalizedRequestId,
-      )
+export async function createRequestDispatchesForRequestWithClient(
+  tx: Prisma.TransactionClient,
+  requestId: string,
+): Promise<CreateRequestDispatchesForRequestResult> {
+  const normalizedRequestId =
+    normalizeRequiredId(requestId)
 
-    if (!resolved.ok) {
-      return resolved
+  if (!normalizedRequestId) {
+    return {
+      ok: false,
+      code: "request_not_found",
+      message: "Request not found.",
     }
+  }
 
-    const candidates =
-      resolved.candidates
-    const candidateCompanyIds =
-      candidates.map(
-        (candidate) => candidate.companyId,
-      )
-    const candidateByCompanyId =
-      toCandidateMap(candidates)
+  await lockRequestDispatchCreation({
+    tx,
+    requestId: normalizedRequestId,
+  })
 
-    const dispatchCreateResult =
-      candidates.length > 0
-        ? await tx.requestDispatch.createMany({
-            data: candidates.map(
-              (candidate) => ({
-                requestId: resolved.requestId,
-                companyId: candidate.companyId,
-                matchedServiceIds:
-                  candidate.matchedServiceIds,
-                distanceKm:
-                  candidate.distanceKm,
-                matchReason:
-                  candidate.matchReason,
-              }),
-            ),
-            skipDuplicates: true,
-          })
-        : {
-            count: 0,
-          }
+  const resolved =
+    await resolveRequestDispatchCandidatesWithClient(
+      tx,
+      normalizedRequestId,
+    )
 
-    const dispatches =
-      candidateCompanyIds.length > 0
-        ? await tx.requestDispatch.findMany({
-            where: {
+  if (!resolved.ok) {
+    return resolved
+  }
+
+  const candidates =
+    resolved.candidates
+  const candidateCompanyIds =
+    candidates.map(
+      (candidate) => candidate.companyId,
+    )
+  const candidateByCompanyId =
+    toCandidateMap(candidates)
+
+  const dispatchCreateResult =
+    candidates.length > 0
+      ? await tx.requestDispatch.createMany({
+          data: candidates.map(
+            (candidate) => ({
               requestId: resolved.requestId,
-              companyId: {
-                in: candidateCompanyIds,
-              },
-            },
-            select: {
-              id: true,
-              companyId: true,
-            },
-          })
-        : []
-
-    const dispatchIds =
-      dispatches.map(
-        (dispatch) => dispatch.id,
-      )
-
-    const existingNotifications =
-      dispatchIds.length > 0
-        ? await tx.companyNotification.findMany({
-            where: {
-              requestDispatchId: {
-                in: dispatchIds,
-              },
-              type: "NEW_REQUEST_AVAILABLE",
-            },
-            select: {
-              requestDispatchId: true,
-            },
-          })
-        : []
-
-    const existingNotificationDispatchIds =
-      new Set(
-        existingNotifications.flatMap(
-          (notification) =>
-            notification.requestDispatchId
-              ? [
-                  notification.requestDispatchId,
-                ]
-              : [],
-        ),
-      )
-
-    const notificationTitle =
-      "Nuova richiesta disponibile"
-    const notificationBody =
-      buildNotificationBody({
-        city: resolved.city,
-      })
-
-    const notificationsToCreate =
-      dispatches
-        .filter(
-          (dispatch) =>
-            !existingNotificationDispatchIds.has(
-              dispatch.id,
-            ),
-        )
-        .map((dispatch) => ({
-          companyId: dispatch.companyId,
-          requestId: resolved.requestId,
-          requestDispatchId: dispatch.id,
-          type: "NEW_REQUEST_AVAILABLE" as const,
-          title: notificationTitle,
-          body: notificationBody,
-        }))
-
-    const notificationCreateResult =
-      notificationsToCreate.length > 0
-        ? await tx.companyNotification.createMany({
-            data: notificationsToCreate,
-            skipDuplicates: true,
-          })
-        : {
-            count: 0,
-          }
-
-    const deliveryRows =
-      dispatches.flatMap((dispatch) => {
-        const candidate =
-          candidateByCompanyId.get(
-            dispatch.companyId,
-          )
-
-        if (!candidate?.recipientEmail) {
-          return []
+              companyId: candidate.companyId,
+              matchedServiceIds:
+                candidate.matchedServiceIds,
+              distanceKm:
+                candidate.distanceKm,
+              matchReason:
+                candidate.matchReason,
+            }),
+          ),
+          skipDuplicates: true,
+        })
+      : {
+          count: 0,
         }
 
-        return [
-          {
-            requestDispatchId: dispatch.id,
-            channel: "EMAIL" as const,
-            recipient:
-              candidate.recipientEmail,
-            idempotencyKey:
-              getIdempotencyKey({
-                requestId:
-                  resolved.requestId,
-                companyId:
-                  dispatch.companyId,
-              }),
+  const dispatches =
+    candidateCompanyIds.length > 0
+      ? await tx.requestDispatch.findMany({
+          where: {
+            requestId: resolved.requestId,
+            companyId: {
+              in: candidateCompanyIds,
+            },
           },
-        ]
-      })
+          select: {
+            id: true,
+            companyId: true,
+          },
+        })
+      : []
 
-    const deliveryCreateResult =
-      deliveryRows.length > 0
-        ? await tx.notificationDelivery.createMany({
-            data: deliveryRows,
-            skipDuplicates: true,
-          })
-        : {
-            count: 0,
-          }
+  const dispatchIds =
+    dispatches.map(
+      (dispatch) => dispatch.id,
+    )
 
-    return {
-      ok: true,
-      requestId: resolved.requestId,
-      resolvedServiceCount:
-        resolved.resolvedServiceCount,
-      eligibleCompanyCount:
-        resolved.eligibleCompanyCount,
-      dispatchCreatedCount:
-        dispatchCreateResult.count,
-      appNotificationCreatedCount:
-        notificationCreateResult.count,
-      emailDeliveryCreatedCount:
-        deliveryCreateResult.count,
-      skippedNoRecipientCount:
-        candidates.filter(
-          (candidate) =>
-            !candidate.recipientEmail,
-        ).length,
-    }
-  })
+  const existingNotifications =
+    dispatchIds.length > 0
+      ? await tx.companyNotification.findMany({
+          where: {
+            requestDispatchId: {
+              in: dispatchIds,
+            },
+            type: "NEW_REQUEST_AVAILABLE",
+          },
+          select: {
+            requestDispatchId: true,
+          },
+        })
+      : []
+
+  const existingNotificationDispatchIds =
+    new Set(
+      existingNotifications.flatMap(
+        (notification) =>
+          notification.requestDispatchId
+            ? [
+                notification.requestDispatchId,
+              ]
+            : [],
+      ),
+    )
+
+  const notificationTitle =
+    "Nuova richiesta disponibile"
+  const notificationBody =
+    buildNotificationBody({
+      city: resolved.city,
+    })
+
+  const notificationsToCreate =
+    dispatches
+      .filter(
+        (dispatch) =>
+          !existingNotificationDispatchIds.has(
+            dispatch.id,
+          ),
+      )
+      .map((dispatch) => ({
+        companyId: dispatch.companyId,
+        requestId: resolved.requestId,
+        requestDispatchId: dispatch.id,
+        type: "NEW_REQUEST_AVAILABLE" as const,
+        title: notificationTitle,
+        body: notificationBody,
+      }))
+
+  const notificationCreateResult =
+    notificationsToCreate.length > 0
+      ? await tx.companyNotification.createMany({
+          data: notificationsToCreate,
+          skipDuplicates: true,
+        })
+      : {
+          count: 0,
+        }
+
+  const deliveryRows =
+    dispatches.flatMap((dispatch) => {
+      const candidate =
+        candidateByCompanyId.get(
+          dispatch.companyId,
+        )
+
+      if (!candidate?.recipientEmail) {
+        return []
+      }
+
+      return [
+        {
+          requestDispatchId: dispatch.id,
+          channel: "EMAIL" as const,
+          recipient:
+            candidate.recipientEmail,
+          idempotencyKey:
+            getIdempotencyKey({
+              requestId: resolved.requestId,
+              companyId:
+                dispatch.companyId,
+            }),
+        },
+      ]
+    })
+
+  const deliveryCreateResult =
+    deliveryRows.length > 0
+      ? await tx.notificationDelivery.createMany({
+          data: deliveryRows,
+          skipDuplicates: true,
+        })
+      : {
+          count: 0,
+        }
+
+  return {
+    ok: true,
+    requestId: resolved.requestId,
+    resolvedServiceCount:
+      resolved.resolvedServiceCount,
+    eligibleCompanyCount:
+      resolved.eligibleCompanyCount,
+    dispatchCreatedCount:
+      dispatchCreateResult.count,
+    appNotificationCreatedCount:
+      notificationCreateResult.count,
+    emailDeliveryCreatedCount:
+      deliveryCreateResult.count,
+    skippedNoRecipientCount:
+      candidates.filter(
+        (candidate) =>
+          !candidate.recipientEmail,
+      ).length,
+  }
 }

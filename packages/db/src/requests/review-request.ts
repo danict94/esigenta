@@ -6,8 +6,18 @@ import {
   prisma,
 } from "../prisma/client"
 
+import {
+  createRequestDispatchesForRequestWithClient,
+} from "./dispatch/create-request-dispatches-for-request"
+
+import type {
+  CreateRequestDispatchesForRequestResult,
+  RequestDispatchFailureCode,
+} from "./dispatch"
+
 export type ReviewRequestDecision =
   | "APPROVED"
+  | "PUBLISHED"
   | "REJECTED"
 
 export type ReviewRequestInput = {
@@ -23,6 +33,32 @@ export type ReviewRequestResult = {
   moderationNotes: string | null
 }
 
+export type PublishReviewedRequestResult =
+  ReviewRequestResult & {
+    dispatch: Extract<
+      CreateRequestDispatchesForRequestResult,
+      {
+        ok: true
+      }
+    >
+  }
+
+export class RequestPublishDispatchError extends Error {
+  readonly code: RequestDispatchFailureCode
+
+  constructor({
+    code,
+    message,
+  }: {
+    code: RequestDispatchFailureCode
+    message: string
+  }) {
+    super(message)
+    this.name = "RequestPublishDispatchError"
+    this.code = code
+  }
+}
+
 function normalizeModerationNotes(
   value: string | null | undefined,
 ): string | null {
@@ -34,11 +70,87 @@ function normalizeModerationNotes(
     : null
 }
 
+function createDispatchFailureMessage(
+  code: RequestDispatchFailureCode,
+) {
+  if (code === "request_missing_coordinates") {
+    return "Impossibile pubblicare la richiesta: coordinate mancanti per il dispatch."
+  }
+
+  if (code === "request_services_not_resolved") {
+    return "Impossibile pubblicare la richiesta: servizi operativi non risolti per il dispatch."
+  }
+
+  return "Impossibile pubblicare la richiesta: richiesta non trovata."
+}
+
+export async function publishReviewedRequest({
+  requestId,
+  moderationNotes,
+}: {
+  requestId: string
+  moderationNotes?: string | null | undefined
+}): Promise<PublishReviewedRequestResult> {
+  return prisma.$transaction(async (tx) => {
+    const request =
+      await tx.request.update({
+        where: {
+          id: requestId,
+        },
+        data: {
+          status: "PUBLISHED",
+          reviewedAt: new Date(),
+          moderationNotes:
+            normalizeModerationNotes(
+              moderationNotes,
+            ),
+        },
+        select: {
+          id: true,
+          status: true,
+          reviewedAt: true,
+          moderationNotes: true,
+        },
+      })
+
+    const dispatch =
+      await createRequestDispatchesForRequestWithClient(
+        tx,
+        request.id,
+      )
+
+    if (!dispatch.ok) {
+      throw new RequestPublishDispatchError({
+        code: dispatch.code,
+        message:
+          createDispatchFailureMessage(
+            dispatch.code,
+          ),
+      })
+    }
+
+    return {
+      ...request,
+      dispatch,
+    }
+  })
+}
+
 export async function reviewRequest({
   requestId,
   status,
   moderationNotes,
 }: ReviewRequestInput): Promise<ReviewRequestResult> {
+  if (
+    status === "APPROVED" ||
+    status === "PUBLISHED"
+  ) {
+    return publishReviewedRequest({
+      requestId,
+      moderationNotes,
+    })
+  }
+
   return prisma.request.update({
     where: {
       id: requestId,

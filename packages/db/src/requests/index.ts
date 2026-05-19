@@ -121,10 +121,13 @@ export type {
 } from "./request-commercial-settings"
 
 export {
+  RequestPublishDispatchError,
+  publishReviewedRequest,
   reviewRequest,
 } from "./review-request"
 
 export type {
+  PublishReviewedRequestResult,
   ReviewRequestDecision,
   ReviewRequestInput,
   ReviewRequestResult,
