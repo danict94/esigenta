@@ -1,4 +1,4 @@
-﻿import Link from "next/link"
+import Link from "next/link"
 import {
   revalidatePath,
 } from "next/cache"
@@ -62,10 +62,8 @@ const errorMessages: Record<string, string> = {
     "Inserisci almeno un nuovo dato di contatto valido.",
   invalid_phone:
     "Inserisci un telefono aziendale valido.",
-  invalid_public_contact_email:
-    "Inserisci un'email pubblica aziendale valida.",
   requested_value_unchanged:
-    "Non hai modificato telefono o email pubblica aziendale.",
+    "Non hai modificato il telefono aziendale.",
   company_contact_change_request_already_pending:
     "Esiste gia una richiesta in revisione per questo dato.",
   company_membership_not_found:
@@ -137,21 +135,8 @@ function normalizeCoordinate(
     : undefined
 }
 
-function normalizePublicContactEmail(
-  value: FormDataEntryValue | null,
-) {
-  return normalizeText(value).toLowerCase()
-}
-
 function isValidPhone(value: string) {
   return value.length >= 5 && value.length <= 40
-}
-
-function isValidPublicContactEmail(value: string) {
-  return (
-    value.length <= 254 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-  )
 }
 
 async function updateCompanyProfileAction(
@@ -262,7 +247,6 @@ async function requestCompanyContactChangeAction(
       select: {
         id: true,
         phone: true,
-        publicContactEmail: true,
       },
     })
 
@@ -272,24 +256,12 @@ async function requestCompanyContactChangeAction(
 
   const requestedPhone =
     normalizeText(formData.get("phone"))
-  const requestedPublicContactEmail =
-    normalizePublicContactEmail(
-      formData.get("publicContactEmail"),
-    )
 
   const shouldRequestPhoneChange =
     requestedPhone.length > 0 &&
     requestedPhone !== company.phone
 
-  const shouldRequestPublicContactEmailChange =
-    requestedPublicContactEmail.length > 0 &&
-    requestedPublicContactEmail !==
-      (company.publicContactEmail ?? "").toLowerCase()
-
-  if (
-    !shouldRequestPhoneChange &&
-    !shouldRequestPublicContactEmailChange
-  ) {
+  if (!shouldRequestPhoneChange) {
     redirectWithError("requested_value_unchanged")
   }
 
@@ -300,26 +272,9 @@ async function requestCompanyContactChangeAction(
     redirectWithError("invalid_phone")
   }
 
-  if (
-    shouldRequestPublicContactEmailChange &&
-    !isValidPublicContactEmail(
-      requestedPublicContactEmail,
-    )
-  ) {
-    redirectWithError("invalid_public_contact_email")
-  }
-
-  const requestedFields: Array<
-    "PHONE" | "PUBLIC_CONTACT_EMAIL"
-  > = []
-
-  if (shouldRequestPhoneChange) {
-    requestedFields.push("PHONE")
-  }
-
-  if (shouldRequestPublicContactEmailChange) {
-    requestedFields.push("PUBLIC_CONTACT_EMAIL")
-  }
+  const requestedFields: Array<"PHONE"> = [
+    "PHONE",
+  ]
 
   const pendingFields =
     await prisma.companyContactChangeRequest.findMany({
@@ -341,33 +296,16 @@ async function requestCompanyContactChangeAction(
     )
   }
 
-  if (shouldRequestPhoneChange) {
-    const result =
-      await createCompanyContactChangeRequest({
-        companyId: company.id,
-        requestedByUserId: user.id,
-        field: "PHONE",
-        requestedValue: requestedPhone,
-      })
+  const result =
+    await createCompanyContactChangeRequest({
+      companyId: company.id,
+      requestedByUserId: user.id,
+      field: "PHONE",
+      requestedValue: requestedPhone,
+    })
 
-    if (!result.ok) {
-      redirectWithError(result.code)
-    }
-  }
-
-  if (shouldRequestPublicContactEmailChange) {
-    const result =
-      await createCompanyContactChangeRequest({
-        companyId: company.id,
-        requestedByUserId: user.id,
-        field: "PUBLIC_CONTACT_EMAIL",
-        requestedValue:
-          requestedPublicContactEmail,
-      })
-
-    if (!result.ok) {
-      redirectWithError(result.code)
-    }
+  if (!result.ok) {
+    redirectWithError(result.code)
   }
 
   revalidatePath("/area-impresa/profilo")
@@ -399,9 +337,6 @@ function formatContactChangeField(field: string) {
     return "Telefono aziendale"
   }
 
-  if (field === "PUBLIC_CONTACT_EMAIL") {
-    return "Email pubblica aziendale"
-  }
 
   return field
 }
@@ -459,7 +394,6 @@ export default async function ProfiloImpresaPage({
         name: true,
         vatNumber: true,
         phone: true,
-        publicContactEmail: true,
         website: true,
         address: true,
         street: true,
@@ -636,9 +570,9 @@ export default async function ProfiloImpresaPage({
               Dati aziendali
             </h2>
             <p className="mt-2 text-sm leading-6 text-text-secondary">
-              Nome, partita IVA ed email account restano protetti.
-              Telefono ed email pubblica aziendale possono essere
-              modificati inviando una richiesta al team FixPro.
+              Nome, partita IVA ed email impresa restano protetti.
+              Il telefono aziendale può essere modificato inviando
+              una richiesta al team FixPro.
             </p>
           </div>
 
@@ -652,9 +586,9 @@ export default async function ProfiloImpresaPage({
               value={company.vatNumber}
             />
             <ReadOnlyRow
-              label="Email account"
+              label="Email impresa"
               value={user.email}
-              note="Email usata per accesso e autenticazione. Non viene modificata da questo flusso."
+              note="Email ufficiale usata per accesso, notifiche e comunicazioni sulle richieste."
             />
           </dl>
 
@@ -677,22 +611,6 @@ export default async function ProfiloImpresaPage({
                 </span>
               </label>
 
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-text-secondary">
-                  Email pubblica aziendale
-                </span>
-                <Input
-                  type="email"
-                  name="publicContactEmail"
-                  defaultValue={
-                    company.publicContactEmail ?? ""
-                  }
-                  placeholder="info@azienda.it"
-                />
-                <span className="text-xs leading-5 text-text-muted">
-                  Email aziendale di contatto, separata dall email account.
-                </span>
-              </label>
             </div>
 
             {pendingContactChangeRequests.length > 0 ? (

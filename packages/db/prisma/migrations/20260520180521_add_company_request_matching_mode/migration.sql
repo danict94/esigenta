@@ -1,0 +1,14 @@
+DO $$
+BEGIN
+  CREATE TYPE "CompanyRequestMatchingMode" AS ENUM (
+    'CATEGORY_WITH_SERVICE_PRIORITY',
+    'SELECTED_SERVICES_ONLY'
+  );
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
+
+ALTER TABLE "Company"
+ADD COLUMN IF NOT EXISTS "requestMatchingMode" "CompanyRequestMatchingMode"
+NOT NULL
+DEFAULT 'CATEGORY_WITH_SERVICE_PRIORITY';

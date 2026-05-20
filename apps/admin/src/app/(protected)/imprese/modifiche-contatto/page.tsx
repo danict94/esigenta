@@ -92,7 +92,6 @@ async function rejectContactChangeRequestAction(
 
 const fieldLabels: Record<string, string> = {
   PHONE: "Telefono aziendale",
-  PUBLIC_CONTACT_EMAIL: "Email pubblica aziendale",
 }
 
 const statusLabels: Record<string, string> = {
@@ -166,9 +165,9 @@ export default async function AdminCompanyContactChangeRequestsPage() {
           Modifiche contatto
         </h1>
         <p className="mt-3 text-sm leading-6 text-text-secondary">
-          Approva o rifiuta le richieste di modifica dei dati di
-          contatto aziendali. L'email login dell'utente non viene
-          modificata da questo flusso.
+          Approva o rifiuta le richieste di modifica del telefono
+          aziendale. L'email impresa resta quella ufficiale
+          dell'account.
         </p>
       </div>
 
@@ -179,7 +178,7 @@ export default async function AdminCompanyContactChangeRequestsPage() {
               Nessuna modifica contatto in revisione
             </p>
             <p className="mt-2 text-sm leading-6 text-text-secondary">
-              Quando arriva una richiesta di modifica per telefono o email pubblica aziendale, la pratica viene mostrata qui.
+              Quando arriva una richiesta di modifica del telefono aziendale, la pratica viene mostrata qui.
             </p>
           </Card>
         ) : (
@@ -286,13 +285,6 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                       label="Telefono attuale"
                       value={formatValue(
                         changeRequest.company.phone,
-                      )}
-                    />
-                    <Field
-                      label="Email pubblica attuale"
-                      value={formatValue(
-                        changeRequest.company
-                          .publicContactEmail,
                       )}
                     />
                     <Field

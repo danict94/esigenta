@@ -63,10 +63,13 @@ async function lockRequestDispatchCreation({
 }) {
   await tx.$queryRaw<
     Array<{
-      locked: unknown
+      locked: boolean
     }>
   >`
-    SELECT pg_advisory_xact_lock(hashtext(${`request-dispatch:${requestId}`})) AS locked
+    SELECT TRUE AS locked
+    FROM (
+      SELECT pg_advisory_xact_lock(hashtext(${`request-dispatch:${requestId}`}))
+    ) AS request_dispatch_lock
   `
 }
 

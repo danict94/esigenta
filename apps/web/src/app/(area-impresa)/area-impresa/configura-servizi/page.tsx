@@ -59,6 +59,7 @@ export default async function ConfiguraServiziPage({
           id: true,
           name: true,
           onboardingCategorySlug: true,
+          requestMatchingMode: true,
           categories: {
             select: {
               categoryId: true,
@@ -240,6 +241,9 @@ export default async function ConfiguraServiziPage({
             }
             initialServiceIds={
               selectedServiceIds
+            }
+            initialRequestMatchingMode={
+              company.requestMatchingMode
             }
             action={
               saveCompanyServicesAction

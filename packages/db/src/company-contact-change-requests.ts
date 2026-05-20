@@ -52,7 +52,6 @@ export type AdminCompanyContactChangeRequestReviewItem = {
   company: {
     id: string
     phone: string
-    publicContactEmail: string | null
   }
   requestedByUser: {
     id: string
@@ -68,7 +67,6 @@ export type AdminCompanyContactChangeRequestReviewItem = {
 
 const allowedFields: CompanyContactChangeField[] = [
   "PHONE",
-  "PUBLIC_CONTACT_EMAIL",
 ]
 
 function normalizeText(value: string | null | undefined) {
@@ -78,7 +76,6 @@ function normalizeText(value: string | null | undefined) {
 }
 
 function normalizeRequestedValue(
-  field: CompanyContactChangeField,
   value: string,
 ): CompanyContactChangeRequestResult<{ requestedValue: string }> {
   const normalizedValue = normalizeText(value)
@@ -91,40 +88,18 @@ function normalizeRequestedValue(
     }
   }
 
-  if (field === "PHONE") {
-    if (normalizedValue.length < 5 || normalizedValue.length > 40) {
-      return {
-        ok: false,
-        code: "invalid_phone",
-        message: "Inserisci un telefono aziendale valido.",
-      }
-    }
-
-    return {
-      ok: true,
-      data: {
-        requestedValue: normalizedValue,
-      },
-    }
-  }
-
-  const normalizedEmail = normalizedValue.toLowerCase()
-
-  if (
-    normalizedEmail.length > 254 ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
-  ) {
+  if (normalizedValue.length < 5 || normalizedValue.length > 40) {
     return {
       ok: false,
-      code: "invalid_public_contact_email",
-      message: "Inserisci un'email aziendale pubblica valida.",
+      code: "invalid_phone",
+      message: "Inserisci un telefono aziendale valido.",
     }
   }
 
   return {
     ok: true,
     data: {
-      requestedValue: normalizedEmail,
+      requestedValue: normalizedValue,
     },
   }
 }
@@ -165,7 +140,7 @@ export async function createCompanyContactChangeRequest({
   }
 
   const requestedValueResult =
-    normalizeRequestedValue(field, requestedValue)
+    normalizeRequestedValue(requestedValue)
 
   if (!requestedValueResult.ok) {
     return requestedValueResult
@@ -204,7 +179,6 @@ export async function createCompanyContactChangeRequest({
       select: {
         id: true,
         phone: true,
-        publicContactEmail: true,
       },
     })
 
@@ -217,9 +191,7 @@ export async function createCompanyContactChangeRequest({
     }
 
     const currentValue =
-      field === "PHONE"
-        ? company.phone
-        : company.publicContactEmail
+      company.phone
 
     if (
       normalizeText(currentValue) ===
@@ -305,7 +277,6 @@ export async function listCompanyContactChangeRequestsForAdminReview(): Promise<
         select: {
           id: true,
           phone: true,
-          publicContactEmail: true,
         },
       },
       requestedByUser: {
@@ -398,18 +369,21 @@ export async function approveCompanyContactChangeRequest({
       FOR UPDATE
     `
 
+    if (changeRequest.field !== "PHONE") {
+      return {
+        ok: false,
+        code: "invalid_field",
+        message: "Campo non modificabile.",
+      }
+    }
+
     await tx.company.update({
       where: {
         id: changeRequest.companyId,
       },
-      data:
-        changeRequest.field === "PHONE"
-          ? {
-              phone: changeRequest.requestedValue,
-            }
-          : {
-              publicContactEmail: changeRequest.requestedValue,
-            },
+      data: {
+        phone: changeRequest.requestedValue,
+      },
     })
 
     await tx.companyContactChangeRequest.update({

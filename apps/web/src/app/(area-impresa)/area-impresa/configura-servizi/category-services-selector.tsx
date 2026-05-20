@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react"
@@ -12,7 +13,11 @@ import {
   cn,
 } from "@fixpro/ui"
 
-export type ServiceOption = {
+export type RequestMatchingMode =
+  | "CATEGORY_WITH_SERVICE_PRIORITY"
+  | "SELECTED_SERVICES_ONLY"
+
+type ServiceOption = {
   id: string
   name: string
   description: string | null
@@ -29,6 +34,7 @@ export type CategoryServicesSelectorProps = {
   categories: CategoryOption[]
   initialCategoryIds: string[]
   initialServiceIds: string[]
+  initialRequestMatchingMode: RequestMatchingMode
   action: (formData: FormData) => Promise<void>
 }
 
@@ -63,6 +69,7 @@ export function CategoryServicesSelector({
   categories,
   initialCategoryIds,
   initialServiceIds,
+  initialRequestMatchingMode,
   action,
 }: CategoryServicesSelectorProps) {
   const [
@@ -94,6 +101,34 @@ export function CategoryServicesSelector({
     () => new Set(selectedServiceIds),
     [selectedServiceIds],
   )
+
+  const [
+    requestMatchingMode,
+    setRequestMatchingMode,
+  ] = useState<RequestMatchingMode>(
+    initialRequestMatchingMode,
+  )
+
+  const hasSelectedServices =
+    selectedServiceIds.length > 0
+
+  useEffect(() => {
+    if (
+      hasSelectedServices ||
+      requestMatchingMode !==
+        "SELECTED_SERVICES_ONLY"
+    ) {
+      return
+    }
+
+    setRequestMatchingMode(
+      "CATEGORY_WITH_SERVICE_PRIORITY",
+    )
+  }, [
+    hasSelectedServices,
+    requestMatchingMode,
+  ])
+
   const selectedCategories = categories.filter(
     (category) =>
       selectedCategoryIdSet.has(category.id),
@@ -314,11 +349,71 @@ export function CategoryServicesSelector({
         )}
       </section>
 
+      <section className="space-y-3 rounded-2xl border border-border-primary bg-surface-primary p-5">
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-text-primary">
+            Modalità ricezione richieste
+          </h3>
+          <p className="text-sm leading-6 text-text-secondary">
+            Per impostazione predefinita ricevi richieste compatibili
+            con le tue categorie professionali. I servizi selezionati
+            migliorano la precisione del matching.
+          </p>
+        </div>
+
+        <label className="flex cursor-pointer gap-4 rounded-2xl border border-border-primary bg-surface-secondary p-4">
+          <Checkbox
+            name="requestMatchingMode"
+            value="SELECTED_SERVICES_ONLY"
+            checked={
+              hasSelectedServices &&
+              requestMatchingMode ===
+                "SELECTED_SERVICES_ONLY"
+            }
+            disabled={!hasSelectedServices}
+            onChange={() => {
+              if (!hasSelectedServices) {
+                return
+              }
+
+              setRequestMatchingMode((currentMode) =>
+                currentMode ===
+                "SELECTED_SERVICES_ONLY"
+                  ? "CATEGORY_WITH_SERVICE_PRIORITY"
+                  : "SELECTED_SERVICES_ONLY",
+              )
+            }}
+            className="mt-1"
+          />
+
+          <span className="min-w-0">
+            <span className="block text-sm font-medium text-text-primary">
+              Ricevi solo richieste compatibili con i servizi selezionati
+            </span>
+            <span className="mt-1 block text-sm leading-6 text-text-secondary">
+              Se attivi questa opzione, FixPro ti invierà solo
+              richieste collegate ai servizi che hai selezionato.
+              Se la lasci disattivata, potrai ricevere anche
+              richieste più ampie delle tue categorie professionali.
+            </span>
+
+            {!hasSelectedServices ? (
+              <span className="mt-2 block text-sm leading-6 text-text-secondary">
+                Seleziona almeno un servizio per limitare le richieste
+                ai soli servizi scelti.
+              </span>
+            ) : null}
+          </span>
+        </label>
+      </section>
+
       <div className="flex justify-end border-t border-border-primary pt-6">
         <Button type="submit">
           Salva configurazione
         </Button>
       </div>
+
+
     </form>
   )
 }

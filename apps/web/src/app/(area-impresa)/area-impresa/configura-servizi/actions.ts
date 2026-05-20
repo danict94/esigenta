@@ -65,6 +65,17 @@ export async function saveCompanyServicesAction(
       formData.getAll("categoryIds"),
     )
 
+  const requestedRequestMatchingMode =
+    formData.get("requestMatchingMode") ===
+    "SELECTED_SERVICES_ONLY"
+      ? "SELECTED_SERVICES_ONLY"
+      : "CATEGORY_WITH_SERVICE_PRIORITY"
+
+  const requestMatchingMode =
+    selectedServiceIds.length > 0
+      ? requestedRequestMatchingMode
+      : "CATEGORY_WITH_SERVICE_PRIORITY"
+
   if (selectedCategoryIds.length === 0) {
     redirectWithError("missing_categories")
   }
@@ -149,6 +160,15 @@ export async function saveCompanyServicesAction(
     )
 
   await prisma.$transaction(async (tx) => {
+    await tx.company.update({
+      where: {
+        id: company.id,
+      },
+      data: {
+        requestMatchingMode,
+      },
+    })
+
     await tx.companyCategory.deleteMany({
       where: {
         companyId: company.id,

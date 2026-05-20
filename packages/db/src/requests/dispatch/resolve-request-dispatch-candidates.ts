@@ -136,14 +136,20 @@ async function resolveCandidates({
   requestLatitude,
   requestLongitude,
   serviceIds,
+  categoryIds,
   serviceSource,
 }: {
   client: DispatchResolverClient
   requestLatitude: number
   requestLongitude: number
   serviceIds: string[]
+  categoryIds: string[]
   serviceSource: RequestDispatchServiceSource
 }): Promise<RequestDispatchCandidate[]> {
+  if (categoryIds.length === 0) {
+    return []
+  }
+
   const companies =
     await client.company.findMany({
       where: {
@@ -156,20 +162,43 @@ async function resolveCandidates({
         operatingRadiusKm: {
           gt: 0,
         },
-        services: {
+        categories: {
           some: {
-            serviceId: {
-              in: serviceIds,
+            categoryId: {
+              in: categoryIds,
             },
           },
         },
       },
       select: {
         id: true,
-        publicContactEmail: true,
+        requestMatchingMode: true,
+        memberships: {
+          where: {
+            role: "OWNER",
+          },
+          take: 1,
+          select: {
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
         latitude: true,
         longitude: true,
         operatingRadiusKm: true,
+        categories: {
+          where: {
+            categoryId: {
+              in: categoryIds,
+            },
+          },
+          select: {
+            categoryId: true,
+          },
+        },
         services: {
           where: {
             serviceId: {
@@ -192,6 +221,17 @@ async function resolveCandidates({
       return []
     }
 
+    const matchedCategoryIds =
+      uniqueStrings(
+        company.categories.map(
+          (category) => category.categoryId,
+        ),
+      )
+
+    if (matchedCategoryIds.length === 0) {
+      return []
+    }
+
     const matchedServiceIds =
       uniqueStrings(
         company.services.map(
@@ -199,7 +239,11 @@ async function resolveCandidates({
         ),
       )
 
-    if (matchedServiceIds.length === 0) {
+    if (
+      company.requestMatchingMode ===
+        "SELECTED_SERVICES_ONLY" &&
+      matchedServiceIds.length === 0
+    ) {
       return []
     }
 
@@ -217,10 +261,25 @@ async function resolveCandidates({
       return []
     }
 
+    const matchStrength =
+      matchedServiceIds.length > 0
+        ? "SERVICE_MATCH"
+        : "CATEGORY_MATCH"
+
     const matchReason: Prisma.InputJsonObject = {
+      requestMatchingMode:
+        company.requestMatchingMode,
+      categoryMatchMode:
+        "derived_from_resolved_services",
       serviceSource,
-      serviceMatchMode: "any",
+      serviceMatchMode:
+        matchedServiceIds.length > 0
+          ? "any"
+          : "category_fallback",
+      matchStrength,
       resolvedServiceIds: serviceIds,
+      derivedCategoryIds: categoryIds,
+      matchedCategoryIds,
       matchedServiceIds,
       distanceKm,
       operatingRadiusKm:
@@ -231,7 +290,7 @@ async function resolveCandidates({
       {
         companyId: company.id,
         recipientEmail: normalizeEmail(
-          company.publicContactEmail,
+          company.memberships[0]?.user.email ?? null,
         ),
         distanceKm,
         operatingRadiusKm:
@@ -319,6 +378,26 @@ export async function resolveRequestDispatchCandidatesWithClient(
     }
   }
 
+  const categoryServices =
+    await client.categoryService.findMany({
+      where: {
+        serviceId: {
+          in: serviceResolution.serviceIds,
+        },
+      },
+      select: {
+        categoryId: true,
+      },
+    })
+
+  const categoryIds =
+    uniqueStrings(
+      categoryServices.map(
+        (categoryService) =>
+          categoryService.categoryId,
+      ),
+    )
+
   const candidates =
     await resolveCandidates({
       client,
@@ -326,6 +405,7 @@ export async function resolveRequestDispatchCandidatesWithClient(
       requestLongitude: request.longitude,
       serviceIds:
         serviceResolution.serviceIds,
+      categoryIds,
       serviceSource:
         serviceResolution.serviceSource,
     })

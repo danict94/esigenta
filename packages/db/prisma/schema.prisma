@@ -35,10 +35,11 @@ model Category {
    * - onboarding grouping
    * - navigation grouping
    * - trust grouping
+   * - base professional coverage for marketplace eligibility
    * Category is NOT:
-   * - operational matching
-   * - notification routing
+   * - customer intent
    * - SEO runtime
+   * - a precise operational specialization
    */
 
   createdAt DateTime @default(now())
@@ -253,13 +254,17 @@ model DomainIntervention {
 // RUNTIME OPERATIONAL LAYER
 ///////////////////////////////////////////////////////////
 
+enum CompanyRequestMatchingMode {
+  CATEGORY_WITH_SERVICE_PRIORITY
+  SELECTED_SERVICES_ONLY
+}
+
 model Company {
   id String @id @default(cuid())
 
   name              String
   vatNumber         String  @unique
   phone             String
-  publicContactEmail String?
   website           String?
   address           String?
   street            String?
@@ -271,21 +276,25 @@ model Company {
   longitude         Float?
   operatingRadiusKm Int     @default(30)
 
+  requestMatchingMode CompanyRequestMatchingMode @default(CATEGORY_WITH_SERVICE_PRIORITY)
+
   /**
    * ONBOARDING CONTEXT ONLY
-   * Captures the professional category selected in the public signup flow.
-   * Matching must remain based on CompanyService, never this field.
+   * Captures the first professional category selected in the public signup flow.
+   * Runtime matching must use CompanyCategory, not this onboarding snapshot.
    */
   onboardingCategorySlug String?
 
   /**
    * IMPORTANT
-   * Company capabilities are defined ONLY by:
-   * CompanyService
-   * NOT:
-   * - categories
+   * Company marketplace eligibility is defined by:
+   * - CompanyCategory as broad professional coverage
+   * - CompanyService as declared operational specialization
+   * - requestMatchingMode as the explicit strictness choice
+   * NOT by:
    * - sectors
    * - SEO
+   * - domains
    */
 
   createdAt DateTime @default(now())
@@ -1088,7 +1097,6 @@ enum CustomerTokenPurpose {
 
 enum CompanyContactChangeField {
   PHONE
-  PUBLIC_CONTACT_EMAIL
 }
 
 enum CompanyContactChangeStatus {
