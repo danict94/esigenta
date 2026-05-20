@@ -563,7 +563,7 @@ export default async function RequestDetailPage({
 
           <DetailSection eyebrow="Localizzazione" title="Luogo richiesta">
             <dl className="grid gap-5 md:grid-cols-2">
-              <FieldBlock label="CittÃ ">
+              <FieldBlock label="Città">
                 {request.city ?? "-"}
               </FieldBlock>
 
@@ -818,14 +818,14 @@ export default async function RequestDetailPage({
                   Revisione chiusa
                 </p>
                 <p className="mt-2 text-sm leading-6 text-text-secondary">
-                  Questa richiesta ha giÃ  ricevuto una decisione editoriale.
+                  Questa richiesta ha già ricevuto una decisione editoriale.
                 </p>
               </div>
             )}
 
             <div className="mt-6 border-t border-border-primary pt-5">
               <p className="text-sm font-semibold text-text-primary">
-                Checklist qualitÃ 
+                Checklist qualità
               </p>
 
               <ul className="mt-3 space-y-2 text-sm leading-6 text-text-secondary">

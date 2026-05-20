@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  useEffect,
   useMemo,
   useState,
 } from "react"
@@ -111,23 +110,6 @@ export function CategoryServicesSelector({
 
   const hasSelectedServices =
     selectedServiceIds.length > 0
-
-  useEffect(() => {
-    if (
-      hasSelectedServices ||
-      requestMatchingMode !==
-        "SELECTED_SERVICES_ONLY"
-    ) {
-      return
-    }
-
-    setRequestMatchingMode(
-      "CATEGORY_WITH_SERVICE_PRIORITY",
-    )
-  }, [
-    hasSelectedServices,
-    requestMatchingMode,
-  ])
 
   const selectedCategories = categories.filter(
     (category) =>

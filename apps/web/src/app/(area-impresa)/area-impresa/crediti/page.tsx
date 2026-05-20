@@ -141,7 +141,7 @@ async function createCreditPackageCheckoutAction(
                 name:
                   `FixPro Crediti - ${order.name}`,
                 description:
-                  `${order.credits} crediti Â· validitÃ  ${order.validityDays} giorni`,
+                  `${order.credits} crediti · validità ${order.validityDays} giorni`,
               },
             },
             quantity: 1,
@@ -335,7 +335,7 @@ export default async function CompanyCreditsPage({
 
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-text-muted">
-                      ValiditÃ 
+                      Validità
                     </dt>
                     <dd className="font-semibold text-text-primary">
                       {creditPackage.validityDays} giorni

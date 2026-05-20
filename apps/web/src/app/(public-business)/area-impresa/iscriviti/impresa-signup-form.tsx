@@ -89,7 +89,7 @@ export function ImpresaSignupForm({
 
     if (!hasValidLeadLocation) {
       setError(
-        "Seleziona prima la cittÃ  dalla pagina professionisti.",
+        "Seleziona prima la città dalla pagina professionisti.",
       )
       return
     }
@@ -326,7 +326,7 @@ export function ImpresaSignupForm({
           </Select>
 
           <p className="text-xs leading-5 text-text-muted">
-            Il raggio sarÃ  calcolato dalla cittÃ  selezionata nel passaggio
+            Il raggio sarà calcolato dalla città selezionata nel passaggio
             precedente. Potrai modificarlo più avanti.
           </p>
         </div>

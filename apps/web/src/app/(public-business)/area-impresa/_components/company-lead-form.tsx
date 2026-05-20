@@ -87,7 +87,7 @@ export function CompanyLeadForm({
       location.longitude === undefined
     ) {
       setError(
-        "Seleziona la tua attivitÃ  e scegli la cittÃ  dai suggerimenti.",
+        "Seleziona la tua attività e scegli la città dai suggerimenti.",
       )
       return
     }
@@ -148,7 +148,7 @@ export function CompanyLeadForm({
           </p>
 
           <p className="mt-2 text-sm leading-6 text-text-secondary">
-            Seleziona la tua attivitÃ  e la zona da cui vuoi iniziare a
+            Seleziona la tua attività e la zona da cui vuoi iniziare a
             ricevere richieste.
           </p>
         </div>
@@ -191,7 +191,7 @@ export function CompanyLeadForm({
             htmlFor="company-city"
             className="text-sm font-medium text-text-primary"
           >
-            In quale cittÃ  lavori?
+            In quale città lavori?
           </label>
 
           <CityAutocomplete
@@ -201,7 +201,7 @@ export function CompanyLeadForm({
               setLocation(nextLocation)
               setError(null)
             }}
-            placeholder="Cerca cittÃ  o comune"
+            placeholder="Cerca città o comune"
           />
         </div>
 
