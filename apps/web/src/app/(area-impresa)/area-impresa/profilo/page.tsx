@@ -1,4 +1,4 @@
-import Link from "next/link"
+﻿import Link from "next/link"
 import {
   revalidatePath,
 } from "next/cache"
@@ -41,9 +41,9 @@ type ProfiloPageProps = {
 }
 
 const allowedRadiusKm = [
-  5,
   10,
-  25,
+  20,
+  30,
   50,
   75,
   100,
@@ -515,7 +515,7 @@ export default async function ProfiloImpresaPage({
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-            L&apos;account risulta autenticato, ma non è collegato a un profilo
+            L&apos;account risulta autenticato, ma non Ã¨ collegato a un profilo
             impresa valido.
           </p>
         </Card>
@@ -713,7 +713,7 @@ export default async function ProfiloImpresaPage({
                       {formatValue(request.currentValue)}
                       {" -> "}
                       {formatValue(request.requestedValue)}
-                      {" · "}
+                      {" Â· "}
                       inviata il {formatDate(request.createdAt)}
                     </li>
                   ))}
@@ -805,8 +805,8 @@ export default async function ProfiloImpresaPage({
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-text-secondary">
-                Le categorie definiscono la visibilità ampia; i servizi
-                aiutano FixPro a dare priorità alle richieste più pertinenti.
+                Le categorie definiscono la visibilitÃ  ampia; i servizi
+                aiutano FixPro a dare prioritÃ  alle richieste piÃ¹ pertinenti.
               </p>
             </div>
 
@@ -855,8 +855,8 @@ export default async function ProfiloImpresaPage({
               ) : (
                 <p className="mt-2 text-sm leading-6 text-text-secondary">
                   Hai selezionato categorie operative. I servizi sono
-                  opzionali e aiutano FixPro a dare priorità alle richieste
-                  più pertinenti.
+                  opzionali e aiutano FixPro a dare prioritÃ  alle richieste
+                  piÃ¹ pertinenti.
                 </p>
               )}
             </div>
@@ -898,3 +898,4 @@ export default async function ProfiloImpresaPage({
     </PageShell>
   )
 }
+
