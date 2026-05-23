@@ -40,13 +40,18 @@ const mainNavigation: NavigationItem[] = [
     enabled: true,
   },
   {
-    label: "Aggiornamenti",
-    href: "/area-impresa/aggiornamenti",
-    enabled: false,
-  },
-  {
     label: "Contatti",
     href: "/area-impresa/contatti",
+    enabled: true,
+  },
+  {
+    label: "Assistenza",
+    href: "/area-impresa/assistenza",
+    enabled: true,
+  },
+  {
+    label: "Aggiornamenti",
+    href: "/area-impresa/aggiornamenti",
     enabled: false,
   },
 ]
@@ -98,7 +103,7 @@ function NavBadge({
     <Badge
       variant="danger"
       size="sm"
-      className="absolute -right-1 top-1 min-h-4 px-1 text-[10px] leading-none"
+      className="absolute -right-1 top-1 min-h-4 px-1 text-xs leading-none"
     >
       {value}
     </Badge>
@@ -201,15 +206,27 @@ function AccountMenuItem({
 export function ImpresaSidebar({
   accountLabel,
   unreadNotificationCount,
+  unreadContactCount,
+  unreadSupportCount,
 }: {
   accountLabel: string
   unreadNotificationCount: number
+  unreadContactCount: number
+  unreadSupportCount: number
 }) {
   const router =
     useRouter()
   const notificationBadge =
     formatUnreadNotificationCount(
       unreadNotificationCount,
+    )
+  const contactBadge =
+    formatUnreadNotificationCount(
+      unreadContactCount,
+    )
+  const supportBadge =
+    formatUnreadNotificationCount(
+      unreadSupportCount,
     )
   const mainNavigationItems =
     mainNavigation.map((item) =>
@@ -219,6 +236,20 @@ export function ImpresaSidebar({
         ? {
             ...item,
             badge: notificationBadge,
+          }
+        : item.href ===
+            "/area-impresa/contatti" &&
+          contactBadge
+        ? {
+            ...item,
+            badge: contactBadge,
+          }
+        : item.href ===
+            "/area-impresa/assistenza" &&
+          supportBadge
+        ? {
+            ...item,
+            badge: supportBadge,
           }
         : item,
     )

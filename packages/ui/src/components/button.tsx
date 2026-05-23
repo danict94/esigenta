@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   ButtonHTMLAttributes,
   ReactNode,
 } from "react"
@@ -11,12 +11,14 @@ import {
 type ButtonVariant =
   | "primary"
   | "secondary"
+  | "brandOutline"
   | "ghost"
 
 type ButtonSize =
   | "sm"
   | "md"
   | "lg"
+  | "xl"
 
 export type ButtonProps = {
   variant?: ButtonVariant
@@ -32,6 +34,9 @@ const variants: Record<ButtonVariant, string> = {
   secondary:
     "border border-border-primary bg-surface-primary text-text-primary hover:border-border-focus",
 
+  brandOutline:
+    "border border-brand-primary bg-transparent text-brand-primary hover:bg-brand-primary hover:text-brand-on-primary",
+
   ghost:
     "border border-transparent bg-transparent text-text-secondary hover:bg-surface-secondary hover:text-text-primary",
 }
@@ -40,6 +45,7 @@ const sizes: Record<ButtonSize, string> = {
   sm: "h-10 px-4 text-sm",
   md: "h-12 px-5 text-sm",
   lg: "h-14 px-6 text-base",
+  xl: "h-16 px-8 text-base",
 }
 
 export function Button({

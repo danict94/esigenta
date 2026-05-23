@@ -14,6 +14,10 @@ export {
   customerRequestsAccessEmail,
 } from "./templates/customer-requests-access-email"
 
+export {
+  conversationMessageEmail,
+} from "./templates/conversation-message-email"
+
 export type {
   RequestVerificationEmailInput,
 } from "./templates/request-verification-email"
@@ -21,3 +25,7 @@ export type {
 export type {
   CustomerRequestsAccessEmailInput,
 } from "./templates/customer-requests-access-email"
+
+export type {
+  ConversationMessageEmailInput,
+} from "./templates/conversation-message-email"

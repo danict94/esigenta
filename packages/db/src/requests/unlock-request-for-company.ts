@@ -9,6 +9,9 @@ import {
 import {
   debitCompanyCreditsInTransaction,
 } from "../credits/credit-ledger"
+import {
+  ensureCompanyCustomerConversationForUnlock,
+} from "../conversations"
 
 export type UnlockRequestForCompanyInput = {
   companyId: string
@@ -25,6 +28,9 @@ export type UnlockRequestForCompanyResult =
         balanceAfter: number
         unlockCount: number
         maxUnlocks: number
+        conversationId: string
+        customerConversationAccessToken: string
+        customerConversationAccessTokenExpiresAt: Date
       }
     }
   | {
@@ -104,6 +110,13 @@ export async function unlockRequestForCompany({
           creditCost: true,
           maxUnlocks: true,
           unlockCount: true,
+          customerId: true,
+          customerEmail: true,
+          customer: {
+            select: {
+              email: true,
+            },
+          },
         },
       })
 
@@ -137,6 +150,21 @@ export async function unlockRequestForCompany({
         code: "request_not_commercially_configured",
         message:
           "Questa richiesta non è ancora pronta per lo sblocco.",
+      }
+    }
+
+    if (
+      !request.customerId ||
+      !(
+        request.customer?.email ??
+        request.customerEmail
+      )
+    ) {
+      return {
+        ok: false,
+        code: "customer_not_found",
+        message:
+          "Cliente non disponibile per questo canale messaggi.",
       }
     }
 
@@ -243,6 +271,23 @@ export async function unlockRequestForCompany({
         },
       })
 
+    const conversationResult =
+      await ensureCompanyCustomerConversationForUnlock({
+        tx,
+        requestUnlockId:
+          requestUnlock.id,
+        now,
+      })
+
+    if (!conversationResult.ok) {
+      return {
+        ok: false,
+        code: conversationResult.code,
+        message:
+          conversationResult.message,
+      }
+    }
+
     return {
       ok: true,
       data: {
@@ -256,6 +301,12 @@ export async function unlockRequestForCompany({
           updatedRequest.unlockCount,
         maxUnlocks:
           request.maxUnlocks,
+        conversationId:
+          conversationResult.conversationId,
+        customerConversationAccessToken:
+          conversationResult.customerConversationAccessToken,
+        customerConversationAccessTokenExpiresAt:
+          conversationResult.customerConversationAccessTokenExpiresAt,
       },
     }
   })

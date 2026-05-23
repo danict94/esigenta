@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 
+import {
+  countUnreadAdminConversations,
+} from "@fixpro/db";
+
 import { requireAdmin } from "../../auth/server";
 import { AdminShell } from "../../components/admin-shell";
 
@@ -16,7 +20,7 @@ function isNamedError(
 
 async function requireProtectedAdminAccess() {
   try {
-    await requireAdmin();
+    return await requireAdmin();
   } catch (error) {
     if (
       isNamedError(
@@ -45,7 +49,20 @@ export default async function ProtectedAdminLayout({
 }: {
   children: ReactNode;
 }) {
-  await requireProtectedAdminAccess();
+  const admin =
+    await requireProtectedAdminAccess();
+  const unreadSupportResult =
+    await countUnreadAdminConversations({
+      userId: admin.userId,
+    });
+  const unreadSupportCount =
+    unreadSupportResult.ok
+      ? unreadSupportResult.count
+      : 0;
 
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <AdminShell unreadSupportCount={unreadSupportCount}>
+      {children}
+    </AdminShell>
+  );
 }

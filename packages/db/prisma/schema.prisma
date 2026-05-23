@@ -276,6 +276,10 @@ model Company {
   longitude         Float?
   operatingRadiusKm Int     @default(30)
 
+  isActive Boolean @default(true)
+
+  deletedAt DateTime?
+
   requestMatchingMode CompanyRequestMatchingMode @default(CATEGORY_WITH_SERVICE_PRIORITY)
 
   /**
@@ -304,16 +308,16 @@ model Company {
   categories  CompanyCategory[]
   memberships CompanyMembership[]
 
-  creditAccount        CompanyCreditAccount?
-  creditOrders         CreditOrder[]
-  creditTransactions   CompanyCreditTransaction[]
-  requestUnlocks       RequestUnlock[]
-  savedRequests        CompanySavedRequest[]
-  requestDispatches    RequestDispatch[]
-  notifications        CompanyNotification[]
-  creditRefundRequests CreditRefundRequest[]
-  contactChangeRequests CompanyContactChangeRequest[]
-
+  creditAccount            CompanyCreditAccount?
+  creditOrders             CreditOrder[]
+  creditTransactions       CompanyCreditTransaction[]
+  requestUnlocks           RequestUnlock[]
+  savedRequests            CompanySavedRequest[]
+  requestDispatches        RequestDispatch[]
+  notifications            CompanyNotification[]
+  creditRefundRequests     CreditRefundRequest[]
+  contactChangeRequests    CompanyContactChangeRequest[]
+  conversationParticipants ConversationParticipant[]
 
   @@index([city])
   @@index([postalCode])
@@ -369,6 +373,7 @@ enum RequestDispatchStatus {
 
 enum CompanyNotificationType {
   NEW_REQUEST_AVAILABLE
+  CONVERSATION_MESSAGE
 }
 
 enum NotificationChannel {
@@ -402,18 +407,24 @@ model User {
   emailVerifiedAt DateTime?
   image           String?
 
+  isActive Boolean @default(true)
+
+  deletedAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  companyMemberships           CompanyMembership[]
-  adminProfile                 AdminProfile?
-  adminCreditTransactions      CompanyCreditTransaction[] @relation("CreditAdminActor")
-  reviewedCreditRefundRequests CreditRefundRequest[]      @relation("CreditRefundReviewAdmin")
+  companyMemberships                   CompanyMembership[]
+  adminProfile                         AdminProfile?
+  adminCreditTransactions              CompanyCreditTransaction[]    @relation("CreditAdminActor")
+  reviewedCreditRefundRequests         CreditRefundRequest[]         @relation("CreditRefundReviewAdmin")
   companyContactChangeRequests         CompanyContactChangeRequest[] @relation("CompanyContactChangeRequestedBy")
   reviewedCompanyContactChangeRequests CompanyContactChangeRequest[] @relation("CompanyContactChangeReviewedBy")
+  resolvedConversations                Conversation[]                @relation("ConversationResolvedBy")
 
-  sessions Session[]
-  accounts Account[]
+  sessions                 Session[]
+  accounts                 Account[]
+  conversationParticipants ConversationParticipant[]
 }
 
 model Session {
@@ -494,7 +505,8 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  requests Request[]
+  requests                 Request[]
+  conversationParticipants ConversationParticipant[]
 }
 
 model CompanyMembership {
@@ -687,6 +699,7 @@ model Request {
   ///////////////////////////////////////////////////////////
   // INDEXES
   ///////////////////////////////////////////////////////////
+  conversations Conversation[]
 
   @@index([status])
   @@index([createdAt])
@@ -743,7 +756,7 @@ model RequestDispatch {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  companyNotifications CompanyNotification[]
+  companyNotifications   CompanyNotification[]
   notificationDeliveries NotificationDelivery[]
 
   @@unique([requestId, companyId])
@@ -764,6 +777,12 @@ model CompanyNotification {
   requestDispatchId String?
   requestDispatch   RequestDispatch? @relation(fields: [requestDispatchId], references: [id], onDelete: Cascade)
 
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  messageId String?
+  message   Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
   type CompanyNotificationType
 
   title String
@@ -776,6 +795,8 @@ model CompanyNotification {
   @@index([companyId, readAt, createdAt])
   @@index([requestId])
   @@index([requestDispatchId])
+  @@index([conversationId])
+  @@index([messageId])
 }
 
 model NotificationDelivery {
@@ -794,7 +815,7 @@ model NotificationDelivery {
 
   idempotencyKey String @unique
 
-  attemptCount Int @default(0)
+  attemptCount Int     @default(0)
   lastError    String?
 
   nextAttemptAt DateTime?
@@ -981,7 +1002,8 @@ model RequestUnlock {
   refundReason  String?
   refundRequest CreditRefundRequest?
 
-  createdAt DateTime @default(now())
+  createdAt     DateTime       @default(now())
+  conversations Conversation[]
 
   @@unique([requestId, companyId])
   @@index([requestId, createdAt])
@@ -1088,6 +1110,7 @@ enum AdminRole {
 }
 
 enum CustomerTokenPurpose {
+  CONVERSATION_ACCESS
   REQUEST_VERIFICATION
   REQUEST_STATUS
 
@@ -1113,7 +1136,7 @@ model CompanyContactChangeRequest {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   requestedByUserId String
-  requestedByUser   User @relation("CompanyContactChangeRequestedBy", fields: [requestedByUserId], references: [id], onDelete: Cascade)
+  requestedByUser   User   @relation("CompanyContactChangeRequestedBy", fields: [requestedByUserId], references: [id], onDelete: Cascade)
 
   field CompanyContactChangeField
 
@@ -1122,9 +1145,9 @@ model CompanyContactChangeRequest {
 
   status CompanyContactChangeStatus @default(PENDING_REVIEW)
 
-  reviewedAt DateTime?
+  reviewedAt            DateTime?
   reviewedByAdminUserId String?
-  reviewedByAdminUser   User? @relation("CompanyContactChangeReviewedBy", fields: [reviewedByAdminUserId], references: [id], onDelete: SetNull)
+  reviewedByAdminUser   User?     @relation("CompanyContactChangeReviewedBy", fields: [reviewedByAdminUserId], references: [id], onDelete: SetNull)
 
   adminNotes String?
 
@@ -1134,4 +1157,103 @@ model CompanyContactChangeRequest {
   @@index([companyId, createdAt])
   @@index([status, createdAt])
   @@index([reviewedByAdminUserId])
+}
+
+///////////////////////////////////////////////////////////
+// CONVERSATION / MESSAGING LAYER
+///////////////////////////////////////////////////////////
+
+enum ConversationType {
+  COMPANY_CUSTOMER
+  SUPPORT
+  COMPANY_ADMIN
+  ADMIN_CUSTOMER
+  INTERNAL_ADMIN
+}
+
+enum ConversationActorType {
+  USER
+  CUSTOMER
+  COMPANY
+  ADMIN
+}
+
+model Conversation {
+  id String @id @default(cuid())
+
+  type ConversationType
+
+  requestId String?
+  request   Request? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  requestUnlockId String?
+  requestUnlock   RequestUnlock? @relation(fields: [requestUnlockId], references: [id], onDelete: Cascade)
+
+  isResolved   Boolean   @default(false)
+  resolvedAt   DateTime?
+  resolvedById String?
+  resolvedBy   User?     @relation("ConversationResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+  companyNotifications CompanyNotification[]
+
+  @@index([type, createdAt])
+  @@index([type, isResolved, updatedAt])
+  @@index([requestId])
+  @@index([requestUnlockId])
+  @@index([resolvedById])
+}
+
+model ConversationParticipant {
+  id String @id @default(cuid())
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  actorType ConversationActorType
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  lastReadAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  sentMessages Message[]
+
+  @@index([conversationId])
+  @@index([userId])
+  @@index([customerId])
+  @@index([companyId])
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  senderParticipantId String
+  senderParticipant   ConversationParticipant @relation(fields: [senderParticipantId], references: [id], onDelete: Cascade)
+
+  body String
+
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  companyNotifications CompanyNotification[]
+
+  @@index([conversationId, createdAt])
+  @@index([senderParticipantId])
 }

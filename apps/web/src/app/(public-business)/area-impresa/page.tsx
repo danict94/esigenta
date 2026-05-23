@@ -1,12 +1,18 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import {
+  redirect,
+} from "next/navigation"
 
 import {
   prisma,
+  reactivateCompanyAccount,
+  getCurrentUserFromHeaders,
 } from "@fixpro/db"
 
 import {
   Badge,
+  Button,
   Card,
   Container,
   cn,
@@ -17,13 +23,16 @@ import {
   CompanyLeadForm,
 } from "./_components/company-lead-form"
 
+import {
+  headers,
+} from "next/headers"
+
 export const metadata: Metadata = {
   title:
     "FixPro per professionisti | Ricevi richieste di lavoro nella tua zona",
   description:
     "Iscrivi la tua impresa a FixPro e ricevi richieste per lavori casa, ristrutturazioni, impianti, manutenzioni e interventi nella tua zona.",
 }
-
 async function getProfessionalCategories() {
   return prisma.category.findMany({
     orderBy: {
@@ -116,9 +125,50 @@ const faqs = [
   },
 ]
 
+async function reactivateAccountAction() {
+  "use server"
+
+  const user =
+    await getCurrentUserFromHeaders(
+      await headers(),
+    )
+
+  if (!user) {
+    return
+  }
+
+  await reactivateCompanyAccount(
+    user.id,
+  )
+
+  redirect(
+    "/area-impresa/richieste",
+  )
+}
+
 export default async function AreaImpresaLandingPage() {
   const categories =
     await getProfessionalCategories()
+
+  const currentUser =
+    await getCurrentUserFromHeaders(
+      await headers(),
+    )
+
+  const hasDeactivatedCompany =
+    currentUser
+      ? await prisma.companyMembership.findFirst({
+          where: {
+            userId:
+              currentUser.id,
+            company: {
+              is: {
+                isActive: false,
+              },
+            },
+          },
+        })
+      : null
 
   return (
     <main className="bg-surface-primary text-text-primary">
@@ -161,7 +211,37 @@ export default async function AreaImpresaLandingPage() {
               </div>
             </div>
 
-            <CompanyLeadForm categories={categories} />
+            {
+              hasDeactivatedCompany ? (
+                <Card className="border-amber-500/30 bg-amber-500/5 p-6">
+                  <div className="space-y-3">
+                    <Badge>
+                      Account disattivato
+                    </Badge>
+
+                    <h2 className="text-2xl font-semibold text-text-primary">
+                      Il tuo account impresa è stato disattivato
+                    </h2>
+
+                    <p className="text-sm leading-6 text-text-secondary">
+                      Abbiamo trovato un account FixPro associato a questa sessione.
+                      Puoi riattivarlo mantenendo storico, richieste e configurazione.
+                    </p>
+
+                    <form
+                      action={reactivateAccountAction}
+                      className="pt-2"
+                    >
+                      <Button type="submit">
+                        Riattiva account
+                      </Button>
+                    </form>
+                  </div>
+                </Card>
+              ) : (
+                <CompanyLeadForm categories={categories} />
+              )
+            }
           </div>
         </Container>
       </section>

@@ -1,8 +1,9 @@
-:root {
+﻿:root {
   --fp-color-surface-primary: #fcfcfc;
   --fp-color-surface-secondary: #f8f8f7;
   --fp-color-surface-tertiary: #f1f3f4;
   --fp-color-surface-elevated: #ffffff;
+  --fp-color-surface-hero: #f7f7f6;
 
   --fp-color-text-primary: #364247;
   --fp-color-text-secondary: #627881;
@@ -13,13 +14,16 @@
   --fp-color-border-secondary: #d7dce0;
   --fp-color-border-focus: #364247;
 
-  --fp-color-brand-primary: #1abd5e;
-  --fp-color-brand-primary-hover: #17a653;
+  --fp-color-brand-primary: #dd29b3;
+  --fp-color-brand-primary-hover: #b6108f;
   --fp-color-brand-on-primary: #ffffff;
 
   --fp-shadow-surface:
     0 0 1px rgba(0, 0, 0, 0.08),
     0 0 14px rgba(0, 0, 0, 0.16);
+
+  --fp-radius-hero-surface: clamp(2.5rem, 4vw, 4.5rem);
+  --fp-hero-surface-background: var(--fp-color-surface-hero);
 }
 
 @theme inline {
@@ -29,6 +33,7 @@
   --color-surface-secondary: var(--fp-color-surface-secondary);
   --color-surface-tertiary: var(--fp-color-surface-tertiary);
   --color-surface-elevated: var(--fp-color-surface-elevated);
+  --color-surface-hero: var(--fp-color-surface-hero);
 
   --color-text-primary: var(--fp-color-text-primary);
   --color-text-secondary: var(--fp-color-text-secondary);
@@ -50,4 +55,10 @@ body {
   background: var(--fp-color-surface-primary);
   color: var(--fp-color-text-primary);
   font-family: var(--font-plus-jakarta-sans, Arial), Helvetica, sans-serif;
+}
+
+.fp-hero-surface {
+  background: var(--fp-hero-surface-background);
+  border-radius: var(--fp-radius-hero-surface);
+  box-shadow: none;
 }

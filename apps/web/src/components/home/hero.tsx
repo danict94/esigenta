@@ -1,45 +1,100 @@
-import { cn, Container, tokens } from "@fixpro/ui";
-import { FunnelEntry } from "./funnel-entry";
+﻿import {
+  cn,
+  Container,
+  tokens,
+} from "@fixpro/ui"
 
-// Hero composition consumes shared layout primitives, typography tokens, and semantic palette utilities.
+import { FunnelEntry } from "./funnel-entry"
+
+type IllustrationSource =
+  | string
+  | null
+
+const heroIllustrationSrc: IllustrationSource =
+  null
+
 export function Hero() {
   return (
-    <section className={tokens.spacing.sectionXl}>
-      <Container size="xl">
-        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-6">
-              <h1
-                className={cn(
-                  "max-w-2xl text-text-primary",
-                  tokens.typography.hero,
-                )}
-              >
-                Il modo più semplice per trovare il professionista giusto.
-              </h1>
+    <section className="pb-8 md:pb-10">
+      <Container size="full" gutter="sm">
+        <div
+          className={cn(
+            tokens.surfaces.hero,
+            "relative overflow-visible px-6 py-10 md:px-12 md:py-12 lg:px-24 lg:py-14",
+          )}
+        >
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
+            <div className="flex flex-col gap-8 lg:pl-12 xl:pl-20">
+              <div className="flex flex-col gap-5">
+                <h1
+                  className={cn(
+                    "max-w-2xl text-text-primary",
+                    tokens.typography.hero,
+                  )}
+                >
+                  <span className="block">
+                    Trova il professionista
+                  </span>
 
-              <p className={cn("max-w-xl", tokens.typography.subtitle)}>
-                Invia la tua richiesta, confronta preventivi e scegli
-                professionisti verificati nella tua zona.
-              </p>
+                  <span
+                    className={cn(
+                      "block",
+                      tokens.typography.heroSecondary,
+                    )}
+                  >
+                    <span className="text-brand-primary">
+                      giusto
+                    </span>{" "}
+                    per le tue esigenze
+                  </span>
+                </h1>
+
+                <p className="max-w-xl text-lg leading-8 text-text-secondary">
+                  Descrivi il lavoro che devi svolgere e ricevi
+                  proposte da professionisti qualificati.
+                </p>
+              </div>
+
+              <div className="relative z-20 max-w-xl md:max-w-2xl">
+                <FunnelEntry />
+              </div>
             </div>
 
-            <FunnelEntry />
-          </div>
-
-          <div
-            className={cn(
-              "relative aspect-[4/3] overflow-hidden border border-border-primary bg-surface-elevated",
-              tokens.radius.lg,
-              tokens.shadows.surface,
-            )}
-          >
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-text-muted">
-              Hero visual placeholder
-            </div>
+            <HeroIllustration />
           </div>
         </div>
       </Container>
     </section>
-  );
+  )
 }
+
+function HeroIllustration() {
+  if (heroIllustrationSrc) {
+    return (
+      <div className="relative min-h-80">
+        <img
+          src={heroIllustrationSrc}
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-contain"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex min-h-80 items-center justify-center bg-surface-elevated text-center text-sm text-text-muted",
+        tokens.radius["3xl"],
+      )}
+    >
+      Inserisci qui:
+      <br />
+      /illustrations/donna_con_laptop.svg
+    </div>
+  )
+}
+
+
+

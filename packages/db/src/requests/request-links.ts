@@ -1,3 +1,7 @@
+import type {
+  ConversationType,
+} from "@prisma/client"
+
 function getWebUrl(): string {
   return (
     process.env.FIXPRO_WEB_URL ??
@@ -54,6 +58,42 @@ export function buildCustomerRequestsUrl({
   const url =
     new URL(
       "/richieste/cliente",
+      getWebUrl(),
+    )
+
+  url.searchParams.set("token", token)
+
+  return url.toString()
+}
+
+export function buildCompanyConversationUrl({
+  conversationId,
+  conversationType,
+}: {
+  conversationId: string
+  conversationType?: ConversationType
+}): string {
+  const basePath =
+    conversationType === "SUPPORT"
+      ? "/area-impresa/assistenza"
+      : "/area-impresa/contatti"
+  const url =
+    new URL(
+      `${basePath}/${encodeURIComponent(conversationId)}`,
+      getWebUrl(),
+    )
+
+  return url.toString()
+}
+
+export function buildCustomerConversationUrl({
+  token,
+}: {
+  token: string
+}): string {
+  const url =
+    new URL(
+      "/messaggi/accesso",
       getWebUrl(),
     )
 

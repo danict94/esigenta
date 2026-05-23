@@ -1,4 +1,4 @@
-import { Container, tokens } from '@fixpro/ui'
+import { Container, tokens } from "@fixpro/ui"
 
 export function Footer() {
   return (
@@ -6,7 +6,8 @@ export function Footer() {
       <Container size="xl">
         <div className="flex flex-col gap-6 py-10">
           <div className="text-lg font-semibold tracking-tight">
-            FixPro
+            <span className="text-text-primary">Esi</span>
+            <span className="text-brand-primary">genta</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-sm text-text-secondary">
@@ -33,7 +34,7 @@ export function Footer() {
           </div>
 
           <p className={tokens.typography.caption}>
-            © 2026 FixPro. Tutti i diritti riservati.
+            © 2026 Esigenta. Tutti i diritti riservati.
           </p>
         </div>
       </Container>

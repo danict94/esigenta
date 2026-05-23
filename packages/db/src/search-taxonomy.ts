@@ -1,6 +1,6 @@
 import { prisma } from "./prisma/client"
 
-import type { TaxonomySearchResult } from "../taxonomy/shared/types"
+import type { TaxonomySearchResult } from "./taxonomy/shared/types"
 
 type SearchParams = {
   query: string

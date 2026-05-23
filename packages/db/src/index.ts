@@ -14,7 +14,11 @@ export * from "./company-contact-change-requests"
 
 export { prisma } from "./prisma/client"
 
+export * from "./conversations"
+
 export type {
   TaxonomySearchEntityType,
   TaxonomySearchResult,
-} from "../taxonomy/shared/types"
+} from "./taxonomy/shared/types"
+
+export * from "./account"

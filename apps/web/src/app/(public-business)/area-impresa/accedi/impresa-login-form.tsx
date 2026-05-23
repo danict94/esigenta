@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import type {
   FormEvent,
@@ -148,6 +148,7 @@ export function ImpresaLoginForm() {
 
       <Button
         type="submit"
+        variant="brandOutline"
         disabled={isSubmitting}
         className="mt-2 w-full"
       >

@@ -14,8 +14,10 @@ export const tokens = {
     sm: "rounded-md",
     md: "rounded-md",
     lg: "rounded-lg",
-    xl: "rounded-lg",
-    full: "rounded-lg",
+    xl: "rounded-xl",
+    "2xl": "rounded-2xl",
+    "3xl": "rounded-[999px]",
+    full: "rounded-full",
   },
 
   spacing: {
@@ -31,6 +33,7 @@ export const tokens = {
 
   typography: {
     hero: "text-3xl md:text-5xl font-bold leading-tight tracking-tight",
+    heroSecondary: "text-[0.92em]",
 
     title: "text-3xl md:text-5xl font-semibold tracking-tight",
 
@@ -39,6 +42,10 @@ export const tokens = {
     body: "text-base leading-7",
 
     caption: "text-sm text-text-muted",
+  },
+
+  surfaces: {
+    hero: "fp-hero-surface",
   },
 
   shadows: {
@@ -53,4 +60,5 @@ export type ContainerToken = keyof typeof tokens.containers
 export type RadiusToken = keyof typeof tokens.radius
 export type SpacingToken = keyof typeof tokens.spacing
 export type TypographyToken = keyof typeof tokens.typography
+export type SurfaceToken = keyof typeof tokens.surfaces
 export type ShadowToken = keyof typeof tokens.shadows

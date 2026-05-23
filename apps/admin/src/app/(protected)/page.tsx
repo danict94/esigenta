@@ -115,16 +115,25 @@ export default async function AdminHomePage() {
               Assistenza
             </p>
 
-            <Badge variant="neutral">Prossima</Badge>
+            <Badge variant="success">Attiva</Badge>
           </div>
 
           <p className="mt-5 text-2xl font-semibold tracking-tight text-text-primary">
-            Non collegata
+            Collegata
           </p>
 
           <p className="mt-3 text-sm leading-6 text-text-secondary">
-            Area futura per ticket, segnalazioni e supporto operativo.
+            Messaggi operativi tra imprese e team FixPro.
           </p>
+
+          <div className="mt-5 border-t border-border-primary pt-4">
+            <Link
+              href="/support"
+              className="text-sm font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
+            >
+              Apri assistenza
+            </Link>
+          </div>
         </Card>
       </section>
 

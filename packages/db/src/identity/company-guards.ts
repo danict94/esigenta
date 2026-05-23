@@ -16,6 +16,7 @@ export type CompanyMembershipForUser = {
 export class CompanyAuthorizationError extends Error {
   constructor(message = "Company authorization required.") {
     super(message)
+
     this.name =
       "CompanyAuthorizationError"
   }
@@ -26,8 +27,20 @@ export class AmbiguousCompanyMembershipError extends Error {
     super(
       "Questo account risulta collegato a più imprese. Per la release FixPro supporta una sola impresa per account.",
     )
+
     this.name =
       "AmbiguousCompanyMembershipError"
+  }
+}
+
+export class CompanyDeactivatedError extends Error {
+  constructor() {
+    super(
+      "Questa impresa è stata disattivata.",
+    )
+
+    this.name =
+      "CompanyDeactivatedError"
   }
 }
 
@@ -37,6 +50,12 @@ export async function listCompanyMembershipsForUser(
   return prisma.companyMembership.findMany({
     where: {
       userId,
+      company: {
+        is: {
+          isActive: true,
+          deletedAt: null,
+        },
+      },
     },
     orderBy: {
       createdAt: "asc",
@@ -57,11 +76,15 @@ export async function getCompanyMembershipForUser({
   userId: string
   companyId: string
 }): Promise<CompanyMembershipForUser | null> {
-  return prisma.companyMembership.findUnique({
+  return prisma.companyMembership.findFirst({
     where: {
-      companyId_userId: {
-        companyId,
-        userId,
+      companyId,
+      userId,
+      company: {
+        is: {
+          isActive: true,
+          deletedAt: null,
+        },
       },
     },
     select: {
@@ -140,4 +163,3 @@ export async function requireDefaultCompanyMembershipFromUser(
 
   return membership
 }
-

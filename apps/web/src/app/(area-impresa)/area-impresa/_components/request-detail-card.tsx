@@ -1,5 +1,7 @@
 ﻿import type { ReactNode } from "react";
 
+import Link from "next/link";
+
 import {
   Badge,
   Button,
@@ -33,7 +35,10 @@ export type RefundRequestDetail = {
   createdAt: string;
 };
 
+export type RequestUnlockError = "insufficient_credits";
+
 export type RequestDetailCardProps = {
+  unlockError?: RequestUnlockError | null;
   requestCode?: string | null;
   title: string;
 
@@ -58,6 +63,7 @@ export type RequestDetailCardProps = {
   requestUnlockId?: string | null;
   unlockedAt?: string | null;
   unlockAction: (formData: FormData) => Promise<void>;
+  contactCustomerAction?: (formData: FormData) => Promise<void>;
   refundRequestAction: (formData: FormData) => Promise<void>;
   requestUnlockRefundedAt?: string | null;
   requestUnlockRefundTransactionId?: string | null;
@@ -426,6 +432,7 @@ function getUnlockStatusMessage({
 }
 
 export function RequestDetailCard({
+  unlockError,
   requestCode,
   title,
   city,
@@ -445,6 +452,7 @@ export function RequestDetailCard({
   requestUnlockId,
   unlockedAt,
   unlockAction,
+  contactCustomerAction,
   refundRequestAction,
   requestUnlockRefundedAt,
   requestUnlockRefundTransactionId,
@@ -475,6 +483,8 @@ export function RequestDetailCard({
     Boolean(requestUnlockId) &&
     !hasRefundedUnlock &&
     !refundRequest;
+  const showInsufficientCreditsRecovery =
+    unlockError === "insufficient_credits" && !hasUnlocked;
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start">
@@ -582,6 +592,24 @@ export function RequestDetailCard({
             })}
           </p>
 
+          {showInsufficientCreditsRecovery ? (
+            <div className="mt-5 rounded-md border border-border-primary bg-surface-secondary p-4">
+              <p className="text-sm font-semibold text-text-primary">
+                Crediti insufficienti per sbloccare questa richiesta.
+              </p>
+              <p className="mt-2 text-sm leading-6 text-text-secondary">
+                Acquista un pacchetto crediti per continuare e contattare il
+                cliente.
+              </p>
+              <Link
+                href="/area-impresa/crediti"
+                className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-4 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+              >
+                Acquista crediti
+              </Link>
+            </div>
+          ) : null}
+
           <form action={savedAction} className="mt-5">
             <Button
               type="submit"
@@ -644,6 +672,15 @@ export function RequestDetailCard({
                   <ContactRow label="Email" value={customerContact?.email} />
                   <ContactRow label="Telefono" value={customerContact?.phone} />
                 </dl>
+
+                {contactCustomerAction && !hasRefundedUnlock ? (
+                  <form action={contactCustomerAction} className="mt-5">
+                    <input type="hidden" name="requestId" value={requestId} />
+                    <Button type="submit" variant="secondary" className="w-full">
+                      Contatta cliente
+                    </Button>
+                  </form>
+                ) : null}
               </>
             ) : (
               <div className="mt-4 rounded-md border border-border-primary bg-surface-secondary p-4">
@@ -795,4 +832,3 @@ export function RequestDetailCard({
     </div>
   );
 }
-

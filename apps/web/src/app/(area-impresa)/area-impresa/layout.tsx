@@ -11,6 +11,7 @@ import {
 } from "../../../auth/server"
 
 import {
+  countUnreadCompanyConversationSummary,
   countUnreadCompanyNotifications,
 } from "@fixpro/db"
 
@@ -47,7 +48,7 @@ async function requireAreaImpresaAccess() {
         "CompanyAuthorizationError",
       )
     ) {
-      redirect("/area-impresa/iscriviti")
+      redirect("/area-impresa")
     }
 
     if (
@@ -73,14 +74,27 @@ export default async function AreaImpresaLayout({
   const [
     user,
     unreadNotificationCount,
+    unreadMessageSummary,
   ] = await Promise.all([
     requireUser(),
     countUnreadCompanyNotifications(
       membership.companyId,
     ),
+    countUnreadCompanyConversationSummary({
+      companyId: membership.companyId,
+      userId: membership.userId,
+    }),
   ])
   const accountLabel =
     user.name || user.email
+  const unreadContactCount =
+    unreadMessageSummary.ok
+      ? unreadMessageSummary.contactsCount
+      : 0
+  const unreadSupportCount =
+    unreadMessageSummary.ok
+      ? unreadMessageSummary.supportCount
+      : 0
 
   return (
     <div className="min-h-screen bg-surface-primary text-text-primary">
@@ -88,6 +102,12 @@ export default async function AreaImpresaLayout({
         accountLabel={accountLabel}
         unreadNotificationCount={
           unreadNotificationCount
+        }
+        unreadContactCount={
+          unreadContactCount
+        }
+        unreadSupportCount={
+          unreadSupportCount
         }
       />
       {children}

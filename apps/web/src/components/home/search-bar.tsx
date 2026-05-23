@@ -180,13 +180,14 @@ export function SearchBar({
     groupedResults.interventions[0]
 
   return (
-    <Card className="p-3 shadow-surface">
-      <div className="flex flex-col gap-3 md:flex-row">
+    <Card className="p-2 shadow-surface">
+      <div className="flex flex-col gap-2 md:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted" />
+          <Search className="absolute left-5 top-1/2 z-10 size-6 -translate-y-1/2 text-text-muted" />
 
           <Input
             type="text"
+            size="lg"
             value={query}
             onFocus={() => {
               setIsFocused(true)
@@ -210,7 +211,7 @@ export function SearchBar({
               )
             }}
             placeholder="Di cosa hai bisogno?"
-            className="pl-12"
+            className="pl-14"
           />
 
           {showDropdown ? (
@@ -305,6 +306,8 @@ export function SearchBar({
 
         <Button
           type="button"
+          size="xl"
+          className="w-full md:w-auto md:min-w-36"
           onClick={() => {
             if (firstIntervention) {
               selectIntervention(
@@ -316,7 +319,7 @@ export function SearchBar({
             !firstIntervention
           }
         >
-          Inizia il tuo progetto
+          Cerca
         </Button>
       </div>
     </Card>

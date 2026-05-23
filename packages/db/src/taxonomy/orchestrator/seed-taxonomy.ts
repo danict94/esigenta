@@ -507,7 +507,7 @@ async function seedTaxonomy(
 }
 
 const { prisma } = await import(
-  "../../src/prisma/client"
+  "../../prisma/client"
 );
 
 seedTaxonomy(prisma)

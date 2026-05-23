@@ -15,6 +15,8 @@ export type CompanyNotificationListItem = {
   createdAt: Date
   requestId: string | null
   requestDispatchId: string | null
+  conversationId: string | null
+  messageId: string | null
   request: {
     id: string
     requestCode: string | null
@@ -22,6 +24,11 @@ export type CompanyNotificationListItem = {
     city: string | null
     postalCode: string | null
     createdAt: Date
+  } | null
+  conversation: {
+    id: string
+    type: string
+    updatedAt: Date
   } | null
 }
 
@@ -81,6 +88,8 @@ export async function listCompanyNotifications(
       createdAt: true,
       requestId: true,
       requestDispatchId: true,
+      conversationId: true,
+      messageId: true,
       request: {
         select: {
           id: true,
@@ -89,6 +98,13 @@ export async function listCompanyNotifications(
           city: true,
           postalCode: true,
           createdAt: true,
+        },
+      },
+      conversation: {
+        select: {
+          id: true,
+          type: true,
+          updatedAt: true,
         },
       },
     },

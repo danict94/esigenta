@@ -64,6 +64,21 @@ export type AvailableCompanyRequest = {
   hasUnlocked: boolean
   requestUnlockId: string | null
   unlockedAt: Date | null
+  conversationId: string | null
+  customerContact: {
+    name: string | null
+    email: string | null
+    phone: string | null
+  } | null
+  requestUnlockRefund: {
+    refundedAt: Date | null
+    refundTransactionId: string | null
+    refundRequest: {
+      id: string
+      status: string
+      createdAt: Date
+    } | null
+  } | null
   isSaved: boolean
   createdAt: Date
   matchLevel: CompanyRequestMatchLevel
@@ -108,14 +123,30 @@ type RequestWithServices =
     | "hasUnlocked"
     | "requestUnlockId"
     | "unlockedAt"
+    | "conversationId"
+    | "customerContact"
+    | "requestUnlockRefund"
     | "isSaved"
   > & {
+    customerName: string | null
+    customerEmail: string | null
+    customerPhone: string | null
     requiredServices: Array<{
       serviceId: string
     }>
     unlocks: Array<{
       id: string
       createdAt: Date
+      refundedAt: Date | null
+      refundTransactionId: string | null
+      refundRequest: {
+        id: string
+        status: string
+        createdAt: Date
+      } | null
+      conversations: Array<{
+        id: string
+      }>
     }>
     savedByCompanies: Array<{
       createdAt: Date
@@ -239,6 +270,9 @@ function mapRequest({
     requiredServices,
     unlocks,
     savedByCompanies,
+    customerName,
+    customerEmail,
+    customerPhone,
     ...requestFields
   } = request
 
@@ -256,6 +290,28 @@ function mapRequest({
       unlock?.id ?? null,
     unlockedAt:
       unlock?.createdAt ?? null,
+    conversationId:
+      unlock?.conversations[0]?.id ?? null,
+    customerContact: unlock
+      ? {
+        name:
+            customerName,
+          email:
+            customerEmail,
+          phone:
+            customerPhone,
+        }
+      : null,
+    requestUnlockRefund: unlock
+      ? {
+          refundedAt:
+            unlock.refundedAt,
+          refundTransactionId:
+            unlock.refundTransactionId,
+          refundRequest:
+            unlock.refundRequest,
+        }
+      : null,
     isSaved: Boolean(savedRequest),
     matchLevel,
   }
@@ -637,6 +693,9 @@ async function loadAvailableRequestsForCompany({
         maxUnlocks: true,
         unlockCount: true,
         createdAt: true,
+        customerName: true,
+        customerEmail: true,
+        customerPhone: true,
         unlocks: {
           where: {
             companyId,
@@ -644,6 +703,24 @@ async function loadAvailableRequestsForCompany({
           select: {
             id: true,
             createdAt: true,
+            refundedAt: true,
+            refundTransactionId: true,
+            refundRequest: {
+              select: {
+                id: true,
+                status: true,
+                createdAt: true,
+              },
+            },
+            conversations: {
+              where: {
+                type: "COMPANY_CUSTOMER",
+              },
+              select: {
+                id: true,
+              },
+              take: 1,
+            },
           },
           take: 1,
         },

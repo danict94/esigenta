@@ -37,7 +37,7 @@ export const locationCapability: RuntimeCapability = {
   /**
    * User-facing acquisition question.
    */
-  question: "📍 Dove devi eseguire il lavoro?",
+  question: "Dove devi eseguire il lavoro?",
 
   /**
    * Optional UX helper copy.

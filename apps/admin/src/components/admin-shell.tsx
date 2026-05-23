@@ -4,16 +4,18 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { cn } from "@fixpro/ui";
+import { Badge, cn } from "@fixpro/ui";
 
 type AdminShellProps = {
   children: ReactNode;
+  unreadSupportCount?: number;
 };
 
 type AdminNavItem = {
   label: string;
   href: string;
   enabled: boolean;
+  badge?: string | null;
 };
 
 const navItems: AdminNavItem[] = [
@@ -31,7 +33,7 @@ const navItems: AdminNavItem[] = [
     enabled: true,
   },
   { label: "Imprese", href: "/companies", enabled: false },
-  { label: "Assistenza", href: "/support", enabled: false },
+  { label: "Assistenza", href: "/support", enabled: true },
   { label: "Qualità", href: "/quality", enabled: false },
   { label: "Impostazioni", href: "/settings", enabled: false },
 ];
@@ -56,6 +58,12 @@ function AdminNavLink({ item }: { item: AdminNavItem }) {
         title="Sezione prevista per una fase successiva"
       >
         {item.label}
+
+        {item.badge ? (
+          <Badge variant="danger" size="sm" className="ml-2">
+            {item.badge}
+          </Badge>
+        ) : null}
       </span>
     );
   }
@@ -71,11 +79,38 @@ function AdminNavLink({ item }: { item: AdminNavItem }) {
       )}
     >
       {item.label}
+
+      {item.badge ? (
+        <Badge variant="danger" size="sm" className="ml-2">
+          {item.badge}
+        </Badge>
+      ) : null}
     </Link>
   );
 }
 
-export function AdminShell({ children }: AdminShellProps) {
+function formatBadgeCount(count: number) {
+  if (count <= 0) {
+    return null;
+  }
+
+  return count > 99 ? "99+" : String(count);
+}
+
+export function AdminShell({
+  children,
+  unreadSupportCount = 0,
+}: AdminShellProps) {
+  const supportBadge = formatBadgeCount(unreadSupportCount);
+  const visibleNavItems = navItems.map((item) =>
+    item.href === "/support" && supportBadge
+      ? {
+          ...item,
+          badge: supportBadge,
+        }
+      : item,
+  );
+
   return (
     <div className="min-h-screen bg-surface-primary text-text-primary">
       <header className="sticky top-0 z-40 border-b border-border-primary bg-surface-primary/95 backdrop-blur">
@@ -99,7 +134,7 @@ export function AdminShell({ children }: AdminShellProps) {
             className="flex justify-start gap-1 overflow-x-auto md:justify-center"
             aria-label="Navigazione admin"
           >
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <AdminNavLink key={item.href} item={item} />
             ))}
           </nav>

@@ -1,0 +1,333 @@
+import type {
+  ConversationParticipant,
+} from "@prisma/client"
+
+import {
+  getCompanyMembershipForUser,
+} from "../identity"
+import {
+  prisma,
+} from "../prisma/client"
+
+import type {
+  CreateCompanyCustomerConversationInput,
+  CreateCompanyCustomerConversationResult,
+} from "./types"
+
+function normalizeRequiredId(
+  value: string,
+): string | null {
+  const normalized =
+    value.trim()
+
+  return normalized
+    ? normalized
+    : null
+}
+
+function findParticipantId({
+  participants,
+  actorType,
+  companyId,
+  customerId,
+}: {
+  participants: Array<
+    Pick<
+      ConversationParticipant,
+      | "actorType"
+      | "companyId"
+      | "customerId"
+      | "id"
+    >
+  >
+  actorType: "COMPANY" | "CUSTOMER"
+  companyId?: string
+  customerId?: string
+}): string | null {
+  const participant =
+    participants.find((item) => {
+      if (item.actorType !== actorType) {
+        return false
+      }
+
+      if (actorType === "COMPANY") {
+        return item.companyId === companyId
+      }
+
+      return item.customerId === customerId
+    })
+
+  return participant?.id ?? null
+}
+
+export async function createCompanyCustomerConversation({
+  companyId,
+  requestId,
+  userId,
+}: CreateCompanyCustomerConversationInput): Promise<CreateCompanyCustomerConversationResult> {
+  const normalizedCompanyId =
+    normalizeRequiredId(companyId)
+  const normalizedRequestId =
+    normalizeRequiredId(requestId)
+  const normalizedUserId =
+    normalizeRequiredId(userId)
+
+  if (!normalizedCompanyId) {
+    return {
+      ok: false,
+      code: "invalid_company_id",
+      message: "Impresa non valida.",
+    }
+  }
+
+  if (!normalizedRequestId) {
+    return {
+      ok: false,
+      code: "invalid_request_id",
+      message: "Richiesta non valida.",
+    }
+  }
+
+  if (!normalizedUserId) {
+    return {
+      ok: false,
+      code: "invalid_user_id",
+      message: "Utente non valido.",
+    }
+  }
+
+  const membership =
+    await getCompanyMembershipForUser({
+      userId: normalizedUserId,
+      companyId: normalizedCompanyId,
+    })
+
+  if (!membership) {
+    return {
+      ok: false,
+      code: "unauthorized",
+      message:
+        "Non hai i permessi per questa impresa.",
+    }
+  }
+
+  return prisma.$transaction(async (tx) => {
+    await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT "id"
+      FROM "RequestUnlock"
+      WHERE "requestId" = ${normalizedRequestId}
+        AND "companyId" = ${normalizedCompanyId}
+      FOR UPDATE
+    `
+
+    const requestUnlock =
+      await tx.requestUnlock.findUnique({
+        where: {
+          requestId_companyId: {
+            requestId:
+              normalizedRequestId,
+            companyId:
+              normalizedCompanyId,
+          },
+        },
+        select: {
+          id: true,
+          refundedAt: true,
+          request: {
+            select: {
+              customerId: true,
+            },
+          },
+        },
+      })
+
+    if (!requestUnlock) {
+      return {
+        ok: false,
+        code: "request_unlock_not_found",
+        message:
+          "La richiesta non risulta sbloccata da questa impresa.",
+      }
+    }
+
+    if (requestUnlock.refundedAt) {
+      return {
+        ok: false,
+        code: "request_unlock_not_valid",
+        message:
+          "Lo sblocco di questa richiesta non e piu valido.",
+      }
+    }
+
+    const customerId =
+      requestUnlock.request.customerId
+
+    if (!customerId) {
+      return {
+        ok: false,
+        code: "customer_not_found",
+        message:
+          "Cliente non disponibile per questo canale messaggi.",
+      }
+    }
+
+    const existingConversation =
+      await tx.conversation.findFirst({
+        where: {
+          type: "COMPANY_CUSTOMER",
+          requestId: normalizedRequestId,
+          AND: [
+            {
+              participants: {
+                some: {
+                  actorType: "COMPANY",
+                  companyId:
+                    normalizedCompanyId,
+                },
+              },
+            },
+            {
+              participants: {
+                some: {
+                  actorType: "CUSTOMER",
+                  customerId,
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          participants: {
+            select: {
+              id: true,
+              actorType: true,
+              companyId: true,
+              customerId: true,
+            },
+          },
+        },
+      })
+
+    if (existingConversation) {
+      const companyParticipantId =
+        findParticipantId({
+          participants:
+            existingConversation.participants,
+          actorType: "COMPANY",
+          companyId: normalizedCompanyId,
+        })
+      const customerParticipantId =
+        findParticipantId({
+          participants:
+            existingConversation.participants,
+          actorType: "CUSTOMER",
+          customerId,
+        })
+
+      if (
+        companyParticipantId &&
+        customerParticipantId
+      ) {
+        return {
+          ok: true,
+          conversationId:
+            existingConversation.id,
+          requestId:
+            normalizedRequestId,
+          requestUnlockId:
+            requestUnlock.id,
+          companyParticipantId,
+          customerParticipantId,
+          created: false,
+        }
+      }
+    }
+
+    const conversation =
+      await tx.conversation.create({
+        data: {
+          type: "COMPANY_CUSTOMER",
+          request: {
+            connect: {
+              id: normalizedRequestId,
+            },
+          },
+          requestUnlock: {
+            connect: {
+              id: requestUnlock.id,
+            },
+          },
+          participants: {
+            create: [
+              {
+                actorType: "COMPANY",
+                company: {
+                  connect: {
+                    id:
+                      normalizedCompanyId,
+                  },
+                },
+              },
+              {
+                actorType: "CUSTOMER",
+                customer: {
+                  connect: {
+                    id: customerId,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        select: {
+          id: true,
+          participants: {
+            select: {
+              id: true,
+              actorType: true,
+              companyId: true,
+              customerId: true,
+            },
+          },
+        },
+      })
+
+    const companyParticipantId =
+      findParticipantId({
+        participants:
+          conversation.participants,
+        actorType: "COMPANY",
+        companyId: normalizedCompanyId,
+      })
+    const customerParticipantId =
+      findParticipantId({
+        participants:
+          conversation.participants,
+        actorType: "CUSTOMER",
+        customerId,
+      })
+
+    if (
+      !companyParticipantId ||
+      !customerParticipantId
+    ) {
+      return {
+        ok: false,
+        code: "customer_not_found",
+        message:
+          "Partecipanti del canale messaggi non disponibili.",
+      }
+    }
+
+    return {
+      ok: true,
+      conversationId: conversation.id,
+      requestId: normalizedRequestId,
+      requestUnlockId: requestUnlock.id,
+      companyParticipantId,
+      customerParticipantId,
+      created: true,
+    }
+  })
+}

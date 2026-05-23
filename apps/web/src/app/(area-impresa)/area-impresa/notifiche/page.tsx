@@ -141,6 +141,25 @@ export default async function NotifichePage() {
                 notification.requestId
                   ? `/area-impresa/richieste/${notification.requestId}`
                   : null
+              const conversationHref =
+                notification.conversationId &&
+                notification.conversation
+                  ? notification.conversation.type === "SUPPORT"
+                    ? `/area-impresa/assistenza/${encodeURIComponent(
+                        notification.conversationId,
+                      )}`
+                    : `/area-impresa/contatti/${encodeURIComponent(
+                      notification.conversationId,
+                    )}`
+                  : null
+              const primaryHref =
+                conversationHref ?? requestHref
+              const primaryActionLabel =
+                conversationHref
+                  ? notification.conversation?.type === "SUPPORT"
+                    ? "Apri assistenza"
+                    : "Apri contatto"
+                  : "Apri richiesta"
 
               return (
                 <Card
@@ -177,6 +196,16 @@ export default async function NotifichePage() {
                               {formatIntervention(
                                 request.interventionSlug,
                               )}
+                            </Badge>
+                          ) : null}
+
+                          {notification.type ===
+                          "CONVERSATION_MESSAGE" ? (
+                            <Badge
+                              variant="danger"
+                              size="sm"
+                            >
+                              Messaggio
                             </Badge>
                           ) : null}
                         </div>
@@ -259,12 +288,12 @@ export default async function NotifichePage() {
                       </dl>
                     ) : null}
 
-                    {requestHref ? (
+                    {primaryHref ? (
                       <Link
-                        href={requestHref}
+                        href={primaryHref}
                         className="inline-flex text-sm font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
                       >
-                        Apri richiesta
+                        {primaryActionLabel}
                       </Link>
                     ) : null}
                   </CardContent>
