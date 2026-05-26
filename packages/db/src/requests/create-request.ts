@@ -12,11 +12,24 @@ import type {
   Prisma,
 } from "@prisma/client"
 
+import {
+  validateRequestPhotoAnswer,
+} from "@fixpro/uploads"
+
+import type {
+  RequestPhotoMetadata,
+} from "@fixpro/uploads"
+
 import { prisma } from "../prisma/client"
 
 import type {
   RequestDraft,
 } from "../funnel/types/request-draft"
+
+import {
+  buildRuntimeContactName,
+  normalizeRuntimeText,
+} from "../funnel/normalization"
 
 import {
   RequestFlowError,
@@ -55,39 +68,6 @@ export type CreateRequestFromDraftResult = {
   status: "PENDING_VERIFICATION"
   verificationEmailSent: boolean
   verificationEmailProvider: "resend"
-}
-
-function normalizeText(
-  value: string | undefined,
-): string | undefined {
-  const trimmed =
-    value?.trim()
-
-  return trimmed
-    ? trimmed
-    : undefined
-}
-
-function buildCustomerName({
-  firstName,
-  lastName,
-  name,
-}: {
-  firstName: string | undefined
-  lastName: string | undefined
-  name: string | undefined
-}): string | undefined {
-  const hasStructuredName =
-    Boolean(firstName || lastName)
-
-  if (hasStructuredName) {
-    return [firstName, lastName]
-      .map((part) => part?.trim())
-      .filter(Boolean)
-      .join(" ")
-  }
-
-  return name
 }
 
 function isValidEmail(
@@ -187,7 +167,7 @@ function validateDraftForCreation(
   }
 
   const customerEmail =
-    normalizeText(
+    normalizeRuntimeText(
       draft.contact.email,
     )?.toLowerCase()
 
@@ -204,12 +184,12 @@ function validateDraftForCreation(
   }
 
   const customerFirstName =
-    normalizeText(
+    normalizeRuntimeText(
       draft.contact.firstName,
     )
 
   const customerLastName =
-    normalizeText(
+    normalizeRuntimeText(
       draft.contact.lastName,
     )
 
@@ -228,14 +208,14 @@ function validateDraftForCreation(
   }
 
   const customerName =
-    normalizeText(
-      buildCustomerName({
+    normalizeRuntimeText(
+      buildRuntimeContactName({
         firstName:
           customerFirstName,
         lastName:
           customerLastName,
         name:
-          normalizeText(
+          normalizeRuntimeText(
             draft.contact.name,
           ),
       }),
@@ -251,7 +231,9 @@ function validateDraftForCreation(
   }
 
   const customerPhone =
-    normalizeText(draft.contact.phone)
+    normalizeRuntimeText(
+      draft.contact.phone,
+    )
 
   if (
     customerPhone &&
@@ -290,13 +272,19 @@ function validateGeoForCreation(
   longitude: number
 } {
   const address =
-    normalizeText(draft.geo.address)
+    normalizeRuntimeText(
+      draft.geo.address,
+    )
 
   const city =
-    normalizeText(draft.geo.city)
+    normalizeRuntimeText(
+      draft.geo.city,
+    )
 
   const postalCode =
-    normalizeText(draft.geo.postalCode)
+    normalizeRuntimeText(
+      draft.geo.postalCode,
+    )
 
   if (
     !address ||
@@ -331,18 +319,170 @@ function validateGeoForCreation(
   }
 }
 
+function validateRequestPhotosForCreation(
+  draft: RequestDraft,
+): {
+  draft: RequestDraft
+  photos: RequestPhotoMetadata[]
+} {
+  const validation =
+    validateRequestPhotoAnswer(
+      draft.rawAnswers.photos,
+    )
+
+  if (!validation.ok) {
+    throw new RequestFlowError({
+      code: "invalid_request_photos",
+      message:
+        "Uploaded request photos are not valid.",
+      statusCode: 400,
+    })
+  }
+
+  const rawAnswers = {
+    ...draft.rawAnswers,
+  }
+
+  if (validation.photos.length > 0) {
+    rawAnswers.photos =
+      validation.photos
+  } else {
+    delete rawAnswers.photos
+  }
+
+  return {
+    draft: {
+      ...draft,
+      rawAnswers,
+    },
+    photos:
+      validation.photos,
+  }
+}
+
+async function attachRequestPhotos({
+  tx,
+  requestId,
+  photos,
+}: {
+  tx: Prisma.TransactionClient
+  requestId: string
+  photos: RequestPhotoMetadata[]
+}) {
+  if (photos.length === 0) {
+    return
+  }
+
+  const uploadIds =
+    photos.map((photo) => photo.uploadId)
+
+  const pendingPhotos =
+    await tx.requestPhoto.findMany({
+      where: {
+        uploadId: {
+          in: uploadIds,
+        },
+        requestId: null,
+        status: "TEMPORARY",
+      },
+      select: {
+        uploadId: true,
+        fileKey: true,
+        fileName: true,
+        mimeType: true,
+        sizeBytes: true,
+      },
+    })
+
+  const pendingByUploadId =
+    new Map(
+      pendingPhotos.map(
+        (photo) => [
+          photo.uploadId,
+          photo,
+        ],
+      ),
+    )
+
+  const arePhotosPending =
+    photos.every((photo) => {
+      const pending =
+        pendingByUploadId.get(
+          photo.uploadId,
+        )
+
+      return Boolean(
+        pending &&
+          pending.fileKey ===
+            photo.fileKey &&
+          pending.fileName ===
+            photo.fileName &&
+          pending.mimeType ===
+            photo.mimeType &&
+          pending.sizeBytes ===
+            photo.sizeBytes,
+      )
+    })
+
+  if (!arePhotosPending) {
+    throw new RequestFlowError({
+      code: "invalid_request_photos",
+      message:
+        "One or more request photos cannot be attached.",
+      statusCode: 400,
+    })
+  }
+
+  const attached =
+    await tx.requestPhoto.updateMany({
+      where: {
+        uploadId: {
+          in: uploadIds,
+        },
+        requestId: null,
+        status: "TEMPORARY",
+      },
+      data: {
+        requestId,
+        status: "ATTACHED",
+        attachedAt: new Date(),
+      },
+    })
+
+  if (attached.count !== photos.length) {
+    throw new RequestFlowError({
+      code: "invalid_request_photos",
+      message:
+        "One or more request photos cannot be attached.",
+      statusCode: 400,
+    })
+  }
+}
+
 export async function createRequestFromDraft({
   draft,
 }: CreateRequestFromDraftInput): Promise<CreateRequestFromDraftResult> {
+  const preparedPhotos =
+    validateRequestPhotosForCreation(
+      draft,
+    )
+
+  const persistedDraft =
+    preparedPhotos.draft
+
   const customer =
-    validateDraftForCreation(draft)
+    validateDraftForCreation(
+      persistedDraft,
+    )
 
   const geo =
-    validateGeoForCreation(draft)
+    validateGeoForCreation(
+      persistedDraft,
+    )
 
   const requiredServiceIds =
     await resolveRequiredServiceIds(
-      draft.matchingSignals
+      persistedDraft.matchingSignals
         .requiredServiceSlugs,
     )
 
@@ -357,12 +497,12 @@ export async function createRequestFromDraft({
     requestCode:
       await generateUniqueRequestCode(),
     interventionSlug:
-      draft.interventionSlug,
+      persistedDraft.interventionSlug,
     customerEmail:
       customer.customerEmail,
     structuredData:
       toRequestStructuredData({
-        draft,
+        draft: persistedDraft,
       }),
     requiredServices: {
       create:
@@ -463,6 +603,14 @@ export async function createRequestFromDraft({
               status: true,
             },
           })
+
+        await attachRequestPhotos({
+          tx,
+          requestId:
+            createdRequest.id,
+          photos:
+            preparedPhotos.photos,
+        })
 
         await createRequestVerificationAccessToken({
           tx,

@@ -14,9 +14,10 @@
   --fp-color-border-secondary: #d7dce0;
   --fp-color-border-focus: #364247;
 
-  --fp-color-brand-primary: #dd29b3;
-  --fp-color-brand-primary-hover: #b6108f;
+  --fp-color-brand-primary: #cc195a;
+  --fp-color-brand-primary-hover: #a50d45;
   --fp-color-brand-on-primary: #ffffff;
+ 
 
   --fp-shadow-surface:
     0 0 1px rgba(0, 0, 0, 0.08),

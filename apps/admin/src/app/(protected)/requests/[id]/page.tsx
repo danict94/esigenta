@@ -1,13 +1,18 @@
 ﻿import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 
 import {
   getRequestById,
+  listAttachedRequestPhotos,
   reviewRequest,
   updateRequestCommercialSettings,
 } from "@fixpro/db";
+import {
+  createRequestPhotoDisplayItems,
+} from "@fixpro/uploads/server";
 import {
   Badge,
   Button,
@@ -46,7 +51,6 @@ const answerLabels: Record<string, string> = {
   location: "Luogo",
   property: "Immobile",
   photos: "Foto",
-  urgency: "Urgenza",
   timing: "Tempistiche",
   budget: "Budget",
   "surface-area": "Superficie",
@@ -56,7 +60,6 @@ const answerLabels: Record<string, string> = {
 
 const valueLabels: Record<string, string> = {
   as_soon_as_possible: "Il prima possibile",
-  within_7_days: "Entro 7 giorni",
   within_30_days: "Entro 30 giorni",
   flexible: "Sono flessibile",
   evaluating: "Sto valutando",
@@ -73,6 +76,7 @@ const valueLabels: Record<string, string> = {
 const duplicatedAnswerKeys = new Set([
   "location",
   "contact",
+  "photos",
 ]);
 
 const descriptionKeys = new Set([
@@ -420,6 +424,10 @@ export default async function RequestDetailPage({
     notFound();
   }
 
+  const photos = await createRequestPhotoDisplayItems(
+    await listAttachedRequestPhotos(request.id),
+  );
+
   const publicRequestCode =
     request.requestCode ?? "In preparazione";
 
@@ -598,6 +606,35 @@ export default async function RequestDetailPage({
               </FieldBlock>
             </dl>
           </DetailSection>
+
+          {photos.length > 0 ? (
+            <DetailSection eyebrow="Allegati" title="Foto allegate dal cliente">
+              <div className="grid gap-4 sm:grid-cols-2">
+                {photos.map((photo) => (
+                  <figure
+                    key={photo.src}
+                    className="overflow-hidden border border-border-primary bg-surface-primary"
+                  >
+                    <div className="relative aspect-video bg-surface-secondary">
+                      <Image
+                        src={photo.src}
+                        alt={photo.fileName}
+                        fill
+                        unoptimized
+                        loading="lazy"
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <figcaption className="truncate px-3 py-2 text-xs text-text-muted">
+                      {photo.fileName}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </DetailSection>
+          ) : null}
 
           <DetailSection eyebrow="Matching" title="Servizi rilevanti">
             {primaryServices.length > 0 ? (
@@ -842,6 +879,3 @@ export default async function RequestDetailPage({
     </PageShell>
   );
 }
-
-
-

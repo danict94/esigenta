@@ -2,35 +2,10 @@ import { NextResponse } from 'next/server'
 
 import { buildRuntimeRequestDraft } from '@fixpro/db'
 
-import type {
-  RuntimeAnswers,
-} from '@fixpro/db'
-
-function readText(
-  value: unknown,
-): string | undefined {
-  if (typeof value !== 'string') {
-    return undefined
-  }
-
-  const trimmed = value.trim()
-
-  return trimmed ? trimmed : undefined
-}
-
-function readAnswers(
-  value: unknown,
-): RuntimeAnswers {
-  if (
-    !value ||
-    typeof value !== 'object' ||
-    Array.isArray(value)
-  ) {
-    return {}
-  }
-
-  return value as RuntimeAnswers
-}
+import {
+  normalizeRuntimeText,
+  readRuntimeAnswers,
+} from '@fixpro/db/funnel-normalization'
 
 export async function POST(request: Request) {
   const body =
@@ -40,7 +15,9 @@ export async function POST(request: Request) {
     >
 
   const interventionSlug =
-    readText(body.interventionSlug)
+    normalizeRuntimeText(
+      body.interventionSlug,
+    )
 
   if (!interventionSlug) {
     return NextResponse.json(
@@ -57,13 +34,18 @@ export async function POST(request: Request) {
   const requestDraft =
     await buildRuntimeRequestDraft({
       interventionSlug,
-      query: readText(body.query),
+      query:
+        normalizeRuntimeText(
+          body.query,
+        ),
       customerDescription:
-        readText(
+        normalizeRuntimeText(
           body.customerDescription,
         ),
       answers:
-        readAnswers(body.answers),
+        readRuntimeAnswers(
+          body.answers,
+        ),
     })
 
   if (!requestDraft) {

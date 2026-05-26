@@ -2,17 +2,9 @@ import { NextResponse } from 'next/server'
 
 import { createRuntimeFunnel } from '@fixpro/db'
 
-function readText(
-  value: unknown,
-): string | undefined {
-  if (typeof value !== 'string') {
-    return undefined
-  }
-
-  const trimmed = value.trim()
-
-  return trimmed ? trimmed : undefined
-}
+import {
+  normalizeRuntimeText,
+} from '@fixpro/db/funnel-normalization'
 
 export async function POST(request: Request) {
   const body =
@@ -22,7 +14,9 @@ export async function POST(request: Request) {
     >
 
   const interventionSlug =
-    readText(body.interventionSlug)
+    normalizeRuntimeText(
+      body.interventionSlug,
+    )
 
   if (!interventionSlug) {
     return NextResponse.json(
@@ -39,7 +33,10 @@ export async function POST(request: Request) {
   const payload =
     await createRuntimeFunnel({
       interventionSlug,
-      query: readText(body.query),
+      query:
+        normalizeRuntimeText(
+          body.query,
+        ),
     })
 
   if (!payload) {

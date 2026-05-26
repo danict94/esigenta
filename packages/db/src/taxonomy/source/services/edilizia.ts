@@ -5,6 +5,9 @@ export const ediliziaServices: TaxonomyService[] = [
   {
     slug: "ristrutturazione-bagno",
     name: "Ristrutturazione bagno",
+    runtimePresetSlugs: [
+      "BATHROOM_RENOVATION",
+    ],
   },
 
   {
@@ -15,11 +18,17 @@ export const ediliziaServices: TaxonomyService[] = [
   {
     slug: "ristrutturazione-appartamento",
     name: "Ristrutturazione appartamento",
+    runtimePresetSlugs: [
+      "HOME_RENOVATION",
+    ],
   },
 
   {
     slug: "ristrutturazione-casa",
     name: "Ristrutturazione casa",
+    runtimePresetSlugs: [
+      "HOME_RENOVATION",
+    ],
   },
 
   // Nuove costruzioni e ampliamenti
@@ -320,17 +329,26 @@ export const ediliziaServices: TaxonomyService[] = [
   //Imbianchino-tinteggiature
 
   {
-  slug: "tinteggiatura-pareti",
-  name: "Tinteggiatura pareti",
-},
+    slug: "tinteggiatura-pareti",
+    name: "Tinteggiatura pareti",
+    runtimePresetSlugs: [
+      "PAINTING",
+    ],
+  },
 
-{
-  slug: "tinteggiatura-interni",
-  name: "Tinteggiatura interni",
-},
+  {
+    slug: "tinteggiatura-interni",
+    name: "Tinteggiatura interni",
+    runtimePresetSlugs: [
+      "PAINTING",
+    ],
+  },
 
-{
-  slug: "tinteggiatura-esterni",
-  name: "Tinteggiatura esterni",
-},
+  {
+    slug: "tinteggiatura-esterni",
+    name: "Tinteggiatura esterni",
+    runtimePresetSlugs: [
+      "PAINTING",
+    ],
+  },
 ]

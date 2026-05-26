@@ -21,4 +21,6 @@ export type {
   TaxonomySearchResult,
 } from "./taxonomy/shared/types"
 
+export * from "./taxonomy/domain"
+
 export * from "./account"

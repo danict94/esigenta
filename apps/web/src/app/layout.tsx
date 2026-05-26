@@ -1,11 +1,17 @@
 ﻿import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Plus_Jakarta_Sans } from "next/font/google"
+import localFont from "next/font/local"
 
 import "./globals.css"
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
+const plusJakartaSans = localFont({
+  src: [
+    {
+      path: "../../public/fonts/plus-jakarta-sans/plus-jakarta-sans-variable.woff2",
+      weight: "200 800",
+      style: "normal",
+    },
+  ],
   variable: "--font-plus-jakarta-sans",
   display: "swap",
 })

@@ -1,4 +1,4 @@
-import type { TaxonomyIntervention } from "../../../shared/types"
+import type { TaxonomyIntervention } from "../../../shared/types";
 
 export const elettricistaInterventions: TaxonomyIntervention[] = [
   {
@@ -6,9 +6,7 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
 
     name: "Impianto elettrico nuovo",
 
-    services: [
-      "impianto-elettrico",
-    ],
+    services: ["impianto-elettrico"],
 
     aliases: [
       "rifare impianto elettrico",
@@ -21,12 +19,9 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
   {
     slug: "saltata-corrente",
 
-    name: "Saltata corrente",
+    name: "corrente saltata",
 
-    services: [
-      "riparazione-guasti-elettrici",
-      "salvavita",
-    ],
+    services: ["riparazione-guasti-elettrici", "salvavita"],
 
     aliases: [
       "manca corrente",
@@ -42,9 +37,7 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
 
     name: "Aggiungere presa elettrica",
 
-    services: [
-      "prese-elettriche",
-    ],
+    services: ["prese-elettriche"],
 
     aliases: [
       "nuova presa elettrica",
@@ -59,9 +52,7 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
 
     name: "Sostituire interruttore",
 
-    services: [
-      "interruttori",
-    ],
+    services: ["interruttori"],
 
     aliases: [
       "interruttore rotto",
@@ -76,10 +67,7 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
 
     name: "Riparare quadro elettrico",
 
-    services: [
-      "quadro-elettrico",
-      "salvavita",
-    ],
+    services: ["quadro-elettrico", "salvavita"],
 
     aliases: [
       "quadro elettrico guasto",
@@ -94,10 +82,7 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
 
     name: "Montare lampadario",
 
-    services: [
-      "lampadari",
-      "illuminazione",
-    ],
+    services: ["lampadari", "illuminazione"],
 
     aliases: [
       "installare lampadario",
@@ -112,10 +97,7 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
 
     name: "Riparare citofono",
 
-    services: [
-      "citofoni",
-      "videocitofoni",
-    ],
+    services: ["citofoni", "videocitofoni"],
 
     aliases: [
       "citofono non funziona",
@@ -124,4 +106,4 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
       "videocitofono guasto",
     ],
   },
-]
+];

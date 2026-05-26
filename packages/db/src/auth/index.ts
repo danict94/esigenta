@@ -12,3 +12,16 @@ export type {
   CurrentAuthSession,
   CurrentAuthUser,
 } from "./server"
+
+export {
+  getPasswordResetTokenState,
+  requestPasswordReset,
+  resetPasswordWithToken,
+} from "./password-reset"
+
+export type {
+  PasswordResetAudience,
+  PasswordResetTokenStateResult,
+  RequestPasswordResetResult,
+  ResetPasswordResult,
+} from "./password-reset"

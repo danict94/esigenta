@@ -33,7 +33,6 @@ type RequestFormDetail = {
 const valueLabels: Record<string, string> = {
   yes: 'Sì',
   no: 'No',
-  urgent: 'Urgente',
   flexible: 'Flessibile',
   appartamento: 'Appartamento',
   villa: 'Villa',
@@ -51,7 +50,6 @@ const detailLabels: Record<string, string> = {
   rooms: 'Ambienti',
   surfacearea: 'Superficie',
   timing: 'Tempistiche',
-  urgency: 'Urgenza',
 }
 
 const omittedDetailKeys = new Set([

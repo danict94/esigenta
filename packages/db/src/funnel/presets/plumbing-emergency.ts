@@ -32,7 +32,7 @@ export const plumbingEmergencyPreset: RuntimePreset = {
    * Emergency plumbing acquisition should remain:
    * - fast
    * - operational
-   * - urgency-driven
+   * - time-sensitive
    *
    * IMPORTANT:
    * Avoid heavy contextual acquisition like:
@@ -42,7 +42,7 @@ export const plumbingEmergencyPreset: RuntimePreset = {
    */
   capabilities: [
     "location",
-    "urgency",
+    "timing",
     "photos",
     "contact",
   ],

@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
@@ -113,6 +114,15 @@ export function AdminLoginForm() {
           {error}
         </p>
       ) : null}
+
+      <div className="flex justify-end">
+        <Link
+          href="/admin/recupera-password"
+          className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+        >
+          Recupera password
+        </Link>
+      </div>
 
       <Button
         type="submit"

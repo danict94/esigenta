@@ -39,7 +39,6 @@ const KNOWN_CAPABILITIES: RuntimeCapabilityId[] = [
   "location",
   "property",
   "photos",
-  "urgency",
   "timing",
   "budget",
   "surface-area",

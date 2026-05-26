@@ -366,6 +366,11 @@ enum RequestStatus {
   CLOSED
 }
 
+enum RequestPhotoStatus {
+  TEMPORARY
+  ATTACHED
+}
+
 enum RequestDispatchStatus {
   CREATED
   CANCELLED
@@ -688,6 +693,7 @@ model Request {
   ///////////////////////////////////////////////////////////
 
   requiredServices     RequestRequiredService[]
+  photos               RequestPhoto[]
   accessTokens         CustomerAccessToken[]
   unlocks              RequestUnlock[]
   savedByCompanies     CompanySavedRequest[]
@@ -712,6 +718,26 @@ model Request {
   @@index([latitude, longitude])
   @@index([status, creditCost])
   @@index([unlockCount])
+}
+
+model RequestPhoto {
+  id String @id @default(cuid())
+
+  uploadId  String @unique
+  fileKey   String @unique
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+
+  status RequestPhotoStatus @default(TEMPORARY)
+
+  requestId String?
+  request   Request? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  attachedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([requestId])
 }
 
 model RequestRequiredService {

@@ -31,7 +31,7 @@ export const electricalWorkPreset: RuntimePreset = {
    * Electrical operational acquisition should remain:
    * - lightweight
    * - fast
-   * - urgency-oriented
+   * - time-sensitive
    *
    * IMPORTANT:
    * Avoid unnecessary heavy acquisition context
@@ -39,7 +39,7 @@ export const electricalWorkPreset: RuntimePreset = {
    */
   capabilities: [
     "location",
-    "urgency",
+    "timing",
     "photos",
     "contact",
   ],

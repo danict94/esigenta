@@ -1,6 +1,8 @@
-﻿import {
+import Image from "next/image"
+
+import {
   cn,
-  Container,
+  HeroSurface,
   tokens,
 } from "@fixpro/ui"
 
@@ -11,72 +13,65 @@ type IllustrationSource =
   | null
 
 const heroIllustrationSrc: IllustrationSource =
-  null
+  "/assets/images/donna-con-laptop.webp"
 
 export function Hero() {
   return (
-    <section className="pb-8 md:pb-10">
-      <Container size="full" gutter="sm">
-        <div
-          className={cn(
-            tokens.surfaces.hero,
-            "relative overflow-visible px-6 py-10 md:px-12 md:py-12 lg:px-24 lg:py-14",
-          )}
-        >
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
-            <div className="flex flex-col gap-8 lg:pl-12 xl:pl-20">
-              <div className="flex flex-col gap-5">
-                <h1
-                  className={cn(
-                    "max-w-2xl text-text-primary",
-                    tokens.typography.hero,
-                  )}
-                >
-                  <span className="block">
-                    Trova il professionista
-                  </span>
+    <HeroSurface className="mb-8 md:mb-10">
+      <div className="grid gap-8 md:gap-10 xl:grid-cols-[minmax(0,1fr)_640px] xl:items-center">
+        <div className="mx-auto flex w-full max-w-2xl flex-col gap-7 text-center xl:mx-0 xl:pl-20 xl:text-left">
+          <div className="flex flex-col gap-5">
+            <h1
+              className={cn(
+                "max-w-2xl text-text-primary",
+                tokens.typography.hero,
+              )}
+            >
+              <span className="block">
+                Trova il professionista
+              </span>
 
-                  <span
-                    className={cn(
-                      "block",
-                      tokens.typography.heroSecondary,
-                    )}
-                  >
-                    <span className="text-brand-primary">
-                      giusto
-                    </span>{" "}
-                    per le tue esigenze
-                  </span>
-                </h1>
+              <span
+                className={cn(
+                  "block",
+                  tokens.typography.heroSecondary,
+                )}
+              >
+                <span className="text-brand-primary">
+                  giusto
+                </span>{" "}
+                per le tue esigenze
+              </span>
+            </h1>
 
-                <p className="max-w-xl text-lg leading-8 text-text-secondary">
-                  Descrivi il lavoro che devi svolgere e ricevi
-                  proposte da professionisti qualificati.
-                </p>
-              </div>
+            <p className="mx-auto max-w-xl text-base leading-7 text-text-secondary md:text-lg md:leading-8 xl:mx-0">
+              Descrivi il lavoro che devi svolgere e ricevi
+              proposte da professionisti qualificati.
+            </p>
+          </div>
 
-              <div className="relative z-20 max-w-xl md:max-w-2xl">
-                <FunnelEntry />
-              </div>
-            </div>
-
-            <HeroIllustration />
+          <div className="relative z-20 mx-auto w-full max-w-xl md:max-w-2xl xl:mx-0">
+            <FunnelEntry />
           </div>
         </div>
-      </Container>
-    </section>
+
+        <HeroIllustration />
+      </div>
+    </HeroSurface>
   )
 }
 
 function HeroIllustration() {
   if (heroIllustrationSrc) {
     return (
-      <div className="relative min-h-80">
-        <img
+      <div className="relative z-10 mx-auto min-h-[260px] w-full max-w-[360px] md:min-h-[340px] md:max-w-[480px] xl:mx-0 xl:min-h-[430px] xl:max-w-[560px] xl:-ml-16 xl:-mb-14">
+        <Image
           src={heroIllustrationSrc}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-contain"
+          fill
+          sizes="(min-width: 1280px) 640px, 100vw"
+          className="object-contain object-bottom"
         />
       </div>
     )
@@ -91,10 +86,7 @@ function HeroIllustration() {
     >
       Inserisci qui:
       <br />
-      /illustrations/donna_con_laptop.svg
+      /assets/images/donna-con-laptop.webp
     </div>
   )
 }
-
-
-

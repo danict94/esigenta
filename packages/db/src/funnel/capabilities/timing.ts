@@ -18,9 +18,7 @@
  * - lightweight lead qualification
  */
 
-import type {
-  RuntimeCapability,
-} from "../types/capability"
+import type { RuntimeCapability } from "../types/capability";
 
 export const timingCapability: RuntimeCapability = {
   /**
@@ -41,8 +39,7 @@ export const timingCapability: RuntimeCapability = {
   /**
    * Lightweight contextual helper.
    */
-  description:
-    "Aiuta i professionisti a capire le tempistiche del lavoro.",
+  description: "Aiuta i professionisti a capire le tempistiche del lavoro.",
 
   /**
    * Runtime timing options.
@@ -54,11 +51,6 @@ export const timingCapability: RuntimeCapability = {
     {
       value: "as_soon_as_possible",
       label: "Il prima possibile",
-    },
-
-    {
-      value: "within_7_days",
-      label: "Entro 7 giorni",
     },
 
     {
@@ -78,8 +70,7 @@ export const timingCapability: RuntimeCapability = {
   ],
 
   /**
-   * Timing is operationally useful and replaces
-   * the duplicated visible urgency step.
+   * Timing is operationally useful for request qualification.
    */
   optional: false,
-}
+};

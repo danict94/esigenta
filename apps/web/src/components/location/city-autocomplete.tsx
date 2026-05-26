@@ -10,13 +10,17 @@ import {
   Input,
 } from '@fixpro/ui'
 
-export type NormalizedLocation = {
-  address?: string
-  city?: string
-  postalCode?: string
-  latitude?: number
-  longitude?: number
-}
+import {
+  isRuntimeLocationAnswerComplete,
+  readRuntimeLocationAnswer,
+} from '@fixpro/db/funnel-normalization'
+
+import type {
+  RequestGeoDraft,
+} from '@fixpro/db'
+
+export type NormalizedLocation =
+  RequestGeoDraft
 
 type GoogleAddressComponent = {
   long_name: string
@@ -81,16 +85,6 @@ const GOOGLE_MAPS_SCRIPT_ID =
 let googleMapsPlacesPromise:
   | Promise<void>
   | null = null
-
-function isRecord(
-  value: unknown,
-): value is Record<string, unknown> {
-  return Boolean(
-    value &&
-      typeof value === 'object' &&
-      !Array.isArray(value),
-  )
-}
 
 function getGoogleMapsWindow() {
   return window as GoogleMapsWindow
@@ -266,70 +260,6 @@ function normalizeGooglePlace(
   }
 }
 
-export function getLocationAnswer(
-  value: unknown,
-): NormalizedLocation {
-  if (typeof value === 'string') {
-    return {
-      address: value,
-    }
-  }
-
-  if (!isRecord(value)) {
-    return {}
-  }
-
-  return {
-    address:
-      typeof value.address === 'string'
-        ? value.address
-        : '',
-    city:
-      typeof value.city === 'string'
-        ? value.city
-        : '',
-    postalCode:
-      typeof value.postalCode ===
-      'string'
-        ? value.postalCode
-        : '',
-    latitude:
-      typeof value.latitude ===
-        'number' &&
-      Number.isFinite(value.latitude)
-        ? value.latitude
-        : undefined,
-    longitude:
-      typeof value.longitude ===
-        'number' &&
-      Number.isFinite(value.longitude)
-        ? value.longitude
-        : undefined,
-  }
-}
-
-export function isLocationComplete(
-  value: unknown,
-) {
-  const location =
-    getLocationAnswer(value)
-
-  return Boolean(
-    location.address &&
-      location.city &&
-      typeof location.latitude ===
-        'number' &&
-      Number.isFinite(
-        location.latitude,
-      ) &&
-      typeof location.longitude ===
-        'number' &&
-      Number.isFinite(
-        location.longitude,
-      ),
-  )
-}
-
 export function CityAutocomplete({
   id,
   value,
@@ -351,7 +281,9 @@ export function CityAutocomplete({
     )
 
   const location =
-    getLocationAnswer(value)
+    readRuntimeLocationAnswer(
+      value,
+    )
 
   const [
     inputValue,
@@ -471,7 +403,7 @@ export function CityAutocomplete({
               )
 
               setMessage(
-                isLocationComplete(
+                isRuntimeLocationAnswerComplete(
                   normalized,
                 )
                   ? null

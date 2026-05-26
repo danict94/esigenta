@@ -1,5 +1,6 @@
 ﻿import type { ReactNode } from "react";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -50,6 +51,10 @@ export type RequestDetailCardProps = {
 
   description?: string | null;
   formDetails: RequestFormDetail[];
+  photos: Array<{
+    src: string;
+    fileName: string;
+  }>;
 
   customerContact?: CustomerContactDetail | null;
 
@@ -441,6 +446,7 @@ export function RequestDetailCard({
   createdAt,
   description,
   formDetails,
+  photos,
   customerContact,
   requestId,
   isSaved,
@@ -535,6 +541,39 @@ export function RequestDetailCard({
             </p>
           )}
         </section>
+
+        {photos.length > 0 ? (
+          <section className="mt-10">
+            <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+              Foto allegate
+            </h2>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {photos.map((photo) => (
+                <figure
+                  key={photo.src}
+                  className="overflow-hidden rounded-md border border-border-primary bg-surface-primary"
+                >
+                  <div className="relative aspect-video bg-surface-secondary">
+                    <Image
+                      src={photo.src}
+                      alt={photo.fileName}
+                      fill
+                      unoptimized
+                      loading="lazy"
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <figcaption className="truncate px-3 py-2 text-xs text-text-muted">
+                    {photo.fileName}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="mt-10">
           <h2 className="text-lg font-semibold tracking-tight text-text-primary">

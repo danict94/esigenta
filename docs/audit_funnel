@@ -1,0 +1,114 @@
+Audit completato. Non ho modificato file e non ho commitato.
+
+**Leakage Map**
+
+| FILE | FUNZIONE / LOGICA | TIPO | DESTINAZIONE | RISCHIO |
+|---|---|---|---|---|
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `RuntimeAnswers` locale | duplicated runtime contract | importare da `@fixpro/db` | low |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `JsonRequestDraft`, `JsonRuntimeFunnelPayload` | API serialization contract | esporre adapter/type dal funnel runtime | medium |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `CreatedRequestPayload`, `SubmittedRequestPayload` | API/domain response shape | `packages/db` o request API typed result | medium |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `isFilled` | validation primitive | `packages/db/src/funnel/runtime` | medium |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `splitLegacyName` | normalization | `packages/db/src/funnel` | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `buildContactName` | normalization | `packages/db/src/funnel` | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `getContactAnswer` | semantic normalization | `packages/db/src/funnel`, riusando `RequestContactDraft` | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `isContactComplete` | validation/progression | `packages/db/src/funnel/runtime` | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `isCapabilityAnswerComplete` | runtime orchestration | `packages/db/src/funnel/runtime` | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `countFilledAnswers` | progress semantics | web può contare, ma completion deve arrivare dal db | medium |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `renderCapabilityInput` | UI renderer con intelligence mista | renderer resta web; shaping/validation fuori | medium |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `draftState` preview | duplicated draft shaping/debug | rimuovere o derivare da db | medium |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `submitDraft` | submit orchestration | `packages/db`: `submitRuntimeRequest` style | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `goNext` | progression + validation | pure runtime helper in `packages/db` | high |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `getRequestSubmitErrorMessage` | UI presenter su error codes | copy resta web, codes typed dal db | medium |
+| `apps/web/src/components/funnel/runtime-funnel-route.tsx` | `loadRuntimeFunnel` | runtime loading orchestration | meglio server component/thin route | medium |
+| `apps/web/src/app/api/funnel/runtime/route.ts` | `readText` | duplicated parsing | shared API/domain adapter | low |
+| `apps/web/src/app/api/funnel/runtime/route.ts` | `POST` | thin API call a `createRuntimeFunnel` | accettabile, da tipizzare meglio | low |
+| `apps/web/src/app/api/funnel/draft/route.ts` | intera route | duplicate/unused draft endpoint | rimuovere o consolidare | medium |
+| `apps/web/src/app/api/requests/route.ts` | `readText`, `readAnswers` | duplicated parsing | shared adapter | medium |
+| `apps/web/src/app/api/requests/route.ts` | `readContactPresence`, `readLocationPresence` | semantic diagnostics | `packages/db` logging/helper | medium |
+| `apps/web/src/app/api/requests/route.ts` | `POST` | API orchestration completa | `packages/db`: build draft + create request + typed result | high |
+| `apps/web/src/components/location/city-autocomplete.tsx` | `NormalizedLocation` | duplicate of `RequestGeoDraft` | import/share type | medium |
+| `apps/web/src/components/location/city-autocomplete.tsx` | Google script/autocomplete | UI only | resta web | low |
+| `apps/web/src/components/location/city-autocomplete.tsx` | `normalizeGooglePlace` | provider adapter normalization | web adapter ok, canonical normalization db | medium |
+| `apps/web/src/components/location/city-autocomplete.tsx` | `getLocationAnswer` | semantic normalization | `packages/db/src/funnel` | high |
+| `apps/web/src/components/location/city-autocomplete.tsx` | `isLocationComplete` | validation/progression | `packages/db/src/funnel/runtime` | high |
+| `packages/db/src/funnel/create-runtime-funnel.ts` | `createRuntimeFunnel`, `buildRuntimeRequestDraft` | SSOT corretto | resta db | clean |
+| `packages/db/src/funnel/compiler/build-request-draft.ts` | `normalizeGeo`, `normalizeContact` | SSOT già presente ma privata | esportare via safe API | clean |
+| `packages/db/src/funnel/runtime/validate-runtime.ts` | `validateRuntimeAnswers` | structural validation only | estendere per completion/requiredness | medium |
+| `packages/db/src/funnel/runtime/resolve-step-visibility.ts` | visibility runtime | SSOT presente ma non usata dal renderer | integrare step runtime | medium |
+| `packages/db/src/funnel/compiler/resolve-runtime-profile.ts` | hardcoded intervention sets | taxonomy bypass/preset inference | taxonomy metadata o generated preset hints | high |
+| `packages/db/src/funnel/compiler/infer-presets.ts` | file vuoto | transitional/dead code | rimuovere o usarlo come vero modulo preset | low |
+
+**Duplication Map**
+
+| SEMANTICA | DUPLICATA DOVE | SOURCE OF TRUTH CORRETTA |
+|---|---|---|
+| Contact normalization | `runtime-funnel.tsx`, `build-request-draft.ts`, `create-request.ts` | `packages/db/src/funnel` + final persistence validation in `requests` |
+| Location normalization | `city-autocomplete.tsx`, `build-request-draft.ts`, `create-request.ts` | `packages/db/src/funnel` |
+| Required answer completion | `runtime-funnel.tsx`, `city-autocomplete.tsx`, `create-request.ts` | `packages/db/src/funnel/runtime` |
+| Error code semantics | `runtime-funnel.tsx`, `apps/web/src/app/api/requests/route.ts`, `RequestFlowError` | typed result/error union in db |
+| Submit lifecycle | `runtime-funnel.tsx`, `/api/requests`, `/api/funnel/draft` | one db orchestrator |
+| Preset inference | hardcoded slug sets in `resolve-runtime-profile.ts` | taxonomy/generator metadata |
+| Runtime step handling | web `stepIndex/goNext`, db `resolveStepOrder/resolveStepVisibility` | db pure runtime helpers, web keeps state |
+| API parsing | three app routes have `readText/readAnswers` | shared adapter or route-local thin parsing only |
+
+**Boundary Violations**
+
+- High: `RuntimeFunnel` decides whether an answer is semantically complete.
+- High: `RuntimeFunnel` normalizes customer contact shape.
+- High: `/api/requests` composes funnel draft creation + request persistence + domain error mapping.
+- High: `CityAutocomplete` exports `isLocationComplete`, then funnel progression depends on it.
+- Medium: `/api/funnel/draft` duplicates draft generation and appears unused.
+- Medium: capability renderer does not handle `multi_select` / `textarea` even though the db contract supports them.
+- Medium/high: hardcoded preset slug sets are inside db, not web, but still bypass taxonomy as semantic authority.
+
+**Runtime Risks**
+
+- Client may allow “complete” answers that server later rejects, especially phone/email/location details.
+- Future `visibleWhen` / `skipWhen` rules will not work correctly because web progression ignores `resolveStepVisibility`.
+- Adding `multi_select` or `textarea` capability in db will silently render as plain input.
+- `/api/funnel/draft` can drift from `/api/requests`.
+- Hardcoded preset intervention sets will become stale as taxonomy grows.
+- `draftState` in the renderer is not the canonical draft; it is a local preview/debug shape.
+
+**Safe Extraction Order**
+
+1. Export db-owned answer utilities without changing behavior: contact/location normalizers, answer completeness, typed error codes.
+2. Replace web `getContactAnswer`, `isContactComplete`, `getLocationAnswer`, `isLocationComplete` with db utilities.
+3. Add a pure db helper like `resolveRuntimeStepState(profile, capabilities, answers, stepIndex)`.
+4. Move `goNext` decision inputs to that helper; web keeps only `useState`.
+5. Introduce one db orchestrator for runtime submission: build draft + create request + typed result.
+6. Make `/api/requests` a thin adapter around that orchestrator.
+7. Remove or consolidate `/api/funnel/draft` after confirming no consumer.
+8. Move hardcoded preset inference into taxonomy/generated metadata.
+9. Add focused tests around contact, location, requiredness, and preset inference before deleting transitional helpers.
+
+**Deve Restare Nel Web**
+
+- Input rendering.
+- Local form state.
+- Google Places script integration.
+- Loading/error UI.
+- Navigation/reset.
+- Visual progress bar.
+- UI copy for user-facing messages.
+
+**Deve Diventare SSOT Funnel Runtime**
+
+- Answer normalization.
+- Required answer completion.
+- Runtime step visibility/progression.
+- Typed request submit result.
+- Error code contract.
+- Draft submission orchestration.
+- Preset inference ownership.
+- Capability renderer coverage contract.
+
+**Validazione**
+
+- `pnpm.cmd lint`: passato
+- `pnpm.cmd --filter @fixpro/db typecheck`: passato
+- `pnpm.cmd --filter web typecheck`: passato
+- `pnpm.cmd --filter admin typecheck`: passato
+- `git diff --check`: passato, solo warning CRLF esistenti
+
+Risk level complessivo: **high**, non perché il funnel sia rotto oggi, ma perché il web contiene abbastanza runtime intelligence da rendere fragile la prossima evoluzione del funnel. La strada sicura è estrazione incrementale, non rewrite.

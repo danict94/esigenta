@@ -1,3 +1,7 @@
+import type {
+  RuntimePresetSlug,
+} from "../../funnel/types/runtime-profile"
+
 export type TaxonomySector = {
   slug: string
   name: string
@@ -8,6 +12,7 @@ export type TaxonomyService = {
   slug: string
   name: string
   description?: string
+  runtimePresetSlugs?: RuntimePresetSlug[]
   aliases?: string[]
 }
 
@@ -17,6 +22,7 @@ export type TaxonomyIntervention = {
   description?: string
 
   services: string[]
+  runtimePresetSlugs?: RuntimePresetSlug[]
 
   aliases?: string[]
 }
@@ -29,6 +35,7 @@ export type TaxonomyCategory = {
   sectorSlug: string
 
   services: string[]
+  runtimePresetSlugs?: RuntimePresetSlug[]
 }
 
 export type TaxonomyDomain = {
@@ -38,6 +45,7 @@ export type TaxonomyDomain = {
   aliases?: string[]
 
   interventions: string[]
+  runtimePresetSlugs?: RuntimePresetSlug[]
 }
 
 export type TaxonomySearchEntityType =

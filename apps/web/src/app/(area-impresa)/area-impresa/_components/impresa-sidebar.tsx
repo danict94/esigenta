@@ -1,32 +1,29 @@
-﻿"use client"
+"use client";
 
-import {
-  useState,
-} from "react"
 import Link from "next/link"
 import {
-  usePathname,
-  useRouter,
-} from "next/navigation"
-
+  ChevronDown,
+  Menu,
+  UserRound,
+  X,
+} from "lucide-react";
 import {
-  Badge,
-  Button,
-  Card,
-  Container,
-  cn,
-} from "@fixpro/ui"
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { usePathname, useRouter } from "next/navigation";
 
-import {
-  authClient,
-} from "../../../../auth/client"
+import { Badge, Button, Card, Container, cn } from "@fixpro/ui";
+
+import { authClient } from "../../../../auth/client";
 
 type NavigationItem = {
-  label: string
-  href: string
-  enabled: boolean
-  badge?: string
-}
+  label: string;
+  href: string;
+  enabled: boolean;
+  badge?: string;
+};
 
 const mainNavigation: NavigationItem[] = [
   {
@@ -49,12 +46,7 @@ const mainNavigation: NavigationItem[] = [
     href: "/area-impresa/assistenza",
     enabled: true,
   },
-  {
-    label: "Aggiornamenti",
-    href: "/area-impresa/aggiornamenti",
-    enabled: false,
-  },
-]
+ ];
 
 const accountNavigation: NavigationItem[] = [
   {
@@ -82,125 +74,158 @@ const accountNavigation: NavigationItem[] = [
     href: "/area-impresa/crediti",
     enabled: true,
   },
-]
+];
 
-function isActivePath(
-  pathname: string,
-  href: string,
-) {
-  return (
-    pathname === href ||
-    pathname.startsWith(`${href}/`)
-  )
+function isActivePath(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function NavBadge({
-  value,
-}: {
-  value: string
-}) {
+function formatUnreadCount(count: number) {
+  if (count <= 0) {
+    return null;
+  }
+
+  return count > 99 ? "99+" : String(count);
+}
+
+function Brand() {
+  return (
+    <span className="inline-flex flex-col leading-none">
+      <span className="text-2xl font-bold tracking-tight md:text-3xl">
+        <span className="text-text-primary">Esi</span>
+        <span className="text-brand-primary">genta</span>
+      </span>
+
+      <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-primary">
+        Imprese
+      </span>
+    </span>
+  );
+}
+
+function NavBadge({ value }: { value: string }) {
   return (
     <Badge
       variant="danger"
       size="sm"
-      className="absolute -right-1 top-1 min-h-4 px-1 text-xs leading-none"
+      className="ml-1 min-w-5 justify-center px-1.5 text-[10px] leading-none"
     >
       {value}
     </Badge>
-  )
+  );
 }
 
-function formatUnreadNotificationCount(
-  count: number,
-) {
-  if (count <= 0) {
-    return null
-  }
-
-  return count > 99 ? "99+" : String(count)
-}
-
-function TopNavLink({
+function DesktopNavLink({
   item,
-  onClick,
+  active,
 }: {
-  item: NavigationItem
-  onClick?: () => void
+  item: NavigationItem;
+  active: boolean;
 }) {
-  const pathname = usePathname()
-  const active =
-    item.enabled &&
-    isActivePath(pathname, item.href)
+  const className = cn(
+    "relative inline-flex items-center gap-1.5 py-7 text-sm font-medium transition-colors",
+    active
+      ? "text-brand-primary"
+      : "text-text-secondary hover:text-text-primary",
+    !item.enabled ? "cursor-not-allowed text-text-muted" : "",
+  );
+
+  const content = (
+    <>
+      <span>{item.label}</span>
+
+      {item.badge ? <NavBadge value={item.badge} /> : null}
+
+      {active ? (
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-0.5 bg-brand-primary"
+        />
+      ) : null}
+    </>
+  );
 
   if (!item.enabled) {
     return (
       <span
-        className="relative inline-flex h-10 cursor-not-allowed items-center px-3 text-sm font-medium text-text-muted"
+        className={className}
         aria-disabled="true"
         title="Sezione prevista per una fase successiva"
       >
-        {item.label}
-
-        {item.badge ? (
-          <NavBadge value={item.badge} />
-        ) : null}
+        {content}
       </span>
-    )
+    );
   }
 
+  return (
+    <Link href={item.href} className={className}>
+      {content}
+    </Link>
+  );
+}
+
+function MobileNavLink({
+  item,
+  active,
+  onClick,
+}: {
+  item: NavigationItem;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const className = cn(
+    "flex items-center justify-between gap-3 px-2 py-3 text-sm font-medium transition-colors",
+    active
+      ? "text-brand-primary"
+      : "text-text-secondary hover:text-text-primary",
+    !item.enabled ? "cursor-not-allowed text-text-muted" : "",
+  );
+
+  const content = (
+    <>
+      <span>{item.label}</span>
+
+      {item.badge ? <NavBadge value={item.badge} /> : null}
+    </>
+  );
+
+  if (!item.enabled) {
+    return (
+      <span className={className} aria-disabled="true">
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <Link href={item.href} onClick={onClick} className={className}>
+      {content}
+    </Link>
+  );
+}
+
+function AccountMenuItem({
+  item,
+  active,
+  onClick,
+}: {
+  item: NavigationItem;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <Link
       href={item.href}
       onClick={onClick}
       className={cn(
-        "relative inline-flex h-10 items-center px-3 text-sm font-semibold transition-colors",
-        active
-          ? "text-text-primary"
-          : "text-text-secondary hover:text-text-primary",
+        "block px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-secondary",
+        active ? "text-brand-primary" : "text-text-primary",
       )}
-    >
-      <span className="relative">
-        {item.label}
-
-        {active ? (
-          <span className="absolute -bottom-2 left-0 h-0.5 w-full bg-brand-primary" />
-        ) : null}
-      </span>
-
-      {item.badge ? (
-        <NavBadge value={item.badge} />
-      ) : null}
-    </Link>
-  )
-}
-
-function AccountMenuItem({
-  item,
-  onClick,
-}: {
-  item: NavigationItem
-  onClick?: () => void
-}) {
-  if (!item.enabled) {
-    return (
-      <span
-        className="block cursor-not-allowed px-5 py-3 text-sm font-medium text-text-muted"
-        aria-disabled="true"
-      >
-        {item.label}
-      </span>
-    )
-  }
-
-  return (
-    <Link
-      href={item.href}
-      onClick={onClick}
-      className="block px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-surface-secondary"
+      role="menuitem"
     >
       {item.label}
     </Link>
-  )
+  );
 }
 
 export function ImpresaSidebar({
@@ -209,152 +234,179 @@ export function ImpresaSidebar({
   unreadContactCount,
   unreadSupportCount,
 }: {
-  accountLabel: string
-  unreadNotificationCount: number
-  unreadContactCount: number
-  unreadSupportCount: number
+  accountLabel: string;
+  unreadNotificationCount: number;
+  unreadContactCount: number;
+  unreadSupportCount: number;
 }) {
-  const router =
-    useRouter()
-  const notificationBadge =
-    formatUnreadNotificationCount(
-      unreadNotificationCount,
-    )
-  const contactBadge =
-    formatUnreadNotificationCount(
-      unreadContactCount,
-    )
-  const supportBadge =
-    formatUnreadNotificationCount(
-      unreadSupportCount,
-    )
-  const mainNavigationItems =
-    mainNavigation.map((item) =>
-      item.href ===
-        "/area-impresa/notifiche" &&
-      notificationBadge
-        ? {
-            ...item,
-            badge: notificationBadge,
-          }
-        : item.href ===
-            "/area-impresa/contatti" &&
-          contactBadge
-        ? {
-            ...item,
-            badge: contactBadge,
-          }
-        : item.href ===
-            "/area-impresa/assistenza" &&
-          supportBadge
-        ? {
-            ...item,
-            badge: supportBadge,
-          }
-        : item,
-    )
+  const pathname = usePathname();
+  const router = useRouter();
 
-  const [
-    mobileOpen,
-    setMobileOpen,
-  ] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
-  const [
-    accountOpen,
-    setAccountOpen,
-  ] = useState(false)
+  const notificationBadge = formatUnreadCount(unreadNotificationCount);
+  const contactBadge = formatUnreadCount(unreadContactCount);
+  const supportBadge = formatUnreadCount(unreadSupportCount);
+
+  const mainNavigationItems = mainNavigation.map((item) => {
+    if (item.href === "/area-impresa/notifiche" && notificationBadge) {
+      return {
+        ...item,
+        badge: notificationBadge,
+      };
+    }
+
+    if (item.href === "/area-impresa/contatti" && contactBadge) {
+      return {
+        ...item,
+        badge: contactBadge,
+      };
+    }
+
+    if (item.href === "/area-impresa/assistenza" && supportBadge) {
+      return {
+        ...item,
+        badge: supportBadge,
+      };
+    }
+
+    return item;
+  });
+
+  const accountMenuRef =
+    useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!accountOpen) {
+      return
+    }
+
+    function handleMouseDown(event: MouseEvent) {
+      const target = event.target
+
+      if (
+        !(target instanceof Node) ||
+        !accountMenuRef.current ||
+        accountMenuRef.current.contains(target)
+      ) {
+        return
+      }
+
+      setAccountOpen(false)
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setAccountOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleMouseDown)
+    document.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown)
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [accountOpen])
+
+  function closeMenus() {
+    setIsMenuOpen(false);
+    setAccountOpen(false);
+  }
 
   async function handleLogout() {
-    await authClient.signOut()
-    setAccountOpen(false)
-    setMobileOpen(false)
-    router.replace("/area-impresa/accedi")
-    router.refresh()
+    await authClient.signOut();
+    closeMenus();
+    router.replace("/area-impresa/accedi");
+    router.refresh();
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border-primary bg-surface-primary">
-      <Container size="xl" className="flex h-20 items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 border-b border-border-primary bg-surface-primary">
+      <Container
+        size="xl"
+        className="flex h-16 items-center justify-between md:h-20"
+      >
         <Link
           href="/area-impresa/richieste"
-          className="inline-flex min-w-0 items-center"
+          onClick={closeMenus}
+          aria-label="Esigenta Imprese"
         >
-          <span className="truncate text-lg font-semibold tracking-tight text-text-primary">
-            FixPro
-          </span>
+          <Brand />
         </Link>
 
-        <div className="hidden items-center gap-7 md:flex">
-          <nav
-            className="flex items-center gap-3"
-            aria-label="Navigazione area impresa"
-          >
-            {mainNavigationItems.map((item) => (
-              <TopNavLink
-                key={item.href}
-                item={item}
-              />
-            ))}
-          </nav>
+        <nav
+          className="hidden items-center gap-8 md:flex"
+          aria-label="Navigazione area impresa"
+        >
+          {mainNavigationItems.map((item) => (
+            <DesktopNavLink
+              key={item.href}
+              item={item}
+              active={item.enabled && isActivePath(pathname, item.href)}
+            />
+          ))}
+        </nav>
 
-          <div className="relative">
+        <div className="hidden md:block">
+          <div ref={accountMenuRef} className="relative">
             <Button
               type="button"
               variant="secondary"
               size="sm"
-              className={cn(
-                "gap-2",
-                accountOpen
-                  ? "bg-surface-secondary"
-                  : null,
-              )}
+              className="gap-2"
               aria-expanded={accountOpen}
               aria-haspopup="menu"
-              onClick={() =>
-                setAccountOpen((open) => !open)
-              }
+              onClick={() => setAccountOpen((open) => !open)}
             >
-              Il mio account
-              <span
+              <UserRound className="size-4" aria-hidden="true" />
+
+              <span className="max-w-40 truncate">Il mio account</span>
+
+              <ChevronDown
                 className={cn(
-                  "text-text-muted transition-transform",
+                  "size-4 text-text-muted transition-transform",
                   accountOpen ? "rotate-180" : "",
                 )}
                 aria-hidden="true"
-              >
-                ▾
-              </span>
+              />
             </Button>
 
             {accountOpen ? (
               <Card
-                className="absolute right-0 top-12 w-64 py-3 shadow-lg"
+                className="absolute right-0 top-12 w-72 py-3 shadow-lg"
                 role="menu"
               >
-                <p className="px-5 pb-3 pt-2 text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Account impresa
-                </p>
+                <div className="border-b border-border-primary px-5 pb-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                    Account impresa
+                  </p>
 
-                <p className="truncate px-5 pb-3 text-sm font-semibold text-text-primary">
-                  {accountLabel}
-                </p>
+                  <p className="mt-1 truncate text-sm font-semibold text-text-primary">
+                    {accountLabel}
+                  </p>
+                </div>
 
-                <div className="border-t border-border-primary pt-2">
+                <nav className="py-2">
                   {accountNavigation.map((item) => (
                     <AccountMenuItem
                       key={item.href}
                       item={item}
-                      onClick={() =>
-                        setAccountOpen(false)
-                      }
+                      active={isActivePath(pathname, item.href)}
+                      onClick={closeMenus}
                     />
                   ))}
+                </nav>
 
+                <div className="border-t border-border-primary px-3 pt-3">
                   <Button
                     type="button"
-                    variant="secondary"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
                     onClick={handleLogout}
-                    className="h-auto w-full justify-start border-0 bg-transparent px-5 py-3 text-left text-sm font-medium hover:bg-surface-secondary"
                   >
                     Esci
                   </Button>
@@ -366,76 +418,68 @@ export function ImpresaSidebar({
 
         <Button
           type="button"
-          variant="secondary"
+          variant="ghost"
           size="sm"
-          className="h-10 w-10 px-0 md:hidden"
-          aria-label={
-            mobileOpen
-              ? "Chiudi menu"
-              : "Apri menu"
-          }
-          aria-expanded={mobileOpen}
-          onClick={() =>
-            setMobileOpen((open) => !open)
-          }
+          aria-label={isMenuOpen ? "Chiudi menu" : "Apri menu"}
+          aria-expanded={isMenuOpen}
+          className="md:hidden"
+          onClick={() => {
+            setIsMenuOpen((current) => !current);
+            setAccountOpen(false);
+          }}
         >
-          <span className="grid gap-1">
-            <span className="block h-0.5 w-4 bg-current" />
-            <span className="block h-0.5 w-4 bg-current" />
-            <span className="block h-0.5 w-4 bg-current" />
-          </span>
+          {isMenuOpen ? (
+            <X className="size-5" aria-hidden="true" />
+          ) : (
+            <Menu className="size-5" aria-hidden="true" />
+          )}
         </Button>
       </Container>
 
-      {mobileOpen ? (
-        <div className="border-t border-border-primary bg-surface-primary px-4 py-4 md:hidden">
-          <nav
-            className="grid gap-1"
-            aria-label="Menu area impresa"
-          >
-            {mainNavigationItems.map((item) => (
-              <TopNavLink
-                key={item.href}
-                item={item}
-                onClick={() =>
-                  setMobileOpen(false)
-                }
-              />
-            ))}
-          </nav>
-
-          <div className="mt-4 border-t border-border-primary pt-4">
-            <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
-              Il mio account
-            </p>
-
-            <p className="truncate px-3 pb-3 text-sm font-semibold text-text-primary">
-              {accountLabel}
-            </p>
-
-            <div className="grid gap-1">
-              {accountNavigation.map((item) => (
-                <AccountMenuItem
+      {isMenuOpen ? (
+        <div className="border-t border-border-primary bg-surface-primary md:hidden">
+          <Container size="xl">
+            <nav
+              className="flex flex-col gap-1 py-4"
+              aria-label="Navigazione area impresa mobile"
+            >
+              {mainNavigationItems.map((item) => (
+                <MobileNavLink
                   key={item.href}
                   item={item}
-                  onClick={() =>
-                    setMobileOpen(false)
-                  }
+                  active={item.enabled && isActivePath(pathname, item.href)}
+                  onClick={closeMenus}
+                />
+              ))}
+
+              <div className="my-2 border-t border-border-primary" />
+
+              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+                Il mio account
+              </p>
+
+              {accountNavigation.map((item) => (
+                <MobileNavLink
+                  key={item.href}
+                  item={item}
+                  active={isActivePath(pathname, item.href)}
+                  onClick={closeMenus}
                 />
               ))}
 
               <Button
                 type="button"
-                variant="secondary"
+                variant="ghost"
+                size="sm"
+                className="mt-2 justify-start"
                 onClick={handleLogout}
-                className="h-auto justify-start border-0 bg-transparent px-3 py-3 text-left text-sm font-medium hover:bg-surface-secondary"
               >
                 Esci
               </Button>
-            </div>
-          </div>
+            </nav>
+          </Container>
         </div>
       ) : null}
     </header>
-  )
+  );
 }

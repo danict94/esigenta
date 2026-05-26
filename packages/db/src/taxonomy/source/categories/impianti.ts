@@ -23,6 +23,10 @@ export const impiantiCategories: TaxonomyCategory[] = [
 
     sectorSlug: "impianti",
 
+    runtimePresetSlugs: [
+      "ELECTRICAL_WORK",
+    ],
+
     services: [
       "impianto-elettrico",
       "riparazione-guasti-elettrici",

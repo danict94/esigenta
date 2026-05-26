@@ -18,15 +18,35 @@ function uniqueTextValues(
   )
 }
 
+const localTrustedOrigins =
+  process.env.NODE_ENV === "production"
+    ? []
+    : [
+        "http://localhost:3000",
+        "http://localhost:3001",
+      ]
+
 const trustedOrigins =
   uniqueTextValues([
     process.env.BETTER_AUTH_URL,
+    process.env.FIXPRO_WEB_URL,
     process.env.FIXPRO_APP_URL,
     process.env.NEXT_PUBLIC_APP_URL,
     process.env.FIXPRO_ADMIN_URL,
-    "http://localhost:3000",
-    "http://localhost:3001",
+    ...localTrustedOrigins,
   ])
+
+const betterAuthSecret =
+  process.env.BETTER_AUTH_SECRET?.trim()
+
+if (
+  !betterAuthSecret &&
+  process.env.NODE_ENV === "production"
+) {
+  throw new Error(
+    "BETTER_AUTH_SECRET is required in production.",
+  )
+}
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -36,10 +56,9 @@ export const auth = betterAuth({
     enabled: true,
   },
   trustedOrigins,
-  ...(process.env.BETTER_AUTH_SECRET
+  ...(betterAuthSecret
     ? {
-        secret:
-          process.env.BETTER_AUTH_SECRET,
+        secret: betterAuthSecret,
       }
     : {}),
   ...(process.env.BETTER_AUTH_URL

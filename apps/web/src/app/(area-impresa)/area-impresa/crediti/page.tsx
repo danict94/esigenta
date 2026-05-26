@@ -35,12 +35,13 @@ type CreditsPageProps = {
 
 function getAppUrl() {
   const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.FIXPRO_APP_URL
+    process.env.FIXPRO_WEB_URL ??
+    process.env.FIXPRO_APP_URL ??
+    process.env.NEXT_PUBLIC_APP_URL
 
   if (!appUrl) {
     throw new Error(
-      "NEXT_PUBLIC_APP_URL non configurata.",
+      "FIXPRO_WEB_URL o FIXPRO_APP_URL non configurata.",
     )
   }
 
@@ -379,4 +380,3 @@ export default async function CompanyCreditsPage({
     </PageShell>
   )
 }
-

@@ -160,8 +160,11 @@ const visibleRequestStatuses: RequestStatus[] = [
 
 const allowedRadiusFilters = new Set([
   10,
-  25,
+  20,
+  30,
   50,
+  75,
+  100,
 ])
 
 const allowedSortFilters =

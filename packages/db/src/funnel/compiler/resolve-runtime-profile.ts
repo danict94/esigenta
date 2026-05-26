@@ -47,6 +47,8 @@ export type ResolvedIntervention = {
   serviceSlugs: string[]
 
   domainSlugs: string[]
+
+  runtimePresetSlugs?: RuntimePresetSlug[]
 }
 
 /**
@@ -62,88 +64,19 @@ type RuntimeInferenceResult = {
   leadType: RuntimeLeadType
 }
 
-const PLUMBING_EMERGENCY_INTERVENTIONS =
-  new Set<string>([
-    "perdita-acqua",
-    "riparare-tubo",
-    "infiltrazione-acqua",
-  ])
+function resolvePresetSlugs(
+  resolved: ResolvedIntervention,
+): RuntimePresetSlug[] {
+  const presetSlugs =
+    Array.from(
+      new Set(
+        resolved.runtimePresetSlugs ?? [],
+      ),
+    ).sort()
 
-const PAINTING_INTERVENTIONS =
-  new Set<string>([
-    "tinteggiare-casa",
-    "imbiancare-stanza",
-    "tinteggiare-interni",
-    "tinteggiare-pareti",
-    "tinteggiare-esterni",
-  ])
-
-const BATHROOM_RENOVATION_INTERVENTIONS =
-  new Set<string>([
-    "rifare-bagno",
-  ])
-
-const HOME_RENOVATION_INTERVENTIONS =
-  new Set<string>([
-    "ristrutturare-casa",
-    "ristrutturare-appartamento",
-  ])
-
-const ELECTRICAL_WORK_INTERVENTIONS =
-  new Set<string>([
-    "impianto-elettrico-nuovo",
-    "saltata-corrente",
-    "aggiungere-presa-elettrica",
-    "sostituire-interruttore",
-    "riparare-quadro-elettrico",
-    "montare-lampadario",
-    "riparare-citofono",
-  ])
-
-function inferPresetSlug(
-  interventionSlug: string,
-): RuntimePresetSlug {
-  if (
-    PLUMBING_EMERGENCY_INTERVENTIONS.has(
-      interventionSlug,
-    )
-  ) {
-    return "PLUMBING_EMERGENCY"
-  }
-
-  if (
-    PAINTING_INTERVENTIONS.has(
-      interventionSlug,
-    )
-  ) {
-    return "PAINTING"
-  }
-
-  if (
-    BATHROOM_RENOVATION_INTERVENTIONS.has(
-      interventionSlug,
-    )
-  ) {
-    return "BATHROOM_RENOVATION"
-  }
-
-  if (
-    HOME_RENOVATION_INTERVENTIONS.has(
-      interventionSlug,
-    )
-  ) {
-    return "HOME_RENOVATION"
-  }
-
-  if (
-    ELECTRICAL_WORK_INTERVENTIONS.has(
-      interventionSlug,
-    )
-  ) {
-    return "ELECTRICAL_WORK"
-  }
-
-  return "GENERIC"
+  return presetSlugs.length > 0
+    ? presetSlugs
+    : ["GENERIC"]
 }
 
 /**
@@ -163,19 +96,11 @@ function inferRuntimeProfile(
    * Current strategy:
    * - lightweight
    * - deterministic
-   * - anti-overengineering
-   *
-   * Future evolution may introduce:
-   * - richer runtime metadata
-   * - runtime scoring
-   * - preset composition rules
+   * - taxonomy-driven
    */
 
-  const presetSlugs: RuntimePresetSlug[] = [
-    inferPresetSlug(
-      resolved.interventionSlug,
-    ),
-  ]
+  const presetSlugs =
+    resolvePresetSlugs(resolved)
 
   const capabilities =
     resolveCapabilities(presetSlugs)

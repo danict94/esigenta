@@ -24,6 +24,10 @@ import type {
   RuntimeComplexity,
 } from "../types/runtime-profile"
 
+import {
+  hasValidRequestPhotos,
+} from "@fixpro/uploads"
+
 export type EnrichRequestOptions = {
   /**
    * Compiler-provided runtime complexity.
@@ -56,16 +60,6 @@ function toNumber(
   return Number.isFinite(parsed)
     ? parsed
     : undefined
-}
-
-function hasPhotoAnswer(
-  value: unknown,
-): boolean {
-  if (Array.isArray(value)) {
-    return value.length > 0
-  }
-
-  return Boolean(value)
 }
 
 function resolveProjectScale(
@@ -166,7 +160,7 @@ function resolveLeadQuality(
   }
 
   if (
-    hasPhotoAnswer(
+    hasValidRequestPhotos(
       draft.rawAnswers.photos,
     )
   ) {
@@ -200,18 +194,12 @@ function resolveUrgency(
 
   switch (timing) {
     case "as_soon_as_possible":
-    case "urgent":
       return "high"
 
     case "within_7_days":
-    case "this_week":
-    case "7_days":
       return "medium"
 
     case "within_30_days":
-    case "this_month":
-    case "next_month":
-    case "30_days":
       return "low"
 
     case "flexible":
@@ -227,15 +215,11 @@ function resolveRoutingSignals(
   draft: RequestDraft,
   derivedSignals: RequestDerivedSignals,
 ): RequestRoutingSignals {
-  const urgency =
-    draft.rawAnswers.urgency
-
   const timing =
     draft.rawAnswers.timing
 
   const emergency =
     derivedSignals.urgency === "high" ||
-    urgency === "urgent" ||
     timing === "as_soon_as_possible"
 
   const inspectionSuggested =

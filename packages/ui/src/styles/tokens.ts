@@ -16,7 +16,7 @@ export const tokens = {
     lg: "rounded-lg",
     xl: "rounded-xl",
     "2xl": "rounded-2xl",
-    "3xl": "rounded-[999px]",
+    "3xl": "rounded-[2.5rem]",
     full: "rounded-full",
   },
 

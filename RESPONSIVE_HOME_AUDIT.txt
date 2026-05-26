@@ -1,0 +1,791 @@
+﻿=== HERO RESPONSIVE ===
+
+  apps\web\src\components\home\hero.tsx:4:  cn,
+> apps\web\src\components\home\hero.tsx:5:  Container,
+  apps\web\src\components\home\hero.tsx:6:  tokens,
+  apps\web\src\components\home\hero.tsx:8:
+> apps\web\src\components\home\hero.tsx:9:import { FunnelEntry } from 
+"./funnel-entry"
+  apps\web\src\components\home\hero.tsx:10:
+  apps\web\src\components\home\hero.tsx:14:
+> apps\web\src\components\home\hero.tsx:15:const heroIllustrationSrc: 
+IllustrationSource =
+  apps\web\src\components\home\hero.tsx:16:  "/assets/images/donna-con-laptop.webp"
+  apps\web\src\components\home\hero.tsx:19:  return (
+> apps\web\src\components\home\hero.tsx:20:    <section className="pb-8 md:pb-10">
+> apps\web\src\components\home\hero.tsx:21:      <Container size="full" 
+gutter="sm">
+  apps\web\src\components\home\hero.tsx:22:        <div
+  apps\web\src\components\home\hero.tsx:24:            tokens.surfaces.hero,
+> apps\web\src\components\home\hero.tsx:25:            "relative overflow-visible 
+px-6 py-10 md:px-12 md:py-12 lg:px-24 lg:py-14",
+  apps\web\src\components\home\hero.tsx:26:          )}
+  apps\web\src\components\home\hero.tsx:27:        >
+> apps\web\src\components\home\hero.tsx:28:          <div className="grid gap-10 
+lg:grid-cols-[minmax(0,1fr)_640px] lg:items-center">
+> apps\web\src\components\home\hero.tsx:29:            <div className="flex 
+flex-col gap-8 lg:pl-12 xl:pl-20">
+  apps\web\src\components\home\hero.tsx:30:              <div className="flex 
+flex-col gap-5">
+  apps\web\src\components\home\hero.tsx:32:                  className={cn(
+> apps\web\src\components\home\hero.tsx:33:                    "max-w-2xl 
+text-text-primary",
+  apps\web\src\components\home\hero.tsx:34:                    
+tokens.typography.hero,
+  apps\web\src\components\home\hero.tsx:53:
+> apps\web\src\components\home\hero.tsx:54:                <p className="max-w-xl 
+text-lg leading-8 text-text-secondary">
+  apps\web\src\components\home\hero.tsx:55:                  Descrivi il lavoro 
+che devi svolgere e ricevi
+  apps\web\src\components\home\hero.tsx:59:
+> apps\web\src\components\home\hero.tsx:60:              <div className="relative 
+z-20 max-w-xl md:max-w-2xl">
+> apps\web\src\components\home\hero.tsx:61:                <FunnelEntry />
+  apps\web\src\components\home\hero.tsx:62:              </div>
+  apps\web\src\components\home\hero.tsx:64:
+> apps\web\src\components\home\hero.tsx:65:            <HeroIllustration />
+  apps\web\src\components\home\hero.tsx:66:          </div>
+  apps\web\src\components\home\hero.tsx:67:        </div>
+> apps\web\src\components\home\hero.tsx:68:      </Container>
+  apps\web\src\components\home\hero.tsx:69:    </section>
+  apps\web\src\components\home\hero.tsx:72:
+> apps\web\src\components\home\hero.tsx:73:function HeroIllustration() {
+> apps\web\src\components\home\hero.tsx:74:  if (heroIllustrationSrc) {
+  apps\web\src\components\home\hero.tsx:75:    return (
+> apps\web\src\components\home\hero.tsx:76:      <div className="relative z-10 
+min-h-[430px] lg:-ml-40 lg:-mb-14">
+  apps\web\src\components\home\hero.tsx:77:        <Image
+> apps\web\src\components\home\hero.tsx:78:          src={heroIllustrationSrc}
+  apps\web\src\components\home\hero.tsx:79:          alt=""
+  apps\web\src\components\home\hero.tsx:81:          fill
+> apps\web\src\components\home\hero.tsx:82:          sizes="(min-width: 1024px) 
+640px, 100vw"
+> apps\web\src\components\home\hero.tsx:83:          className="object-contain 
+object-bottom"
+  apps\web\src\components\home\hero.tsx:84:        />
+  apps\web\src\components\home\hero.tsx:91:      className={cn(
+> apps\web\src\components\home\hero.tsx:92:        "flex min-h-80 items-center 
+justify-center bg-surface-elevated text-center text-sm text-text-muted",
+  apps\web\src\components\home\hero.tsx:93:        tokens.radius["3xl"],
+
+
+
+
+=== SEARCH RESPONSIVE ===
+
+  apps\web\src\components\home\search-bar.tsx:12:import {
+> apps\web\src\components\home\search-bar.tsx:13:  Button,
+> apps\web\src\components\home\search-bar.tsx:14:  Card,
+> apps\web\src\components\home\search-bar.tsx:15:  Input,
+  apps\web\src\components\home\search-bar.tsx:16:} from "@fixpro/ui"
+  apps\web\src\components\home\search-bar.tsx:182:  return (
+> apps\web\src\components\home\search-bar.tsx:183:    <Card className="p-2 
+shadow-surface">
+> apps\web\src\components\home\search-bar.tsx:184:      <div className="flex 
+flex-col gap-2 md:flex-row">
+> apps\web\src\components\home\search-bar.tsx:185:        <div className="relative 
+flex-1">
+> apps\web\src\components\home\search-bar.tsx:186:          <Search 
+className="absolute left-5 top-1/2 z-10 size-6 -translate-y-1/2 text-text-muted" />
+  apps\web\src\components\home\search-bar.tsx:187:
+> apps\web\src\components\home\search-bar.tsx:188:          <Input
+  apps\web\src\components\home\search-bar.tsx:189:            type="text"
+> apps\web\src\components\home\search-bar.tsx:190:            size="lg"
+  apps\web\src\components\home\search-bar.tsx:191:            value={query}
+  apps\web\src\components\home\search-bar.tsx:217:          {showDropdown ? (
+> apps\web\src\components\home\search-bar.tsx:218:            <Card 
+className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden shadow-lg">
+  apps\web\src\components\home\search-bar.tsx:219:              <div 
+className="max-h-[420px] overflow-y-auto">
+  apps\web\src\components\home\search-bar.tsx:227:
+> apps\web\src\components\home\search-bar.tsx:228:                    <div 
+className="flex flex-col">
+  apps\web\src\components\home\search-bar.tsx:229:                      
+{groupedResults.interventions.map(
+  apps\web\src\components\home\search-bar.tsx:232:                        ) => (
+> apps\web\src\components\home\search-bar.tsx:233:                          <Button
+  apps\web\src\components\home\search-bar.tsx:234:                            
+key={`INTERVENTION-${result.id}`}
+> apps\web\src\components\home\search-bar.tsx:235:                            
+type="button"
+  apps\web\src\components\home\search-bar.tsx:236:                            
+variant="ghost"
+  apps\web\src\components\home\search-bar.tsx:241:                            }}
+> apps\web\src\components\home\search-bar.tsx:242:                            
+className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 
+text-left"
+  apps\web\src\components\home\search-bar.tsx:243:                          >
+  apps\web\src\components\home\search-bar.tsx:256:                            ) : 
+null}
+> apps\web\src\components\home\search-bar.tsx:257:                          
+</Button>
+  apps\web\src\components\home\search-bar.tsx:258:                        ),
+  apps\web\src\components\home\search-bar.tsx:271:
+> apps\web\src\components\home\search-bar.tsx:272:                    <div 
+className="flex flex-col">
+  apps\web\src\components\home\search-bar.tsx:273:                      
+{groupedResults.categories.map(
+  apps\web\src\components\home\search-bar.tsx:276:                        ) => (
+> apps\web\src\components\home\search-bar.tsx:277:                          <Button
+  apps\web\src\components\home\search-bar.tsx:278:                            
+key={`CATEGORY-${result.id}`}
+> apps\web\src\components\home\search-bar.tsx:279:                            
+type="button"
+  apps\web\src\components\home\search-bar.tsx:280:                            
+variant="ghost"
+> apps\web\src\components\home\search-bar.tsx:281:                            
+className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 
+text-left"
+  apps\web\src\components\home\search-bar.tsx:282:                          >
+  apps\web\src\components\home\search-bar.tsx:295:                            ) : 
+null}
+> apps\web\src\components\home\search-bar.tsx:296:                          
+</Button>
+  apps\web\src\components\home\search-bar.tsx:297:                        ),
+  apps\web\src\components\home\search-bar.tsx:302:              </div>
+> apps\web\src\components\home\search-bar.tsx:303:            </Card>
+  apps\web\src\components\home\search-bar.tsx:304:          ) : null}
+  apps\web\src\components\home\search-bar.tsx:306:
+> apps\web\src\components\home\search-bar.tsx:307:        <Button
+> apps\web\src\components\home\search-bar.tsx:308:          type="button"
+> apps\web\src\components\home\search-bar.tsx:309:          size="xl"
+> apps\web\src\components\home\search-bar.tsx:310:          className="w-full 
+md:w-auto md:min-w-36"
+  apps\web\src\components\home\search-bar.tsx:311:          onClick={() => {
+  apps\web\src\components\home\search-bar.tsx:322:          Cerca
+> apps\web\src\components\home\search-bar.tsx:323:        </Button>
+  apps\web\src\components\home\search-bar.tsx:324:      </div>
+> apps\web\src\components\home\search-bar.tsx:325:    </Card>
+  apps\web\src\components\home\search-bar.tsx:326:  )
+
+
+
+
+=== NAVBAR RESPONSIVE ===
+
+> apps\web\src\components\navigation\navbar.tsx:1:import Link from "next/link"
+  apps\web\src\components\navigation\navbar.tsx:2:
+> apps\web\src\components\navigation\navbar.tsx:3:import { Container } from 
+"@fixpro/ui"
+  apps\web\src\components\navigation\navbar.tsx:4:
+> apps\web\src\components\navigation\navbar.tsx:5:export function Navbar() {
+  apps\web\src\components\navigation\navbar.tsx:6:  return (
+  apps\web\src\components\navigation\navbar.tsx:7:    <header className="border-b 
+border-border-primary bg-surface-primary">
+> apps\web\src\components\navigation\navbar.tsx:8:      <Container size="xl" 
+className="flex h-20 items-center justify-between">
+> apps\web\src\components\navigation\navbar.tsx:9:        <Link
+  apps\web\src\components\navigation\navbar.tsx:10:          href="/"
+> apps\web\src\components\navigation\navbar.tsx:11:          className="text-3xl 
+font-bold tracking-tight"
+  apps\web\src\components\navigation\navbar.tsx:12:          aria-label="Esigenta 
+home"
+  apps\web\src\components\navigation\navbar.tsx:13:        >
+> apps\web\src\components\navigation\navbar.tsx:14:          <span 
+className="text-text-primary">Esi</span>
+> apps\web\src\components\navigation\navbar.tsx:15:          <span 
+className="text-brand-primary">genta</span>
+> apps\web\src\components\navigation\navbar.tsx:16:        </Link>
+  apps\web\src\components\navigation\navbar.tsx:17:
+> apps\web\src\components\navigation\navbar.tsx:18:        <nav className="hidden 
+items-center gap-8 md:flex">
+> apps\web\src\components\navigation\navbar.tsx:19:          <Link
+  apps\web\src\components\navigation\navbar.tsx:20:            
+href="/richieste/accesso"
+> apps\web\src\components\navigation\navbar.tsx:21:            className="text-sm 
+text-text-secondary transition-colors hover:text-text-primary"
+  apps\web\src\components\navigation\navbar.tsx:22:          >
+  apps\web\src\components\navigation\navbar.tsx:23:            Le mie richieste
+> apps\web\src\components\navigation\navbar.tsx:24:          </Link>
+> apps\web\src\components\navigation\navbar.tsx:25:        </nav>
+  apps\web\src\components\navigation\navbar.tsx:26:
+> apps\web\src\components\navigation\navbar.tsx:27:        <div className="flex 
+items-center gap-8">
+> apps\web\src\components\navigation\navbar.tsx:28:          <Link
+  apps\web\src\components\navigation\navbar.tsx:29:            
+href="/area-impresa/accedi"
+> apps\web\src\components\navigation\navbar.tsx:30:            
+className="text-base text-text-primary transition-colors hover:text-brand-primary"
+  apps\web\src\components\navigation\navbar.tsx:31:          >
+  apps\web\src\components\navigation\navbar.tsx:32:            Accedi
+> apps\web\src\components\navigation\navbar.tsx:33:          </Link>
+  apps\web\src\components\navigation\navbar.tsx:34:
+> apps\web\src\components\navigation\navbar.tsx:35:          <Link
+  apps\web\src\components\navigation\navbar.tsx:36:            href="/area-impresa"
+> apps\web\src\components\navigation\navbar.tsx:37:            className="group 
+text-base text-text-primary transition-colors hover:text-brand-primary"
+  apps\web\src\components\navigation\navbar.tsx:38:          >
+  apps\web\src\components\navigation\navbar.tsx:40:            <span
+> apps\web\src\components\navigation\navbar.tsx:41:              aria-hidden="true"
+> apps\web\src\components\navigation\navbar.tsx:42:              className="mt-1 
+block h-0.5 w-full bg-brand-primary"
+  apps\web\src\components\navigation\navbar.tsx:43:            />
+> apps\web\src\components\navigation\navbar.tsx:44:          </Link>
+  apps\web\src\components\navigation\navbar.tsx:45:        </div>
+> apps\web\src\components\navigation\navbar.tsx:46:      </Container>
+  apps\web\src\components\navigation\navbar.tsx:47:    </header>
+
+
+
+
+=== HERO FILE FULL ===
+import Image from "next/image"
+
+import {
+  cn,
+  Container,
+  tokens,
+} from "@fixpro/ui"
+
+import { FunnelEntry } from "./funnel-entry"
+
+type IllustrationSource =
+  | string
+  | null
+
+const heroIllustrationSrc: IllustrationSource =
+  "/assets/images/donna-con-laptop.webp"
+
+export function Hero() {
+  return (
+    <section className="pb-8 md:pb-10">
+      <Container size="full" gutter="sm">
+        <div
+          className={cn(
+            tokens.surfaces.hero,
+            "relative overflow-visible px-6 py-10 md:px-12 md:py-12 lg:px-24 lg:py-14",
+          )}
+        >
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_640px] lg:items-center">
+            <div className="flex flex-col gap-8 lg:pl-12 xl:pl-20">
+              <div className="flex flex-col gap-5">
+                <h1
+                  className={cn(
+                    "max-w-2xl text-text-primary",
+                    tokens.typography.hero,
+                  )}
+                >
+                  <span className="block">
+                    Trova il professionista
+                  </span>
+
+                  <span
+                    className={cn(
+                      "block",
+                      tokens.typography.heroSecondary,
+                    )}
+                  >
+                    <span className="text-brand-primary">
+                      giusto
+                    </span>{" "}
+                    per le tue esigenze
+                  </span>
+                </h1>
+
+                <p className="max-w-xl text-lg leading-8 text-text-secondary">
+                  Descrivi il lavoro che devi svolgere e ricevi
+                  proposte da professionisti qualificati.
+                </p>
+              </div>
+
+              <div className="relative z-20 max-w-xl md:max-w-2xl">
+                <FunnelEntry />
+              </div>
+            </div>
+
+            <HeroIllustration />
+          </div>
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+function HeroIllustration() {
+  if (heroIllustrationSrc) {
+    return (
+      <div className="relative z-10 min-h-[430px] lg:-ml-40 lg:-mb-14">
+        <Image
+          src={heroIllustrationSrc}
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="(min-width: 1024px) 640px, 100vw"
+          className="object-contain object-bottom"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex min-h-80 items-center justify-center bg-surface-elevated text-center text-sm text-text-muted",
+        tokens.radius["3xl"],
+      )}
+    >
+      Inserisci qui:
+      <br />
+      /assets/images/donna-con-laptop.webp
+    </div>
+  )
+}
+
+
+=== SEARCH FILE FULL ===
+"use client"
+
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
+
+import { Search } from "lucide-react"
+
+import {
+  Button,
+  Card,
+  Input,
+} from "@fixpro/ui"
+
+import type { TaxonomySearchResult } from "@fixpro/db"
+
+export type SearchBarSelection = {
+  result: TaxonomySearchResult
+  query: string
+}
+
+type SearchBarProps = {
+  onInterventionSelect?: (
+    selection: SearchBarSelection,
+  ) => void
+}
+
+const PRELOADED_RESULTS: TaxonomySearchResult[] = [
+  {
+    id: "preload-1",
+    type: "INTERVENTION",
+    name: "Rifare bagno",
+    slug: "rifare-bagno",
+    description: null,
+    relevance: 100,
+  },
+  {
+    id: "preload-2",
+    type: "INTERVENTION",
+    name: "Perdita acqua",
+    slug: "perdita-acqua",
+    description: null,
+    relevance: 100,
+  },
+  {
+    id: "preload-3",
+    type: "CATEGORY",
+    name: "Impresa edile",
+    slug: "impresa-edile",
+    description: null,
+    relevance: 60,
+  },
+  {
+    id: "preload-4",
+    type: "CATEGORY",
+    name: "Idraulico",
+    slug: "idraulico",
+    description: null,
+    relevance: 60,
+  },
+]
+
+export function SearchBar({
+  onInterventionSelect,
+}: SearchBarProps = {}) {
+  const [query, setQuery] =
+    useState("")
+
+  const [results, setResults] =
+    useState<TaxonomySearchResult[]>([])
+
+  const [isFocused, setIsFocused] =
+    useState(false)
+
+  const debounceRef =
+    useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    const trimmedQuery =
+      query.trim()
+
+    if (!trimmedQuery) {
+      const resetResultsTimeout =
+        window.setTimeout(() => {
+          setResults(PRELOADED_RESULTS)
+        }, 0)
+
+      return () => {
+        window.clearTimeout(resetResultsTimeout)
+      }
+    }
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+
+    const controller =
+      new AbortController()
+
+    debounceRef.current =
+      setTimeout(async () => {
+        try {
+          const response =
+            await fetch(
+              `/api/taxonomy/search?q=${encodeURIComponent(
+                trimmedQuery,
+              )}`,
+              {
+                signal:
+                  controller.signal,
+              },
+            )
+
+          if (!response.ok) {
+            return
+          }
+
+          const data =
+            (await response.json()) as TaxonomySearchResult[]
+
+          setResults(data)
+        } catch {
+          // aborted
+        }
+      }, 180)
+
+    return () => {
+      controller.abort()
+
+      if (debounceRef.current) {
+        clearTimeout(
+          debounceRef.current,
+        )
+      }
+    }
+  }, [query])
+
+  const groupedResults =
+    useMemo(() => {
+      return {
+        interventions:
+          results.filter(
+            (result) =>
+              result.type ===
+              "INTERVENTION",
+          ),
+
+        categories:
+          results.filter(
+            (result) =>
+              result.type ===
+              "CATEGORY",
+          ),
+      }
+    }, [results])
+
+  const showDropdown =
+    isFocused &&
+    results.length > 0
+
+  function selectIntervention(
+    result: TaxonomySearchResult,
+  ) {
+    setQuery(result.name)
+    setResults([])
+    setIsFocused(false)
+
+    onInterventionSelect?.({
+      result,
+      query:
+        query.trim() ||
+        result.name,
+    })
+  }
+
+  const firstIntervention =
+    groupedResults.interventions[0]
+
+  return (
+    <Card className="p-2 shadow-surface">
+      <div className="flex flex-col gap-2 md:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-5 top-1/2 z-10 size-6 -translate-y-1/2 text-text-muted" />
+
+          <Input
+            type="text"
+            size="lg"
+            value={query}
+            onFocus={() => {
+              setIsFocused(true)
+
+              if (
+                query.trim() === ""
+              ) {
+                setResults(
+                  PRELOADED_RESULTS,
+                )
+              }
+            }}
+            onBlur={() => {
+              setTimeout(() => {
+                setIsFocused(false)
+              }, 150)
+            }}
+            onChange={(event) => {
+              setQuery(
+                event.target.value,
+              )
+            }}
+            placeholder="Di cosa hai bisogno?"
+            className="pl-14"
+          />
+
+          {showDropdown ? (
+            <Card className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden shadow-lg">
+              <div className="max-h-[420px] overflow-y-auto">
+                {groupedResults
+                  .interventions
+                  .length > 0 ? (
+                  <div className="border-b border-border-primary">
+                    <div className="px-4 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted">
+                      Interventi
+                    </div>
+
+                    <div className="flex flex-col">
+                      {groupedResults.interventions.map(
+                        (
+                          result,
+                        ) => (
+                          <Button
+                            key={`INTERVENTION-${result.id}`}
+                            type="button"
+                            variant="ghost"
+                            onClick={() => {
+                              selectIntervention(
+                                result,
+                              )
+                            }}
+                            className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 text-left"
+                          >
+                            <span className="text-sm text-text-primary">
+                              {
+                                result.name
+                              }
+                            </span>
+
+                            {result.description ? (
+                              <span className="text-xs text-text-muted">
+                                {
+                                  result.description
+                                }
+                              </span>
+                            ) : null}
+                          </Button>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+
+                {groupedResults
+                  .categories.length >
+                0 ? (
+                  <div>
+                    <div className="px-4 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted">
+                      Categorie
+                    </div>
+
+                    <div className="flex flex-col">
+                      {groupedResults.categories.map(
+                        (
+                          result,
+                        ) => (
+                          <Button
+                            key={`CATEGORY-${result.id}`}
+                            type="button"
+                            variant="ghost"
+                            className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 text-left"
+                          >
+                            <span className="text-sm text-text-primary">
+                              {
+                                result.name
+                              }
+                            </span>
+
+                            {result.description ? (
+                              <span className="text-xs text-text-muted">
+                                {
+                                  result.description
+                                }
+                              </span>
+                            ) : null}
+                          </Button>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </Card>
+          ) : null}
+        </div>
+
+        <Button
+          type="button"
+          size="xl"
+          className="w-full md:w-auto md:min-w-36"
+          onClick={() => {
+            if (firstIntervention) {
+              selectIntervention(
+                firstIntervention,
+              )
+            }
+          }}
+          disabled={
+            !firstIntervention
+          }
+        >
+          Cerca
+        </Button>
+      </div>
+    </Card>
+  )
+}
+
+=== NAVBAR FILE FULL ===
+import Link from "next/link"
+
+import { Container } from "@fixpro/ui"
+
+export function Navbar() {
+  return (
+    <header className="border-b border-border-primary bg-surface-primary">
+      <Container size="xl" className="flex h-20 items-center justify-between">
+        <Link
+          href="/"
+          className="text-3xl font-bold tracking-tight"
+          aria-label="Esigenta home"
+        >
+          <span className="text-text-primary">Esi</span>
+          <span className="text-brand-primary">genta</span>
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex">
+          <Link
+            href="/richieste/accesso"
+            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
+          >
+            Le mie richieste
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-8">
+          <Link
+            href="/area-impresa/accedi"
+            className="text-base text-text-primary transition-colors hover:text-brand-primary"
+          >
+            Accedi
+          </Link>
+
+          <Link
+            href="/area-impresa"
+            className="group text-base text-text-primary transition-colors hover:text-brand-primary"
+          >
+            <span>Sei un professionista?</span>
+            <span
+              aria-hidden="true"
+              className="mt-1 block h-0.5 w-full bg-brand-primary"
+            />
+          </Link>
+        </div>
+      </Container>
+    </header>
+  )
+}
+
+=== HOME DIFF ===
+diff --git a/apps/web/src/components/home/hero.tsx b/apps/web/src/components/home/hero.tsx
+index 9341bd9..d9e36c7 100644
+--- a/apps/web/src/components/home/hero.tsx
++++ b/apps/web/src/components/home/hero.tsx
+@@ -1,4 +1,6 @@
+-´╗┐import {
++import Image from "next/image"
++
++import {
+   cn,
+   Container,
+   tokens,
+@@ -11,7 +13,7 @@ type IllustrationSource =
+   | null
+ 
+ const heroIllustrationSrc: IllustrationSource =
+-  null
++  "/assets/images/donna-con-laptop.webp"
+ 
+ export function Hero() {
+   return (
+@@ -23,7 +25,7 @@ export function Hero() {
+             "relative overflow-visible px-6 py-10 md:px-12 md:py-12 lg:px-24 lg:py-14",
+           )}
+         >
+-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
++          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_640px] lg:items-center">
+             <div className="flex flex-col gap-8 lg:pl-12 xl:pl-20">
+               <div className="flex flex-col gap-5">
+                 <h1
+@@ -71,12 +73,14 @@ export function Hero() {
+ function HeroIllustration() {
+   if (heroIllustrationSrc) {
+     return (
+-      <div className="relative min-h-80">
+-        <img
++      <div className="relative z-10 min-h-[430px] lg:-ml-40 lg:-mb-14">
++        <Image
+           src={heroIllustrationSrc}
+           alt=""
+           aria-hidden="true"
+-          className="h-full w-full object-contain"
++          fill
++          sizes="(min-width: 1024px) 640px, 100vw"
++          className="object-contain object-bottom"
+         />
+       </div>
+     )
+@@ -91,10 +95,7 @@ function HeroIllustration() {
+     >
+       Inserisci qui:
+       <br />
+-      /illustrations/donna_con_laptop.svg
++      /assets/images/donna-con-laptop.webp
+     </div>
+   )
+ }
+-
+-
+-
+diff --git a/packages/ui/src/styles/globals.css b/packages/ui/src/styles/globals.css
+index 99d70d5..f07df51 100644
+--- a/packages/ui/src/styles/globals.css
++++ b/packages/ui/src/styles/globals.css
+@@ -14,8 +14,8 @@
+   --fp-color-border-secondary: #d7dce0;
+   --fp-color-border-focus: #364247;
+ 
+-  --fp-color-brand-primary: #dd29b3;
+-  --fp-color-brand-primary-hover: #b6108f;
++  --fp-color-brand-primary: #ff4eb6;
++  --fp-color-brand-primary-hover: #fa3aaa;
+   --fp-color-brand-on-primary: #ffffff;
+ 
+   --fp-shadow-surface:
+

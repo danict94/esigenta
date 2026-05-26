@@ -8,6 +8,10 @@ export const idraulicaInterventions: TaxonomyIntervention[] = [
 
     services: ["riparazione-perdite-acqua"],
 
+    runtimePresetSlugs: [
+      "PLUMBING_EMERGENCY",
+    ],
+
     aliases: [
       "perde acqua",
       "tubo che perde",

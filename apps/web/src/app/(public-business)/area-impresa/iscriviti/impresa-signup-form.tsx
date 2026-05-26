@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   type FormEvent,
@@ -9,9 +9,12 @@ import {
 } from "next/navigation"
 
 import {
+  Badge,
   Button,
   Input,
   Select,
+  cn,
+  tokens,
 } from "@fixpro/ui"
 
 import {
@@ -36,6 +39,10 @@ type ImpresaSignupFormProps = {
   hasValidLeadLocation: boolean
 }
 
+type SignupStep =
+  | "company"
+  | "account"
+
 const operatingRadiusOptions = [
   10,
   20,
@@ -56,6 +63,9 @@ export function ImpresaSignupForm({
 }: ImpresaSignupFormProps) {
   const router =
     useRouter()
+
+  const [step, setStep] =
+    useState<SignupStep>("company")
 
   const [companyName, setCompanyName] =
     useState("")
@@ -80,57 +90,83 @@ export function ImpresaSignupForm({
   const [isSubmitting, setIsSubmitting] =
     useState(false)
 
+  function validateCompanyStep() {
+    if (!hasValidLeadLocation) {
+      return "Seleziona prima la città dalla pagina professionisti."
+    }
+
+    if (!categorySlug) {
+      return "Seleziona prima la categoria professionale dalla pagina professionisti."
+    }
+
+    if (!hasText(companyName)) {
+      return "Inserisci il nome azienda."
+    }
+
+    if (!hasText(vatNumber)) {
+      return "Inserisci la partita IVA."
+    }
+
+    if (!hasText(phone)) {
+      return "Inserisci il numero di telefono."
+    }
+
+    return null
+  }
+
+  function validateAccountStep() {
+    if (!hasText(name)) {
+      return "Inserisci il nome referente."
+    }
+
+    if (!hasText(email)) {
+      return "Inserisci l’email."
+    }
+
+    if (password.length < 8) {
+      return "La password deve contenere almeno 8 caratteri."
+    }
+
+    return null
+  }
+
+  function handleContinue() {
+    const validationError =
+      validateCompanyStep()
+
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+
+    setError(null)
+    setStep("account")
+  }
+
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault()
 
+    const companyStepError =
+      validateCompanyStep()
+
+    if (companyStepError) {
+      setError(companyStepError)
+      setStep("company")
+      return
+    }
+
+    const accountStepError =
+      validateAccountStep()
+
+    if (accountStepError) {
+      setError(accountStepError)
+      setStep("account")
+      return
+    }
+
     setError(null)
-
-    if (!hasValidLeadLocation) {
-      setError(
-        "Seleziona prima la città dalla pagina professionisti.",
-      )
-      return
-    }
-
-    if (!categorySlug) {
-      setError(
-        "Seleziona prima la categoria professionale dalla pagina professionisti.",
-      )
-      return
-    }
-
-    if (!hasText(companyName)) {
-      setError("Inserisci il nome azienda.")
-      return
-    }
-
-    if (!hasText(vatNumber)) {
-      setError("Inserisci la partita IVA.")
-      return
-    }
-
-    if (!hasText(phone)) {
-      setError("Inserisci il numero di telefono.")
-      return
-    }
-
-    if (!hasText(name)) {
-      setError("Inserisci il nome referente.")
-      return
-    }
-
-    if (!hasText(email)) {
-      setError("Inserisci l’email.")
-      return
-    }
-
-    if (password.length < 8) {
-      setError("La password deve contenere almeno 8 caratteri.")
-      return
-    }
-
     setIsSubmitting(true)
 
     try {
@@ -214,43 +250,81 @@ export function ImpresaSignupForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className="flex flex-col gap-5"
     >
-      <div className="space-y-5">
-        <div>
-          <h3 className="text-base font-semibold text-text-primary">
-            Dati azienda
-          </h3>
+      <div className="flex items-center gap-2 pb-1">
+        <Badge
+          variant={step === "company" ? "success" : "neutral"}
+        >
+          1
+        </Badge>
 
-          <p className="mt-1 text-sm leading-6 text-text-secondary">
-            Inserisci le informazioni principali della tua impresa.
-          </p>
-        </div>
+        <span
+          className={cn(
+            "text-sm font-semibold",
+            step === "company"
+              ? "text-text-primary"
+              : "text-text-secondary",
+          )}
+        >
+          Dati azienda
+        </span>
 
-        <div className="space-y-2">
-          <label
-            htmlFor="companyName"
-            className="text-sm font-medium text-text-primary"
-          >
-            Nome azienda
-          </label>
+        <span className="h-px flex-1 bg-border-primary" />
 
-          <Input
-            id="companyName"
-            type="text"
-            autoComplete="organization"
-            required
-            value={companyName}
-            onChange={(event) =>
-              setCompanyName(
-                event.target.value,
-              )
-            }
-          />
-        </div>
+        <Badge
+          variant={step === "account" ? "success" : "neutral"}
+        >
+          2
+        </Badge>
 
-        <div className="grid gap-5 md:grid-cols-2">
-          <div className="space-y-2">
+        <span
+          className={cn(
+            "text-sm font-semibold",
+            step === "account"
+              ? "text-text-primary"
+              : "text-text-secondary",
+          )}
+        >
+          Accesso
+        </span>
+      </div>
+
+      {step === "company" ? (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold text-text-primary">
+              Dati azienda
+            </h2>
+
+            <p className="mt-1 text-sm leading-5 text-text-secondary">
+              Inserisci le informazioni principali della tua impresa.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="companyName"
+              className="text-sm font-medium text-text-primary"
+            >
+              Nome azienda
+            </label>
+
+            <Input
+              id="companyName"
+              type="text"
+              autoComplete="organization"
+              required
+              value={companyName}
+              onChange={(event) =>
+                setCompanyName(
+                  event.target.value,
+                )
+              }
+            />
+          </div>
+
+          <div className="space-y-1.5">
             <label
               htmlFor="vatNumber"
               className="text-sm font-medium text-text-primary"
@@ -272,7 +346,7 @@ export function ImpresaSignupForm({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
               htmlFor="phone"
               className="text-sm font-medium text-text-primary"
@@ -293,126 +367,164 @@ export function ImpresaSignupForm({
               }
             />
           </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="operatingRadiusKm"
+              className="text-sm font-medium text-text-primary"
+            >
+              Raggio d’azione
+            </label>
+
+            <Select
+              id="operatingRadiusKm"
+              required
+              value={operatingRadiusKm}
+              onChange={(event) =>
+                setOperatingRadiusKm(
+                  Number(event.target.value),
+                )
+              }
+            >
+              {operatingRadiusOptions.map(
+                (option) => (
+                  <option
+                    key={option}
+                    value={option}
+                  >
+                    {option} km
+                  </option>
+                ),
+              )}
+            </Select>
+
+            <p className={tokens.typography.caption}>
+              Il raggio sarà calcolato dalla città selezionata nel passaggio
+              precedente. Potrai modificarlo più avanti.
+            </p>
+          </div>
         </div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold text-text-primary">
+              Referente e accesso
+            </h2>
 
-        <div className="space-y-2">
-          <label
-            htmlFor="operatingRadiusKm"
-            className="text-sm font-medium text-text-primary"
-          >
-            Raggio d’azione
-          </label>
+            <p className="mt-1 text-sm leading-5 text-text-secondary">
+              Inserisci i dati della persona che gestirà l’area impresa.
+            </p>
+          </div>
 
-          <Select
-            id="operatingRadiusKm"
-            required
-            value={operatingRadiusKm}
-            onChange={(event) =>
-              setOperatingRadiusKm(
-                Number(event.target.value),
-              )
-            }
-          >
-            {operatingRadiusOptions.map(
-              (option) => (
-                <option
-                  key={option}
-                  value={option}
-                >
-                  {option} km
-                </option>
-              ),
-            )}
-          </Select>
+          <div className="space-y-1.5">
+            <label
+              htmlFor="name"
+              className="text-sm font-medium text-text-primary"
+            >
+              Nome referente
+            </label>
 
-          <p className="text-xs leading-5 text-text-muted">
-            Il raggio sarà calcolato dalla città selezionata nel passaggio
-            precedente. Potrai modificarlo più avanti.
-          </p>
+            <Input
+              id="name"
+              type="text"
+              autoComplete="name"
+              required
+              value={name}
+              onChange={(event) =>
+                setName(event.target.value)
+              }
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-text-primary"
+            >
+              Email
+            </label>
+
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(event) =>
+                setEmail(event.target.value)
+              }
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-text-primary"
+            >
+              Password
+            </label>
+
+            <Input
+              id="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(event) =>
+                setPassword(
+                  event.target.value,
+                )
+              }
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="space-y-5 border-t border-border-primary pt-6">
-        <div className="space-y-2">
-          <label
-            htmlFor="name"
-            className="text-sm font-medium text-text-primary"
-          >
-            Nome referente
-          </label>
-
-          <Input
-            id="name"
-            type="text"
-            autoComplete="name"
-            required
-            value={name}
-            onChange={(event) =>
-              setName(event.target.value)
-            }
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label
-            htmlFor="email"
-            className="text-sm font-medium text-text-primary"
-          >
-            Email
-          </label>
-
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(event) =>
-              setEmail(event.target.value)
-            }
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label
-            htmlFor="password"
-            className="text-sm font-medium text-text-primary"
-          >
-            Password
-          </label>
-
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={8}
-            value={password}
-            onChange={(event) =>
-              setPassword(
-                event.target.value,
-              )
-            }
-          />
-        </div>
-      </div>
+      )}
 
       {error ? (
-        <p className="border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+        <p
+          className={cn(
+            "border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary",
+            tokens.radius.md,
+          )}
+        >
           {error}
         </p>
       ) : null}
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full"
-      >
-        {isSubmitting
-          ? "Creazione in corso..."
-          : "Crea accesso impresa"}
-      </Button>
+      {step === "company" ? (
+        <Button
+          type="button"
+          className="w-full"
+          onClick={handleContinue}
+        >
+          Continua
+        </Button>
+      ) : (
+        <div className="flex flex-col gap-3">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full"
+          >
+            {isSubmitting
+              ? "Creazione in corso..."
+              : "Crea accesso impresa"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full"
+            onClick={() => {
+              setError(null)
+              setStep("company")
+            }}
+          >
+            Indietro
+          </Button>
+        </div>
+      )}
     </form>
   )
 }
-

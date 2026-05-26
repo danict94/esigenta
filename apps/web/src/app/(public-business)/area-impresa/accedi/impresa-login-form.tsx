@@ -6,6 +6,12 @@ import type {
 import {
   useState,
 } from "react"
+import Link from "next/link"
+import {
+  Eye,
+  Lock,
+  Mail,
+} from "lucide-react"
 import {
   useRouter,
 } from "next/navigation"
@@ -100,19 +106,28 @@ export function ImpresaLoginForm() {
           Email
         </label>
 
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="username"
-          autoCapitalize="none"
-          spellCheck={false}
-          required
-          value={email}
-          onChange={(event) =>
-            setEmail(event.target.value)
-          }
-        />
+        <div className="relative">
+          <Mail
+            aria-hidden="true"
+            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+          />
+
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            required
+            value={email}
+            onChange={(event) =>
+              setEmail(event.target.value)
+            }
+            placeholder="es.azienda@esempio.it"
+            className="pl-12"
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -123,21 +138,44 @@ export function ImpresaLoginForm() {
           Password
         </label>
 
-        <Input
-          id="password"
-          name="company-login-password"
-          type="password"
-          autoComplete="new-password"
-          required
-          readOnly={!isPasswordEditable}
-          value={password}
-          onFocus={() =>
-            setIsPasswordEditable(true)
-          }
-          onChange={(event) =>
-            setPassword(event.target.value)
-          }
-        />
+        <div className="relative">
+          <Lock
+            aria-hidden="true"
+            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+          />
+
+          <Input
+            id="password"
+            name="company-login-password"
+            type="password"
+            autoComplete="new-password"
+            required
+            readOnly={!isPasswordEditable}
+            value={password}
+            onFocus={() =>
+              setIsPasswordEditable(true)
+            }
+            onChange={(event) =>
+              setPassword(event.target.value)
+            }
+            placeholder="Inserisci la password"
+            className="pl-12 pr-12"
+          />
+
+          <Eye
+            aria-hidden="true"
+            className="absolute right-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <Link
+          href="/area-impresa/recupera-password"
+          className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+        >
+          Recupera password
+        </Link>
       </div>
 
       {error ? (
@@ -148,7 +186,7 @@ export function ImpresaLoginForm() {
 
       <Button
         type="submit"
-        variant="brandOutline"
+        size="lg"
         disabled={isSubmitting}
         className="mt-2 w-full"
       >

@@ -1,0 +1,1423 @@
+﻿=== 1. HEX HARDCODED IN APPS ===
+
+
+=== 2. ARBITRARY TAILWIND VALUES IN APPS ===
+
+
+=== 3. POSSIBLE CUSTOM BUTTONS ===
+
+
+=== 4. POSSIBLE CUSTOM INPUTS ===
+
+
+=== 5. POSSIBLE CUSTOM CARDS / LOCAL SURFACES ===
+
+
+=== 6. TOKENS ===
+export const tokens = {
+  containers: {
+    xs: "max-w-2xl",
+    sm: "max-w-3xl",
+    md: "max-w-5xl",
+    lg: "max-w-6xl",
+    xl: "max-w-7xl",
+    xxl: "max-w-screen-2xl",
+    full: "max-w-none",
+  },
+
+  radius: {
+    none: "",
+    sm: "rounded-md",
+    md: "rounded-md",
+    lg: "rounded-lg",
+    xl: "rounded-xl",
+    "2xl": "rounded-2xl",
+    "3xl": "rounded-[999px]",
+    full: "rounded-full",
+  },
+
+  spacing: {
+    sectionXs: "py-8",
+    sectionSm: "py-12",
+    sectionMd: "py-16",
+    sectionLg: "py-24",
+    sectionXl: "py-32",
+
+    pageShell: "py-10 md:py-12",
+    containerX: "px-4 md:px-6 lg:px-8",
+  },
+
+  typography: {
+    hero: "text-3xl md:text-5xl font-bold leading-tight tracking-tight",
+    heroSecondary: "text-[0.92em]",
+
+    title: "text-3xl md:text-5xl font-semibold tracking-tight",
+
+    subtitle: "text-xl md:text-2xl text-text-secondary",
+
+    body: "text-base leading-7",
+
+    caption: "text-sm text-text-muted",
+  },
+
+  surfaces: {
+    hero: "fp-hero-surface",
+  },
+
+  shadows: {
+    sm: "shadow-sm",
+    md: "shadow-md",
+    lg: "shadow-lg",
+    surface: "shadow-surface",
+  },
+} as const
+
+export type ContainerToken = keyof typeof tokens.containers
+export type RadiusToken = keyof typeof tokens.radius
+export type SpacingToken = keyof typeof tokens.spacing
+export type TypographyToken = keyof typeof tokens.typography
+export type SurfaceToken = keyof typeof tokens.surfaces
+export type ShadowToken = keyof typeof tokens.shadows
+
+=== 7. GLOBALS DESIGN TOKENS ===
+:root {
+  --fp-color-surface-primary: #fcfcfc;
+  --fp-color-surface-secondary: #f8f8f7;
+  --fp-color-surface-tertiary: #f1f3f4;
+  --fp-color-surface-elevated: #ffffff;
+  --fp-color-surface-hero: #f7f7f6;
+
+  --fp-color-text-primary: #364247;
+  --fp-color-text-secondary: #627881;
+  --fp-color-text-muted: #8a9aa3;
+  --fp-color-text-inverse: #ffffff;
+
+  --fp-color-border-primary: #e5e7eb;
+  --fp-color-border-secondary: #d7dce0;
+  --fp-color-border-focus: #364247;
+
+  --fp-color-brand-primary: #ca8fb2;
+  --fp-color-brand-primary-hover: #fa3aaa;
+  --fp-color-brand-on-primary: #ffffff;
+
+  --fp-shadow-surface:
+    0 0 1px rgba(0, 0, 0, 0.08),
+    0 0 14px rgba(0, 0, 0, 0.16);
+
+  --fp-radius-hero-surface: clamp(2.5rem, 4vw, 4.5rem);
+  --fp-hero-surface-background: var(--fp-color-surface-hero);
+}
+
+@theme inline {
+  --font-sans: var(--font-plus-jakarta-sans);
+
+  --color-surface-primary: var(--fp-color-surface-primary);
+  --color-surface-secondary: var(--fp-color-surface-secondary);
+  --color-surface-tertiary: var(--fp-color-surface-tertiary);
+  --color-surface-elevated: var(--fp-color-surface-elevated);
+  --color-surface-hero: var(--fp-color-surface-hero);
+
+  --color-text-primary: var(--fp-color-text-primary);
+  --color-text-secondary: var(--fp-color-text-secondary);
+  --color-text-muted: var(--fp-color-text-muted);
+  --color-text-inverse: var(--fp-color-text-inverse);
+
+  --color-border-primary: var(--fp-color-border-primary);
+  --color-border-secondary: var(--fp-color-border-secondary);
+  --color-border-focus: var(--fp-color-border-focus);
+
+  --color-brand-primary: var(--fp-color-brand-primary);
+  --color-brand-primary-hover: var(--fp-color-brand-primary-hover);
+  --color-brand-on-primary: var(--fp-color-brand-on-primary);
+
+  --shadow-surface: var(--fp-shadow-surface);
+}
+
+body {
+  background: var(--fp-color-surface-primary);
+  color: var(--fp-color-text-primary);
+  font-family: var(--font-plus-jakarta-sans, Arial), Helvetica, sans-serif;
+}
+
+.fp-hero-surface {
+  background: var(--fp-hero-surface-background);
+  border-radius: var(--fp-radius-hero-surface);
+  box-shadow: none;
+}
+
+
+=== 8. UI PRIMITIVES ===
+--- button.tsx ---
+import type {
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react"
+
+import { cn } from "../lib/cn"
+import {
+  tokens,
+} from "../styles/tokens"
+
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "brandOutline"
+  | "ghost"
+
+type ButtonSize =
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+
+export type ButtonProps = {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+  children: ReactNode
+} & ButtonHTMLAttributes<HTMLButtonElement>
+
+const variants: Record<ButtonVariant, string> = {
+  primary:
+    "border border-brand-primary bg-brand-primary text-brand-on-primary hover:border-brand-primary-hover hover:bg-brand-primary-hover",
+
+  secondary:
+    "border border-border-primary bg-surface-primary text-text-primary hover:border-border-focus",
+
+  brandOutline:
+    "border border-brand-primary bg-transparent text-brand-primary hover:bg-brand-primary hover:text-brand-on-primary",
+
+  ghost:
+    "border border-transparent bg-transparent text-text-secondary hover:bg-surface-secondary hover:text-text-primary",
+}
+
+const sizes: Record<ButtonSize, string> = {
+  sm: "h-10 px-4 text-sm",
+  md: "h-12 px-5 text-sm",
+  lg: "h-14 px-6 text-base",
+  xl: "h-16 px-8 text-base",
+}
+
+export function Button({
+  variant = "primary",
+  size = "md",
+  className,
+  children,
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      className={cn(
+        "inline-flex items-center justify-center font-medium transition-colors disabled:pointer-events-none disabled:opacity-60",
+        tokens.radius.md,
+        sizes[size],
+        variants[variant],
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
+
+--- input.tsx ---
+import {
+  forwardRef,
+  type InputHTMLAttributes,
+} from "react"
+
+import { cn } from "../lib/cn"
+
+type InputSize =
+  | "md"
+  | "lg"
+
+export type InputProps =
+  Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
+    size?: InputSize
+  }
+
+const sizes: Record<InputSize, string> = {
+  md: "h-12 px-4 text-sm",
+  lg: "h-16 px-5 text-base",
+}
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  function Input({
+    className,
+    size = "md",
+    ...props
+  }, ref) {
+    return (
+      <input
+        ref={ref}
+        className={cn(
+          "w-full border border-border-primary bg-surface-primary text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus disabled:cursor-not-allowed disabled:opacity-60",
+          sizes[size],
+          className,
+        )}
+        {...props}
+      />
+    )
+  },
+)
+
+--- card.tsx ---
+import type {
+  HTMLAttributes,
+  ReactNode,
+} from "react"
+
+import { cn } from "../lib/cn"
+import {
+  tokens,
+} from "../styles/tokens"
+
+export type CardProps = {
+  children: ReactNode
+  className?: string
+} & HTMLAttributes<HTMLDivElement>
+
+export function Card({
+  className,
+  children,
+  ...props
+}: CardProps) {
+  return (
+    <div
+      className={cn(
+        tokens.radius.lg,
+        "border border-border-primary bg-surface-elevated",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+export type CardSectionProps = {
+  children: ReactNode
+  className?: string
+} & HTMLAttributes<HTMLDivElement>
+
+export function CardHeader({
+  className,
+  children,
+  ...props
+}: CardSectionProps) {
+  return (
+    <div
+      className={cn("space-y-1.5 p-6", className)}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+export function CardContent({
+  className,
+  children,
+  ...props
+}: CardSectionProps) {
+  return (
+    <div
+      className={cn("p-6 pt-0", className)}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+export function CardFooter({
+  className,
+  children,
+  ...props
+}: CardSectionProps) {
+  return (
+    <div
+      className={cn("flex items-center p-6 pt-0", className)}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+export type CardTitleProps = {
+  children: ReactNode
+  className?: string
+} & HTMLAttributes<HTMLHeadingElement>
+
+export function CardTitle({
+  className,
+  children,
+  ...props
+}: CardTitleProps) {
+  return (
+    <h3
+      className={cn(
+        "text-lg font-semibold leading-none tracking-tight text-text-primary",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </h3>
+  )
+}
+
+export type CardDescriptionProps = {
+  children: ReactNode
+  className?: string
+} & HTMLAttributes<HTMLParagraphElement>
+
+export function CardDescription({
+  className,
+  children,
+  ...props
+}: CardDescriptionProps) {
+  return (
+    <p
+      className={cn("text-sm text-text-secondary", className)}
+      {...props}
+    >
+      {children}
+    </p>
+  )
+}
+
+
+--- container.tsx ---
+import type { ReactNode } from "react"
+
+import { cn } from "../lib/cn"
+import {
+  tokens,
+  type ContainerToken,
+} from "../styles/tokens"
+
+export type ContainerSize = ContainerToken
+
+export type ContainerGutter =
+  | "none"
+  | "sm"
+  | "md"
+
+export type ContainerProps = {
+  size?: ContainerSize
+  gutter?: ContainerGutter
+  className?: string
+  children?: ReactNode
+}
+
+const gutters: Record<ContainerGutter, string> = {
+  none: "",
+  sm: "px-2 md:px-3 lg:px-4",
+  md: tokens.spacing.containerX,
+}
+
+export function Container({
+  size = "lg",
+  gutter = "md",
+  className,
+  children,
+}: ContainerProps) {
+  return (
+    <div
+      className={cn(
+        "mx-auto w-full",
+        tokens.containers[size],
+        gutters[gutter],
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+=== 9. HOME COMPONENTS ===
+--- hero.tsx ---
+import Image from "next/image"
+
+import {
+  cn,
+  Container,
+  tokens,
+} from "@fixpro/ui"
+
+import { FunnelEntry } from "./funnel-entry"
+
+type IllustrationSource =
+  | string
+  | null
+
+const heroIllustrationSrc: IllustrationSource =
+  "/assets/images/donna-con-laptop.webp"
+
+export function Hero() {
+  return (
+    <section className="pb-8 md:pb-10">
+      <Container size="full" gutter="sm">
+        <div
+          className={cn(
+            tokens.surfaces.hero,
+            "relative overflow-visible px-5 py-8 md:px-10 md:py-10 xl:px-24 xl:py-14",
+          )}
+        >
+          <div className="grid gap-8 md:gap-10 xl:grid-cols-[minmax(0,1fr)_640px] xl:items-center">
+            <div className="mx-auto flex w-full max-w-2xl flex-col gap-7 text-center xl:mx-0 xl:max-w-none xl:pl-20 xl:text-left">
+              <div className="flex flex-col gap-5">
+                <h1
+                  className={cn(
+                    "max-w-2xl text-text-primary",
+                    tokens.typography.hero,
+                  )}
+                >
+                  <span className="block">
+                    Trova il professionista
+                  </span>
+
+                  <span
+                    className={cn(
+                      "block",
+                      tokens.typography.heroSecondary,
+                    )}
+                  >
+                    <span className="text-brand-primary">
+                      giusto
+                    </span>{" "}
+                    per le tue esigenze
+                  </span>
+                </h1>
+
+                <p className="mx-auto max-w-xl text-base leading-7 text-text-secondary md:text-lg md:leading-8 xl:mx-0">
+                  Descrivi il lavoro che devi svolgere e ricevi
+                  proposte da professionisti qualificati.
+                </p>
+              </div>
+
+              <div className="relative z-20 mx-auto w-full max-w-xl md:max-w-2xl xl:mx-0">
+                <FunnelEntry />
+              </div>
+            </div>
+
+            <HeroIllustration />
+          </div>
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+function HeroIllustration() {
+  if (heroIllustrationSrc) {
+    return (
+      <div className="relative z-10 mx-auto min-h-[260px] w-full max-w-[360px] md:min-h-[340px] md:max-w-[480px] xl:mx-0 lg:min-h-[430px] lg:max-w-none lg:-ml-40 lg:-mb-14">
+        <Image
+          src={heroIllustrationSrc}
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="(min-width: 1280px) 640px, 100vw"
+          className="object-contain object-bottom"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex min-h-80 items-center justify-center bg-surface-elevated text-center text-sm text-text-muted",
+        tokens.radius["3xl"],
+      )}
+    >
+      Inserisci qui:
+      <br />
+      /assets/images/donna-con-laptop.webp
+    </div>
+  )
+}
+
+
+--- search-bar.tsx ---
+"use client"
+
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
+
+import { Search } from "lucide-react"
+
+import {
+  Button,
+  Card,
+  Input,
+} from "@fixpro/ui"
+
+import type { TaxonomySearchResult } from "@fixpro/db"
+
+export type SearchBarSelection = {
+  result: TaxonomySearchResult
+  query: string
+}
+
+type SearchBarProps = {
+  onInterventionSelect?: (
+    selection: SearchBarSelection,
+  ) => void
+}
+
+const PRELOADED_RESULTS: TaxonomySearchResult[] = [
+  {
+    id: "preload-1",
+    type: "INTERVENTION",
+    name: "Rifare bagno",
+    slug: "rifare-bagno",
+    description: null,
+    relevance: 100,
+  },
+  {
+    id: "preload-2",
+    type: "INTERVENTION",
+    name: "Perdita acqua",
+    slug: "perdita-acqua",
+    description: null,
+    relevance: 100,
+  },
+  {
+    id: "preload-3",
+    type: "CATEGORY",
+    name: "Impresa edile",
+    slug: "impresa-edile",
+    description: null,
+    relevance: 60,
+  },
+  {
+    id: "preload-4",
+    type: "CATEGORY",
+    name: "Idraulico",
+    slug: "idraulico",
+    description: null,
+    relevance: 60,
+  },
+]
+
+export function SearchBar({
+  onInterventionSelect,
+}: SearchBarProps = {}) {
+  const [query, setQuery] =
+    useState("")
+
+  const [results, setResults] =
+    useState<TaxonomySearchResult[]>([])
+
+  const [isFocused, setIsFocused] =
+    useState(false)
+
+  const debounceRef =
+    useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    const trimmedQuery =
+      query.trim()
+
+    if (!trimmedQuery) {
+      const resetResultsTimeout =
+        window.setTimeout(() => {
+          setResults(PRELOADED_RESULTS)
+        }, 0)
+
+      return () => {
+        window.clearTimeout(resetResultsTimeout)
+      }
+    }
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+
+    const controller =
+      new AbortController()
+
+    debounceRef.current =
+      setTimeout(async () => {
+        try {
+          const response =
+            await fetch(
+              `/api/taxonomy/search?q=${encodeURIComponent(
+                trimmedQuery,
+              )}`,
+              {
+                signal:
+                  controller.signal,
+              },
+            )
+
+          if (!response.ok) {
+            return
+          }
+
+          const data =
+            (await response.json()) as TaxonomySearchResult[]
+
+          setResults(data)
+        } catch {
+          // aborted
+        }
+      }, 180)
+
+    return () => {
+      controller.abort()
+
+      if (debounceRef.current) {
+        clearTimeout(
+          debounceRef.current,
+        )
+      }
+    }
+  }, [query])
+
+  const groupedResults =
+    useMemo(() => {
+      return {
+        interventions:
+          results.filter(
+            (result) =>
+              result.type ===
+              "INTERVENTION",
+          ),
+
+        categories:
+          results.filter(
+            (result) =>
+              result.type ===
+              "CATEGORY",
+          ),
+      }
+    }, [results])
+
+  const showDropdown =
+    isFocused &&
+    results.length > 0
+
+  function selectIntervention(
+    result: TaxonomySearchResult,
+  ) {
+    setQuery(result.name)
+    setResults([])
+    setIsFocused(false)
+
+    onInterventionSelect?.({
+      result,
+      query:
+        query.trim() ||
+        result.name,
+    })
+  }
+
+  const firstIntervention =
+    groupedResults.interventions[0]
+
+  return (
+    <Card className="p-2 shadow-surface">
+      <div className="flex flex-col gap-2 md:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-5 top-1/2 z-10 size-6 -translate-y-1/2 text-text-muted" />
+
+          <Input
+            type="text"
+            size="lg"
+            value={query}
+            onFocus={() => {
+              setIsFocused(true)
+
+              if (
+                query.trim() === ""
+              ) {
+                setResults(
+                  PRELOADED_RESULTS,
+                )
+              }
+            }}
+            onBlur={() => {
+              setTimeout(() => {
+                setIsFocused(false)
+              }, 150)
+            }}
+            onChange={(event) => {
+              setQuery(
+                event.target.value,
+              )
+            }}
+            placeholder="Di cosa hai bisogno?"
+            className="pl-14"
+          />
+
+          {showDropdown ? (
+            <Card className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden shadow-lg">
+              <div className="max-h-[min(60vh,420px)] overflow-y-auto">
+                {groupedResults
+                  .interventions
+                  .length > 0 ? (
+                  <div className="border-b border-border-primary">
+                    <div className="px-4 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted">
+                      Interventi
+                    </div>
+
+                    <div className="flex flex-col">
+                      {groupedResults.interventions.map(
+                        (
+                          result,
+                        ) => (
+                          <Button
+                            key={`INTERVENTION-${result.id}`}
+                            type="button"
+                            variant="ghost"
+                            onClick={() => {
+                              selectIntervention(
+                                result,
+                              )
+                            }}
+                            className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 text-left"
+                          >
+                            <span className="text-sm text-text-primary">
+                              {
+                                result.name
+                              }
+                            </span>
+
+                            {result.description ? (
+                              <span className="text-xs text-text-muted">
+                                {
+                                  result.description
+                                }
+                              </span>
+                            ) : null}
+                          </Button>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+
+                {groupedResults
+                  .categories.length >
+                0 ? (
+                  <div>
+                    <div className="px-4 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted">
+                      Categorie
+                    </div>
+
+                    <div className="flex flex-col">
+                      {groupedResults.categories.map(
+                        (
+                          result,
+                        ) => (
+                          <Button
+                            key={`CATEGORY-${result.id}`}
+                            type="button"
+                            variant="ghost"
+                            className="h-auto w-full flex-col items-start justify-start gap-1 px-4 py-3 text-left"
+                          >
+                            <span className="text-sm text-text-primary">
+                              {
+                                result.name
+                              }
+                            </span>
+
+                            {result.description ? (
+                              <span className="text-xs text-text-muted">
+                                {
+                                  result.description
+                                }
+                              </span>
+                            ) : null}
+                          </Button>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </Card>
+          ) : null}
+        </div>
+
+        <Button
+          type="button"
+          size="xl"
+          className="w-full md:w-auto md:min-w-36"
+          onClick={() => {
+            if (firstIntervention) {
+              selectIntervention(
+                firstIntervention,
+              )
+            }
+          }}
+          disabled={
+            !firstIntervention
+          }
+        >
+          Cerca
+        </Button>
+      </div>
+    </Card>
+  )
+}
+
+--- how-it-works.tsx ---
+import Image from "next/image"
+
+import {
+  Badge,
+  Card,
+  CardContent,
+  cn,
+  Container,
+  tokens,
+} from "@fixpro/ui"
+
+type HowItWorksStep = {
+  id: string
+  badge: string
+  title: string
+  description: string
+  imageSrc: string
+}
+
+const steps: HowItWorksStep[] = [
+  {
+    id: "describe",
+    badge: "Step 1",
+    title: "Descrivi il lavoro",
+    description:
+      "Raccontaci cosa devi fare, dove serve lâ€™intervento e quando vuoi ricevere aiuto.",
+    imageSrc: "/assets/images/descrivi-lavoro.webp",
+  },
+  {
+    id: "proposals",
+    badge: "Step 2",
+    title: "Ricevi risposte",
+    description:
+      "I professionisti interessati leggono la richiesta e ti inviano una proposta.",
+    imageSrc: "/assets/images/ricevi-risposte.webp",
+  },
+  {
+    id: "choose",
+    badge: "Step 3",
+    title: "Scegli il professionista",
+    description:
+      "Confronta le proposte e scegli il professionista piÃ¹ adatto alle tue esigenze.",
+    imageSrc: "/assets/images/scegli-professionista.webp",
+  },
+]
+
+export function HowItWorks() {
+  return (
+    <section className={tokens.spacing.sectionMd}>
+      <Container size="xl">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+          <p className="text-sm font-medium text-brand-primary">
+            Come funziona
+          </p>
+
+          <h2
+            className={cn(
+              "text-text-primary",
+              tokens.typography.title,
+            )}
+          >
+            Da esigenza a professionista, senza confusione
+          </h2>
+
+          <p className="max-w-2xl text-base leading-7 text-text-secondary">
+            Esigenta ti accompagna in pochi passaggi: parti dal lavoro
+            che devi fare e arrivi a una proposta concreta.
+          </p>
+        </div>
+
+        <div className="grid gap-6 pt-10 md:grid-cols-3">
+          {steps.map((step) => (
+            <Card key={step.id} className="bg-surface-elevated">
+              <CardContent className="flex h-full flex-col gap-6 p-6">
+                <Badge variant="success">
+                  {step.badge}
+                </Badge>
+
+                <div
+                  className={cn(
+                    "relative min-h-40 overflow-hidden bg-surface-secondary",
+                    tokens.radius["2xl"],
+                  )}
+                >
+                  <Image
+                    src={step.imageSrc}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-contain p-4"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-xl font-semibold tracking-tight text-text-primary">
+                    {step.title}
+                  </h3>
+
+                  <p className="text-sm leading-6 text-text-secondary">
+                    {step.description}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+--- navbar.tsx ---
+"use client"
+
+import Link from "next/link"
+import {
+  Menu,
+  X,
+} from "lucide-react"
+import {
+  useState,
+} from "react"
+
+import {
+  Button,
+  Container,
+} from "@fixpro/ui"
+
+export function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] =
+    useState(false)
+
+  function closeMenu() {
+    setIsMenuOpen(false)
+  }
+
+  return (
+    <header className="relative z-50 border-b border-border-primary bg-surface-primary">
+      <Container
+        size="xl"
+        className="flex h-16 items-center justify-between md:h-20"
+      >
+        <Link
+          href="/"
+          onClick={closeMenu}
+          className="text-2xl font-bold tracking-tight md:text-3xl"
+          aria-label="Esigenta home"
+        >
+          <span className="text-text-primary">Esi</span>
+          <span className="text-brand-primary">genta</span>
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex">
+          <Link
+            href="/richieste/accesso"
+            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
+          >
+            Le mie richieste
+          </Link>
+
+          <Link
+            href="/area-impresa/accedi"
+            className="text-base text-text-primary transition-colors hover:text-brand-primary"
+          >
+            Accedi
+          </Link>
+
+          <Link
+            href="/area-impresa"
+            className="group text-base text-text-primary transition-colors hover:text-brand-primary"
+          >
+            <span>Sei un professionista?</span>
+            <span
+              aria-hidden="true"
+              className="mt-1 block h-0.5 w-full bg-brand-primary"
+            />
+          </Link>
+        </nav>
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          aria-label={
+            isMenuOpen
+              ? "Chiudi menu"
+              : "Apri menu"
+          }
+          aria-expanded={isMenuOpen}
+          className="md:hidden"
+          onClick={() => {
+            setIsMenuOpen((current) => !current)
+          }}
+        >
+          {isMenuOpen ? (
+            <X className="size-5" aria-hidden="true" />
+          ) : (
+            <Menu className="size-5" aria-hidden="true" />
+          )}
+        </Button>
+      </Container>
+
+      {isMenuOpen ? (
+        <div className="border-t border-border-primary bg-surface-primary md:hidden">
+          <Container size="xl">
+            <nav className="flex flex-col gap-1 py-4">
+              <Link
+                href="/richieste/accesso"
+                onClick={closeMenu}
+                className="px-2 py-3 text-sm text-text-secondary transition-colors hover:text-text-primary"
+              >
+                Le mie richieste
+              </Link>
+
+              <Link
+                href="/area-impresa/accedi"
+                onClick={closeMenu}
+                className="px-2 py-3 text-sm text-text-primary transition-colors hover:text-brand-primary"
+              >
+                Accedi
+              </Link>
+
+              <Link
+                href="/area-impresa"
+                onClick={closeMenu}
+                className="px-2 py-3 text-sm font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
+              >
+                Sei un professionista?
+              </Link>
+            </nav>
+          </Container>
+        </div>
+      ) : null}
+    </header>
+  )
+}
+
+=== 10. DIFF ===
+diff --git a/apps/web/src/app/(area-impresa)/area-impresa/crediti/page.tsx b/apps/web/src/app/(area-impresa)/area-impresa/crediti/page.tsx
+index de5009e..bfcfeb9 100644
+--- a/apps/web/src/app/(area-impresa)/area-impresa/crediti/page.tsx
++++ b/apps/web/src/app/(area-impresa)/area-impresa/crediti/page.tsx
+@@ -35,12 +35,13 @@ type CreditsPageProps = {
+ 
+ function getAppUrl() {
+   const appUrl =
+-    process.env.NEXT_PUBLIC_APP_URL ??
+-    process.env.FIXPRO_APP_URL
++    process.env.FIXPRO_WEB_URL ??
++    process.env.FIXPRO_APP_URL ??
++    process.env.NEXT_PUBLIC_APP_URL
+ 
+   if (!appUrl) {
+     throw new Error(
+-      "NEXT_PUBLIC_APP_URL non configurata.",
++      "FIXPRO_WEB_URL o FIXPRO_APP_URL non configurata.",
+     )
+   }
+ 
+@@ -379,4 +380,3 @@ export default async function CompanyCreditsPage({
+     </PageShell>
+   )
+ }
+-
+diff --git a/apps/web/src/app/(public)/page.tsx b/apps/web/src/app/(public)/page.tsx
+index 984c3fe..55afd3b 100644
+--- a/apps/web/src/app/(public)/page.tsx
++++ b/apps/web/src/app/(public)/page.tsx
+@@ -1,10 +1,12 @@
+-import { Hero } from '../../components/home/hero'
+-import { PublicShell } from '../../components/layout/public-shell'
++import { Hero } from "../../components/home/hero"
++import { HowItWorks } from "../../components/home/how-it-works"
++import { PublicShell } from "../../components/layout/public-shell"
+ 
+ export default function HomePage() {
+   return (
+     <PublicShell>
+       <Hero />
++      <HowItWorks />
+     </PublicShell>
+   )
+-}
++}
+\ No newline at end of file
+diff --git a/apps/web/src/components/home/hero.tsx b/apps/web/src/components/home/hero.tsx
+index 9341bd9..dd27c93 100644
+--- a/apps/web/src/components/home/hero.tsx
++++ b/apps/web/src/components/home/hero.tsx
+@@ -1,4 +1,6 @@
+-´╗┐import {
++import Image from "next/image"
++
++import {
+   cn,
+   Container,
+   tokens,
+@@ -11,7 +13,7 @@ type IllustrationSource =
+   | null
+ 
+ const heroIllustrationSrc: IllustrationSource =
+-  null
++  "/assets/images/donna-con-laptop.webp"
+ 
+ export function Hero() {
+   return (
+@@ -20,11 +22,11 @@ export function Hero() {
+         <div
+           className={cn(
+             tokens.surfaces.hero,
+-            "relative overflow-visible px-6 py-10 md:px-12 md:py-12 lg:px-24 lg:py-14",
++            "relative overflow-visible px-5 py-8 md:px-10 md:py-10 xl:px-24 xl:py-14",
+           )}
+         >
+-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
+-            <div className="flex flex-col gap-8 lg:pl-12 xl:pl-20">
++          <div className="grid gap-8 md:gap-10 xl:grid-cols-[minmax(0,1fr)_640px] xl:items-center">
++            <div className="mx-auto flex w-full max-w-2xl flex-col gap-7 text-center xl:mx-0 xl:max-w-none xl:pl-20 xl:text-left">
+               <div className="flex flex-col gap-5">
+                 <h1
+                   className={cn(
+@@ -49,13 +51,13 @@ export function Hero() {
+                   </span>
+                 </h1>
+ 
+-                <p className="max-w-xl text-lg leading-8 text-text-secondary">
++                <p className="mx-auto max-w-xl text-base leading-7 text-text-secondary md:text-lg md:leading-8 xl:mx-0">
+                   Descrivi il lavoro che devi svolgere e ricevi
+                   proposte da professionisti qualificati.
+                 </p>
+               </div>
+ 
+-              <div className="relative z-20 max-w-xl md:max-w-2xl">
++              <div className="relative z-20 mx-auto w-full max-w-xl md:max-w-2xl xl:mx-0">
+                 <FunnelEntry />
+               </div>
+             </div>
+@@ -71,12 +73,14 @@ export function Hero() {
+ function HeroIllustration() {
+   if (heroIllustrationSrc) {
+     return (
+-      <div className="relative min-h-80">
+-        <img
++      <div className="relative z-10 mx-auto min-h-[260px] w-full max-w-[360px] md:min-h-[340px] md:max-w-[480px] xl:mx-0 lg:min-h-[430px] lg:max-w-none lg:-ml-40 lg:-mb-14">
++        <Image
+           src={heroIllustrationSrc}
+           alt=""
+           aria-hidden="true"
+-          className="h-full w-full object-contain"
++          fill
++          sizes="(min-width: 1280px) 640px, 100vw"
++          className="object-contain object-bottom"
+         />
+       </div>
+     )
+@@ -91,10 +95,7 @@ function HeroIllustration() {
+     >
+       Inserisci qui:
+       <br />
+-      /illustrations/donna_con_laptop.svg
++      /assets/images/donna-con-laptop.webp
+     </div>
+   )
+ }
+-
+-
+-
+diff --git a/apps/web/src/components/home/search-bar.tsx b/apps/web/src/components/home/search-bar.tsx
+index 4097b60..43d90e8 100644
+--- a/apps/web/src/components/home/search-bar.tsx
++++ b/apps/web/src/components/home/search-bar.tsx
+@@ -215,8 +215,8 @@ export function SearchBar({
+           />
+ 
+           {showDropdown ? (
+-            <Card className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden shadow-lg">
+-              <div className="max-h-[420px] overflow-y-auto">
++            <Card className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden shadow-lg">
++              <div className="max-h-[min(60vh,420px)] overflow-y-auto">
+                 {groupedResults
+                   .interventions
+                   .length > 0 ? (
+diff --git a/apps/web/src/components/navigation/navbar.tsx b/apps/web/src/components/navigation/navbar.tsx
+index 9da396c..45197e2 100644
+--- a/apps/web/src/components/navigation/navbar.tsx
++++ b/apps/web/src/components/navigation/navbar.tsx
+@@ -1,14 +1,37 @@
++"use client"
++
+ import Link from "next/link"
++import {
++  Menu,
++  X,
++} from "lucide-react"
++import {
++  useState,
++} from "react"
+ 
+-import { Container } from "@fixpro/ui"
++import {
++  Button,
++  Container,
++} from "@fixpro/ui"
+ 
+ export function Navbar() {
++  const [isMenuOpen, setIsMenuOpen] =
++    useState(false)
++
++  function closeMenu() {
++    setIsMenuOpen(false)
++  }
++
+   return (
+-    <header className="border-b border-border-primary bg-surface-primary">
+-      <Container size="xl" className="flex h-20 items-center justify-between">
++    <header className="relative z-50 border-b border-border-primary bg-surface-primary">
++      <Container
++        size="xl"
++        className="flex h-16 items-center justify-between md:h-20"
++      >
+         <Link
+           href="/"
+-          className="text-3xl font-bold tracking-tight"
++          onClick={closeMenu}
++          className="text-2xl font-bold tracking-tight md:text-3xl"
+           aria-label="Esigenta home"
+         >
+           <span className="text-text-primary">Esi</span>
+@@ -22,9 +45,7 @@ export function Navbar() {
+           >
+             Le mie richieste
+           </Link>
+-        </nav>
+ 
+-        <div className="flex items-center gap-8">
+           <Link
+             href="/area-impresa/accedi"
+             className="text-base text-text-primary transition-colors hover:text-brand-primary"
+@@ -42,8 +63,62 @@ export function Navbar() {
+               className="mt-1 block h-0.5 w-full bg-brand-primary"
+             />
+           </Link>
+-        </div>
++        </nav>
++
++        <Button
++          type="button"
++          variant="ghost"
++          size="sm"
++          aria-label={
++            isMenuOpen
++              ? "Chiudi menu"
++              : "Apri menu"
++          }
++          aria-expanded={isMenuOpen}
++          className="md:hidden"
++          onClick={() => {
++            setIsMenuOpen((current) => !current)
++          }}
++        >
++          {isMenuOpen ? (
++            <X className="size-5" aria-hidden="true" />
++          ) : (
++            <Menu className="size-5" aria-hidden="true" />
++          )}
++        </Button>
+       </Container>
++
++      {isMenuOpen ? (
++        <div className="border-t border-border-primary bg-surface-primary md:hidden">
++          <Container size="xl">
++            <nav className="flex flex-col gap-1 py-4">
++              <Link
++                href="/richieste/accesso"
++                onClick={closeMenu}
++                className="px-2 py-3 text-sm text-text-secondary transition-colors hover:text-text-primary"
++              >
++                Le mie richieste
++              </Link>
++
++              <Link
++                href="/area-impresa/accedi"
++                onClick={closeMenu}
++                className="px-2 py-3 text-sm text-text-primary transition-colors hover:text-brand-primary"
++              >
++                Accedi
++              </Link>
++
++              <Link
++                href="/area-impresa"
++                onClick={closeMenu}
++                className="px-2 py-3 text-sm font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
++              >
++                Sei un professionista?
++              </Link>
++            </nav>
++          </Container>
++        </div>
++      ) : null}
+     </header>
+   )
+ }
+\ No newline at end of file
+diff --git a/apps/web/tsconfig.json b/apps/web/tsconfig.json
+index 3a13f90..f08fe78 100644
+--- a/apps/web/tsconfig.json
++++ b/apps/web/tsconfig.json
+@@ -1,18 +1,9 @@
+ {
++  "extends": "../../packages/config/typescript/base.json",
+   "compilerOptions": {
+-    "target": "ES2017",
+-    "lib": ["dom", "dom.iterable", "esnext"],
+     "allowJs": true,
+-    "skipLibCheck": true,
+-    "strict": true,
++    "exactOptionalPropertyTypes": false,
+     "noEmit": true,
+-    "esModuleInterop": true,
+-    "module": "esnext",
+-    "moduleResolution": "bundler",
+-    "resolveJsonModule": true,
+-    "isolatedModules": true,
+-    "jsx": "react-jsx",
+-    "incremental": true,
+     "plugins": [
+       {
+         "name": "next"
+diff --git a/packages/ui/src/styles/globals.css b/packages/ui/src/styles/globals.css
+index 99d70d5..cbd2a2b 100644
+--- a/packages/ui/src/styles/globals.css
++++ b/packages/ui/src/styles/globals.css
+@@ -14,8 +14,8 @@
+   --fp-color-border-secondary: #d7dce0;
+   --fp-color-border-focus: #364247;
+ 
+-  --fp-color-brand-primary: #dd29b3;
+-  --fp-color-brand-primary-hover: #b6108f;
++  --fp-color-brand-primary: #ca8fb2;
++  --fp-color-brand-primary-hover: #fa3aaa;
+   --fp-color-brand-on-primary: #ffffff;
+ 
+   --fp-shadow-surface:
+

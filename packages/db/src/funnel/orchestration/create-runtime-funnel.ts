@@ -11,77 +11,78 @@
  * It does NOT duplicate taxonomy source semantics.
  */
 
-import { prisma } from "../prisma/client"
+import { prisma } from "../../prisma/client"
+
+import {
+  taxonomySource,
+} from "../../taxonomy/source"
 
 import type {
   RuntimeCapability,
-} from "./types/capability"
+} from "../types/capability"
 
 import type {
   RequestDraft,
-} from "./types/request-draft"
+} from "../types/request-draft"
 
 import type {
   RuntimeCapabilityId,
   RuntimeProfile,
-} from "./types/runtime-profile"
+  RuntimePresetSlug,
+} from "../types/runtime-profile"
 
 import {
   budgetCapability,
-} from "./capabilities/budget"
+} from "../capabilities/budget"
 
 import {
   contactCapability,
-} from "./capabilities/contact"
+} from "../capabilities/contact"
 
 import {
   locationCapability,
-} from "./capabilities/location"
+} from "../capabilities/location"
 
 import {
   photosCapability,
-} from "./capabilities/photos"
+} from "../capabilities/photos"
 
 import {
   propertyCapability,
-} from "./capabilities/property"
+} from "../capabilities/property"
 
 import {
   roomsCapability,
-} from "./capabilities/rooms"
+} from "../capabilities/rooms"
 
 import {
   surfaceAreaCapability,
-} from "./capabilities/surface-area"
+} from "../capabilities/surface-area"
 
 import {
   timingCapability,
-} from "./capabilities/timing"
-
-import {
-  urgencyCapability,
-} from "./capabilities/urgency"
+} from "../capabilities/timing"
 
 import {
   buildRequestDraft,
-} from "./compiler/build-request-draft"
+} from "../compiler/build-request-draft"
 
 import {
   resolveCapabilities,
-} from "./compiler/resolve-capabilities"
+} from "../compiler/resolve-capabilities"
 
 import {
   type ResolvedIntervention,
   resolveRuntimeProfile,
-} from "./compiler/resolve-runtime-profile"
+} from "../compiler/resolve-runtime-profile"
 
 import {
   resolveStepOrder,
-} from "./runtime/resolve-step-order"
+} from "../runtime/resolve-step-order"
 
 import type {
   RuntimeAnswers,
-} from "./runtime/resolve-step-visibility"
+} from "../runtime/resolve-step-visibility"
 
 const CAPABILITY_REGISTRY: Record<
   RuntimeCapabilityId,
@@ -90,7 +91,6 @@ const CAPABILITY_REGISTRY: Record<
   location: locationCapability,
   property: propertyCapability,
   photos: photosCapability,
-  urgency: urgencyCapability,
   timing: timingCapability,
   budget: budgetCapability,
   "surface-area": surfaceAreaCapability,
@@ -140,6 +140,14 @@ function sortedUnique(values: string[]): string[] {
   ).sort()
 }
 
+function sortedRuntimePresetSlugs(
+  values: RuntimePresetSlug[],
+): RuntimePresetSlug[] {
+  return Array.from(
+    new Set(values),
+  ).sort()
+}
+
 function normalizeOptionalText(
   value: string | undefined,
 ): string | undefined {
@@ -149,6 +157,64 @@ function normalizeOptionalText(
   return trimmed
     ? trimmed
     : undefined
+}
+
+function resolveTaxonomyRuntimePresetSlugs({
+  interventionSlug,
+  serviceSlugs,
+  categorySlugs,
+  domainSlugs,
+}: {
+  interventionSlug: string
+  serviceSlugs: string[]
+  categorySlugs: string[]
+  domainSlugs: string[]
+}): RuntimePresetSlug[] {
+  const serviceSlugSet =
+    new Set(serviceSlugs)
+
+  const categorySlugSet =
+    new Set(categorySlugs)
+
+  const domainSlugSet =
+    new Set(domainSlugs)
+
+  const interventionPresets =
+    taxonomySource.interventions.find(
+      (intervention) =>
+        intervention.slug === interventionSlug,
+    )?.runtimePresetSlugs ?? []
+
+  const servicePresets =
+    taxonomySource.services.flatMap(
+      (service) =>
+        serviceSlugSet.has(service.slug)
+          ? service.runtimePresetSlugs ?? []
+          : [],
+    )
+
+  const categoryPresets =
+    taxonomySource.categories.flatMap(
+      (category) =>
+        categorySlugSet.has(category.slug)
+          ? category.runtimePresetSlugs ?? []
+          : [],
+    )
+
+  const domainPresets =
+    taxonomySource.domains.flatMap(
+      (domain) =>
+        domainSlugSet.has(domain.slug)
+          ? domain.runtimePresetSlugs ?? []
+          : [],
+    )
+
+  return sortedRuntimePresetSlugs([
+    ...interventionPresets,
+    ...servicePresets,
+    ...categoryPresets,
+    ...domainPresets,
+  ])
 }
 
 async function resolveInterventionForFunnel(
@@ -217,6 +283,15 @@ async function resolveInterventionForFunnel(
       (relation) => relation.domain.slug,
     )
 
+  const normalizedServiceSlugs =
+    sortedUnique(serviceSlugs)
+
+  const normalizedCategorySlugs =
+    sortedUnique(categorySlugs)
+
+  const normalizedDomainSlugs =
+    sortedUnique(domainSlugs)
+
   return {
     selectedIntervention: {
       id: intervention.id,
@@ -229,11 +304,22 @@ async function resolveInterventionForFunnel(
       interventionSlug:
         intervention.slug,
       serviceSlugs:
-        sortedUnique(serviceSlugs),
+        normalizedServiceSlugs,
       categorySlugs:
-        sortedUnique(categorySlugs),
+        normalizedCategorySlugs,
       domainSlugs:
-        sortedUnique(domainSlugs),
+        normalizedDomainSlugs,
+      runtimePresetSlugs:
+        resolveTaxonomyRuntimePresetSlugs({
+          interventionSlug:
+            intervention.slug,
+          serviceSlugs:
+            normalizedServiceSlugs,
+          categorySlugs:
+            normalizedCategorySlugs,
+          domainSlugs:
+            normalizedDomainSlugs,
+        }),
     },
   }
 }

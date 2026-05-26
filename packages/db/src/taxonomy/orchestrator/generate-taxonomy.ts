@@ -40,6 +40,25 @@ function cleanAliases(aliases?: string[]): string[] | undefined {
   )
 }
 
+function cleanRuntimePresetSlugs(
+  runtimePresetSlugs?: string[],
+): string[] | undefined {
+  if (
+    !runtimePresetSlugs ||
+    runtimePresetSlugs.length === 0
+  ) {
+    return undefined
+  }
+
+  return sortedUnique(
+    runtimePresetSlugs
+      .map((presetSlug) =>
+        presetSlug.trim(),
+      )
+      .filter(Boolean),
+  )
+}
+
 function cleanDescription(
   description?: string,
 ): string | undefined {
@@ -65,6 +84,10 @@ function cleanSector(sector: TaxonomySector): TaxonomySector {
 function cleanService(service: TaxonomyService): TaxonomyService {
   const aliases = cleanAliases(service.aliases)
   const description = cleanDescription(service.description)
+  const runtimePresetSlugs =
+    cleanRuntimePresetSlugs(
+      service.runtimePresetSlugs,
+    ) as TaxonomyService["runtimePresetSlugs"]
 
   const result: TaxonomyService = {
     slug: service.slug,
@@ -79,6 +102,11 @@ function cleanService(service: TaxonomyService): TaxonomyService {
     result.aliases = aliases
   }
 
+  if (runtimePresetSlugs) {
+    result.runtimePresetSlugs =
+      runtimePresetSlugs
+  }
+
   return result
 }
 
@@ -87,6 +115,10 @@ function cleanIntervention(
 ): TaxonomyIntervention {
   const aliases = cleanAliases(intervention.aliases)
   const description = cleanDescription(intervention.description)
+  const runtimePresetSlugs =
+    cleanRuntimePresetSlugs(
+      intervention.runtimePresetSlugs,
+    ) as TaxonomyIntervention["runtimePresetSlugs"]
 
   const result: TaxonomyIntervention = {
     slug: intervention.slug,
@@ -102,6 +134,11 @@ function cleanIntervention(
     result.aliases = aliases
   }
 
+  if (runtimePresetSlugs) {
+    result.runtimePresetSlugs =
+      runtimePresetSlugs
+  }
+
   return result
 }
 
@@ -110,6 +147,10 @@ function cleanCategory(
 ): TaxonomyCategory {
   const aliases = cleanAliases(category.aliases)
   const description = cleanDescription(category.description)
+  const runtimePresetSlugs =
+    cleanRuntimePresetSlugs(
+      category.runtimePresetSlugs,
+    ) as TaxonomyCategory["runtimePresetSlugs"]
 
   const result: TaxonomyCategory = {
     slug: category.slug,
@@ -126,12 +167,21 @@ function cleanCategory(
     result.aliases = aliases
   }
 
+  if (runtimePresetSlugs) {
+    result.runtimePresetSlugs =
+      runtimePresetSlugs
+  }
+
   return result
 }
 
 function cleanDomain(domain: TaxonomyDomain): TaxonomyDomain {
   const aliases = cleanAliases(domain.aliases)
   const description = cleanDescription(domain.description)
+  const runtimePresetSlugs =
+    cleanRuntimePresetSlugs(
+      domain.runtimePresetSlugs,
+    ) as TaxonomyDomain["runtimePresetSlugs"]
 
   const result: TaxonomyDomain = {
     slug: domain.slug,
@@ -145,6 +195,11 @@ function cleanDomain(domain: TaxonomyDomain): TaxonomyDomain {
 
   if (aliases) {
     result.aliases = aliases
+  }
+
+  if (runtimePresetSlugs) {
+    result.runtimePresetSlugs =
+      runtimePresetSlugs
   }
 
   return result

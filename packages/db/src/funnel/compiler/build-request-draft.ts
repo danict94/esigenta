@@ -16,9 +16,7 @@
  */
 
 import type {
-  RequestContactDraft,
   RequestDraft,
-  RequestGeoDraft,
 } from "../types/request-draft"
 
 import type {
@@ -40,6 +38,12 @@ import {
 import {
   assertValidRuntimeProfile,
 } from "../runtime/validate-runtime"
+
+import {
+  normalizeRuntimeContactAnswer,
+  normalizeRuntimeLocationAnswer,
+  normalizeRuntimeText,
+} from "../normalization"
 
 export type BuildRequestDraftInput = {
   /**
@@ -74,210 +78,6 @@ export type BuildRequestDraftInput = {
    * Test-friendly timestamp override.
    */
   createdAt?: Date
-}
-
-function isRecord(
-  value: unknown,
-): value is Record<string, unknown> {
-  return Boolean(
-    value &&
-      typeof value === "object" &&
-      !Array.isArray(value),
-  )
-}
-
-function asString(
-  value: unknown,
-): string | undefined {
-  if (typeof value !== "string") {
-    return undefined
-  }
-
-  const trimmed =
-    value.trim()
-
-  return trimmed
-    ? trimmed
-    : undefined
-}
-
-function asNumber(
-  value: unknown,
-): number | undefined {
-  if (
-    typeof value === "number" &&
-    Number.isFinite(value)
-  ) {
-    return value
-  }
-
-  if (typeof value !== "string") {
-    return undefined
-  }
-
-  const parsed = Number(
-    value.replace(",", "."),
-  )
-
-  return Number.isFinite(parsed)
-    ? parsed
-    : undefined
-}
-
-function buildFullName({
-  firstName,
-  lastName,
-}: {
-  firstName: string | undefined
-  lastName: string | undefined
-}): string | undefined {
-  const fullName =
-    [firstName, lastName]
-      .map((part) => part?.trim())
-      .filter(Boolean)
-      .join(" ")
-
-  return fullName || undefined
-}
-
-function normalizeGeo(
-  value: unknown,
-): RequestGeoDraft {
-  const geo: RequestGeoDraft = {}
-
-  const address =
-    asString(value)
-
-  if (address) {
-    geo.address = address
-
-    return geo
-  }
-
-  if (!isRecord(value)) {
-    return geo
-  }
-
-  const normalizedAddress =
-    asString(value.address)
-
-  const city =
-    asString(value.city)
-
-  const cap =
-    asString(value.postalCode) ??
-    asString(value.cap)
-
-  const lat =
-    asNumber(value.latitude) ??
-    asNumber(value.lat)
-
-  const lng =
-    asNumber(value.longitude) ??
-    asNumber(value.lng)
-
-  if (normalizedAddress) {
-    geo.address =
-      normalizedAddress
-  }
-
-  if (city) {
-    geo.city = city
-  }
-
-  if (cap) {
-    geo.postalCode = cap
-  }
-
-  if (lat !== undefined) {
-    geo.latitude = lat
-  }
-
-  if (lng !== undefined) {
-    geo.longitude = lng
-  }
-
-  return geo
-}
-
-function normalizeContact(
-  value: unknown,
-): RequestContactDraft {
-  const contact: RequestContactDraft = {}
-
-  const text =
-    asString(value)
-
-  if (text) {
-    if (text.includes("@")) {
-      contact.email = text
-    } else {
-      contact.phone = text
-    }
-
-    return contact
-  }
-
-  if (!isRecord(value)) {
-    return contact
-  }
-
-  const name =
-    asString(value.name)
-
-  const firstName =
-    asString(value.firstName) ??
-    asString(value.nome)
-
-  const lastName =
-    asString(value.lastName) ??
-    asString(value.cognome) ??
-    asString(value.surname) ??
-    asString(value.familyName)
-
-  const normalizedFirstName =
-    firstName
-
-  const normalizedLastName =
-    lastName
-
-  const fullName =
-    buildFullName({
-      firstName:
-        normalizedFirstName,
-      lastName:
-        normalizedLastName,
-    }) ?? name
-
-  const phone =
-    asString(value.phone)
-
-  const email =
-    asString(value.email)
-
-  if (normalizedFirstName) {
-    contact.firstName =
-      normalizedFirstName
-  }
-
-  if (normalizedLastName) {
-    contact.lastName =
-      normalizedLastName
-  }
-
-  if (fullName) {
-    contact.name = fullName
-  }
-
-  if (phone) {
-    contact.phone = phone
-  }
-
-  if (email) {
-    contact.email = email
-  }
-
-  return contact
 }
 
 function sortedUnique(
@@ -348,7 +148,7 @@ export function buildRequestDraft({
     )
 
   const contact =
-    normalizeContact(
+    normalizeRuntimeContactAnswer(
       rawAnswers.contact,
     )
 
@@ -371,7 +171,7 @@ export function buildRequestDraft({
     rawAnswers,
 
     geo:
-      normalizeGeo(
+      normalizeRuntimeLocationAnswer(
         rawAnswers.location,
       ),
 
@@ -398,14 +198,16 @@ export function buildRequestDraft({
   }
 
   const query =
-    asString(originalQuery)
+    normalizeRuntimeText(originalQuery)
 
   if (query) {
     draft.originalQuery = query
   }
 
   const description =
-    asString(customerDescription)
+    normalizeRuntimeText(
+      customerDescription,
+    )
 
   if (description) {
     draft.customerDescription =

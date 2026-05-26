@@ -112,6 +112,14 @@ export type {
 } from "./get-request-by-id"
 
 export {
+  listAttachedRequestPhotos,
+} from "./request-photos"
+
+export type {
+  AttachedRequestPhoto,
+} from "./request-photos"
+
+export {
   updateRequestCommercialSettings,
 } from "./request-commercial-settings"
 

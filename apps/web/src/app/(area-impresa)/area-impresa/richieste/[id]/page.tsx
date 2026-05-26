@@ -8,9 +8,14 @@ import {
   createCreditRefundRequest,
   createCompanyCustomerConversation,
   getAvailableRequestForCompany,
+  listAttachedRequestPhotos,
   unlockRequestForCompany,
   type CreateCreditRefundRequestInput,
 } from "@fixpro/db";
+
+import {
+  createRequestPhotoDisplayItems,
+} from "@fixpro/uploads/server";
 
 import { requireDefaultCompanyMembership } from "../../../../../auth/server";
 
@@ -269,7 +274,6 @@ const italianProvinceCodes = new Set([
 
 const detailLabels: Record<string, string> = {
   timing: "Tempistiche",
-  urgency: "Urgenza",
   property: "Immobile",
   propertytype: "Tipo immobile",
   surfacearea: "Superficie",
@@ -280,7 +284,6 @@ const detailLabels: Record<string, string> = {
 
 const detailSortOrder: Record<string, number> = {
   timing: 10,
-  urgency: 20,
   property: 30,
   propertytype: 35,
   surfacearea: 40,
@@ -291,7 +294,6 @@ const detailSortOrder: Record<string, number> = {
 
 const valueLabels: Record<string, string> = {
   as_soon_as_possible: "Il prima possibile",
-  within_7_days: "Entro 7 giorni",
   within_30_days: "Entro 30 giorni",
   flexible: "Flessibile",
   evaluating: "Sto valutando",
@@ -331,6 +333,7 @@ const omittedDetailKeys = new Set([
   "worktype",
   "jobtype",
   "typeofwork",
+  "photos",
 ]);
 
 const descriptionKeys = new Set([
@@ -701,6 +704,9 @@ export default async function RequestDetailPage({
   });
   const description = findDescription(request.structuredData);
   const formDetails = buildFormDetails(request.structuredData);
+  const photos = await createRequestPhotoDisplayItems(
+    await listAttachedRequestPhotos(request.id),
+  );
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -723,6 +729,7 @@ export default async function RequestDetailPage({
         createdAt={formatDate(request.createdAt)}
         description={description}
         formDetails={formDetails}
+        photos={photos}
         {...(hasUnlocked
           ? {
               customerContact: {

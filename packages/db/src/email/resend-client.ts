@@ -23,8 +23,18 @@ export function getResendClient(): Resend {
 }
 
 export function getResendFromEmail(): string {
-  return (
-    process.env.RESEND_FROM_EMAIL ??
-    "FixPro <onboarding@resend.dev>"
+  const fromEmail =
+    process.env.RESEND_FROM_EMAIL?.trim()
+
+  if (fromEmail) {
+    return fromEmail
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return "FixPro <onboarding@resend.dev>"
+  }
+
+  throw new Error(
+    "RESEND_FROM_EMAIL is required to send email in production.",
   )
 }

@@ -1,5 +1,9 @@
 import { prisma } from "./prisma/client"
 
+import {
+  listInterventionsForCategory,
+} from "./taxonomy/domain"
+
 import type { TaxonomySearchResult } from "./taxonomy/shared/types"
 
 type SearchParams = {
@@ -177,44 +181,36 @@ export async function searchTaxonomy({
       slug: true,
       name: true,
       description: true,
-      services: {
-        select: {
-          service: {
-            select: {
-              interventions: {
-                select: {
-                  intervention: {
-                    select: {
-                      id: true,
-                      slug: true,
-                      name: true,
-                      description: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
     },
     take: 5,
   })
 
-  for (const category of matchedCategories) {
-    for (const categoryService of category.services) {
-      for (const relation of categoryService.service.interventions) {
-        const intervention = relation.intervention
+  const categoryDiscoveryResults =
+    await Promise.all(
+      matchedCategories.map(
+        async (category) => ({
+          category,
+          interventions:
+            await listInterventionsForCategory(
+              category.slug,
+            ),
+        }),
+      ),
+    )
 
-        addResult(resultMap, {
-          id: intervention.id,
-          type: "INTERVENTION",
-          slug: intervention.slug,
-          name: intervention.name,
-          description: intervention.description,
-          relevance: 80,
-        })
-      }
+  for (const {
+    category,
+    interventions,
+  } of categoryDiscoveryResults) {
+    for (const intervention of interventions) {
+      addResult(resultMap, {
+        id: intervention.id,
+        type: "INTERVENTION",
+        slug: intervention.slug,
+        name: intervention.name,
+        description: intervention.description,
+        relevance: 80,
+      })
     }
 
     addResult(resultMap, {

@@ -1,12 +1,12 @@
 import Link from "next/link"
 
 import {
-  Badge,
   Card,
-  Container,
-  cn,
-  tokens,
+  CardContent,
+  HeroSurface,
 } from "@fixpro/ui"
+
+import { PublicShell } from "../../../../components/layout/public-shell"
 
 import {
   ImpresaSignupForm,
@@ -45,8 +45,6 @@ export default async function AreaImpresaSignupPage({
 
   const categorySlug =
     getValue(params.categorySlug)
-  const activity =
-    getValue(params.activity)
   const city =
     getValue(params.city)
   const postalCode =
@@ -64,24 +62,6 @@ export default async function AreaImpresaSignupPage({
         latitude !== null &&
         longitude !== null,
     )
-
-  const hasValidLeadCategory =
-    Boolean(categorySlug)
-
-  const hasLeadContext =
-    Boolean(
-      categorySlug ||
-        activity ||
-        city ||
-        postalCode ||
-        address,
-    )
-
-  const locationLabel =
-    [city, postalCode]
-      .filter(Boolean)
-      .join(" - ") ||
-    address
 
   const initialCompany = {
     ...(address
@@ -112,141 +92,26 @@ export default async function AreaImpresaSignupPage({
   }
 
   return (
-    <main className="min-h-screen bg-surface-primary text-text-primary">
-      <Container size="lg">
-        <div className="grid min-h-screen gap-10 py-12 md:py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <Badge>
-              FixPro per professionisti
-            </Badge>
-
-            <h1
-              className={cn(
-                "mt-5 text-text-primary",
-                tokens.typography.title,
-              )}
-            >
-              Crea il tuo accesso impresa
-            </h1>
-
-            <p className="mt-4 max-w-xl text-base leading-7 text-text-secondary">
-              Raccontaci di più sulla tua azienda e crea l&apos;accesso per
-              entrare nell&apos;area impresa.
-            </p>
-
-            {hasLeadContext ? (
-              <Card className="mt-6 p-5">
-                <p className="text-sm font-medium text-text-primary">
-                  Hai iniziato da:
+    <PublicShell>
+      <main className="pb-8 md:pb-10">
+        <HeroSurface size="md" className="py-6 md:py-8 xl:py-10">
+          <Card className="mx-auto w-full max-w-2xl bg-surface-elevated shadow-surface">
+            <CardContent className="flex flex-col gap-5 p-6 md:p-7 xl:p-8">
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-semibold text-brand-primary">
+                  Crea accesso
                 </p>
 
-                <div className="mt-4 space-y-2 text-sm text-text-secondary">
-                  {activity ? (
-                    <p>
-                      Attività selezionata:{" "}
-                      <span className="font-medium text-text-primary">
-                        {activity}
-                      </span>
-                    </p>
-                  ) : null}
+                <h1 className="text-2xl font-semibold tracking-tight text-text-primary md:text-3xl">
+                  Raccontaci di più sulla tua azienda
+                </h1>
 
-                  {locationLabel ? (
-                    <p>
-                      Città/zona:{" "}
-                      <span className="font-medium text-text-primary">
-                        {locationLabel}
-                      </span>
-                    </p>
-                  ) : null}
-
-                </div>
-
-                {address ? (
-                  <p className="mt-3 text-xs leading-5 text-text-muted">
-                    Localizzazione: {address}
-                    {latitude !== null &&
-                    longitude !== null
-                      ? ` (${latitude}, ${longitude})`
-                      : ""}
-                  </p>
-                ) : null}
-
-                <p className="mt-4 text-xs leading-5 text-text-muted">
-                  Questi dati servono ora come riepilogo e precompilazione.
-                  Il matching con le richieste verrà gestito in un passaggio
-                  successivo.
+                <p className="text-sm leading-6 text-text-secondary">
+                  Inserisci i dati aziendali e crea l’accesso. Dopo la
+                  registrazione ti chiederemo di accedere per continuare.
                 </p>
-              </Card>
-            ) : null}
+              </div>
 
-            {!hasValidLeadLocation ? (
-              <Card className="mt-6 p-5">
-                <p className="text-sm font-medium text-text-primary">
-                  Seleziona prima la località operativa
-                </p>
-
-                <p className="mt-3 text-sm leading-6 text-text-secondary">
-                  Per creare il profilo impresa serve una città scelta dai
-                  suggerimenti nella pagina professionisti.
-                </p>
-
-                <Link
-                  href="/area-impresa"
-                  className="mt-4 inline-flex text-sm font-medium text-brand-primary"
-                >
-                  Torna alla pagina professionisti
-                </Link>
-              </Card>
-            ) : null}
-
-            {!hasValidLeadCategory ? (
-              <Card className="mt-6 p-5">
-                <p className="text-sm font-medium text-text-primary">
-                  Seleziona prima la categoria professionale
-                </p>
-
-                <p className="mt-3 text-sm leading-6 text-text-secondary">
-                  Per creare il profilo impresa serve la categoria scelta
-                  nella pagina professionisti.
-                </p>
-
-                <Link
-                  href="/area-impresa"
-                  className="mt-4 inline-flex text-sm font-medium text-brand-primary"
-                >
-                  Torna alla pagina professionisti
-                </Link>
-              </Card>
-            ) : null}
-
-            <div className="mt-6 text-sm text-text-secondary">
-              Hai già un profilo?{" "}
-              <Link
-                href="/area-impresa/accedi"
-                className="font-medium text-brand-primary"
-              >
-                Accedi all&apos;area impresa
-              </Link>
-            </div>
-          </div>
-
-          <Card className="p-6 md:p-8">
-            <div>
-              <p className="text-sm font-medium text-brand-primary">
-                Crea accesso
-              </p>
-
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-text-primary">
-                Raccontaci di più sulla tua azienda
-              </h2>
-
-              <p className="mt-3 text-sm leading-6 text-text-secondary">
-                Inserisci i dati aziendali e crea accesso. Dopo la
-                registrazione ti chiederemo di accedere per continuare.
-              </p>
-            </div>
-
-            <div className="mt-8">
               <ImpresaSignupForm
                 categorySlug={
                   categorySlug ?? undefined
@@ -254,19 +119,19 @@ export default async function AreaImpresaSignupPage({
                 initialCompany={initialCompany}
                 hasValidLeadLocation={hasValidLeadLocation}
               />
-            </div>
 
-            <div className="mt-6 border-t border-border-primary pt-5 text-sm text-text-secondary">
-              <Link
-                href="/area-impresa"
-                className="font-medium text-text-primary"
-              >
-                Torna alla pagina professionisti
-              </Link>
-            </div>
+              <div className="border-t border-border-primary pt-5 text-sm text-text-secondary">
+                <Link
+                  href="/area-impresa"
+                  className="font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+                >
+                  Torna alla pagina professionisti
+                </Link>
+              </div>
+            </CardContent>
           </Card>
-        </div>
-      </Container>
-    </main>
+        </HeroSurface>
+      </main>
+    </PublicShell>
   )
 }

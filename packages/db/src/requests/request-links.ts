@@ -3,11 +3,21 @@ import type {
 } from "@prisma/client"
 
 function getWebUrl(): string {
-  return (
+  const webUrl =
     process.env.FIXPRO_WEB_URL ??
     process.env.FIXPRO_APP_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3000"
+    process.env.NEXT_PUBLIC_APP_URL
+
+  if (webUrl) {
+    return webUrl
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return "http://localhost:3000"
+  }
+
+  throw new Error(
+    "FIXPRO_WEB_URL or FIXPRO_APP_URL is required to build public links.",
   )
 }
 
