@@ -18,13 +18,23 @@ export type PageShellProps = {
 }
 
 export function PageShell({
-  size = "lg",
+  size = tokens.layout.pageShell.contentContainer.defaultSize,
   className,
   children,
 }: PageShellProps) {
   return (
-    <main className={cn("min-h-screen", tokens.spacing.pageShell, className)}>
-      <Container size={size}>
+    <main
+      data-ui="page-shell"
+      className={cn(
+        tokens.layout.pageShell.base,
+        tokens.layout.pageShell.padding,
+        className,
+      )}
+    >
+      <Container
+        size={size}
+        gutter={tokens.layout.pageShell.contentContainer.gutter}
+      >
         {children}
       </Container>
     </main>

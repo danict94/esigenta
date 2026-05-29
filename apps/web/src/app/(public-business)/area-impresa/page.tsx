@@ -26,7 +26,7 @@ import { CompanyLeadForm } from "./_components/company-lead-form";
 import { BusinessHowItWorks } from "./_components/business-how-it-works";
 
 export const metadata: Metadata = {
-  title: "Esigenta Imprese | Richieste selezionate per professionisti",
+  title: "esigenta Imprese | Richieste selezionate per professionisti",
   description:
     "Iscrizione gratuita, pacchetti crediti, richieste con posti limitati e area impresa per gestire nuove opportunità di lavoro.",
 };
@@ -89,20 +89,20 @@ export default async function AreaImpresaLandingPage() {
             <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 text-center xl:mx-0 xl:pl-12 xl:text-left">
               <div className="flex flex-col gap-5">
                 <p className="text-sm font-semibold text-brand-primary">
-                  Esigenta Imprese
+                  esigenta Imprese
                 </p>
 
                 <h1
                   className={cn(
-                    "max-w-3xl text-text-primary",
+                    "max-w-3xl text-text-on-hero-primary",
                     tokens.typography.hero,
                   )}
                 >
                   Richieste selezionate per professionisti come te
                 </h1>
 
-                <p className="mx-auto max-w-xl text-base leading-7 text-text-secondary md:text-lg md:leading-8 xl:mx-0">
-                  Tu porti la competenza. Esigenta ti collega a richieste reali
+                <p className="mx-auto max-w-xl text-base leading-7 text-text-on-hero-secondary md:text-lg md:leading-8 xl:mx-0">
+                  Tu porti la competenza. esigenta ti collega a richieste reali
                   nella tua zona, con costi in crediti visibili e opportunità
                   limitate a poche imprese.
                 </p>
@@ -112,7 +112,7 @@ export default async function AreaImpresaLandingPage() {
                 {heroPoints.map((point) => (
                   <div
                     key={point}
-                    className="flex items-center gap-3 text-sm text-text-secondary md:text-base"
+                    className="flex items-center gap-3 text-sm text-text-on-hero-secondary md:text-base"
                   >
                     <CheckCircle2
                       className="size-5 shrink-0 text-brand-primary"
@@ -124,7 +124,7 @@ export default async function AreaImpresaLandingPage() {
                 ))}
               </div>
 
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-text-on-hero-secondary">
                 Hai già un profilo?{" "}
                 <Link
                   href="/area-impresa/accedi"

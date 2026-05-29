@@ -10,41 +10,58 @@ import {
 import {
   Container,
 } from "./container"
+import {
+  MarketingSurface,
+} from "./marketing-surface"
 
 export type HeroSurfaceProps = {
   children: ReactNode
-  size?: ContainerToken
   className?: string
-  contentClassName?: string
-}
+} & (
+  | {
+      constrainContent?: true
+      size?: ContainerToken
+      contentClassName?: string
+    }
+  | {
+      constrainContent: false
+      size?: never
+      contentClassName?: never
+    }
+)
 
-export function HeroSurface({
-  children,
-  size = "xl",
-  className,
-  contentClassName,
-}: HeroSurfaceProps) {
-  return (
-    <Container size="full" gutter="sm">
-      <section
-        className={cn(
-          tokens.surfaces.hero,
-          "relative overflow-visible px-5 py-8 md:px-10 md:py-10 xl:px-14 xl:py-14",
-          className,
-        )}
-      >
+export function HeroSurface(props: HeroSurfaceProps) {
+  const {
+    children,
+    className,
+  } = props
+
+  const content = props.constrainContent === false
+    ? children
+    : (
         <Container
-          size={size}
-          gutter="none"
-          {...(contentClassName
+          size={props.size ?? tokens.layout.heroSurface.contentContainer.defaultSize}
+          gutter={tokens.layout.heroSurface.contentContainer.gutter}
+          {...(props.contentClassName
             ? {
-                className: contentClassName,
+                className: props.contentClassName,
               }
             : {})}
         >
           {children}
         </Container>
-      </section>
-    </Container>
+      )
+
+  return (
+    <MarketingSurface
+      as="section"
+      variant="hero"
+      className={cn(
+        tokens.layout.heroSurface.frame,
+        className,
+      )}
+    >
+      {content}
+    </MarketingSurface>
   )
 }

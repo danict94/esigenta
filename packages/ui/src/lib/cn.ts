@@ -1,23 +1,10 @@
-type ClassValue = string | false | null | undefined
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
+/**
+ * Combines recipes left-to-right; callers pass consumer `className` last so
+ * conflicting Tailwind utilities resolve to the explicit consumer override.
+ */
 export function cn(...classes: ClassValue[]): string {
-  const seen = new Set<string>()
-  const result: string[] = []
-
-  for (const classValue of classes) {
-    if (!classValue) {
-      continue
-    }
-
-    for (const className of classValue.split(/\s+/)) {
-      if (!className || seen.has(className)) {
-        continue
-      }
-
-      seen.add(className)
-      result.push(className)
-    }
-  }
-
-  return result.join(' ')
+  return twMerge(clsx(classes))
 }

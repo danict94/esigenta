@@ -4,6 +4,9 @@ import {
 } from "react"
 
 import { cn } from "../lib/cn"
+import {
+  tokens,
+} from "../styles/tokens"
 
 type InputSize =
   | "md"
@@ -13,11 +16,6 @@ export type InputProps =
   Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
     size?: InputSize
   }
-
-const sizes: Record<InputSize, string> = {
-  md: "h-12 px-4 text-sm",
-  lg: "h-16 px-5 text-base",
-}
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   function Input({
@@ -29,8 +27,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         className={cn(
-          "w-full border border-border-primary bg-surface-primary text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-border-focus disabled:cursor-not-allowed disabled:opacity-60",
-          sizes[size],
+          tokens.formControls.base,
+          tokens.formControls.states.placeholder,
+          tokens.formControls.states.focus,
+          tokens.formControls.states.disabled,
+          tokens.formControls.inputSizes[size],
           className,
         )}
         {...props}

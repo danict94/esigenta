@@ -21,8 +21,7 @@ export function Card({
   return (
     <div
       className={cn(
-        tokens.radius.lg,
-        "border border-border-primary bg-surface-elevated",
+        tokens.card.base,
         className,
       )}
       {...props}
@@ -44,7 +43,7 @@ export function CardHeader({
 }: CardSectionProps) {
   return (
     <div
-      className={cn("space-y-1.5 p-6", className)}
+      className={cn(tokens.card.header, className)}
       {...props}
     >
       {children}
@@ -59,7 +58,7 @@ export function CardContent({
 }: CardSectionProps) {
   return (
     <div
-      className={cn("p-6 pt-0", className)}
+      className={cn(tokens.card.content, className)}
       {...props}
     >
       {children}
@@ -74,7 +73,7 @@ export function CardFooter({
 }: CardSectionProps) {
   return (
     <div
-      className={cn("flex items-center p-6 pt-0", className)}
+      className={cn(tokens.card.footer, className)}
       {...props}
     >
       {children}
@@ -95,7 +94,7 @@ export function CardTitle({
   return (
     <h3
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight text-text-primary",
+        tokens.card.title,
         className,
       )}
       {...props}
@@ -117,7 +116,7 @@ export function CardDescription({
 }: CardDescriptionProps) {
   return (
     <p
-      className={cn("text-sm text-text-secondary", className)}
+      className={cn(tokens.card.description, className)}
       {...props}
     >
       {children}

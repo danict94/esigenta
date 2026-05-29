@@ -4,14 +4,12 @@ import { cn } from "../lib/cn"
 import {
   tokens,
   type ContainerToken,
+  type LayoutGutterToken,
 } from "../styles/tokens"
 
 export type ContainerSize = ContainerToken
 
-export type ContainerGutter =
-  | "none"
-  | "sm"
-  | "md"
+export type ContainerGutter = LayoutGutterToken
 
 export type ContainerProps = {
   size?: ContainerSize
@@ -20,24 +18,19 @@ export type ContainerProps = {
   children?: ReactNode
 }
 
-const gutters: Record<ContainerGutter, string> = {
-  none: "",
-  sm: "px-2 md:px-3 lg:px-4",
-  md: tokens.spacing.containerX,
-}
-
 export function Container({
-  size = "lg",
-  gutter = "md",
+  size = tokens.layout.container.defaultSize,
+  gutter = tokens.layout.container.defaultGutter,
   className,
   children,
 }: ContainerProps) {
   return (
     <div
+      data-ui="container"
       className={cn(
-        "mx-auto w-full",
-        tokens.containers[size],
-        gutters[gutter],
+        tokens.layout.container.base,
+        tokens.layout.container.widths[size],
+        tokens.layout.container.gutters[gutter],
         className,
       )}
     >

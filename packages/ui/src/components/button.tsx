@@ -11,6 +11,7 @@ import {
 type ButtonVariant =
   | "primary"
   | "secondary"
+  | "brand"
   | "brandOutline"
   | "ghost"
 
@@ -27,27 +28,6 @@ export type ButtonProps = {
   children: ReactNode
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
-const variants: Record<ButtonVariant, string> = {
-  primary:
-    "border border-brand-primary bg-brand-primary text-brand-on-primary hover:border-brand-primary-hover hover:bg-brand-primary-hover",
-
-  secondary:
-    "border border-border-primary bg-surface-primary text-text-primary hover:border-border-focus",
-
-  brandOutline:
-    "border border-brand-primary bg-transparent text-brand-primary hover:bg-brand-primary hover:text-brand-on-primary",
-
-  ghost:
-    "border border-transparent bg-transparent text-text-secondary hover:bg-surface-secondary hover:text-text-primary",
-}
-
-const sizes: Record<ButtonSize, string> = {
-  sm: "h-10 px-4 text-sm",
-  md: "h-12 px-5 text-sm",
-  lg: "h-14 px-6 text-base",
-  xl: "h-16 px-8 text-base",
-}
-
 export function Button({
   variant = "primary",
   size = "md",
@@ -58,10 +38,11 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center font-medium transition-colors disabled:pointer-events-none disabled:opacity-60",
-        tokens.radius.md,
-        sizes[size],
-        variants[variant],
+        tokens.interactive.base,
+        tokens.interactive.radius,
+        tokens.interactive.states.disabled,
+        tokens.interactive.sizes[size],
+        tokens.interactive.variants[variant],
         className,
       )}
       {...props}

@@ -1,30 +1,92 @@
 ﻿:root {
+  /* Physical visual values; TypeScript tokens select their semantic usage. */
   --fp-color-surface-primary: #fcfcfc;
-  --fp-color-surface-secondary: #f8f8f7;
+  --fp-color-surface-secondary: #f5f4f6;
   --fp-color-surface-tertiary: #f1f3f4;
+  --fp-color-surface-footer: var(--fp-color-surface-hero);
   --fp-color-surface-elevated: #ffffff;
-  --fp-color-surface-hero: #f7f7f6;
+  --fp-color-surface-hero: #16202f;
+  --fp-color-surface-marketing-soft: #f5f4f6;
+  --fp-color-surface-soft: var(--fp-color-surface-marketing-soft);
+  --fp-color-surface-dark: var(--fp-color-surface-hero);
+  --fp-color-primary-purple: #6e5efa;
 
   --fp-color-text-primary: #364247;
   --fp-color-text-secondary: #627881;
   --fp-color-text-muted: #8a9aa3;
   --fp-color-text-inverse: #ffffff;
+  --fp-color-text-on-hero-primary: var(--fp-color-text-inverse);
+  --fp-color-text-on-hero-secondary: rgba(255, 255, 255, 0.76);
+  --fp-color-border-on-hero: rgba(255, 255, 255, 0.2);
 
   --fp-color-border-primary: #e5e7eb;
   --fp-color-border-secondary: #d7dce0;
   --fp-color-border-focus: #364247;
 
-  --fp-color-brand-primary: #cc195a;
-  --fp-color-brand-primary-hover: #a50d45;
+  --fp-color-brand-primary: var(--fp-color-primary-purple);
+  --fp-color-brand-primary-hover:
+    color-mix(in srgb, var(--fp-color-brand-primary) 82%, black);
   --fp-color-brand-on-primary: #ffffff;
- 
+
+  /*
+   * Action colors.
+   * These are intentionally separated from brand colors:
+   * brand = logo/accent identity
+   * action = primary CTA buttons
+   */
+  --fp-color-action-primary: var(--fp-color-primary-purple);
+  --fp-color-action-primary-hover:
+    color-mix(in srgb, var(--fp-color-action-primary) 88%, white);
+  --fp-color-action-on-primary: #ffffff;
+
+  /*
+   * Editorial accent colors.
+   * Used for small visual accents such as the three "Come funziona?"
+   * dividers. Keep HEX values here, never inside apps/web pages.
+   */
+  --fp-color-accent-step-one: #2b415e;
+  --fp-color-accent-step-two: #356fbe;
+  --fp-color-accent-step-three: #922b66;
+  --fp-color-accent-warning: #f59e0b;
+  --fp-color-warning-primary: var(--fp-color-accent-warning);
 
   --fp-shadow-surface:
     0 0 1px rgba(0, 0, 0, 0.08),
     0 0 14px rgba(0, 0, 0, 0.16);
+  --fp-shadow-card:
+    0 1px 2px rgba(38, 18, 48, 0.04),
+    0 8px 22px rgba(38, 18, 48, 0.07);
 
-  --fp-radius-hero-surface: clamp(2.5rem, 4vw, 4.5rem);
+  /* Shared marketing surface frame: hero and editorial panels align to it. */
+  --fp-radius-marketing-surface: 0.75rem;
+  --fp-radius-hero-surface: var(--fp-radius-marketing-surface);
   --fp-hero-surface-background: var(--fp-color-surface-hero);
+
+  /*
+   * Public home tuning variables.
+   * These are intentionally editable from DevTools for visual calibration.
+   */
+  --fp-home-rail-max-width: 96rem;
+  --fp-home-hero-max-width: 96rem;
+  --fp-home-hero-height: 34.5rem;
+  --fp-home-hero-radius: 0rem;
+  --fp-home-hero-light-width: 54.5%;
+  --fp-home-hero-light-height: 94%;
+  --fp-home-hero-dark-left: 14%;
+  --fp-home-hero-dark-top: 0.3%;
+  --fp-home-hero-dark-bottom: -1.1%;
+  --fp-home-hero-title-x: 15.6%;
+  --fp-home-hero-title-y: 13%;
+  --fp-home-hero-search-x: 15.3%;
+  --fp-home-hero-search-y: 55%;
+  --fp-home-hero-image-x: 51.7%;
+  --fp-home-hero-image-y: 10%;
+  --fp-home-content-inset-x: 8.5%;
+  --fp-home-section-y: 3rem;
+  --fp-home-section-y-compact: 2.5rem;
+  --fp-home-section-gap: 1.25rem;
+  --fp-home-search-inner-height: 92px;
+  --fp-home-search-button-size: 92px;
 }
 
 @theme inline {
@@ -33,13 +95,21 @@
   --color-surface-primary: var(--fp-color-surface-primary);
   --color-surface-secondary: var(--fp-color-surface-secondary);
   --color-surface-tertiary: var(--fp-color-surface-tertiary);
+  --color-surface-footer: var(--fp-color-surface-footer);
   --color-surface-elevated: var(--fp-color-surface-elevated);
   --color-surface-hero: var(--fp-color-surface-hero);
+  --color-surface-marketing-soft: var(--fp-color-surface-marketing-soft);
+  --color-surface-soft: var(--fp-color-surface-soft);
+  --color-surface-dark: var(--fp-color-surface-dark);
+  --color-primary-purple: var(--fp-color-primary-purple);
 
   --color-text-primary: var(--fp-color-text-primary);
   --color-text-secondary: var(--fp-color-text-secondary);
   --color-text-muted: var(--fp-color-text-muted);
   --color-text-inverse: var(--fp-color-text-inverse);
+  --color-text-on-hero-primary: var(--fp-color-text-on-hero-primary);
+  --color-text-on-hero-secondary: var(--fp-color-text-on-hero-secondary);
+  --color-border-on-hero: var(--fp-color-border-on-hero);
 
   --color-border-primary: var(--fp-color-border-primary);
   --color-border-secondary: var(--fp-color-border-secondary);
@@ -49,7 +119,18 @@
   --color-brand-primary-hover: var(--fp-color-brand-primary-hover);
   --color-brand-on-primary: var(--fp-color-brand-on-primary);
 
+  --color-action-primary: var(--fp-color-action-primary);
+  --color-action-primary-hover: var(--fp-color-action-primary-hover);
+  --color-action-on-primary: var(--fp-color-action-on-primary);
+
+  --color-accent-step-one: var(--fp-color-accent-step-one);
+  --color-accent-step-two: var(--fp-color-accent-step-two);
+  --color-accent-step-three: var(--fp-color-accent-step-three);
+  --color-accent-warning: var(--fp-color-accent-warning);
+  --color-warning-primary: var(--fp-color-warning-primary);
+
   --shadow-surface: var(--fp-shadow-surface);
+  --shadow-card: var(--fp-shadow-card);
 }
 
 body {
@@ -58,6 +139,10 @@ body {
   font-family: var(--font-plus-jakarta-sans, Arial), Helvetica, sans-serif;
 }
 
+/*
+ * Legacy CSS-driven hero surface. Kept for tokens.surfaces.hero consumers;
+ * HeroSurface now emits mergeable utilities from tokens.structuralSurfaces.
+ */
 .fp-hero-surface {
   background: var(--fp-hero-surface-background);
   border-radius: var(--fp-radius-hero-surface);

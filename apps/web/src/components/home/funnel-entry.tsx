@@ -18,6 +18,7 @@ import {
 } from './search-bar'
 
 import type {
+  SearchBarVariant,
   SearchBarSelection,
 } from './search-bar'
 
@@ -188,7 +189,13 @@ function CategoryDiscoveryPanel({
   )
 }
 
-export function FunnelEntry() {
+type FunnelEntryProps = {
+  searchVariant?: SearchBarVariant
+}
+
+export function FunnelEntry({
+  searchVariant = 'default',
+}: FunnelEntryProps = {}) {
   const router = useRouter()
   const [
     categoryDiscovery,
@@ -328,6 +335,7 @@ export function FunnelEntry() {
   return (
     <div className="flex flex-col gap-4">
       <SearchBar
+        variant={searchVariant}
         onSelect={handleSearchSelect}
       />
 
