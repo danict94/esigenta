@@ -7,6 +7,10 @@ export type SeoInterventionLanding = {
   metaDescription: string;
   funnelSlug: string;
   domainSlug: string;
+  geoSection: {
+    title: string;
+    summary: string;
+  };
   relatedInterventionSlugs: readonly string[];
   professionalCategorySlugs: readonly string[];
   guideSlugs?: readonly string[];
@@ -37,6 +41,11 @@ export const seoInterventionLandings = [
       "Devi ristrutturare un bagno? Scopri cosa puoi richiedere, da cosa dipende il costo e confronta preventivi da professionisti qualificati.",
     funnelSlug: "rifare-bagno",
     domainSlug: "ristrutturazione",
+    geoSection: {
+      title: "Trova professionisti per ristrutturare il bagno nella tua zona",
+      summary:
+        "Descrivi il lavoro e confronta preventivi da imprese disponibili nella tua area, senza creare pagine locali duplicate.",
+    },
     relatedInterventionSlugs: [
       "ristrutturare-casa",
       "rifare-cucina",
@@ -92,6 +101,11 @@ export const seoInterventionLandings = [
       "Devi rifare o adeguare l'impianto elettrico? Scopri cosa incide sul costo e richiedi preventivi da elettricisti qualificati.",
     funnelSlug: "impianto-elettrico-nuovo",
     domainSlug: "impianti-elettrici",
+    geoSection: {
+      title: "Trova elettricisti per il tuo impianto nella tua zona",
+      summary:
+        "Indica dove si trova l'abitazione e confronta professionisti attivi nella tua area per adeguare o rifare l'impianto elettrico.",
+    },
     relatedInterventionSlugs: [
       "riparare-quadro-elettrico",
       "aggiungere-presa-elettrica",
@@ -147,6 +161,11 @@ export const seoInterventionLandings = [
       "Vuoi installare un impianto fotovoltaico? Scopri cosa valutare e confronta preventivi da professionisti per pannelli solari domestici.",
     funnelSlug: "installare-fotovoltaico",
     domainSlug: "clima-energia",
+    geoSection: {
+      title: "Trova installatori fotovoltaico nella tua zona",
+      summary:
+        "Indica dove vuoi realizzare l'impianto e confronta professionisti attivi nella tua area, mantenendo una sola landing canonica.",
+    },
     relatedInterventionSlugs: [
       "impianto-elettrico-nuovo",
       "installare-climatizzatore",
@@ -202,6 +221,11 @@ export const seoInterventionLandings = [
       "Devi rifare il tetto? Scopri cosa incide sul costo, quali lavori puoi richiedere e confronta preventivi da imprese qualificate.",
     funnelSlug: "rifare-tetto",
     domainSlug: "tetti",
+    geoSection: {
+      title: "Trova imprese per rifare il tetto nella tua zona",
+      summary:
+        "Descrivi copertura, accessibilità e tipo di intervento per confrontare preventivi da imprese disponibili nella tua area.",
+    },
     relatedInterventionSlugs: [
       "riparare-tetto",
       "fare-copertura-edile",
@@ -257,6 +281,11 @@ export const seoInterventionLandings = [
       "Devi installare o sostituire un climatizzatore? Scopri cosa valutare e richiedi preventivi da tecnici qualificati nella tua zona.",
     funnelSlug: "installare-climatizzatore",
     domainSlug: "clima-energia",
+    geoSection: {
+      title: "Trova tecnici per climatizzatori nella tua zona",
+      summary:
+        "Indica dove installare il climatizzatore e confronta preventivi da professionisti attivi nella tua area.",
+    },
     relatedInterventionSlugs: [
       "installare-fotovoltaico",
       "impianto-elettrico-nuovo",
@@ -312,6 +341,11 @@ export const seoInterventionLandings = [
       "Devi realizzare lavori in cartongesso o finiture interne? Scopri cosa puoi richiedere e confronta preventivi da professionisti qualificati.",
     funnelSlug: "fare-lavori-cartongesso",
     domainSlug: "ristrutturazione",
+    geoSection: {
+      title: "Trova cartongessisti e professionisti per finiture nella tua zona",
+      summary:
+        "Descrivi pareti, controsoffitti o finiture da realizzare e confronta professionisti disponibili nella tua area.",
+    },
     relatedInterventionSlugs: [
       "fare-parete-cartongesso",
       "abbassare-soffitto",
