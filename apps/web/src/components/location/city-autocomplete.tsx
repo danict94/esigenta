@@ -7,7 +7,13 @@ import {
 } from 'react'
 
 import {
+  MapPin,
+} from 'lucide-react'
+
+import {
+  cn,
   Input,
+  tokens,
 } from '@fixpro/ui'
 
 import {
@@ -431,27 +437,40 @@ export function CityAutocomplete({
 
   return (
     <div className="grid gap-2">
-      <Input
-        id={id}
-        ref={inputRef}
-        value={inputValue}
-        onChange={(event) => {
-          const address =
-            event.target.value
+      <div className="relative">
+        <Input
+          id={id}
+          ref={inputRef}
+          size="lg"
+          value={inputValue}
+          onChange={(event) => {
+            const address =
+              event.target.value
 
-          setInputValue(address)
-          onChange({
-            address,
-          })
-          setMessage(
-            address.trim()
-              ? 'Seleziona un indirizzo dai suggerimenti.'
-              : null,
-          )
-        }}
-        placeholder={placeholder}
-        className={className}
-      />
+            setInputValue(address)
+            onChange({
+              address,
+            })
+            setMessage(
+              address.trim()
+                ? 'Seleziona un indirizzo dai suggerimenti.'
+                : null,
+            )
+          }}
+          placeholder={placeholder}
+          className={cn(
+            tokens.radius.lg,
+            "h-16 pr-14 text-lg",
+            className,
+          )}
+        />
+
+        <MapPin
+          className="pointer-events-none absolute right-6 top-1/2 size-7 -translate-y-1/2 text-text-secondary"
+          aria-hidden="true"
+          strokeWidth={1.5}
+        />
+      </div>
 
       {message ? (
         <p className="text-xs text-text-muted">

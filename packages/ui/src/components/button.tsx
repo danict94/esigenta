@@ -13,6 +13,7 @@ type ButtonVariant =
   | "secondary"
   | "brand"
   | "brandOutline"
+  | "dark"
   | "ghost"
 
 type ButtonSize =

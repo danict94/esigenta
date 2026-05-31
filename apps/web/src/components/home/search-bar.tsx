@@ -212,7 +212,7 @@ export function SearchBar({
           {error ? (
             <div className="pointer-events-none absolute bottom-full left-4 z-[60] mb-3">
               <div className="relative max-w-xs border border-border-primary bg-surface-elevated px-3 py-2 shadow-surface backdrop-blur">
-                <div className="absolute left-5 top-full h-3 w-3 rotate-45 border-b border-r border-border-primary bg-surface-elevated" />
+                <div className="absolute left-5 top-full h- w-3 rotate-45 border-b border-r border-border-primary bg-surface-elevated" />
 
                 <p className="text-sm text-text-primary">{error}</p>
               </div>

@@ -348,100 +348,82 @@ export function FunnelUI({
   }
 
   return (
-    <div
-      className={cn(
-        "border border-border-primary bg-surface-elevated p-6 md:p-8",
-        tokens.radius["3xl"],
-        tokens.shadows.surface,
-      )}
-    >
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-3 text-xs text-text-muted">
-            <span>
-              Passaggio {stepIndex + 1} di {totalSteps}
-            </span>
+    <div className={tokens.funnel.step}>
+      <p className="sr-only">
+        {selectedInterventionName}. Passaggio {stepIndex + 1} di {totalSteps}.
+        {filledAnswers} risposte raccolte.
+      </p>
 
-            <span>{filledAnswers} risposte raccolte</span>
-          </div>
+      <div className={tokens.funnel.stepHeader}>
+        <div className={tokens.funnel.accent} aria-hidden="true" />
 
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tertiary">
-            <div
-              className="h-full rounded-full bg-brand-primary transition-all"
-              style={{
-                width: `${((stepIndex + 1) / totalSteps) * 100}%`,
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-brand-primary">
-            {selectedInterventionName}
-          </p>
-
-          <h2 className="text-2xl font-semibold leading-tight text-text-primary">
+        <div className="space-y-4">
+          <h2 className={tokens.funnel.stepTitle}>
             {currentCapability.question}
           </h2>
 
           {currentCapability.description ? (
-            <p className="text-sm leading-6 text-text-secondary">
+            <p className={tokens.funnel.stepDescription}>
               {currentCapability.description}
             </p>
           ) : null}
         </div>
+      </div>
 
-        {renderCapabilityInput({
-          capability: currentCapability,
-          value: currentValue,
-          onChange: onCapabilityChange,
-          onPhotoUploadingChange,
-        })}
+      {renderCapabilityInput({
+        capability: currentCapability,
+        value: currentValue,
+        onChange: onCapabilityChange,
+        onPhotoUploadingChange,
+      })}
 
-        {isLastStep ? (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-text-primary">
-              Aggiungi qualche dettaglio utile
-            </label>
+      {isLastStep ? (
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-text-primary">
+            Aggiungi qualche dettaglio utile
+          </label>
 
-            <Textarea
-              value={customerDescription}
-              onChange={(event) => {
-                onCustomerDescriptionChange(event.target.value);
-              }}
-              rows={4}
-              placeholder="Descrivi brevemente il lavoro, se vuoi."
-            />
-          </div>
-        ) : null}
-
-        {error ? <p className="text-sm text-brand-primary">{error}</p> : null}
-
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onBack}
-            disabled={isPhotoUploading}
-            className="text-text-secondary hover:text-text-primary"
-          >
-            {stepIndex === 0 ? "Cambia intervento" : "Indietro"}
-          </Button>
-
-          <Button
-            type="button"
-            onClick={onNext}
-            disabled={isSubmitting || isPhotoUploading}
-          >
-            {isLastStep
-              ? isSubmitting
-                ? "Preparazione..."
-                : "Prepara richiesta"
-              : isPhotoUploading
-                ? "Caricamento foto..."
-                : "Continua"}
-          </Button>
+          <Textarea
+            value={customerDescription}
+            onChange={(event) => {
+              onCustomerDescriptionChange(event.target.value);
+            }}
+            rows={4}
+            placeholder="Descrivi brevemente il lavoro, se vuoi."
+          />
         </div>
+      ) : null}
+
+      {error ? <p className="text-sm text-brand-primary">{error}</p> : null}
+
+      <div className={tokens.funnel.actions}>
+        <Button
+          type="button"
+          variant="secondary"
+          size="lg"
+          onClick={onBack}
+          disabled={isPhotoUploading}
+          className={tokens.funnel.actionButton}
+        >
+          Indietro
+        </Button>
+
+        <Button
+          type="button"
+          variant="primary"
+          size="lg"
+          onClick={onNext}
+          disabled={isSubmitting || isPhotoUploading}
+          className={tokens.funnel.actionButton}
+        >
+          {isLastStep
+            ? isSubmitting
+              ? "Preparazione..."
+              : "Prepara richiesta"
+            : isPhotoUploading
+              ? "Caricamento foto..."
+              : "Avanti"}
+        </Button>
       </div>
     </div>
   );

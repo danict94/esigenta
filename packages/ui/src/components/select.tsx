@@ -5,6 +5,9 @@
 import {
   cn,
 } from "../lib/cn"
+import {
+  tokens,
+} from "../styles/tokens"
 
 export type SelectProps =
   SelectHTMLAttributes<HTMLSelectElement>
@@ -17,7 +20,10 @@ export function Select({
   return (
     <select
       className={cn(
-        "h-12 w-full border border-border-primary bg-surface-primary px-4 text-sm text-text-primary outline-none transition-colors focus:border-border-focus disabled:cursor-not-allowed disabled:opacity-60",
+        tokens.formControls.base,
+        tokens.formControls.states.focus,
+        tokens.formControls.states.disabled,
+        tokens.formControls.select,
         className,
       )}
       {...props}

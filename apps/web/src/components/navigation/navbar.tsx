@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { Button, Container, cn, tokens } from "@fixpro/ui";
 
-type NavbarVariant = "default" | "embedded" | "hero";
+export type NavbarVariant = "default" | "embedded" | "hero" | "funnel";
 
 type NavbarProps = {
   variant?: NavbarVariant;
@@ -36,6 +36,8 @@ const navLinks: NavItem[] = [
 
 export function Navbar({ variant = "default" }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const visibleNavLinks =
+    variant === "funnel" ? navLinks.slice(1) : navLinks;
 
   function closeMenu() {
     setIsMenuOpen(false);
@@ -68,7 +70,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
         </Button>
 
         <nav className={tokens.home.nav.heroMenu}>
-          {navLinks.map((link) => (
+          {visibleNavLinks.map((link) => (
             <NavLink
               key={link.href}
               href={link.href}
@@ -83,18 +85,21 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           ))}
         </nav>
 
-        {isMenuOpen ? <MobileMenu onClick={closeMenu} /> : null}
+        {isMenuOpen ? (
+          <MobileMenu links={visibleNavLinks} onClick={closeMenu} />
+        ) : null}
       </header>
     );
   }
 
   const isEmbedded = variant === "embedded";
+  const isFunnel = variant === "funnel";
 
   return (
     <header
       className={cn(
         "relative z-50",
-        !isEmbedded && "border-b border-border-primary",
+        !isEmbedded && !isFunnel && "border-b border-border-primary",
       )}
     >
       <Container
@@ -119,7 +124,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
         />
 
         <nav className={cn("hidden items-center md:flex", isEmbedded ? "gap-6 lg:gap-9" : "gap-8")}>
-          {navLinks.map((link) => (
+          {visibleNavLinks.map((link) => (
             <NavLink
               key={link.href}
               href={link.href}
@@ -175,6 +180,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
             className={!isEmbedded ? tokens.home.railFrame : undefined}
           >
             <MobileMenuContent
+              links={visibleNavLinks}
               onClick={closeMenu}
               inverse={isEmbedded}
             />
@@ -239,11 +245,17 @@ function NavLink({
   );
 }
 
-function MobileMenu({ onClick }: { onClick: () => void }) {
+function MobileMenu({
+  links,
+  onClick,
+}: {
+  links: NavItem[];
+  onClick: () => void;
+}) {
   return (
     <div className="pointer-events-auto absolute left-0 right-0 top-14 border-t border-border-primary bg-surface-secondary lg:hidden">
       <Container size="lg">
-        <MobileMenuContent onClick={onClick} />
+        <MobileMenuContent links={links} onClick={onClick} />
       </Container>
     </div>
   );
@@ -251,14 +263,16 @@ function MobileMenu({ onClick }: { onClick: () => void }) {
 
 function MobileMenuContent({
   inverse = false,
+  links,
   onClick,
 }: {
   inverse?: boolean;
+  links: NavItem[];
   onClick: () => void;
 }) {
   return (
     <nav className="flex flex-col gap-1 py-4">
-      {navLinks.map((link) => (
+      {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}

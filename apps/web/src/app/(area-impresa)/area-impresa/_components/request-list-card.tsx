@@ -1,125 +1,136 @@
-import Link from "next/link";
+import Link from "next/link"
+import {
+  Bookmark,
+  Clock3,
+  MapPin,
+  Ruler,
+  UsersRound,
+} from "lucide-react"
 
 import {
   Badge,
   Button,
   Card,
+  cn,
+  tokens,
   type BadgeProps,
-} from "@fixpro/ui";
+} from "@fixpro/ui"
 
 import {
   formatCreditCost,
-  formatUnlockAvailability,
-  getCommercialStatusLabel,
-  getRequestCommercialState,
-} from "./request-commercial-display";
+} from "./request-commercial-display"
 
 export type RequestListCardProps = {
-  id: string;
-  intervention: string;
-  location: string;
-  createdAt: string;
-  matchLabel?: string;
-  description?: string | null;
-  surfaceArea?: string | number | null;
-  creditCost: number | null;
-  maxUnlocks: number | null;
-  unlockCount: number;
-  isSaved?: boolean;
-  savedAction?: (formData: FormData) => Promise<void>;
+  id: string
+  intervention: string
+  location: string
+  createdAt: string
+  matchLabel?: string
+  description?: string | null
+  surfaceArea?: string | number | null
+  creditCost: number | null
+  maxUnlocks: number | null
+  unlockCount: number
+  isSaved?: boolean
+  savedAction?: (formData: FormData) => Promise<void>
   badges?: Array<{
-    label: string;
-    variant?: BadgeProps["variant"];
-  }>;
-};
+    label: string
+    variant?: BadgeProps["variant"]
+  }>
+}
 
-function formatSurfaceArea(value?: string | number | null) {
-  if (value === null || value === undefined || value === "") {
-    return null;
+function formatSurfaceArea(
+  value?: string | number | null,
+) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null
   }
 
-  const raw = String(value).trim();
+  const raw = String(value).trim()
 
   if (!raw) {
-    return null;
+    return null
   }
 
   if (/^\d+([,.]\d+)?$/.test(raw)) {
-    return `${raw} mq`;
+    return `${raw} mq`
   }
 
-  return raw;
+  return raw
+}
+
+function getLocationTitlePart(
+  location: string,
+) {
+  const value =
+    location.split(" - ")[0]?.trim()
+
+  if (!value || value.toLowerCase().startsWith("localit")) {
+    return null
+  }
+
+  return value
 }
 
 function buildTitle({
   intervention,
-  description,
-  surfaceArea,
+  location,
 }: {
-  intervention: string;
-  description?: string | null;
-  surfaceArea?: string | number | null;
+  intervention: string
+  location: string
 }) {
-  const formattedSurface = formatSurfaceArea(surfaceArea);
+  const locationTitlePart =
+    getLocationTitlePart(location)
 
-  const details = [formattedSurface, description]
-    .filter(Boolean)
-    .join("; ");
-
-  if (details) {
-    return `${intervention}: ${details}`;
+  if (!locationTitlePart) {
+    return intervention
   }
 
-  return intervention;
+  return `${intervention} a ${locationTitlePart}`
 }
 
-function WorkIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      aria-hidden="true"
-    >
-      <path d="M9 7V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1" />
-      <path d="M4 8h16v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" />
-      <path d="M4 13h16" />
-    </svg>
-  );
+function formatInterestCount({
+  maxUnlocks,
+  unlockCount,
+}: {
+  maxUnlocks: number | null
+  unlockCount: number
+}) {
+  if (maxUnlocks === null) {
+    return `${unlockCount} interessati`
+  }
+
+  return `${unlockCount}/${maxUnlocks} interessati`
 }
 
-function PinIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      aria-hidden="true"
-    >
-      <path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z" />
-      <circle cx="12" cy="10" r="2" />
-    </svg>
-  );
-}
+function buildPreviewText({
+  description,
+  formattedSurface,
+  intervention,
+}: {
+  description?: string | null
+  formattedSurface: string | null
+  intervention: string
+}) {
+  const cleanDescription =
+    description?.trim()
 
-function ClockIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="8" />
-      <path d="M12 8v4l3 2" />
-    </svg>
-  );
+  if (cleanDescription) {
+    return cleanDescription
+  }
+
+  const interventionLabel =
+    intervention.toLowerCase()
+
+  if (formattedSurface) {
+    return `Richiesta per ${interventionLabel}, superficie indicativa ${formattedSurface}.`
+  }
+
+  return `Richiesta per ${interventionLabel}.`
 }
 
 export function RequestListCard({
@@ -139,24 +150,31 @@ export function RequestListCard({
 }: RequestListCardProps) {
   const title = buildTitle({
     intervention,
-    description,
-    surfaceArea,
-  });
-  const commercialState = getRequestCommercialState({
-    creditCost,
-    maxUnlocks,
-    unlockCount,
-  });
+    location,
+  })
+  const formattedSurface =
+    formatSurfaceArea(surfaceArea)
+  const previewText =
+    buildPreviewText({
+      description,
+      formattedSurface,
+      intervention,
+    })
 
   return (
-    <Card className="relative overflow-hidden bg-surface-primary transition-colors hover:border-border-focus">
-      <span
-        className="absolute inset-y-0 left-0 w-1 bg-brand-primary"
-        aria-hidden="true"
-      />
+    <Card className="border-l-4 border-l-brand-primary p-4 transition-colors hover:border-border-focus lg:p-5">
+      <div className="space-y-3.5 lg:space-y-4">
+        <div className="flex flex-col gap-1.5 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
+          <h2 className="text-xl font-semibold leading-snug tracking-tight text-text-primary lg:text-2xl">
+            {title}
+          </h2>
 
-      <div className="px-5 py-5 pl-6 md:px-6 md:pl-7">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <span className="shrink-0 text-sm font-medium text-text-primary lg:pt-1 lg:text-lg">
+            {formatCreditCost(creditCost)}
+          </span>
+        </div>
+
+        {(matchLabel || badges.length > 0) ? (
           <div className="flex flex-wrap items-center gap-2">
             {matchLabel ? (
               <Badge variant="warning" size="sm">
@@ -174,60 +192,97 @@ export function RequestListCard({
               </Badge>
             ))}
           </div>
+        ) : null}
 
-          {savedAction ? (
-            <form action={savedAction}>
-              <Button
-                type="submit"
-                name="requestId"
-                value={id}
-                variant={isSaved ? "secondary" : "ghost"}
-                size="sm"
-              >
-                {isSaved ? "Salvata" : "Salva"}
-              </Button>
-            </form>
-          ) : null}
+        <p className="line-clamp-2 max-w-3xl text-sm leading-6 text-text-primary lg:text-lg lg:leading-7">
+          {previewText}{" "}
+          <Link
+            href={`/area-impresa/richieste/${id}`}
+            className="font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
+          >
+            Leggi tutto
+          </Link>
+        </p>
+
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0 flex-1 space-y-3 lg:space-y-4">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-text-primary lg:gap-x-12 lg:gap-y-3 lg:text-base">
+              <span className="inline-flex items-center gap-2">
+                <MapPin
+                  className="size-4 text-text-secondary lg:size-5"
+                  aria-hidden="true"
+                />
+                {location}
+              </span>
+
+              <span className="inline-flex items-center gap-2">
+                <Clock3
+                  className="size-4 text-text-secondary lg:size-5"
+                  aria-hidden="true"
+                />
+                {createdAt}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-text-primary lg:gap-x-12 lg:gap-y-3 lg:text-base">
+              <span className="inline-flex items-center gap-2">
+                <UsersRound
+                  className="size-4 text-text-secondary lg:size-5"
+                  aria-hidden="true"
+                />
+                {formatInterestCount({
+                  maxUnlocks,
+                  unlockCount,
+                })}
+              </span>
+
+              {formattedSurface ? (
+                <span className="inline-flex items-center gap-2">
+                  <Ruler
+                    className="size-4 text-text-secondary lg:size-5"
+                    aria-hidden="true"
+                  />
+                  {formattedSurface}
+                </span>
+              ) : null}
+
+              {savedAction ? (
+                <form action={savedAction}>
+                  <Button
+                    type="submit"
+                    name="requestId"
+                    value={id}
+                    variant="ghost"
+                    size="sm"
+                    className="gap-2 px-0 text-sm font-normal text-text-primary hover:bg-transparent hover:text-brand-primary lg:text-base"
+                  >
+                    <Bookmark
+                      className="size-4 lg:size-5"
+                      aria-hidden="true"
+                    />
+                    {isSaved ? "salvata" : "salva"}
+                  </Button>
+                </form>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="flex shrink-0 lg:min-w-44 lg:justify-end">
+            <Link
+              href={`/area-impresa/richieste/${id}`}
+              className={cn(
+                tokens.interactive.base,
+                tokens.interactive.radius,
+                tokens.interactive.sizes.md,
+                tokens.interactive.variants.brand,
+                "w-full gap-2 lg:w-auto",
+              )}
+            >
+              Vedi richiesta
+            </Link>
+          </div>
         </div>
-
-        <Link href={`/area-impresa/richieste/${id}`} className="group block">
-
-          <h2 className="line-clamp-1 text-xl font-semibold tracking-tight text-brand-primary transition-colors group-hover:text-brand-primary-hover md:text-2xl">
-            {title}
-          </h2>
-
-          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-base text-text-primary">
-            <span className="inline-flex items-center gap-2">
-              <WorkIcon />
-              <span>{intervention}</span>
-            </span>
-
-            <span className="inline-flex items-center gap-2">
-              <PinIcon />
-              <span>{location}</span>
-            </span>
-
-            <span className="inline-flex items-center gap-2">
-              <ClockIcon />
-              <span>{createdAt}</span>
-            </span>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-medium">
-            <Badge variant="warning" size="sm">
-              {formatCreditCost(creditCost)}
-            </Badge>
-
-            <Badge variant="warning" size="sm">
-              {formatUnlockAvailability(commercialState.availableUnlockSlots)}
-            </Badge>
-
-            <Badge variant="neutral" size="sm">
-              {getCommercialStatusLabel(commercialState)}
-            </Badge>
-          </div>
-        </Link>
       </div>
     </Card>
-  );
+  )
 }

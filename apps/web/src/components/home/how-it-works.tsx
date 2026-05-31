@@ -18,7 +18,7 @@ const steps: HowItWorksStep[] = [
     title: "Descrivi il lavoro",
     description: "Racconta cosa ti serve, aggiungi dettagli, foto e posizione.",
     Icon: ClipboardList,
-    iconClassName: "text-accent-step-one",
+    iconClassName: "text-accent-step-two",
   },
   {
     title: "Ricevi risposte",

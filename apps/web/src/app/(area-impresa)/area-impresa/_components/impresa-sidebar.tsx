@@ -14,7 +14,7 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Badge, Button, Card, Container, cn } from "@fixpro/ui";
+import { Badge, Button, Card, Container, cn, tokens } from "@fixpro/ui";
 
 import { authClient } from "../../../../auth/client";
 
@@ -92,11 +92,11 @@ function Brand() {
   return (
     <span className="inline-flex flex-col leading-none">
       <span className="text-2xl font-bold tracking-tight md:text-3xl">
-        <span className="text-text-primary">Esi</span>
+        <span className="text-text-primary">esi</span>
         <span className="text-brand-primary">genta</span>
       </span>
 
-      <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-primary">
+      <span className={cn("mt-0.5 font-semibold text-brand-primary", tokens.typography.microLabel)}>
         Imprese
       </span>
     </span>
@@ -108,7 +108,7 @@ function NavBadge({ value }: { value: string }) {
     <Badge
       variant="danger"
       size="sm"
-      className="ml-1 min-w-5 justify-center px-1.5 text-[10px] leading-none"
+      className={cn("ml-1 min-w-5 justify-center px-1.5", tokens.typography.micro)}
     >
       {value}
     </Badge>

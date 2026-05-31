@@ -1,4 +1,8 @@
 import Link from "next/link"
+import {
+  BriefcaseBusiness,
+  MapPin,
+} from "lucide-react"
 
 import {
   Card,
@@ -110,11 +114,17 @@ function normalizeRequestDashboardFilters(
 }
 
 function getMatchLabel(
-  matchLevel: "selected_service" | "category",
+  matchLevel: "selected_service" | "category" | "explore",
 ) {
-  return matchLevel === "selected_service"
-    ? "Molto compatibile"
-    : "Nella tua categoria"
+  if (matchLevel === "selected_service") {
+    return "Molto compatibile"
+  }
+
+  if (matchLevel === "category") {
+    return "Nella tua categoria"
+  }
+
+  return "Non nel profilo"
 }
 
 type ActiveFilters = {
@@ -135,6 +145,57 @@ function hasActiveFilters(
       active.serviceId ||
       active.sort !== "recommended",
   )
+}
+
+function formatCompanyLocation(
+  company:
+    | {
+        city: string | null
+        province: string | null
+        postalCode: string | null
+      }
+    | null
+    | undefined,
+) {
+  if (!company) {
+    return "Sede operativa non configurata"
+  }
+
+  const cityWithProvince = [
+    company.city,
+    company.province,
+  ]
+    .filter(Boolean)
+    .join(" ")
+
+  if (cityWithProvince && company.postalCode) {
+    return `${cityWithProvince} - ${company.postalCode}`
+  }
+
+  return (
+    cityWithProvince ||
+    company.postalCode ||
+    "Sede operativa non configurata"
+  )
+}
+
+function formatProfileSummary({
+  categoryCount,
+  radiusKm,
+}: {
+  categoryCount: number
+  radiusKm: number | null | undefined
+}) {
+  const categories =
+    categoryCount === 1
+      ? "1 categoria"
+      : `${categoryCount} categorie`
+
+  if (!radiusKm) {
+    return `${categories} operative`
+  }
+
+  return `${categories} operative, raggio ${radiusKm} km`
 }
 
 export default async function RichiestePage({
@@ -164,23 +225,55 @@ export default async function RichiestePage({
 
   const activeFilterCount =
     hasActiveFilters(activeFilters)
+  const requestCount =
+    result.ok ? result.requests.length : 0
+  const companyProfile =
+    result.company ?? null
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
       <section className="space-y-7">
-        <div className="flex flex-col gap-2 pt-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-medium text-text-secondary">
-              Dashboard impresa
-            </p>
-
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-text-primary md:text-3xl">
-              Nuove richieste disponibili
+        <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-3xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+              Richieste disponibili
             </h1>
 
-            <p className="mt-2 text-sm text-text-secondary">
-              {result.ok ? result.requests.length : 0} richieste compatibili
+            <p className="mt-2 text-base text-text-primary">
+              richieste compatibili con il tuo profilo
             </p>
+
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-text-secondary">
+              <span className="inline-flex items-center gap-2">
+                <MapPin
+                  className="size-4"
+                  aria-hidden="true"
+                />
+                {formatCompanyLocation(
+                  companyProfile,
+                )}
+              </span>
+
+              {result.ok ? (
+                <span className="inline-flex items-center gap-2">
+                  <BriefcaseBusiness
+                    className="size-4"
+                    aria-hidden="true"
+                  />
+                  {formatProfileSummary({
+                    categoryCount:
+                      companyProfile
+                        ?.operationalCategoryCount ?? 0,
+                    radiusKm:
+                      companyProfile?.operatingRadiusKm,
+                  })}
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="text-sm font-medium text-text-secondary">
+            {requestCount} richieste
           </div>
         </div>
 
@@ -189,6 +282,9 @@ export default async function RichiestePage({
             active={activeFilters}
             categories={result.filters.categories}
             services={result.filters.services}
+            activeCategoryIsConfigured={
+              result.filters.activeCategoryIsConfigured
+            }
             activeFilterCount={activeFilterCount}
           />
         ) : null}

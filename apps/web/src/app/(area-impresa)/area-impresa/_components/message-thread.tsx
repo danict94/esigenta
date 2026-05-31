@@ -12,6 +12,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  tokens,
 } from "@fixpro/ui"
 
 type MessageThreadProps = {
@@ -108,7 +109,7 @@ export function MessageThread({
                   className={`flex ${isCurrentActor ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[min(34rem,85%)] border px-4 py-3 ${
+                    className={`${tokens.layout.messaging.bubble} border px-4 py-3 ${
                       isCurrentActor
                         ? "border-brand-primary bg-brand-primary text-brand-on-primary"
                         : "border-border-primary bg-surface-secondary text-text-primary"

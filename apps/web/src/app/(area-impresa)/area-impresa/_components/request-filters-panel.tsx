@@ -6,16 +6,17 @@ import {
   SlidersHorizontal,
 } from "lucide-react"
 import {
-  type ReactNode,
+  useRouter,
+} from "next/navigation"
+import {
   useState,
 } from "react"
 
 import {
   Badge,
   Button,
-  Card,
   Input,
-  cn,
+  Select,
 } from "@fixpro/ui"
 
 import type {
@@ -33,24 +34,21 @@ export type RequestFiltersState = {
 export type RequestFilterOption = {
   id: string
   name: string
+  isConfigured: boolean
 }
 
 export type RequestServiceFilterOption = {
   id: string
   name: string
   categoryId: string
+  isConfigured: boolean
 }
-
-type FilterGroup =
-  | "radius"
-  | "category"
-  | "service"
-  | "sort"
 
 type RequestFiltersPanelProps = {
   active: RequestFiltersState
   categories: RequestFilterOption[]
   services: RequestServiceFilterOption[]
+  activeCategoryIsConfigured: boolean | null
   activeFilterCount: boolean
 }
 
@@ -69,7 +67,7 @@ const sortOptions: Array<{
 }> = [
   {
     value: "recommended",
-    label: "Consigliate",
+    label: "Più compatibili",
   },
   {
     value: "newest",
@@ -78,28 +76,6 @@ const sortOptions: Array<{
   {
     value: "nearest",
     label: "Più vicine",
-  },
-]
-
-const filterGroups: Array<{
-  id: FilterGroup
-  label: string
-}> = [
-  {
-    id: "radius",
-    label: "Raggio",
-  },
-  {
-    id: "category",
-    label: "Categoria",
-  },
-  {
-    id: "service",
-    label: "Servizi",
-  },
-  {
-    id: "sort",
-    label: "Ordina",
   },
 ]
 
@@ -159,14 +135,6 @@ function PreservedFilterInputs({
 }) {
   return (
     <>
-      {active.q && !except.includes("q") ? (
-        <Input
-          type="hidden"
-          name="q"
-          defaultValue={active.q}
-        />
-      ) : null}
-
       {active.radiusKm &&
       !except.includes("radiusKm") ? (
         <Input
@@ -203,64 +171,6 @@ function PreservedFilterInputs({
         />
       ) : null}
     </>
-  )
-}
-
-function FilterLink({
-  href,
-  active,
-  children,
-}: {
-  href: string
-  active: boolean
-  children: string
-}) {
-  return (
-    <Link href={href} className="inline-flex">
-      <Badge
-        variant={active ? "success" : "neutral"}
-        size="sm"
-      >
-        {children}
-      </Badge>
-    </Link>
-  )
-}
-
-function FilterTab({
-  active,
-  onClick,
-  label,
-  summary,
-}: {
-  active: boolean
-  onClick: () => void
-  label: string
-  summary: string
-}) {
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      className={cn(
-        "h-auto justify-start border-b px-0 py-3 text-left",
-        active
-          ? "border-brand-primary text-brand-primary"
-          : "border-border-primary text-text-secondary",
-      )}
-      onClick={onClick}
-    >
-      <span className="flex flex-col items-start gap-1">
-        <span className="text-sm font-semibold">
-          {label}
-        </span>
-
-        <span className="max-w-40 truncate text-xs font-normal text-text-muted">
-          {summary}
-        </span>
-      </span>
-    </Button>
   )
 }
 
@@ -313,77 +223,23 @@ function getActiveFilterLabels({
   return labels
 }
 
-function getGroupSummary({
-  group,
-  active,
-  categories,
-  services,
-}: {
-  group: FilterGroup
-  active: RequestFiltersState
-  categories: RequestFilterOption[]
-  services: RequestServiceFilterOption[]
-}) {
-  if (group === "radius") {
-    return active.radiusKm
-      ? `${active.radiusKm} km`
-      : "Profilo"
-  }
-
-  if (group === "category") {
-    return (
-      categories.find(
-        (category) =>
-          category.id === active.categoryId,
-      )?.name ?? "Tutte"
-    )
-  }
-
-  if (group === "service") {
-    return (
-      services.find(
-        (service) =>
-          service.id === active.serviceId,
-      )?.name ?? "Tutti"
-    )
-  }
-
-  return (
-    sortOptions.find(
-      (option) =>
-        option.value === active.sort,
-    )?.label ?? "Consigliate"
-  )
-}
-
-function FilterContent({
-  children,
-}: {
-  children: ReactNode
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {children}
-    </div>
-  )
-}
-
 export function RequestFiltersPanel({
   active,
   categories,
   services,
+  activeCategoryIsConfigured,
   activeFilterCount,
 }: RequestFiltersPanelProps) {
-  const [
-    isFilterOpen,
-    setIsFilterOpen,
-  ] = useState(false)
-
-  const [
-    activeGroup,
-    setActiveGroup,
-  ] = useState<FilterGroup>("radius")
-
+  const router = useRouter()
+  const hasAdvancedFilters =
+    Boolean(
+      active.radiusKm ||
+        active.categoryId ||
+        active.serviceId ||
+        active.sort !== "recommended",
+    )
+  const [filtersOpen, setFiltersOpen] =
+    useState(hasAdvancedFilters)
   const visibleServices =
     active.categoryId
       ? services.filter(
@@ -391,208 +247,257 @@ export function RequestFiltersPanel({
             service.categoryId ===
             active.categoryId,
         )
-      : services
-
+      : []
   const activeLabels =
     getActiveFilterLabels({
       active,
       categories,
       services,
     })
+  const selectedCategory =
+    categories.find(
+      (category) =>
+        category.id === active.categoryId,
+    )
 
   return (
-    <Card className="p-4 md:p-5">
-      <div className="flex flex-col gap-3 lg:flex-row">
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
         <form
           action="/area-impresa/richieste"
           method="get"
-          className="flex flex-1 flex-col gap-3 md:flex-row"
+          className="w-full max-w-xl"
         >
           <PreservedFilterInputs
             active={active}
             except={["q"]}
           />
 
-          <div className="relative flex-1">
-            <Search
-              className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
-              aria-hidden="true"
-            />
+          <label className="grid flex-1 gap-2">
+            <span className="text-sm font-medium text-text-primary">
+              cerca richiesta con parole chiave.
+            </span>
 
-            <Input
-              type="search"
-              name="q"
-              defaultValue={active.q ?? ""}
-              placeholder="Cerca richiesta, città, materiale..."
-              className="pl-12"
-            />
-          </div>
+            <span className="relative">
+              <Search
+                className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+                aria-hidden="true"
+              />
 
-          <Button type="submit">
-            Cerca
-          </Button>
+              <Input
+                type="search"
+                name="q"
+                defaultValue={active.q ?? ""}
+                placeholder="es. tinteggiatura, bagno"
+                className="pl-12"
+              />
+            </span>
+          </label>
         </form>
 
-        <div className="flex flex-col gap-2 md:flex-row md:items-center">
+        <div className="flex flex-wrap items-center gap-3">
           <Button
             type="button"
-            variant="secondary"
-            className="gap-2 lg:w-auto"
-            aria-expanded={isFilterOpen}
+            variant="ghost"
+            className="gap-2 text-brand-primary"
+            aria-expanded={filtersOpen}
             onClick={() => {
-              setIsFilterOpen((current) => !current)
+              setFiltersOpen((value) => !value)
             }}
           >
             <SlidersHorizontal
-              className="size-4"
+              className="size-5"
               aria-hidden="true"
             />
             Filtri
-            {activeFilterCount ? (
-              <Badge variant="danger" size="sm">
-                {activeLabels.length}
-              </Badge>
-            ) : null}
           </Button>
 
           {activeFilterCount ? (
             <Link
               href="/area-impresa/richieste"
-              className="inline-flex h-10 items-center justify-center text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+              className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
             >
               Reset filtri
+            </Link>
+          ) : null}
+
+          {active.q ? (
+            <Link
+              href={buildFilterHref(active, {
+                q: null,
+              })}
+              className="text-sm font-semibold text-text-secondary transition-colors hover:text-brand-primary"
+            >
+              Cancella ricerca
             </Link>
           ) : null}
         </div>
       </div>
 
+      {filtersOpen ? (
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <label className="grid gap-2">
+            <span className="text-sm font-medium text-text-primary">
+              Categoria
+            </span>
+
+            <Select
+              value={active.categoryId ?? ""}
+              onChange={(event) => {
+                router.push(
+                  buildFilterHref(active, {
+                    categoryId:
+                      event.target.value || null,
+                    serviceId: null,
+                  }),
+                )
+              }}
+            >
+              <option value="">
+                Tutte le categorie
+              </option>
+              {categories.map((category) => (
+                <option
+                  key={category.id}
+                  value={category.id}
+                >
+                  {category.isConfigured
+                    ? category.name
+                    : `${category.name} (non nel profilo)`}
+                </option>
+              ))}
+            </Select>
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-sm font-medium text-text-primary">
+              Servizio
+            </span>
+
+            <Select
+              value={active.serviceId ?? ""}
+              disabled={!active.categoryId}
+              onChange={(event) => {
+                router.push(
+                  buildFilterHref(active, {
+                    serviceId:
+                      event.target.value || null,
+                  }),
+                )
+              }}
+            >
+              <option value="">
+                {active.categoryId
+                  ? "Tutti i servizi"
+                  : "Scegli prima categoria"}
+              </option>
+              {visibleServices.map((service) => (
+                <option
+                  key={`${service.categoryId}-${service.id}`}
+                  value={service.id}
+                >
+                  {service.isConfigured
+                    ? service.name
+                    : `${service.name} (non configurato)`}
+                </option>
+              ))}
+            </Select>
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-sm font-medium text-text-primary">
+              Raggio
+            </span>
+
+            <Select
+              value={
+                active.radiusKm
+                  ? String(active.radiusKm)
+                  : ""
+              }
+              onChange={(event) => {
+                router.push(
+                  buildFilterHref(active, {
+                    radiusKm: event.target.value
+                      ? Number(event.target.value)
+                      : null,
+                  }),
+                )
+              }}
+            >
+              <option value="">
+                Raggio profilo
+              </option>
+              {radiusOptions.map((radiusKm) => (
+                <option
+                  key={radiusKm}
+                  value={radiusKm}
+                >
+                  {radiusKm} km
+                </option>
+              ))}
+            </Select>
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-sm font-medium text-text-primary">
+              Ordina
+            </span>
+
+            <Select
+              value={active.sort}
+              onChange={(event) => {
+                router.push(
+                  buildFilterHref(active, {
+                    sort: event.target
+                      .value as RequestDashboardSort,
+                  }),
+                )
+              }}
+            >
+              {sortOptions.map((option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                >
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+        </div>
+      ) : null}
+
+      {filtersOpen ? (
+        !active.categoryId ? (
+          <p className="text-sm leading-6 text-text-secondary">
+            Seleziona una categoria per filtrare i servizi collegati.
+          </p>
+        ) : activeCategoryIsConfigured === false ? (
+          <p className="max-w-3xl text-sm leading-6 text-text-secondary">
+            Questa categoria non è ancora nel tuo profilo. Puoi configurarla
+            per ricevere richieste più pertinenti.
+          </p>
+        ) : visibleServices.length === 0 ? (
+          <p className="text-sm leading-6 text-text-secondary">
+            Nessun servizio collegato a {selectedCategory?.name ?? "questa categoria"}.
+          </p>
+        ) : null
+      ) : null}
+
       {activeLabels.length > 0 ? (
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-2">
           {activeLabels.map((label) => (
-            <Badge key={label} variant="neutral" size="sm">
+            <Badge
+              key={label}
+              variant="neutral"
+              size="sm"
+            >
               {label}
             </Badge>
           ))}
         </div>
       ) : null}
-
-      {isFilterOpen ? (
-        <div className="mt-5 border-t border-border-primary pt-4">
-          <div className="grid gap-3 md:grid-cols-4">
-            {filterGroups.map((group) => (
-              <FilterTab
-                key={group.id}
-                active={activeGroup === group.id}
-                label={group.label}
-                summary={getGroupSummary({
-                  group: group.id,
-                  active,
-                  categories,
-                  services,
-                })}
-                onClick={() => {
-                  setActiveGroup(group.id)
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="mt-5">
-            {activeGroup === "radius" ? (
-              <FilterContent>
-                <FilterLink
-                  href={buildFilterHref(active, {
-                    radiusKm: null,
-                  })}
-                  active={active.radiusKm === null}
-                >
-                  Raggio profilo
-                </FilterLink>
-
-                {radiusOptions.map((radiusKm) => (
-                  <FilterLink
-                    key={radiusKm}
-                    href={buildFilterHref(active, {
-                      radiusKm,
-                    })}
-                    active={active.radiusKm === radiusKm}
-                  >
-                    {`${radiusKm} km`}
-                  </FilterLink>
-                ))}
-              </FilterContent>
-            ) : null}
-
-            {activeGroup === "category" ? (
-              <FilterContent>
-                <FilterLink
-                  href={buildFilterHref(active, {
-                    categoryId: null,
-                    serviceId: null,
-                  })}
-                  active={active.categoryId === null}
-                >
-                  Tutte
-                </FilterLink>
-
-                {categories.map((category) => (
-                  <FilterLink
-                    key={category.id}
-                    href={buildFilterHref(active, {
-                      categoryId: category.id,
-                      serviceId: null,
-                    })}
-                    active={active.categoryId === category.id}
-                  >
-                    {category.name}
-                  </FilterLink>
-                ))}
-              </FilterContent>
-            ) : null}
-
-            {activeGroup === "service" ? (
-              <FilterContent>
-                <FilterLink
-                  href={buildFilterHref(active, {
-                    serviceId: null,
-                  })}
-                  active={active.serviceId === null}
-                >
-                  Tutti
-                </FilterLink>
-
-                {visibleServices.map((service) => (
-                  <FilterLink
-                    key={`${service.categoryId}-${service.id}`}
-                    href={buildFilterHref(active, {
-                      serviceId: service.id,
-                    })}
-                    active={active.serviceId === service.id}
-                  >
-                    {service.name}
-                  </FilterLink>
-                ))}
-              </FilterContent>
-            ) : null}
-
-            {activeGroup === "sort" ? (
-              <FilterContent>
-                {sortOptions.map((sortOption) => (
-                  <FilterLink
-                    key={sortOption.value}
-                    href={buildFilterHref(active, {
-                      sort: sortOption.value,
-                    })}
-                    active={active.sort === sortOption.value}
-                  >
-                    {sortOption.label}
-                  </FilterLink>
-                ))}
-              </FilterContent>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-    </Card>
+    </div>
   )
 }

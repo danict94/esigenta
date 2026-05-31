@@ -47,6 +47,96 @@ export function getStructuredData(value: unknown) {
     : null
 }
 
+function isRecord(
+  value: unknown,
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  )
+}
+
+const descriptionKeys = new Set([
+  "description",
+  "customerdescription",
+  "message",
+  "details",
+  "detail",
+  "notes",
+  "note",
+  "summary",
+])
+
+function normalizeKey(key: string) {
+  return key
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+}
+
+function getRawAnswers(
+  structuredData: Record<string, unknown>,
+) {
+  if (
+    isRecord(structuredData.draft) &&
+    isRecord(structuredData.draft.rawAnswers)
+  ) {
+    return structuredData.draft.rawAnswers
+  }
+
+  if (isRecord(structuredData.rawAnswers)) {
+    return structuredData.rawAnswers
+  }
+
+  return structuredData
+}
+
+function findDescriptionInValue(
+  value: unknown,
+): string | null {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found =
+        findDescriptionInValue(item)
+
+      if (found) {
+        return found
+      }
+    }
+
+    return null
+  }
+
+  if (!isRecord(value)) {
+    return null
+  }
+
+  for (const [key, entryValue] of Object.entries(value)) {
+    if (
+      descriptionKeys.has(normalizeKey(key)) &&
+      typeof entryValue === "string"
+    ) {
+      const trimmed =
+        entryValue.trim()
+
+      if (trimmed.length > 0) {
+        return trimmed
+      }
+    }
+  }
+
+  for (const entryValue of Object.values(value)) {
+    const found =
+      findDescriptionInValue(entryValue)
+
+    if (found) {
+      return found
+    }
+  }
+
+  return null
+}
+
 export function getDescription(
   structuredData: Record<string, unknown> | null,
 ) {
@@ -54,19 +144,20 @@ export function getDescription(
     return null
   }
 
-  if (typeof structuredData.description === "string") {
-    return structuredData.description
-  }
+  const draftDescription =
+    isRecord(structuredData.draft) &&
+    typeof structuredData.draft.customerDescription ===
+      "string"
+      ? structuredData.draft.customerDescription.trim()
+      : ""
 
-  if (typeof structuredData.message === "string") {
-    return structuredData.message
-  }
-
-  if (typeof structuredData.details === "string") {
-    return structuredData.details
-  }
-
-  return null
+  return (
+    draftDescription ||
+    findDescriptionInValue(
+      getRawAnswers(structuredData),
+    ) ||
+    findDescriptionInValue(structuredData)
+  )
 }
 
 export function getSurfaceArea(
@@ -76,9 +167,13 @@ export function getSurfaceArea(
     return null
   }
 
+  const rawAnswers =
+    getRawAnswers(structuredData)
   const value =
     structuredData.surfaceArea ??
-    structuredData["surface-area"]
+    structuredData["surface-area"] ??
+    rawAnswers.surfaceArea ??
+    rawAnswers["surface-area"]
 
   return typeof value === "string" ||
     typeof value === "number"

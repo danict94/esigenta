@@ -85,8 +85,8 @@
   --fp-home-section-y: 3rem;
   --fp-home-section-y-compact: 2.5rem;
   --fp-home-section-gap: 1.25rem;
-  --fp-home-search-inner-height: 92px;
-  --fp-home-search-button-size: 92px;
+  --fp-home-search-inner-height: 72px;
+  --fp-home-search-button-size: 72px;
 }
 
 @theme inline {

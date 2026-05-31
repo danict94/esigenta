@@ -53,7 +53,7 @@ export const contactCapability: RuntimeCapability = {
    * Lightweight helper copy.
    */
   description:
-    "Lascia nome, cognome, telefono ed email: ti scriviamo solo per questa richiesta.",
+    "Ti scriviamo solo per questa richiesta.",
 
   /**
    * Contact collection is operationally critical.

@@ -83,7 +83,7 @@ export default async function AreaImpresaLandingPage() {
 
   return (
     <PublicShell>
-      <main className="pb-8 md:pb-10">
+      <div className="pb-8 md:pb-10">
         <HeroSurface>
           <div className="grid gap-12 xl:grid-cols-[minmax(0,1fr)_520px] xl:items-center">
             <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 text-center xl:mx-0 xl:pl-12 xl:text-left">
@@ -98,7 +98,7 @@ export default async function AreaImpresaLandingPage() {
                     tokens.typography.hero,
                   )}
                 >
-                  Richieste selezionate per professionisti come te
+                  Trova lavori nella tua zona
                 </h1>
 
                 <p className="mx-auto max-w-xl text-base leading-7 text-text-on-hero-secondary md:text-lg md:leading-8 xl:mx-0">
@@ -164,7 +164,7 @@ export default async function AreaImpresaLandingPage() {
         </HeroSurface>
 
         <BusinessHowItWorks />
-      </main>
+      </div>
     </PublicShell>
   );
 }

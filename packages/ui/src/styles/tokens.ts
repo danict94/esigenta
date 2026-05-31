@@ -135,6 +135,9 @@ const layoutTokens = {
   marketingSurface: {
     inset: marketingSurfaceFrameTokens.inset,
   },
+  messaging: {
+    bubble: "max-w-[min(34rem,85%)]",
+  },
 } as const;
 
 const cardTokens = {
@@ -144,6 +147,24 @@ const cardTokens = {
   footer: `flex items-center ${densityTokens.panel.default} pt-0`,
   title: "text-lg font-semibold leading-none tracking-tight text-text-primary",
   description: "text-sm text-text-secondary",
+} as const;
+
+const badgeTokens = {
+  base: "inline-flex items-center border font-medium",
+  variants: {
+    neutral:
+      "border-border-primary bg-surface-primary text-text-secondary",
+    success:
+      "border-brand-primary bg-surface-primary text-brand-primary",
+    warning:
+      "border-border-secondary bg-surface-secondary text-text-primary",
+    danger:
+      "border-border-focus bg-surface-primary text-text-primary",
+  },
+  sizes: {
+    sm: `${sizingTokens.badge.sm} ${densityTokens.badge.sm} text-xs`,
+    md: `${sizingTokens.badge.md} ${densityTokens.badge.md} text-xs`,
+  },
 } as const;
 
 const interactiveTokens = {
@@ -161,6 +182,8 @@ const interactiveTokens = {
       "border border-brand-primary bg-brand-primary text-brand-on-primary hover:border-brand-primary-hover hover:bg-brand-primary-hover",
     brandOutline:
       "border border-brand-primary bg-transparent text-brand-primary hover:bg-brand-primary hover:text-brand-on-primary",
+    dark:
+      "border border-surface-dark bg-surface-dark text-text-inverse hover:border-surface-dark hover:bg-surface-dark",
     ghost:
       "border border-transparent bg-transparent text-text-secondary hover:bg-surface-secondary hover:text-text-primary",
   },
@@ -237,6 +260,25 @@ const homeTokens = {
   },
 } as const;
 
+const funnelTokens = {
+  page: "pb-14 pt-7 md:pb-16 md:pt-8 lg:pb-20 lg:pt-8",
+  rail: "mx-auto w-full max-w-2xl",
+  intro: "space-y-5",
+  introTitle:
+    "text-4xl font-semibold leading-tight tracking-[-0.055em] text-text-primary md:text-5xl",
+  introDescription: "text-lg leading-8 text-text-primary md:text-xl",
+  accent: "h-1 w-16 bg-brand-primary",
+  step: "mt-7 flex flex-col gap-7 md:mt-8",
+  stepHeader: "space-y-5",
+  stepTitle:
+    "text-4xl font-medium leading-tight tracking-[-0.05em] text-text-primary md:text-5xl",
+  stepDescription:
+    "max-w-2xl text-2xl leading-snug tracking-[-0.035em] text-text-primary md:text-3xl",
+  actions:
+    "flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between",
+  actionButton: "min-w-40",
+} as const;
+
 export const tokens = {
   // Backward-compatible alias; layout.container.widths owns width selection.
   containers: containerWidthTokens,
@@ -265,6 +307,8 @@ export const tokens = {
     body: "text-base leading-7",
 
     caption: "text-sm text-text-muted",
+    micro: "text-[10px] leading-none",
+    microLabel: "text-[10px] uppercase tracking-[0.18em]",
   },
 
   /*
@@ -293,7 +337,9 @@ export const tokens = {
   sizing: sizingTokens,
   layout: layoutTokens,
   home: homeTokens,
+  funnel: funnelTokens,
   card: cardTokens,
+  badge: badgeTokens,
   interactive: interactiveTokens,
   density: densityTokens,
   formControls: formControlTokens,

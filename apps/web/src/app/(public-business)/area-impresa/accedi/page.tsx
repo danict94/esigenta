@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Card, CardContent, Container, tokens } from "@fixpro/ui";
 
-import { Navbar } from "../../../../components/navigation/navbar";
+import { PublicShell } from "../../../../components/layout/public-shell";
 import { ImpresaLoginForm } from "./impresa-login-form";
 
 type AreaImpresaLoginPageProps = {
@@ -19,10 +19,8 @@ export default async function AreaImpresaLoginPage({
   const justRegistered = registered === "1";
 
   return (
-    <div className="min-h-screen bg-surface-primary text-text-primary">
-      <Navbar />
-
-      <main className="flex min-h-[calc(100vh-5rem)] items-center py-8 md:py-12">
+    <PublicShell>
+      <div className="flex items-center py-12 md:py-16 lg:py-20">
         <Container size="sm">
           <Card className="mx-auto w-full max-w-md">
             <CardContent className="flex flex-col gap-6 p-6 pt-6 md:p-8">
@@ -64,7 +62,7 @@ export default async function AreaImpresaLoginPage({
             </CardContent>
           </Card>
         </Container>
-      </main>
-    </div>
+      </div>
+    </PublicShell>
   );
 }
