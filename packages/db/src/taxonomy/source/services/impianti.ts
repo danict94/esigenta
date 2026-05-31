@@ -73,6 +73,24 @@ export const impiantiServices: TaxonomyService[] = [
     name: "Salvavita",
   },
 
+  // Clima ed energia
+
+  {
+    slug: "impianti-fotovoltaici",
+    name: "Impianti fotovoltaici",
+    runtimePresetSlugs: [
+      "QUICK_SERVICE",
+    ],
+  },
+
+  {
+    slug: "climatizzatori",
+    name: "Climatizzatori",
+    runtimePresetSlugs: [
+      "QUICK_SERVICE",
+    ],
+  },
+
   // Sicurezza elettronica
 
   {

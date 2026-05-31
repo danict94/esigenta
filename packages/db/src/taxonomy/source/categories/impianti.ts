@@ -42,6 +42,19 @@ export const impiantiCategories: TaxonomyCategory[] = [
   },
 
   {
+    slug: "impiantista",
+
+    name: "Impiantista",
+
+    sectorSlug: "impianti",
+
+    services: [
+      "impianti-fotovoltaici",
+      "climatizzatori",
+    ],
+  },
+
+  {
     slug: "sicurezza-elettronica",
 
     name: "Sicurezza elettronica",

@@ -9,9 +9,12 @@ import { pavimentiDomains } from "./domains/pavimenti";
 import { impermeabilizzazioniDomains } from "./domains/impermeabilizzazioni";
 import { facciateDomains } from "./domains/facciate";
 import { tettiDomains } from "./domains/tetti";
+import { climaEnergiaDomains } from "./domains/clima-energia";
+import { impiantiElettriciDomains } from "./domains/impianti-elettrici";
 
 import { elettricistaInterventions } from "./interventions/impianti/elettricista";
 import { sicurezzaInterventions } from "./interventions/impianti/sicurezza";
+import { climaEnergiaInterventions } from "./interventions/impianti/clima-energia";
 import { bagnoInterventions } from "./interventions/edilizia/bagno";
 import { cartongessoInterventions } from "./interventions/edilizia/cartongesso";
 import { idraulicaInterventions } from "./interventions/impianti/idraulica";
@@ -63,6 +66,7 @@ const taxonomyRegistry = {
     piscineInterventions,
     tinteggiatureInterventions,
     elettricistaInterventions,
+    climaEnergiaInterventions,
     sicurezzaInterventions,
   ],
 
@@ -77,6 +81,8 @@ const taxonomyRegistry = {
     impermeabilizzazioniDomains,
     facciateDomains,
     tettiDomains,
+    climaEnergiaDomains,
+    impiantiElettriciDomains,
   ],
 };
 

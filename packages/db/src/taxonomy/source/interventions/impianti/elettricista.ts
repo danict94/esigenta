@@ -26,7 +26,6 @@ export const elettricistaInterventions: TaxonomyIntervention[] = [
     aliases: [
       "manca corrente",
       "non c'è corrente",
-      "corrente saltata",
       "salta la corrente",
       "blackout casa",
     ],

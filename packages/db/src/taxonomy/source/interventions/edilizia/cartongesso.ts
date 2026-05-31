@@ -15,6 +15,7 @@ export const cartongessoInterventions: TaxonomyIntervention[] = [
       "struttura in cartongesso",
       "cartongessista",
       "fare cartongesso",
+      "cartongesso e finiture",
     ],
   },
 

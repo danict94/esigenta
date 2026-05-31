@@ -14,6 +14,7 @@ export const bagnoInterventions: TaxonomyIntervention[] = [
       "rifare il bagno",
       "rinnovare bagno",
       "rimodernare bagno",
+      "ristrutturare bagno",
       "bagno da rifare",
       "rifare bagno completo",
       "lavori bagno",
