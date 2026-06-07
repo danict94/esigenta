@@ -17,6 +17,7 @@ type HomeImageProps = {
   priority?: boolean;
   sizes: string;
   src: string;
+  unoptimized?: boolean;
 };
 
 export function HomeImage({
@@ -30,6 +31,7 @@ export function HomeImage({
   priority = false,
   sizes,
   src,
+  unoptimized = false,
 }: HomeImageProps) {
   const [hasError, setHasError] = useState(false);
 
@@ -64,6 +66,7 @@ export function HomeImage({
           fill
           priority={priority}
           sizes={sizes}
+          unoptimized={unoptimized}
           className={cn("object-cover", imageClassName)}
           onError={() => {
             setHasError(true);

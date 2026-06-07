@@ -24,6 +24,13 @@
     "name": "Citofoni"
   },
   {
+    "slug": "climatizzatori",
+    "name": "Climatizzatori",
+    "runtimePresetSlugs": [
+      "QUICK_SERVICE"
+    ]
+  },
+  {
     "slug": "consolidamenti-murari",
     "name": "Consolidamenti murari"
   },
@@ -90,6 +97,13 @@
   {
     "slug": "impermeabilizzazione-terrazzi",
     "name": "Impermeabilizzazione terrazzi"
+  },
+  {
+    "slug": "impianti-fotovoltaici",
+    "name": "Impianti fotovoltaici",
+    "runtimePresetSlugs": [
+      "QUICK_SERVICE"
+    ]
   },
   {
     "slug": "impianto-elettrico",
@@ -253,15 +267,24 @@
   },
   {
     "slug": "ristrutturazione-appartamento",
-    "name": "Ristrutturazione appartamento"
+    "name": "Ristrutturazione appartamento",
+    "runtimePresetSlugs": [
+      "HOME_RENOVATION"
+    ]
   },
   {
     "slug": "ristrutturazione-bagno",
-    "name": "Ristrutturazione bagno"
+    "name": "Ristrutturazione bagno",
+    "runtimePresetSlugs": [
+      "BATHROOM_RENOVATION"
+    ]
   },
   {
     "slug": "ristrutturazione-casa",
-    "name": "Ristrutturazione casa"
+    "name": "Ristrutturazione casa",
+    "runtimePresetSlugs": [
+      "HOME_RENOVATION"
+    ]
   },
   {
     "slug": "ristrutturazione-cucina",
@@ -309,15 +332,24 @@
   },
   {
     "slug": "tinteggiatura-esterni",
-    "name": "Tinteggiatura esterni"
+    "name": "Tinteggiatura esterni",
+    "runtimePresetSlugs": [
+      "PAINTING"
+    ]
   },
   {
     "slug": "tinteggiatura-interni",
-    "name": "Tinteggiatura interni"
+    "name": "Tinteggiatura interni",
+    "runtimePresetSlugs": [
+      "PAINTING"
+    ]
   },
   {
     "slug": "tinteggiatura-pareti",
-    "name": "Tinteggiatura pareti"
+    "name": "Tinteggiatura pareti",
+    "runtimePresetSlugs": [
+      "PAINTING"
+    ]
   },
   {
     "slug": "velette-cartongesso",

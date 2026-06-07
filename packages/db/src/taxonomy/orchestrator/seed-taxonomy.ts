@@ -18,9 +18,9 @@ import type {
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
-const packageDir = path.resolve(currentDir, "../..");
+const packageDir = path.resolve(currentDir, "../../..");
 
-const generatedDir = path.resolve(currentDir, "../generated");
+const generatedDir = path.resolve(packageDir, "taxonomy/generated");
 
 config({
   path: path.resolve(packageDir, "../../.env"),

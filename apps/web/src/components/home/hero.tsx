@@ -1,118 +1,277 @@
-import type { LucideIcon } from "lucide-react";
+"use client";
 
-import { MapPin, ShieldCheck, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
-import { cn, Container, tokens } from "@fixpro/ui";
+import { Button, Container, Input, tokens } from "@fixpro/ui";
+import type { TaxonomySearchResult } from "@fixpro/db";
 
-import { HomeContentRail } from "../layout/home-content-rail";
 import { Navbar } from "../navigation/navbar";
-import { FunnelEntry } from "./funnel-entry";
-import { HomeImage } from "./home-image";
 
-const heroIllustrationSrc = "/assets/images/professionisti-hero.webp";
+const heroSearchResultsId = "home-hero-search-results";
 
-const trustBenefits: {
-  description: string;
-  iconClassName: string;
-  Icon: LucideIcon;
-  title: string;
-}[] = [
-  {
-    title: "Professionisti verificati",
-    description: "Solo esperti qualificati.",
-    Icon: ShieldCheck,
-    iconClassName: "text-accent-step-one",
-  },
-  {
-    title: "Vicini a te",
-    description: "Solo esperti qualificati.",
-    Icon: MapPin,
-    iconClassName: "text-accent-step-two",
-  },
-  {
-    title: "Risposte rapide",
-    description: "Meno attese, piu soluzioni.",
-    Icon: Zap,
-    iconClassName: "text-accent-warning",
-  },
-];
+type HeroSearchSelection = {
+  result: TaxonomySearchResult;
+  query: string;
+};
 
 export function Hero() {
-  return (
-    <section className="pt-2 md:pt-3">
-      <Container size="full" gutter="sm">
-        <div className={tokens.home.hero.frame}>
-          <Navbar variant="hero" />
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const selectionRef = useRef<HeroSearchSelection | null>(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<TaxonomySearchResult[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selection, setSelection] = useState<HeroSearchSelection | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-          <div className={tokens.home.hero.lightPanel}>
-            <div className={tokens.home.hero.titleBlock}>
-              <h1 className={tokens.home.hero.title}>
-                <span className="block">Dai forma</span>
-                <span className="block">ai tuoi progetti</span>
-                <span className="block">con il Professionista</span>
-                <span className="block">giusto per te</span>
-              </h1>
+  useEffect(() => {
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) {
+      setResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    const controller = new AbortController();
+
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/api/taxonomy/search?q=${encodeURIComponent(trimmedQuery)}`,
+          {
+            signal: controller.signal,
+          },
+        );
+
+        if (!response.ok) {
+          setResults([]);
+          setIsSearching(false);
+          return;
+        }
+
+        const data = (await response.json()) as TaxonomySearchResult[];
+
+        setResults(
+          data
+            .filter((result) => result.type === "INTERVENTION")
+            .slice(0, 6),
+        );
+        setIsSearching(false);
+      } catch {
+        if (!controller.signal.aborted) {
+          setResults([]);
+          setIsSearching(false);
+        }
+      }
+    }, 180);
+
+    return () => {
+      controller.abort();
+
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [query]);
+
+  const hasQuery = query.trim().length > 0;
+  const showSuggestions = isFocused && !selection && hasQuery;
+
+  function createSelection(result: TaxonomySearchResult) {
+    return {
+      result,
+      query: query.trim() || result.name,
+    };
+  }
+
+  function selectResult(result: TaxonomySearchResult) {
+    const nextSelection = createSelection(result);
+
+    selectionRef.current = nextSelection;
+    setSelection(nextSelection);
+    setQuery(result.name);
+    setError(null);
+    setIsFocused(false);
+  }
+
+  function openRequest(nextSelection: HeroSearchSelection) {
+    const searchParams = new URLSearchParams();
+
+    if (nextSelection.query.trim()) {
+      searchParams.set("q", nextSelection.query.trim());
+    }
+
+    const queryString = searchParams.toString();
+
+    router.push(
+      `/richiesta/${encodeURIComponent(nextSelection.result.slug)}${
+        queryString ? `?${queryString}` : ""
+      }`,
+    );
+  }
+
+  function submitSearch() {
+    const currentSelection = selection ?? selectionRef.current;
+
+    if (currentSelection) {
+      openRequest(currentSelection);
+      return;
+    }
+
+    const firstResult = results[0];
+
+    if (firstResult) {
+      openRequest(createSelection(firstResult));
+      return;
+    }
+
+    setError("Seleziona un suggerimento prima di proseguire.");
+    setIsFocused(true);
+    inputRef.current?.focus();
+  }
+
+  return (
+    <>
+      <Navbar />
+
+      <section id="richiedi-preventivo" className={tokens.home.hero.root}>
+        <Container size="lg" gutter="md" className={tokens.home.hero.container}>
+          <h1 className={tokens.home.hero.title}>
+            Trova le migliori offerte
+            <br />
+            da{" "}
+            <span className={tokens.home.hero.titleAccent}>
+              professionisti
+            </span>{" "}
+            nella tua zona
+          </h1>
+
+          <p className={tokens.home.hero.question}>
+            Di quale intervento hai bisogno?
+          </p>
+
+          <div className={tokens.home.hero.searchWrap}>
+            <div className={tokens.home.hero.searchForm}>
+              <Input
+                ref={inputRef}
+                type="text"
+                value={query}
+                placeholder="Es: tinteggiatura pareti, ripristino frontalino"
+                role="combobox"
+                aria-label="Intervento da cercare"
+                aria-autocomplete="list"
+                aria-expanded={showSuggestions}
+                aria-controls={heroSearchResultsId}
+                className={tokens.home.hero.searchInput}
+                onFocus={() => {
+                  setIsFocused(true);
+                }}
+                onBlur={() => {
+                  setTimeout(() => {
+                    setIsFocused(false);
+                  }, 150);
+                }}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  selectionRef.current = null;
+                  setSelection(null);
+                  setError(null);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter") {
+                    return;
+                  }
+
+                  event.preventDefault();
+                  submitSearch();
+                }}
+              />
+
+              <Button
+                type="button"
+                variant="warm"
+                size="sm"
+                aria-label="Cerca intervento"
+                className={tokens.home.hero.searchSubmit}
+                onClick={submitSearch}
+              >
+                <ArrowRight
+                  aria-hidden="true"
+                  className={tokens.home.hero.searchSubmitIcon}
+                />
+              </Button>
             </div>
 
-            <div className={tokens.home.hero.searchBlock}>
-              <p className={tokens.home.hero.question}>
-                di cosa hai bisogno?
-              </p>
+            {showSuggestions ? (
+              <div
+                id={heroSearchResultsId}
+                role="listbox"
+                className={tokens.home.hero.suggestions}
+              >
+                <div className={tokens.home.hero.suggestionsList}>
+                  <div className={tokens.home.hero.suggestionsLabel}>
+                    Interventi
+                  </div>
 
-              <div className={tokens.home.hero.heroSearch}>
-                <FunnelEntry searchVariant="hero" />
+                  {results.map((result) => (
+                    <Button
+                      key={`${result.type}-${result.id}`}
+                      type="button"
+                      variant="ghost"
+                      role="option"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                      }}
+                      onClick={() => {
+                        selectResult(result);
+                      }}
+                      className={tokens.home.hero.suggestionAction}
+                    >
+                      <span className={tokens.home.hero.suggestionTitle}>
+                        {result.name}
+                      </span>
+
+                      {result.description ? (
+                        <span className={tokens.home.hero.suggestionDescription}>
+                          {result.description}
+                        </span>
+                      ) : null}
+                    </Button>
+                  ))}
+
+                  {isSearching ? (
+                    <p className={tokens.home.hero.suggestionsState}>
+                      Cerchiamo gli interventi disponibili.
+                    </p>
+                  ) : null}
+
+                  {!isSearching && results.length === 0 ? (
+                    <p className={tokens.home.hero.suggestionsState}>
+                      Nessun intervento trovato. Prova con un termine piu
+                      specifico.
+                    </p>
+                  ) : null}
+                </div>
               </div>
-            </div>
+            ) : null}
+
+            {error && !showSuggestions ? (
+              <p className={tokens.home.hero.searchError}>{error}</p>
+            ) : null}
           </div>
-
-          <div className={tokens.home.hero.darkPanel}>
-            <HomeImage
-              src={heroIllustrationSrc}
-              decorative
-              priority
-              sizes="(min-width: 1024px) 42vw, 100vw"
-              fallbackLabel="Aggiungi /assets/images/professionisti-hero.webp"
-              fallbackClassName="bg-surface-dark text-text-on-hero-secondary"
-              minimalFallback
-              className={tokens.home.hero.image}
-              imageClassName="object-contain object-bottom"
-            />
-          </div>
-        </div>
-      </Container>
-
-      <TrustBenefits />
-    </section>
-  );
-}
-
-function TrustBenefits() {
-  return (
-    <HomeContentRail className="py-5 md:py-6">
-      <div className="grid gap-3 sm:grid-cols-3 md:gap-6">
-        {trustBenefits.map((benefit) => (
-          <div
-            key={benefit.title}
-            className="flex items-center gap-3 rounded-lg bg-surface-primary px-2 py-3 sm:flex-col sm:justify-start sm:text-center"
-          >
-            <benefit.Icon
-              className={cn("size-7", benefit.iconClassName)}
-              aria-hidden="true"
-              strokeWidth={1.6}
-            />
-
-            <div>
-              <h2 className="text-sm font-semibold text-text-primary md:text-base">
-                {benefit.title}
-              </h2>
-
-              <p className="mt-1 text-xs text-text-secondary">
-                {benefit.description}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </HomeContentRail>
+        </Container>
+      </section>
+    </>
   );
 }

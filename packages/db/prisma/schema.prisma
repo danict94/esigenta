@@ -259,6 +259,13 @@ enum CompanyRequestMatchingMode {
   SELECTED_SERVICES_ONLY
 }
 
+enum CompanyStatus {
+  PENDING_REVIEW
+  APPROVED
+  SUSPENDED
+  BLOCKED
+}
+
 model Company {
   id String @id @default(cuid())
 
@@ -279,6 +286,11 @@ model Company {
   isActive Boolean @default(true)
 
   deletedAt DateTime?
+
+  status      CompanyStatus @default(PENDING_REVIEW)
+  approvedAt  DateTime?
+  suspendedAt DateTime?
+  blockedAt   DateTime?
 
   requestMatchingMode CompanyRequestMatchingMode @default(CATEGORY_WITH_SERVICE_PRIORITY)
 
@@ -323,6 +335,7 @@ model Company {
   @@index([postalCode])
   @@index([latitude, longitude])
   @@index([onboardingCategorySlug])
+  @@index([status])
   @@index([createdAt])
 }
 

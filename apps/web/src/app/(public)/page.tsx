@@ -8,8 +8,8 @@ import { PublicShell } from "../../components/layout/public-shell";
 export default function HomePage() {
   return (
     <PublicShell hero={<Hero />}>
-      <HowItWorks />
       <ProfessionalAreas />
+      <HowItWorks />
       <ProfessionalCta />
       <CostGuides />
     </PublicShell>

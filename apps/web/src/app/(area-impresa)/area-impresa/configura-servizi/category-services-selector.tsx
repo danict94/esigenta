@@ -3,13 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import {
-  Badge,
-  Button,
-  Checkbox,
-  Input,
-  cn,
-} from "@fixpro/ui";
+import { Badge, Button, Checkbox, Input, cn } from "@fixpro/ui";
 
 type ServiceOption = {
   id: string;
@@ -232,7 +226,7 @@ export function CategoryServicesSelector({
         return currentActiveCategoryId &&
           nextCategoryIds.includes(currentActiveCategoryId)
           ? currentActiveCategoryId
-          : nextCategoryIds[0] ?? null;
+          : (nextCategoryIds[0] ?? null);
       });
 
       return nextCategoryIds;

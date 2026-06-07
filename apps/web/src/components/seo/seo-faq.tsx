@@ -1,6 +1,4 @@
 import {
-  Card,
-  CardContent,
   cn,
   tokens,
 } from "@fixpro/ui";
@@ -22,32 +20,38 @@ export function SeoFaq({ faq }: SeoFaqProps) {
   return (
     <section
       aria-labelledby="seo-faq-title"
-      className={cn("space-y-6", tokens.home.sectionGap)}
+      className="space-y-6"
     >
       <div className="max-w-3xl">
         <p className={tokens.home.sectionLabel}>FAQ</p>
 
         <h2
           id="seo-faq-title"
-          className={cn("mt-2", tokens.home.sectionTitle)}
+          className="mt-2 text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
         >
           Domande frequenti
         </h2>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div
+        className={cn(
+          tokens.radius.lg,
+          "divide-y divide-border-primary border-y border-border-primary",
+        )}
+      >
         {faq.map((item) => (
-          <Card key={item.question}>
-            <CardContent className="space-y-3 pt-6">
-              <h3 className="text-lg font-semibold leading-7 text-text-primary">
-                {item.question}
-              </h3>
+          <article
+            key={item.question}
+            className="grid gap-3 py-5 md:grid-cols-[0.42fr_1fr] md:gap-8 md:py-6"
+          >
+            <h3 className="text-lg font-semibold leading-7 text-text-primary">
+              {item.question}
+            </h3>
 
-              <p className="text-sm leading-6 text-text-secondary">
-                {item.answer}
-              </p>
-            </CardContent>
-          </Card>
+            <p className="text-base leading-7 text-text-secondary">
+              {item.answer}
+            </p>
+          </article>
         ))}
       </div>
     </section>

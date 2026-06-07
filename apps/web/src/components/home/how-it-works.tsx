@@ -1,79 +1,91 @@
 import type { LucideIcon } from "lucide-react";
 
-import { ClipboardList, Handshake, MessagesSquare } from "lucide-react";
+import { Scale, ShieldCheck, UsersRound } from "lucide-react";
 
-import { cn, tokens } from "@fixpro/ui";
+import { tokens } from "@fixpro/ui";
 
 import { HomeContentRail } from "../layout/home-content-rail";
 
-type HowItWorksStep = {
+type SafetyStep = {
   description: string;
-  iconClassName: string;
   Icon: LucideIcon;
   title: string;
 };
 
-const steps: HowItWorksStep[] = [
+const safetySteps: SafetyStep[] = [
   {
-    title: "Descrivi il lavoro",
-    description: "Racconta cosa ti serve, aggiungi dettagli, foto e posizione.",
-    Icon: ClipboardList,
-    iconClassName: "text-accent-step-two",
+    title: "Ricevi più proposte",
+    description:
+      "Pubblica una sola richiesta e ricevi l’interesse di più professionisti",
+    Icon: UsersRound,
   },
   {
-    title: "Ricevi risposte",
+    title: "Confronta prima di decidere",
     description:
-      "I professionisti interessati valutano la richiesta e ti rispondono.",
-    Icon: MessagesSquare,
-    iconClassName: "text-accent-step-two",
+      "Valuta prezzi, disponibilità ed esperienza in un unico posto.",
+    Icon: Scale,
   },
   {
-    title: "Scegli con calma",
+    title: "Scegli con fiducia",
     description:
-      "Confronta chiarezza, disponibilità e profili prima di decidere.",
-    Icon: Handshake,
-    iconClassName: "text-action-primary",
+      "Decidi quando trovi la soluzione più adatta al tuo progetto.",
+    Icon: ShieldCheck,
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section className={tokens.home.compactSoftSection}>
+    <section
+      id="scegli-con-piu-sicurezza"
+      className={tokens.home.howItWorks.root}
+    >
       <HomeContentRail>
-        <div className="mx-auto max-w-3xl text-center">
-          <p className={tokens.home.sectionLabel}>
-            Come funziona?
-          </p>
-
-          <h2 className={cn("mt-2", tokens.home.sectionTitleCompact)}>
-            Richiedi in pochi passi, risolvi senza stress.
+        <div className={tokens.home.howItWorks.header}>
+          <h2 className={tokens.home.howItWorks.title}>
+            Scegli con più sicurezza
           </h2>
+
+          <p className={tokens.home.howItWorks.subtitle}>
+            Confrontare più professionisti ti aiuta a scegliere la soluzione più
+            adatta al tuo progetto.
+          </p>
         </div>
 
-        <div className="mt-8 grid gap-7 md:grid-cols-3 md:gap-6">
-          {steps.map((step) => (
-            <article
+        <ol className={tokens.home.howItWorks.list}>
+          <span
+            className={tokens.home.howItWorks.line}
+            aria-hidden={true}
+          />
+
+          {safetySteps.map((step, index) => (
+            <li
               key={step.title}
-              className="flex flex-col items-center text-center"
+              className={tokens.home.howItWorks.item}
             >
-              <div className="flex size-14 items-center justify-center rounded-lg bg-surface-elevated shadow-card">
+              <span className={tokens.home.howItWorks.iconFrame}>
                 <step.Icon
-                  className={cn("size-7", step.iconClassName)}
-                  aria-hidden="true"
+                  className={tokens.home.howItWorks.icon}
+                  aria-hidden={true}
                   strokeWidth={1.7}
                 />
+              </span>
+
+              <div className={tokens.home.howItWorks.body}>
+                <p className={tokens.home.howItWorks.number}>
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+
+                <h3 className={tokens.home.howItWorks.stepTitle}>
+                  {step.title}
+                </h3>
+
+                <p className={tokens.home.howItWorks.description}>
+                  {step.description}
+                </p>
               </div>
-
-              <h3 className="mt-4 text-base font-semibold text-text-primary">
-                {step.title}
-              </h3>
-
-              <p className="mt-2 max-w-xs text-sm leading-6 text-text-secondary">
-                {step.description}
-              </p>
-            </article>
+            </li>
           ))}
-        </div>
+        </ol>
       </HomeContentRail>
     </section>
   );

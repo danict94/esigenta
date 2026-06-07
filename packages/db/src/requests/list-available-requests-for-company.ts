@@ -6,6 +6,9 @@ import type {
 import {
   prisma,
 } from "../prisma/client"
+import {
+  isCompanyMarketplaceApproved,
+} from "../identity"
 
 import {
   getDistanceKm,
@@ -109,6 +112,7 @@ export type ListAvailableRequestsForCompanyResult =
       ok: false
       company?: RequestDashboardCompanyProfile | null
       code:
+        | "company_not_approved_for_marketplace"
         | "missing_category"
         | "missing_location"
       message: string
@@ -127,6 +131,7 @@ export type GetAvailableRequestForCompanyResult =
       ok: false
       company?: RequestDashboardCompanyProfile | null
       code:
+        | "company_not_approved_for_marketplace"
         | "missing_category"
         | "missing_location"
       message: string
@@ -503,6 +508,9 @@ async function loadAvailableRequestsForCompany({
         id: companyId,
       },
       select: {
+        isActive: true,
+        deletedAt: true,
+        status: true,
         onboardingCategorySlug: true,
         name: true,
         city: true,
@@ -543,6 +551,21 @@ async function loadAvailableRequestsForCompany({
     operatingRadiusKm:
       company.operatingRadiusKm,
     operationalCategoryCount: 0,
+  }
+
+  if (
+    !isCompanyMarketplaceApproved(
+      company,
+    )
+  ) {
+    return {
+      ok: false,
+      company: companyProfile,
+      code: "company_not_approved_for_marketplace",
+      message:
+        "Il profilo impresa deve essere approvato prima di usare il marketplace.",
+      filters: emptyFilterOptions,
+    }
   }
 
   if (

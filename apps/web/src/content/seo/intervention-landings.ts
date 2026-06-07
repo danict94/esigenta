@@ -7,6 +7,10 @@ export type SeoInterventionLanding = {
   metaDescription: string;
   funnelSlug: string;
   domainSlug: string;
+  image: {
+    src: string;
+    alt: string;
+  };
   geoSection: {
     title: string;
     summary: string;
@@ -20,6 +24,11 @@ export type SeoInterventionLanding = {
     title: string;
     summary: string;
     priceRange?: string;
+    priceRows?: readonly {
+      label: string;
+      range: string;
+      note: string;
+    }[];
     factors: readonly string[];
     examples?: readonly string[];
   };
@@ -41,10 +50,14 @@ export const seoInterventionLandings = [
       "Devi ristrutturare un bagno? Scopri cosa puoi richiedere, da cosa dipende il costo e confronta preventivi da professionisti qualificati.",
     funnelSlug: "rifare-bagno",
     domainSlug: "ristrutturazione",
+    image: {
+      src: "/assets/images/rifacimento-bagno.webp",
+      alt: "Ristrutturazione bagno con sanitari e rivestimenti moderni",
+    },
     geoSection: {
       title: "Trova professionisti per ristrutturare il bagno nella tua zona",
       summary:
-        "Descrivi il lavoro e confronta preventivi da imprese disponibili nella tua area, senza creare pagine locali duplicate.",
+        "Descrivi il lavoro e confronta preventivi da professionisti disponibili nella tua zona.",
     },
     relatedInterventionSlugs: [
       "ristrutturare-casa",
@@ -65,6 +78,23 @@ export const seoInterventionLandings = [
       summary:
         "Il costo dipende soprattutto da dimensioni, materiali, demolizioni, spostamento degli impianti e livello delle finiture. Per un preventivo attendibile serve descrivere lo stato attuale e il risultato desiderato.",
       priceRange: "indicativamente da 3.500 € a 12.000 €",
+      priceRows: [
+        {
+          label: "Rinnovo leggero bagno",
+          range: "da 1.500 € a 4.000 €",
+          note: "sostituzioni mirate e finiture senza rifacimento completo",
+        },
+        {
+          label: "Ristrutturazione completa",
+          range: "da 3.500 € a 12.000 €",
+          note: "demolizioni, impianti, rivestimenti, sanitari e finiture",
+        },
+        {
+          label: "Costo indicativo al mq",
+          range: "da 600 € a 1.500 € al mq",
+          note: "varia in base a materiali, impianti e complessità del cantiere",
+        },
+      ],
       factors: [
         "metratura del bagno",
         "qualità di sanitari, rubinetteria e rivestimenti",
@@ -101,6 +131,10 @@ export const seoInterventionLandings = [
       "Devi rifare o adeguare l'impianto elettrico? Scopri cosa incide sul costo e richiedi preventivi da elettricisti qualificati.",
     funnelSlug: "impianto-elettrico-nuovo",
     domainSlug: "impianti-elettrici",
+    image: {
+      src: "/assets/images/impianto-elettrico.webp",
+      alt: "Intervento su impianto elettrico domestico",
+    },
     geoSection: {
       title: "Trova elettricisti per il tuo impianto nella tua zona",
       summary:
@@ -161,10 +195,14 @@ export const seoInterventionLandings = [
       "Vuoi installare un impianto fotovoltaico? Scopri cosa valutare e confronta preventivi da professionisti per pannelli solari domestici.",
     funnelSlug: "installare-fotovoltaico",
     domainSlug: "clima-energia",
+    image: {
+      src: "/assets/images/installazione-fotovoltaico.webp",
+      alt: "Installazione di pannelli fotovoltaici su abitazione",
+    },
     geoSection: {
       title: "Trova installatori fotovoltaico nella tua zona",
       summary:
-        "Indica dove vuoi realizzare l'impianto e confronta professionisti attivi nella tua area, mantenendo una sola landing canonica.",
+        "Indica dove vuoi realizzare l'intervento e confronta professionisti attivi nella tua area.",
     },
     relatedInterventionSlugs: [
       "impianto-elettrico-nuovo",
@@ -221,6 +259,10 @@ export const seoInterventionLandings = [
       "Devi rifare il tetto? Scopri cosa incide sul costo, quali lavori puoi richiedere e confronta preventivi da imprese qualificate.",
     funnelSlug: "rifare-tetto",
     domainSlug: "tetti",
+    image: {
+      src: "/assets/images/rifare-tetto.webp",
+      alt: "Rifacimento tetto e copertura",
+    },
     geoSection: {
       title: "Trova imprese per rifare il tetto nella tua zona",
       summary:
@@ -281,6 +323,10 @@ export const seoInterventionLandings = [
       "Devi installare o sostituire un climatizzatore? Scopri cosa valutare e richiedi preventivi da tecnici qualificati nella tua zona.",
     funnelSlug: "installare-climatizzatore",
     domainSlug: "clima-energia",
+    image: {
+      src: "/assets/images/climatizzazione.webp",
+      alt: "Installazione climatizzatore in abitazione",
+    },
     geoSection: {
       title: "Trova tecnici per climatizzatori nella tua zona",
       summary:
@@ -341,6 +387,10 @@ export const seoInterventionLandings = [
       "Devi realizzare lavori in cartongesso o finiture interne? Scopri cosa puoi richiedere e confronta preventivi da professionisti qualificati.",
     funnelSlug: "fare-lavori-cartongesso",
     domainSlug: "ristrutturazione",
+    image: {
+      src: "/assets/images/cartongesso.webp",
+      alt: "Lavori in cartongesso e finiture interne",
+    },
     geoSection: {
       title: "Trova cartongessisti e professionisti per finiture nella tua zona",
       summary:

@@ -14,15 +14,8 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { useRef } from "react";
 
-import {
-  Button,
-  Card,
-  CardContent,
-  cn,
-  tokens,
-} from "@fixpro/ui";
+import { Button, Card, Container, cn, tokens } from "@fixpro/ui";
 
-import { HomeContentRail } from "../layout/home-content-rail";
 import { HomeImage } from "./home-image";
 
 type FeaturedIntervention = {
@@ -78,6 +71,12 @@ const featuredInterventions: FeaturedIntervention[] = [
   },
 ];
 
+const projectIdeasFeatureImage = {
+  alt: "Professionisti in cantiere",
+  fallbackLabel: "Foto professionisti in cantiere",
+  src: "/assets/images/professionisti-hero.webp",
+};
+
 export function ProfessionalAreas() {
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
@@ -97,10 +96,7 @@ export function ProfessionalAreas() {
     const cardWidth = card?.offsetWidth ?? carousel.clientWidth;
 
     carousel.scrollBy({
-      left:
-        direction === "next"
-          ? cardWidth + gap
-          : -(cardWidth + gap),
+      left: direction === "next" ? cardWidth + gap : -(cardWidth + gap),
       behavior: "smooth",
     });
   }
@@ -108,122 +104,123 @@ export function ProfessionalAreas() {
   return (
     <section
       id="progetti-piu-richiesti"
-      className={cn(tokens.home.sectionGap)}
+      className={cn(tokens.home.projectIdeas.root)}
     >
-      <HomeContentRail>
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className={tokens.home.sectionLabel}>
-              Richieste comuni
-            </p>
-
-            <h2 className={cn("mt-2", tokens.home.sectionTitle)}>
-              Interventi pi&ugrave; richiesti
-            </h2>
-
-            <p className={cn("mt-3", tokens.home.sectionDescription)}>
-              Scegli l&apos;intervento che ti serve e ricevi
-              preventivi gratuiti dai migliori professionisti della
-              tua zona.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              aria-label="Mostra interventi precedenti"
-              onClick={() => {
-                scrollCarousel("previous");
-              }}
-              className="h-11 w-11 rounded-full px-0"
-            >
-              <ArrowLeft className="size-5" aria-hidden={true} />
-            </Button>
-
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              aria-label="Mostra interventi successivi"
-              onClick={() => {
-                scrollCarousel("next");
-              }}
-              className="h-11 w-11 rounded-full px-0"
-            >
-              <ArrowRight className="size-5" aria-hidden={true} />
-            </Button>
-          </div>
-        </div>
-
-        <div
-          ref={carouselRef}
-          role="list"
-          aria-label="Interventi piu richiesti"
-          className="mt-8 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto scroll-smooth px-1 pb-4 [scrollbar-width:none] md:gap-6 [&::-webkit-scrollbar]:hidden"
-        >
-          {featuredInterventions.map((intervention) => (
-            <ProjectCard
-              key={intervention.title}
-              intervention={intervention}
+      <Container size="lg" gutter="md">
+        <div className={tokens.home.projectIdeas.inner}>
+          <div className={tokens.home.projectIdeas.feature}>
+            <HomeImage
+              src={projectIdeasFeatureImage.src}
+              alt={projectIdeasFeatureImage.alt}
+              sizes="(min-width: 1280px) 32.5rem, (min-width: 1024px) 38vw, (min-width: 768px) calc(100vw - 48px), calc(100vw - 32px)"
+              fallbackLabel={projectIdeasFeatureImage.fallbackLabel}
+              className={tokens.home.projectIdeas.featureImage}
+              priority
             />
-          ))}
+
+            <div className={tokens.home.projectIdeas.copy}>
+              <h2 className={tokens.home.projectIdeas.title}>
+                Idee per il tuo
+                <br />
+                progetto
+              </h2>
+
+              <p className={tokens.home.projectIdeas.description}>
+                Scopri alcuni
+                <br />
+                degli interventi
+                <br />
+                pi&ugrave; richiesti.
+              </p>
+
+              <Link
+                href="#idee-progetto-lista"
+                className={cn("group", tokens.home.projectIdeas.cta)}
+              >
+                <span>vedi tutti</span>
+                <span
+                  className={tokens.home.projectIdeas.ctaIcon}
+                  aria-hidden={true}
+                >
+                  <ArrowRight className="size-4" />
+                </span>
+              </Link>
+            </div>
+          </div>
+
+          <div className={tokens.home.projectIdeas.carouselShell}>
+            <div className={tokens.home.projectIdeas.carouselToolbar}>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                aria-label="Scorri progetti precedenti"
+                className={tokens.home.projectIdeas.carouselButton}
+                onClick={() => {
+                  scrollCarousel("previous");
+                }}
+              >
+                <ArrowLeft className="size-4" aria-hidden={true} />
+              </Button>
+
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                aria-label="Scorri progetti successivi"
+                className={tokens.home.projectIdeas.carouselButton}
+                onClick={() => {
+                  scrollCarousel("next");
+                }}
+              >
+                <ArrowRight className="size-4" aria-hidden={true} />
+              </Button>
+            </div>
+
+            <div
+              ref={carouselRef}
+              id="idee-progetto-lista"
+              role="list"
+              aria-label="Idee per il tuo progetto"
+              className={tokens.home.projectIdeas.carousel}
+            >
+              {featuredInterventions.map((intervention) => (
+                <ProjectCard
+                  key={intervention.title}
+                  intervention={intervention}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      </HomeContentRail>
+      </Container>
     </section>
   );
 }
 
-function ProjectCard({
-  intervention,
-}: {
-  intervention: FeaturedIntervention;
-}) {
-  const Icon = intervention.icon;
-
+function ProjectCard({ intervention }: { intervention: FeaturedIntervention }) {
   return (
     <Card
       role="listitem"
       data-featured-intervention-card
-      className="group flex min-w-0 flex-[0_0_84%] snap-start overflow-hidden border-border-primary bg-surface-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-surface sm:flex-[0_0_20rem] md:flex-[0_0_21rem] lg:flex-[0_0_21.5rem] xl:flex-[0_0_22rem]"
+      className={tokens.home.projectIdeas.card}
     >
       <Link
         href={intervention.href}
-        aria-label={`Apri richiesta per ${intervention.title}`}
-        className="flex h-full w-full flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-action-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-primary"
+        aria-label={`Apri progetto ${intervention.title}. ${intervention.description}`}
+        className={tokens.home.projectIdeas.cardLink}
       >
-        <div className="relative overflow-hidden">
-          <HomeImage
-            src={intervention.image}
-            alt={intervention.title}
-            sizes="(min-width: 1280px) 22rem, (min-width: 1024px) 21.5rem, (min-width: 768px) 21rem, (min-width: 640px) 20rem, 84vw"
-            fallbackLabel={`Foto ${intervention.title}`}
-            className="aspect-[4/3] bg-surface-tertiary transition-transform duration-300 group-hover:scale-[1.03]"
-          />
+        <HomeImage
+          src={intervention.image}
+          alt={intervention.title}
+          sizes="(min-width: 1280px) 18.5rem, (min-width: 1024px) 21vw, (min-width: 768px) 15rem, 15.5rem"
+          fallbackLabel={`Foto ${intervention.title}`}
+          className={tokens.home.projectIdeas.cardImage}
+        />
 
-          <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-surface-primary shadow-surface">
-            <Icon
-              className="size-5 text-action-primary"
-              aria-hidden={true}
-            />
-          </div>
-        </div>
-
-        <CardContent className="flex min-h-[14rem] flex-1 flex-col px-6 pb-6 pt-6">
-          <h3 className="text-xl font-semibold leading-7 text-text-primary">
-            {intervention.title}
-          </h3>
-
-          <p className="mt-3 text-base leading-7 text-text-secondary">
-            {intervention.description}
-          </p>
-
-          <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-action-primary transition-colors group-hover:text-action-primary-hover">
-            Richiedi preventivi
-            <ArrowRight className="size-4" aria-hidden={true} />
-          </span>
-        </CardContent>
+        <h3 className={tokens.home.projectIdeas.cardTitle}>
+          {intervention.title}
+        </h3>
       </Link>
     </Card>
   );

@@ -43,6 +43,22 @@ export type PublishReviewedRequestResult =
     >
   }
 
+export const requestPublishingRequirementsMissingCode =
+  "REQUEST_PUBLISHING_REQUIREMENTS_MISSING"
+
+export class RequestPublishingRequirementsError extends Error {
+  readonly code =
+    requestPublishingRequirementsMissingCode
+
+  constructor(
+    message = "Prima di pubblicare la richiesta devi impostare costo crediti e limite imprese.",
+  ) {
+    super(message)
+    this.name =
+      "RequestPublishingRequirementsError"
+  }
+}
+
 export class RequestPublishDispatchError extends Error {
   readonly code: RequestDispatchFailureCode
 
@@ -84,6 +100,16 @@ function createDispatchFailureMessage(
   return "Impossibile pubblicare la richiesta: richiesta non trovata."
 }
 
+function isPositiveInteger(
+  value: number | null,
+): value is number {
+  return (
+    typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 1
+  )
+}
+
 export async function publishReviewedRequest({
   requestId,
   moderationNotes,
@@ -92,6 +118,31 @@ export async function publishReviewedRequest({
   moderationNotes?: string | null | undefined
 }): Promise<PublishReviewedRequestResult> {
   return prisma.$transaction(async (tx) => {
+    const publishingRequirements =
+      await tx.request.findUnique({
+        where: {
+          id: requestId,
+        },
+        select: {
+          creditCost: true,
+          maxUnlocks: true,
+        },
+      })
+
+    if (
+      publishingRequirements &&
+      (
+        !isPositiveInteger(
+          publishingRequirements.creditCost,
+        ) ||
+        !isPositiveInteger(
+          publishingRequirements.maxUnlocks,
+        )
+      )
+    ) {
+      throw new RequestPublishingRequirementsError()
+    }
+
     const request =
       await tx.request.update({
         where: {

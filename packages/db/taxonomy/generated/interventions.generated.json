@@ -2,7 +2,9 @@
   {
     "slug": "abbassare-soffitto",
     "name": "Abbassare soffitto",
-    "services": ["controsoffitti"],
+    "services": [
+      "controsoffitti"
+    ],
     "aliases": [
       "abbassamento soffitto",
       "controsoffitto",
@@ -15,7 +17,9 @@
   {
     "slug": "aggiungere-presa-elettrica",
     "name": "Aggiungere presa elettrica",
-    "services": ["prese-elettriche"],
+    "services": [
+      "prese-elettriche"
+    ],
     "aliases": [
       "montare presa",
       "nuova presa elettrica",
@@ -26,7 +30,9 @@
   {
     "slug": "ampliare-casa",
     "name": "Ampliare casa",
-    "services": ["ampliamenti-edili"],
+    "services": [
+      "ampliamenti-edili"
+    ],
     "aliases": [
       "ampliamento casa",
       "ampliamento edificio",
@@ -40,7 +46,9 @@
   {
     "slug": "aprire-chiudere-vano",
     "name": "Aprire o chiudere vano",
-    "services": ["apertura-chiusura-vani"],
+    "services": [
+      "apertura-chiusura-vani"
+    ],
     "aliases": [
       "aprire porta nel muro",
       "aprire vano nel muro",
@@ -54,13 +62,21 @@
   {
     "slug": "cambiare-rubinetto",
     "name": "Cambiare rubinetto",
-    "services": ["installazione-rubinetteria"],
-    "aliases": ["montare rubinetto", "rubinetto nuovo", "sostituire rubinetto"]
+    "services": [
+      "installazione-rubinetteria"
+    ],
+    "aliases": [
+      "montare rubinetto",
+      "rubinetto nuovo",
+      "sostituire rubinetto"
+    ]
   },
   {
     "slug": "consolidare-muratura",
     "name": "Consolidare muratura",
-    "services": ["consolidamenti-murari"],
+    "services": [
+      "consolidamenti-murari"
+    ],
     "aliases": [
       "consolidamento parete",
       "consolidare muro",
@@ -74,7 +90,9 @@
   {
     "slug": "costruire-casa",
     "name": "Costruire casa",
-    "services": ["costruzione-case"],
+    "services": [
+      "costruzione-case"
+    ],
     "aliases": [
       "casa da costruire",
       "costruire abitazione",
@@ -88,7 +106,9 @@
   {
     "slug": "costruire-piscina",
     "name": "Costruire piscina",
-    "services": ["costruzione-piscine"],
+    "services": [
+      "costruzione-piscine"
+    ],
     "aliases": [
       "costruire piscina in cemento",
       "costruire piscina interrata",
@@ -102,7 +122,9 @@
   {
     "slug": "costruire-tramezzo",
     "name": "Costruire tramezzo",
-    "services": ["costruzione-tramezzi"],
+    "services": [
+      "costruzione-tramezzi"
+    ],
     "aliases": [
       "costruire muro interno",
       "costruire parete interna",
@@ -115,7 +137,9 @@
   {
     "slug": "costruire-villa",
     "name": "Costruire villa",
-    "services": ["costruzione-ville"],
+    "services": [
+      "costruzione-ville"
+    ],
     "aliases": [
       "costruire villa da zero",
       "costruire villetta",
@@ -129,7 +153,9 @@
   {
     "slug": "fare-botola-cartongesso",
     "name": "Fare botola in cartongesso",
-    "services": ["botole-cartongesso"],
+    "services": [
+      "botole-cartongesso"
+    ],
     "aliases": [
       "accesso controsoffitto",
       "botola cartongesso",
@@ -142,7 +168,9 @@
   {
     "slug": "fare-cappotto-termico",
     "name": "Fare cappotto termico",
-    "services": ["isolamento-cappotto"],
+    "services": [
+      "isolamento-cappotto"
+    ],
     "aliases": [
       "cappotto condominio",
       "cappotto esterno",
@@ -156,7 +184,9 @@
   {
     "slug": "fare-cassonetto-cartongesso",
     "name": "Fare cassonetto in cartongesso",
-    "services": ["cassonetti-cartongesso"],
+    "services": [
+      "cassonetti-cartongesso"
+    ],
     "aliases": [
       "box cartongesso per tubi",
       "cassonetto cartongesso",
@@ -169,7 +199,9 @@
   {
     "slug": "fare-controparete-cartongesso",
     "name": "Fare controparete in cartongesso",
-    "services": ["contropareti-cartongesso"],
+    "services": [
+      "contropareti-cartongesso"
+    ],
     "aliases": [
       "controparete cartongesso",
       "coprire parete con cartongesso",
@@ -182,7 +214,9 @@
   {
     "slug": "fare-copertura-edile",
     "name": "Fare copertura edile",
-    "services": ["coperture-edili"],
+    "services": [
+      "coperture-edili"
+    ],
     "aliases": [
       "copertura casa",
       "copertura edificio",
@@ -196,7 +230,9 @@
   {
     "slug": "fare-demolizioni",
     "name": "Fare demolizioni",
-    "services": ["demolizioni"],
+    "services": [
+      "demolizioni"
+    ],
     "aliases": [
       "abbattere muro",
       "abbattere parete",
@@ -210,7 +246,9 @@
   {
     "slug": "fare-intonaco",
     "name": "Fare intonaco",
-    "services": ["intonaci"],
+    "services": [
+      "intonaci"
+    ],
     "aliases": [
       "fare intonaci",
       "intonacare muro",
@@ -223,7 +261,9 @@
   {
     "slug": "fare-intonaco-esterno",
     "name": "Fare intonaco esterno",
-    "services": ["intonaci-esterni"],
+    "services": [
+      "intonaci-esterni"
+    ],
     "aliases": [
       "intonacare esterno",
       "intonacare facciata",
@@ -237,7 +277,9 @@
   {
     "slug": "fare-lattoneria",
     "name": "Fare lattoneria",
-    "services": ["lattoneria"],
+    "services": [
+      "lattoneria"
+    ],
     "aliases": [
       "elementi di lattoneria",
       "lattoneria casa",
@@ -251,9 +293,12 @@
   {
     "slug": "fare-lavori-cartongesso",
     "name": "Fare lavori in cartongesso",
-    "services": ["cartongesso"],
+    "services": [
+      "cartongesso"
+    ],
     "aliases": [
       "cartongessista",
+      "cartongesso e finiture",
       "fare cartongesso",
       "lavori in cartongesso",
       "opera in cartongesso",
@@ -264,7 +309,9 @@
   {
     "slug": "fare-libreria-cartongesso",
     "name": "Fare libreria in cartongesso",
-    "services": ["librerie-cartongesso"],
+    "services": [
+      "librerie-cartongesso"
+    ],
     "aliases": [
       "fare libreria",
       "libreria cartongesso",
@@ -277,7 +324,9 @@
   {
     "slug": "fare-massetto",
     "name": "Fare massetto",
-    "services": ["massetti"],
+    "services": [
+      "massetti"
+    ],
     "aliases": [
       "fare massetto casa",
       "massetto nuovo",
@@ -290,7 +339,9 @@
   {
     "slug": "fare-nicchia-cartongesso",
     "name": "Fare nicchia in cartongesso",
-    "services": ["nicchie-cartongesso"],
+    "services": [
+      "nicchie-cartongesso"
+    ],
     "aliases": [
       "fare nicchia",
       "nicchia a muro",
@@ -303,7 +354,9 @@
   {
     "slug": "fare-opere-murarie",
     "name": "Fare opere murarie",
-    "services": ["opere-murarie"],
+    "services": [
+      "opere-murarie"
+    ],
     "aliases": [
       "fare lavori in muratura",
       "interventi murari",
@@ -316,7 +369,9 @@
   {
     "slug": "fare-parete-attrezzata-cartongesso",
     "name": "Fare parete attrezzata in cartongesso",
-    "services": ["pareti-attrezzate-cartongesso"],
+    "services": [
+      "pareti-attrezzate-cartongesso"
+    ],
     "aliases": [
       "mobile tv cartongesso",
       "parete attrezzata cartongesso",
@@ -329,7 +384,9 @@
   {
     "slug": "fare-parete-cartongesso",
     "name": "Fare parete in cartongesso",
-    "services": ["pareti-cartongesso"],
+    "services": [
+      "pareti-cartongesso"
+    ],
     "aliases": [
       "dividere stanza con cartongesso",
       "fare muro cartongesso",
@@ -342,7 +399,9 @@
   {
     "slug": "fare-rasatura",
     "name": "Fare rasatura",
-    "services": ["rasature"],
+    "services": [
+      "rasature"
+    ],
     "aliases": [
       "parete da rasare",
       "rasare muro",
@@ -355,7 +414,9 @@
   {
     "slug": "fare-sottofondo",
     "name": "Fare sottofondo",
-    "services": ["sottofondi"],
+    "services": [
+      "sottofondi"
+    ],
     "aliases": [
       "preparare sottofondo",
       "sottofondo nuovo",
@@ -366,7 +427,9 @@
   {
     "slug": "fare-veletta-cartongesso",
     "name": "Fare veletta in cartongesso",
-    "services": ["velette-cartongesso"],
+    "services": [
+      "velette-cartongesso"
+    ],
     "aliases": [
       "fare veletta",
       "illuminazione indiretta cartongesso",
@@ -379,7 +442,9 @@
   {
     "slug": "impermeabilizzare-bagno",
     "name": "Impermeabilizzare bagno",
-    "services": ["impermeabilizzazione-bagno"],
+    "services": [
+      "impermeabilizzazione-bagno"
+    ],
     "aliases": [
       "bagno perde acqua",
       "doccia perde sotto",
@@ -393,7 +458,9 @@
   {
     "slug": "impermeabilizzare-balcone",
     "name": "Impermeabilizzare balcone",
-    "services": ["impermeabilizzazione-balconi"],
+    "services": [
+      "impermeabilizzazione-balconi"
+    ],
     "aliases": [
       "acqua dal balcone",
       "balcone con infiltrazioni",
@@ -407,7 +474,9 @@
   {
     "slug": "impermeabilizzare-piscina",
     "name": "Impermeabilizzare piscina",
-    "services": ["impermeabilizzazione-piscine"],
+    "services": [
+      "impermeabilizzazione-piscine"
+    ],
     "aliases": [
       "guaina piscina",
       "infiltrazioni piscina",
@@ -421,7 +490,9 @@
   {
     "slug": "impermeabilizzare-terrazzo",
     "name": "Impermeabilizzare terrazzo",
-    "services": ["impermeabilizzazione-terrazzi"],
+    "services": [
+      "impermeabilizzazione-terrazzi"
+    ],
     "aliases": [
       "acqua dal terrazzo",
       "infiltrazioni terrazzo",
@@ -435,7 +506,9 @@
   {
     "slug": "impianto-elettrico-nuovo",
     "name": "Impianto elettrico nuovo",
-    "services": ["impianto-elettrico"],
+    "services": [
+      "impianto-elettrico"
+    ],
     "aliases": [
       "impianto elettrico appartamento",
       "impianto elettrico casa",
@@ -446,7 +519,10 @@
   {
     "slug": "installare-antifurto",
     "name": "Installare antifurto",
-    "services": ["installazione-antifurto", "sensori-allarme"],
+    "services": [
+      "installazione-antifurto",
+      "sensori-allarme"
+    ],
     "aliases": [
       "allarme casa",
       "impianto antifurto",
@@ -455,9 +531,26 @@
     ]
   },
   {
+    "slug": "installare-climatizzatore",
+    "name": "Installare climatizzatore",
+    "services": [
+      "climatizzatori"
+    ],
+    "aliases": [
+      "climatizzazione casa",
+      "installare condizionatore",
+      "installazione climatizzatore",
+      "montare climatizzatore",
+      "montare condizionatore",
+      "sostituire climatizzatore"
+    ]
+  },
+  {
     "slug": "installare-controllo-accessi",
     "name": "Installare controllo accessi",
-    "services": ["controllo-accessi"],
+    "services": [
+      "controllo-accessi"
+    ],
     "aliases": [
       "badge accessi",
       "controllo ingressi",
@@ -466,9 +559,26 @@
     ]
   },
   {
+    "slug": "installare-fotovoltaico",
+    "name": "Installare fotovoltaico",
+    "services": [
+      "impianti-fotovoltaici"
+    ],
+    "aliases": [
+      "fotovoltaico casa",
+      "impianto fotovoltaico",
+      "impianto solare",
+      "installazione fotovoltaico",
+      "pannelli fotovoltaici",
+      "pannelli solari"
+    ]
+  },
+  {
     "slug": "installare-scossaline",
     "name": "Installare scossaline",
-    "services": ["scossaline"],
+    "services": [
+      "scossaline"
+    ],
     "aliases": [
       "mettere scossalina",
       "riparare scossalina",
@@ -497,7 +607,9 @@
   {
     "slug": "livellare-pavimento",
     "name": "Livellare pavimento",
-    "services": ["livellamento-pavimenti"],
+    "services": [
+      "livellamento-pavimenti"
+    ],
     "aliases": [
       "autolivellante pavimento",
       "pareggiare pavimento",
@@ -508,7 +620,10 @@
   {
     "slug": "montare-lampadario",
     "name": "Montare lampadario",
-    "services": ["illuminazione", "lampadari"],
+    "services": [
+      "illuminazione",
+      "lampadari"
+    ],
     "aliases": [
       "installare lampadario",
       "lampadario nuovo",
@@ -519,18 +634,25 @@
   {
     "slug": "perdita-acqua",
     "name": "Perdita acqua",
-    "services": ["riparazione-perdite-acqua"],
+    "services": [
+      "riparazione-perdite-acqua"
+    ],
     "aliases": [
       "acqua che perde",
       "perde acqua",
       "perdita tubo",
       "tubo che perde"
+    ],
+    "runtimePresetSlugs": [
+      "PLUMBING_EMERGENCY"
     ]
   },
   {
     "slug": "posare-guaina-bituminosa",
     "name": "Posare guaina bituminosa",
-    "services": ["guaina-bituminosa"],
+    "services": [
+      "guaina-bituminosa"
+    ],
     "aliases": [
       "guaina bituminosa terrazzo",
       "guaina impermeabilizzante",
@@ -544,7 +666,9 @@
   {
     "slug": "posare-pavimento",
     "name": "Posare pavimento",
-    "services": ["posa-pavimenti"],
+    "services": [
+      "posa-pavimenti"
+    ],
     "aliases": [
       "installare pavimento",
       "mettere pavimento",
@@ -557,7 +681,9 @@
   {
     "slug": "posare-piastrelle",
     "name": "Posare piastrelle",
-    "services": ["posa-piastrelle"],
+    "services": [
+      "posa-piastrelle"
+    ],
     "aliases": [
       "mettere piastrelle",
       "piastrellare",
@@ -570,7 +696,9 @@
   {
     "slug": "posare-rivestimento",
     "name": "Posare rivestimento",
-    "services": ["posa-rivestimenti"],
+    "services": [
+      "posa-rivestimenti"
+    ],
     "aliases": [
       "mettere rivestimento",
       "posa rivestimento",
@@ -584,7 +712,9 @@
   {
     "slug": "realizzare-nuova-costruzione",
     "name": "Realizzare nuova costruzione",
-    "services": ["nuove-costruzioni"],
+    "services": [
+      "nuove-costruzioni"
+    ],
     "aliases": [
       "costruire da zero",
       "costruire nuovo edificio",
@@ -598,7 +728,11 @@
   {
     "slug": "rifare-bagno",
     "name": "Rifare bagno",
-    "services": ["demolizioni", "posa-piastrelle", "ristrutturazione-bagno"],
+    "services": [
+      "demolizioni",
+      "posa-piastrelle",
+      "ristrutturazione-bagno"
+    ],
     "aliases": [
       "bagno da rifare",
       "bagno nuovo",
@@ -607,13 +741,16 @@
       "rifare bagno completo",
       "rifare il bagno",
       "rimodernare bagno",
-      "rinnovare bagno"
+      "rinnovare bagno",
+      "ristrutturare bagno"
     ]
   },
   {
     "slug": "rifare-balcone",
     "name": "Rifare balcone",
-    "services": ["rifacimento-balconi"],
+    "services": [
+      "rifacimento-balconi"
+    ],
     "aliases": [
       "balcone da rifare",
       "balcone rovinato",
@@ -627,7 +764,9 @@
   {
     "slug": "rifare-ballatoio",
     "name": "Rifare ballatoio",
-    "services": ["rifacimento-ballatoi"],
+    "services": [
+      "rifacimento-ballatoi"
+    ],
     "aliases": [
       "ballatoio da rifare",
       "ballatoio rovinato",
@@ -641,7 +780,9 @@
   {
     "slug": "rifare-cornicione",
     "name": "Rifare cornicione",
-    "services": ["rifacimento-cornicioni"],
+    "services": [
+      "rifacimento-cornicioni"
+    ],
     "aliases": [
       "cornicione che cade",
       "cornicione rovinato",
@@ -655,7 +796,9 @@
   {
     "slug": "rifare-cucina",
     "name": "Rifare cucina",
-    "services": ["ristrutturazione-cucina"],
+    "services": [
+      "ristrutturazione-cucina"
+    ],
     "aliases": [
       "cucina da rifare",
       "cucina nuova",
@@ -669,7 +812,9 @@
   {
     "slug": "rifare-facciata",
     "name": "Rifare facciata",
-    "services": ["rifacimento-facciate"],
+    "services": [
+      "rifacimento-facciate"
+    ],
     "aliases": [
       "facciata da rifare",
       "facciata nuova",
@@ -683,7 +828,9 @@
   {
     "slug": "rifare-scale",
     "name": "Rifare scale",
-    "services": ["rifacimento-scale"],
+    "services": [
+      "rifacimento-scale"
+    ],
     "aliases": [
       "lavori scale",
       "rifacimento scale",
@@ -697,7 +844,9 @@
   {
     "slug": "rifare-terrazzo",
     "name": "Rifare terrazzo",
-    "services": ["rifacimento-terrazzi"],
+    "services": [
+      "rifacimento-terrazzi"
+    ],
     "aliases": [
       "lavori terrazzo",
       "rifacimento terrazzo",
@@ -711,7 +860,9 @@
   {
     "slug": "rifare-tetto",
     "name": "Rifare tetto",
-    "services": ["rifacimento-tetto"],
+    "services": [
+      "rifacimento-tetto"
+    ],
     "aliases": [
       "rifacimento tetto",
       "rifare copertura",
@@ -725,7 +876,9 @@
   {
     "slug": "riparare-cartongesso",
     "name": "Riparare cartongesso",
-    "services": ["riparazioni-cartongesso"],
+    "services": [
+      "riparazioni-cartongesso"
+    ],
     "aliases": [
       "aggiustare cartongesso",
       "buco cartongesso",
@@ -737,7 +890,10 @@
   {
     "slug": "riparare-citofono",
     "name": "Riparare citofono",
-    "services": ["citofoni", "videocitofoni"],
+    "services": [
+      "citofoni",
+      "videocitofoni"
+    ],
     "aliases": [
       "aggiustare citofono",
       "citofono non funziona",
@@ -748,7 +904,9 @@
   {
     "slug": "riparare-muratura",
     "name": "Riparare muratura",
-    "services": ["riparazioni-muratura"],
+    "services": [
+      "riparazioni-muratura"
+    ],
     "aliases": [
       "aggiustare muro",
       "muro danneggiato",
@@ -762,7 +920,10 @@
   {
     "slug": "riparare-quadro-elettrico",
     "name": "Riparare quadro elettrico",
-    "services": ["quadro-elettrico", "salvavita"],
+    "services": [
+      "quadro-elettrico",
+      "salvavita"
+    ],
     "aliases": [
       "centralina elettrica",
       "problema quadro elettrico",
@@ -773,7 +934,9 @@
   {
     "slug": "riparare-tetto",
     "name": "Riparare tetto",
-    "services": ["riparazione-tetto"],
+    "services": [
+      "riparazione-tetto"
+    ],
     "aliases": [
       "infiltrazione tetto",
       "perdita dal tetto",
@@ -787,7 +950,9 @@
   {
     "slug": "ripristinare-facciata",
     "name": "Ripristinare facciata",
-    "services": ["ripristino-facciate"],
+    "services": [
+      "ripristino-facciate"
+    ],
     "aliases": [
       "facciata ammalorata",
       "facciata danneggiata",
@@ -801,7 +966,9 @@
   {
     "slug": "ripristinare-frontalini",
     "name": "Ripristinare frontalini",
-    "services": ["ripristino-frontalini"],
+    "services": [
+      "ripristino-frontalini"
+    ],
     "aliases": [
       "frontalini balconi",
       "frontalini che cadono",
@@ -815,7 +982,9 @@
   {
     "slug": "ripristinare-muro",
     "name": "Ripristinare muro",
-    "services": ["ripristino-muri"],
+    "services": [
+      "ripristino-muri"
+    ],
     "aliases": [
       "muro rovinato",
       "parete rovinata",
@@ -828,7 +997,9 @@
   {
     "slug": "ripristinare-sottobalcone",
     "name": "Ripristinare sottobalcone",
-    "services": ["ripristino-sottobalconi"],
+    "services": [
+      "ripristino-sottobalconi"
+    ],
     "aliases": [
       "intonaco sottobalcone",
       "pezzi sotto balcone",
@@ -842,7 +1013,9 @@
   {
     "slug": "ristrutturare-appartamento",
     "name": "Ristrutturare appartamento",
-    "services": ["ristrutturazione-appartamento"],
+    "services": [
+      "ristrutturazione-appartamento"
+    ],
     "aliases": [
       "appartamento da ristrutturare",
       "lavori appartamento",
@@ -857,7 +1030,9 @@
   {
     "slug": "ristrutturare-casa",
     "name": "Ristrutturare casa",
-    "services": ["ristrutturazione-casa"],
+    "services": [
+      "ristrutturazione-casa"
+    ],
     "aliases": [
       "casa da ristrutturare",
       "lavori ristrutturazione casa",
@@ -872,7 +1047,9 @@
   {
     "slug": "ristrutturare-piscina",
     "name": "Ristrutturare piscina",
-    "services": ["ristrutturazione-piscine"],
+    "services": [
+      "ristrutturazione-piscine"
+    ],
     "aliases": [
       "piscina da ristrutturare",
       "rifacimento piscina",
@@ -886,7 +1063,9 @@
   {
     "slug": "rivestire-piscina",
     "name": "Rivestire piscina",
-    "services": ["rivestimento-piscine"],
+    "services": [
+      "rivestimento-piscine"
+    ],
     "aliases": [
       "mosaico piscina",
       "piastrelle piscina",
@@ -899,10 +1078,12 @@
   {
     "slug": "saltata-corrente",
     "name": "corrente saltata",
-    "services": ["riparazione-guasti-elettrici", "salvavita"],
+    "services": [
+      "riparazione-guasti-elettrici",
+      "salvavita"
+    ],
     "aliases": [
       "blackout casa",
-      "corrente saltata",
       "manca corrente",
       "non c'è corrente",
       "salta la corrente"
@@ -911,7 +1092,9 @@
   {
     "slug": "sopraelevare-edificio",
     "name": "Sopraelevare edificio",
-    "services": ["sopraelevazioni"],
+    "services": [
+      "sopraelevazioni"
+    ],
     "aliases": [
       "aggiungere piano",
       "alzare piano casa",
@@ -925,7 +1108,9 @@
   {
     "slug": "sostituire-grondaie",
     "name": "Sostituire grondaie",
-    "services": ["grondaie"],
+    "services": [
+      "grondaie"
+    ],
     "aliases": [
       "cambiare grondaie",
       "grondaia rotta",
@@ -939,7 +1124,9 @@
   {
     "slug": "sostituire-interruttore",
     "name": "Sostituire interruttore",
-    "services": ["interruttori"],
+    "services": [
+      "interruttori"
+    ],
     "aliases": [
       "cambiare interruttore",
       "interruttore non funziona",
@@ -950,19 +1137,33 @@
   {
     "slug": "sostituire-sanitari",
     "name": "Sostituire sanitari",
-    "services": ["installazione-sanitari"],
-    "aliases": ["cambiare lavabo", "cambiare wc", "sostituire bidet"]
+    "services": [
+      "installazione-sanitari"
+    ],
+    "aliases": [
+      "cambiare lavabo",
+      "cambiare wc",
+      "sostituire bidet"
+    ]
   },
   {
     "slug": "sostituire-tubi",
     "name": "Sostituire tubi",
-    "services": ["sostituzione-tubi"],
-    "aliases": ["cambiare tubi", "rifare tubature", "tubi nuovi"]
+    "services": [
+      "sostituzione-tubi"
+    ],
+    "aliases": [
+      "cambiare tubi",
+      "rifare tubature",
+      "tubi nuovi"
+    ]
   },
   {
     "slug": "stuccare-muro",
     "name": "Stuccare muro",
-    "services": ["stuccature-murarie"],
+    "services": [
+      "stuccature-murarie"
+    ],
     "aliases": [
       "chiudere crepe muro",
       "riparare crepe muro",
@@ -974,7 +1175,9 @@
   {
     "slug": "tinteggiare-esterni",
     "name": "Tinteggiare esterni",
-    "services": ["tinteggiatura-esterni"],
+    "services": [
+      "tinteggiatura-esterni"
+    ],
     "aliases": [
       "dipingere esterni",
       "dipingere muro esterno",
@@ -991,7 +1194,9 @@
   {
     "slug": "tinteggiare-interni",
     "name": "Tinteggiare interni",
-    "services": ["tinteggiatura-interni"],
+    "services": [
+      "tinteggiatura-interni"
+    ],
     "aliases": [
       "dipingere appartamento",
       "dipingere casa",
@@ -1008,7 +1213,9 @@
   {
     "slug": "tinteggiare-pareti",
     "name": "Tinteggiare pareti",
-    "services": ["tinteggiatura-pareti"],
+    "services": [
+      "tinteggiatura-pareti"
+    ],
     "aliases": [
       "dipingere muri",
       "dipingere pareti",

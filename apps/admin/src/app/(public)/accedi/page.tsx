@@ -26,7 +26,7 @@ export default async function AdminLoginPage({
     <main className="flex min-h-screen items-center justify-center bg-surface-primary px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <p className="text-sm font-medium text-text-muted">FixPro Admin</p>
+          <p className="text-sm font-medium text-text-muted">esigenta Admin</p>
 
           <CardTitle>Accedi</CardTitle>
 

@@ -76,7 +76,7 @@ export default async function AdminForgotPasswordPage({
       <Card className="w-full max-w-md">
         <CardHeader>
           <p className="text-sm font-medium text-text-muted">
-            FixPro Admin
+            esigenta Admin
           </p>
           <CardTitle>
             Recupera password

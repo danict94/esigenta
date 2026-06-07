@@ -229,6 +229,29 @@ export default async function RichiestePage({
     result.ok ? result.requests.length : 0
   const companyProfile =
     result.company ?? null
+  const unavailableTitle =
+    !result.ok &&
+    result.code ===
+      "company_not_approved_for_marketplace"
+      ? "Profilo impresa in revisione"
+      : !result.ok &&
+          result.code === "missing_category"
+        ? "Categoria impresa non configurata"
+        : "Sede operativa incompleta"
+  const unavailableHref =
+    !result.ok &&
+    result.code ===
+      "company_not_approved_for_marketplace"
+      ? null
+      : !result.ok &&
+          result.code === "missing_category"
+        ? "/area-impresa/configura-servizi"
+        : "/area-impresa/profilo"
+  const unavailableCta =
+    !result.ok &&
+    result.code === "missing_category"
+      ? "Vai alla configurazione servizi"
+      : "Completa sede e raggio operativo"
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -292,27 +315,21 @@ export default async function RichiestePage({
         {!result.ok ? (
           <Card className="p-8">
             <p className="text-base font-semibold text-text-primary">
-              {result.code === "missing_category"
-                ? "Categoria impresa non configurata"
-                : "Sede operativa incompleta"}
+              {unavailableTitle}
             </p>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
               {result.message}
             </p>
 
-            <Link
-              href={
-                result.code === "missing_category"
-                  ? "/area-impresa/configura-servizi"
-                  : "/area-impresa/profilo"
-              }
-              className="mt-5 inline-flex text-sm font-medium text-brand-primary"
-            >
-              {result.code === "missing_category"
-                ? "Vai alla configurazione servizi"
-                : "Completa sede e raggio operativo"}
-            </Link>
+            {unavailableHref ? (
+              <Link
+                href={unavailableHref}
+                className="mt-5 inline-flex text-sm font-medium text-brand-primary"
+              >
+                {unavailableCta}
+              </Link>
+            ) : null}
           </Card>
         ) : (
           <>

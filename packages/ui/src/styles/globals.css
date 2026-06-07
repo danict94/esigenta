@@ -1,32 +1,45 @@
 ﻿:root {
   /* Physical visual values; TypeScript tokens select their semantic usage. */
-  --fp-color-surface-primary: #fcfcfc;
-  --fp-color-surface-secondary: #f5f4f6;
-  --fp-color-surface-tertiary: #f1f3f4;
-  --fp-color-surface-footer: var(--fp-color-surface-hero);
-  --fp-color-surface-elevated: #ffffff;
-  --fp-color-surface-hero: #16202f;
-  --fp-color-surface-marketing-soft: #f5f4f6;
-  --fp-color-surface-soft: var(--fp-color-surface-marketing-soft);
-  --fp-color-surface-dark: var(--fp-color-surface-hero);
-  --fp-color-primary-purple: #6e5efa;
+  --fp-font-nav: var(--font-inter, var(--font-plus-jakarta-sans, Arial));
+  --fp-letter-spacing-canvas: -0.06em;
 
-  --fp-color-text-primary: #364247;
+  --fp-color-neutral-white: #ffffff;
+  --fp-color-neutral-black: #000000;
+  --fp-color-neutral-anthracite: #333333;
+
+  --fp-color-surface-base: #ffffff;
+  --fp-color-surface-primary: #fcfcfc;
+  --fp-color-surface-muted: #fafafa;
+  --fp-color-surface-subtle: var(--fp-color-surface-muted);
+  --fp-color-surface-secondary: #f4f8f4;
+  --fp-color-surface-tertiary: #f7fce8;
+  --fp-color-surface-footer: var(--fp-color-neutral-anthracite);
+  --fp-color-surface-elevated: var(--fp-color-neutral-white);
+  --fp-color-surface-hero: var(--fp-color-neutral-anthracite);
+  --fp-color-surface-marketing-soft: var(--fp-color-neutral-white);
+  --fp-color-surface-soft: var(--fp-color-surface-marketing-soft);
+  --fp-color-surface-dark: var(--fp-color-neutral-anthracite);
+  --fp-color-primary-purple: var(--fp-color-decorative-purple);
+
+  --fp-color-text-primary: #141510;
   --fp-color-text-secondary: #627881;
   --fp-color-text-muted: #8a9aa3;
-  --fp-color-text-inverse: #ffffff;
+  --fp-color-text-inverse: var(--fp-color-neutral-white);
   --fp-color-text-on-hero-primary: var(--fp-color-text-inverse);
-  --fp-color-text-on-hero-secondary: rgba(255, 255, 255, 0.76);
-  --fp-color-border-on-hero: rgba(255, 255, 255, 0.2);
+  --fp-color-text-on-hero-secondary:
+    color-mix(in srgb, var(--fp-color-text-inverse) 76%, transparent);
+  --fp-color-border-on-hero:
+    color-mix(in srgb, var(--fp-color-text-inverse) 20%, transparent);
 
   --fp-color-border-primary: #e5e7eb;
   --fp-color-border-secondary: #d7dce0;
-  --fp-color-border-focus: #364247;
+  --fp-color-border-soft: #bdbdbd;
+  --fp-color-border-focus: var(--fp-color-neutral-black);
 
-  --fp-color-brand-primary: var(--fp-color-primary-purple);
+  --fp-color-brand-primary: var(--fp-color-accent-warm);
   --fp-color-brand-primary-hover:
     color-mix(in srgb, var(--fp-color-brand-primary) 82%, black);
-  --fp-color-brand-on-primary: #ffffff;
+  --fp-color-brand-on-primary: var(--fp-color-neutral-white);
 
   /*
    * Action colors.
@@ -34,10 +47,16 @@
    * brand = logo/accent identity
    * action = primary CTA buttons
    */
-  --fp-color-action-primary: var(--fp-color-primary-purple);
+  --fp-color-action-primary: var(--fp-color-accent-warm);
   --fp-color-action-primary-hover:
     color-mix(in srgb, var(--fp-color-action-primary) 88%, white);
-  --fp-color-action-on-primary: #ffffff;
+  --fp-color-action-on-primary: var(--fp-color-neutral-white);
+
+  --fp-color-accent-warm: #de7356;
+  --fp-color-accent-warm-hover:
+    color-mix(in srgb, var(--fp-color-accent-warm) 84%, black);
+  --fp-color-accent-on-warm: var(--fp-color-neutral-white);
+  --fp-color-decorative-purple: #6258a8;
 
   /*
    * Editorial accent colors.
@@ -56,6 +75,16 @@
   --fp-shadow-card:
     0 1px 2px rgba(38, 18, 48, 0.04),
     0 8px 22px rgba(38, 18, 48, 0.07);
+  --fp-shadow-home-hero-card:
+    0 12px 32px rgba(0, 0, 0, 0.08);
+
+  /*
+   * Global content rail.
+   * Container is the only source of truth for application content width.
+   */
+  --fp-container-max-width: 1024px;
+  --fp-container-padding-inline: 24px;
+  --fp-container-padding-inline-mobile: 16px;
 
   /* Shared marketing surface frame: hero and editorial panels align to it. */
   --fp-radius-marketing-surface: 0.75rem;
@@ -66,21 +95,9 @@
    * Public home tuning variables.
    * These are intentionally editable from DevTools for visual calibration.
    */
-  --fp-home-rail-max-width: 96rem;
-  --fp-home-hero-max-width: 96rem;
-  --fp-home-hero-height: 34.5rem;
-  --fp-home-hero-radius: 0rem;
-  --fp-home-hero-light-width: 54.5%;
-  --fp-home-hero-light-height: 94%;
-  --fp-home-hero-dark-left: 14%;
-  --fp-home-hero-dark-top: 0.3%;
-  --fp-home-hero-dark-bottom: -1.1%;
-  --fp-home-hero-title-x: 15.6%;
-  --fp-home-hero-title-y: 13%;
-  --fp-home-hero-search-x: 15.3%;
-  --fp-home-hero-search-y: 55%;
-  --fp-home-hero-image-x: 51.7%;
-  --fp-home-hero-image-y: 10%;
+  --fp-home-hero-min-height: 28rem;
+  --fp-home-hero-title-max-width: 58rem;
+  --fp-home-hero-search-width: 42.5rem;
   --fp-home-content-inset-x: 8.5%;
   --fp-home-section-y: 3rem;
   --fp-home-section-y-compact: 2.5rem;
@@ -92,7 +109,14 @@
 @theme inline {
   --font-sans: var(--font-plus-jakarta-sans);
 
+  --color-neutral-white: var(--fp-color-neutral-white);
+  --color-neutral-black: var(--fp-color-neutral-black);
+  --color-neutral-anthracite: var(--fp-color-neutral-anthracite);
+
+  --color-surface-base: var(--fp-color-surface-base);
   --color-surface-primary: var(--fp-color-surface-primary);
+  --color-surface-muted: var(--fp-color-surface-muted);
+  --color-surface-subtle: var(--fp-color-surface-subtle);
   --color-surface-secondary: var(--fp-color-surface-secondary);
   --color-surface-tertiary: var(--fp-color-surface-tertiary);
   --color-surface-footer: var(--fp-color-surface-footer);
@@ -113,6 +137,7 @@
 
   --color-border-primary: var(--fp-color-border-primary);
   --color-border-secondary: var(--fp-color-border-secondary);
+  --color-border-soft: var(--fp-color-border-soft);
   --color-border-focus: var(--fp-color-border-focus);
 
   --color-brand-primary: var(--fp-color-brand-primary);
@@ -123,6 +148,18 @@
   --color-action-primary-hover: var(--fp-color-action-primary-hover);
   --color-action-on-primary: var(--fp-color-action-on-primary);
 
+  --color-accent-warm: var(--fp-color-accent-warm);
+  --color-accent-warm-hover: var(--fp-color-accent-warm-hover);
+  --color-accent-on-warm: var(--fp-color-accent-on-warm);
+  --color-decorative-purple: var(--fp-color-decorative-purple);
+
+  --tracking-tighter: var(--fp-letter-spacing-canvas);
+  --tracking-tight: var(--fp-letter-spacing-canvas);
+  --tracking-normal: var(--fp-letter-spacing-canvas);
+  --tracking-wide: var(--fp-letter-spacing-canvas);
+  --tracking-wider: var(--fp-letter-spacing-canvas);
+  --tracking-widest: var(--fp-letter-spacing-canvas);
+
   --color-accent-step-one: var(--fp-color-accent-step-one);
   --color-accent-step-two: var(--fp-color-accent-step-two);
   --color-accent-step-three: var(--fp-color-accent-step-three);
@@ -131,12 +168,18 @@
 
   --shadow-surface: var(--fp-shadow-surface);
   --shadow-card: var(--fp-shadow-card);
+  --shadow-home-hero-card: var(--fp-shadow-home-hero-card);
 }
 
 body {
   background: var(--fp-color-surface-primary);
   color: var(--fp-color-text-primary);
   font-family: var(--font-plus-jakarta-sans, Arial), Helvetica, sans-serif;
+  letter-spacing: var(--fp-letter-spacing-canvas);
+}
+
+body [class] {
+  letter-spacing: var(--fp-letter-spacing-canvas);
 }
 
 /*

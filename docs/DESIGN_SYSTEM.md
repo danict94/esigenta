@@ -169,9 +169,30 @@ Se serve cambiare identità visiva, modificare il componente in `packages/ui`.
 
 ## Colori
 
+La palette globale e definita in `packages/ui/src/styles/globals.css`. I valori
+fisici vivono li; in `apps/web` si usano solo token semantici.
+
+| Ruolo | Token utility | Variabile sorgente | Uso |
+| --- | --- | --- | --- |
+| Surface base | `bg-surface-base` | `--fp-color-surface-base` | superfici bianche pure |
+| Surface primary | `bg-surface-primary` | `--fp-color-surface-primary` | background applicativo quasi bianco |
+| Surface muted | `bg-surface-muted` | `--fp-color-surface-muted` | sezioni leggere, inclusa Hero home |
+| Surface subtle | `bg-surface-subtle` | `--fp-color-surface-subtle` | alias muted per compatibilita semantica |
+| Text primary | `text-text-primary` | `--fp-color-text-primary` | titoli, logo text, copy principale |
+| Text secondary | `text-text-secondary` | `--fp-color-text-secondary` | copy secondario |
+| Border soft | `border-border-soft` | `--fp-color-border-soft` | search, input e bordi leggeri |
+| Accent warm | `text-accent-warm`, `bg-accent-warm` | `--fp-color-accent-warm` | accento Canva-style, CTA e logo accent |
+| Decorative purple | `text-decorative-purple`, `bg-decorative-purple` | `--fp-color-decorative-purple` | timeline, step e dettagli decorativi futuri |
+
+`brand-primary`, `action-primary` e il vecchio `primary-purple` restano token di
+compatibilita, ma non rappresentano piu il bordeaux legacy.
+
 Usare solo token semantici:
 
+- `bg-surface-base`
 - `bg-surface-primary`
+- `bg-surface-muted`
+- `bg-surface-subtle`
 - `bg-surface-secondary`
 - `bg-surface-tertiary`
 - `bg-surface-elevated`
@@ -181,9 +202,15 @@ Usare solo token semantici:
 - `text-text-inverse`
 - `border-border-primary`
 - `border-border-secondary`
+- `border-border-soft`
 - `border-border-focus`
 - `bg-brand-primary`
 - `hover:bg-brand-primary-hover`
+- `text-accent-warm`
+- `bg-accent-warm`
+- `hover:bg-accent-warm-hover`
+- `text-decorative-purple`
+- `bg-decorative-purple`
 
 Vietato usare HEX nelle pagine:
 
@@ -193,9 +220,65 @@ text-[#364247]
 border-[#e5e7eb]
 ```
 
+### Colori scuri
+
+Le aree scure del sito usano solo due neutrali fondamentali:
+
+- `--fp-color-neutral-black`
+- `--fp-color-neutral-anthracite`
+
+Uso previsto:
+
+- nero: testo molto forte o superfici davvero nere se necessario;
+- antracite: footer, CTA scure, sezioni scure e superfici scure principali.
+
+Non creare tonalità scure locali o derivate dalla reference visuale.
+
+Vietato introdurre token o classi come:
+
+```txt
+darkSoft
+darkMuted
+footerGray
+canvasDark
+screenshotBlack
+almostBlack
+heroDark
+darkSurface2
+darkSurface3
+bg-[#111111]
+bg-[#181818]
+bg-[#222222]
+bg-[#2a2a2a]
+bg-[#303030]
+```
+
+Se serve uno sfondo scuro usare:
+
+```tsx
+bg-surface-dark
+```
+
+Se serve testo chiaro su sfondo scuro usare:
+
+```tsx
+text-text-inverse
+```
+
 ## Tipografia
 
 Usare `tokens.typography`.
+
+Il tracking tipografico globale segue la reference Canva-style:
+
+- sorgente: `--fp-letter-spacing-canvas`
+- valore: `-0.06em`
+- applicazione: `body` e testo con classi Tailwind/componenti
+
+I token Tailwind `tracking-tight`, `tracking-normal`, `tracking-wide`,
+`tracking-wider` e `tracking-widest` sono rimappati allo stesso valore globale
+per evitare conflitti visivi. Evitare tracking locali nelle pagine; se serve
+una variazione intenzionale va introdotta come token nel design system.
 
 Pattern disponibili:
 

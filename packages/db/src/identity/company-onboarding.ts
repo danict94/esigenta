@@ -206,6 +206,8 @@ function buildCompanyCreateData({
     vatNumber:
       company.vatNumber,
     phone: company.phone,
+    status:
+      "PENDING_REVIEW",
     operatingRadiusKm:
       company.operatingRadiusKm,
     ...(company.website

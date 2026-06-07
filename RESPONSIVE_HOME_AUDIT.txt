@@ -178,7 +178,7 @@ className="flex h-20 items-center justify-between">
   apps\web\src\components\navigation\navbar.tsx:10:          href="/"
 > apps\web\src\components\navigation\navbar.tsx:11:          className="text-3xl 
 font-bold tracking-tight"
-  apps\web\src\components\navigation\navbar.tsx:12:          aria-label="Esigenta 
+  apps\web\src\components\navigation\navbar.tsx:12:          aria-label="esigenta 
 home"
   apps\web\src\components\navigation\navbar.tsx:13:        >
 > apps\web\src\components\navigation\navbar.tsx:14:          <span 
@@ -673,7 +673,7 @@ export function Navbar() {
         <Link
           href="/"
           className="text-3xl font-bold tracking-tight"
-          aria-label="Esigenta home"
+          aria-label="esigenta home"
         >
           <span className="text-text-primary">Esi</span>
           <span className="text-brand-primary">genta</span>

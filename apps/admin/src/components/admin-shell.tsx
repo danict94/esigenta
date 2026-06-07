@@ -1,10 +1,11 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Badge, cn } from "@fixpro/ui";
+import { Badge, Button, Container, cn, tokens } from "@fixpro/ui";
 
 type AdminShellProps = {
   children: ReactNode;
@@ -14,28 +15,22 @@ type AdminShellProps = {
 type AdminNavItem = {
   label: string;
   href: string;
-  enabled: boolean;
   badge?: string | null;
 };
 
 const navItems: AdminNavItem[] = [
-  { label: "Dashboard", href: "/", enabled: true },
-  { label: "Richieste", href: "/requests", enabled: true },
-  { label: "Crediti", href: "/crediti/pacchetti", enabled: true },
+  { label: "Dashboard", href: "/" },
+  { label: "Richieste", href: "/requests" },
   {
-    label: "Richieste rimborso",
+    label: "Imprese",
+    href: "/imprese",
+  },
+  { label: "Crediti", href: "/crediti/pacchetti" },
+  {
+    label: "Rimborsi",
     href: "/crediti/rimborsi/richieste",
-    enabled: true,
   },
-  {
-    label: "Modifiche contatto",
-    href: "/imprese/modifiche-contatto",
-    enabled: true,
-  },
-  { label: "Imprese", href: "/companies", enabled: false },
-  { label: "Assistenza", href: "/support", enabled: true },
-  { label: "Qualità", href: "/quality", enabled: false },
-  { label: "Impostazioni", href: "/settings", enabled: false },
+  { label: "Assistenza", href: "/support" },
 ];
 
 function isActivePath(pathname: string, href: string) {
@@ -46,49 +41,6 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function AdminNavLink({ item }: { item: AdminNavItem }) {
-  const pathname = usePathname();
-  const isActive = item.enabled && isActivePath(pathname, item.href);
-
-  if (!item.enabled) {
-    return (
-      <span
-        className="inline-flex h-9 shrink-0 cursor-not-allowed items-center justify-center rounded-md border border-transparent px-3 text-sm font-medium text-text-muted"
-        aria-disabled="true"
-        title="Sezione prevista per una fase successiva"
-      >
-        {item.label}
-
-        {item.badge ? (
-          <Badge variant="danger" size="sm" className="ml-2">
-            {item.badge}
-          </Badge>
-        ) : null}
-      </span>
-    );
-  }
-
-  return (
-    <Link
-      href={item.href}
-      className={cn(
-        "inline-flex h-9 shrink-0 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors",
-        isActive
-          ? "border-border-primary bg-surface-secondary text-text-primary"
-          : "border-transparent text-text-secondary hover:border-border-primary hover:bg-surface-secondary hover:text-text-primary",
-      )}
-    >
-      {item.label}
-
-      {item.badge ? (
-        <Badge variant="danger" size="sm" className="ml-2">
-          {item.badge}
-        </Badge>
-      ) : null}
-    </Link>
-  );
-}
-
 function formatBadgeCount(count: number) {
   if (count <= 0) {
     return null;
@@ -97,10 +49,132 @@ function formatBadgeCount(count: number) {
   return count > 99 ? "99+" : String(count);
 }
 
+function AdminLogo({ onClick }: { onClick: () => void }) {
+  return (
+    <Link
+      href="/"
+      onClick={onClick}
+      className={cn(tokens.home.nav.logo, "gap-3")}
+      aria-label="esigenta Admin dashboard"
+    >
+      <span aria-hidden="true" className={tokens.home.nav.logoMark}>
+        E
+      </span>
+
+      <span className="grid min-w-0 gap-0.5">
+        <span className="truncate text-base font-semibold leading-none tracking-tight text-text-primary">
+          esigenta Admin
+        </span>
+        <span className="truncate text-xs font-medium leading-none text-text-muted">
+          Control room
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+function MenuGlyph({ isOpen }: { isOpen: boolean }) {
+  return (
+    <span
+      className="flex h-5 w-5 flex-col items-center justify-center gap-1"
+      aria-hidden="true"
+    >
+      <span
+        className={cn(
+          "h-px w-5 bg-current transition-transform",
+          isOpen && "translate-y-1 rotate-45",
+        )}
+      />
+      <span
+        className={cn(
+          "h-px w-5 bg-current transition-opacity",
+          isOpen && "opacity-0",
+        )}
+      />
+      <span
+        className={cn(
+          "h-px w-5 bg-current transition-transform",
+          isOpen && "-translate-y-1 -rotate-45",
+        )}
+      />
+    </span>
+  );
+}
+
+function DesktopNavLink({
+  item,
+  onClick,
+}: {
+  item: AdminNavItem;
+  onClick: () => void;
+}) {
+  const pathname = usePathname();
+  const isActive = isActivePath(pathname, item.href);
+
+  return (
+    <Link
+      href={item.href}
+      onClick={onClick}
+      className={cn(
+        tokens.home.nav.link,
+        "relative inline-flex items-center gap-2 py-2",
+        isActive && "text-accent-warm",
+      )}
+    >
+      <span>{item.label}</span>
+
+      {item.badge ? (
+        <Badge variant="danger" size="sm">
+          {item.badge}
+        </Badge>
+      ) : null}
+
+      {isActive ? (
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 -bottom-0.5 h-px bg-accent-warm"
+        />
+      ) : null}
+    </Link>
+  );
+}
+
+function MobileNavLink({
+  item,
+  onClick,
+}: {
+  item: AdminNavItem;
+  onClick: () => void;
+}) {
+  const pathname = usePathname();
+  const isActive = isActivePath(pathname, item.href);
+
+  return (
+    <Link
+      href={item.href}
+      onClick={onClick}
+      className={cn(
+        tokens.home.nav.mobileLink,
+        "flex items-center justify-between gap-3",
+        isActive && "text-accent-warm",
+      )}
+    >
+      <span>{item.label}</span>
+
+      {item.badge ? (
+        <Badge variant="danger" size="sm">
+          {item.badge}
+        </Badge>
+      ) : null}
+    </Link>
+  );
+}
+
 export function AdminShell({
   children,
   unreadSupportCount = 0,
 }: AdminShellProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const supportBadge = formatBadgeCount(unreadSupportCount);
   const visibleNavItems = navItems.map((item) =>
     item.href === "/support" && supportBadge
@@ -111,40 +185,58 @@ export function AdminShell({
       : item,
   );
 
+  function closeMenu() {
+    setIsMenuOpen(false);
+  }
+
   return (
     <div className="min-h-screen bg-surface-primary text-text-primary">
-      <header className="sticky top-0 z-40 border-b border-border-primary bg-surface-primary/95 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-3 px-4 py-3 sm:px-6 lg:px-8 md:grid-cols-[1fr_auto_1fr] md:items-center">
-          <Link href="/" className="inline-flex min-w-0 items-center gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border-primary bg-surface-secondary text-sm font-semibold text-text-primary">
-              FP
-            </span>
-
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold tracking-tight text-text-primary">
-                FixPro Admin
-              </span>
-              <span className="block truncate text-xs text-text-muted">
-                Control room
-              </span>
-            </span>
-          </Link>
+      <header className="sticky top-0 z-40 border-b border-border-primary bg-surface-elevated/95 backdrop-blur">
+        <Container size="lg" gutter="md" className={tokens.home.nav.container}>
+          <AdminLogo onClick={closeMenu} />
 
           <nav
-            className="flex justify-start gap-1 overflow-x-auto md:justify-center"
             aria-label="Navigazione admin"
+            className={tokens.home.nav.desktopMenu}
           >
             {visibleNavItems.map((item) => (
-              <AdminNavLink key={item.href} item={item} />
+              <DesktopNavLink key={item.href} item={item} onClick={closeMenu} />
             ))}
           </nav>
 
-          <div className="hidden justify-end md:flex">
-            <span className="inline-flex h-8 items-center rounded-md border border-border-primary bg-surface-secondary px-3 text-xs font-medium text-text-secondary">
-              Operativo
-            </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            aria-label={isMenuOpen ? "Chiudi menu admin" : "Apri menu admin"}
+            aria-expanded={isMenuOpen}
+            className={tokens.home.nav.mobileToggle}
+            onClick={() => {
+              setIsMenuOpen((current) => !current);
+            }}
+          >
+            <MenuGlyph isOpen={isMenuOpen} />
+          </Button>
+        </Container>
+
+        {isMenuOpen ? (
+          <div className={tokens.home.nav.mobilePanel}>
+            <Container size="lg" gutter="md">
+              <nav
+                aria-label="Navigazione admin mobile"
+                className={tokens.home.nav.mobileMenu}
+              >
+                {visibleNavItems.map((item) => (
+                  <MobileNavLink
+                    key={item.href}
+                    item={item}
+                    onClick={closeMenu}
+                  />
+                ))}
+              </nav>
+            </Container>
           </div>
-        </div>
+        ) : null}
       </header>
 
       {children}

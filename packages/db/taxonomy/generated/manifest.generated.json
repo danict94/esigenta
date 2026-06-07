@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "counts": {
+    "sectors": 2,
+    "services": 86,
+    "interventions": 80,
+    "categories": 7,
+    "domains": 10
+  }
+}

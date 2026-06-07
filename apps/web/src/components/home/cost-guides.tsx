@@ -67,7 +67,10 @@ export function CostGuides() {
             href="#"
             className="inline-flex items-center gap-2 text-sm font-medium text-text-primary underline underline-offset-4 transition-colors hover:text-action-primary"
           >
-            <ArrowRight className="size-5 text-action-primary" aria-hidden="true" />
+            <ArrowRight
+              className="size-5 text-action-primary"
+              aria-hidden="true"
+            />
             leggi tutti
           </Link>
         </div>

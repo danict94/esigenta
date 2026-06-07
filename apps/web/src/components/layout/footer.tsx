@@ -33,8 +33,8 @@ export function Footer() {
               </Link>
 
               <p className="mt-5 max-w-sm text-sm leading-6 text-text-on-hero-secondary">
-                Connetti con imprese artigianali verificate. Edilizia,
-                impianti, finiture e molto altro.
+                Connetti con imprese artigianali verificate. Edilizia, impianti,
+                finiture e molto altro.
               </p>
             </div>
 

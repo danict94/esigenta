@@ -16,6 +16,10 @@ import {
 } from "@fixpro/db"
 
 import {
+  Container,
+} from "@fixpro/ui"
+
+import {
   ImpresaSidebar,
 } from "./_components/impresa-sidebar"
 
@@ -64,6 +68,24 @@ async function requireAreaImpresaAccess() {
   }
 }
 
+function getCompanyStatusNotice(
+  status: string,
+) {
+  if (status === "PENDING_REVIEW") {
+    return "Il tuo profilo impresa è in revisione. Potrai acquistare crediti e usare il marketplace dopo l’approvazione."
+  }
+
+  if (status === "SUSPENDED") {
+    return "Il tuo profilo impresa è sospeso. Contatta l’assistenza per maggiori informazioni."
+  }
+
+  if (status === "BLOCKED") {
+    return "Il tuo profilo impresa è bloccato. Le funzioni marketplace non sono disponibili."
+  }
+
+  return null
+}
+
 export default async function AreaImpresaLayout({
   children,
 }: {
@@ -95,6 +117,14 @@ export default async function AreaImpresaLayout({
     unreadMessageSummary.ok
       ? unreadMessageSummary.supportCount
       : 0
+  const companyStatus =
+    membership.company.status
+  const marketplaceEnabled =
+    companyStatus === "APPROVED"
+  const statusNotice =
+    getCompanyStatusNotice(
+      companyStatus,
+    )
 
   return (
     <div className="min-h-screen bg-surface-primary text-text-primary">
@@ -109,7 +139,20 @@ export default async function AreaImpresaLayout({
         unreadSupportCount={
           unreadSupportCount
         }
+        marketplaceEnabled={
+          marketplaceEnabled
+        }
       />
+      {statusNotice ? (
+        <Container
+          size="xl"
+          className="pt-4"
+        >
+          <div className="border border-border-primary bg-surface-secondary px-4 py-3 text-sm font-medium leading-6 text-text-primary">
+            {statusNotice}
+          </div>
+        </Container>
+      ) : null}
       {children}
     </div>
   )

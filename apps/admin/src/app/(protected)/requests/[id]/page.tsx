@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import {
   getRequestById,
   listAttachedRequestPhotos,
+  RequestPublishingRequirementsError,
   reviewRequest,
   updateRequestCommercialSettings,
 } from "@fixpro/db";
@@ -125,7 +126,11 @@ function getStatusBadgeVariant(status: string) {
     return "danger";
   }
 
-  return "warning";
+  if (status === "PENDING_REVIEW") {
+    return "warning";
+  }
+
+  return "neutral";
 }
 
 function getStatusLabel(status: string) {
@@ -145,7 +150,19 @@ function getStatusLabel(status: string) {
     return "In revisione";
   }
 
+  if (status === "CLOSED") {
+    return "Chiusa";
+  }
+
   return status;
+}
+
+function isPositiveInteger(value: number | null) {
+  return (
+    typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 1
+  );
 }
 
 function parseOptionalInteger(value: FormDataEntryValue | null) {
@@ -336,12 +353,22 @@ async function reviewRequestAction(formData: FormData) {
     throw new Error("Invalid moderation action.");
   }
 
-  const reviewResult = await reviewRequest({
-    requestId,
-    status,
-    moderationNotes:
-      moderationNotes || null,
-  });
+  let reviewResult: Awaited<ReturnType<typeof reviewRequest>>;
+
+  try {
+    reviewResult = await reviewRequest({
+      requestId,
+      status,
+      moderationNotes:
+        moderationNotes || null,
+    });
+  } catch (error) {
+    if (error instanceof RequestPublishingRequirementsError) {
+      throw new Error(error.message);
+    }
+
+    throw error;
+  }
 
   if (reviewResult.status === "PUBLISHED") {
     await processRequestEmailDeliveriesForRequest(
@@ -454,6 +481,9 @@ export default async function RequestDetailPage({
   const categories = uniqueCategories(
     primaryServices.flatMap((service) => service.categories),
   );
+  const hasRequiredPublishingSettings =
+    isPositiveInteger(request.creditCost) &&
+    isPositiveInteger(request.maxUnlocks);
 
   return (
     <PageShell size="lg">
@@ -799,6 +829,18 @@ export default async function RequestDetailPage({
 
             {request.status === "PENDING_REVIEW" ? (
               <div className="mt-5 space-y-4">
+                {!hasRequiredPublishingSettings ? (
+                  <div className="border border-border-primary bg-surface-secondary p-4">
+                    <p className="text-sm font-medium text-text-primary">
+                      Configurazione commerciale incompleta
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-text-secondary">
+                      Prima di pubblicare la richiesta devi impostare costo
+                      crediti e limite imprese.
+                    </p>
+                  </div>
+                ) : null}
+
                 <form action={reviewRequestAction} className="space-y-3">
                   <input type="hidden" name="requestId" value={request.id} />
                   <input type="hidden" name="status" value="PUBLISHED" />
@@ -819,7 +861,10 @@ export default async function RequestDetailPage({
                     />
                   </div>
 
-                  <Button type="submit">
+                  <Button
+                    type="submit"
+                    disabled={!hasRequiredPublishingSettings}
+                  >
                     Approva pubblicazione
                   </Button>
                 </form>

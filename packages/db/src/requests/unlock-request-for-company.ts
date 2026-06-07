@@ -12,6 +12,10 @@ import {
 import {
   ensureCompanyCustomerConversationForUnlock,
 } from "../conversations"
+import {
+  assertCompanyCanUseMarketplace,
+  CompanyMarketplaceAuthorizationError,
+} from "../identity"
 
 export type UnlockRequestForCompanyInput = {
   companyId: string
@@ -89,6 +93,26 @@ export async function unlockRequestForCompany({
       code: "invalid_request_id",
       message: "Richiesta non valida.",
     }
+  }
+
+  try {
+    await assertCompanyCanUseMarketplace({
+      companyId:
+        normalizedCompanyId,
+    })
+  } catch (error) {
+    if (
+      error instanceof
+      CompanyMarketplaceAuthorizationError
+    ) {
+      return {
+        ok: false,
+        code: error.code,
+        message: error.message,
+      }
+    }
+
+    throw error
   }
 
   return prisma.$transaction(async (tx) => {

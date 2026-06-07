@@ -1,17 +1,8 @@
 "use client";
 
-import Link from "next/link"
-import {
-  ChevronDown,
-  Menu,
-  UserRound,
-  X,
-} from "lucide-react";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import Link from "next/link";
+import { ChevronDown, Menu, UserRound, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { Badge, Button, Card, Container, cn, tokens } from "@fixpro/ui";
@@ -23,6 +14,7 @@ type NavigationItem = {
   href: string;
   enabled: boolean;
   badge?: string;
+  disabledReason?: string;
 };
 
 const mainNavigation: NavigationItem[] = [
@@ -46,7 +38,7 @@ const mainNavigation: NavigationItem[] = [
     href: "/area-impresa/assistenza",
     enabled: true,
   },
- ];
+];
 
 const accountNavigation: NavigationItem[] = [
   {
@@ -76,6 +68,14 @@ const accountNavigation: NavigationItem[] = [
   },
 ];
 
+const commercialNavigationHrefs = new Set([
+  "/area-impresa/richieste",
+  "/area-impresa/contatti",
+  "/area-impresa/richieste-salvate",
+  "/area-impresa/richieste-acquistate",
+  "/area-impresa/crediti",
+]);
+
 function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -96,7 +96,12 @@ function Brand() {
         <span className="text-brand-primary">genta</span>
       </span>
 
-      <span className={cn("mt-0.5 font-semibold text-brand-primary", tokens.typography.microLabel)}>
+      <span
+        className={cn(
+          "mt-0.5 font-semibold text-brand-primary",
+          tokens.typography.microLabel,
+        )}
+      >
         Imprese
       </span>
     </span>
@@ -108,7 +113,10 @@ function NavBadge({ value }: { value: string }) {
     <Badge
       variant="danger"
       size="sm"
-      className={cn("ml-1 min-w-5 justify-center px-1.5", tokens.typography.micro)}
+      className={cn(
+        "ml-1 min-w-5 justify-center px-1.5",
+        tokens.typography.micro,
+      )}
     >
       {value}
     </Badge>
@@ -150,7 +158,7 @@ function DesktopNavLink({
       <span
         className={className}
         aria-disabled="true"
-        title="Sezione prevista per una fase successiva"
+        title={item.disabledReason ?? "Sezione non disponibile"}
       >
         {content}
       </span>
@@ -191,7 +199,11 @@ function MobileNavLink({
 
   if (!item.enabled) {
     return (
-      <span className={className} aria-disabled="true">
+      <span
+        className={className}
+        aria-disabled="true"
+        title={item.disabledReason}
+      >
         {content}
       </span>
     );
@@ -213,14 +225,35 @@ function AccountMenuItem({
   active: boolean;
   onClick: () => void;
 }) {
+  const className = cn(
+    "block px-5 py-3 text-sm font-medium transition-colors",
+    item.enabled &&
+      "hover:bg-surface-secondary",
+    item.enabled && active
+      ? "text-brand-primary"
+      : item.enabled
+        ? "text-text-primary"
+        : "cursor-not-allowed text-text-muted",
+  );
+
+  if (!item.enabled) {
+    return (
+      <span
+        className={className}
+        role="menuitem"
+        aria-disabled="true"
+        title={item.disabledReason}
+      >
+        {item.label}
+      </span>
+    );
+  }
+
   return (
     <Link
       href={item.href}
       onClick={onClick}
-      className={cn(
-        "block px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-secondary",
-        active ? "text-brand-primary" : "text-text-primary",
-      )}
+      className={className}
       role="menuitem"
     >
       {item.label}
@@ -233,11 +266,13 @@ export function ImpresaSidebar({
   unreadNotificationCount,
   unreadContactCount,
   unreadSupportCount,
+  marketplaceEnabled,
 }: {
   accountLabel: string;
   unreadNotificationCount: number;
   unreadContactCount: number;
   unreadSupportCount: number;
+  marketplaceEnabled: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -248,11 +283,24 @@ export function ImpresaSidebar({
   const notificationBadge = formatUnreadCount(unreadNotificationCount);
   const contactBadge = formatUnreadCount(unreadContactCount);
   const supportBadge = formatUnreadCount(unreadSupportCount);
+  const disabledReason = marketplaceEnabled
+    ? undefined
+    : "Disponibile dopo approvazione del profilo impresa";
 
   const mainNavigationItems = mainNavigation.map((item) => {
+    const availability =
+      !marketplaceEnabled &&
+      commercialNavigationHrefs.has(item.href)
+        ? {
+            enabled: false,
+            disabledReason,
+          }
+        : {};
+
     if (item.href === "/area-impresa/notifiche" && notificationBadge) {
       return {
         ...item,
+        ...availability,
         badge: notificationBadge,
       };
     }
@@ -260,6 +308,7 @@ export function ImpresaSidebar({
     if (item.href === "/area-impresa/contatti" && contactBadge) {
       return {
         ...item,
+        ...availability,
         badge: contactBadge,
       };
     }
@@ -267,49 +316,62 @@ export function ImpresaSidebar({
     if (item.href === "/area-impresa/assistenza" && supportBadge) {
       return {
         ...item,
+        ...availability,
         badge: supportBadge,
       };
     }
 
-    return item;
+    return {
+      ...item,
+      ...availability,
+    };
   });
+  const accountNavigationItems = accountNavigation.map((item) =>
+    !marketplaceEnabled &&
+    commercialNavigationHrefs.has(item.href)
+      ? {
+          ...item,
+          enabled: false,
+          disabledReason,
+        }
+      : item,
+  );
 
-  const accountMenuRef =
-    useRef<HTMLDivElement | null>(null)
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!accountOpen) {
-      return
+      return;
     }
 
     function handleMouseDown(event: MouseEvent) {
-      const target = event.target
+      const target = event.target;
 
       if (
         !(target instanceof Node) ||
         !accountMenuRef.current ||
         accountMenuRef.current.contains(target)
       ) {
-        return
+        return;
       }
 
-      setAccountOpen(false)
+      setAccountOpen(false);
     }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setAccountOpen(false)
+        setAccountOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleMouseDown)
-    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("mousedown", handleMouseDown)
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [accountOpen])
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [accountOpen]);
 
   function closeMenus() {
     setIsMenuOpen(false);
@@ -332,7 +394,7 @@ export function ImpresaSidebar({
         <Link
           href="/area-impresa/richieste"
           onClick={closeMenus}
-          aria-label="Esigenta Imprese"
+          aria-label="esigenta Imprese"
         >
           <Brand />
         </Link>
@@ -390,11 +452,14 @@ export function ImpresaSidebar({
                 </div>
 
                 <nav className="py-2">
-                  {accountNavigation.map((item) => (
+                  {accountNavigationItems.map((item) => (
                     <AccountMenuItem
                       key={item.href}
                       item={item}
-                      active={isActivePath(pathname, item.href)}
+                      active={
+                        item.enabled &&
+                        isActivePath(pathname, item.href)
+                      }
                       onClick={closeMenus}
                     />
                   ))}
@@ -458,11 +523,11 @@ export function ImpresaSidebar({
                 Il mio account
               </p>
 
-              {accountNavigation.map((item) => (
+              {accountNavigationItems.map((item) => (
                 <MobileNavLink
                   key={item.href}
                   item={item}
-                  active={isActivePath(pathname, item.href)}
+                  active={item.enabled && isActivePath(pathname, item.href)}
                   onClick={closeMenus}
                 />
               ))}

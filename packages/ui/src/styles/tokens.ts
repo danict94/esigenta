@@ -18,7 +18,10 @@ const radiusTokens = {
 } as const;
 
 const semanticSurfaceTokens = {
+  base: "bg-surface-base",
   primary: "bg-surface-primary",
+  muted: "bg-surface-muted",
+  subtle: "bg-surface-subtle",
   secondary: "bg-surface-secondary",
   tertiary: "bg-surface-tertiary",
   footer: "bg-surface-footer",
@@ -26,6 +29,17 @@ const semanticSurfaceTokens = {
   marketingSoft: "bg-surface-marketing-soft",
   soft: "bg-surface-soft",
   dark: "bg-surface-dark",
+} as const;
+
+const neutralColorTokens = {
+  black: {
+    background: "bg-neutral-black",
+    text: "text-neutral-black",
+  },
+  anthracite: {
+    background: "bg-neutral-anthracite",
+    text: "text-neutral-anthracite",
+  },
 } as const;
 
 const marketingSurfaceFrameTokens = {
@@ -44,14 +58,17 @@ const legacyCssSurfaceTokens = {
 } as const;
 
 const containerWidthTokens = {
-  xs: "max-w-2xl",
-  sm: "max-w-3xl",
-  md: "max-w-5xl",
-  lg: "max-w-6xl",
-  xl: "max-w-7xl",
-  xxl: "max-w-screen-2xl",
-  full: "max-w-none",
+  xs: "max-w-[var(--fp-container-max-width)]",
+  sm: "max-w-[var(--fp-container-max-width)]",
+  md: "max-w-[var(--fp-container-max-width)]",
+  lg: "max-w-[var(--fp-container-max-width)]",
+  xl: "max-w-[var(--fp-container-max-width)]",
+  xxl: "max-w-[var(--fp-container-max-width)]",
+  full: "max-w-[var(--fp-container-max-width)]",
 } as const
+
+const containerGutterToken =
+  "px-[var(--fp-container-padding-inline-mobile)] md:px-[var(--fp-container-padding-inline)]"
 
 const sizingTokens = {
   viewport: {
@@ -106,9 +123,9 @@ const layoutTokens = {
     defaultGutter: "md",
     widths: containerWidthTokens,
     gutters: {
-      none: "",
-      sm: "px-2 md:px-3 lg:px-4",
-      md: "px-4 md:px-5 lg:px-6",
+      none: containerGutterToken,
+      sm: containerGutterToken,
+      md: containerGutterToken,
     },
   },
   pageShell: {
@@ -129,8 +146,8 @@ const layoutTokens = {
     },
   },
   marketing: {
-    heroGutter: "px-6 sm:px-10 md:px-16 lg:px-20 xl:px-24",
-    sectionInner: "mx-auto w-full max-w-7xl",
+    heroGutter: containerGutterToken,
+    sectionInner: `mx-auto w-full ${containerWidthTokens.lg} ${containerGutterToken}`,
   },
   marketingSurface: {
     inset: marketingSurfaceFrameTokens.inset,
@@ -180,6 +197,8 @@ const interactiveTokens = {
       "border border-border-primary bg-surface-primary text-text-primary hover:border-border-focus",
     brand:
       "border border-brand-primary bg-brand-primary text-brand-on-primary hover:border-brand-primary-hover hover:bg-brand-primary-hover",
+    warm:
+      "border border-accent-warm bg-accent-warm text-accent-on-warm hover:border-accent-warm-hover hover:bg-accent-warm-hover",
     brandOutline:
       "border border-brand-primary bg-transparent text-brand-primary hover:bg-brand-primary hover:text-brand-on-primary",
     dark:
@@ -212,8 +231,8 @@ const formControlTokens = {
 } as const;
 
 const homeTokens = {
-  railFrame: "max-w-[var(--fp-home-rail-max-width)]",
-  rail: "lg:px-[var(--fp-home-content-inset-x)]",
+  railFrame: "",
+  rail: "",
   section: "py-12 md:py-[calc(var(--fp-home-section-y)+0.5rem)]",
   softSection: `${semanticSurfaceTokens.soft} py-[var(--fp-home-section-y-compact)] md:py-[var(--fp-home-section-y)]`,
   compactSoftSection:
@@ -227,36 +246,172 @@ const homeTokens = {
   sectionDescription:
     "max-w-2xl text-sm leading-6 text-text-secondary md:text-base",
   nav: {
+    root:
+      "relative z-50 bg-surface-elevated text-text-primary",
+    embeddedRoot: "bg-transparent text-text-on-hero-primary",
+    container:
+      "flex h-16 items-center justify-between md:h-[4.5rem]",
+    embeddedContainer: "h-14 md:h-16 lg:h-20",
+    logo:
+      "inline-flex items-center gap-2.5 font-[family-name:var(--fp-font-nav)] text-[1.375rem] font-semibold leading-none tracking-[-0.06em] text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-elevated md:text-2xl",
+    logoInverse: "text-text-on-hero-primary focus-visible:ring-offset-surface-dark",
+    logoMark:
+      "flex size-6 shrink-0 items-center justify-center rounded-md bg-accent-warm text-[0.875rem] font-semibold leading-none tracking-[-0.06em] text-accent-on-warm",
+    logoMarkInverse: "bg-accent-warm text-accent-on-warm",
+    logoText: "inline-flex items-baseline",
+    desktopMenu:
+      "hidden items-center gap-10 md:flex lg:gap-12 xl:gap-14",
+    desktopMenuEmbedded: "gap-6 lg:gap-9",
+    link:
+      "font-[family-name:var(--fp-font-nav)] text-[0.9375rem] font-medium leading-none tracking-[-0.06em] text-text-primary transition-colors hover:text-accent-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-elevated lg:text-base",
+    linkEmbedded:
+      "text-text-on-hero-secondary hover:text-text-on-hero-primary focus-visible:ring-offset-surface-dark lg:text-sm",
+    accentLink: "font-semibold text-text-primary",
+    accentLinkEmbedded: "text-text-on-hero-primary",
+    mobileToggle:
+      "h-10 w-10 rounded-md px-0 text-text-primary hover:bg-surface-muted focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated md:hidden",
+    mobileToggleEmbedded:
+      "text-text-on-hero-primary hover:bg-transparent hover:text-text-on-hero-primary focus-visible:ring-offset-surface-dark",
+    mobilePanel:
+      "border-t border-border-primary bg-surface-elevated md:hidden",
+    mobilePanelEmbedded: "border-border-on-hero bg-surface-dark",
+    mobileMenu:
+      "flex flex-col gap-1 py-4",
+    mobileLink:
+      "font-[family-name:var(--fp-font-nav)] px-2 py-3 text-base font-medium tracking-[-0.06em] text-text-primary transition-colors hover:text-accent-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated",
+    mobileLinkEmbedded:
+      "text-text-on-hero-primary focus-visible:ring-offset-surface-dark",
+    mobileAccentLink: "font-semibold text-accent-warm",
     heroLogo:
       "pointer-events-auto absolute left-6 top-4 text-lg font-medium sm:left-8 md:left-12 md:text-xl lg:left-[var(--fp-home-content-inset-x)] lg:top-[3.2%]",
     heroMenu:
       "pointer-events-auto absolute right-[var(--fp-home-content-inset-x)] top-[3.2%] hidden items-center gap-5 text-sm lg:flex lg:gap-7",
+    heroLink:
+      "text-sm font-medium text-text-secondary hover:text-text-primary",
+    heroAccentLink: "text-text-primary",
     defaultContainer: "h-14 md:h-16 lg:px-[var(--fp-home-content-inset-x)]",
   },
   hero: {
-    frame:
-      "relative mx-auto w-full max-w-[var(--fp-home-hero-max-width)] lg:h-[var(--fp-home-hero-height)]",
-    lightPanel:
-      `relative z-20 ${semanticSurfaceTokens.soft} rounded-[var(--fp-home-hero-radius)] pb-9 pt-20 shadow-surface md:pb-12 md:pt-24 lg:absolute lg:left-0 lg:top-0 lg:h-[var(--fp-home-hero-light-height)] lg:w-[var(--fp-home-hero-light-width)] lg:p-0`,
-    titleBlock:
-      "px-6 sm:px-8 md:px-12 lg:absolute lg:left-[var(--fp-home-hero-title-x)] lg:top-[var(--fp-home-hero-title-y)] lg:w-[76%] lg:p-0",
+    root: `${semanticSurfaceTokens.muted} text-text-primary`,
+    container:
+      "flex min-h-[var(--fp-home-hero-min-height)] flex-col items-center justify-center py-14 text-center md:min-h-[30rem] md:py-16 lg:min-h-[32.5rem] lg:py-[4.25rem]",
     title:
-      "max-w-md text-[2.15rem] font-medium leading-[1.08] tracking-[-0.05em] text-text-primary md:text-[2.65rem] lg:text-[38px] xl:text-[38px]",
-    searchBlock:
-      "mt-8 px-6 sm:px-8 md:px-12 lg:absolute lg:left-[var(--fp-home-hero-search-x)] lg:top-[var(--fp-home-hero-search-y)] lg:mt-0 lg:w-[82%] lg:p-0",
+      "max-w-[var(--fp-home-hero-title-max-width)] text-[2.35rem] font-semibold leading-[1.08] tracking-[-0.04em] text-text-primary sm:text-[2.6rem] md:text-[3.1rem] lg:text-[3.85rem]",
+    titleAccent: "text-accent-warm",
     question:
-      "text-2xl font-medium leading-tight tracking-[-0.045em] text-text-primary md:text-3xl lg:text-[38px]",
-    heroSearch: "mt-4 w-full max-w-md md:mt-5 lg:mt-5 lg:max-w-none",
-    darkPanel:
-      `relative min-h-[22rem] ${semanticSurfaceTokens.dark} rounded-[var(--fp-home-hero-radius)] px-6 pt-6 sm:min-h-[26rem] md:min-h-[30rem] lg:absolute lg:bottom-[var(--fp-home-hero-dark-bottom)] lg:left-[var(--fp-home-hero-dark-left)] lg:right-0 lg:top-[var(--fp-home-hero-dark-top)] lg:z-10 lg:min-h-0 lg:p-0`,
-    image:
-      "absolute inset-x-0 bottom-0 top-8 mx-auto max-w-xl lg:bottom-0 lg:left-[var(--fp-home-hero-image-x)] lg:right-0 lg:top-[var(--fp-home-hero-image-y)] lg:max-w-none",
-    searchCard: "lg:p-2",
-    searchInner: "lg:h-[var(--fp-home-search-inner-height)]",
-    searchInput: "lg:pl-8 lg:text-xl",
-    searchButton:
-      "lg:h-[var(--fp-home-search-button-size)] lg:w-[var(--fp-home-search-button-size)]",
-    searchIcon: "lg:size-8",
+      "mt-9 text-[1.35rem] font-medium leading-tight tracking-[-0.02em] text-text-primary md:mt-10 md:text-[1.65rem]",
+    searchWrap:
+      "relative mt-5 w-full max-w-[var(--fp-home-hero-search-width)] md:mt-6",
+    searchForm:
+      "flex h-14 w-full items-center gap-3 rounded-full border border-border-soft bg-surface-elevated py-1.5 pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-accent-warm focus-within:ring-offset-2 focus-within:ring-offset-surface-muted md:h-16 md:pl-6 md:pr-2",
+    searchInput:
+      "h-full min-w-0 flex-1 border-0 bg-transparent px-0 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-transparent md:text-base",
+    searchSubmit:
+      "h-11 w-11 shrink-0 rounded-full px-0 md:h-12 md:w-12",
+    searchSubmitIcon: "size-5 md:size-6",
+    suggestions:
+      "absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border-soft bg-surface-elevated text-left shadow-card",
+    suggestionsList: "max-h-64 overflow-y-auto",
+    suggestionsLabel:
+      "px-4 py-2 text-xs font-medium uppercase tracking-widest text-text-muted",
+    suggestionsState: "px-4 py-3 text-sm text-text-secondary",
+    suggestionAction:
+      "h-auto w-full flex-col items-start justify-start gap-1 rounded-none px-4 py-3 text-left hover:bg-surface-muted",
+    suggestionTitle: "text-sm text-text-primary",
+    suggestionDescription: "text-xs text-text-muted",
+    searchError:
+      "absolute left-0 right-0 top-full z-50 mt-2 rounded-xl border border-border-soft bg-surface-elevated px-4 py-3 text-left text-sm text-text-primary shadow-card",
+    searchCard:
+      "rounded-full border-border-soft bg-surface-elevated p-1.5 shadow-none md:p-2",
+    searchInner: "h-11 md:h-12",
+    searchButton: "h-10 w-10 rounded-full px-0 md:h-11 md:w-11",
+    searchIcon: "size-5",
+  },
+  howItWorks: {
+    root:
+      `${semanticSurfaceTokens.muted} py-16 font-[family-name:var(--fp-font-nav)] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] md:py-20 lg:py-24`,
+    header: "max-w-3xl",
+    title:
+      "text-[2.625rem] font-normal leading-[1.06] tracking-[-0.06em] text-text-primary md:text-[3.5rem] lg:text-[3.75rem] lg:leading-[1.06]",
+    subtitle:
+      "mt-6 max-w-[46rem] text-[1.45rem] font-normal leading-[1.3] tracking-[-0.06em] text-text-primary md:mt-7 md:text-[1.75rem] md:leading-[1.3]",
+    list:
+      "relative mt-12 grid gap-10 md:mt-14 md:gap-11 lg:mt-16 lg:grid-cols-3 lg:gap-8",
+    line:
+      "absolute bottom-2 left-8 top-0 w-px bg-border-soft lg:bottom-auto lg:left-0 lg:right-0 lg:top-10 lg:h-1 lg:w-full lg:bg-decorative-purple",
+    item:
+      "relative grid grid-cols-[4rem_minmax(0,1fr)] gap-5 lg:grid-cols-1 lg:gap-0",
+    iconFrame:
+      "relative z-10 flex size-16 items-center justify-center rounded-full border border-border-soft bg-surface-base text-text-primary lg:mx-auto lg:size-20",
+    icon: "size-8 lg:size-11",
+    body: "pt-0.5 lg:mt-11 lg:pt-0 lg:text-center",
+    number:
+      "text-lg font-normal leading-none tracking-[-0.06em] text-accent-warm md:text-xl",
+    stepTitle:
+      "mt-3 text-[1.375rem] font-semibold leading-[1.18] tracking-[-0.06em] text-text-primary md:text-2xl lg:text-[1.5rem]",
+    description:
+      "mt-3 max-w-xs text-[1.0625rem] font-normal leading-[1.42] tracking-[-0.025em] text-text-primary md:text-lg lg:mx-auto",
+  },
+  professionalCta: {
+    root:
+      `${semanticSurfaceTokens.base} overflow-hidden py-16 font-[family-name:var(--fp-font-nav)] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] md:py-20 lg:pb-24 lg:pt-20`,
+    layout:
+      "grid items-center gap-12 md:gap-14 lg:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)] lg:gap-20",
+    visual:
+      "relative mx-auto flex min-h-[23rem] w-full max-w-[20rem] items-center justify-center md:min-h-[34rem] md:max-w-[25rem] lg:min-h-[34rem] lg:max-w-none",
+    blob:
+      "absolute left-1/2 top-1/2 h-[16rem] w-[15rem] -translate-x-1/2 -translate-y-1/2 rounded-[45%_55%_50%_50%/58%_42%_55%_45%] bg-accent-warm md:h-[24rem] md:w-[22rem] lg:h-[28rem] lg:w-[24rem]",
+    phone:
+      "relative z-10 aspect-[3/4] w-[16rem] overflow-visible md:w-[19rem] lg:w-[20rem]",
+    phoneImage: "object-contain",
+    copy:
+      "mx-auto w-full max-w-[38rem] lg:mx-0 lg:pt-8",
+    title:
+      "text-[2.375rem] font-normal leading-[1.14] tracking-[-0.06em] text-text-primary md:text-[3.25rem] md:leading-[1.16] lg:text-[4rem] lg:leading-[1.16]",
+    accentLine:
+      "mt-8 h-1.5 w-20 rounded-full bg-accent-warm md:mt-9 md:w-[5.5rem]",
+    subtitle:
+      "mt-10 text-[1.625rem] font-normal leading-[1.35] tracking-[-0.06em] text-text-primary md:text-[1.875rem] md:leading-[1.4] lg:text-[2.125rem]",
+    cta:
+      "mt-12 inline-flex max-w-full items-center gap-4 text-[1.375rem] font-normal leading-tight tracking-[-0.06em] text-accent-warm transition-colors hover:text-accent-warm-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-base md:mt-14 md:gap-5 md:text-[1.625rem] lg:mt-16 lg:text-[1.875rem]",
+    ctaIcon:
+      "flex size-[3.25rem] shrink-0 items-center justify-center rounded-full border border-accent-warm bg-transparent text-accent-warm transition-colors group-hover:border-accent-warm-hover group-hover:text-accent-warm-hover md:size-14 lg:size-16",
+    ctaArrow: "size-5 md:size-6",
+  },
+  projectIdeas: {
+    root:
+      `${semanticSurfaceTokens.base} py-14 font-[family-name:var(--fp-font-nav)] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] md:py-16 lg:py-20`,
+    inner:
+      "w-full",
+    feature:
+      "grid w-full grid-cols-1 items-start gap-9 md:gap-10 lg:grid-cols-[clamp(18rem,37.8vw,28.75rem)_minmax(0,1fr)] lg:gap-[clamp(3rem,9.27vw,7rem)]",
+    featureImage:
+      "order-2 h-[clamp(20rem,92vw,26.25rem)] w-full max-w-full rounded-xl bg-surface-muted md:h-[26rem] lg:order-none lg:aspect-[259/284] lg:h-auto lg:max-w-none",
+    copy:
+      "order-1 flex w-full max-w-full flex-col items-start pt-1 lg:order-none lg:-mt-3 lg:max-w-[28.25rem]",
+    title:
+      "max-w-full text-[2.375rem] font-normal leading-[1.05] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] sm:text-[2.5rem] md:text-[3.25rem] md:leading-[1.04] lg:max-w-[28.25rem] lg:text-[4rem] lg:font-semibold lg:leading-[1.02]",
+    description:
+      "mt-5 max-w-full text-[1.75rem] font-normal leading-[1.22] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] md:mt-7 md:text-[2.25rem] md:leading-[1.18] lg:mt-6 lg:max-w-[20rem] lg:text-5xl lg:font-medium lg:leading-[1.4]",
+    cta:
+      "mt-7 inline-flex items-center gap-2 text-base font-normal leading-none tracking-[-0.06em] text-text-primary [word-spacing:0.08em] transition-colors hover:text-accent-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-base md:mt-8 lg:ml-12 lg:mt-10 lg:text-[0.9375rem] lg:font-medium",
+    ctaIcon:
+      "flex size-9 items-center justify-center rounded-full bg-accent-warm text-accent-on-warm transition-colors group-hover:bg-accent-warm-hover",
+    carouselShell: "relative mt-8 md:mt-9 lg:mt-7",
+    carouselToolbar:
+      "absolute right-0 top-[-3.25rem] hidden items-center gap-2 md:flex",
+    carouselButton:
+      "size-9 rounded-full border-border-soft bg-surface-base px-0 text-text-primary hover:border-accent-warm hover:bg-accent-warm hover:text-accent-on-warm focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base",
+    carousel:
+      "flex snap-x snap-mandatory items-start gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] sm:gap-5 md:gap-5 lg:gap-8 [&::-webkit-scrollbar]:hidden",
+    card:
+      "flex-[0_0_15.5rem] snap-start border-0 bg-transparent shadow-none transition-colors sm:flex-[0_0_15.75rem] md:flex-[0_0_15rem] lg:flex-[0_0_clamp(190px,21vw,296px)]",
+    cardLink:
+      "group block focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-base",
+    cardImage:
+      "aspect-[147/93] w-full rounded-xl bg-surface-muted",
+    cardTitle:
+      "mt-3.5 text-center text-base font-normal leading-snug tracking-[-0.06em] text-text-primary [word-spacing:0.08em] transition-colors group-hover:text-accent-warm lg:font-semibold",
   },
 } as const;
 
@@ -323,6 +478,9 @@ export const tokens = {
   // Role-only fills: no spacing, radius or elevation ownership.
   semanticSurfaces: semanticSurfaceTokens,
 
+  // Primitive dark neutrals. Surfaces should prefer semanticSurfaces.dark/footer.
+  neutralColors: neutralColorTokens,
+
   // Merge-safe composed shells: fill and shape, never content layout.
   structuralSurfaces: structuralSurfaceTokens,
 
@@ -332,6 +490,7 @@ export const tokens = {
     lg: "shadow-lg",
     card: "shadow-card",
     surface: "shadow-surface",
+    homeHeroCard: "shadow-home-hero-card",
   },
 
   sizing: sizingTokens,
@@ -353,6 +512,7 @@ export type SpacingToken = keyof typeof tokens.spacing;
 export type TypographyToken = keyof typeof tokens.typography;
 export type SurfaceToken = keyof typeof tokens.surfaces;
 export type SemanticSurfaceToken = keyof typeof tokens.semanticSurfaces;
+export type NeutralColorToken = keyof typeof tokens.neutralColors;
 export type StructuralSurfaceToken = keyof typeof tokens.structuralSurfaces;
 export type ShadowToken = keyof typeof tokens.shadows;
 

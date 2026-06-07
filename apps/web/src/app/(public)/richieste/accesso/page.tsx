@@ -87,8 +87,8 @@ export default async function CustomerRequestsAccessPage({
                     <strong className="font-semibold text-text-primary">
                       Controlla la tua email.
                     </strong>{" "}
-                    Se l&apos;indirizzo &egrave; associato a una o pi&ugrave; richieste,
-                    riceverai un link di accesso.
+                    Se l&apos;indirizzo &egrave; associato a una o pi&ugrave;
+                    richieste, riceverai un link di accesso.
                   </div>
                 ) : null}
 

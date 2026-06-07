@@ -10,6 +10,27 @@ La home pubblica usa il design system come sorgente ufficiale. Le pagine in
 - Primitive: `Button`, `Input`, `Card`, `CardContent`, `Container`
 - Rail applicativo: `apps/web/src/components/layout/home-content-rail.tsx`
 
+## Palette Home
+
+Hero e top nav consumano la palette globale, non colori locali:
+
+- superficie nav: `bg-surface-elevated`
+- superficie hero: `bg-surface-muted`
+- testo principale: `text-text-primary`
+- accento logo, link hover e CTA: `text-accent-warm`, `bg-accent-warm`
+- bordi search/input: `border-border-soft`
+- focus ring: `ring-accent-warm`
+
+Gli alias legacy `brand-primary`, `action-primary` e `primary-purple` sono
+mantenuti solo per compatibilita e risolti dalla palette globale.
+
+## Tipografia Home
+
+La home eredita il tracking globale Canva-style da
+`--fp-letter-spacing-canvas`. La stessa spaziatura si applica a Hero, top nav,
+search e testi delle sezioni tramite il design system; non va ridefinita nelle
+pagine.
+
 ## Rail
 
 Il contenuto della home usa `HomeContentRail`, che applica:
@@ -18,51 +39,45 @@ Il contenuto della home usa `HomeContentRail`, che applica:
 - `tokens.home.railFrame`
 - `tokens.home.rail`
 
-Questo rail allinea le sezioni all'asse del testo della Hero. Gli sfondi possono
-essere larghi, ma label, titoli, card, CTA e footer devono partire da questo
-rail.
+Il rail eredita la larghezza ufficiale da `Container`. La compattezza laterale
+della home dipende da `--fp-container-max-width`, non da `max-width` locali nelle
+sezioni.
 
 ## Hero
 
-La Hero e una composizione a layer:
+La Hero home e una composizione centrata e compatta, ispirata al mockup Canva.
 
-- `tokens.home.hero.frame` governa larghezza e altezza del frame.
-- `tokens.home.hero.lightPanel` governa il pannello chiaro.
-- `tokens.home.hero.darkPanel` governa il pannello scuro dietro/destra.
-- `tokens.home.hero.titleBlock` e `tokens.home.hero.searchBlock` governano
-  l'asse interno del contenuto.
-- `tokens.home.hero.image` governa il posizionamento immagine.
+- `tokens.home.hero.root` governa la superficie muted della sezione.
+- `tokens.home.hero.container` governa altezza, padding verticale e
+  allineamento.
+- `tokens.home.hero.title`, `titleAccent` e `question` governano ritmo
+  tipografico.
+- `tokens.home.hero.searchWrap`, `searchForm`, `searchInput` e `searchSubmit`
+  governano la search bar.
+- `tokens.home.hero.suggestions` e token collegati governano autocomplete,
+  stati e messaggi.
 
-Non spostare coordinate della Hero dentro `hero.tsx`: se serve tuning, aggiorna
-i token o le variabili CSS.
+La Hero non contiene immagine, trust badge o copy secondari extra. La search
+continua a consumare `/api/taxonomy/search` e ad aprire il funnel
+`/richiesta/[slug]`.
 
 ## Variabili DevTools
 
 Le variabili principali sono in `:root`:
 
-- `--fp-home-rail-max-width`
-- `--fp-home-hero-max-width`
-- `--fp-home-hero-height`
-- `--fp-home-hero-radius`
-- `--fp-home-hero-light-width`
-- `--fp-home-hero-light-height`
-- `--fp-home-hero-dark-left`
-- `--fp-home-hero-dark-top`
-- `--fp-home-hero-dark-bottom`
-- `--fp-home-hero-title-x`
-- `--fp-home-hero-title-y`
-- `--fp-home-hero-search-x`
-- `--fp-home-hero-search-y`
-- `--fp-home-hero-image-x`
-- `--fp-home-hero-image-y`
+- `--fp-container-max-width`
+- `--fp-container-padding-inline`
+- `--fp-container-padding-inline-mobile`
+- `--fp-home-hero-min-height`
+- `--fp-home-hero-title-max-width`
+- `--fp-home-hero-search-width`
 - `--fp-home-content-inset-x`
 - `--fp-home-section-y`
 - `--fp-home-section-y-compact`
 - `--fp-home-section-gap`
 
-Da DevTools puoi cambiare questi valori per provare frame Hero piu largo,
-altezza piu compatta, dark panel piu basso, rail piu ampio o sezioni piu
-ravvicinate.
+Da DevTools puoi cambiare questi valori per provare container piu compatto,
+altezza hero piu sostenibile, search bar piu larga o sezioni piu ravvicinate.
 
 ## Sezioni Home
 

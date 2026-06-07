@@ -153,6 +153,9 @@ async function resolveCandidates({
   const companies =
     await client.company.findMany({
       where: {
+        isActive: true,
+        deletedAt: null,
+        status: "APPROVED",
         latitude: {
           not: null,
         },

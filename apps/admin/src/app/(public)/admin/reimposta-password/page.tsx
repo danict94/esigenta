@@ -144,7 +144,7 @@ export default async function AdminResetPasswordPage({
       <Card className="w-full max-w-md">
         <CardHeader>
           <p className="text-sm font-medium text-text-muted">
-            FixPro Admin
+            esigenta Admin
           </p>
           <CardTitle>
             Reimposta password

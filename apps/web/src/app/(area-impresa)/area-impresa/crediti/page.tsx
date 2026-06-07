@@ -212,6 +212,9 @@ export default async function CompanyCreditsPage({
     await requireDefaultCompanyMembership()
   const params =
     searchParams ? await searchParams : {}
+  const canBuyCredits =
+    membership.company.status ===
+    "APPROVED"
 
   const [
     accountSummary,
@@ -260,6 +263,15 @@ export default async function CompanyCreditsPage({
           <Card className="p-5">
             <p className="text-sm font-semibold text-text-primary">
               {checkoutMessage}
+            </p>
+          </Card>
+        ) : null}
+
+        {!canBuyCredits ? (
+          <Card className="bg-surface-secondary p-5">
+            <p className="text-sm font-semibold text-text-primary">
+              Il tuo profilo impresa deve essere approvato prima di acquistare
+              crediti.
             </p>
           </Card>
         ) : null}
@@ -358,20 +370,30 @@ export default async function CompanyCreditsPage({
                   </div>
                 </dl>
 
-                <form
-                  action={createCreditPackageCheckoutAction}
-                  className="mt-6"
-                >
-                  <input
-                    type="hidden"
-                    name="packageId"
-                    value={creditPackage.id}
-                  />
+                {canBuyCredits ? (
+                  <form
+                    action={createCreditPackageCheckoutAction}
+                    className="mt-6"
+                  >
+                    <input
+                      type="hidden"
+                      name="packageId"
+                      value={creditPackage.id}
+                    />
 
-                  <Button type="submit">
-                    Acquista pacchetto
+                    <Button type="submit">
+                      Acquista pacchetto
+                    </Button>
+                  </form>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled
+                    className="mt-6"
+                  >
+                    Acquisto non disponibile
                   </Button>
-                </form>
+                )}
               </Card>
             ))
           )}

@@ -1,5 +1,6 @@
 import fs from "node:fs/promises"
 import path from "node:path"
+import { fileURLToPath } from "node:url"
 
 import { taxonomySource } from "../source"
 import {
@@ -10,13 +11,18 @@ import { validateTaxonomySource } from "../shared/validators"
 import type {
   TaxonomyCategory,
   TaxonomyDomain,
+  TaxonomySource,
   TaxonomyIntervention,
   TaxonomySector,
   TaxonomyService,
 } from "../shared/types"
 
+const currentDir = path.dirname(fileURLToPath(import.meta.url))
+
+const packageDir = path.resolve(currentDir, "../../..")
+
 const OUTPUT_DIR = path.resolve(
-  process.cwd(),
+  packageDir,
   "taxonomy/generated",
 )
 
@@ -30,14 +36,31 @@ function sortedUnique(values: string[]): string[] {
   )
 }
 
-function cleanAliases(aliases?: string[]): string[] | undefined {
+function normalizeComparable(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ")
+}
+
+function cleanAliases(
+  aliases: string[] | undefined,
+  name: string,
+): string[] | undefined {
   if (!aliases || aliases.length === 0) {
     return undefined
   }
 
-  return sortedUnique(
-    aliases.map((alias) => alias.trim()).filter(Boolean),
+  const normalizedName = normalizeComparable(name)
+
+  const cleanedAliases = sortedUnique(
+    aliases
+      .map((alias) => alias.trim())
+      .filter(
+        (alias) =>
+          alias.length > 0 &&
+          normalizeComparable(alias) !== normalizedName,
+      ),
   )
+
+  return cleanedAliases.length > 0 ? cleanedAliases : undefined
 }
 
 function cleanRuntimePresetSlugs(
@@ -82,7 +105,7 @@ function cleanSector(sector: TaxonomySector): TaxonomySector {
 }
 
 function cleanService(service: TaxonomyService): TaxonomyService {
-  const aliases = cleanAliases(service.aliases)
+  const aliases = cleanAliases(service.aliases, service.name)
   const description = cleanDescription(service.description)
   const runtimePresetSlugs =
     cleanRuntimePresetSlugs(
@@ -113,7 +136,10 @@ function cleanService(service: TaxonomyService): TaxonomyService {
 function cleanIntervention(
   intervention: TaxonomyIntervention,
 ): TaxonomyIntervention {
-  const aliases = cleanAliases(intervention.aliases)
+  const aliases = cleanAliases(
+    intervention.aliases,
+    intervention.name,
+  )
   const description = cleanDescription(intervention.description)
   const runtimePresetSlugs =
     cleanRuntimePresetSlugs(
@@ -145,7 +171,7 @@ function cleanIntervention(
 function cleanCategory(
   category: TaxonomyCategory,
 ): TaxonomyCategory {
-  const aliases = cleanAliases(category.aliases)
+  const aliases = cleanAliases(category.aliases, category.name)
   const description = cleanDescription(category.description)
   const runtimePresetSlugs =
     cleanRuntimePresetSlugs(
@@ -176,7 +202,7 @@ function cleanCategory(
 }
 
 function cleanDomain(domain: TaxonomyDomain): TaxonomyDomain {
-  const aliases = cleanAliases(domain.aliases)
+  const aliases = cleanAliases(domain.aliases, domain.name)
   const description = cleanDescription(domain.description)
   const runtimePresetSlugs =
     cleanRuntimePresetSlugs(
@@ -216,8 +242,6 @@ async function writeArtifact(
 }
 
 async function generateTaxonomy() {
-  validateTaxonomySource(taxonomySource)
-
   const sectors = taxonomySource.sectors
     .map(cleanSector)
     .sort(bySlug)
@@ -238,6 +262,16 @@ async function generateTaxonomy() {
     .map(cleanDomain)
     .sort(bySlug)
 
+  const generatedTaxonomy: TaxonomySource = {
+    sectors,
+    services,
+    interventions,
+    categories,
+    domains,
+  }
+
+  validateTaxonomySource(generatedTaxonomy)
+
   await fs.mkdir(OUTPUT_DIR, {
     recursive: true,
   })
@@ -252,11 +286,17 @@ async function generateTaxonomy() {
       domains: domains.length,
     },
   })
-  await writeArtifact("sectors.generated.json", sectors)
-  await writeArtifact("services.generated.json", services)
-  await writeArtifact("interventions.generated.json", interventions)
-  await writeArtifact("categories.generated.json", categories)
-  await writeArtifact("domains.generated.json", domains)
+  await writeArtifact("sectors.generated.json", generatedTaxonomy.sectors)
+  await writeArtifact("services.generated.json", generatedTaxonomy.services)
+  await writeArtifact(
+    "interventions.generated.json",
+    generatedTaxonomy.interventions,
+  )
+  await writeArtifact(
+    "categories.generated.json",
+    generatedTaxonomy.categories,
+  )
+  await writeArtifact("domains.generated.json", generatedTaxonomy.domains)
 
   console.log("Generated taxonomy artifacts")
 }

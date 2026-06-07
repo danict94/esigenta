@@ -1,8 +1,8 @@
-﻿import type { Metadata } from "next"
-import type { ReactNode } from "react"
-import localFont from "next/font/local"
+﻿import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import localFont from "next/font/local";
 
-import "./globals.css"
+import "./globals.css";
 
 const plusJakartaSans = localFont({
   src: [
@@ -14,17 +14,13 @@ const plusJakartaSans = localFont({
   ],
   variable: "--font-plus-jakarta-sans",
   display: "swap",
-})
+});
 
 export const metadata: Metadata = {
-  title: "FixPro Admin",
-}
+  title: "esigenta Admin",
+};
 
-export default function AdminRootLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function AdminRootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="it"
@@ -34,5 +30,5 @@ export default function AdminRootLayout({
         {children}
       </body>
     </html>
-  )
+  );
 }

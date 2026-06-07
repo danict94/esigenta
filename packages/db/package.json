@@ -8,9 +8,9 @@
     "./funnel-normalization": "./src/funnel/normalization/index.ts"
   },
   "scripts": {
-    "taxonomy:build": "tsx taxonomy/orchestrator/build-taxonomy.ts",
-    "taxonomy:generate": "tsx taxonomy/orchestrator/generate-taxonomy.ts",
-    "taxonomy:seed": "tsx taxonomy/orchestrator/seed-taxonomy.ts",
+    "taxonomy:build": "tsx src/taxonomy/orchestrator/build-taxonomy.ts",
+    "taxonomy:generate": "tsx src/taxonomy/orchestrator/generate-taxonomy.ts",
+    "taxonomy:seed": "tsx src/taxonomy/orchestrator/seed-taxonomy.ts",
     "admin:bootstrap": "tsx src/identity/bootstrap-super-admin.ts",
     "seed:auth": "tsx seed/seed_auth.ts",
     "seed:credit-packages": "tsx seed/seed_credit_packages.ts",

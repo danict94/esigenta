@@ -6,6 +6,11 @@ import {
   prisma,
 } from "../prisma/client"
 
+import {
+  assertCompanyCanBuyCredits,
+  CompanyMarketplaceAuthorizationError,
+} from "../identity"
+
 import type {
   CreditLedgerResult,
 } from "./credit-ledger"
@@ -123,6 +128,26 @@ export async function createPendingCreditOrder({
       code: "invalid_credit_package_id",
       message: "Pacchetto crediti non valido.",
     }
+  }
+
+  try {
+    await assertCompanyCanBuyCredits({
+      companyId:
+        normalizedCompanyId,
+    })
+  } catch (error) {
+    if (
+      error instanceof
+      CompanyMarketplaceAuthorizationError
+    ) {
+      return {
+        ok: false,
+        code: error.code,
+        message: error.message,
+      }
+    }
+
+    throw error
   }
 
   const creditPackage =

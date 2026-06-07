@@ -1,5 +1,18 @@
 [
   {
+    "slug": "clima-energia",
+    "name": "Clima ed energia",
+    "interventions": [
+      "installare-climatizzatore",
+      "installare-fotovoltaico"
+    ],
+    "aliases": [
+      "climatizzazione energia",
+      "energia casa",
+      "impianti clima energia"
+    ]
+  },
+  {
     "slug": "costruzione",
     "name": "Costruzione",
     "interventions": [
@@ -48,6 +61,24 @@
       "impermeabilizzare-piscina",
       "impermeabilizzare-terrazzo",
       "posare-guaina-bituminosa"
+    ]
+  },
+  {
+    "slug": "impianti-elettrici",
+    "name": "Impianti elettrici",
+    "interventions": [
+      "aggiungere-presa-elettrica",
+      "impianto-elettrico-nuovo",
+      "montare-lampadario",
+      "riparare-citofono",
+      "riparare-quadro-elettrico",
+      "saltata-corrente",
+      "sostituire-interruttore"
+    ],
+    "aliases": [
+      "elettricista",
+      "elettrico casa",
+      "lavori elettrici"
     ]
   },
   {

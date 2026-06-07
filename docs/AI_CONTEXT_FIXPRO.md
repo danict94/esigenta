@@ -1,8 +1,8 @@
-# FixPro / Esigenta — AI Context
+# FixPro / esigenta — AI Context
 
 ## Monorepo
 
-FixPro / Esigenta vive in un pnpm monorepo.
+FixPro / esigenta vive in un pnpm monorepo.
 
 Aree principali:
 
@@ -180,7 +180,7 @@ pnpm.cmd --dir packages/db exec tsx src/taxonomy/orchestrator/build-taxonomy.ts
 Ogni task deve:
 
 1. leggere questo file
-2. leggere `docs/FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md`
+2. leggere `docs/FIXPRO_esigenta_SEO_SYSTEM_2026.md`
 3. rispettare lo scope
 4. non anticipare step futuri
 5. mostrare diff finale
@@ -192,7 +192,7 @@ Ogni task deve:
 ## 4. Commit docs
 
 ```powershell
-git add docs\FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md docs\AI_CONTEXT_FIXPRO.md
+git add docs\FIXPRO_esigenta_SEO_SYSTEM_2026.md docs\AI_CONTEXT_FIXPRO.md
 git diff --cached --stat
 git commit -m "Document SEO system and AI context"
 ````

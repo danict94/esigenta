@@ -32,6 +32,9 @@
       "riparazione-guasti-elettrici",
       "salvavita",
       "videocitofoni"
+    ],
+    "runtimePresetSlugs": [
+      "ELECTRICAL_WORK"
     ]
   },
   {
@@ -55,6 +58,15 @@
       "tinteggiatura-esterni",
       "tinteggiatura-interni",
       "tinteggiatura-pareti"
+    ]
+  },
+  {
+    "slug": "impiantista",
+    "name": "Impiantista",
+    "sectorSlug": "impianti",
+    "services": [
+      "climatizzatori",
+      "impianti-fotovoltaici"
     ]
   },
   {

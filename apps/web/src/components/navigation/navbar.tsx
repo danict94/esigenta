@@ -36,8 +36,7 @@ const navLinks: NavItem[] = [
 
 export function Navbar({ variant = "default" }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const visibleNavLinks =
-    variant === "funnel" ? navLinks.slice(1) : navLinks;
+  const visibleNavLinks = variant === "funnel" ? navLinks.slice(1) : navLinks;
 
   function closeMenu() {
     setIsMenuOpen(false);
@@ -46,10 +45,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
   if (variant === "hero") {
     return (
       <header className="pointer-events-none absolute inset-0 z-50">
-        <Logo
-          onClick={closeMenu}
-          className={tokens.home.nav.heroLogo}
-        />
+        <Logo onClick={closeMenu} className={tokens.home.nav.heroLogo} />
 
         <Button
           type="button"
@@ -69,17 +65,19 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           )}
         </Button>
 
-        <nav className={tokens.home.nav.heroMenu}>
+        <nav
+          aria-label="Navigazione principale"
+          className={tokens.home.nav.heroMenu}
+        >
           {visibleNavLinks.map((link) => (
             <NavLink
               key={link.href}
               href={link.href}
               label={link.label}
-              accent={link.accent}
               onClick={closeMenu}
               className={cn(
-                "text-sm font-medium text-text-on-hero-secondary hover:text-text-on-hero-primary",
-                link.accent && "text-text-on-hero-primary",
+                tokens.home.nav.heroLink,
+                link.accent && tokens.home.nav.heroAccentLink,
               )}
             />
           ))}
@@ -93,52 +91,45 @@ export function Navbar({ variant = "default" }: NavbarProps) {
   }
 
   const isEmbedded = variant === "embedded";
-  const isFunnel = variant === "funnel";
 
   return (
     <header
       className={cn(
-        "relative z-50",
-        !isEmbedded && !isFunnel && "border-b border-border-primary",
+        tokens.home.nav.root,
+        isEmbedded && tokens.home.nav.embeddedRoot,
       )}
     >
       <Container
-        size={isEmbedded ? "lg" : "full"}
-        gutter={isEmbedded ? "none" : "sm"}
+        size="lg"
+        gutter="md"
         className={cn(
-          "flex items-center justify-between",
-          !isEmbedded && tokens.home.railFrame,
           isEmbedded
-            ? cn("h-14 md:h-16 lg:h-20", tokens.layout.marketing.heroGutter)
-            : tokens.home.nav.defaultContainer,
+            ? cn(tokens.home.nav.container, tokens.home.nav.embeddedContainer)
+            : tokens.home.nav.container,
         )}
       >
-        <Logo
-          onClick={closeMenu}
-          className={cn(
-            isEmbedded
-              ? "text-lg font-medium md:text-xl lg:text-2xl"
-              : "text-lg font-medium md:text-xl",
-          )}
-          inverse={isEmbedded}
-        />
+        <Logo onClick={closeMenu} inverse={isEmbedded} />
 
-        <nav className={cn("hidden items-center md:flex", isEmbedded ? "gap-6 lg:gap-9" : "gap-8")}>
+        <nav
+          aria-label="Navigazione principale"
+          className={cn(
+            tokens.home.nav.desktopMenu,
+            isEmbedded && tokens.home.nav.desktopMenuEmbedded,
+          )}
+        >
           {visibleNavLinks.map((link) => (
             <NavLink
               key={link.href}
               href={link.href}
               label={link.label}
-              accent={link.accent}
               onClick={closeMenu}
               className={cn(
-                isEmbedded
-                  ? "text-xs font-medium text-text-on-hero-secondary hover:text-text-on-hero-primary lg:text-sm"
-                  : "text-sm font-medium text-text-secondary hover:text-action-primary",
+                tokens.home.nav.link,
+                isEmbedded ? tokens.home.nav.linkEmbedded : undefined,
                 link.accent &&
                   (isEmbedded
-                    ? "text-text-on-hero-primary"
-                    : "text-text-primary"),
+                    ? tokens.home.nav.accentLinkEmbedded
+                    : tokens.home.nav.accentLink),
               )}
             />
           ))}
@@ -151,9 +142,8 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           aria-label={isMenuOpen ? "Chiudi menu" : "Apri menu"}
           aria-expanded={isMenuOpen}
           className={cn(
-            "md:hidden",
-            isEmbedded &&
-              "text-text-on-hero-primary hover:bg-transparent hover:text-text-on-hero-primary",
+            tokens.home.nav.mobileToggle,
+            isEmbedded && tokens.home.nav.mobileToggleEmbedded,
           )}
           onClick={() => {
             setIsMenuOpen((current) => !current);
@@ -170,15 +160,11 @@ export function Navbar({ variant = "default" }: NavbarProps) {
       {isMenuOpen ? (
         <div
           className={cn(
-            "border-t border-border-primary md:hidden",
-            !isEmbedded && "bg-surface-primary",
+            tokens.home.nav.mobilePanel,
+            isEmbedded && tokens.home.nav.mobilePanelEmbedded,
           )}
         >
-          <Container
-            size={isEmbedded ? "lg" : "full"}
-            gutter={isEmbedded ? "md" : "sm"}
-            className={!isEmbedded ? tokens.home.railFrame : undefined}
-          >
+          <Container size="lg" gutter="md">
             <MobileMenuContent
               links={visibleNavLinks}
               onClick={closeMenu}
@@ -202,45 +188,42 @@ function Logo({ className, inverse = false, onClick }: LogoProps) {
     <Link
       href="/"
       onClick={onClick}
-      className={cn("tracking-tight", className ?? "text-lg font-medium")}
+      className={cn(
+        tokens.home.nav.logo,
+        inverse && tokens.home.nav.logoInverse,
+        className,
+      )}
       aria-label="esigenta home"
     >
-      <span className={inverse ? "text-text-on-hero-primary" : "text-text-primary"}>
-        esi
+      <span
+        aria-hidden="true"
+        className={cn(
+          tokens.home.nav.logoMark,
+          inverse && tokens.home.nav.logoMarkInverse,
+        )}
+      >
+        e
       </span>
-      <span className="text-brand-primary">genta</span>
+
+      <span className={tokens.home.nav.logoText}>
+        <span>esi</span>
+        <span className="text-accent-warm">genta</span>
+      </span>
     </Link>
   );
 }
 
 type NavLinkProps = {
-  accent?: boolean;
   className?: string;
   href: string;
   label: string;
   onClick: () => void;
 };
 
-function NavLink({
-  accent = false,
-  className,
-  href,
-  label,
-  onClick,
-}: NavLinkProps) {
+function NavLink({ className, href, label, onClick }: NavLinkProps) {
   return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={cn("transition-colors", className)}
-    >
+    <Link href={href} onClick={onClick} className={className}>
       <span>{label}</span>
-      {accent ? (
-        <span
-          aria-hidden="true"
-          className="mt-1 block h-0.5 w-full bg-brand-primary"
-        />
-      ) : null}
     </Link>
   );
 }
@@ -253,7 +236,7 @@ function MobileMenu({
   onClick: () => void;
 }) {
   return (
-    <div className="pointer-events-auto absolute left-0 right-0 top-14 border-t border-border-primary bg-surface-secondary lg:hidden">
+    <div className="pointer-events-auto absolute left-0 right-0 top-14 border-t border-border-primary bg-surface-elevated lg:hidden">
       <Container size="lg">
         <MobileMenuContent links={links} onClick={onClick} />
       </Container>
@@ -271,16 +254,19 @@ function MobileMenuContent({
   onClick: () => void;
 }) {
   return (
-    <nav className="flex flex-col gap-1 py-4">
+    <nav
+      aria-label="Navigazione principale"
+      className={tokens.home.nav.mobileMenu}
+    >
       {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}
           onClick={onClick}
           className={cn(
-            "px-2 py-3 text-sm transition-colors hover:text-brand-primary",
-            inverse ? "text-text-on-hero-primary" : "text-text-primary",
-            link.accent && "font-medium text-brand-primary",
+            tokens.home.nav.mobileLink,
+            inverse && tokens.home.nav.mobileLinkEmbedded,
+            link.accent && tokens.home.nav.mobileAccentLink,
           )}
         >
           {link.label}

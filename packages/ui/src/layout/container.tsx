@@ -28,10 +28,10 @@ export function Container({
     <div
       data-ui="container"
       className={cn(
+        className,
         tokens.layout.container.base,
         tokens.layout.container.widths[size],
         tokens.layout.container.gutters[gutter],
-        className,
       )}
     >
       {children}

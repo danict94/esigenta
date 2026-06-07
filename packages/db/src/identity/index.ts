@@ -24,7 +24,11 @@ export type {
 export {
   AmbiguousCompanyMembershipError,
   CompanyAuthorizationError,
+  CompanyMarketplaceAuthorizationError,
+  assertCompanyCanBuyCredits,
+  assertCompanyCanUseMarketplace,
   getCompanyMembershipForUser,
+  isCompanyMarketplaceApproved,
   listCompanyMembershipsForUser,
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,

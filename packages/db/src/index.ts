@@ -16,6 +16,10 @@ export { prisma } from "./prisma/client"
 
 export * from "./conversations"
 
+export * from "./admin-dashboard"
+
+export * from "./admin-companies"
+
 export type {
   TaxonomySearchEntityType,
   TaxonomySearchResult,

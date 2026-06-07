@@ -941,7 +941,7 @@ export function HowItWorks() {
           </h2>
 
           <p className="max-w-2xl text-base leading-7 text-text-secondary">
-            Esigenta ti accompagna in pochi passaggi: parti dal lavoro
+            esigenta ti accompagna in pochi passaggi: parti dal lavoro
             che devi fare e arrivi a una proposta concreta.
           </p>
         </div>
@@ -1023,7 +1023,7 @@ export function Navbar() {
           href="/"
           onClick={closeMenu}
           className="text-2xl font-bold tracking-tight md:text-3xl"
-          aria-label="Esigenta home"
+          aria-label="esigenta home"
         >
           <span className="text-text-primary">Esi</span>
           <span className="text-brand-primary">genta</span>
@@ -1302,7 +1302,7 @@ index 9da396c..45197e2 100644
 -          className="text-3xl font-bold tracking-tight"
 +          onClick={closeMenu}
 +          className="text-2xl font-bold tracking-tight md:text-3xl"
-           aria-label="Esigenta home"
+           aria-label="esigenta home"
          >
            <span className="text-text-primary">Esi</span>
 @@ -22,9 +45,7 @@ export function Navbar() {

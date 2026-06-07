@@ -1,8 +1,8 @@
-# FixPro / Esigenta — SEO System 2026 definitivo
+# FixPro / esigenta — SEO System 2026 definitivo
 
 ## Scopo del documento
 
-Questo documento è la sorgente operativa unica per la strategia SEO 2026 di FixPro / Esigenta.
+Questo documento è la sorgente operativa unica per la strategia SEO 2026 di FixPro / esigenta.
 
 Serve a evitare confusione tra:
 
@@ -25,7 +25,7 @@ L'obiettivo è costruire traffico organico scalabile senza dipendere subito da A
 
 ## Strategia principale
 
-FixPro / Esigenta deve scalare con un sistema SEO ordinato:
+FixPro / esigenta deve scalare con un sistema SEO ordinato:
 
 ```txt
 Homepage
@@ -1600,7 +1600,7 @@ Controllare:
 Usare questo prompt quando si passa all'implementazione.
 
 ```txt
-Devi implementare la fondazione SEO 2026 di FixPro / Esigenta seguendo il documento "FixPro / Esigenta — SEO System 2026 definitivo".
+Devi implementare la fondazione SEO 2026 di FixPro / esigenta seguendo il documento "FixPro / esigenta — SEO System 2026 definitivo".
 
 Obiettivo:
 - creare landing SEO per i 6 interventi principali
@@ -1682,7 +1682,6 @@ Geo
 
 Questa struttura permette di ottenere traffico organico nel tempo senza ADV iniziale, evitando il rischio di migliaia di pagine duplicate e mantenendo la piattaforma scalabile, leggibile e coerente con la taxonomy.
 
-
 # Addendum — Revisione Claude e correzioni SEO 2026
 
 ## Sintesi
@@ -1690,6 +1689,7 @@ Questa struttura permette di ottenere traffico organico nel tempo senza ADV iniz
 La revisione di Claude è utile, ma va filtrata.
 
 Da integrare:
+
 - authority building
 - link earning con asset dati
 - AI-first writing
@@ -1700,6 +1700,7 @@ Da integrare:
 - sitemap con `lastmod` reale
 
 Da correggere:
+
 - non puntare su FAQPage schema come leva principale 2026
 - non creare profili pubblici vuoti
 - non usare `priority` e `changefreq` della sitemap come leva SEO
@@ -2111,7 +2112,7 @@ Ogni task Codex/AI importante deve iniziare con:
 
 ```txt
 Leggi prima docs/AI_CONTEXT_FIXPRO.md
-Leggi poi docs/FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md
+Leggi poi docs/FIXPRO_esigenta_SEO_SYSTEM_2026.md
 Non modificare file fuori scope.
 ```
 
@@ -2178,11 +2179,11 @@ sitemap pulita con URL utili e lastmod reale
 # 10. Prompt operativo aggiornato per AI / Codex
 
 ```txt
-Devi implementare la fondazione SEO 2026 di FixPro / Esigenta.
+Devi implementare la fondazione SEO 2026 di FixPro / esigenta.
 
 Prima di modificare codice:
 1. leggi docs/AI_CONTEXT_FIXPRO.md
-2. leggi docs/FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md
+2. leggi docs/FIXPRO_esigenta_SEO_SYSTEM_2026.md
 3. verifica taxonomy source prima di creare nuovi slug
 4. verifica componenti UI esistenti prima di creare nuovi componenti
 
@@ -2695,17 +2696,17 @@ con modulo dati dinamico interno.
 # 40. Prompt operativo Codex aggiornato — Step 0
 
 ```txt
-Devi preparare il repository per l'implementazione SEO 2026 di FixPro / Esigenta.
+Devi preparare il repository per l'implementazione SEO 2026 di FixPro / esigenta.
 
 Scope unico di questo step:
 documentazione e contesto AI.
 
 Leggi il documento SEO 2026 fornito e crea/aggiorna solo:
 
-- docs/FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md
+- docs/FIXPRO_esigenta_SEO_SYSTEM_2026.md
 - docs/AI_CONTEXT_FIXPRO.md
 
-Nel file docs/FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md inserisci il documento SEO completo v3.
+Nel file docs/FIXPRO_esigenta_SEO_SYSTEM_2026.md inserisci il documento SEO completo v3.
 
 Nel file docs/AI_CONTEXT_FIXPRO.md crea un contesto operativo per AI/Codex con:
 
@@ -2746,7 +2747,7 @@ Fai solo audit, senza modificare file.
 
 Prima leggi:
 
-- docs/FIXPRO_ESIGENTA_SEO_SYSTEM_2026.md
+- docs/FIXPRO_esigenta_SEO_SYSTEM_2026.md
 - docs/AI_CONTEXT_FIXPRO.md
 
 Poi analizza:

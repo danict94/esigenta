@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { listPendingRequests } from "@fixpro/db";
+import { listAdminRequests } from "@fixpro/db";
 import { Badge, Card, PageShell } from "@fixpro/ui";
 
 export const dynamic = "force-dynamic";
@@ -50,8 +50,48 @@ function formatFreshness(date: Date) {
   return formatDate(date);
 }
 
+function getStatusBadgeVariant(status: string) {
+  if (status === "APPROVED" || status === "PUBLISHED") {
+    return "success";
+  }
+
+  if (status === "REJECTED") {
+    return "danger";
+  }
+
+  if (status === "PENDING_REVIEW") {
+    return "warning";
+  }
+
+  return "neutral";
+}
+
+function getStatusLabel(status: string) {
+  if (status === "APPROVED") {
+    return "Approvata";
+  }
+
+  if (status === "PUBLISHED") {
+    return "Pubblicata";
+  }
+
+  if (status === "REJECTED") {
+    return "Rifiutata";
+  }
+
+  if (status === "PENDING_REVIEW") {
+    return "In revisione";
+  }
+
+  if (status === "CLOSED") {
+    return "Chiusa";
+  }
+
+  return status;
+}
+
 export default async function RequestsModerationPage() {
-  const requests = await listPendingRequests();
+  const requests = await listAdminRequests();
 
   return (
     <PageShell size="lg">
@@ -63,12 +103,11 @@ export default async function RequestsModerationPage() {
             </p>
 
             <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
-              Coda moderazione
+              Richieste
             </h1>
 
             <p className="mt-3 max-w-xl text-sm leading-6 text-text-secondary">
-              Richieste cliente verificate in attesa di revisione editoriale.
-              Controlla qualità, chiarezza e coerenza prima della pubblicazione
+              Gestisci le richieste ricevute e controlla lo stato editoriale
               nel marketplace.
             </p>
           </div>
@@ -86,15 +125,15 @@ export default async function RequestsModerationPage() {
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-semibold text-text-primary">
-              Revisione marketplace
+              Gestione richieste
             </p>
             <p className="mt-1 text-sm text-text-secondary">
-              Richieste verificate in attesa di decisione editoriale.
+              Elenco delle richieste ricevute con stato e dettagli operativi.
             </p>
           </div>
 
-          <Badge variant="warning">
-            {requests.length} in revisione
+          <Badge variant="neutral">
+            {requests.length} richieste
           </Badge>
         </div>
       </section>
@@ -104,11 +143,10 @@ export default async function RequestsModerationPage() {
           <Card className="p-8">
             <div className="max-w-xl">
               <p className="text-lg font-semibold text-text-primary">
-                La coda è pulita
+                Nessuna richiesta
               </p>
               <p className="mt-2 text-sm leading-6 text-text-secondary">
-                Non ci sono richieste da revisionare in questo momento. Quando
-                arriveranno nuove richieste verificate, compariranno qui.
+                Non ci sono richieste da mostrare in questo momento.
               </p>
             </div>
           </Card>
@@ -120,12 +158,12 @@ export default async function RequestsModerationPage() {
                   <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="warning">
-                          {formatFreshness(request.createdAt)}
+                        <Badge variant={getStatusBadgeVariant(request.status)}>
+                          {getStatusLabel(request.status)}
                         </Badge>
 
                         <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                          In attesa di revisione
+                          {formatFreshness(request.createdAt)}
                         </span>
                       </div>
 
@@ -151,17 +189,18 @@ export default async function RequestsModerationPage() {
                       </div>
 
                       <p className="mt-4 text-sm leading-6 text-text-secondary">
-                        Verifica contenuto, località e qualità del contatto
-                        prima di pubblicare questa opportunità per le imprese.
+                        Controlla contenuto, località e qualità del contatto
+                        per gestire questa opportunità nel marketplace.
                       </p>
                     </div>
 
                     <div className="flex shrink-0 md:justify-end">
+                      {/* TODO: add admin actions for edit/archive/soft delete after schema decision */}
                       <Link
                         href={`/requests/${request.id}`}
                         className="inline-flex h-11 items-center justify-center border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                       >
-                        Revisiona richiesta
+                        Apri richiesta
                       </Link>
                     </div>
                   </div>

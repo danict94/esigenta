@@ -12,6 +12,7 @@ type ButtonVariant =
   | "primary"
   | "secondary"
   | "brand"
+  | "warm"
   | "brandOutline"
   | "dark"
   | "ghost"

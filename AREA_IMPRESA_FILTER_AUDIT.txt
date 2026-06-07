@@ -1138,7 +1138,7 @@ export function ImpresaSidebar({
         <Link
           href="/area-impresa/richieste"
           onClick={closeMenus}
-          aria-label="Esigenta Imprese"
+          aria-label="esigenta Imprese"
         >
           <Brand />
         </Link>
@@ -3635,7 +3635,7 @@ index ccdb1c1..b6e4fee 100644
            href="/area-impresa/richieste"
 -          className="inline-flex min-w-0 items-center"
 +          onClick={closeMenus}
-+          aria-label="Esigenta Imprese"
++          aria-label="esigenta Imprese"
          >
 -          <span className="truncate text-lg font-semibold tracking-tight text-text-primary">
 -            FixPro
