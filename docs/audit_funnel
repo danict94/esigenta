@@ -4,7 +4,7 @@ Audit completato. Non ho modificato file e non ho commitato.
 
 | FILE | FUNZIONE / LOGICA | TIPO | DESTINAZIONE | RISCHIO |
 |---|---|---|---|---|
-| `apps/web/src/components/funnel/runtime-funnel.tsx` | `RuntimeAnswers` locale | duplicated runtime contract | importare da `@fixpro/db` | low |
+| `apps/web/src/components/funnel/runtime-funnel.tsx` | `RuntimeAnswers` locale | duplicated runtime contract | importare da `@esigenta/db` | low |
 | `apps/web/src/components/funnel/runtime-funnel.tsx` | `JsonRequestDraft`, `JsonRuntimeFunnelPayload` | API serialization contract | esporre adapter/type dal funnel runtime | medium |
 | `apps/web/src/components/funnel/runtime-funnel.tsx` | `CreatedRequestPayload`, `SubmittedRequestPayload` | API/domain response shape | `packages/db` o request API typed result | medium |
 | `apps/web/src/components/funnel/runtime-funnel.tsx` | `isFilled` | validation primitive | `packages/db/src/funnel/runtime` | medium |
@@ -106,7 +106,7 @@ Audit completato. Non ho modificato file e non ho commitato.
 **Validazione**
 
 - `pnpm.cmd lint`: passato
-- `pnpm.cmd --filter @fixpro/db typecheck`: passato
+- `pnpm.cmd --filter @esigenta/db typecheck`: passato
 - `pnpm.cmd --filter web typecheck`: passato
 - `pnpm.cmd --filter admin typecheck`: passato
 - `git diff --check`: passato, solo warning CRLF esistenti

@@ -48,8 +48,8 @@ function getErrorMessage(
 
 function getPublicAppUrl() {
   const rawUrl =
-    process.env.FIXPRO_WEB_URL ??
-    process.env.FIXPRO_APP_URL ??
+    process.env.ESIGENTA_WEB_URL ??
+    process.env.ESIGENTA_APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL
 
   if (!rawUrl) {

@@ -4,8 +4,8 @@ import type {
 
 function getWebUrl(): string {
   const webUrl =
-    process.env.FIXPRO_WEB_URL ??
-    process.env.FIXPRO_APP_URL ??
+    process.env.ESIGENTA_WEB_URL ??
+    process.env.ESIGENTA_APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL
 
   if (webUrl) {
@@ -17,7 +17,7 @@ function getWebUrl(): string {
   }
 
   throw new Error(
-    "FIXPRO_WEB_URL or FIXPRO_APP_URL is required to build public links.",
+    "ESIGENTA_WEB_URL or ESIGENTA_APP_URL is required to build public links.",
   )
 }
 

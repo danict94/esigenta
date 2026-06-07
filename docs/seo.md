@@ -1,6 +1,6 @@
 E allora stai facendo il ragionamento corretto:
 
-# devi progettare FixPro come un SEO marketplace system,
+# devi progettare Esigenta come un SEO marketplace system,
 
 non come un semplice sito con pagine.
 

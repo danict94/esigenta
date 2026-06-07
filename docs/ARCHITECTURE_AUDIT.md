@@ -1,4 +1,4 @@
-# FixPro V2 — Architecture Audit
+# Esigenta V2 — Architecture Audit
 
 ## Monorepo Structure
 
@@ -254,7 +254,7 @@ Potential future packages/db domains:
 
 # Audit Summary
 
-FixPro architecture is NOT chaotic.
+Esigenta architecture is NOT chaotic.
 
 The project already has:
 

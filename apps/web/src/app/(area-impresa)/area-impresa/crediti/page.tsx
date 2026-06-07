@@ -35,13 +35,13 @@ type CreditsPageProps = {
 
 function getAppUrl() {
   const appUrl =
-    process.env.FIXPRO_WEB_URL ??
-    process.env.FIXPRO_APP_URL ??
+    process.env.ESIGENTA_WEB_URL ??
+    process.env.ESIGENTA_APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL
 
   if (!appUrl) {
     throw new Error(
-      "FIXPRO_WEB_URL o FIXPRO_APP_URL non configurata.",
+      "ESIGENTA_WEB_URL o ESIGENTA_APP_URL non configurata.",
     )
   }
 

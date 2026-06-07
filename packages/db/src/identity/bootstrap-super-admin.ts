@@ -24,11 +24,11 @@ config({
 
 export async function bootstrapSuperAdmin() {
   const email =
-    process.env.FIXPRO_SUPER_ADMIN_EMAIL?.trim()
+    process.env.ESIGENTA_SUPER_ADMIN_EMAIL?.trim()
 
   if (!email) {
     throw new Error(
-      "FIXPRO_SUPER_ADMIN_EMAIL is required.",
+      "ESIGENTA_SUPER_ADMIN_EMAIL is required.",
     )
   }
 

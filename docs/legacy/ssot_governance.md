@@ -1,11 +1,11 @@
 ````md
-# FIXPRO V2 — ARCHITETTURA FONDATIVA
+# ESIGENTA V2 — ARCHITETTURA FONDATIVA
 
 ## Visione
 
-FixPro NON deve essere un “gestionale con pagine pubbliche”.
+Esigenta NON deve essere un “gestionale con pagine pubbliche”.
 
-FixPro deve essere:
+Esigenta deve essere:
 - un marketplace moderno
 - orientato al consumatore
 - editoriale
@@ -42,7 +42,7 @@ Il valore principale nasce da:
 
 ## 2. Cliente ≠ gestionale
 
-Il cliente NON usa FixPro come software.
+Il cliente NON usa Esigenta come software.
 
 Il cliente vuole:
 - inviare richiesta
@@ -548,7 +548,7 @@ Obiettivo:
 
 # OBIETTIVO FINALE
 
-FixPro deve sembrare:
+Esigenta deve sembrare:
 
 NON:
 
@@ -566,7 +566,7 @@ MA:
 
 ```
 ```
-REGOLA FONDATIVA FIXPRO V2
+REGOLA FONDATIVA ESIGENTA V2
 
 Ogni pagina/componente deve essere:
 
@@ -617,7 +617,7 @@ Solo:
 Tailwind v4
 design tokens
 spacing system
-PRINCIPIO CENTRALE FIXPRO V2
+PRINCIPIO CENTRALE ESIGENTA V2
 
 Ogni decisione deve favorire:
 
@@ -746,7 +746,7 @@ Poi:
 performance
 caching
 micro ottimizzazioni
-FILOSOFIA FIXPRO V2
+FILOSOFIA ESIGENTA V2
 
 NON:
 

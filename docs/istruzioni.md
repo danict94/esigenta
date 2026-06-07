@@ -310,9 +310,9 @@ NON TOCCARE:
 TASK:
 Aggiorna `packages/db/seed/seed_auth.ts` per leggere da env:
 
-* `FIXPRO_SUPER_ADMIN_EMAIL`
-* `FIXPRO_SUPER_ADMIN_PASSWORD`
-* `FIXPRO_SUPER_ADMIN_NAME` opzionale
+* `ESIGENTA_SUPER_ADMIN_EMAIL`
+* `ESIGENTA_SUPER_ADMIN_PASSWORD`
+* `ESIGENTA_SUPER_ADMIN_NAME` opzionale
 
 Regole:
 

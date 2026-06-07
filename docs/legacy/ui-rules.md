@@ -3,7 +3,7 @@ Questo è esattamente il momento giusto per scriverlo.
 
 Questo primo MD deve diventare:
 
-# LA LEGGE UI DI FIXPRO V2
+# LA LEGGE UI DI ESIGENTA V2
 
 Non teoria.
 Non corporate.
@@ -24,11 +24,11 @@ docs/ui-rules.md
 e mettici questo:
 
 ````md id="1wjglz"
-# FixPro V2 — UI Rules
+# Esigenta V2 — UI Rules
 
 ## Purpose
 
-FixPro V2 is a consumer-first marketplace platform.
+Esigenta V2 is a consumer-first marketplace platform.
 
 The UI must feel:
 - calm
@@ -98,7 +98,7 @@ Avoid:
 - rounded-3xl
 - bubble UI
 
-FixPro should feel:
+Esigenta should feel:
 - practical
 - trustworthy
 - service-oriented
@@ -273,7 +273,7 @@ Before creating a new component:
 
 # Mobile Rules
 
-FixPro is mobile-first.
+Esigenta is mobile-first.
 
 Every component must:
 
@@ -304,7 +304,7 @@ pnpm typecheck
 
 # Final Principle
 
-FixPro should feel like:
+Esigenta should feel like:
 
 * a real-world trusted service platform
 

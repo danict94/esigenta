@@ -29,10 +29,10 @@ const localTrustedOrigins =
 const trustedOrigins =
   uniqueTextValues([
     process.env.BETTER_AUTH_URL,
-    process.env.FIXPRO_WEB_URL,
-    process.env.FIXPRO_APP_URL,
+    process.env.ESIGENTA_WEB_URL,
+    process.env.ESIGENTA_APP_URL,
     process.env.NEXT_PUBLIC_APP_URL,
-    process.env.FIXPRO_ADMIN_URL,
+    process.env.ESIGENTA_ADMIN_URL,
     ...localTrustedOrigins,
   ])
 

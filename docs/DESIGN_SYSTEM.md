@@ -1,8 +1,8 @@
-# FixPro Design System
+# Esigenta Design System
 
 ## Principio
 
-Il design di FixPro non deve vivere nelle singole pagine.
+Il design di Esigenta non deve vivere nelle singole pagine.
 
 Il design vive in:
 

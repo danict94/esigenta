@@ -1,4 +1,4 @@
-# FixPro V2 - Roadmap
+# Esigenta V2 - Roadmap
 
 Version: 0.4
 Status: ACTIVE
@@ -8,7 +8,7 @@ Last updated: 2026-05-13
 
 # Purpose
 
-This document is the operational roadmap for FixPro V2.
+This document is the operational roadmap for Esigenta V2.
 
 This file tracks only:
 

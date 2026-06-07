@@ -1,8 +1,8 @@
-# FixPro Taxonomy Architecture — Operational Foundation
+# Esigenta Taxonomy Architecture — Operational Foundation
 
 # Obiettivo
 
-Questo documento definisce la struttura ufficiale della taxonomy FixPro.
+Questo documento definisce la struttura ufficiale della taxonomy Esigenta.
 
 Serve per:
 
@@ -19,14 +19,14 @@ Questo documento è la source of truth operativa della taxonomy.
 
 # Principio Fondamentale
 
-FixPro NON è:
+Esigenta NON è:
 
 * un CMS tassonomico
 * una directory categorie
 * un sistema SEO-first
 * un marketplace category-first
 
-FixPro è:
+Esigenta è:
 
 ```txt
 capability-first
@@ -319,7 +319,7 @@ Servono per:
 
 # Runtime Reale
 
-Il runtime ufficiale di FixPro è:
+Il runtime ufficiale di Esigenta è:
 
 ```txt
 RequestRequiredService
@@ -678,13 +678,13 @@ Prima servono:
 
 # Obiettivo Reale
 
-FixPro NON deve diventare:
+Esigenta NON deve diventare:
 
 ```txt
 mega taxonomy system
 ```
 
-FixPro deve diventare:
+Esigenta deve diventare:
 
 ```txt
 resolved capability infrastructure
@@ -694,13 +694,13 @@ resolved capability infrastructure
 
 # Principio Finale
 
-FixPro NON deve essere:
+Esigenta NON deve essere:
 
 ```txt
 category-first
 ```
 
-FixPro deve essere:
+Esigenta deve essere:
 
 ```txt
 capability-first

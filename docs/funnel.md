@@ -1,4 +1,4 @@
-# FixPro V2 — Semantic Funnel Runtime Architecture
+# Esigenta V2 — Semantic Funnel Runtime Architecture
 
 Version: 2.1
 Status: ACTIVE RUNTIME FOUNDATION - CONTEXTUAL PRESETS
@@ -8,7 +8,7 @@ Last updated: 2026-05-13
 
 # Purpose
 
-This document is the operational reference for the FixPro request funnel runtime.
+This document is the operational reference for the Esigenta request funnel runtime.
 
 Its purpose is to:
 
@@ -36,7 +36,7 @@ for developers and AI assistants.
 
 # Current Runtime Goal
 
-FixPro is building:
+Esigenta is building:
 
 # semantic request acquisition infrastructure
 

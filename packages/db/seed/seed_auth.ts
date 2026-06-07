@@ -30,11 +30,11 @@ if (existsSync(packageEnvPath)) {
  * Super admin bootstrap.
  *
  * Required env:
- * - FIXPRO_SUPER_ADMIN_EMAIL
- * - FIXPRO_SUPER_ADMIN_PASSWORD
+ * - ESIGENTA_SUPER_ADMIN_EMAIL
+ * - ESIGENTA_SUPER_ADMIN_PASSWORD
  *
  * Optional env:
- * - FIXPRO_SUPER_ADMIN_NAME
+ * - ESIGENTA_SUPER_ADMIN_NAME
  *
  * Command:
  * pnpm --filter @esigenta/db seed:auth
@@ -63,15 +63,15 @@ async function ensureSuperAdmin() {
     ]);
 
   const email = requireEnvValue(
-    "FIXPRO_SUPER_ADMIN_EMAIL",
+    "ESIGENTA_SUPER_ADMIN_EMAIL",
   ).toLowerCase();
 
   const password = requireEnvValue(
-    "FIXPRO_SUPER_ADMIN_PASSWORD",
+    "ESIGENTA_SUPER_ADMIN_PASSWORD",
   );
 
   const name =
-    process.env.FIXPRO_SUPER_ADMIN_NAME?.trim() ||
+    process.env.ESIGENTA_SUPER_ADMIN_NAME?.trim() ||
     DEFAULT_SUPER_ADMIN_NAME;
 
   const existingUser =

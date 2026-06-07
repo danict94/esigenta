@@ -1,4 +1,4 @@
-# FixPro V2 — Master Control Document
+# Esigenta V2 — Master Control Document
 
 Version: 0.3
 Status: RUNTIME FUNNEL FOUNDATION ACTIVE
@@ -294,7 +294,7 @@ Do not rewrite yet until primitive system stabilizes.
 
 ## Tokens
 
-FixPro currently has TWO UI foundation layers.
+Esigenta currently has TWO UI foundation layers.
 
 ---
 
@@ -951,7 +951,7 @@ Report findings before implementation.
 
 # Final Principle
 
-FixPro V2 must evolve as:
+Esigenta V2 must evolve as:
 
 * a scalable marketplace system
 * with controlled architecture

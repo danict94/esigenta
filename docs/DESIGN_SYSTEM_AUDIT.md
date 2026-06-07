@@ -1,8 +1,8 @@
-# FixPro Design System Audit
+# Esigenta Design System Audit
 
 ## Stato
 
-Il design system FixPro vive in `packages/ui`.
+Il design system Esigenta vive in `packages/ui`.
 
 File auditati:
 
