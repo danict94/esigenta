@@ -14,6 +14,8 @@ export * from "./company-contact-change-requests"
 
 export { prisma } from "./prisma/client"
 
+export type { Prisma } from "@prisma/client"
+
 export * from "./conversations"
 
 export * from "./admin-dashboard"

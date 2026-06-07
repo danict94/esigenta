@@ -12,6 +12,10 @@
       "outputs": [".next/**", "dist/**"]
     },
 
+    "@fixpro/db#build": {
+      "cache": false
+    },
+
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },

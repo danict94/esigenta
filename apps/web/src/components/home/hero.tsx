@@ -32,12 +32,8 @@ export function Hero() {
     const trimmedQuery = query.trim();
 
     if (!trimmedQuery) {
-      setResults([]);
-      setIsSearching(false);
       return;
     }
-
-    setIsSearching(true);
 
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -183,10 +179,20 @@ export function Hero() {
                   }, 150);
                 }}
                 onChange={(event) => {
-                  setQuery(event.target.value);
+                  const nextQuery = event.target.value;
+
+                  setQuery(nextQuery);
                   selectionRef.current = null;
                   setSelection(null);
                   setError(null);
+
+                  if (!nextQuery.trim()) {
+                    setResults([]);
+                    setIsSearching(false);
+                    return;
+                  }
+
+                  setIsSearching(true);
                 }}
                 onKeyDown={(event) => {
                   if (event.key !== "Enter") {

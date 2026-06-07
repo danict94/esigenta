@@ -28,6 +28,34 @@ const errorMessages: Record<string, string> = {
     "Non troviamo il profilo impresa collegato a questo account.",
 };
 
+type CompanyServiceConfiguration = {
+  id: string;
+  name: string;
+  onboardingCategorySlug: string | null;
+  categories: Array<{
+    categoryId: string;
+  }>;
+  services: Array<{
+    serviceId: string;
+  }>;
+};
+
+type ConfigurableCategory = {
+  id: string;
+  slug: string;
+  name: string;
+  sector: {
+    name: string;
+  } | null;
+  services: Array<{
+    service: {
+      id: string;
+      name: string;
+      description: string | null;
+    };
+  }>;
+};
+
 export default async function ConfiguraServiziPage({
   searchParams,
 }: ConfiguraServiziPageProps) {
@@ -36,7 +64,7 @@ export default async function ConfiguraServiziPage({
     requireDefaultCompanyMembership(),
   ]);
 
-  const [company, categories] = await Promise.all([
+  const companyPromise: Promise<CompanyServiceConfiguration | null> =
     prisma.company.findUnique({
       where: {
         id: membership.companyId,
@@ -56,7 +84,8 @@ export default async function ConfiguraServiziPage({
           },
         },
       },
-    }),
+    });
+  const categoriesPromise: Promise<ConfigurableCategory[]> =
     prisma.category.findMany({
       orderBy: {
         name: "asc",
@@ -87,7 +116,11 @@ export default async function ConfiguraServiziPage({
           },
         },
       },
-    }),
+    });
+
+  const [company, categories] = await Promise.all([
+    companyPromise,
+    categoriesPromise,
   ]);
 
   if (!company) {

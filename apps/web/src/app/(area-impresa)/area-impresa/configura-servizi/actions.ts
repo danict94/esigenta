@@ -5,6 +5,7 @@ import {
 } from "next/navigation"
 
 import {
+  type Prisma,
   prisma,
 } from "@fixpro/db"
 
@@ -48,6 +49,11 @@ function redirectWithError(code: string): never {
   redirect(
     `/area-impresa/configura-servizi?error=${encodeURIComponent(code)}`,
   )
+}
+
+type CategoryServiceSelection = {
+  categoryId: string
+  serviceId: string
 }
 
 export async function saveCompanyServicesAction(
@@ -121,7 +127,7 @@ export async function saveCompanyServicesAction(
     selectedCategoryIds,
   )
 
-  const categoryServices =
+  const categoryServices: CategoryServiceSelection[] =
     await prisma.categoryService.findMany({
       where: {
         categoryId: {
@@ -159,7 +165,7 @@ export async function saveCompanyServicesAction(
       allowedServiceIds.has(serviceId),
     )
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.company.update({
       where: {
         id: company.id,

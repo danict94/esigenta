@@ -8,6 +8,7 @@
     "./funnel-normalization": "./src/funnel/normalization/index.ts"
   },
   "scripts": {
+    "build": "prisma generate",
     "taxonomy:build": "tsx src/taxonomy/orchestrator/build-taxonomy.ts",
     "taxonomy:generate": "tsx src/taxonomy/orchestrator/generate-taxonomy.ts",
     "taxonomy:seed": "tsx src/taxonomy/orchestrator/seed-taxonomy.ts",
