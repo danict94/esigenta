@@ -1,49 +1,55 @@
 {
-  "$schema": "./node_modules/turbo/schema.json",
-
-  "globalEnv": [
-    "DATABASE_URL",
-    "DIRECT_URL",
-    "BETTER_AUTH_URL",
-    "BETTER_AUTH_SECRET",
-    "NEXT_PUBLIC_APP_URL",
-    "ESIGENTA_ADMIN_URL",
-    "ESIGENTA_WEB_URL",
-    "ESIGENTA_APP_URL",
-    "GOOGLE_MAPS_API_KEY",
-    "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
-    "RESEND_API_KEY",
-    "RESEND_FROM_EMAIL",
-    "UPLOADTHING_TOKEN",
-    "STRIPE_SECRET_KEY",
-    "STRIPE_PUBLISHABLE_KEY",
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
-    "STRIPE_WEBHOOK_SECRET",
-    "ESIGENTA_SUPER_ADMIN_EMAIL",
-    "ESIGENTA_SUPER_ADMIN_PASSWORD"
-  ],
-
-  "tasks": {
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**"]
-    },
-
-    "@esigenta/db#build": {
-      "cache": false
-    },
-
-    "typecheck": {
-      "dependsOn": ["^typecheck"]
-    },
-
-    "lint": {
-      "dependsOn": ["^lint"]
-    }
-  }
+    "$schema":  "./node_modules/turbo/schema.json",
+    "globalEnv":  [
+                      "DATABASE_URL",
+                      "DIRECT_URL",
+                      "BETTER_AUTH_URL",
+                      "BETTER_AUTH_SECRET",
+                      "NEXT_PUBLIC_APP_URL",
+                      "ESIGENTA_ADMIN_URL",
+                      "ESIGENTA_WEB_URL",
+                      "ESIGENTA_APP_URL",
+                      "GOOGLE_MAPS_API_KEY",
+                      "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
+                      "RESEND_API_KEY",
+                      "RESEND_FROM_EMAIL",
+                      "UPLOADTHING_TOKEN",
+                      "STRIPE_SECRET_KEY",
+                      "STRIPE_PUBLISHABLE_KEY",
+                      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+                      "STRIPE_WEBHOOK_SECRET",
+                      "ESIGENTA_SUPER_ADMIN_EMAIL",
+                      "ESIGENTA_SUPER_ADMIN_PASSWORD",
+                      "VERCEL",
+                      "VERCEL_URL",
+                      "VERCEL_PROJECT_PRODUCTION_URL"
+                  ],
+    "tasks":  {
+                  "dev":  {
+                              "cache":  false,
+                              "persistent":  true
+                          },
+                  "build":  {
+                                "dependsOn":  [
+                                                  "^build"
+                                              ],
+                                "outputs":  [
+                                                ".next/**",
+                                                "dist/**"
+                                            ]
+                            },
+                  "@esigenta/db#build":  {
+                                             "cache":  false
+                                         },
+                  "typecheck":  {
+                                    "dependsOn":  [
+                                                      "^typecheck"
+                                                  ]
+                                },
+                  "lint":  {
+                               "dependsOn":  [
+                                                 "^lint"
+                                             ]
+                           }
+              }
 }
