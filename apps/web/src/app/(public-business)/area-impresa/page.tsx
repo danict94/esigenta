@@ -7,10 +7,10 @@ import { CheckCircle2 } from "lucide-react";
 import {
   prisma,
   reactivateCompanyAccount,
-} from "@fixpro/db";
+} from "@esigenta/db";
 import {
   getCurrentUserFromHeaders,
-} from "@fixpro/db/auth";
+} from "@esigenta/db/auth";
 
 import {
   Badge,
@@ -20,7 +20,7 @@ import {
   HeroSurface,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import { PublicShell } from "../../../components/layout/public-shell";
 

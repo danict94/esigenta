@@ -1,12 +1,12 @@
 import {
   listAdminSupportConversations,
-} from "@fixpro/db";
+} from "@esigenta/db";
 import {
   Badge,
   Card,
   CardContent,
   PageShell,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import {
   requireAdmin,

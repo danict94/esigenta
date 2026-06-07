@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { searchTaxonomy } from '@fixpro/db'
+import { searchTaxonomy } from '@esigenta/db'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)

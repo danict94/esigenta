@@ -2,12 +2,12 @@ import {
   Container,
   cn,
   tokens,
-} from '@fixpro/ui'
+} from '@esigenta/ui'
 
 import {
   RequestFlowError,
   verifyRequestEmail,
-} from '@fixpro/db'
+} from '@esigenta/db'
 
 import { PublicShell } from '../../../../components/layout/public-shell'
 import { CustomerRequestsNav } from '../../richieste/_components/customer-requests-nav'

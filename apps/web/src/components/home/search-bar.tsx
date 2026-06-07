@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
-import { Button, Card, Input, cn, tokens } from "@fixpro/ui";
+import { Button, Card, Input, cn, tokens } from "@esigenta/ui";
 
-import type { TaxonomySearchResult } from "@fixpro/db";
+import type { TaxonomySearchResult } from "@esigenta/db";
 
 export type SearchBarSelection = {
   result: TaxonomySearchResult;

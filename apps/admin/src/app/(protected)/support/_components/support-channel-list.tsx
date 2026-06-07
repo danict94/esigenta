@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type {
   AdminSupportConversationListItem,
-} from "@fixpro/db";
+} from "@esigenta/db";
 import {
   Badge,
   Card,
@@ -10,7 +10,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 type SupportChannelListProps = {
   channels: AdminSupportConversationListItem[];

@@ -11,7 +11,7 @@ import {
 import {
   Button,
   Card,
-} from '@fixpro/ui'
+} from '@esigenta/ui'
 
 import {
   SearchBar,

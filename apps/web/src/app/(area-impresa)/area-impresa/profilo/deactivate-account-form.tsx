@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   useMemo,
@@ -8,7 +8,7 @@ import {
 import {
   Button,
   Input,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 type DeactivateAccountFormProps = {
   action: (

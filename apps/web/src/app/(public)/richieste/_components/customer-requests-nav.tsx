@@ -1,7 +1,7 @@
 import Link from "next/link"
 import {
   cn,
-} from '@fixpro/ui'
+} from '@esigenta/ui'
 
 type CustomerRequestsNavProps = {
   token?: string

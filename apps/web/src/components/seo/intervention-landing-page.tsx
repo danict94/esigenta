@@ -7,7 +7,7 @@ import {
   PageShell,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import {
   listSeoInterventionLandings,

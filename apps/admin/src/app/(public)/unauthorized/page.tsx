@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import {
   Card,
@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 export default function AdminUnauthorizedPage() {
   return (

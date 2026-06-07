@@ -1,10 +1,10 @@
-﻿import {
+import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import { AdminLoginForm } from "./admin-login-form";
 

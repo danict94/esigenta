@@ -9,12 +9,12 @@ import {
   getCustomerConversationThreadByToken,
   markConversationRead,
   sendConversationMessage,
-} from "@fixpro/db"
+} from "@esigenta/db"
 import {
   Card,
   CardContent,
   Container,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import { PublicShell } from "../../../../components/layout/public-shell"
 import {

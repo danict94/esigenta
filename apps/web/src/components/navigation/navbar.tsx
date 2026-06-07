@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
-import { Button, Container, cn, tokens } from "@fixpro/ui";
+import { Button, Container, cn, tokens } from "@esigenta/ui";
 
 export type NavbarVariant = "default" | "embedded" | "hero" | "funnel";
 

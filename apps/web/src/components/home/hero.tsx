@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
-import { Button, Container, Input, tokens } from "@fixpro/ui";
-import type { TaxonomySearchResult } from "@fixpro/db";
+import { Button, Container, Input, tokens } from "@esigenta/ui";
+import type { TaxonomySearchResult } from "@esigenta/db";
 
 import { Navbar } from "../navigation/navbar";
 

@@ -6,7 +6,7 @@ import {
   markCreditOrderCheckoutCancelled,
   markCreditOrderCheckoutCreated,
   markCreditOrderCheckoutFailed,
-} from "@fixpro/db";
+} from "@esigenta/db";
 
 import { getStripeServerClient } from "../../../../lib/stripe/server";
 

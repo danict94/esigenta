@@ -1,7 +1,7 @@
 import {
   Button,
   Textarea,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 type SendMessageFormProps = {
   action: (

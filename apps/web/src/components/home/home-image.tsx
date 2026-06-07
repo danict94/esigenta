@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { useState } from "react";
 
-import { cn } from "@fixpro/ui";
+import { cn } from "@esigenta/ui";
 
 type HomeImageProps = {
   alt?: string;

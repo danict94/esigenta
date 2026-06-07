@@ -3,7 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { Badge, Button, Checkbox, Input, cn } from "@fixpro/ui";
+import { Badge, Button, Checkbox, Input, cn } from "@esigenta/ui";
 
 type ServiceOption = {
   id: string;

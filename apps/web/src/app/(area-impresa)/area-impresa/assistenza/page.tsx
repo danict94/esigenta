@@ -8,7 +8,7 @@ import {
 import {
   createSupportConversation,
   listCompanyConversations,
-} from "@fixpro/db"
+} from "@esigenta/db"
 import {
   Badge,
   Button,
@@ -18,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
   PageShell,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   requireDefaultCompanyMembership,

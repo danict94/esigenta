@@ -2,7 +2,7 @@
 
 import {
   CompanyOnboardingError,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   createCompanyForCurrentUser,

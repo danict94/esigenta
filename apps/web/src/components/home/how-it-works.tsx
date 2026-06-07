@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 import { Scale, ShieldCheck, UsersRound } from "lucide-react";
 
-import { tokens } from "@fixpro/ui";
+import { tokens } from "@esigenta/ui";
 
 import { HomeContentRail } from "../layout/home-content-rail";
 

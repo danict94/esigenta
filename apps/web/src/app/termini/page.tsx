@@ -4,7 +4,7 @@ import {
   Badge,
   Card,
   Container,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import { PublicShell } from "../../components/layout/public-shell"
 import {

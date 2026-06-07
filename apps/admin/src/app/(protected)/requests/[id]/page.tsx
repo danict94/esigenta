@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
@@ -10,10 +10,10 @@ import {
   RequestPublishingRequirementsError,
   reviewRequest,
   updateRequestCommercialSettings,
-} from "@fixpro/db";
+} from "@esigenta/db";
 import {
   createRequestPhotoDisplayItems,
-} from "@fixpro/uploads/server";
+} from "@esigenta/uploads/server";
 import {
   Badge,
   Button,
@@ -21,7 +21,7 @@ import {
   Input,
   PageShell,
   Textarea,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import { requireAdmin } from "../../../../auth/server";
 import {

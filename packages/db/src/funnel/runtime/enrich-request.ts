@@ -26,7 +26,7 @@ import type {
 
 import {
   hasValidRequestPhotos,
-} from "@fixpro/uploads"
+} from "@esigenta/uploads"
 
 export type EnrichRequestOptions = {
   /**

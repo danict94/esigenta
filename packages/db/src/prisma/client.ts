@@ -3,14 +3,14 @@ import { PrismaPg } from "@prisma/adapter-pg"
 import { Pool } from "pg"
 
 const globalForPrisma = globalThis as typeof globalThis & {
-  fixproPrisma?: PrismaClient
+  esigentaPrisma?: PrismaClient
 }
 
 function createPrismaClient() {
   const databaseUrl = process.env.DATABASE_URL
 
   if (!databaseUrl) {
-    throw new Error("DATABASE_URL is required to use @fixpro/db.")
+    throw new Error("DATABASE_URL is required to use @esigenta/db.")
   }
 
   const pool = new Pool({
@@ -25,12 +25,12 @@ function createPrismaClient() {
 }
 
 function getPrismaClient() {
-  if (!globalForPrisma.fixproPrisma) {
-    globalForPrisma.fixproPrisma =
+  if (!globalForPrisma.esigentaPrisma) {
+    globalForPrisma.esigentaPrisma =
       createPrismaClient()
   }
 
-  return globalForPrisma.fixproPrisma
+  return globalForPrisma.esigentaPrisma
 }
 
 export const prisma = new Proxy({} as PrismaClient, {

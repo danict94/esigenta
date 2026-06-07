@@ -13,7 +13,7 @@ import {
   Button,
   cn,
   tokens,
-} from '@fixpro/ui'
+} from '@esigenta/ui'
 
 import {
   RuntimeFunnel,

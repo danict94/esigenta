@@ -12,11 +12,11 @@ import {
   CardTitle,
   Container,
   Input,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   requestPasswordReset,
-} from "@fixpro/db/auth"
+} from "@esigenta/db/auth"
 
 type CompanyForgotPasswordPageProps = {
   searchParams?: Promise<{

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 import {
   submitRuntimeRequest,
-} from '@fixpro/db'
+} from '@esigenta/db'
 
 function serializeError(error: unknown) {
   if (error instanceof Error) {

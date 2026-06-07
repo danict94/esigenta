@@ -7,7 +7,7 @@ import {
   Input,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 export type GeoRequestFormProps = {
   funnelSlug: string;

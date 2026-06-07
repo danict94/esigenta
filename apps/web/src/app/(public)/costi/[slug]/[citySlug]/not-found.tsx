@@ -4,7 +4,7 @@ import {
   PageShell,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 export default function CityCostGuideNotFound() {
   return (

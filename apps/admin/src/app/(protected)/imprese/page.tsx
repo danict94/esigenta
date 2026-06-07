@@ -12,14 +12,14 @@ import {
   suspendCompanyForMarketplace,
   type AdminCompanyListItem,
   type AdminCompanyStatusFilter,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   Badge,
   Button,
   PageShell,
   cn,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   requireAdmin,

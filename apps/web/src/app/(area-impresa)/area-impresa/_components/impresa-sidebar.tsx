@@ -5,7 +5,7 @@ import { ChevronDown, Menu, UserRound, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Badge, Button, Card, Container, cn, tokens } from "@fixpro/ui";
+import { Badge, Button, Card, Container, cn, tokens } from "@esigenta/ui";
 
 import { authClient } from "../../../../auth/client";
 

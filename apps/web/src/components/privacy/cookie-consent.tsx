@@ -10,7 +10,7 @@ import {
   Button,
   cn,
   tokens,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   COOKIE_CONSENT_OPEN_EVENT,

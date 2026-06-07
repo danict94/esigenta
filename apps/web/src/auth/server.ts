@@ -6,12 +6,12 @@ import {
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,
   requireDefaultCompanyMembershipFromUser,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   getCurrentUserFromHeaders,
   requireUserFromHeaders,
-} from "@fixpro/db/auth"
+} from "@esigenta/db/auth"
 
 export async function getCurrentUser() {
   return getCurrentUserFromHeaders(

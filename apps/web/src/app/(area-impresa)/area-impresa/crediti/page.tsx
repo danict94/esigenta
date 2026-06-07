@@ -7,14 +7,14 @@ import {
   Button,
   Card,
   PageShell,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   createPendingCreditOrder,
   getCompanyCreditAccountSummary,
   listActiveCreditPackagesForPurchase,
   markCreditOrderCheckoutCreated,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireDefaultCompanyMembership,

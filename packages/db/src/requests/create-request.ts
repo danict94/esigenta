@@ -14,11 +14,11 @@ import type {
 
 import {
   validateRequestPhotoAnswer,
-} from "@fixpro/uploads"
+} from "@esigenta/uploads"
 
 import type {
   RequestPhotoMetadata,
-} from "@fixpro/uploads"
+} from "@esigenta/uploads"
 
 import { prisma } from "../prisma/client"
 

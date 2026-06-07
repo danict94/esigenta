@@ -11,7 +11,7 @@ import {
   Input,
   Select,
   Textarea,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import {
   formatCreditCost,

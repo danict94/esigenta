@@ -4,7 +4,7 @@ import {
 
 import {
   getCompanyConversationThread,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireDefaultCompanyMembership,

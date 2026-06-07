@@ -1,9 +1,9 @@
 import {
   createCompanyForUser,
-} from "@fixpro/db"
+} from "@esigenta/db"
 import type {
   CreateCompanyProfileInput,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireUser,

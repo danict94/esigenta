@@ -442,7 +442,7 @@ Runtime funnel:
 - runtime inference now maps `resolved.interventionSlug` to contextual presets
 - fallback preset is `GENERIC`
 - legacy presets remain registered for compatibility
-- `@fixpro/db` typecheck passes
+- `@esigenta/db` typecheck passes
 
 Documentation:
 
@@ -470,7 +470,7 @@ Funnel and request foundation:
 
 Validated:
 
-- `@fixpro/db` typecheck passes
+- `@esigenta/db` typecheck passes
 - root `pnpm typecheck` passes
 - taxonomy build passes with existing taxonomy warnings only
 

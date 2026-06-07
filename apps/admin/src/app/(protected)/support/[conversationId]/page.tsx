@@ -10,13 +10,13 @@ import {
   markConversationRead,
   resolveSupportConversation,
   sendConversationMessage,
-} from "@fixpro/db";
+} from "@esigenta/db";
 import {
   Button,
   Card,
   CardContent,
   PageShell,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import {
   requireAdmin,

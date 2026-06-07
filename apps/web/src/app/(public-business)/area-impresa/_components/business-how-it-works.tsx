@@ -4,7 +4,7 @@ import {
   Container,
   cn,
   tokens,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 const illustrationSrc =
   "/assets/images/area-professionista.webp"

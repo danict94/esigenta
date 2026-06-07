@@ -157,7 +157,7 @@ Preferred font:
 
 # Layout Rules
 
-Always use shared layout primitives from `@fixpro/ui`.
+Always use shared layout primitives from `@esigenta/ui`.
 
 Required primitives:
 

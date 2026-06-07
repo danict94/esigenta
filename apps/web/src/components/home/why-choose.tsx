@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactElement, SVGProps } from "react";
 
-import { cn, tokens } from "@fixpro/ui";
+import { cn, tokens } from "@esigenta/ui";
 
 import { HomeContentRail } from "../layout/home-content-rail";
 

@@ -13,11 +13,11 @@ import {
 import {
   countUnreadCompanyConversationSummary,
   countUnreadCompanyNotifications,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   Container,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   ImpresaSidebar,

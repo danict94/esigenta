@@ -1,5 +1,5 @@
 {
-  "name": "@fixpro/db",
+  "name": "@esigenta/db",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "^1.6.11",
-    "@fixpro/uploads": "workspace:*",
+    "@esigenta/uploads": "workspace:*",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "better-auth": "^1.6.11",

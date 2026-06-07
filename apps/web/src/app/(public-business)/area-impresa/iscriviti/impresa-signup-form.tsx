@@ -16,7 +16,7 @@ import {
   Select,
   cn,
   tokens,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   authClient,

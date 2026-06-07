@@ -3,12 +3,12 @@ import {
   Container,
   cn,
   tokens,
-} from '@fixpro/ui'
+} from '@esigenta/ui'
 
 import {
   RequestFlowError,
   getCustomerRequestsByHistoryToken,
-} from '@fixpro/db'
+} from '@esigenta/db'
 
 import { PublicShell } from '../../../../components/layout/public-shell'
 import { CustomerRequestsNav } from '../_components/customer-requests-nav'

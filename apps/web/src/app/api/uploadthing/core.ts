@@ -4,14 +4,14 @@ import {
 
 import {
   prisma,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   REQUEST_PHOTO_MAX_FILES,
   REQUEST_PHOTO_MAX_SIZE_LABEL,
   readRequestPhotoMetadata,
   validateRequestPhotoFile,
-} from "@fixpro/uploads"
+} from "@esigenta/uploads"
 
 import {
   createUploadthing,
@@ -29,7 +29,7 @@ import {
 import type {
   RequestPhotoFileValidationError,
   RequestPhotoMetadata,
-} from "@fixpro/uploads"
+} from "@esigenta/uploads"
 
 const uploadthing =
   createUploadthing()

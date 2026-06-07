@@ -14,7 +14,7 @@ import {
   cn,
   tokens,
   type BadgeProps,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   formatCreditCost,

@@ -1,11 +1,11 @@
-﻿import Link from "next/link"
+import Link from "next/link"
 
 import {
   Card,
   Container,
   cn,
   tokens,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 export default function SelezionaImpresaPage() {
   return (

@@ -2,14 +2,14 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { Badge, Button, Card, Input, PageShell, Select } from "@fixpro/ui";
+import { Badge, Button, Card, Input, PageShell, Select } from "@esigenta/ui";
 
 import {
   createCompanyContactChangeRequest,
   deactivateCompanyAccount,
   getCompanyCreditAccountSummary,
   prisma,
-} from "@fixpro/db";
+} from "@esigenta/db";
 
 import {
   requireDefaultCompanyMembership,

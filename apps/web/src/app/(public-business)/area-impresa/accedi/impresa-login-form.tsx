@@ -19,7 +19,7 @@ import {
 import {
   Button,
   Input,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   authClient,

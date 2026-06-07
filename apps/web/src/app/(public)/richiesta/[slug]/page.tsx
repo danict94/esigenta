@@ -1,4 +1,4 @@
-import { Container, tokens } from "@fixpro/ui";
+import { Container, tokens } from "@esigenta/ui";
 
 import { RuntimeFunnelRoute } from "../../../../components/funnel/runtime-funnel-route";
 import { PublicShell } from "../../../../components/layout/public-shell";

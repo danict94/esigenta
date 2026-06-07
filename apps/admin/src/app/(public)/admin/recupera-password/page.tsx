@@ -9,11 +9,11 @@ import {
   CardHeader,
   CardTitle,
   Input,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import {
   requestPasswordReset,
-} from "@fixpro/db/auth";
+} from "@esigenta/db/auth";
 
 type AdminForgotPasswordPageProps = {
   searchParams?: Promise<{

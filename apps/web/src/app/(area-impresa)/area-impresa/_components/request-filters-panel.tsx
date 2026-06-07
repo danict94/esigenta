@@ -17,11 +17,11 @@ import {
   Button,
   Input,
   Select,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import type {
   RequestDashboardSort,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 export type RequestFiltersState = {
   q: string | null

@@ -15,16 +15,16 @@ import {
   cn,
   Input,
   tokens,
-} from '@fixpro/ui'
+} from '@esigenta/ui'
 
 import {
   isRuntimeLocationAnswerComplete,
   readRuntimeLocationAnswer,
-} from '@fixpro/db/funnel-normalization'
+} from '@esigenta/db/funnel-normalization'
 
 import type {
   RequestGeoDraft,
-} from '@fixpro/db'
+} from '@esigenta/db'
 import {
   COOKIE_CONSENT_CHANGED_EVENT,
   hasFunctionalCookieConsent,
@@ -92,7 +92,7 @@ type CityAutocompleteProps = {
 }
 
 const GOOGLE_MAPS_SCRIPT_ID =
-  'fixpro-google-maps-places'
+  'esigenta-google-maps-places'
 
 let googleMapsPlacesPromise:
   | Promise<void>

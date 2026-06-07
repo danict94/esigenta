@@ -4,7 +4,7 @@ import type {
 
 import type {
   ConversationThread as MessageThreadData,
-} from "@fixpro/db"
+} from "@esigenta/db"
 import {
   Badge,
   Card,
@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
   tokens,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 type MessageThreadProps = {
   thread: MessageThreadData

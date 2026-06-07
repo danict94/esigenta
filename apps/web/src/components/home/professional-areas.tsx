@@ -14,7 +14,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { useRef } from "react";
 
-import { Button, Card, Container, cn, tokens } from "@fixpro/ui";
+import { Button, Card, Container, cn, tokens } from "@esigenta/ui";
 
 import { HomeImage } from "./home-image";
 

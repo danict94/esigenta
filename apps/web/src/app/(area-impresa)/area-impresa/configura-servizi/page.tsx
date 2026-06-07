@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { Badge, Card, PageShell } from "@fixpro/ui";
-import { prisma } from "@fixpro/db";
+import { Badge, Card, PageShell } from "@esigenta/ui";
+import { prisma } from "@esigenta/db";
 
 import { requireDefaultCompanyMembership } from "../../../../auth/server";
 

@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 
-import { Button, Input, Textarea, cn, tokens } from "@fixpro/ui";
+import { Button, Input, Textarea, cn, tokens } from "@esigenta/ui";
 
-import type { RuntimeCapability } from "@fixpro/db/funnel";
+import type { RuntimeCapability } from "@esigenta/db/funnel";
 
 import {
   readRuntimeContactAnswer,
   updateRuntimeContactAnswerField,
-} from "@fixpro/db/funnel-normalization";
+} from "@esigenta/db/funnel-normalization";
 
-import type { RuntimeContactAnswerField } from "@fixpro/db/funnel-normalization";
+import type { RuntimeContactAnswerField } from "@esigenta/db/funnel-normalization";
 
 import { CityAutocomplete } from "../location/city-autocomplete";
 import { PhotoUploadStep } from "./photo-upload-step";

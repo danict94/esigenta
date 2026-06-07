@@ -15,7 +15,7 @@ import {
   Card,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import {
   REQUEST_PHOTO_ACCEPT,
@@ -24,12 +24,12 @@ import {
   readRequestPhotoMetadata,
   validateRequestPhotoAnswer,
   validateRequestPhotoFile,
-} from "@fixpro/uploads";
+} from "@esigenta/uploads";
 
 import type {
   RequestPhotoFileValidationError,
   RequestPhotoMetadata,
-} from "@fixpro/uploads";
+} from "@esigenta/uploads";
 
 import {
   useUploadThing,

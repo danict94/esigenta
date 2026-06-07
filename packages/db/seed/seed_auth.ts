@@ -37,7 +37,7 @@ if (existsSync(packageEnvPath)) {
  * - FIXPRO_SUPER_ADMIN_NAME
  *
  * Command:
- * pnpm --filter @fixpro/db seed:auth
+ * pnpm --filter @esigenta/db seed:auth
  */
 const DEFAULT_SUPER_ADMIN_NAME =
   "Esigenta Super Admin";

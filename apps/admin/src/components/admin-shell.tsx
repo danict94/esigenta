@@ -5,7 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Badge, Button, Container, cn, tokens } from "@fixpro/ui";
+import { Badge, Button, Container, cn, tokens } from "@esigenta/ui";
 
 type AdminShellProps = {
   children: ReactNode;

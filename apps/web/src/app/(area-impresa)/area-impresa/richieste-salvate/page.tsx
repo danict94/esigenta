@@ -1,11 +1,11 @@
 import {
   Card,
   PageShell,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   listCompanySavedRequests,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireDefaultCompanyMembership,

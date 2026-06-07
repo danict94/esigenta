@@ -1,7 +1,7 @@
 import {
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 export type SeoFaqItem = {
   question: string;

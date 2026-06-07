@@ -7,12 +7,12 @@ import type {
   RuntimeAnswers,
   RuntimeCapabilityId,
   RuntimeFunnelPayload,
-} from "@fixpro/db/funnel";
+} from "@esigenta/db/funnel";
 
 import {
   countCompleteRuntimeAnswers,
   isRuntimeCapabilityAnswerComplete,
-} from "@fixpro/db/funnel-normalization";
+} from "@esigenta/db/funnel-normalization";
 
 import { FunnelUI } from "./funnel-ui";
 

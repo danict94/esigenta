@@ -6,7 +6,7 @@ import {
 
 import {
   Input,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   CityAutocomplete,

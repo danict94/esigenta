@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { listAdminRequests } from "@fixpro/db";
-import { Badge, Card, PageShell } from "@fixpro/ui";
+import { listAdminRequests } from "@esigenta/db";
+import { Badge, Card, PageShell } from "@esigenta/ui";
 
 export const dynamic = "force-dynamic";
 

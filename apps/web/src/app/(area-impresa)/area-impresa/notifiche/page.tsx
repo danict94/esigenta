@@ -1,4 +1,4 @@
-﻿import Link from "next/link"
+import Link from "next/link"
 import {
   revalidatePath,
 } from "next/cache"
@@ -14,12 +14,12 @@ import {
   Input,
   PageShell,
   cn,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   listCompanyNotifications,
   markCompanyNotificationRead,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireDefaultCompanyMembership,

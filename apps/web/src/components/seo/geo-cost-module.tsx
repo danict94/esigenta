@@ -5,7 +5,7 @@ import {
   Badge,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
 import type { SeoInterventionLanding } from "../../content/seo/intervention-landings";
 import { GeoRequestForm } from "./geo-request-form";

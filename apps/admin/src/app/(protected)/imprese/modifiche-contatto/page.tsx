@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   ReactNode,
 } from "react"
 import {
@@ -9,7 +9,7 @@ import {
   approveCompanyContactChangeRequest,
   listCompanyContactChangeRequestsForAdminReview,
   rejectCompanyContactChangeRequest,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   Badge,
@@ -17,7 +17,7 @@ import {
   Card,
   PageShell,
   Textarea,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   requireAdmin,

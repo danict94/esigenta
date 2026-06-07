@@ -34,7 +34,7 @@
       "outputs": [".next/**", "dist/**"]
     },
 
-    "@fixpro/db#build": {
+    "@esigenta/db#build": {
       "cache": false
     },
 

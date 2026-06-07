@@ -8,9 +8,9 @@ import {
   Input,
   cn,
   tokens,
-} from "@fixpro/ui";
+} from "@esigenta/ui";
 
-import { sendCustomerRequestsAccessEmail } from "@fixpro/db";
+import { sendCustomerRequestsAccessEmail } from "@esigenta/db";
 
 import { PublicShell } from "../../../../components/layout/public-shell";
 

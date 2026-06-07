@@ -2,7 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 
-import { PageShell } from "@fixpro/ui";
+import { PageShell } from "@esigenta/ui";
 
 import {
   createCreditRefundRequest,
@@ -11,11 +11,11 @@ import {
   listAttachedRequestPhotos,
   unlockRequestForCompany,
   type CreateCreditRefundRequestInput,
-} from "@fixpro/db";
+} from "@esigenta/db";
 
 import {
   createRequestPhotoDisplayItems,
-} from "@fixpro/uploads/server";
+} from "@esigenta/uploads/server";
 
 import { requireDefaultCompanyMembership } from "../../../../../auth/server";
 

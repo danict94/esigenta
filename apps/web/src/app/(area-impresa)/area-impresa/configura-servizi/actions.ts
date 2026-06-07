@@ -7,7 +7,7 @@ import {
 import {
   type Prisma,
   prisma,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireDefaultCompanyMembership,

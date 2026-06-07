@@ -10,9 +10,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@fixpro/db": "workspace:*",
-    "@fixpro/ui": "workspace:*",
-    "@fixpro/uploads": "workspace:*",
+    "@esigenta/db": "workspace:*",
+    "@esigenta/ui": "workspace:*",
+    "@esigenta/uploads": "workspace:*",
     "@uploadthing/react": "^7.3.3",
     "better-auth": "^1.6.11",
     "lucide-react": "^1.14.0",

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Card, CardContent, Container, tokens } from "@fixpro/ui";
+import { Card, CardContent, Container, tokens } from "@esigenta/ui";
 
 import { PublicShell } from "../../../../components/layout/public-shell";
 import { ImpresaLoginForm } from "./impresa-login-form";

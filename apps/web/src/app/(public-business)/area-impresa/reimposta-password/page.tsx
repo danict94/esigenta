@@ -12,12 +12,12 @@ import {
   CardTitle,
   Container,
   Input,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   getPasswordResetTokenState,
   resetPasswordWithToken,
-} from "@fixpro/db/auth"
+} from "@esigenta/db/auth"
 
 type CompanyResetPasswordPageProps = {
   searchParams?: Promise<{

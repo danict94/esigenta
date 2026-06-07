@@ -6,7 +6,7 @@ import {
 
 import {
   toggleCompanySavedRequest,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   requireDefaultCompanyMembership,

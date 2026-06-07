@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Container, cn, tokens } from "@fixpro/ui";
+import { Container, cn, tokens } from "@esigenta/ui";
 
 type HomeContentRailProps = {
   children: ReactNode;

@@ -7,13 +7,13 @@ import {
 import {
   Card,
   PageShell,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   listAvailableRequestsForCompany,
   type RequestDashboardFilters,
   type RequestDashboardSort,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import { requireDefaultCompanyMembership } from "../../../../auth/server"
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { cn } from "@fixpro/ui";
+import { cn } from "@esigenta/ui";
 
 export type SeoBreadcrumbItem = {
   label: string;

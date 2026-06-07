@@ -9,12 +9,12 @@ import {
   getCompanyConversationThread,
   markConversationRead,
   sendConversationMessage,
-} from "@fixpro/db"
+} from "@esigenta/db"
 import {
   Card,
   CardContent,
   PageShell,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   requireDefaultCompanyMembership,

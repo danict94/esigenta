@@ -328,11 +328,11 @@ Aggiorna commento nel file indicando:
 
 * env richieste
 * comando:
-  `pnpm --filter @fixpro/db seed:auth`
+  `pnpm --filter @esigenta/db seed:auth`
 
 Verifica:
 
-* `pnpm.cmd --filter @fixpro/db typecheck`
+* `pnpm.cmd --filter @esigenta/db typecheck`
 
 Output:
 
@@ -549,11 +549,11 @@ Aggiungi indici `Request`:
 TASK 2 — migration
 Esegui:
 
-* `pnpm.cmd --filter @fixpro/db exec prisma format`
-* `pnpm.cmd --filter @fixpro/db exec prisma validate`
-* `pnpm.cmd --filter @fixpro/db exec prisma migrate dev --name credits-foundation`
-* `pnpm.cmd --filter @fixpro/db db:generate`
-* `pnpm.cmd --filter @fixpro/db typecheck`
+* `pnpm.cmd --filter @esigenta/db exec prisma format`
+* `pnpm.cmd --filter @esigenta/db exec prisma validate`
+* `pnpm.cmd --filter @esigenta/db exec prisma migrate dev --name credits-foundation`
+* `pnpm.cmd --filter @esigenta/db db:generate`
+* `pnpm.cmd --filter @esigenta/db typecheck`
 
 TASK 3 — no business logic
 Non creare funzioni unlock.

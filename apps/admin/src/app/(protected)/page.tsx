@@ -6,13 +6,13 @@ import Link from "next/link"
 import {
   type AdminDashboardMetrics,
   getAdminDashboardMetrics,
-} from "@fixpro/db"
+} from "@esigenta/db"
 import {
   Badge,
   PageShell,
   cn,
   tokens,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import { requireAdmin } from "../../auth/server"
 

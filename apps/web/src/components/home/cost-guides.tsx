@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { Card, CardContent, cn, tokens } from "@fixpro/ui";
+import { Card, CardContent, cn, tokens } from "@esigenta/ui";
 
 import { HomeContentRail } from "../layout/home-content-rail";
 import { HomeImage } from "./home-image";

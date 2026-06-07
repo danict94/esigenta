@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   ReactNode,
 } from "react"
 import { revalidatePath } from "next/cache"
@@ -7,7 +7,7 @@ import {
   createCreditPackage,
   listCreditPackages,
   updateCreditPackage,
-} from "@fixpro/db"
+} from "@esigenta/db"
 
 import {
   Badge,
@@ -16,7 +16,7 @@ import {
   Input,
   PageShell,
   Textarea,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import {
   requireAdmin,

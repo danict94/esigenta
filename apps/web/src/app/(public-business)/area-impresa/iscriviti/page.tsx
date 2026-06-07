@@ -4,7 +4,7 @@ import {
   Card,
   CardContent,
   HeroSurface,
-} from "@fixpro/ui"
+} from "@esigenta/ui"
 
 import { PublicShell } from "../../../../components/layout/public-shell"
 
