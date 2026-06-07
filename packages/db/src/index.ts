@@ -4,8 +4,6 @@ export * from "./funnel"
 
 export * from "./requests"
 
-export * from "./auth"
-
 export * from "./identity"
 
 export * from "./credits"

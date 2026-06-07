@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { buildRuntimeRequestDraft } from '@fixpro/db'
+import { buildRuntimeRequestDraft } from '@fixpro/db/funnel'
 
 import {
   normalizeRuntimeText,

@@ -13,7 +13,7 @@ import {
 
 import {
   requestPasswordReset,
-} from "@fixpro/db";
+} from "@fixpro/db/auth";
 
 type AdminForgotPasswordPageProps = {
   searchParams?: Promise<{

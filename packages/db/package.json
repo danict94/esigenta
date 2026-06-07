@@ -5,6 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./auth": "./src/auth/index.ts",
+    "./funnel": "./src/funnel/index.ts",
     "./funnel-normalization": "./src/funnel/normalization/index.ts"
   },
   "scripts": {

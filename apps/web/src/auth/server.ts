@@ -3,12 +3,15 @@ import {
 } from "next/headers"
 
 import {
-  getCurrentUserFromHeaders,
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,
   requireDefaultCompanyMembershipFromUser,
-  requireUserFromHeaders,
 } from "@fixpro/db"
+
+import {
+  getCurrentUserFromHeaders,
+  requireUserFromHeaders,
+} from "@fixpro/db/auth"
 
 export async function getCurrentUser() {
   return getCurrentUserFromHeaders(

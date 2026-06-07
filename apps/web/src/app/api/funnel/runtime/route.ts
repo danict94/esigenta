@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { createRuntimeFunnel } from '@fixpro/db'
+import { createRuntimeFunnel } from '@fixpro/db/funnel'
 
 import {
   normalizeRuntimeText,

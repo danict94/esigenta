@@ -2,7 +2,7 @@
 
 import { Button, Input, Textarea, cn, tokens } from "@fixpro/ui";
 
-import type { RuntimeCapability } from "@fixpro/db";
+import type { RuntimeCapability } from "@fixpro/db/funnel";
 
 import {
   readRuntimeContactAnswer,

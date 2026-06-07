@@ -1,6 +1,6 @@
 import {
   auth,
-} from "@fixpro/db"
+} from "@fixpro/db/auth"
 
 import {
   toNextJsHandler,

@@ -14,7 +14,7 @@ import {
 import {
   getPasswordResetTokenState,
   resetPasswordWithToken,
-} from "@fixpro/db";
+} from "@fixpro/db/auth";
 
 type AdminResetPasswordPageProps = {
   searchParams?: Promise<{

@@ -7,7 +7,7 @@ import type {
   RuntimeAnswers,
   RuntimeCapabilityId,
   RuntimeFunnelPayload,
-} from "@fixpro/db";
+} from "@fixpro/db/funnel";
 
 import {
   countCompleteRuntimeAnswers,

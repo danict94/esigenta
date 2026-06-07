@@ -3,11 +3,14 @@ import {
 } from "next/headers"
 
 import {
-  getCurrentUserFromHeaders,
   requireAdminFromUser,
   requireSuperAdminFromUser,
-  requireUserFromHeaders,
 } from "@fixpro/db"
+
+import {
+  getCurrentUserFromHeaders,
+  requireUserFromHeaders,
+} from "@fixpro/db/auth"
 
 export async function getCurrentAdmin() {
   const user =

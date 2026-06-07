@@ -5,10 +5,12 @@ import { headers } from "next/headers";
 import { CheckCircle2 } from "lucide-react";
 
 import {
-  getCurrentUserFromHeaders,
   prisma,
   reactivateCompanyAccount,
 } from "@fixpro/db";
+import {
+  getCurrentUserFromHeaders,
+} from "@fixpro/db/auth";
 
 import {
   Badge,
