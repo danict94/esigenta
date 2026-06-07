@@ -6,7 +6,7 @@ import { Container, tokens } from "@fixpro/ui";
 import { HomeImage } from "./home-image";
 
 const professionalAreaHref = "/area-impresa";
-const phoneMockupSrc = "/assets/images/area-impresa-phone-dashboard.webp";
+const phoneMockupSrc = "/assets/images/area-professionista.webp";
 
 export function ProfessionalCta() {
   return (

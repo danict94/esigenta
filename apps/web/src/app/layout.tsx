@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import localFont from "next/font/local"
 
 import "./globals.css"
+import { CookieConsent } from "../components/privacy/cookie-consent"
 
 const plusJakartaSans = localFont({
   src: [
@@ -40,6 +41,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col bg-surface-primary font-sans text-text-primary">
         {children}
+        <CookieConsent />
       </body>
     </html>
   )

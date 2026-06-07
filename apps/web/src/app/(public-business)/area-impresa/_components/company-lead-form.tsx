@@ -11,6 +11,7 @@ import {
 import {
   useRouter,
 } from "next/navigation"
+import Link from "next/link"
 
 import {
   Button,
@@ -222,8 +223,16 @@ export function CompanyLeadForm({
           Nel passaggio successivo completerai i dati aziendali e creerai
           l&apos;accesso impresa.
         </p>
+
+        <p className="text-xs leading-5 text-text-muted">
+          I dati saranno usati per ricontattarti e gestire la richiesta. Leggi
+          l&apos;
+          <Link href="/privacy" className="font-medium text-brand-primary">
+            informativa privacy
+          </Link>
+          .
+        </p>
       </form>
     </Card>
   )
 }
-

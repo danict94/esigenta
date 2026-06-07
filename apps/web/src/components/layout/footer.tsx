@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CookiePreferencesButton } from "../privacy/cookie-preferences-button";
 import { HomeContentRail } from "./home-content-rail";
 
 const footerColumns = [
@@ -10,8 +11,9 @@ const footerColumns = [
   {
     title: "Legale",
     links: [
-      { href: "#", label: "Informativa sui cookie" },
-      { href: "#", label: "Termini di servizio" },
+      { href: "/privacy", label: "Privacy" },
+      { href: "/cookie-policy", label: "Informativa sui cookie" },
+      { href: "/termini", label: "Termini di servizio" },
     ],
   },
 ] as const;
@@ -55,6 +57,12 @@ export function Footer() {
                       </Link>
                     </li>
                   ))}
+
+                  {column.title === "Legale" ? (
+                    <li>
+                      <CookiePreferencesButton className="text-left text-sm text-text-on-hero-secondary transition-colors hover:text-text-on-hero-primary" />
+                    </li>
+                  ) : null}
                 </ul>
               </nav>
             ))}

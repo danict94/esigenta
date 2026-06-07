@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   useEffect,
@@ -452,6 +453,15 @@ export function PhotoUploadStep({
           }}
         />
       </label>
+
+      <p className="text-xs leading-5 text-text-muted">
+        Le foto caricate saranno usate per descrivere la richiesta e possono
+        essere gestite tramite provider di upload indicato nella{" "}
+        <Link href="/privacy" className="font-medium text-brand-primary">
+          privacy policy
+        </Link>
+        .
+      </p>
 
       {items.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2">

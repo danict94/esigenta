@@ -194,6 +194,18 @@ export function ImpresaLoginForm() {
           ? "Accesso in corso..."
           : "Accedi"}
       </Button>
+
+      <p className="text-center text-xs leading-5 text-text-muted">
+        Usando l&apos;area impresa confermi di aver letto l&apos;
+        <Link href="/privacy" className="font-medium text-brand-primary">
+          informativa privacy
+        </Link>{" "}
+        e i{" "}
+        <Link href="/termini" className="font-medium text-brand-primary">
+          termini del servizio
+        </Link>
+        .
+      </p>
     </form>
   )
 }

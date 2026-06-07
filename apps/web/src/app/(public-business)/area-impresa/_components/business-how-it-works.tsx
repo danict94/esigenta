@@ -7,7 +7,7 @@ import {
 } from "@fixpro/ui"
 
 const illustrationSrc =
-  "/assets/images/area-impresa-phone-dashboard.webp"
+  "/assets/images/area-professionista.webp"
 
 const topSteps = [
   {

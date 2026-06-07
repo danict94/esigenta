@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Button, Input, Textarea, cn, tokens } from "@fixpro/ui";
 
 import type { RuntimeCapability } from "@fixpro/db/funnel";
@@ -395,6 +397,20 @@ export function FunnelUI({
       ) : null}
 
       {error ? <p className="text-sm text-brand-primary">{error}</p> : null}
+
+      {isLastStep ? (
+        <p className="text-xs leading-5 text-text-muted">
+          Inviando la richiesta confermi di aver letto l&apos;
+          <Link href="/privacy" className="font-medium text-brand-primary">
+            informativa privacy
+          </Link>{" "}
+          e accetti i{" "}
+          <Link href="/termini" className="font-medium text-brand-primary">
+            termini del servizio
+          </Link>
+          .
+        </p>
+      ) : null}
 
       <div className={tokens.funnel.actions}>
         <Button

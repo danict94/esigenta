@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 
 import {
+  Button,
   cn,
   Input,
   tokens,
@@ -24,6 +25,11 @@ import {
 import type {
   RequestGeoDraft,
 } from '@fixpro/db'
+import {
+  COOKIE_CONSENT_CHANGED_EVENT,
+  hasFunctionalCookieConsent,
+  openCookiePreferences,
+} from '../privacy/cookie-consent-storage'
 
 export type NormalizedLocation =
   RequestGeoDraft
@@ -300,10 +306,46 @@ export function CityAutocomplete({
 
   const [message, setMessage] =
     useState<string | null>(null)
+  const [
+    hasFunctionalConsent,
+    setHasFunctionalConsent,
+  ] = useState(false)
+
+  const hasGoogleMapsApiKey = Boolean(
+    process.env
+      .NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+  )
 
   useEffect(() => {
     onChangeRef.current = onChange
   }, [onChange])
+
+  useEffect(() => {
+    function syncFunctionalConsent() {
+      setHasFunctionalConsent(
+        hasFunctionalCookieConsent(),
+      )
+    }
+
+    const syncTimeout =
+      window.setTimeout(
+        syncFunctionalConsent,
+        0,
+      )
+
+    window.addEventListener(
+      COOKIE_CONSENT_CHANGED_EVENT,
+      syncFunctionalConsent,
+    )
+
+    return () => {
+      window.clearTimeout(syncTimeout)
+      window.removeEventListener(
+        COOKIE_CONSENT_CHANGED_EVENT,
+        syncFunctionalConsent,
+      )
+    }
+  }, [])
 
   useEffect(() => {
     const nextAddress =
@@ -347,7 +389,24 @@ export function CityAutocomplete({
       }
     }
 
+    if (!hasFunctionalConsent) {
+      const messageTimeout =
+        window.setTimeout(() => {
+          setMessage(
+            'I suggerimenti automatici usano Google Maps. Puoi abilitarli dalle preferenze cookie.',
+          )
+        }, 0)
+
+      return () => {
+        window.clearTimeout(messageTimeout)
+      }
+    }
+
     let active = true
+    const clearMessageTimeout =
+      window.setTimeout(() => {
+        setMessage(null)
+      }, 0)
 
     void loadGoogleMapsPlaces(apiKey)
       .then(() => {
@@ -430,10 +489,13 @@ export function CityAutocomplete({
 
     return () => {
       active = false
+      window.clearTimeout(
+        clearMessageTimeout,
+      )
       listenerRef.current?.remove()
       listenerRef.current = null
     }
-  }, [])
+  }, [hasFunctionalConsent])
 
   return (
     <div className="grid gap-2">
@@ -473,9 +535,24 @@ export function CityAutocomplete({
       </div>
 
       {message ? (
-        <p className="text-xs text-text-muted">
-          {message}
-        </p>
+        <div className="grid gap-2">
+          <p className="text-xs text-text-muted">
+            {message}
+          </p>
+
+          {!hasFunctionalConsent &&
+          hasGoogleMapsApiKey ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="w-fit"
+              onClick={openCookiePreferences}
+            >
+              Abilita suggerimenti
+            </Button>
+          ) : null}
+        </div>
       ) : null}
     </div>
   )

@@ -4,6 +4,7 @@ import {
   type FormEvent,
   useState,
 } from "react"
+import Link from "next/link"
 import {
   useRouter,
 } from "next/navigation"
@@ -84,6 +85,10 @@ export function ImpresaSignupForm({
     useState("")
   const [password, setPassword] =
     useState("")
+  const [
+    hasAcceptedLegalTerms,
+    setHasAcceptedLegalTerms,
+  ] = useState(false)
 
   const [error, setError] =
     useState<string | null>(null)
@@ -125,6 +130,10 @@ export function ImpresaSignupForm({
 
     if (password.length < 8) {
       return "La password deve contenere almeno 8 caratteri."
+    }
+
+    if (!hasAcceptedLegalTerms) {
+      return "Accetta termini e informativa privacy per continuare."
     }
 
     return null
@@ -478,6 +487,37 @@ export function ImpresaSignupForm({
               }
             />
           </div>
+
+          <label className="flex items-start gap-3 text-sm leading-6 text-text-secondary">
+            <input
+              type="checkbox"
+              required
+              checked={hasAcceptedLegalTerms}
+              className="mt-1"
+              onChange={(event) => {
+                setHasAcceptedLegalTerms(
+                  event.target.checked,
+                )
+              }}
+            />
+            <span>
+              Ho letto l&apos;
+              <Link
+                href="/privacy"
+                className="font-medium text-brand-primary"
+              >
+                informativa privacy
+              </Link>{" "}
+              e accetto i{" "}
+              <Link
+                href="/termini"
+                className="font-medium text-brand-primary"
+              >
+                termini del servizio
+              </Link>
+              .
+            </span>
+          </label>
         </div>
       )}
 
