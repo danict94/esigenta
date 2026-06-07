@@ -3,6 +3,12 @@ import { prismaAdapter } from "better-auth/adapters/prisma"
 
 import { prisma } from "../prisma/client"
 
+const defaultAdminOrigin =
+  "https://esigenta-admin.vercel.app"
+
+const defaultWebOrigin =
+  "https://esigenta-web.vercel.app"
+
 function normalizeOrigin(
   value: string | undefined,
 ): string | undefined {
@@ -22,7 +28,11 @@ function normalizeOrigin(
         : `https://${origin}`
   }
 
-  return origin.replace(/\/+$/, "")
+  try {
+    return new URL(origin).origin
+  } catch {
+    return origin.replace(/\/+$/, "")
+  }
 }
 
 function uniqueOrigins(
@@ -40,33 +50,66 @@ function uniqueOrigins(
   )
 }
 
-const trustedOrigins = uniqueOrigins([
-  process.env.BETTER_AUTH_URL,
-  process.env.NEXT_PUBLIC_APP_URL,
+function resolveVercelOrigin(
+  value: string | undefined,
+): string | undefined {
+  return normalizeOrigin(value)
+}
 
-  process.env.ESIGENTA_WEB_URL,
-  process.env.ESIGENTA_APP_URL,
-  process.env.ESIGENTA_ADMIN_URL,
+function getTrustedOrigins(): string[] {
+  return uniqueOrigins([
+    defaultAdminOrigin,
+    defaultWebOrigin,
 
-  process.env.VERCEL_PROJECT_PRODUCTION_URL,
-  process.env.VERCEL_URL,
+    "http://localhost:3000",
+    "http://localhost:3001",
 
-  "https://esigenta-admin.vercel.app",
-  "https://esigenta-web.vercel.app",
+    process.env.BETTER_AUTH_URL,
+    process.env.NEXT_PUBLIC_APP_URL,
 
-  "http://localhost:3000",
-  "http://localhost:3001",
-])
+    process.env.ESIGENTA_ADMIN_URL,
+    process.env.ESIGENTA_WEB_URL,
+    process.env.ESIGENTA_APP_URL,
 
-const baseURL = normalizeOrigin(
+    resolveVercelOrigin(
+      process.env.VERCEL_URL,
+    ),
+    resolveVercelOrigin(
+      process.env
+        .VERCEL_PROJECT_PRODUCTION_URL,
+    ),
+  ])
+}
+
+function getAllowedHost(
+  origin: string,
+): string | undefined {
+  return origin.replace(/^https?:\/\//i, "")
+}
+
+const trustedOrigins = getTrustedOrigins()
+
+const baseURLFallback = normalizeOrigin(
   process.env.BETTER_AUTH_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
     process.env.VERCEL_PROJECT_PRODUCTION_URL ??
     process.env.VERCEL_URL ??
     process.env.ESIGENTA_APP_URL ??
     process.env.ESIGENTA_WEB_URL ??
-    process.env.ESIGENTA_ADMIN_URL,
+    process.env.ESIGENTA_ADMIN_URL ??
+    defaultWebOrigin,
 )
+
+const baseURL = {
+  allowedHosts: trustedOrigins
+    .map(getAllowedHost)
+    .filter(
+      (host): host is string =>
+        Boolean(host),
+    ),
+  fallback: baseURLFallback,
+  protocol: "auto" as const,
+}
 
 const betterAuthSecret =
   process.env.BETTER_AUTH_SECRET?.trim()
@@ -78,6 +121,32 @@ if (
   throw new Error(
     "BETTER_AUTH_SECRET is required in production.",
   )
+}
+
+if (
+  process.env.ESIGENTA_DEBUG_AUTH_ORIGINS ===
+  "true"
+) {
+  console.info("[esigenta-auth]", {
+    NODE_ENV: process.env.NODE_ENV,
+    BETTER_AUTH_URL_PRESENT: Boolean(
+      process.env.BETTER_AUTH_URL?.trim(),
+    ),
+    NEXT_PUBLIC_APP_URL:
+      process.env.NEXT_PUBLIC_APP_URL,
+    ESIGENTA_ADMIN_URL:
+      process.env.ESIGENTA_ADMIN_URL,
+    ESIGENTA_WEB_URL:
+      process.env.ESIGENTA_WEB_URL,
+    ESIGENTA_APP_URL:
+      process.env.ESIGENTA_APP_URL,
+    VERCEL_URL: process.env.VERCEL_URL,
+    VERCEL_PROJECT_PRODUCTION_URL:
+      process.env
+        .VERCEL_PROJECT_PRODUCTION_URL,
+    trustedOrigins,
+    baseURL,
+  })
 }
 
 export const auth = betterAuth({
@@ -93,9 +162,5 @@ export const auth = betterAuth({
         secret: betterAuthSecret,
       }
     : {}),
-  ...(baseURL
-    ? {
-        baseURL,
-      }
-    : {}),
+  baseURL,
 })
