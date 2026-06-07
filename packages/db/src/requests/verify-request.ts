@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Verification Flow
+ * Esigenta V2 - Request Verification Flow
  *
  * Magic-link verification:
  * token -> verifiedAt -> PENDING_REVIEW.

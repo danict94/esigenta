@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Runtime Step Visibility
+ * Esigenta V2 — Runtime Step Visibility
  *
  * FOUNDATION RUNTIME
  *

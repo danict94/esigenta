@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Creation Flow
+ * Esigenta V2 - Request Creation Flow
  *
  * Backend flow:
  * RequestDraft -> Request(PENDING_VERIFICATION) -> verification email.

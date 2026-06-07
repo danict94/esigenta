@@ -22,7 +22,7 @@ export function conversationMessageEmail({
   messagePreview,
 }: ConversationMessageEmailInput) {
   const subject =
-    "Nuovo messaggio su FixPro"
+    "Nuovo messaggio su Esigenta"
   const greeting = recipientLabel
     ? `Ciao ${recipientLabel},`
     : "Ciao,"

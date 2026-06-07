@@ -57,7 +57,7 @@ function formatRequestTitle(
   return request?.requestCode
     ? `Richiesta ${request.requestCode}`
     : conversation.type === "SUPPORT"
-      ? "supporto FixPro"
+      ? "supporto Esigenta"
     : "richiesta"
 }
 
@@ -95,7 +95,7 @@ function createSenderLabel(
   }
 
   if (sender.actorType === "ADMIN") {
-    return sender.user?.name ?? "Team FixPro"
+    return sender.user?.name ?? "Team Esigenta"
   }
 
   return sender.user?.name ?? "Operatore"

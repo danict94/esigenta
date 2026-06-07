@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Structured Data
+ * Esigenta V2 - Request Structured Data
  *
  * Helpers for MVP request structuredData JSON.
  */

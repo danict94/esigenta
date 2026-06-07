@@ -190,7 +190,7 @@ export default async function CompanySupportThreadPage({
           </p>
 
           <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
-            Messaggi con FixPro
+            Messaggi con Esigenta
           </h1>
         </div>
 

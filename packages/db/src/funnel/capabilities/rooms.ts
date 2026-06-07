@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Rooms Capability
+ * Esigenta V2 - Rooms Capability
  *
  * FOUNDATION CAPABILITY
  *

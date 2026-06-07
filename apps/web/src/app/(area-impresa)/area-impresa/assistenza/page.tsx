@@ -96,7 +96,7 @@ export default async function CompanySupportPage() {
           </h1>
 
           <p className="mt-1 text-sm text-text-secondary">
-            Scrivi al team FixPro per dubbi operativi sulla piattaforma.
+            Scrivi al team Esigenta per dubbi operativi sulla piattaforma.
           </p>
         </div>
 
@@ -105,7 +105,7 @@ export default async function CompanySupportPage() {
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <CardTitle>
-                  Assistenza FixPro
+                  Assistenza Esigenta
                 </CardTitle>
 
                 <Badge
@@ -139,7 +139,7 @@ export default async function CompanySupportPage() {
           <CardContent className="space-y-5">
             <p className="text-sm leading-6 text-text-secondary">
               {supportConversation?.lastMessage?.body ??
-                "Scrivi al team FixPro se hai bisogno di supporto su richieste, crediti o profilo impresa."}
+                "Scrivi al team Esigenta se hai bisogno di supporto su richieste, crediti o profilo impresa."}
             </p>
 
             <form action={contactSupportAction}>

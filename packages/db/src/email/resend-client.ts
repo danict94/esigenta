@@ -31,7 +31,7 @@ export function getResendFromEmail(): string {
   }
 
   if (process.env.NODE_ENV !== "production") {
-    return "FixPro <onboarding@resend.dev>"
+    return "Esigenta <onboarding@resend.dev>"
   }
 
   throw new Error(

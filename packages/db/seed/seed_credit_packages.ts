@@ -23,7 +23,7 @@ const creditPackages = [
   {
     name: "Base",
     description:
-      "Pacchetto iniziale per provare FixPro e sbloccare le prime richieste.",
+      "Pacchetto iniziale per provare Esigenta e sbloccare le prime richieste.",
     credits: 60,
     priceCents: 6000,
     currency: "EUR",

@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Contact Capability
+ * Esigenta V2 — Contact Capability
  *
  * FOUNDATION CAPABILITY
  *

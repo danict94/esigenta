@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Structured Request Draft
+ * Esigenta V2 — Structured Request Draft
  *
  * FOUNDATION CONTRACT
  *

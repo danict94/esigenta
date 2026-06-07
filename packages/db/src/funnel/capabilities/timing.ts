@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Timing Capability
+ * Esigenta V2 - Timing Capability
  *
  * FOUNDATION CAPABILITY
  *

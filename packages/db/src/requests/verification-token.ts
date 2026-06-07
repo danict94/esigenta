@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Customer soft-access tokens
+ * Esigenta V2 - Customer soft-access tokens
  *
  * Single-use token helpers used by request verification,
  * request status links and future customer review links.

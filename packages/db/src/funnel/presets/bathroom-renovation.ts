@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Bathroom Renovation Runtime Preset
+ * Esigenta V2 - Bathroom Renovation Runtime Preset
  *
  * FOUNDATION PRESET
  *

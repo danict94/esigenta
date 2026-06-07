@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Status Contracts
+ * Esigenta V2 - Request Status Contracts
  *
  * REQUEST DOMAIN CONTRACT
  *

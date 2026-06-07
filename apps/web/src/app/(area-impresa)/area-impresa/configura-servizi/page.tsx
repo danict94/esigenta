@@ -206,7 +206,7 @@ export default async function ConfiguraServiziPage({
 
         <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
           Le categorie determinano quali richieste puoi vedere. I servizi sono
-          opzionali: aiutano FixPro a mostrarti prima le richieste più
+          opzionali: aiutano Esigenta a mostrarti prima le richieste più
           pertinenti.
         </p>
 

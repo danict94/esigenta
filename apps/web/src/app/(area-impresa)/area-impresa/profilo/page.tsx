@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -421,7 +421,7 @@ export default async function ProfiloImpresaPage({
   const savedMessage = params.saved === "1" ? "Profilo aggiornato." : null;
   const contactRequestedMessage =
     params.contactRequested === "1"
-      ? "Richiesta inviata. Il team FixPro la valutera prima di applicare la modifica."
+      ? "Richiesta inviata. Il team Esigenta la valutera prima di applicare la modifica."
       : null;
   const errorMessage = params.error ? errorMessages[params.error] : null;
 
@@ -473,7 +473,7 @@ export default async function ProfiloImpresaPage({
             <p className="mt-2 text-sm leading-6 text-text-secondary">
               Nome, partita IVA ed email impresa restano protetti. Il telefono
               aziendale puo essere modificato inviando una richiesta al team
-              FixPro.
+              Esigenta.
             </p>
           </div>
 
@@ -606,7 +606,7 @@ export default async function ProfiloImpresaPage({
 
               <p className="mt-2 text-sm leading-6 text-text-secondary">
                 Le categorie definiscono la visibilita ampia; i servizi aiutano
-                FixPro a dare priorita alle richieste piu pertinenti.
+                Esigenta a dare priorita alle richieste piu pertinenti.
               </p>
             </div>
 
@@ -655,7 +655,7 @@ export default async function ProfiloImpresaPage({
               ) : (
                 <p className="mt-2 text-sm leading-6 text-text-secondary">
                   Hai selezionato categorie operative. I servizi sono opzionali
-                  e aiutano FixPro a dare priorita alle richieste piu
+                  e aiutano Esigenta a dare priorita alle richieste piu
                   pertinenti.
                 </p>
               )}

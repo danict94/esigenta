@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Painting Runtime Preset
+ * Esigenta V2 - Painting Runtime Preset
  *
  * FOUNDATION PRESET
  *

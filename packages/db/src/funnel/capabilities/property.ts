@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Property Capability
+ * Esigenta V2 — Property Capability
  *
  * FOUNDATION CAPABILITY
  *

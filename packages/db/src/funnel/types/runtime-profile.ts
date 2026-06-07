@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Funnel Runtime Profile
+ * Esigenta V2 — Funnel Runtime Profile
  *
  * FOUNDATION CONTRACT
  *

@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Lifecycle Contracts
+ * Esigenta V2 - Request Lifecycle Contracts
  *
  * REQUEST DOMAIN CONTRACT
  *

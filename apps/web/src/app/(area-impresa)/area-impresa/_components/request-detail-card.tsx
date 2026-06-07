@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -767,7 +767,7 @@ export function RequestDetailCard({
                       Richiedi rimborso
                     </h2>
                     <p className="mt-2 text-xs leading-5 text-text-muted">
-                      La richiesta sar\u00e0 verificata dal team FixPro. Il
+                      La richiesta sar\u00e0 verificata dal team Esigenta. Il
                       rimborso non \u00e8 automatico.
                     </p>
                   </div>

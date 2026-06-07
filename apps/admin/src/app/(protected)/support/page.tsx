@@ -52,7 +52,7 @@ export default async function AdminSupportPage() {
               </h1>
 
               <p className="mt-3 max-w-xl text-sm leading-6 text-text-secondary">
-                Messaggi operativi tra imprese e team FixPro.
+                Messaggi operativi tra imprese e team Esigenta.
               </p>
             </div>
 

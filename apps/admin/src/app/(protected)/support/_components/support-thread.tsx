@@ -52,7 +52,7 @@ export function SupportThread({
             </div>
 
             <CardDescription>
-              Assistenza FixPro - Ultimo aggiornamento{" "}
+              Assistenza Esigenta - Ultimo aggiornamento{" "}
               {formatDateTime(thread.updatedAt)}
             </CardDescription>
 

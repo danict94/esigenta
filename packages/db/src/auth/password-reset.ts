@@ -205,10 +205,10 @@ async function sendPasswordResetEmail({
 }) {
   const label =
     audience === "admin"
-      ? "admin FixPro"
-      : "area impresa FixPro"
+      ? "admin Esigenta"
+      : "area impresa Esigenta"
   const subject =
-    "Reimposta la password FixPro"
+    "Reimposta la password Esigenta"
   const greeting =
     name?.trim() || "ciao"
   const text =

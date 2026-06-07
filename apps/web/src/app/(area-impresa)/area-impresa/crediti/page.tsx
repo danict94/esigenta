@@ -1,4 +1,4 @@
-﻿import {
+import {
   redirect,
 } from "next/navigation"
 
@@ -140,7 +140,7 @@ async function createCreditPackageCheckoutAction(
                 order.priceCents,
               product_data: {
                 name:
-                  `FixPro Crediti - ${order.name}`,
+                  `Esigenta Crediti - ${order.name}`,
                 description:
                   `${order.credits} crediti · validità ${order.validityDays} giorni`,
               },

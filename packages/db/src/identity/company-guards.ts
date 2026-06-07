@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   CompanyMemberRole,
   CompanyStatus,
 } from "@prisma/client"
@@ -35,7 +35,7 @@ export class CompanyAuthorizationError extends Error {
 export class AmbiguousCompanyMembershipError extends Error {
   constructor() {
     super(
-      "Questo account risulta collegato a più imprese. Per la release FixPro supporta una sola impresa per account.",
+      "Questo account risulta collegato a più imprese. Per la release Esigenta supporta una sola impresa per account.",
     )
 
     this.name =

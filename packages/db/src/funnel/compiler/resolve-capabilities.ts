@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Runtime Capability Resolver
+ * Esigenta V2 — Runtime Capability Resolver
  *
  * FOUNDATION COMPILER
  *

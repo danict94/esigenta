@@ -6,12 +6,12 @@ export function customerRequestsAccessEmail({
   accessUrl,
 }: CustomerRequestsAccessEmailInput) {
   const subject =
-    "Accedi alle tue richieste FixPro"
+    "Accedi alle tue richieste Esigenta"
 
   const text = [
     "Ciao,",
     "",
-    "usa questo link per vedere le tue richieste FixPro.",
+    "usa questo link per vedere le tue richieste Esigenta.",
     "",
     `Apri le tue richieste: ${accessUrl}`,
     "",
@@ -21,7 +21,7 @@ export function customerRequestsAccessEmail({
   const html = `
     <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
       <p>Ciao,</p>
-      <p>usa questo link per vedere le tue richieste FixPro.</p>
+      <p>usa questo link per vedere le tue richieste Esigenta.</p>
       <p>
         <a href="${accessUrl}" style="display: inline-block; padding: 10px 16px; background: #111827; color: #ffffff; text-decoration: none; border-radius: 6px;">
           Apri le mie richieste

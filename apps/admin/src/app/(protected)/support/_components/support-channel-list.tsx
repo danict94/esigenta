@@ -91,7 +91,7 @@ export function SupportChannelList({
                 </div>
 
                 <CardDescription>
-                  Assistenza FixPro
+                  Assistenza Esigenta
                 </CardDescription>
               </div>
 

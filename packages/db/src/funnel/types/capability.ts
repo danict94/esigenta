@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Funnel Capability Contracts
+ * Esigenta V2 — Funnel Capability Contracts
  *
  * FOUNDATION CONTRACT
  *

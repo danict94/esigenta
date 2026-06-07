@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Surface Area Capability
+ * Esigenta V2 - Surface Area Capability
  *
  * FOUNDATION CAPABILITY
  *

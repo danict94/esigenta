@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next"
+import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { Inter } from "next/font/google"
 import localFont from "next/font/local"
@@ -25,7 +25,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "FixPro",
+  title: "Esigenta",
   description: "Trova professionisti verificati per i tuoi interventi.",
 }
 

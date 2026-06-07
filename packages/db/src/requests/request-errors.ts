@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Errors
+ * Esigenta V2 - Request Errors
  *
  * Small typed errors for request creation and verification.
  */

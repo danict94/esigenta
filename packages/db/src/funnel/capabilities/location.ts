@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Location Capability
+ * Esigenta V2 — Location Capability
  *
  * FOUNDATION CAPABILITY
  *

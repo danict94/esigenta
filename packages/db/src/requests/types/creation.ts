@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Creation Contracts
+ * Esigenta V2 - Request Creation Contracts
  *
  * REQUEST DOMAIN CONTRACT
  *

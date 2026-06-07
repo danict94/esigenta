@@ -52,7 +52,7 @@ function formatThreadTitle(
   thread: MessageThreadData,
 ) {
   if (thread.type === "SUPPORT") {
-    return "Assistenza FixPro"
+    return "Assistenza Esigenta"
   }
 
   return (

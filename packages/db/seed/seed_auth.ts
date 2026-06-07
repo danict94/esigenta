@@ -40,7 +40,7 @@ if (existsSync(packageEnvPath)) {
  * pnpm --filter @fixpro/db seed:auth
  */
 const DEFAULT_SUPER_ADMIN_NAME =
-  "FixPro Super Admin";
+  "Esigenta Super Admin";
 
 function requireEnvValue(
   name: string,

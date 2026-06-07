@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Verification Email
+ * Esigenta V2 - Request Verification Email
  *
  * Sends request verification email through the shared email layer.
  */

@@ -14,7 +14,7 @@ import {
 } from "./resend-request-email-adapter"
 
 const EMAIL_SUBJECT =
-  "Nuova richiesta disponibile su FixPro"
+  "Nuova richiesta disponibile su Esigenta"
 
 export type ProcessRequestEmailDeliveriesForRequestResult = {
   requestId: string
@@ -154,10 +154,10 @@ function buildEmailContent(
   const actionText =
     requestUrl
       ? `Apri la richiesta: ${requestUrl}`
-      : "Accedi alla tua Area Impresa FixPro per visualizzare la richiesta."
+      : "Accedi alla tua Area Impresa Esigenta per visualizzare la richiesta."
 
   const text = [
-    "Nuova richiesta disponibile su FixPro",
+    "Nuova richiesta disponibile su Esigenta",
     "",
     "Una nuova richiesta compatibile con i servizi e l'area operativa della tua impresa e disponibile.",
     `Intervento: ${intervention}`,
@@ -170,10 +170,10 @@ function buildEmailContent(
   const htmlAction =
     requestUrl
       ? `<p><a href="${escapeHtml(requestUrl)}">Apri la richiesta nell'Area Impresa</a></p>`
-      : "<p>Accedi alla tua Area Impresa FixPro per visualizzare la richiesta.</p>"
+      : "<p>Accedi alla tua Area Impresa Esigenta per visualizzare la richiesta.</p>"
 
   const html = [
-    "<h1>Nuova richiesta disponibile su FixPro</h1>",
+    "<h1>Nuova richiesta disponibile su Esigenta</h1>",
     "<p>Una nuova richiesta compatibile con i servizi e l'area operativa della tua impresa e disponibile.</p>",
     "<ul>",
     `<li><strong>Intervento:</strong> ${escapeHtml(intervention)}</li>`,

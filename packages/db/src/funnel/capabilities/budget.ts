@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Budget Capability
+ * Esigenta V2 - Budget Capability
  *
  * FOUNDATION CAPABILITY
  *

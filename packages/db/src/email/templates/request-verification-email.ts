@@ -6,12 +6,12 @@ export function requestVerificationEmail({
   verificationUrl,
 }: RequestVerificationEmailInput) {
   const subject =
-    "Verifica la tua richiesta FixPro"
+    "Verifica la tua richiesta Esigenta"
 
   const text = [
     "Ciao,",
     "",
-    "conferma la tua richiesta FixPro per inviarla ai professionisti giusti.",
+    "conferma la tua richiesta Esigenta per inviarla ai professionisti giusti.",
     "",
     `Verifica la richiesta: ${verificationUrl}`,
     "",
@@ -21,7 +21,7 @@ export function requestVerificationEmail({
   const html = `
     <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
       <p>Ciao,</p>
-      <p>conferma la tua richiesta FixPro per inviarla ai professionisti giusti.</p>
+      <p>conferma la tua richiesta Esigenta per inviarla ai professionisti giusti.</p>
       <p>
         <a href="${verificationUrl}" style="display: inline-block; padding: 10px 16px; background: #111827; color: #ffffff; text-decoration: none; border-radius: 6px;">
           Verifica la richiesta

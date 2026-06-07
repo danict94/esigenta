@@ -1,5 +1,5 @@
 /**
- * FixPro V2 — Photos Capability
+ * Esigenta V2 — Photos Capability
  *
  * FOUNDATION CAPABILITY
  *

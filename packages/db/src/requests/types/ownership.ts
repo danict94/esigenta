@@ -1,5 +1,5 @@
 /**
- * FixPro V2 - Request Ownership Contracts
+ * Esigenta V2 - Request Ownership Contracts
  *
  * REQUEST DOMAIN CONTRACT
  *
