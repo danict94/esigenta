@@ -46,6 +46,7 @@ export type MarkCreditOrderCheckoutCreatedInput = {
   creditOrderId: string
   providerCheckoutId: string
   providerPaymentIntentId?: string | null
+  providerEventId?: string | null
 }
 
 export type MarkCreditOrderCheckoutTerminalInput = {
@@ -212,6 +213,7 @@ export async function markCreditOrderCheckoutCreated({
   creditOrderId,
   providerCheckoutId,
   providerPaymentIntentId,
+  providerEventId,
 }: MarkCreditOrderCheckoutCreatedInput): Promise<
   CreditLedgerResult<MarkCreditOrderCheckoutCreatedData>
 > {
@@ -224,6 +226,10 @@ export async function markCreditOrderCheckoutCreated({
       ? normalizeRequiredText(
           providerPaymentIntentId,
         )
+      : null
+  const normalizedProviderEventId =
+    providerEventId
+      ? normalizeRequiredText(providerEventId)
       : null
 
   if (!normalizedCreditOrderId) {
@@ -251,6 +257,12 @@ export async function markCreditOrderCheckoutCreated({
       data: {
         providerCheckoutId:
           normalizedProviderCheckoutId,
+        ...(normalizedProviderEventId
+          ? {
+              providerEventId:
+                normalizedProviderEventId,
+            }
+          : {}),
         ...(normalizedPaymentIntentId
           ? {
               providerPaymentIntentId:

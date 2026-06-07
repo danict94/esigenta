@@ -10,6 +10,7 @@
                       "ESIGENTA_WEB_URL",
                       "ESIGENTA_APP_URL",
                       "ESIGENTA_DEBUG_AUTH_ORIGINS",
+                      "ESIGENTA_DEBUG_STRIPE",
                       "GOOGLE_MAPS_API_KEY",
                       "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
                       "RESEND_API_KEY",

@@ -24,38 +24,111 @@ import {
   getStripeServerClient,
 } from "../../../../lib/stripe/server"
 
+import {
+  getStripeRuntimeDebugConfig,
+  getUrlHost,
+  logStripeDebug,
+} from "../../../../lib/stripe/debug"
+
+import {
+  CreditCheckoutStatusBanner,
+} from "./credit-checkout-status-banner"
+
 export const dynamic = "force-dynamic"
 
 type CreditsPageProps = {
   searchParams?: Promise<{
     checkout?: string
     orderId?: string
+    session_id?: string
   }>
 }
 
-function getAppUrl() {
-  const appUrl =
-    process.env.ESIGENTA_WEB_URL ??
-    process.env.ESIGENTA_APP_URL ??
-    process.env.NEXT_PUBLIC_APP_URL
+type AppUrlCandidate = {
+  value: string | undefined
+  source: "standard" | "vercel"
+}
 
-  if (!appUrl) {
-    throw new Error(
-      "ESIGENTA_WEB_URL o ESIGENTA_APP_URL non configurata.",
-    )
+function normalizeAppUrl({
+  source,
+  value,
+}: AppUrlCandidate) {
+  const trimmed =
+    value?.trim()
+
+  if (!trimmed) {
+    return null
   }
 
-  return appUrl
+  const withProtocol =
+    source === "vercel" &&
+    !/^https?:\/\//i.test(trimmed)
+      ? `https://${trimmed}`
+      : trimmed
+
+  return withProtocol.replace(
+    /\/+$/,
+    "",
+  )
+}
+
+function getAppUrl() {
+  const candidates: AppUrlCandidate[] = [
+    {
+      value:
+        process.env.ESIGENTA_WEB_URL,
+      source: "standard",
+    },
+    {
+      value:
+        process.env.ESIGENTA_APP_URL,
+      source: "standard",
+    },
+    {
+      value:
+        process.env.NEXT_PUBLIC_APP_URL,
+      source: "standard",
+    },
+    {
+      value:
+        process.env.BETTER_AUTH_URL,
+      source: "standard",
+    },
+    {
+      value:
+        process.env
+          .VERCEL_PROJECT_PRODUCTION_URL,
+      source: "vercel",
+    },
+    {
+      value:
+        process.env.VERCEL_URL,
+      source: "vercel",
+    },
+  ]
+
+  for (const candidate of candidates) {
+    const normalized =
+      normalizeAppUrl(candidate)
+
+    if (normalized) {
+      return normalized
+    }
+  }
+
+  return null
 }
 
 function buildCheckoutReturnUrl({
   appUrl,
   checkout,
   orderId,
+  sessionId,
 }: {
   appUrl: string
   checkout: "success" | "cancel"
-  orderId: string
+  orderId?: string
+  sessionId?: string
 }) {
   const url = new URL(
     "/area-impresa/crediti",
@@ -66,12 +139,27 @@ function buildCheckoutReturnUrl({
     "checkout",
     checkout,
   )
-  url.searchParams.set(
-    "orderId",
-    orderId,
-  )
 
-  return url.toString()
+  if (orderId) {
+    url.searchParams.set(
+      "orderId",
+      orderId,
+    )
+  }
+
+  if (sessionId) {
+    url.searchParams.set(
+      "session_id",
+      sessionId,
+    )
+  }
+
+  return url
+    .toString()
+    .replace(
+      "%7BCHECKOUT_SESSION_ID%7D",
+      "{CHECKOUT_SESSION_ID}",
+    )
 }
 
 function formatPrice({
@@ -108,8 +196,45 @@ async function createCreditPackageCheckoutAction(
 
   const appUrl =
     getAppUrl()
-  const stripe =
-    getStripeServerClient()
+  if (!appUrl) {
+    logStripeDebug(
+      "checkout.base_url_missing",
+      {
+        companyId:
+          membership.companyId,
+        ...getStripeRuntimeDebugConfig(),
+      },
+    )
+
+    redirect(
+      "/area-impresa/crediti?checkout=config",
+    )
+  }
+
+  let stripe: ReturnType<
+    typeof getStripeServerClient
+  >
+
+  try {
+    stripe =
+      getStripeServerClient()
+  } catch (error) {
+    logStripeDebug(
+      "checkout.stripe_client_unavailable",
+      {
+        companyId:
+          membership.companyId,
+        error:
+          error instanceof Error
+            ? error.message
+            : "unknown_error",
+      },
+    )
+
+    redirect(
+      "/area-impresa/crediti?checkout=config",
+    )
+  }
 
   const orderResult =
     await createPendingCreditOrder({
@@ -119,16 +244,57 @@ async function createCreditPackageCheckoutAction(
     })
 
   if (!orderResult.ok) {
-    throw new Error(orderResult.message)
+    logStripeDebug(
+      "checkout.order_creation_failed",
+      {
+        companyId:
+          membership.companyId,
+        packageId,
+        code: orderResult.code,
+      },
+    )
+
+    redirect(
+      "/area-impresa/crediti?checkout=unavailable",
+    )
   }
 
   const order =
     orderResult.data
   const idempotencyKey =
     `credit-checkout:${order.orderId}`
+  const checkoutMetadata = {
+    creditOrderId:
+      order.orderId,
+    companyId:
+      membership.companyId,
+    packageId:
+      order.packageId,
+    credits:
+      String(order.credits),
+  }
+  const successUrl =
+    buildCheckoutReturnUrl({
+      appUrl,
+      checkout: "success",
+      sessionId:
+        "{CHECKOUT_SESSION_ID}",
+    })
+  const cancelUrl =
+    buildCheckoutReturnUrl({
+      appUrl,
+      checkout: "cancel",
+    })
 
-  const session =
-    await stripe.checkout.sessions.create(
+  let session: Awaited<
+    ReturnType<
+      typeof stripe.checkout.sessions.create
+    >
+  >
+
+  try {
+    session =
+      await stripe.checkout.sessions.create(
       {
         mode: "payment",
         line_items: [
@@ -149,26 +315,14 @@ async function createCreditPackageCheckoutAction(
           },
         ],
         success_url:
-          buildCheckoutReturnUrl({
-            appUrl,
-            checkout: "success",
-            orderId: order.orderId,
-          }),
+          successUrl,
         cancel_url:
-          buildCheckoutReturnUrl({
-            appUrl,
-            checkout: "cancel",
-            orderId: order.orderId,
-          }),
-        metadata: {
-          creditOrderId:
-            order.orderId,
-          companyId:
-            membership.companyId,
-          packageId:
-            order.packageId,
-          credits:
-            String(order.credits),
+          cancelUrl,
+        metadata:
+          checkoutMetadata,
+        payment_intent_data: {
+          metadata:
+            checkoutMetadata,
         },
         client_reference_id:
           order.orderId,
@@ -177,11 +331,52 @@ async function createCreditPackageCheckoutAction(
         idempotencyKey,
       },
     )
+  } catch (error) {
+    logStripeDebug(
+      "checkout.session_creation_failed",
+      {
+        companyId:
+          membership.companyId,
+        creditOrderId:
+          order.orderId,
+        error:
+          error instanceof Error
+            ? error.message
+            : "unknown_error",
+      },
+    )
+
+    redirect(
+      "/area-impresa/crediti?checkout=error",
+    )
+  }
 
   const providerPaymentIntentId =
     typeof session.payment_intent === "string"
       ? session.payment_intent
       : null
+
+  logStripeDebug(
+    "checkout.session_created",
+    {
+      companyId:
+        membership.companyId,
+      creditOrderId:
+        order.orderId,
+      packageId:
+        order.packageId,
+      checkoutSessionId:
+        session.id,
+      providerPaymentIntentId,
+      baseUrl:
+        appUrl,
+      successUrlHost:
+        getUrlHost(successUrl),
+      cancelUrlHost:
+        getUrlHost(cancelUrl),
+      ...getStripeRuntimeDebugConfig(),
+    },
+  )
 
   const markResult =
     await markCreditOrderCheckoutCreated({
@@ -193,12 +388,39 @@ async function createCreditPackageCheckoutAction(
     })
 
   if (!markResult.ok) {
-    throw new Error(markResult.message)
+    logStripeDebug(
+      "checkout.order_attach_failed",
+      {
+        companyId:
+          membership.companyId,
+        creditOrderId:
+          order.orderId,
+        checkoutSessionId:
+          session.id,
+        code: markResult.code,
+      },
+    )
+
+    redirect(
+      "/area-impresa/crediti?checkout=error",
+    )
   }
 
   if (!session.url) {
-    throw new Error(
-      "Stripe Checkout Session senza URL.",
+    logStripeDebug(
+      "checkout.session_url_missing",
+      {
+        companyId:
+          membership.companyId,
+        creditOrderId:
+          order.orderId,
+        checkoutSessionId:
+          session.id,
+      },
+    )
+
+    redirect(
+      "/area-impresa/crediti?checkout=error",
     )
   }
 
@@ -232,11 +454,18 @@ export default async function CompanyCreditsPage({
   }
 
   const checkoutMessage =
-    params.checkout === "success"
-      ? "Pagamento ricevuto: i crediti saranno disponibili dopo la conferma Stripe."
+    params.checkout === "success" &&
+    !params.session_id
+      ? "Pagamento ricevuto: verifica Stripe in corso."
       : params.checkout === "cancel"
         ? "Pagamento annullato o non completato."
-        : null
+        : params.checkout === "config"
+          ? "Checkout non disponibile: configurazione URL applicazione mancante."
+          : params.checkout === "unavailable"
+            ? "Checkout non disponibile per questo pacchetto o profilo impresa."
+            : params.checkout === "error"
+              ? "Checkout non completato: riprova tra poco o contatta il supporto."
+              : null
 
   return (
     <PageShell
@@ -265,6 +494,13 @@ export default async function CompanyCreditsPage({
               {checkoutMessage}
             </p>
           </Card>
+        ) : null}
+
+        {params.checkout === "success" &&
+        params.session_id ? (
+          <CreditCheckoutStatusBanner
+            sessionId={params.session_id}
+          />
         ) : null}
 
         {!canBuyCredits ? (

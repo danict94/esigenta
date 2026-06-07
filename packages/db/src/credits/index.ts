@@ -10,6 +10,15 @@ export type {
 } from "./credit-packages"
 
 export {
+  fulfillCreditOrderFromStripeCheckoutSession,
+} from "./credit-checkout-fulfillment"
+
+export type {
+  FulfillCreditOrderFromStripeCheckoutSessionData,
+  FulfillCreditOrderFromStripeCheckoutSessionInput,
+} from "./credit-checkout-fulfillment"
+
+export {
   createPendingCreditOrder,
   listActiveCreditPackagesForPurchase,
   markCreditOrderCheckoutCancelled,

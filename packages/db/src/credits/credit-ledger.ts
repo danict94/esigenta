@@ -139,6 +139,28 @@ async function findTransactionByIdempotencyKey(
   })
 }
 
+async function findCompletedPackagePurchaseByCreditOrderId(
+  tx: CreditTransactionClient,
+  creditOrderId: string,
+) {
+  return tx.companyCreditTransaction.findFirst({
+    where: {
+      creditOrderId,
+      type: "PACKAGE_PURCHASE",
+      status: "COMPLETED",
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    select: {
+      id: true,
+      accountId: true,
+      balanceAfter: true,
+      expiresAtAfter: true,
+    },
+  })
+}
+
 async function getOrCreateCompanyCreditAccount(
   tx: CreditTransactionClient,
   companyId: string,
@@ -422,6 +444,29 @@ export async function grantCreditsFromCreditOrder({
     }
   }
 
+  const existingOrderTransaction =
+    await findCompletedPackagePurchaseByCreditOrderId(
+      prisma,
+      order.id,
+    )
+
+  if (existingOrderTransaction) {
+    return {
+      ok: true,
+      data: {
+        accountId:
+          existingOrderTransaction.accountId,
+        transactionId:
+          existingOrderTransaction.id,
+        balanceAfter:
+          existingOrderTransaction.balanceAfter,
+        expiresAtAfter:
+          existingOrderTransaction.expiresAtAfter ??
+          now,
+      },
+    }
+  }
+
   if (
     order.status === "FAILED" ||
     order.status === "CANCELLED" ||
@@ -438,8 +483,9 @@ export async function grantCreditsFromCreditOrder({
   const packageValidityDays =
     order.package.validityDays
 
-  const result =
-    await prisma.$transaction(async (tx) => {
+  try {
+    const result =
+      await prisma.$transaction(async (tx) => {
       const transactionAlreadyCreated =
         await findTransactionByIdempotencyKey(
           tx,
@@ -460,6 +506,26 @@ export async function grantCreditsFromCreditOrder({
         }
       }
 
+      const orderTransactionAlreadyCreated =
+        await findCompletedPackagePurchaseByCreditOrderId(
+          tx,
+          order.id,
+        )
+
+      if (orderTransactionAlreadyCreated) {
+        return {
+          accountId:
+            orderTransactionAlreadyCreated.accountId,
+          transactionId:
+            orderTransactionAlreadyCreated.id,
+          balanceAfter:
+            orderTransactionAlreadyCreated.balanceAfter,
+          expiresAtAfter:
+            orderTransactionAlreadyCreated.expiresAtAfter ??
+            now,
+        }
+      }
+
       const freshAccount =
         await ensureCreditAccountFreshInTransaction(
           tx,
@@ -468,6 +534,26 @@ export async function grantCreditsFromCreditOrder({
             now,
           },
         )
+
+      const orderTransactionAfterAccountLock =
+        await findCompletedPackagePurchaseByCreditOrderId(
+          tx,
+          order.id,
+        )
+
+      if (orderTransactionAfterAccountLock) {
+        return {
+          accountId:
+            orderTransactionAfterAccountLock.accountId,
+          transactionId:
+            orderTransactionAfterAccountLock.id,
+          balanceAfter:
+            orderTransactionAfterAccountLock.balanceAfter,
+          expiresAtAfter:
+            orderTransactionAfterAccountLock.expiresAtAfter ??
+            now,
+        }
+      }
 
       const balanceBefore =
         freshAccount.balance
@@ -537,11 +623,47 @@ export async function grantCreditsFromCreditOrder({
         balanceAfter,
         expiresAtAfter,
       }
-    })
+      })
 
-  return {
-    ok: true,
-    data: result,
+    return {
+      ok: true,
+      data: result,
+    }
+  } catch (error) {
+    if (
+      error instanceof
+        Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      const retryExistingTransaction =
+        (await findTransactionByIdempotencyKey(
+          prisma,
+          ledgerIdempotencyKey,
+        )) ??
+        (await findCompletedPackagePurchaseByCreditOrderId(
+          prisma,
+          order.id,
+        ))
+
+      if (retryExistingTransaction) {
+        return {
+          ok: true,
+          data: {
+            accountId:
+              retryExistingTransaction.accountId,
+            transactionId:
+              retryExistingTransaction.id,
+            balanceAfter:
+              retryExistingTransaction.balanceAfter,
+            expiresAtAfter:
+              retryExistingTransaction.expiresAtAfter ??
+              now,
+          },
+        }
+      }
+    }
+
+    throw error
   }
 }
 
