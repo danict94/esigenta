@@ -77,9 +77,12 @@ export {
 } from "./list-admin-requests"
 
 export {
-  getAvailableRequestForCompany,
   listAvailableRequestsForCompany,
 } from "./list-available-requests-for-company"
+
+export {
+  getAvailableRequestForCompanyDetail,
+} from "./get-available-request-for-company-detail"
 
 export {
   listCompanySavedRequests,
@@ -99,12 +102,16 @@ export type {
 export type {
   AvailableCompanyRequest,
   CompanyRequestMatchLevel,
-  GetAvailableRequestForCompanyResult,
   ListAvailableRequestsForCompanyResult,
   RequestDashboardFilterOptions,
   RequestDashboardFilters,
   RequestDashboardSort,
 } from "./list-available-requests-for-company"
+
+export type {
+  AvailableCompanyRequestDetail,
+  GetAvailableRequestForCompanyDetailResult,
+} from "./get-available-request-for-company-detail"
 
 export type {
   CompanySavedRequestListItem,

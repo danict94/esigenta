@@ -77,24 +77,6 @@ export type AvailableCompanyRequest = {
   creditCost: number | null
   maxUnlocks: number | null
   unlockCount: number
-  hasUnlocked: boolean
-  requestUnlockId: string | null
-  unlockedAt: Date | null
-  conversationId: string | null
-  customerContact: {
-    name: string | null
-    email: string | null
-    phone: string | null
-  } | null
-  requestUnlockRefund: {
-    refundedAt: Date | null
-    refundTransactionId: string | null
-    refundRequest: {
-      id: string
-      status: string
-      createdAt: Date
-    } | null
-  } | null
   isSaved: boolean
   createdAt: Date
   matchLevel: CompanyRequestMatchLevel
@@ -119,60 +101,18 @@ export type ListAvailableRequestsForCompanyResult =
       filters: RequestDashboardFilterOptions
     }
 
-export type GetAvailableRequestForCompanyResult =
-  | {
-      ok: true
-      company: RequestDashboardCompanyProfile
-      hasSelectedServices: boolean
-      filters: RequestDashboardFilterOptions
-      request: AvailableCompanyRequest | null
-    }
-  | {
-      ok: false
-      company?: RequestDashboardCompanyProfile | null
-      code:
-        | "company_not_approved_for_marketplace"
-        | "missing_category"
-        | "missing_location"
-      message: string
-      filters: RequestDashboardFilterOptions
-    }
-
 type RequestWithServices =
   Omit<
     AvailableCompanyRequest,
     | "matchLevel"
-    | "hasUnlocked"
-    | "requestUnlockId"
-    | "unlockedAt"
-    | "conversationId"
-    | "customerContact"
-    | "requestUnlockRefund"
     | "isSaved"
   > & {
-    customerName: string | null
-    customerEmail: string | null
-    customerPhone: string | null
     requiredServices: Array<{
       serviceId: string
       service: {
         name: string
         slug: string
       }
-    }>
-    unlocks: Array<{
-      id: string
-      createdAt: Date
-      refundedAt: Date | null
-      refundTransactionId: string | null
-      refundRequest: {
-        id: string
-        status: string
-        createdAt: Date
-      } | null
-      conversations: Array<{
-        id: string
-      }>
     }>
     savedByCompanies: Array<{
       createdAt: Date
@@ -302,50 +242,17 @@ function mapRequest({
 
   const {
     requiredServices,
-    unlocks,
     savedByCompanies,
-    customerName,
-    customerEmail,
-    customerPhone,
     ...requestFields
   } = request
 
   void requiredServices
 
-  const unlock =
-    unlocks[0] ?? null
   const savedRequest =
     savedByCompanies[0] ?? null
 
   return {
     ...requestFields,
-    hasUnlocked: Boolean(unlock),
-    requestUnlockId:
-      unlock?.id ?? null,
-    unlockedAt:
-      unlock?.createdAt ?? null,
-    conversationId:
-      unlock?.conversations[0]?.id ?? null,
-    customerContact: unlock
-      ? {
-          name:
-            customerName,
-          email:
-            customerEmail,
-          phone:
-            customerPhone,
-        }
-      : null,
-    requestUnlockRefund: unlock
-      ? {
-          refundedAt:
-            unlock.refundedAt,
-          refundTransactionId:
-            unlock.refundTransactionId,
-          refundRequest:
-            unlock.refundRequest,
-        }
-      : null,
     isSaved: Boolean(savedRequest),
     matchLevel,
   }
@@ -489,11 +396,9 @@ function sortVisibleRequests(
 
 async function loadAvailableRequestsForCompany({
   companyId,
-  requestId,
   filters,
 }: {
   companyId: string
-  requestId?: string
   filters?: RequestDashboardFilters | undefined
 }): Promise<ListAvailableRequestsForCompanyResult> {
   const normalizedFilters =
@@ -853,11 +758,6 @@ async function loadAvailableRequestsForCompany({
   const requests =
     await prisma.request.findMany({
       where: {
-        ...(requestId
-          ? {
-              id: requestId,
-            }
-          : {}),
         status: {
           in: visibleRequestStatuses,
         },
@@ -890,37 +790,6 @@ async function loadAvailableRequestsForCompany({
         maxUnlocks: true,
         unlockCount: true,
         createdAt: true,
-        customerName: true,
-        customerEmail: true,
-        customerPhone: true,
-        unlocks: {
-          where: {
-            companyId,
-          },
-          select: {
-            id: true,
-            createdAt: true,
-            refundedAt: true,
-            refundTransactionId: true,
-            refundRequest: {
-              select: {
-                id: true,
-                status: true,
-                createdAt: true,
-              },
-            },
-            conversations: {
-              where: {
-                type: "COMPANY_CUSTOMER",
-              },
-              select: {
-                id: true,
-              },
-              take: 1,
-            },
-          },
-          take: 1,
-        },
         savedByCompanies: {
           where: {
             companyId,
@@ -1038,33 +907,4 @@ export async function listAvailableRequestsForCompany({
     companyId,
     filters,
   })
-}
-
-export async function getAvailableRequestForCompany({
-  companyId,
-  requestId,
-}: {
-  companyId: string
-  requestId: string
-}): Promise<GetAvailableRequestForCompanyResult> {
-  const result =
-    await loadAvailableRequestsForCompany({
-      companyId,
-      requestId,
-    })
-
-  if (!result.ok) {
-    return result
-  }
-
-  return {
-    ok: true,
-    company:
-      result.company,
-    hasSelectedServices:
-      result.hasSelectedServices,
-    filters: result.filters,
-    request:
-      result.requests[0] ?? null,
-  }
 }

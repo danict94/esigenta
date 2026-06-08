@@ -6,7 +6,7 @@ import { PageShell } from "@esigenta/ui";
 import {
   createCreditRefundRequest,
   createCompanyCustomerConversation,
-  getAvailableRequestForCompany,
+  getAvailableRequestForCompanyDetail,
   listAttachedRequestPhotos,
   unlockRequestForCompany,
   type CreateCreditRefundRequestInput,
@@ -679,7 +679,7 @@ export default async function RequestDetailPage({
 
   const membership = await requireDefaultCompanyMembership();
 
-  const visibility = await getAvailableRequestForCompany({
+  const visibility = await getAvailableRequestForCompanyDetail({
     companyId: membership.companyId,
     requestId: id,
   });
