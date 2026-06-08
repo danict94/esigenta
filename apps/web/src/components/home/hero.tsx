@@ -29,17 +29,20 @@ export function Hero() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const trimmedQuery = query.trim();
-
-    if (!trimmedQuery) {
+    if (!isFocused || selection) {
       return;
     }
+
+    const trimmedQuery = query.trim();
 
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
     const controller = new AbortController();
+    const debounceDelay = trimmedQuery ? 180 : 0;
+
+    setIsSearching(true);
 
     debounceRef.current = setTimeout(async () => {
       try {
@@ -61,7 +64,7 @@ export function Hero() {
         setResults(
           data
             .filter((result) => result.type === "INTERVENTION")
-            .slice(0, 6),
+            .slice(0, 10),
         );
         setIsSearching(false);
       } catch {
@@ -70,7 +73,7 @@ export function Hero() {
           setIsSearching(false);
         }
       }
-    }, 180);
+    }, debounceDelay);
 
     return () => {
       controller.abort();
@@ -79,10 +82,13 @@ export function Hero() {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query]);
+  }, [isFocused, query, selection]);
 
   const hasQuery = query.trim().length > 0;
-  const showSuggestions = isFocused && !selection && hasQuery;
+  const showSuggestions =
+    isFocused &&
+    !selection &&
+    (hasQuery || results.length > 0 || isSearching);
 
   function createSelection(result: TaxonomySearchResult) {
     return {
@@ -126,6 +132,13 @@ export function Hero() {
     }
 
     const firstResult = results[0];
+
+    if (!query.trim()) {
+      setError("Seleziona un suggerimento prima di proseguire.");
+      setIsFocused(true);
+      inputRef.current?.focus();
+      return;
+    }
 
     if (firstResult) {
       openRequest(createSelection(firstResult));
@@ -185,12 +198,6 @@ export function Hero() {
                   selectionRef.current = null;
                   setSelection(null);
                   setError(null);
-
-                  if (!nextQuery.trim()) {
-                    setResults([]);
-                    setIsSearching(false);
-                    return;
-                  }
 
                   setIsSearching(true);
                 }}

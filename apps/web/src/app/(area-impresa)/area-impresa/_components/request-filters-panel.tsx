@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import {
   Search,
   SlidersHorizontal,
@@ -8,8 +7,12 @@ import {
 import {
   useRouter,
 } from "next/navigation"
+import type {
+  FormEvent,
+} from "react"
 import {
   useState,
+  useTransition,
 } from "react"
 
 import {
@@ -22,6 +25,10 @@ import {
 import type {
   RequestDashboardSort,
 } from "@esigenta/db"
+
+import {
+  PendingRequestLink,
+} from "./request-pending-controls"
 
 export type RequestFiltersState = {
   q: string | null
@@ -231,6 +238,10 @@ export function RequestFiltersPanel({
   activeFilterCount,
 }: RequestFiltersPanelProps) {
   const router = useRouter()
+  const [
+    isPending,
+    startTransition,
+  ] = useTransition()
   const hasAdvancedFilters =
     Boolean(
       active.radiusKm ||
@@ -260,12 +271,38 @@ export function RequestFiltersPanel({
         category.id === active.categoryId,
     )
 
+  function navigateTo(href: string) {
+    startTransition(() => {
+      router.push(href)
+    })
+  }
+
+  function handleSearchSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault()
+
+    const formData =
+      new FormData(event.currentTarget)
+    const query =
+      String(formData.get("q") ?? "")
+        .trim()
+
+    navigateTo(
+      buildFilterHref(active, {
+        q: query || null,
+      }),
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
         <form
           action="/area-impresa/richieste"
           method="get"
+          onSubmit={handleSearchSubmit}
+          aria-busy={isPending}
           className="w-full max-w-xl"
         >
           <PreservedFilterInputs
@@ -289,6 +326,7 @@ export function RequestFiltersPanel({
                 name="q"
                 defaultValue={active.q ?? ""}
                 placeholder="es. tinteggiatura, bagno"
+                disabled={isPending}
                 className="pl-12"
               />
             </span>
@@ -313,26 +351,38 @@ export function RequestFiltersPanel({
           </Button>
 
           {activeFilterCount ? (
-            <Link
+            <PendingRequestLink
               href="/area-impresa/richieste"
+              pendingChildren="Reset in corso..."
               className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
             >
               Reset filtri
-            </Link>
+            </PendingRequestLink>
           ) : null}
 
           {active.q ? (
-            <Link
+            <PendingRequestLink
               href={buildFilterHref(active, {
                 q: null,
               })}
+              pendingChildren="Cancellazione..."
               className="text-sm font-semibold text-text-secondary transition-colors hover:text-brand-primary"
             >
               Cancella ricerca
-            </Link>
+            </PendingRequestLink>
           ) : null}
         </div>
       </div>
+
+      {isPending ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className="text-sm font-medium text-text-secondary"
+        >
+          Aggiornamento risultati...
+        </p>
+      ) : null}
 
       {filtersOpen ? (
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -343,8 +393,9 @@ export function RequestFiltersPanel({
 
             <Select
               value={active.categoryId ?? ""}
+              disabled={isPending}
               onChange={(event) => {
-                router.push(
+                navigateTo(
                   buildFilterHref(active, {
                     categoryId:
                       event.target.value || null,
@@ -376,9 +427,11 @@ export function RequestFiltersPanel({
 
             <Select
               value={active.serviceId ?? ""}
-              disabled={!active.categoryId}
+              disabled={
+                isPending || !active.categoryId
+              }
               onChange={(event) => {
-                router.push(
+                navigateTo(
                   buildFilterHref(active, {
                     serviceId:
                       event.target.value || null,
@@ -415,8 +468,9 @@ export function RequestFiltersPanel({
                   ? String(active.radiusKm)
                   : ""
               }
+              disabled={isPending}
               onChange={(event) => {
-                router.push(
+                navigateTo(
                   buildFilterHref(active, {
                     radiusKm: event.target.value
                       ? Number(event.target.value)
@@ -446,8 +500,9 @@ export function RequestFiltersPanel({
 
             <Select
               value={active.sort}
+              disabled={isPending}
               onChange={(event) => {
-                router.push(
+                navigateTo(
                   buildFilterHref(active, {
                     sort: event.target
                       .value as RequestDashboardSort,

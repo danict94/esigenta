@@ -1,4 +1,7 @@
-export { searchTaxonomy } from "./search-taxonomy"
+export {
+  getPopularInterventions,
+  searchTaxonomy,
+} from "./search-taxonomy"
 
 export * from "./funnel"
 

@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {
   Bookmark,
   Clock3,
@@ -9,7 +8,6 @@ import {
 
 import {
   Badge,
-  Button,
   Card,
   cn,
   tokens,
@@ -19,6 +17,10 @@ import {
 import {
   formatCreditCost,
 } from "./request-commercial-display"
+import {
+  PendingRequestLink,
+  PendingSubmitButton,
+} from "./request-pending-controls"
 
 export type RequestListCardProps = {
   id: string
@@ -160,6 +162,8 @@ export function RequestListCard({
       formattedSurface,
       intervention,
     })
+  const detailHref =
+    `/area-impresa/richieste/${id}`
 
   return (
     <Card className="border-l-4 border-l-brand-primary p-4 transition-colors hover:border-border-focus lg:p-5">
@@ -196,12 +200,13 @@ export function RequestListCard({
 
         <p className="line-clamp-2 max-w-3xl text-sm leading-6 text-text-primary lg:text-lg lg:leading-7">
           {previewText}{" "}
-          <Link
-            href={`/area-impresa/richieste/${id}`}
+          <PendingRequestLink
+            href={detailHref}
+            pendingChildren="Apertura..."
             className="font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
           >
             Leggi tutto
-          </Link>
+          </PendingRequestLink>
         </p>
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -248,28 +253,38 @@ export function RequestListCard({
 
               {savedAction ? (
                 <form action={savedAction}>
-                  <Button
+                  <PendingSubmitButton
                     type="submit"
                     name="requestId"
                     value={id}
                     variant="ghost"
                     size="sm"
                     className="gap-2 px-0 text-sm font-normal text-text-primary hover:bg-transparent hover:text-brand-primary lg:text-base"
+                    pendingChildren={
+                      <>
+                        <Bookmark
+                          className="size-4 lg:size-5"
+                          aria-hidden="true"
+                        />
+                        Aggiorno...
+                      </>
+                    }
                   >
                     <Bookmark
                       className="size-4 lg:size-5"
                       aria-hidden="true"
                     />
                     {isSaved ? "salvata" : "salva"}
-                  </Button>
+                  </PendingSubmitButton>
                 </form>
               ) : null}
             </div>
           </div>
 
           <div className="flex shrink-0 lg:min-w-44 lg:justify-end">
-            <Link
-              href={`/area-impresa/richieste/${id}`}
+            <PendingRequestLink
+              href={detailHref}
+              pendingChildren="Apertura..."
               className={cn(
                 tokens.interactive.base,
                 tokens.interactive.radius,
@@ -279,7 +294,7 @@ export function RequestListCard({
               )}
             >
               Vedi richiesta
-            </Link>
+            </PendingRequestLink>
           </div>
         </div>
       </div>

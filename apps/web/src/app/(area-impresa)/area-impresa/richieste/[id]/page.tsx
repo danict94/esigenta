@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 
@@ -24,6 +23,9 @@ import {
   type RequestFormDetail,
   type RequestUnlockError,
 } from "../../_components/request-detail-card";
+import {
+  PendingRequestLink,
+} from "../../_components/request-pending-controls";
 import { toggleSavedRequestAction } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -711,12 +713,13 @@ export default async function RequestDetailPage({
   return (
     <PageShell size="xl" className="py-8 md:py-10">
       <div className="mb-6">
-        <Link
+        <PendingRequestLink
           href="/area-impresa/richieste"
+          pendingChildren="Ritorno alle richieste..."
           className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
         >
           &larr; Nuove richieste
-        </Link>
+        </PendingRequestLink>
       </div>
 
       <RequestDetailCard

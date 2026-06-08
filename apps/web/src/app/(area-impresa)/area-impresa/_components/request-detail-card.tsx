@@ -18,6 +18,9 @@ import {
   formatUnlockAvailability,
   getRequestCommercialState,
 } from "./request-commercial-display";
+import {
+  PendingSubmitButton,
+} from "./request-pending-controls";
 
 export type RequestFormDetail = {
   label: string;
@@ -650,17 +653,18 @@ export function RequestDetailCard({
           ) : null}
 
           <form action={savedAction} className="mt-5">
-            <Button
+            <PendingSubmitButton
               type="submit"
               name="requestId"
               value={requestId}
               variant="secondary"
               className="w-full"
+              pendingChildren="Aggiornamento..."
             >
               {isSaved
                 ? "Rimuovi dai preferiti"
                 : "Salva nei preferiti"}
-            </Button>
+            </PendingSubmitButton>
           </form>
 
           <dl className="mt-5 grid gap-3 border-t border-border-primary pt-5">
@@ -715,9 +719,14 @@ export function RequestDetailCard({
                 {contactCustomerAction && !hasRefundedUnlock ? (
                   <form action={contactCustomerAction} className="mt-5">
                     <input type="hidden" name="requestId" value={requestId} />
-                    <Button type="submit" variant="secondary" className="w-full">
+                    <PendingSubmitButton
+                      type="submit"
+                      variant="secondary"
+                      className="w-full"
+                      pendingChildren="Apertura contatto..."
+                    >
                       Contatta cliente
-                    </Button>
+                    </PendingSubmitButton>
                   </form>
                 ) : null}
               </>
@@ -826,9 +835,13 @@ export function RequestDetailCard({
                     />
                   </label>
 
-                  <Button type="submit" variant="secondary">
+                  <PendingSubmitButton
+                    type="submit"
+                    variant="secondary"
+                    pendingChildren="Invio in corso..."
+                  >
                     Invia richiesta rimborso
-                  </Button>
+                  </PendingSubmitButton>
                 </form>
               ) : null}
             </div>
@@ -842,9 +855,13 @@ export function RequestDetailCard({
             {canUnlock ? (
               <form action={unlockAction}>
                 <input type="hidden" name="requestId" value={requestId} />
-                <Button type="submit" className="w-full">
+                <PendingSubmitButton
+                  type="submit"
+                  className="w-full"
+                  pendingChildren="Sblocco in corso..."
+                >
                   Sblocca richiesta
-                </Button>
+                </PendingSubmitButton>
               </form>
             ) : (
               <Button
