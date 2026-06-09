@@ -1,9 +1,11 @@
 import Link from "next/link";
 
+import {
+  getCompanyServiceConfigurationPageData,
+} from "@esigenta/db";
 import { Badge, Card, PageShell } from "@esigenta/ui";
-import { prisma } from "@esigenta/db";
 
-import { requireDefaultCompanyMembership } from "../../../../auth/server";
+import { requireCompanyActor } from "../../../../auth/server";
 
 import { saveCompanyServicesAction } from "./actions";
 import {
@@ -28,100 +30,18 @@ const errorMessages: Record<string, string> = {
     "Non troviamo il profilo impresa collegato a questo account.",
 };
 
-type CompanyServiceConfiguration = {
-  id: string;
-  name: string;
-  onboardingCategorySlug: string | null;
-  categories: Array<{
-    categoryId: string;
-  }>;
-  services: Array<{
-    serviceId: string;
-  }>;
-};
-
-type ConfigurableCategory = {
-  id: string;
-  slug: string;
-  name: string;
-  sector: {
-    name: string;
-  } | null;
-  services: Array<{
-    service: {
-      id: string;
-      name: string;
-      description: string | null;
-    };
-  }>;
-};
-
 export default async function ConfiguraServiziPage({
   searchParams,
 }: ConfiguraServiziPageProps) {
-  const [{ error }, membership] = await Promise.all([
+  const [{ error }, actor] = await Promise.all([
     searchParams,
-    requireDefaultCompanyMembership(),
+    requireCompanyActor(),
   ]);
 
-  const companyPromise: Promise<CompanyServiceConfiguration | null> =
-    prisma.company.findUnique({
-      where: {
-        id: membership.companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-        onboardingCategorySlug: true,
-        categories: {
-          select: {
-            categoryId: true,
-          },
-        },
-        services: {
-          select: {
-            serviceId: true,
-          },
-        },
-      },
+  const { company, categories } =
+    await getCompanyServiceConfigurationPageData({
+      companyId: actor.companyId,
     });
-  const categoriesPromise: Promise<ConfigurableCategory[]> =
-    prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
-      select: {
-        id: true,
-        slug: true,
-        name: true,
-        sector: {
-          select: {
-            name: true,
-          },
-        },
-        services: {
-          orderBy: {
-            service: {
-              name: "asc",
-            },
-          },
-          select: {
-            service: {
-              select: {
-                id: true,
-                name: true,
-                description: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-  const [company, categories] = await Promise.all([
-    companyPromise,
-    categoriesPromise,
-  ]);
 
   if (!company) {
     return (
@@ -134,7 +54,7 @@ export default async function ConfiguraServiziPage({
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-            L&apos;account risulta autenticato, ma non è collegato a un profilo
+            L&apos;account risulta autenticato, ma non Ã¨ collegato a un profilo
             impresa valido.
           </p>
         </Card>
@@ -206,7 +126,7 @@ export default async function ConfiguraServiziPage({
 
         <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
           Le categorie determinano quali richieste puoi vedere. I servizi sono
-          opzionali: aiutano Esigenta a mostrarti prima le richieste più
+          opzionali: aiutano Esigenta a mostrarti prima le richieste piÃ¹
           pertinenti.
         </p>
 

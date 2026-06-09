@@ -31,3 +31,5 @@ export type {
 export * from "./taxonomy/domain"
 
 export * from "./account"
+
+export * from "./company-service-configuration"
