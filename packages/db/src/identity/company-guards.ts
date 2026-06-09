@@ -7,7 +7,11 @@ import {
   prisma,
 } from "../prisma/client"
 
-export type CompanyMembershipForUser = {
+import type {
+  CompanyActor,
+} from "./company-actor"
+
+type CompanyMembershipRecord = {
   id: string
   companyId: string
   userId: string
@@ -199,9 +203,21 @@ export async function assertCompanyCanBuyCredits({
   })
 }
 
-export async function listCompanyMembershipsForUser(
+function mapCompanyMembershipRecordToActor(
+  membership: CompanyMembershipRecord,
+): CompanyActor {
+  return {
+    userId: membership.userId,
+    companyId: membership.companyId,
+    role: membership.role,
+    companyStatus:
+      membership.company.status,
+  }
+}
+
+async function listCompanyMembershipRecordsForUser(
   userId: string,
-): Promise<CompanyMembershipForUser[]> {
+): Promise<CompanyMembershipRecord[]> {
   return prisma.companyMembership.findMany({
     where: {
       userId,
@@ -229,13 +245,13 @@ export async function listCompanyMembershipsForUser(
   })
 }
 
-export async function getCompanyMembershipForUser({
+async function getCompanyMembershipRecordForUser({
   userId,
   companyId,
 }: {
   userId: string
   companyId: string
-}): Promise<CompanyMembershipForUser | null> {
+}): Promise<CompanyMembershipRecord | null> {
   return prisma.companyMembership.findFirst({
     where: {
       companyId,
@@ -261,23 +277,56 @@ export async function getCompanyMembershipForUser({
   })
 }
 
+export async function listCompanyActorsForUser(
+  userId: string,
+): Promise<CompanyActor[]> {
+  const memberships =
+    await listCompanyMembershipRecordsForUser(
+      userId,
+    )
+
+  return memberships.map(
+    mapCompanyMembershipRecordToActor,
+  )
+}
+
+export async function getCompanyActorForUser({
+  userId,
+  companyId,
+}: {
+  userId: string
+  companyId: string
+}): Promise<CompanyActor | null> {
+  const membership =
+    await getCompanyMembershipRecordForUser({
+      userId,
+      companyId,
+    })
+
+  return membership
+    ? mapCompanyMembershipRecordToActor(
+        membership,
+      )
+    : null
+}
+
 export async function requireCompanyMemberFromUser(
   user: {
     id: string
   },
   companyId: string,
-): Promise<CompanyMembershipForUser> {
-  const membership =
-    await getCompanyMembershipForUser({
+): Promise<CompanyActor> {
+  const actor =
+    await getCompanyActorForUser({
       userId: user.id,
       companyId,
     })
 
-  if (!membership) {
+  if (!actor) {
     throw new CompanyAuthorizationError()
   }
 
-  return membership
+  return actor
 }
 
 export async function requireCompanyOwnerFromUser(
@@ -285,46 +334,18 @@ export async function requireCompanyOwnerFromUser(
     id: string
   },
   companyId: string,
-): Promise<CompanyMembershipForUser> {
-  const membership =
+): Promise<CompanyActor> {
+  const actor =
     await requireCompanyMemberFromUser(
       user,
       companyId,
     )
 
-  if (membership.role !== "OWNER") {
+  if (actor.role !== "OWNER") {
     throw new CompanyAuthorizationError(
       "Company owner authorization required.",
     )
   }
 
-  return membership
-}
-
-export async function requireDefaultCompanyMembershipFromUser(
-  user: {
-    id: string
-  },
-): Promise<CompanyMembershipForUser> {
-  const memberships =
-    await listCompanyMembershipsForUser(
-      user.id,
-    )
-
-  if (memberships.length === 0) {
-    throw new CompanyAuthorizationError()
-  }
-
-  if (memberships.length > 1) {
-    throw new AmbiguousCompanyMembershipError()
-  }
-
-  const [membership] =
-    memberships
-
-  if (!membership) {
-    throw new CompanyAuthorizationError()
-  }
-
-  return membership
+  return actor
 }

@@ -1,4 +1,4 @@
-export {
+﻿export {
   AdminAuthorizationError,
   getAdminProfileForUser,
   requireAdminFromUser,
@@ -27,14 +27,16 @@ export {
   CompanyMarketplaceAuthorizationError,
   assertCompanyCanBuyCredits,
   assertCompanyCanUseMarketplace,
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
   isCompanyMarketplaceApproved,
-  listCompanyMembershipsForUser,
+  listCompanyActorsForUser,
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,
-  requireDefaultCompanyMembershipFromUser,
 } from "./company-guards"
+export {
+  resolveCompanyActorFromUser,
+} from "./company-actor"
 
 export type {
-  CompanyMembershipForUser,
-} from "./company-guards"
+  CompanyActor,
+} from "./company-actor"

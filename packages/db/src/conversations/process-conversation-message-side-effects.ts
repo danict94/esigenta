@@ -339,8 +339,8 @@ async function notifyCompanyRecipients({
     uniqueRecipients(
       companyParticipant?.company
         ?.memberships.map(
-          (membership) =>
-            membership.user,
+          (companyMember) =>
+            companyMember.user,
         ) ?? [],
     )
   const accessUrl =

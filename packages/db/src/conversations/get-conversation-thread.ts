@@ -1,6 +1,6 @@
 import {
   getAdminProfileForUser,
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
 } from "../identity"
 import {
   prisma,
@@ -244,13 +244,13 @@ export async function getCompanyConversationThread({
     }
   }
 
-  const membership =
-    await getCompanyMembershipForUser({
+  const actor =
+    await getCompanyActorForUser({
       userId: normalizedUserId,
       companyId: normalizedCompanyId,
     })
 
-  if (!membership) {
+  if (!actor) {
     return {
       ok: false,
       code: "unauthorized",

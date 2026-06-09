@@ -1,6 +1,6 @@
 import {
   getAdminProfileForUser,
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
 } from "../identity"
 import {
   prisma,
@@ -143,8 +143,8 @@ async function resolveSenderParticipantId({
   }
 
   if (sender.actorType === "COMPANY") {
-    const membership =
-      await getCompanyMembershipForUser({
+    const actor =
+      await getCompanyActorForUser({
         userId: sender.userId,
         companyId: sender.companyId,
       })
@@ -164,7 +164,7 @@ async function resolveSenderParticipantId({
           sender.companyId
 
     if (
-      !membership ||
+      !actor ||
       !hasConversationAccess
     ) {
       return {

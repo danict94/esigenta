@@ -3,7 +3,7 @@ import type {
 } from "@prisma/client"
 
 import {
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
 } from "../identity"
 import {
   prisma,
@@ -199,13 +199,13 @@ export async function createSupportConversation({
     }
   }
 
-  const membership =
-    await getCompanyMembershipForUser({
+  const actor =
+    await getCompanyActorForUser({
       userId: normalizedUserId,
       companyId: normalizedCompanyId,
     })
 
-  if (!membership) {
+  if (!actor) {
     return {
       ok: false,
       code: "unauthorized",

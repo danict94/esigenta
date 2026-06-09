@@ -5,7 +5,7 @@ import {
 import {
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,
-  requireDefaultCompanyMembershipFromUser,
+  resolveCompanyActorFromUser,
 } from "@esigenta/db"
 
 import {
@@ -49,11 +49,11 @@ export async function requireCompanyOwner(
   )
 }
 
-export async function requireDefaultCompanyMembership() {
+export async function requireCompanyActor() {
   const user =
     await requireUser()
 
-  return requireDefaultCompanyMembershipFromUser(
+  return resolveCompanyActorFromUser(
     user,
   )
 }

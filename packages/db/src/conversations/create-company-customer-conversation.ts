@@ -3,7 +3,7 @@ import type {
 } from "@prisma/client"
 
 import {
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
 } from "../identity"
 import {
   prisma,
@@ -117,18 +117,18 @@ export async function createCompanyCustomerConversation({
     }
   }
 
-  const membership =
+  const actor =
     await measurePerf(
       "authorization",
       recordPerf,
       () =>
-        getCompanyMembershipForUser({
+        getCompanyActorForUser({
           userId: normalizedUserId,
           companyId: normalizedCompanyId,
         }),
     )
 
-  if (!membership) {
+  if (!actor) {
     return {
       ok: false,
       code: "unauthorized",

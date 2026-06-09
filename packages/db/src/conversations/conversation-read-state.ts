@@ -1,6 +1,6 @@
 import {
   getAdminProfileForUser,
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
 } from "../identity"
 import {
   prisma,
@@ -104,13 +104,13 @@ async function resolveCompanyUnreadScope({
     }
   }
 
-  const membership =
-    await getCompanyMembershipForUser({
+  const actor =
+    await getCompanyActorForUser({
       userId: normalizedUserId,
       companyId: normalizedCompanyId,
     })
 
-  if (!membership) {
+  if (!actor) {
     return {
       ok: false,
       code: "unauthorized",
@@ -136,13 +136,13 @@ async function markCompanyConversationRead({
   userId: string
   now: Date
 }): Promise<MarkConversationReadResult> {
-  const membership =
-    await getCompanyMembershipForUser({
+  const actor =
+    await getCompanyActorForUser({
       userId,
       companyId,
     })
 
-  if (!membership) {
+  if (!actor) {
     return {
       ok: false,
       code: "unauthorized",

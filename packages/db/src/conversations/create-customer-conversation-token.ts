@@ -4,7 +4,7 @@ import {
 
 import {
   getAdminProfileForUser,
-  getCompanyMembershipForUser,
+  getCompanyActorForUser,
 } from "../identity"
 import {
   prisma,
@@ -68,14 +68,14 @@ async function canRequesterIssueToken({
     return false
   }
 
-  const membership =
-    await getCompanyMembershipForUser({
+  const actor =
+    await getCompanyActorForUser({
       userId: requestedBy.userId,
       companyId: requestedBy.companyId,
     })
 
   return Boolean(
-    membership &&
+    actor &&
       requestedBy.companyId === companyId,
   )
 }

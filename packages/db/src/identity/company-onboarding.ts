@@ -6,10 +6,6 @@ import {
   prisma,
 } from "../prisma/client"
 
-import {
-  listCompanyMembershipsForUser,
-} from "./company-guards"
-
 const allowedOperatingRadiusKm = [
   10,
   20,
@@ -19,6 +15,35 @@ const allowedOperatingRadiusKm = [
   100,
 ] as const
 
+async function listExistingCompanyLinksForUser(
+  userId: string,
+) {
+  return prisma.companyMembership.findMany({
+    where: {
+      userId,
+      company: {
+        is: {
+          isActive: true,
+          deletedAt: null,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    select: {
+      id: true,
+      companyId: true,
+      userId: true,
+      role: true,
+      company: {
+        select: {
+          status: true,
+        },
+      },
+    },
+  })
+}
 export type CompanyOperatingRadiusKm =
   (typeof allowedOperatingRadiusKm)[number]
 
@@ -278,7 +303,7 @@ export async function createCompanyForUser({
   company,
 }: CreateCompanyForUserInput): Promise<CreateCompanyForUserResult> {
   const memberships =
-    await listCompanyMembershipsForUser(
+    await listExistingCompanyLinksForUser(
       userId,
     )
 
@@ -384,4 +409,3 @@ export async function createCompanyForUser({
     throw error
   }
 }
-
