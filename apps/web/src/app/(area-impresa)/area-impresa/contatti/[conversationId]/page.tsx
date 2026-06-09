@@ -25,6 +25,9 @@ import {
 import {
   SendMessageForm,
 } from "../../_components/send-message-form"
+import {
+  createPerfTrace,
+} from "../../_lib/perf-log"
 
 export const dynamic = "force-dynamic"
 
@@ -85,55 +88,85 @@ export default async function CompanyContactThreadPage({
   params,
   searchParams,
 }: CompanyContactThreadPageProps) {
+  const trace = createPerfTrace({
+    scope: "conversation-page",
+  })
   const [
     resolvedParams,
     resolvedSearchParams,
-    membership,
   ] = await Promise.all([
     params,
     searchParams,
-    requireDefaultCompanyMembership(),
   ])
   const { conversationId } =
     resolvedParams
+  const membership = await trace.measure(
+    "membership",
+    () => requireDefaultCompanyMembership(),
+  )
   const result =
-    await getCompanyConversationThread({
-      conversationId,
-      companyId: membership.companyId,
-      userId: membership.userId,
-    })
+    await trace.measure(
+      "conversation-query",
+      () =>
+        getCompanyConversationThread({
+          conversationId,
+          companyId: membership.companyId,
+          userId: membership.userId,
+        }),
+    )
 
   if (
     result.ok &&
     result.thread.type === "SUPPORT"
   ) {
+    const redirectHref =
+      trace.measureSync(
+        "redirect",
+        () =>
+          `/area-impresa/assistenza/${encodeURIComponent(
+            conversationId,
+          )}`,
+      )
+
+    trace.finish({
+      conversationId,
+      redirect: redirectHref,
+      status: "support-redirect",
+    })
     redirect(
-      `/area-impresa/assistenza/${encodeURIComponent(
-        conversationId,
-      )}`,
+      redirectHref,
     )
   }
 
   if (result.ok) {
-    await markConversationRead({
-      conversationId,
-      reader: {
-        actorType: "COMPANY",
-        companyId: membership.companyId,
-        userId: membership.userId,
-      },
-    })
+    await trace.measure("mark-read", () =>
+      markConversationRead({
+        conversationId,
+        reader: {
+          actorType: "COMPANY",
+          companyId: membership.companyId,
+          userId: membership.userId,
+        },
+      }),
+    )
   }
 
   const statusMessage =
-    getStatusMessage({
-      sent: readSearchParam(
-        resolvedSearchParams.sent,
-      ),
-      error: readSearchParam(
-        resolvedSearchParams.error,
-      ),
-    })
+    trace.measureSync("render-final", () =>
+      getStatusMessage({
+        sent: readSearchParam(
+          resolvedSearchParams.sent,
+        ),
+        error: readSearchParam(
+          resolvedSearchParams.error,
+        ),
+      }),
+    )
+
+  trace.finish({
+    conversationId,
+    status: result.ok ? "ok" : result.code,
+  })
 
   async function sendCompanyMessageAction(
     formData: FormData,

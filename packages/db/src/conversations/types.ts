@@ -36,6 +36,10 @@ export type CreateCompanyCustomerConversationInput = {
   companyId: string
   requestId: string
   userId: string
+  recordPerf?: (
+    operation: string,
+    durationMs: number,
+  ) => void
 }
 
 export type CreateCompanyCustomerConversationResult =

@@ -42,6 +42,7 @@
     "name": "Idraulico",
     "sectorSlug": "impianti",
     "services": [
+      "impianto-idraulico",
       "installazione-rubinetteria",
       "installazione-sanitari",
       "riparazione-perdite-acqua",

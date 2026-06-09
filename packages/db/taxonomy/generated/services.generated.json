@@ -110,6 +110,10 @@
     "name": "Impianto elettrico"
   },
   {
+    "slug": "impianto-idraulico",
+    "name": "impianto-idraulico"
+  },
+  {
     "slug": "installazione-antifurto",
     "name": "Installazione antifurto"
   },

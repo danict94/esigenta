@@ -26,6 +26,9 @@ import {
 import {
   PendingRequestLink,
 } from "../../_components/request-pending-controls";
+import {
+  createPerfTrace,
+} from "../../_lib/perf-log";
 import { toggleSavedRequestAction } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -113,20 +116,45 @@ async function unlockRequestAction(formData: FormData) {
 async function contactCustomerAction(formData: FormData) {
   "use server";
 
-  const membership = await requireDefaultCompanyMembership();
+  const trace = createPerfTrace({
+    scope: "contact-customer-action",
+  });
   const requestId = String(formData.get("requestId") ?? "").trim();
+  const membership = await trace.measure("membership", () =>
+    requireDefaultCompanyMembership(),
+  );
 
   const result = await createCompanyCustomerConversation({
     companyId: membership.companyId,
     userId: membership.userId,
     requestId,
+    recordPerf: trace.add,
   });
 
   if (!result.ok) {
-    redirect(buildRequestDetailHref({ requestId, error: result.code }));
+    const redirectHref = trace.measureSync("redirect", () =>
+      buildRequestDetailHref({ requestId, error: result.code }),
+    );
+
+    trace.finish({
+      requestId,
+      redirect: redirectHref,
+      status: result.code,
+    });
+    redirect(redirectHref);
   }
 
-  redirect(`/area-impresa/contatti/${result.conversationId}`);
+  const redirectHref = trace.measureSync(
+    "redirect",
+    () => `/area-impresa/contatti/${result.conversationId}`,
+  );
+
+  trace.finish({
+    requestId,
+    redirect: redirectHref,
+    status: result.created ? "created" : "existing",
+  });
+  redirect(redirectHref);
 }
 
 async function createRefundRequestAction(formData: FormData) {
@@ -672,43 +700,73 @@ export default async function RequestDetailPage({
   params,
   searchParams,
 }: RequestDetailPageProps) {
+  const trace = createPerfTrace({
+    scope: "request-detail",
+  });
   const [{ id }, resolvedSearchParams] = await Promise.all([
     params,
     searchParams,
   ]);
 
-  const membership = await requireDefaultCompanyMembership();
+  const membership = await trace.measure("membership", () =>
+    requireDefaultCompanyMembership(),
+  );
 
   const visibility = await getAvailableRequestForCompanyDetail({
     companyId: membership.companyId,
     requestId: id,
+    recordPerf: trace.add,
   });
 
   if (!visibility.ok || !visibility.request) {
+    trace.finish({
+      requestId: id,
+      status: "not-found",
+    });
     notFound();
   }
 
   const request = visibility.request;
-  const unlockError = getUnlockError(resolvedSearchParams.error);
-  const hasUnlocked = visibility.request.hasUnlocked;
-  const requestUnlockRefundState = visibility.request.requestUnlockRefund;
-  const customerContact = visibility.request.customerContact;
-
-  const intervention = formatInterventionLabel(request.interventionSlug);
-  const province = resolveProvince({
-    address: request.address,
-    structuredData: request.structuredData,
-  });
-  const title = buildTitle({
-    intervention,
-    city: request.city,
-    province,
-  });
-  const description = findDescription(request.structuredData);
-  const formDetails = buildFormDetails(request.structuredData);
-  const photos = await createRequestPhotoDisplayItems(
-    await listAttachedRequestPhotos(request.id),
+  const attachedPhotos = await trace.measure("attachments-db", () =>
+    listAttachedRequestPhotos(request.id),
   );
+  const photos = await trace.measure("uploadthing-sign", () =>
+    createRequestPhotoDisplayItems(attachedPhotos),
+  );
+  const viewModel = trace.measureSync("render-final", () => {
+    const unlockError = getUnlockError(resolvedSearchParams.error);
+    const hasUnlocked = request.hasUnlocked;
+    const requestUnlockRefundState = request.requestUnlockRefund;
+    const customerContact = request.customerContact;
+    const intervention = formatInterventionLabel(request.interventionSlug);
+    const province = resolveProvince({
+      address: request.address,
+      structuredData: request.structuredData,
+    });
+    const title = buildTitle({
+      intervention,
+      city: request.city,
+      province,
+    });
+    const description = findDescription(request.structuredData);
+    const formDetails = buildFormDetails(request.structuredData);
+
+    return {
+      customerContact,
+      description,
+      formDetails,
+      hasUnlocked,
+      province,
+      requestUnlockRefundState,
+      title,
+      unlockError,
+    };
+  });
+
+  trace.finish({
+    requestId: id,
+    status: "ok",
+  });
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -723,22 +781,22 @@ export default async function RequestDetailPage({
       </div>
 
       <RequestDetailCard
-        unlockError={unlockError}
+        unlockError={viewModel.unlockError}
         requestCode={request.requestCode}
-        title={title}
+        title={viewModel.title}
         city={request.city}
-        province={province}
+        province={viewModel.province}
         postalCode={request.postalCode}
         createdAt={formatDate(request.createdAt)}
-        description={description}
-        formDetails={formDetails}
+        description={viewModel.description}
+        formDetails={viewModel.formDetails}
         photos={photos}
-        {...(hasUnlocked
+        {...(viewModel.hasUnlocked
           ? {
               customerContact: {
-                name: customerContact?.name ?? null,
-                email: customerContact?.email ?? null,
-                phone: customerContact?.phone ?? null,
+                name: viewModel.customerContact?.name ?? null,
+                email: viewModel.customerContact?.email ?? null,
+                phone: viewModel.customerContact?.phone ?? null,
               },
             }
           : {})}
@@ -748,7 +806,7 @@ export default async function RequestDetailPage({
         creditCost={request.creditCost}
         maxUnlocks={request.maxUnlocks}
         unlockCount={request.unlockCount}
-        hasUnlocked={hasUnlocked}
+        hasUnlocked={viewModel.hasUnlocked}
         requestUnlockId={visibility.request.requestUnlockId}
         unlockedAt={
           visibility.request.unlockedAt
@@ -756,23 +814,25 @@ export default async function RequestDetailPage({
             : null
         }
         unlockAction={unlockRequestAction}
-        contactCustomerAction={hasUnlocked ? contactCustomerAction : undefined}
+        contactCustomerAction={
+          viewModel.hasUnlocked ? contactCustomerAction : undefined
+        }
         refundRequestAction={createRefundRequestAction}
         requestUnlockRefundedAt={
-          requestUnlockRefundState?.refundedAt
-            ? formatDate(requestUnlockRefundState.refundedAt)
+          viewModel.requestUnlockRefundState?.refundedAt
+            ? formatDate(viewModel.requestUnlockRefundState.refundedAt)
             : null
         }
         requestUnlockRefundTransactionId={
-          requestUnlockRefundState?.refundTransactionId ?? null
+          viewModel.requestUnlockRefundState?.refundTransactionId ?? null
         }
         refundRequest={
-          requestUnlockRefundState?.refundRequest
+          viewModel.requestUnlockRefundState?.refundRequest
             ? {
-                id: requestUnlockRefundState.refundRequest.id,
-                status: requestUnlockRefundState.refundRequest.status,
+                id: viewModel.requestUnlockRefundState.refundRequest.id,
+                status: viewModel.requestUnlockRefundState.refundRequest.status,
                 createdAt: formatDate(
-                  requestUnlockRefundState.refundRequest.createdAt,
+                  viewModel.requestUnlockRefundState.refundRequest.createdAt,
                 ),
               }
             : null

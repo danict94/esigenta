@@ -13,6 +13,7 @@ export const impiantiCategories: TaxonomyCategory[] = [
       "installazione-rubinetteria",
       "sostituzione-tubi",
       "installazione-sanitari",
+      "impianto-idraulico",
     ],
   },
 

@@ -826,6 +826,18 @@
     ]
   },
   {
+    "slug": "rifare-impianto-idraulico",
+    "name": "Rifare impianto idraulico",
+    "services": [
+      "impianto-idraulico"
+    ],
+    "aliases": [
+      "installare impianto idraulico",
+      "nuovo impianto idraulico",
+      "realizzare impianto idraulico"
+    ]
+  },
+  {
     "slug": "rifare-scale",
     "name": "Rifare scale",
     "services": [

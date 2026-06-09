@@ -8,9 +8,7 @@ export const idraulicaInterventions: TaxonomyIntervention[] = [
 
     services: ["riparazione-perdite-acqua"],
 
-    runtimePresetSlugs: [
-      "PLUMBING_EMERGENCY",
-    ],
+    runtimePresetSlugs: ["PLUMBING_EMERGENCY"],
 
     aliases: [
       "perde acqua",
@@ -48,5 +46,19 @@ export const idraulicaInterventions: TaxonomyIntervention[] = [
     services: ["sostituzione-tubi"],
 
     aliases: ["cambiare tubi", "rifare tubature", "tubi nuovi"],
+  },
+
+  {
+    slug: "rifare-impianto-idraulico",
+
+    name: "Rifare impianto idraulico",
+
+    services: ["impianto-idraulico"],
+
+    aliases: [
+      "nuovo impianto idraulico",
+      "installare impianto idraulico",
+      "realizzare impianto idraulico",
+    ],
   },
 ];

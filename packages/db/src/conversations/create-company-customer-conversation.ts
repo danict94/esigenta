@@ -60,10 +60,31 @@ function findParticipantId({
   return participant?.id ?? null
 }
 
+async function measurePerf<T>(
+  operation: string,
+  recordPerf:
+    | CreateCompanyCustomerConversationInput["recordPerf"]
+    | undefined,
+  task: () => Promise<T>,
+): Promise<T> {
+  const startedAt =
+    performance.now()
+
+  try {
+    return await task()
+  } finally {
+    recordPerf?.(
+      operation,
+      performance.now() - startedAt,
+    )
+  }
+}
+
 export async function createCompanyCustomerConversation({
   companyId,
   requestId,
   userId,
+  recordPerf,
 }: CreateCompanyCustomerConversationInput): Promise<CreateCompanyCustomerConversationResult> {
   const normalizedCompanyId =
     normalizeRequiredId(companyId)
@@ -97,10 +118,15 @@ export async function createCompanyCustomerConversation({
   }
 
   const membership =
-    await getCompanyMembershipForUser({
-      userId: normalizedUserId,
-      companyId: normalizedCompanyId,
-    })
+    await measurePerf(
+      "authorization",
+      recordPerf,
+      () =>
+        getCompanyMembershipForUser({
+          userId: normalizedUserId,
+          companyId: normalizedCompanyId,
+        }),
+    )
 
   if (!membership) {
     return {
@@ -112,34 +138,44 @@ export async function createCompanyCustomerConversation({
   }
 
   return prisma.$transaction(async (tx) => {
-    await tx.$queryRaw<Array<{ id: string }>>`
-      SELECT "id"
-      FROM "RequestUnlock"
-      WHERE "requestId" = ${normalizedRequestId}
-        AND "companyId" = ${normalizedCompanyId}
-      FOR UPDATE
-    `
+    await measurePerf(
+      "unlock-lock",
+      recordPerf,
+      () =>
+        tx.$queryRaw<Array<{ id: string }>>`
+          SELECT "id"
+          FROM "RequestUnlock"
+          WHERE "requestId" = ${normalizedRequestId}
+            AND "companyId" = ${normalizedCompanyId}
+          FOR UPDATE
+        `,
+    )
 
     const requestUnlock =
-      await tx.requestUnlock.findUnique({
-        where: {
-          requestId_companyId: {
-            requestId:
-              normalizedRequestId,
-            companyId:
-              normalizedCompanyId,
-          },
-        },
-        select: {
-          id: true,
-          refundedAt: true,
-          request: {
-            select: {
-              customerId: true,
+      await measurePerf(
+        "unlock-lookup",
+        recordPerf,
+        () =>
+          tx.requestUnlock.findUnique({
+            where: {
+              requestId_companyId: {
+                requestId:
+                  normalizedRequestId,
+                companyId:
+                  normalizedCompanyId,
+              },
             },
-          },
-        },
-      })
+            select: {
+              id: true,
+              refundedAt: true,
+              request: {
+                select: {
+                  customerId: true,
+                },
+              },
+            },
+          }),
+      )
 
     if (!requestUnlock) {
       return {
@@ -172,42 +208,47 @@ export async function createCompanyCustomerConversation({
     }
 
     const existingConversation =
-      await tx.conversation.findFirst({
-        where: {
-          type: "COMPANY_CUSTOMER",
-          requestId: normalizedRequestId,
-          AND: [
-            {
-              participants: {
-                some: {
-                  actorType: "COMPANY",
-                  companyId:
-                    normalizedCompanyId,
+      await measurePerf(
+        "conversation-lookup",
+        recordPerf,
+        () =>
+          tx.conversation.findFirst({
+            where: {
+              type: "COMPANY_CUSTOMER",
+              requestId: normalizedRequestId,
+              AND: [
+                {
+                  participants: {
+                    some: {
+                      actorType: "COMPANY",
+                      companyId:
+                        normalizedCompanyId,
+                    },
+                  },
                 },
-              },
-            },
-            {
-              participants: {
-                some: {
-                  actorType: "CUSTOMER",
-                  customerId,
+                {
+                  participants: {
+                    some: {
+                      actorType: "CUSTOMER",
+                      customerId,
+                    },
+                  },
                 },
-              },
+              ],
             },
-          ],
-        },
-        select: {
-          id: true,
-          participants: {
             select: {
               id: true,
-              actorType: true,
-              companyId: true,
-              customerId: true,
+              participants: {
+                select: {
+                  id: true,
+                  actorType: true,
+                  companyId: true,
+                  customerId: true,
+                },
+              },
             },
-          },
-        },
-      })
+          }),
+      )
 
     if (existingConversation) {
       const companyParticipantId =
@@ -229,6 +270,11 @@ export async function createCompanyCustomerConversation({
         companyParticipantId &&
         customerParticipantId
       ) {
+        recordPerf?.(
+          "conversation-create",
+          0,
+        )
+
         return {
           ok: true,
           conversationId:
@@ -245,53 +291,58 @@ export async function createCompanyCustomerConversation({
     }
 
     const conversation =
-      await tx.conversation.create({
-        data: {
-          type: "COMPANY_CUSTOMER",
-          request: {
-            connect: {
-              id: normalizedRequestId,
-            },
-          },
-          requestUnlock: {
-            connect: {
-              id: requestUnlock.id,
-            },
-          },
-          participants: {
-            create: [
-              {
-                actorType: "COMPANY",
-                company: {
-                  connect: {
-                    id:
-                      normalizedCompanyId,
-                  },
+      await measurePerf(
+        "conversation-create",
+        recordPerf,
+        () =>
+          tx.conversation.create({
+            data: {
+              type: "COMPANY_CUSTOMER",
+              request: {
+                connect: {
+                  id: normalizedRequestId,
                 },
               },
-              {
-                actorType: "CUSTOMER",
-                customer: {
-                  connect: {
-                    id: customerId,
-                  },
+              requestUnlock: {
+                connect: {
+                  id: requestUnlock.id,
                 },
               },
-            ],
-          },
-        },
-        select: {
-          id: true,
-          participants: {
+              participants: {
+                create: [
+                  {
+                    actorType: "COMPANY",
+                    company: {
+                      connect: {
+                        id:
+                          normalizedCompanyId,
+                      },
+                    },
+                  },
+                  {
+                    actorType: "CUSTOMER",
+                    customer: {
+                      connect: {
+                        id: customerId,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
             select: {
               id: true,
-              actorType: true,
-              companyId: true,
-              customerId: true,
+              participants: {
+                select: {
+                  id: true,
+                  actorType: true,
+                  companyId: true,
+                  customerId: true,
+                },
+              },
             },
-          },
-        },
-      })
+          }),
+      )
 
     const companyParticipantId =
       findParticipantId({

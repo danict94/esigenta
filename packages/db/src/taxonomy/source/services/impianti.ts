@@ -21,6 +21,11 @@ export const impiantiServices: TaxonomyService[] = [
     name: "Installazione sanitari",
   },
 
+   {
+    slug: "impianto-idraulico",
+    name: "impianto-idraulico",
+  },
+
    // Elettricista
 
   {
