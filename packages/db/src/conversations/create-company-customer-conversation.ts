@@ -81,11 +81,12 @@ async function measurePerf<T>(
 }
 
 export async function createCompanyCustomerConversation({
+  authorizedActor,
   companyId,
   requestId,
   userId,
   recordPerf,
-}: CreateCompanyCustomerConversationInput): Promise<CreateCompanyCustomerConversationResult> {
+}: CreateCompanyCustomerConversationInput & { authorizedActor?: NonNullable<Awaited<ReturnType<typeof getCompanyActorForUser>>> }): Promise<CreateCompanyCustomerConversationResult> {
   const normalizedCompanyId =
     normalizeRequiredId(companyId)
   const normalizedRequestId =
@@ -118,7 +119,10 @@ export async function createCompanyCustomerConversation({
   }
 
   const actor =
-    await measurePerf(
+    authorizedActor?.companyId === normalizedCompanyId &&
+    authorizedActor.userId === normalizedUserId
+      ? authorizedActor
+      : await measurePerf(
       "authorization",
       recordPerf,
       () =>

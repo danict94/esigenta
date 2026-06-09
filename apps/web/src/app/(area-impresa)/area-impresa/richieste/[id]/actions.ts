@@ -97,6 +97,7 @@ export async function contactCustomerAction(formData: FormData) {
   const result = await createCompanyCustomerConversation({
     companyId: actor.companyId,
     userId: actor.userId,
+    authorizedActor: actor,
     requestId,
     recordPerf: trace.add,
   })
