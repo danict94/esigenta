@@ -1,4 +1,4 @@
-generator client {
+﻿generator client {
   provider = "prisma-client-js"
 }
 
@@ -552,6 +552,7 @@ model CompanyMembership {
   @@unique([companyId, userId])
   @@index([userId])
   @@index([companyId, role])
+  @@index([userId, companyId], map: "idx_company_membership_user_company_s6b")
 }
 
 model AdminProfile {
@@ -1048,6 +1049,7 @@ model RequestUnlock {
   @@index([requestId, createdAt])
   @@index([companyId, createdAt])
   @@index([refundedAt])
+  @@index([companyId, requestId], map: "idx_request_unlock_company_request_s6b")
 }
 
 model CompanySavedRequest {
@@ -1245,6 +1247,7 @@ model Conversation {
   @@index([requestId])
   @@index([requestUnlockId])
   @@index([resolvedById])
+  @@index([requestId], map: "idx_conversation_request_s6b")
 }
 
 model ConversationParticipant {
@@ -1274,6 +1277,9 @@ model ConversationParticipant {
   @@index([userId])
   @@index([customerId])
   @@index([companyId])
+  @@index([conversationId, actorType], map: "idx_conversation_participant_conversation_actor_s6b")
+  @@index([companyId, actorType, conversationId], map: "idx_conversation_participant_company_actor_conversation_s6b")
+  @@index([customerId, actorType, conversationId], map: "idx_conversation_participant_customer_actor_conversation_s6b")
 }
 
 model Message {
