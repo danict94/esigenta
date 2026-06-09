@@ -5,24 +5,18 @@ import { redirect } from "next/navigation";
 import { Badge, Button, Card, Input, PageShell, Select } from "@esigenta/ui";
 
 import {
-  createCompanyContactChangeRequest,
   deactivateCompanyAccount,
   getCompanyCreditAccountSummary,
-  prisma,
+  getCompanyProfilePageData,
+  requestCompanyPhoneContactChange,
+  updateCompanyProfile,
 } from "@esigenta/db";
 
-import {
-  requireDefaultCompanyMembership,
-  requireUser,
-} from "../../../../auth/server";
+import { requireCompanyActor, requireUser } from "../../../../auth/server";
 
-import {
-  CompanyLocationFields,
-} from "./company-location-fields"
+import { CompanyLocationFields } from "./company-location-fields";
 
-import {
-  DeactivateAccountForm,
-} from "./deactivate-account-form"
+import { DeactivateAccountForm } from "./deactivate-account-form";
 
 export const dynamic = "force-dynamic";
 
@@ -56,108 +50,30 @@ function normalizeText(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function normalizeOptionalText(value: FormDataEntryValue | null) {
-  const normalized = normalizeText(value);
-
-  return normalized || null;
-}
-
 function redirectWithError(code: string): never {
   redirect(`/area-impresa/profilo?error=${encodeURIComponent(code)}`);
-}
-
-function normalizeWebsite(value: FormDataEntryValue | null) {
-  const website = normalizeText(value);
-
-  if (!website) {
-    return null;
-  }
-
-  try {
-    const url = new URL(website);
-
-    if (url.protocol !== "http:" && url.protocol !== "https:") {
-      return undefined;
-    }
-
-    return url.toString();
-  } catch {
-    return undefined;
-  }
-}
-
-function normalizeCoordinate(value: FormDataEntryValue | null) {
-  const normalized = normalizeText(value);
-
-  if (!normalized) {
-    return null;
-  }
-
-  const numberValue = Number(normalized.replace(",", "."));
-
-  return Number.isFinite(numberValue) ? numberValue : undefined;
-}
-
-function isValidPhone(value: string) {
-  return value.length >= 5 && value.length <= 40;
 }
 
 async function updateCompanyProfileAction(formData: FormData) {
   "use server";
 
-  const membership = await requireDefaultCompanyMembership();
-  const website = normalizeWebsite(formData.get("website"));
-  const radiusValue = Number(normalizeText(formData.get("operatingRadiusKm")));
-  const latitude = normalizeCoordinate(formData.get("latitude"));
-  const longitude = normalizeCoordinate(formData.get("longitude"));
+  const actor = await requireCompanyActor();
 
-  if (website === undefined) {
-    redirectWithError("invalid_website");
-  }
-
-  if (
-    !allowedRadiusKm.includes(radiusValue as (typeof allowedRadiusKm)[number])
-  ) {
-    redirectWithError("invalid_radius");
-  }
-
-  if (
-    latitude === undefined ||
-    longitude === undefined ||
-    (latitude === null && longitude !== null) ||
-    (latitude !== null && longitude === null)
-  ) {
-    redirectWithError("invalid_coordinates");
-  }
-
-  const company = await prisma.company.findUnique({
-    where: {
-      id: membership.companyId,
-    },
-    select: {
-      id: true,
-    },
+  const result = await updateCompanyProfile({
+    companyId: actor.companyId,
+    website: normalizeText(formData.get("website")) || null,
+    address: normalizeText(formData.get("address")) || null,
+    city: normalizeText(formData.get("city")) || null,
+    postalCode: normalizeText(formData.get("postalCode")) || null,
+    province: normalizeText(formData.get("province")) || null,
+    latitude: normalizeText(formData.get("latitude")) || null,
+    longitude: normalizeText(formData.get("longitude")) || null,
+    operatingRadiusKm: normalizeText(formData.get("operatingRadiusKm")) || null,
   });
 
-  if (!company) {
-    redirectWithError("company_not_found");
+  if (!result.ok) {
+    redirectWithError(result.code);
   }
-
-  await prisma.company.update({
-    where: {
-      id: company.id,
-    },
-    data: {
-      website,
-      address: normalizeOptionalText(formData.get("address")),
-      city: normalizeOptionalText(formData.get("city")),
-      postalCode: normalizeOptionalText(formData.get("postalCode")),
-      province: normalizeOptionalText(formData.get("province")),
-      latitude,
-      longitude,
-      operatingRadiusKm: radiusValue,
-    },
-  });
 
   revalidatePath("/area-impresa/profilo");
   redirect("/area-impresa/profilo?saved=1");
@@ -166,62 +82,15 @@ async function updateCompanyProfileAction(formData: FormData) {
 async function requestCompanyContactChangeAction(formData: FormData) {
   "use server";
 
-  const [membership, user] = await Promise.all([
-    requireDefaultCompanyMembership(),
+  const [actor, user] = await Promise.all([
+    requireCompanyActor(),
     requireUser(),
   ]);
 
-  const company = await prisma.company.findUnique({
-    where: {
-      id: membership.companyId,
-    },
-    select: {
-      id: true,
-      phone: true,
-    },
-  });
-
-  if (!company) {
-    redirectWithError("company_not_found");
-  }
-
-  const requestedPhone = normalizeText(formData.get("phone"));
-
-  const shouldRequestPhoneChange =
-    requestedPhone.length > 0 && requestedPhone !== company.phone;
-
-  if (!shouldRequestPhoneChange) {
-    redirectWithError("requested_value_unchanged");
-  }
-
-  if (shouldRequestPhoneChange && !isValidPhone(requestedPhone)) {
-    redirectWithError("invalid_phone");
-  }
-
-  const requestedFields: Array<"PHONE"> = ["PHONE"];
-
-  const pendingFields = await prisma.companyContactChangeRequest.findMany({
-    where: {
-      companyId: company.id,
-      status: "PENDING_REVIEW",
-      field: {
-        in: requestedFields,
-      },
-    },
-    select: {
-      field: true,
-    },
-  });
-
-  if (pendingFields.length > 0) {
-    redirectWithError("company_contact_change_request_already_pending");
-  }
-
-  const result = await createCompanyContactChangeRequest({
-    companyId: company.id,
+  const result = await requestCompanyPhoneContactChange({
+    companyId: actor.companyId,
     requestedByUserId: user.id,
-    field: "PHONE",
-    requestedValue: requestedPhone,
+    requestedPhone: normalizeText(formData.get("phone")) || null,
   });
 
   if (!result.ok) {
@@ -235,12 +104,12 @@ async function requestCompanyContactChangeAction(formData: FormData) {
 async function deactivateAccountAction() {
   "use server";
 
-  const membership = await requireDefaultCompanyMembership();
+  const actor = await requireCompanyActor();
 
   const result = await deactivateCompanyAccount({
-    companyId: membership.companyId,
+    companyId: actor.companyId,
 
-    userId: membership.userId,
+    userId: actor.userId,
   });
 
   if (!result.ok) {
@@ -301,60 +170,18 @@ export default async function ProfiloImpresaPage({
   searchParams,
 }: ProfiloPageProps) {
   const params = searchParams ? await searchParams : {};
-  const [membership, user] = await Promise.all([
-    requireDefaultCompanyMembership(),
+  const [actor, user] = await Promise.all([
+    requireCompanyActor(),
     requireUser(),
   ]);
 
-  const company = await prisma.company.findUnique({
-    where: {
-      id: membership.companyId,
-    },
-    select: {
-      id: true,
-      name: true,
-      vatNumber: true,
-      phone: true,
-      website: true,
-      address: true,
-      street: true,
-      streetNo: true,
-      city: true,
-      postalCode: true,
-      province: true,
-      latitude: true,
-      longitude: true,
-      operatingRadiusKm: true,
-      onboardingCategorySlug: true,
-      categories: {
-        select: {
-          category: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
-      services: {
-        select: {
-          service: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-        orderBy: {
-          service: {
-            name: "asc",
-          },
-        },
-      },
-    },
+  const {
+    company,
+    categories,
+    services,
+    pendingContactChangeRequests,
+  } = await getCompanyProfilePageData({
+    companyId: actor.companyId,
   });
 
   if (!company) {
@@ -376,46 +203,9 @@ export default async function ProfiloImpresaPage({
     );
   }
 
-  const [accountSummary, fallbackCategory] = await Promise.all([
-    getCompanyCreditAccountSummary({
+  const accountSummary =
+    await getCompanyCreditAccountSummary({
       companyId: company.id,
-    }),
-    company.categories.length === 0 && company.onboardingCategorySlug
-      ? prisma.category.findUnique({
-          where: {
-            slug: company.onboardingCategorySlug,
-          },
-          select: {
-            id: true,
-            name: true,
-          },
-        })
-      : Promise.resolve(null),
-  ]);
-
-  const categories =
-    company.categories.length > 0
-      ? company.categories.map(({ category }) => category)
-      : fallbackCategory
-        ? [fallbackCategory]
-        : [];
-  const services = company.services.map(({ service }) => service);
-  const pendingContactChangeRequests =
-    await prisma.companyContactChangeRequest.findMany({
-      where: {
-        companyId: company.id,
-        status: "PENDING_REVIEW",
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      select: {
-        id: true,
-        field: true,
-        currentValue: true,
-        requestedValue: true,
-        createdAt: true,
-      },
     });
 
   const savedMessage = params.saved === "1" ? "Profilo aggiornato." : null;
@@ -707,9 +497,7 @@ export default async function ProfiloImpresaPage({
             </p>
           </div>
 
-          <DeactivateAccountForm
-            action={deactivateAccountAction}
-          />
+          <DeactivateAccountForm action={deactivateAccountAction} />
         </Card>
       </section>
     </PageShell>

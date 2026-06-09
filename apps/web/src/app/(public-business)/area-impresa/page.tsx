@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { CheckCircle2 } from "lucide-react";
 
 import {
-  prisma,
+  getPublicBusinessAreaPageData,
   reactivateCompanyAccount,
 } from "@esigenta/db";
 import {
@@ -33,18 +33,6 @@ export const metadata: Metadata = {
     "Iscrizione gratuita, pacchetti crediti, richieste con posti limitati e area impresa per gestire nuove opportunità di lavoro.",
 };
 
-async function getProfessionalCategories() {
-  return prisma.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-    select: {
-      slug: true,
-      name: true,
-    },
-  });
-}
-
 const heroPoints = [
   "Iscrizione gratuita",
   "Pacchetti crediti senza abbonamento obbligatorio",
@@ -66,22 +54,14 @@ async function reactivateAccountAction() {
 }
 
 export default async function AreaImpresaLandingPage() {
-  const categories = await getProfessionalCategories();
-
   const currentUser = await getCurrentUserFromHeaders(await headers());
 
-  const hasDeactivatedCompany = currentUser
-    ? await prisma.companyMembership.findFirst({
-        where: {
-          userId: currentUser.id,
-          company: {
-            is: {
-              isActive: false,
-            },
-          },
-        },
-      })
-    : null;
+  const {
+    categories,
+    hasDeactivatedCompany,
+  } = await getPublicBusinessAreaPageData({
+    userId: currentUser?.id ?? null,
+  });
 
   return (
     <PublicShell>

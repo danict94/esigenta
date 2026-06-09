@@ -33,3 +33,7 @@ export * from "./taxonomy/domain"
 export * from "./account"
 
 export * from "./company-service-configuration"
+
+export * from "./company-profile"
+
+export * from "./public-business-area"

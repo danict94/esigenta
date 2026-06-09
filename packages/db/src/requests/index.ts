@@ -207,3 +207,13 @@ export type {
   MarkCompanyNotificationReadInput,
   MarkCompanyNotificationReadResult,
 } from "./company-notifications"
+
+export {
+  storeUploadedRequestPhoto,
+}
+from "./store-uploaded-request-photo"
+
+export type {
+  StoredUploadedRequestPhoto,
+}
+from "./store-uploaded-request-photo"

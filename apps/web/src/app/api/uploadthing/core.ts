@@ -3,7 +3,7 @@ import {
 } from "node:crypto"
 
 import {
-  prisma,
+  storeUploadedRequestPhoto,
 } from "@esigenta/db"
 
 import {
@@ -156,21 +156,9 @@ export const requestPhotoFileRouter = {
       }
 
       const storedPhoto =
-        await prisma.requestPhoto.upsert({
-          where: {
-            uploadId:
-              uploadedPhoto.uploadId,
-          },
-          update: {},
-          create: uploadedPhoto,
-          select: {
-            uploadId: true,
-            fileKey: true,
-            fileName: true,
-            mimeType: true,
-            sizeBytes: true,
-          },
-        })
+        await storeUploadedRequestPhoto(
+          uploadedPhoto,
+        )
 
       const storedMetadata =
         readRequestPhotoMetadata(
