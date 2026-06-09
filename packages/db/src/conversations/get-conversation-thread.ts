@@ -29,7 +29,7 @@ type LoadedConversationThread =
     >
   >
 
-const threadMessageLimit = 100
+const threadMessageLimit = 30
 
 function normalizeRequiredText(
   value: string,
