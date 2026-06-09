@@ -21,7 +21,7 @@ import {
 } from "@esigenta/ui"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../auth/server"
 
 export const dynamic = "force-dynamic"
@@ -34,12 +34,12 @@ function formatDateTime(date: Date) {
 }
 
 export default async function CompanySupportPage() {
-  const membership =
-    await requireDefaultCompanyMembership()
+  const actor =
+    await requireCompanyActor()
   const result =
     await listCompanyConversations({
-      companyId: membership.companyId,
-      userId: membership.userId,
+      companyId: actor.companyId,
+      userId: actor.userId,
     })
   const supportConversation =
     result.ok
@@ -52,14 +52,14 @@ export default async function CompanySupportPage() {
   async function contactSupportAction() {
     "use server"
 
-    const currentMembership =
-      await requireDefaultCompanyMembership()
+    const currentActor =
+      await requireCompanyActor()
     const supportResult =
       await createSupportConversation({
         companyId:
-          currentMembership.companyId,
+          currentActor.companyId,
         userId:
-          currentMembership.userId,
+          currentActor.userId,
       })
 
     if (!supportResult.ok) {

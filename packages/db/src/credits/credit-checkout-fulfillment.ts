@@ -7,12 +7,20 @@ import {
 } from "../prisma/client"
 
 import {
+  getCreditOrderIdFromCheckoutSessionData,
+} from "./credit-checkout-session"
+
+import {
   grantCreditsFromCreditOrder,
 } from "./credit-ledger"
 
 import type {
   CreditLedgerResult,
-} from "./credit-ledger"
+} from "./credit-result"
+
+import {
+  normalizeRequiredText,
+} from "./credit-result"
 
 import {
   markCreditOrderCheckoutCreated,
@@ -51,38 +59,6 @@ export type FulfillCreditOrderFromStripeCheckoutSessionData = {
   balanceAfter: number | null
   expiresAtAfter: Date | null
   idempotencyKey: string
-}
-
-function normalizeRequiredText(
-  value: string | null | undefined,
-): string | null {
-  const trimmed =
-    value?.trim()
-
-  return trimmed
-    ? trimmed
-    : null
-}
-
-function getCreditOrderIdFromCheckoutSession({
-  clientReferenceId,
-  metadata,
-}: {
-  clientReferenceId?: string | null | undefined
-  metadata?:
-    | Record<
-        string,
-        string | null | undefined
-      >
-    | null
-    | undefined
-}) {
-  return (
-    normalizeRequiredText(
-      metadata?.creditOrderId,
-    ) ??
-    normalizeRequiredText(clientReferenceId)
-  )
 }
 
 async function getOrderFulfillmentSnapshot(
@@ -176,14 +152,12 @@ export async function fulfillCreditOrderFromStripeCheckoutSession({
   const normalizedCheckoutSessionId =
     normalizeRequiredText(checkoutSessionId)
   const creditOrderId =
-    getCreditOrderIdFromCheckoutSession({
+    getCreditOrderIdFromCheckoutSessionData({
       clientReferenceId,
       metadata,
     })
   const normalizedExpectedCompanyId =
-    expectedCompanyId
-      ? normalizeRequiredText(expectedCompanyId)
-      : null
+    normalizeRequiredText(expectedCompanyId)
 
   if (!normalizedCheckoutSessionId) {
     logStripeDebug(
@@ -191,12 +165,12 @@ export async function fulfillCreditOrderFromStripeCheckoutSession({
       {
         checkoutSessionId:
           checkoutSessionId || null,
-      paymentStatus:
-        paymentStatus ?? null,
-      eventType:
-        eventType ?? null,
-    },
-  )
+        paymentStatus:
+          paymentStatus ?? null,
+        eventType:
+          eventType ?? null,
+      },
+    )
 
     return {
       ok: false,

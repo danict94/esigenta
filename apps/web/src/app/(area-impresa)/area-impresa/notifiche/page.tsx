@@ -1,7 +1,9 @@
-import Link from "next/link"
 import {
-  revalidatePath,
-} from "next/cache"
+  buildCompanyConversationHref,
+} from "../_lib/conversation-routes";
+
+import Link from "next/link";
+import { revalidatePath } from "next/cache";
 
 import {
   Badge,
@@ -14,98 +16,73 @@ import {
   Input,
   PageShell,
   cn,
-} from "@esigenta/ui"
+} from "@esigenta/ui";
 
 import {
   listCompanyNotifications,
   markCompanyNotificationRead,
-} from "@esigenta/db"
+} from "@esigenta/db";
 
-import {
-  requireDefaultCompanyMembership,
-} from "../../../../auth/server"
+import { requireCompanyActor } from "../../../../auth/server";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("it-IT", {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(date)
+  }).format(date);
 }
 
-function formatIntervention(
-  slug: string | null,
-) {
+function formatIntervention(slug: string | null) {
   if (!slug) {
-    return "Richiesta"
+    return "Richiesta";
   }
 
-  const readable =
-    slug.replace(/[-_]/g, " ").trim()
+  const readable = slug.replace(/[-_]/g, " ").trim();
 
   return readable
-    ? readable.charAt(0).toUpperCase() +
-        readable.slice(1)
-    : "Richiesta"
+    ? readable.charAt(0).toUpperCase() + readable.slice(1)
+    : "Richiesta";
 }
 
 function formatLocation({
   city,
   postalCode,
 }: {
-  city: string | null
-  postalCode: string | null
+  city: string | null;
+  postalCode: string | null;
 }) {
-  const location = [
-    city,
-    postalCode,
-  ]
-    .filter(Boolean)
-    .join(" ")
+  const location = [city, postalCode].filter(Boolean).join(" ");
 
-  return location || "Area compatibile"
+  return location || "Area compatibile";
 }
 
-async function markNotificationReadAction(
-  formData: FormData,
-) {
-  "use server"
+async function markNotificationReadAction(formData: FormData) {
+  "use server";
 
-  const membership =
-    await requireDefaultCompanyMembership()
-  const notificationId =
-    String(
-      formData.get("notificationId") ?? "",
-    ).trim()
+  const actor = await requireCompanyActor();
+  const notificationId = String(formData.get("notificationId") ?? "").trim();
 
-  const result =
-    await markCompanyNotificationRead({
-      companyId:
-        membership.companyId,
-      notificationId,
-    })
+  const result = await markCompanyNotificationRead({
+    companyId: actor.companyId,
+    notificationId,
+  });
 
   if (!result.ok) {
-    throw new Error(result.message)
+    throw new Error(result.message);
   }
 
-  revalidatePath("/area-impresa/notifiche")
-  revalidatePath("/area-impresa", "layout")
+  revalidatePath("/area-impresa/notifiche");
+  revalidatePath("/area-impresa", "layout");
 }
 
 export default async function NotifichePage() {
-  const membership =
-    await requireDefaultCompanyMembership()
-  const notifications =
-    await listCompanyNotifications(
-      membership.companyId,
-    )
-  const unreadCount =
-    notifications.filter(
-      (notification) =>
-        notification.readAt === null,
-    ).length
+  const actor = await requireCompanyActor();
+  const notifications = await listCompanyNotifications(actor.companyId);
+  const unreadCount = notifications.filter(
+    (notification) => notification.readAt === null,
+  ).length;
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -133,33 +110,26 @@ export default async function NotifichePage() {
         ) : (
           <div className="space-y-4">
             {notifications.map((notification) => {
-              const unread =
-                notification.readAt === null
-              const request =
-                notification.request
-              const requestHref =
-                notification.requestId
-                  ? `/area-impresa/richieste/${notification.requestId}`
-                  : null
+              const unread = notification.readAt === null;
+              const request = notification.request;
+              const requestHref = notification.requestId
+                ? `/area-impresa/richieste/${notification.requestId}`
+                : null;
               const conversationHref =
-                notification.conversationId &&
-                notification.conversation
-                  ? notification.conversation.type === "SUPPORT"
-                    ? `/area-impresa/assistenza/${encodeURIComponent(
+                notification.conversationId && notification.conversation
+                  ? buildCompanyConversationHref({
+                      conversationId:
                         notification.conversationId,
-                      )}`
-                    : `/area-impresa/contatti/${encodeURIComponent(
-                      notification.conversationId,
-                    )}`
-                  : null
-              const primaryHref =
-                conversationHref ?? requestHref
-              const primaryActionLabel =
-                conversationHref
-                  ? notification.conversation?.type === "SUPPORT"
-                    ? "Apri assistenza"
-                    : "Apri contatto"
-                  : "Apri richiesta"
+                      conversationType:
+                        notification.conversation.type,
+                    })
+                  : null;
+              const primaryHref = conversationHref ?? requestHref;
+              const primaryActionLabel = conversationHref
+                ? notification.conversation?.type === "SUPPORT"
+                  ? "Apri assistenza"
+                  : "Apri contatto"
+                : "Apri richiesta";
 
               return (
                 <Card
@@ -176,68 +146,41 @@ export default async function NotifichePage() {
                       <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
                           <Badge
-                            variant={
-                              unread
-                                ? "success"
-                                : "neutral"
-                            }
+                            variant={unread ? "success" : "neutral"}
                             size="sm"
                           >
-                            {unread
-                              ? "Nuova"
-                              : "Letta"}
+                            {unread ? "Nuova" : "Letta"}
                           </Badge>
 
                           {request ? (
-                            <Badge
-                              variant="warning"
-                              size="sm"
-                            >
-                              {formatIntervention(
-                                request.interventionSlug,
-                              )}
+                            <Badge variant="warning" size="sm">
+                              {formatIntervention(request.interventionSlug)}
                             </Badge>
                           ) : null}
 
-                          {notification.type ===
-                          "CONVERSATION_MESSAGE" ? (
-                            <Badge
-                              variant="danger"
-                              size="sm"
-                            >
+                          {notification.type === "CONVERSATION_MESSAGE" ? (
+                            <Badge variant="danger" size="sm">
                               Messaggio
                             </Badge>
                           ) : null}
                         </div>
 
-                        <CardTitle>
-                          {notification.title}
-                        </CardTitle>
+                        <CardTitle>{notification.title}</CardTitle>
 
                         <CardDescription>
-                          {formatDate(
-                            notification.createdAt,
-                          )}
+                          {formatDate(notification.createdAt)}
                         </CardDescription>
                       </div>
 
                       {unread ? (
-                        <form
-                          action={
-                            markNotificationReadAction
-                          }
-                        >
+                        <form action={markNotificationReadAction}>
                           <Input
                             type="hidden"
                             name="notificationId"
                             value={notification.id}
                           />
 
-                          <Button
-                            type="submit"
-                            variant="secondary"
-                            size="sm"
-                          >
+                          <Button type="submit" variant="secondary" size="sm">
                             Segna come letta
                           </Button>
                         </form>
@@ -253,24 +196,18 @@ export default async function NotifichePage() {
                     {request ? (
                       <dl className="grid gap-3 text-sm sm:grid-cols-3">
                         <div className="border border-border-primary bg-surface-secondary p-3">
-                          <dt className="text-xs text-text-muted">
-                            Codice
-                          </dt>
+                          <dt className="text-xs text-text-muted">Codice</dt>
                           <dd className="mt-1 font-medium text-text-primary">
-                            {request.requestCode ??
-                              request.id}
+                            {request.requestCode ?? request.id}
                           </dd>
                         </div>
 
                         <div className="border border-border-primary bg-surface-secondary p-3">
-                          <dt className="text-xs text-text-muted">
-                            Località 
-                          </dt>
+                          <dt className="text-xs text-text-muted">Località </dt>
                           <dd className="mt-1 font-medium text-text-primary">
                             {formatLocation({
                               city: request.city,
-                              postalCode:
-                                request.postalCode,
+                              postalCode: request.postalCode,
                             })}
                           </dd>
                         </div>
@@ -280,9 +217,7 @@ export default async function NotifichePage() {
                             Pubblicata
                           </dt>
                           <dd className="mt-1 font-medium text-text-primary">
-                            {formatDate(
-                              request.createdAt,
-                            )}
+                            {formatDate(request.createdAt)}
                           </dd>
                         </div>
                       </dl>
@@ -298,12 +233,11 @@ export default async function NotifichePage() {
                     ) : null}
                   </CardContent>
                 </Card>
-              )
+              );
             })}
           </div>
         )}
       </section>
     </PageShell>
-  )
+  );
 }
-

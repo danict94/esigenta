@@ -5,11 +5,11 @@ import {
 } from "next/server"
 
 import {
-  fulfillCreditOrderFromStripeCheckoutSession,
+  getCreditOrderCheckoutStatus,
 } from "@esigenta/db"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../auth/server"
 
 import {
@@ -20,13 +20,10 @@ import {
   logStripeDebug,
 } from "../../../../lib/stripe/debug"
 
-type CheckoutStatus =
-  | "pending"
-  | "fulfilled"
-  | "failed"
-  | "cancelled"
-  | "expired"
-  | "error"
+import {
+  getStripeCreditOrderId,
+  mapCreditCheckoutStatus,
+} from "../../../../lib/stripe/credit-checkout"
 
 function jsonResponse(
   body: Record<string, unknown>,
@@ -48,42 +45,6 @@ function normalizeRequiredText(
     : null
 }
 
-function getPaymentIntentId(
-  session: Stripe.Checkout.Session,
-) {
-  return typeof session.payment_intent === "string"
-    ? session.payment_intent
-    : null
-}
-
-function mapCheckoutStatus({
-  fulfilled,
-  orderStatus,
-  sessionStatus,
-}: {
-  fulfilled: boolean
-  orderStatus: string
-  sessionStatus: Stripe.Checkout.Session["status"]
-}): CheckoutStatus {
-  if (fulfilled) {
-    return "fulfilled"
-  }
-
-  if (orderStatus === "FAILED") {
-    return "failed"
-  }
-
-  if (sessionStatus === "expired") {
-    return "expired"
-  }
-
-  if (orderStatus === "CANCELLED") {
-    return "cancelled"
-  }
-
-  return "pending"
-}
-
 function getHttpStatusForDomainError(
   code: string,
 ) {
@@ -96,7 +57,8 @@ function getHttpStatusForDomainError(
 
   if (
     code === "invalid_checkout_session_id" ||
-    code === "missing_credit_order_id"
+    code === "missing_credit_order_id" ||
+    code === "invalid_company_id"
   ) {
     return 400
   }
@@ -105,15 +67,15 @@ function getHttpStatusForDomainError(
 }
 
 export async function GET(request: Request) {
-  let membership: Awaited<
+  let actor: Awaited<
     ReturnType<
-      typeof requireDefaultCompanyMembership
+      typeof requireCompanyActor
     >
   >
 
   try {
-    membership =
-      await requireDefaultCompanyMembership()
+    actor =
+      await requireCompanyActor()
   } catch {
     return jsonResponse(
       {
@@ -136,7 +98,7 @@ export async function GET(request: Request) {
       hasSessionId:
         Boolean(sessionId),
       companyId:
-        membership.companyId,
+        actor.companyId,
     },
   )
 
@@ -162,7 +124,7 @@ export async function GET(request: Request) {
       "checkout_status.stripe_client_unavailable",
       {
         companyId:
-          membership.companyId,
+          actor.companyId,
         error:
           error instanceof Error
             ? error.message
@@ -191,7 +153,7 @@ export async function GET(request: Request) {
       "checkout_status.session_retrieve_failed",
       {
         companyId:
-          membership.companyId,
+          actor.companyId,
         checkoutSessionId:
           sessionId,
         error:
@@ -210,36 +172,28 @@ export async function GET(request: Request) {
     )
   }
 
-  const creditOrderId =
-    session.metadata?.creditOrderId ??
-    session.client_reference_id ??
-    null
-
   const result =
-    await fulfillCreditOrderFromStripeCheckoutSession({
-      checkoutSessionId: session.id,
+    await getCreditOrderCheckoutStatus({
+      companyId:
+        actor.companyId,
+      checkoutSessionId:
+        session.id,
       clientReferenceId:
         session.client_reference_id,
-      paymentIntentId:
-        getPaymentIntentId(session),
-      paymentStatus:
-        session.payment_status,
-      metadata: session.metadata,
-      expectedCompanyId:
-        membership.companyId,
-      eventType:
-        "checkout-status",
+      metadata:
+        session.metadata,
     })
 
   if (!result.ok) {
     logStripeDebug(
-      "checkout_status.reconcile_failed",
+      "checkout_status.lookup_failed",
       {
         companyId:
-          membership.companyId,
+          actor.companyId,
         checkoutSessionId:
           session.id,
-        creditOrderId,
+        creditOrderId:
+          getStripeCreditOrderId(session),
         stripeSessionStatus:
           session.status,
         stripePaymentStatus:
@@ -260,7 +214,7 @@ export async function GET(request: Request) {
   }
 
   const status =
-    mapCheckoutStatus({
+    mapCreditCheckoutStatus({
       fulfilled:
         result.data.fulfilled,
       orderStatus:
@@ -273,24 +227,22 @@ export async function GET(request: Request) {
     "checkout_status.resolved",
     {
       companyId:
-        membership.companyId,
+        actor.companyId,
       creditOrderId:
         result.data.creditOrderId,
       checkoutSessionId:
         session.id,
       stripeSessionStatus:
         session.status,
+      stripePaymentStatus:
+        session.payment_status,
       status,
-      paymentStatus:
-        result.data.paymentStatus,
       orderStatus:
         result.data.orderStatus,
-      reconciled:
-        result.data.reconciled,
       fulfilled:
         result.data.fulfilled,
-      idempotencyKey:
-        result.data.idempotencyKey,
+      transactionId:
+        result.data.transactionId,
     },
   )
 
@@ -301,6 +253,6 @@ export async function GET(request: Request) {
     orderStatus:
       result.data.orderStatus,
     paymentStatus:
-      result.data.paymentStatus,
+      session.payment_status,
   })
 }

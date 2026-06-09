@@ -9,16 +9,17 @@ import {
   prisma,
 } from "../prisma/client"
 
-export type CreditLedgerResult<T> =
-  | {
-      ok: true
-      data: T
-    }
-  | {
-      ok: false
-      code: string
-      message: string
-    }
+import {
+  normalizeRequiredText,
+} from "./credit-result"
+
+import type {
+  CreditLedgerResult,
+} from "./credit-result"
+
+export type {
+  CreditLedgerResult,
+} from "./credit-result"
 
 export type CompanyCreditAccountSummary = {
   accountId: string
@@ -89,17 +90,6 @@ type LockedCompanyCreditAccount =
   >
 
 const REFUND_VALIDITY_DAYS = 30
-
-function normalizeRequiredText(
-  value: string,
-): string | null {
-  const trimmed =
-    value.trim()
-
-  return trimmed
-    ? trimmed
-    : null
-}
 
 function addDays(
   date: Date,

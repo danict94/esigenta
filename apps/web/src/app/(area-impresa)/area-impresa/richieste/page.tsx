@@ -15,20 +15,14 @@ import {
   type RequestDashboardSort,
 } from "@esigenta/db"
 
-import { requireDefaultCompanyMembership } from "../../../../auth/server"
+import { requireCompanyActor } from "../../../../auth/server"
 
+import {
+  CompanyRequestList,
+} from "../_components/company-request-list"
 import {
   RequestFiltersPanel,
 } from "../_components/request-filters-panel"
-import { RequestListCard } from "../_components/request-list-card"
-import {
-  formatFreshness,
-  formatInterventionLabel,
-  formatLocationLabel,
-  getDescription,
-  getStructuredData,
-  getSurfaceArea,
-} from "../_components/request-card-format"
 
 import {
   toggleSavedRequestAction,
@@ -113,20 +107,6 @@ function normalizeRequestDashboardFilters(
   }
 }
 
-function getMatchLabel(
-  matchLevel: "selected_service" | "category" | "explore",
-) {
-  if (matchLevel === "selected_service") {
-    return "Molto compatibile"
-  }
-
-  if (matchLevel === "category") {
-    return "Nella tua categoria"
-  }
-
-  return "Non nel profilo"
-}
-
 type ActiveFilters = {
   q: string | null
   radiusKm: number | null
@@ -203,10 +183,10 @@ export default async function RichiestePage({
 }: RichiestePageProps) {
   const [
     resolvedSearchParams,
-    membership,
+    actor,
   ] = await Promise.all([
     searchParams,
-    requireDefaultCompanyMembership(),
+    requireCompanyActor(),
   ])
 
   const filters =
@@ -216,7 +196,7 @@ export default async function RichiestePage({
 
   const result =
     await listAvailableRequestsForCompany({
-      companyId: membership.companyId,
+      companyId: actor.companyId,
       filters,
     })
 
@@ -337,7 +317,7 @@ export default async function RichiestePage({
               <Card className="bg-surface-secondary p-5">
                 <p className="text-sm font-semibold text-text-primary">
                   Seleziona i servizi che offri per vedere prima le richieste
-                  più adatte.
+                  piÃ¹ adatte.
                 </p>
 
                 <Link
@@ -349,52 +329,12 @@ export default async function RichiestePage({
               </Card>
             ) : null}
 
-            {result.requests.length === 0 ? (
-              <Card className="p-8">
-                <p className="text-sm text-text-secondary">
-                  Nessuna richiesta disponibile al momento.
-                </p>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {result.requests.map((request) => {
-                  const structuredData =
-                    getStructuredData(
-                      request.structuredData,
-                    )
-
-                  const description =
-                    getDescription(structuredData)
-
-                  const surfaceArea =
-                    getSurfaceArea(structuredData)
-
-                  return (
-                    <RequestListCard
-                      key={request.id}
-                      id={request.id}
-                      intervention={formatInterventionLabel(
-                        request.interventionSlug,
-                      )}
-                      location={formatLocationLabel({
-                        city: request.city,
-                        postalCode: request.postalCode,
-                        address: request.address,
-                      })}
-                      createdAt={formatFreshness(request.createdAt)}
-                      matchLabel={getMatchLabel(request.matchLevel)}
-                      description={description}
-                      surfaceArea={surfaceArea}
-                      creditCost={request.creditCost}
-                      maxUnlocks={request.maxUnlocks}
-                      unlockCount={request.unlockCount}
-                      isSaved={request.isSaved}
-                      savedAction={toggleSavedRequestAction}
-                    />
-                  )
-                })}
-              </div>
-            )}
+            <CompanyRequestList
+              requests={result.requests}
+              mode="available"
+              emptyMessage="Nessuna richiesta disponibile al momento."
+              savedAction={toggleSavedRequestAction}
+            />
           </>
         )}
       </section>

@@ -7,8 +7,11 @@ import {
 } from "@esigenta/db"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../../auth/server"
+import {
+  buildCompanyConversationHref,
+} from "../../_lib/conversation-routes"
 
 export const dynamic = "force-dynamic"
 
@@ -23,34 +26,33 @@ export default async function LegacyCompanyConversationThreadPage({
 }: LegacyCompanyConversationThreadPageProps) {
   const [
     resolvedParams,
-    membership,
+    actor,
   ] = await Promise.all([
     params,
-    requireDefaultCompanyMembership(),
+    requireCompanyActor(),
   ])
   const { conversationId } =
     resolvedParams
   const result =
     await getCompanyConversationThread({
       conversationId,
-      companyId: membership.companyId,
-      userId: membership.userId,
+      companyId: actor.companyId,
+      userId: actor.userId,
     })
 
-  if (
-    result.ok &&
-    result.thread.type === "SUPPORT"
-  ) {
+  if (result.ok) {
     redirect(
-      `/area-impresa/assistenza/${encodeURIComponent(
+      buildCompanyConversationHref({
         conversationId,
-      )}`,
+        conversationType: result.thread.type,
+      }),
     )
   }
 
   redirect(
-    `/area-impresa/contatti/${encodeURIComponent(
+    buildCompanyConversationHref({
       conversationId,
-    )}`,
+      conversationType: "COMPANY_CUSTOMER",
+    }),
   )
 }

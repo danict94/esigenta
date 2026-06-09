@@ -1,4 +1,4 @@
-const STRIPE_DEBUG_PREFIX =
+export const STRIPE_DEBUG_PREFIX =
   "[esigenta-stripe]"
 
 export function isStripeDebugEnabled() {

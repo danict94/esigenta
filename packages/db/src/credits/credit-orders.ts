@@ -11,9 +11,13 @@ import {
   CompanyMarketplaceAuthorizationError,
 } from "../identity"
 
+import {
+  normalizeRequiredText,
+} from "./credit-result"
+
 import type {
   CreditLedgerResult,
-} from "./credit-ledger"
+} from "./credit-result"
 
 export type PurchasableCreditPackage = {
   id: string
@@ -62,17 +66,6 @@ export type MarkCreditOrderCheckoutCreatedData = {
 export type MarkCreditOrderCheckoutTerminalData = {
   orderId: string
   updated: boolean
-}
-
-function normalizeRequiredText(
-  value: string,
-): string | null {
-  const trimmed =
-    value.trim()
-
-  return trimmed
-    ? trimmed
-    : null
 }
 
 export async function listActiveCreditPackagesForPurchase(): Promise<
@@ -222,15 +215,11 @@ export async function markCreditOrderCheckoutCreated({
   const normalizedProviderCheckoutId =
     normalizeRequiredText(providerCheckoutId)
   const normalizedPaymentIntentId =
-    providerPaymentIntentId
-      ? normalizeRequiredText(
-          providerPaymentIntentId,
-        )
-      : null
+    normalizeRequiredText(
+      providerPaymentIntentId,
+    )
   const normalizedProviderEventId =
-    providerEventId
-      ? normalizeRequiredText(providerEventId)
-      : null
+    normalizeRequiredText(providerEventId)
 
   if (!normalizedCreditOrderId) {
     return {

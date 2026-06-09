@@ -1,5 +1,8 @@
-export const STRIPE_DEBUG_PREFIX =
-  "[esigenta-stripe]"
+export {
+  STRIPE_DEBUG_PREFIX,
+  isStripeDebugEnabled,
+  logStripeDebug,
+} from "@esigenta/db"
 
 export const STRIPE_EXPECTED_WEBHOOK_ENDPOINT =
   "https://esigenta-web.vercel.app/api/stripe/webhook"
@@ -11,27 +14,6 @@ export const STRIPE_REQUIRED_WEBHOOK_EVENTS = [
   "checkout.session.expired",
   "payment_intent.payment_failed",
 ] as const
-
-export function isStripeDebugEnabled() {
-  return (
-    process.env.ESIGENTA_DEBUG_STRIPE ===
-    "true"
-  )
-}
-
-export function logStripeDebug(
-  event: string,
-  payload: Record<string, unknown>,
-) {
-  if (!isStripeDebugEnabled()) {
-    return
-  }
-
-  console.info(
-    `${STRIPE_DEBUG_PREFIX} ${event}`,
-    payload,
-  )
-}
 
 export function getUrlHost(
   value: string,

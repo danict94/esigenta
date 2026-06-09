@@ -8,7 +8,7 @@ import {
 } from "@esigenta/ui"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../auth/server"
 
 import {
@@ -18,12 +18,12 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function CompanyContactsPage() {
-  const membership =
-    await requireDefaultCompanyMembership()
+  const actor =
+    await requireCompanyActor()
   const result =
     await listCompanyConversations({
-      companyId: membership.companyId,
-      userId: membership.userId,
+      companyId: actor.companyId,
+      userId: actor.userId,
     })
   const contacts =
     result.ok

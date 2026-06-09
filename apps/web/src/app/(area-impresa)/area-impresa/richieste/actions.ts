@@ -9,21 +9,21 @@ import {
 } from "@esigenta/db"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../auth/server"
 
 export async function toggleSavedRequestAction(
   formData: FormData,
 ) {
-  const membership =
-    await requireDefaultCompanyMembership()
+  const actor =
+    await requireCompanyActor()
   const requestId = String(
     formData.get("requestId") ?? "",
   ).trim()
 
   const result =
     await toggleCompanySavedRequest({
-      companyId: membership.companyId,
+      companyId: actor.companyId,
       requestId,
     })
 

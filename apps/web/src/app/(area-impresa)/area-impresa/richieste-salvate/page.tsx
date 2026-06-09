@@ -1,5 +1,4 @@
 import {
-  Card,
   PageShell,
 } from "@esigenta/ui"
 
@@ -8,20 +7,12 @@ import {
 } from "@esigenta/db"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../auth/server"
 
 import {
-  formatFreshness,
-  formatInterventionLabel,
-  formatLocationLabel,
-  getDescription,
-  getStructuredData,
-  getSurfaceArea,
-} from "../_components/request-card-format"
-import {
-  RequestListCard,
-} from "../_components/request-list-card"
+  CompanyRequestList,
+} from "../_components/company-request-list"
 
 import {
   toggleSavedRequestAction,
@@ -30,12 +21,10 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function RichiesteSalvatePage() {
-  const membership =
-    await requireDefaultCompanyMembership()
-  const requests =
-    await listCompanySavedRequests({
-      companyId: membership.companyId,
-    })
+  const actor = await requireCompanyActor()
+  const requests = await listCompanySavedRequests({
+    companyId: actor.companyId,
+  })
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -54,65 +43,12 @@ export default async function RichiesteSalvatePage() {
           </p>
         </div>
 
-        {requests.length === 0 ? (
-          <Card className="p-8">
-            <p className="text-sm text-text-secondary">
-              Non hai ancora salvato richieste.
-            </p>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {requests.map((request) => {
-              const structuredData =
-                getStructuredData(
-                  request.structuredData,
-                )
-              const description =
-                getDescription(structuredData)
-              const surfaceArea =
-                getSurfaceArea(structuredData)
-
-              return (
-                <RequestListCard
-                  key={request.id}
-                  id={request.id}
-                  intervention={formatInterventionLabel(
-                    request.interventionSlug,
-                  )}
-                  location={formatLocationLabel({
-                    city: request.city,
-                    postalCode:
-                      request.postalCode,
-                    address: request.address,
-                  })}
-                  createdAt={formatFreshness(
-                    request.createdAt,
-                  )}
-                  matchLabel="Salvata"
-                  description={description}
-                  surfaceArea={surfaceArea}
-                  creditCost={request.creditCost}
-                  maxUnlocks={request.maxUnlocks}
-                  unlockCount={request.unlockCount}
-                  isSaved={request.isSaved}
-                  savedAction={
-                    toggleSavedRequestAction
-                  }
-                  badges={
-                    request.hasUnlocked
-                      ? [
-                          {
-                            label: "Acquistata",
-                            variant: "success",
-                          },
-                        ]
-                      : []
-                  }
-                />
-              )
-            })}
-          </div>
-        )}
+        <CompanyRequestList
+          requests={requests}
+          mode="saved"
+          emptyMessage="Non hai ancora salvato richieste."
+          savedAction={toggleSavedRequestAction}
+        />
       </section>
     </PageShell>
   )

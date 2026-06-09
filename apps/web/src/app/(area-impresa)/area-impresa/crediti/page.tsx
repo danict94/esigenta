@@ -1,8 +1,4 @@
 import {
-  redirect,
-} from "next/navigation"
-
-import {
   Badge,
   Button,
   Card,
@@ -10,29 +6,21 @@ import {
 } from "@esigenta/ui"
 
 import {
-  createPendingCreditOrder,
   getCompanyCreditAccountSummary,
   listActiveCreditPackagesForPurchase,
-  markCreditOrderCheckoutCreated,
 } from "@esigenta/db"
 
 import {
-  requireDefaultCompanyMembership,
+  requireCompanyActor,
 } from "../../../../auth/server"
-
-import {
-  getStripeServerClient,
-} from "../../../../lib/stripe/server"
-
-import {
-  getStripeRuntimeDebugConfig,
-  getUrlHost,
-  logStripeDebug,
-} from "../../../../lib/stripe/debug"
 
 import {
   CreditCheckoutStatusBanner,
 } from "./credit-checkout-status-banner"
+
+import {
+  createCreditPackageCheckoutAction,
+} from "./actions"
 
 export const dynamic = "force-dynamic"
 
@@ -42,124 +30,6 @@ type CreditsPageProps = {
     orderId?: string
     session_id?: string
   }>
-}
-
-type AppUrlCandidate = {
-  value: string | undefined
-  source: "standard" | "vercel"
-}
-
-function normalizeAppUrl({
-  source,
-  value,
-}: AppUrlCandidate) {
-  const trimmed =
-    value?.trim()
-
-  if (!trimmed) {
-    return null
-  }
-
-  const withProtocol =
-    source === "vercel" &&
-    !/^https?:\/\//i.test(trimmed)
-      ? `https://${trimmed}`
-      : trimmed
-
-  return withProtocol.replace(
-    /\/+$/,
-    "",
-  )
-}
-
-function getAppUrl() {
-  const candidates: AppUrlCandidate[] = [
-    {
-      value:
-        process.env.ESIGENTA_WEB_URL,
-      source: "standard",
-    },
-    {
-      value:
-        process.env.ESIGENTA_APP_URL,
-      source: "standard",
-    },
-    {
-      value:
-        process.env.NEXT_PUBLIC_APP_URL,
-      source: "standard",
-    },
-    {
-      value:
-        process.env.BETTER_AUTH_URL,
-      source: "standard",
-    },
-    {
-      value:
-        process.env
-          .VERCEL_PROJECT_PRODUCTION_URL,
-      source: "vercel",
-    },
-    {
-      value:
-        process.env.VERCEL_URL,
-      source: "vercel",
-    },
-  ]
-
-  for (const candidate of candidates) {
-    const normalized =
-      normalizeAppUrl(candidate)
-
-    if (normalized) {
-      return normalized
-    }
-  }
-
-  return null
-}
-
-function buildCheckoutReturnUrl({
-  appUrl,
-  checkout,
-  orderId,
-  sessionId,
-}: {
-  appUrl: string
-  checkout: "success" | "cancel"
-  orderId?: string
-  sessionId?: string
-}) {
-  const url = new URL(
-    "/area-impresa/crediti",
-    appUrl,
-  )
-
-  url.searchParams.set(
-    "checkout",
-    checkout,
-  )
-
-  if (orderId) {
-    url.searchParams.set(
-      "orderId",
-      orderId,
-    )
-  }
-
-  if (sessionId) {
-    url.searchParams.set(
-      "session_id",
-      sessionId,
-    )
-  }
-
-  return url
-    .toString()
-    .replace(
-      "%7BCHECKOUT_SESSION_ID%7D",
-      "{CHECKOUT_SESSION_ID}",
-    )
 }
 
 function formatPrice({
@@ -181,261 +51,15 @@ function formatDate(date: Date) {
   }).format(date)
 }
 
-async function createCreditPackageCheckoutAction(
-  formData: FormData,
-) {
-  "use server"
-
-  const membership =
-    await requireDefaultCompanyMembership()
-
-  const packageId =
-    String(
-      formData.get("packageId") ?? "",
-    ).trim()
-
-  const appUrl =
-    getAppUrl()
-  if (!appUrl) {
-    logStripeDebug(
-      "checkout.base_url_missing",
-      {
-        companyId:
-          membership.companyId,
-        ...getStripeRuntimeDebugConfig(),
-      },
-    )
-
-    redirect(
-      "/area-impresa/crediti?checkout=config",
-    )
-  }
-
-  let stripe: ReturnType<
-    typeof getStripeServerClient
-  >
-
-  try {
-    stripe =
-      getStripeServerClient()
-  } catch (error) {
-    logStripeDebug(
-      "checkout.stripe_client_unavailable",
-      {
-        companyId:
-          membership.companyId,
-        error:
-          error instanceof Error
-            ? error.message
-            : "unknown_error",
-      },
-    )
-
-    redirect(
-      "/area-impresa/crediti?checkout=config",
-    )
-  }
-
-  const orderResult =
-    await createPendingCreditOrder({
-      companyId:
-        membership.companyId,
-      packageId,
-    })
-
-  if (!orderResult.ok) {
-    logStripeDebug(
-      "checkout.order_creation_failed",
-      {
-        companyId:
-          membership.companyId,
-        packageId,
-        code: orderResult.code,
-      },
-    )
-
-    redirect(
-      "/area-impresa/crediti?checkout=unavailable",
-    )
-  }
-
-  const order =
-    orderResult.data
-  const idempotencyKey =
-    `credit-checkout:${order.orderId}`
-  const checkoutMetadata = {
-    creditOrderId:
-      order.orderId,
-    companyId:
-      membership.companyId,
-    packageId:
-      order.packageId,
-    credits:
-      String(order.credits),
-  }
-  const successUrl =
-    buildCheckoutReturnUrl({
-      appUrl,
-      checkout: "success",
-      sessionId:
-        "{CHECKOUT_SESSION_ID}",
-    })
-  const cancelUrl =
-    buildCheckoutReturnUrl({
-      appUrl,
-      checkout: "cancel",
-    })
-
-  let session: Awaited<
-    ReturnType<
-      typeof stripe.checkout.sessions.create
-    >
-  >
-
-  try {
-    session =
-      await stripe.checkout.sessions.create(
-      {
-        mode: "payment",
-        line_items: [
-          {
-            price_data: {
-              currency:
-                order.currency,
-              unit_amount:
-                order.priceCents,
-              product_data: {
-                name:
-                  `Esigenta Crediti - ${order.name}`,
-                description:
-                  `${order.credits} crediti · validità ${order.validityDays} giorni`,
-              },
-            },
-            quantity: 1,
-          },
-        ],
-        success_url:
-          successUrl,
-        cancel_url:
-          cancelUrl,
-        metadata:
-          checkoutMetadata,
-        payment_intent_data: {
-          metadata:
-            checkoutMetadata,
-        },
-        client_reference_id:
-          order.orderId,
-      },
-      {
-        idempotencyKey,
-      },
-    )
-  } catch (error) {
-    logStripeDebug(
-      "checkout.session_creation_failed",
-      {
-        companyId:
-          membership.companyId,
-        creditOrderId:
-          order.orderId,
-        error:
-          error instanceof Error
-            ? error.message
-            : "unknown_error",
-      },
-    )
-
-    redirect(
-      "/area-impresa/crediti?checkout=error",
-    )
-  }
-
-  const providerPaymentIntentId =
-    typeof session.payment_intent === "string"
-      ? session.payment_intent
-      : null
-
-  logStripeDebug(
-    "checkout.session_created",
-    {
-      companyId:
-        membership.companyId,
-      creditOrderId:
-        order.orderId,
-      packageId:
-        order.packageId,
-      checkoutSessionId:
-        session.id,
-      providerPaymentIntentId,
-      baseUrl:
-        appUrl,
-      successUrlHost:
-        getUrlHost(successUrl),
-      cancelUrlHost:
-        getUrlHost(cancelUrl),
-      ...getStripeRuntimeDebugConfig(),
-    },
-  )
-
-  const markResult =
-    await markCreditOrderCheckoutCreated({
-      creditOrderId:
-        order.orderId,
-      providerCheckoutId:
-        session.id,
-      providerPaymentIntentId,
-    })
-
-  if (!markResult.ok) {
-    logStripeDebug(
-      "checkout.order_attach_failed",
-      {
-        companyId:
-          membership.companyId,
-        creditOrderId:
-          order.orderId,
-        checkoutSessionId:
-          session.id,
-        code: markResult.code,
-      },
-    )
-
-    redirect(
-      "/area-impresa/crediti?checkout=error",
-    )
-  }
-
-  if (!session.url) {
-    logStripeDebug(
-      "checkout.session_url_missing",
-      {
-        companyId:
-          membership.companyId,
-        creditOrderId:
-          order.orderId,
-        checkoutSessionId:
-          session.id,
-      },
-    )
-
-    redirect(
-      "/area-impresa/crediti?checkout=error",
-    )
-  }
-
-  redirect(session.url)
-}
-
 export default async function CompanyCreditsPage({
   searchParams,
 }: CreditsPageProps) {
-  const membership =
-    await requireDefaultCompanyMembership()
+  const actor =
+    await requireCompanyActor()
   const params =
     searchParams ? await searchParams : {}
   const canBuyCredits =
-    membership.company.status ===
+    actor.companyStatus ===
     "APPROVED"
 
   const [
@@ -444,7 +68,7 @@ export default async function CompanyCreditsPage({
   ] = await Promise.all([
     getCompanyCreditAccountSummary({
       companyId:
-        membership.companyId,
+        actor.companyId,
     }),
     listActiveCreditPackagesForPurchase(),
   ])
@@ -460,7 +84,7 @@ export default async function CompanyCreditsPage({
       : params.checkout === "cancel"
         ? "Pagamento annullato o non completato."
         : params.checkout === "config"
-          ? "Checkout non disponibile: configurazione URL applicazione mancante."
+          ? "Checkout non disponibile: configurazione applicazione mancante."
           : params.checkout === "unavailable"
             ? "Checkout non disponibile per questo pacchetto o profilo impresa."
             : params.checkout === "error"
@@ -584,7 +208,7 @@ export default async function CompanyCreditsPage({
 
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-text-muted">
-                      Validità
+                      Validita
                     </dt>
                     <dd className="font-semibold text-text-primary">
                       {creditPackage.validityDays} giorni
