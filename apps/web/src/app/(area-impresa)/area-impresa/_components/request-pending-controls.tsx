@@ -114,7 +114,7 @@ export function PendingRequestLink({
   return (
     <Link
       href={href}
-      prefetch={prefetch}
+      prefetch={prefetch ?? false}
       aria-label={ariaLabel}
       aria-busy={isPending}
       aria-disabled={isPending}
