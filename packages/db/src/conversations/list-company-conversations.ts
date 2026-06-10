@@ -40,10 +40,11 @@ function normalizeLimit(
 }
 
 export async function listCompanyConversations({
+  authorizedActor,
   companyId,
   userId,
   limit,
-}: ListCompanyConversationsInput): Promise<ListCompanyConversationsResult> {
+}: ListCompanyConversationsInput & { authorizedActor?: NonNullable<Awaited<ReturnType<typeof getCompanyActorForUser>>> }): Promise<ListCompanyConversationsResult> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
   const normalizedUserId =
@@ -66,7 +67,10 @@ export async function listCompanyConversations({
   }
 
   const actor =
-    await getCompanyActorForUser({
+    authorizedActor?.companyId === normalizedCompanyId &&
+    authorizedActor.userId === normalizedUserId
+      ? authorizedActor
+      : await getCompanyActorForUser({
       userId: normalizedUserId,
       companyId: normalizedCompanyId,
     })

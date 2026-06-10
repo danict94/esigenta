@@ -40,6 +40,7 @@ export default async function CompanySupportPage() {
     await listCompanyConversations({
       companyId: actor.companyId,
       userId: actor.userId,
+    authorizedActor: actor,
     })
   const supportConversation =
     result.ok

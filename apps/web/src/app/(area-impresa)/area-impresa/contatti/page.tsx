@@ -24,6 +24,7 @@ export default async function CompanyContactsPage() {
     await listCompanyConversations({
       companyId: actor.companyId,
       userId: actor.userId,
+    authorizedActor: actor,
     })
   const contacts =
     result.ok
