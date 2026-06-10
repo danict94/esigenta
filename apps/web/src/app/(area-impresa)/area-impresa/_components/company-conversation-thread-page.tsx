@@ -122,6 +122,7 @@ export async function CompanyConversationThreadPage({
       conversationId,
       companyId: actor.companyId,
       userId: actor.userId,
+    authorizedActor: actor,
     })
 
   if (result.ok) {

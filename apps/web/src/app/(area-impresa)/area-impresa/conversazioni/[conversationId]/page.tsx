@@ -38,6 +38,7 @@ export default async function LegacyCompanyConversationThreadPage({
       conversationId,
       companyId: actor.companyId,
       userId: actor.userId,
+    authorizedActor: actor,
     })
 
   if (result.ok) {

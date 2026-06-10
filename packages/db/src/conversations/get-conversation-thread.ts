@@ -209,10 +209,11 @@ async function loadConversationThread(
 }
 
 export async function getCompanyConversationThread({
+  authorizedActor,
   companyId,
   userId,
   conversationId,
-}: GetCompanyConversationThreadInput): Promise<GetCompanyConversationThreadResult> {
+}: GetCompanyConversationThreadInput & { authorizedActor?: NonNullable<Awaited<ReturnType<typeof getCompanyActorForUser>>> }): Promise<GetCompanyConversationThreadResult> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
   const normalizedUserId =
@@ -245,7 +246,10 @@ export async function getCompanyConversationThread({
   }
 
   const actor =
-    await getCompanyActorForUser({
+    authorizedActor?.companyId === normalizedCompanyId &&
+    authorizedActor.userId === normalizedUserId
+      ? authorizedActor
+      : await getCompanyActorForUser({
       userId: normalizedUserId,
       companyId: normalizedCompanyId,
     })
