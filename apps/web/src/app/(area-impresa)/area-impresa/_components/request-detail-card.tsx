@@ -646,6 +646,7 @@ export function RequestDetailCard({
               <Link
                 href="/area-impresa/crediti"
                 className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-4 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+                prefetch={false}
               >
                 Acquista crediti
               </Link>

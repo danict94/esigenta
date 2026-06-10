@@ -227,6 +227,7 @@ export default async function NotifichePage() {
                       <Link
                         href={primaryHref}
                         className="inline-flex text-sm font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
+                        prefetch={false}
                       >
                         {primaryActionLabel}
                       </Link>

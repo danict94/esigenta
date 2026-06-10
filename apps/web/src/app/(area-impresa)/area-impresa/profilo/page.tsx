@@ -403,6 +403,7 @@ export default async function ProfiloImpresaPage({
             <Link
               href="/area-impresa/configura-servizi"
               className="text-sm font-medium text-brand-primary"
+              prefetch={false}
             >
               Modifica categorie e servizi
             </Link>
@@ -476,6 +477,7 @@ export default async function ProfiloImpresaPage({
             <Link
               href="/area-impresa/crediti"
               className="text-sm font-medium text-brand-primary"
+              prefetch={false}
             >
               Vai ai crediti
             </Link>

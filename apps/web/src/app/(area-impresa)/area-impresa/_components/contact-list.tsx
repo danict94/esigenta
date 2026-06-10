@@ -77,6 +77,7 @@ export function ContactList({
             contact.id,
           )}`}
           className="block"
+          prefetch={false}
         >
           <Card className="transition-colors hover:bg-surface-secondary">
             <CardHeader className="gap-4 sm:flex sm:flex-row sm:items-start sm:justify-between">

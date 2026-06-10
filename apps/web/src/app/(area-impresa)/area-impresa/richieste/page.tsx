@@ -306,6 +306,7 @@ export default async function RichiestePage({
               <Link
                 href={unavailableHref}
                 className="mt-5 inline-flex text-sm font-medium text-brand-primary"
+                prefetch={false}
               >
                 {unavailableCta}
               </Link>
@@ -323,6 +324,7 @@ export default async function RichiestePage({
                 <Link
                   href="/area-impresa/configura-servizi"
                   className="mt-3 inline-flex text-sm font-medium text-brand-primary"
+                  prefetch={false}
                 >
                   Configura servizi
                 </Link>

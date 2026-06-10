@@ -80,6 +80,7 @@ export default async function ConfiguraServiziPage({
           <Link
             href="/area-impresa/richieste"
             className="mt-6 inline-flex text-sm font-medium text-brand-primary"
+            prefetch={false}
           >
             Vai alle richieste
           </Link>

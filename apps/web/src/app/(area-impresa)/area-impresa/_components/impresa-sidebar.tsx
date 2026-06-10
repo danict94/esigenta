@@ -166,7 +166,7 @@ function DesktopNavLink({
   }
 
   return (
-    <Link href={item.href} className={className}>
+    <Link href={item.href} className={className} prefetch={false}>
       {content}
     </Link>
   );
@@ -210,7 +210,7 @@ function MobileNavLink({
   }
 
   return (
-    <Link href={item.href} onClick={onClick} className={className}>
+    <Link href={item.href} onClick={onClick} className={className} prefetch={false}>
       {content}
     </Link>
   );
@@ -255,6 +255,7 @@ function AccountMenuItem({
       onClick={onClick}
       className={className}
       role="menuitem"
+      prefetch={false}
     >
       {item.label}
     </Link>
@@ -395,6 +396,7 @@ export function ImpresaSidebar({
           href="/area-impresa/richieste"
           onClick={closeMenus}
           aria-label="esigenta Imprese"
+          prefetch={false}
         >
           <Brand />
         </Link>
