@@ -1,69 +1,59 @@
-﻿import {
-  prisma,
-} from "../prisma/client"
+﻿import { prisma } from "../../prisma/client";
 
 import type {
   DeactivateCompanyAccountInput,
   DeactivateCompanyAccountResult,
-} from "./types"
+} from "./types";
 
 export async function deactivateCompanyAccount(
   input: DeactivateCompanyAccountInput,
 ): Promise<DeactivateCompanyAccountResult> {
-  const companyId =
-    input.companyId.trim()
+  const companyId = input.companyId.trim();
 
-  const userId =
-    input.userId.trim()
+  const userId = input.userId.trim();
 
   if (!companyId) {
     return {
       ok: false,
       code: "invalid_company",
-      message:
-        "Company non valida.",
-    }
+      message: "Company non valida.",
+    };
   }
 
   if (!userId) {
     return {
       ok: false,
       code: "invalid_user",
-      message:
-        "Utente non valido.",
-    }
+      message: "Utente non valido.",
+    };
   }
 
-  const membership =
-    await prisma.companyMembership.findUnique({
-      where: {
-        companyId_userId: {
-          companyId,
-          userId,
-        },
+  const membership = await prisma.companyMembership.findUnique({
+    where: {
+      companyId_userId: {
+        companyId,
+        userId,
       },
-    })
+    },
+  });
 
   if (!membership) {
     return {
       ok: false,
       code: "membership_not_found",
-      message:
-        "Membership non trovata.",
-    }
+      message: "Membership non trovata.",
+    };
   }
 
   if (membership.role !== "OWNER") {
     return {
       ok: false,
       code: "not_owner",
-      message:
-        "Solo il proprietario può eliminare l’account.",
-    }
+      message: "Solo il proprietario può eliminare l’account.",
+    };
   }
 
-  const now =
-    new Date()
+  const now = new Date();
 
   await prisma.$transaction([
     prisma.company.update({
@@ -91,10 +81,9 @@ export async function deactivateCompanyAccount(
         userId,
       },
     }),
-  ])
+  ]);
 
   return {
     ok: true,
-  }
+  };
 }
-

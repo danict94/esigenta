@@ -1,25 +1,20 @@
-﻿import {
-  prisma,
-} from "../prisma/client"
+﻿import { prisma } from "../../prisma/client";
 
-export async function reactivateCompanyAccount(
-  userId: string,
-) {
-  const membership =
-    await prisma.companyMembership.findFirst({
-      where: {
-        userId,
-      },
-      select: {
-        companyId: true,
-      },
-    })
+export async function reactivateCompanyAccount(userId: string) {
+  const membership = await prisma.companyMembership.findFirst({
+    where: {
+      userId,
+    },
+    select: {
+      companyId: true,
+    },
+  });
 
   if (!membership) {
     return {
       ok: false,
       code: "membership_not_found",
-    } as const
+    } as const;
   }
 
   await prisma.$transaction([
@@ -42,9 +37,9 @@ export async function reactivateCompanyAccount(
         deletedAt: null,
       },
     }),
-  ])
+  ]);
 
   return {
     ok: true,
-  } as const
+  } as const;
 }

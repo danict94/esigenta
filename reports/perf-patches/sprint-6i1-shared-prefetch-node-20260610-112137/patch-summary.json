@@ -1,0 +1,37 @@
+[
+  {
+    "file": "apps/web/src/components/navigation/navbar.tsx",
+    "status": "changed",
+    "patched": 3,
+    "missingBefore": 3,
+    "missingAfter": 0
+  },
+  {
+    "file": "apps/web/src/components/layout/footer.tsx",
+    "status": "changed",
+    "patched": 2,
+    "missingBefore": 2,
+    "missingAfter": 0
+  },
+  {
+    "file": "apps/web/src/components/privacy/cookie-consent.tsx",
+    "status": "changed",
+    "patched": 1,
+    "missingBefore": 1,
+    "missingAfter": 0
+  },
+  {
+    "file": "apps/web/src/components/funnel/funnel-ui.tsx",
+    "status": "changed",
+    "patched": 2,
+    "missingBefore": 2,
+    "missingAfter": 0
+  },
+  {
+    "file": "apps/web/src/components/funnel/photo-upload-step.tsx",
+    "status": "changed",
+    "patched": 1,
+    "missingBefore": 1,
+    "missingAfter": 0
+  }
+]
