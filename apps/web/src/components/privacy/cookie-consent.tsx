@@ -160,7 +160,7 @@ export function CookieConsent() {
                 <Link
                   href="/cookie-policy"
                   className="font-medium text-brand-primary"
-                >
+                 prefetch={false}>
                   cookie policy
                 </Link>
                 .

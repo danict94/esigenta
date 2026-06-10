@@ -29,7 +29,7 @@ export function Footer() {
                 href="/"
                 className="text-xl font-medium tracking-tight"
                 aria-label="esigenta home"
-              >
+               prefetch={false}>
                 <span className="text-text-on-hero-primary">esi</span>
                 <span className="text-brand-primary">genta</span>
               </Link>
@@ -52,7 +52,7 @@ export function Footer() {
                       <Link
                         href={link.href}
                         className="text-sm text-text-on-hero-secondary transition-colors hover:text-text-on-hero-primary"
-                      >
+                       prefetch={false}>
                         {link.label}
                       </Link>
                     </li>

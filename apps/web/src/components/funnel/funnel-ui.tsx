@@ -401,11 +401,11 @@ export function FunnelUI({
       {isLastStep ? (
         <p className="text-xs leading-5 text-text-muted">
           Inviando la richiesta confermi di aver letto l&apos;
-          <Link href="/privacy" className="font-medium text-brand-primary">
+          <Link href="/privacy" className="font-medium text-brand-primary" prefetch={false}>
             informativa privacy
           </Link>{" "}
           e accetti i{" "}
-          <Link href="/termini" className="font-medium text-brand-primary">
+          <Link href="/termini" className="font-medium text-brand-primary" prefetch={false}>
             termini del servizio
           </Link>
           .

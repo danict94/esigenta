@@ -194,7 +194,7 @@ function Logo({ className, inverse = false, onClick }: LogoProps) {
         className,
       )}
       aria-label="esigenta home"
-    >
+     prefetch={false}>
       <span
         aria-hidden="true"
         className={cn(
@@ -222,7 +222,7 @@ type NavLinkProps = {
 
 function NavLink({ className, href, label, onClick }: NavLinkProps) {
   return (
-    <Link href={href} onClick={onClick} className={className}>
+    <Link href={href} onClick={onClick} className={className} prefetch={false}>
       <span>{label}</span>
     </Link>
   );
@@ -268,7 +268,7 @@ function MobileMenuContent({
             inverse && tokens.home.nav.mobileLinkEmbedded,
             link.accent && tokens.home.nav.mobileAccentLink,
           )}
-        >
+         prefetch={false}>
           {link.label}
         </Link>
       ))}
