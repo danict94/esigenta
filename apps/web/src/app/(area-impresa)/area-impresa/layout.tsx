@@ -64,6 +64,7 @@ export default async function AreaImpresaLayout({
       countUnreadCompanyConversationSummary({
         companyId: actor.company.id,
         userId: actor.user.id,
+        authorizedActor: actor,
       }),
     ]);
   const accountLabel =

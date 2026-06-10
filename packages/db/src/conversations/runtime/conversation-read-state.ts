@@ -82,6 +82,7 @@ function mapCustomerAccessFailure(
 async function resolveCompanyUnreadScope({
   companyId,
   userId,
+  authorizedActor,
 }: CountUnreadCompanyConversationsInput): Promise<CompanyUnreadScopeResult> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
@@ -101,6 +102,13 @@ async function resolveCompanyUnreadScope({
       ok: false,
       code: "invalid_user_id",
       message: "Utente non valido.",
+    }
+  }
+
+  if (authorizedActor) {
+    return {
+      ok: true,
+      companyId: normalizedCompanyId,
     }
   }
 
@@ -129,18 +137,21 @@ async function markCompanyConversationRead({
   conversationId,
   companyId,
   userId,
+  authorizedActor,
   now,
 }: {
   conversationId: string
   companyId: string
   userId: string
+  authorizedActor?: import("../../identity/company/actor").CompanyActor
   now: Date
 }): Promise<MarkConversationReadResult> {
   const actor =
-    await getCompanyActorForUser({
+    authorizedActor ??
+    (await getCompanyActorForUser({
       userId,
       companyId,
-    })
+    }))
 
   if (!actor) {
     return {
@@ -285,6 +296,7 @@ async function markAdminConversationRead({
 export async function markConversationRead({
   conversationId,
   reader,
+  authorizedActor,
   now = new Date(),
 }: MarkConversationReadInput): Promise<MarkConversationReadResult> {
   const normalizedConversationId =
@@ -342,6 +354,7 @@ export async function markConversationRead({
         normalizedConversationId,
       companyId: reader.companyId,
       userId: reader.userId,
+      ...(authorizedActor && { authorizedActor }),
       now,
     })
   }
@@ -438,11 +451,13 @@ export async function countUnreadAdminConversations({
 export async function countUnreadCompanyConversations({
   companyId,
   userId,
+  authorizedActor,
 }: CountUnreadCompanyConversationsInput): Promise<CountUnreadCompanyConversationsResult> {
   const scope =
     await resolveCompanyUnreadScope({
       companyId,
       userId,
+      ...(authorizedActor && { authorizedActor }),
     })
 
   if (!scope.ok) {
@@ -485,11 +500,13 @@ export async function countUnreadCompanyConversations({
 export async function countUnreadCompanyConversationSummary({
   companyId,
   userId,
+  authorizedActor,
 }: CountUnreadCompanyConversationSummaryInput): Promise<CountUnreadCompanyConversationSummaryResult> {
   const scope =
     await resolveCompanyUnreadScope({
       companyId,
       userId,
+      ...(authorizedActor && { authorizedActor }),
     })
 
   if (!scope.ok) {

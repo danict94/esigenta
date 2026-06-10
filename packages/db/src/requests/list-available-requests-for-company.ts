@@ -775,6 +775,10 @@ async function loadAvailableRequestsForCompany({
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 300,
       select: {
         id: true,
         requestCode: true,

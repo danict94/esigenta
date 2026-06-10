@@ -5,6 +5,10 @@ import type {
   RequestStatus,
 } from "@prisma/client"
 
+import type {
+  CompanyActor,
+} from "../identity/company/actor"
+
 export type CompanyConversationActor = {
   actorType: "COMPANY"
   companyId: string
@@ -420,6 +424,7 @@ export type GetCustomerConversationThreadByTokenResult =
 export type MarkConversationReadInput = {
   conversationId: string
   reader: ConversationActor
+  authorizedActor?: CompanyActor
   now?: Date
 }
 
@@ -446,6 +451,7 @@ export type MarkConversationReadResult =
 export type CountUnreadCompanyConversationsInput = {
   companyId: string
   userId: string
+  authorizedActor?: CompanyActor
 }
 
 export type CountUnreadCompanyConversationsResult =
@@ -465,6 +471,7 @@ export type CountUnreadCompanyConversationsResult =
 export type CountUnreadCompanyConversationSummaryInput = {
   companyId: string
   userId: string
+  authorizedActor?: CompanyActor
 }
 
 export type CountUnreadCompanyConversationSummaryResult =

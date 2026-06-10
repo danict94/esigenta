@@ -152,6 +152,7 @@ export async function CompanyConversationThreadPage({
         companyId: actor.company.id,
         userId: actor.user.id,
       },
+      authorizedActor: actor,
     })
   }
 

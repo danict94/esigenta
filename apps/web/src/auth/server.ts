@@ -1,4 +1,8 @@
 import {
+  cache,
+} from "react"
+
+import {
   headers,
 } from "next/headers"
 
@@ -13,17 +17,21 @@ import {
   requireUserFromHeaders,
 } from "@esigenta/db/auth"
 
-export async function getCurrentUser() {
-  return getCurrentUserFromHeaders(
-    await headers(),
-  )
-}
+export const getCurrentUser = cache(
+  async function getCurrentUser() {
+    return getCurrentUserFromHeaders(
+      await headers(),
+    )
+  },
+)
 
-export async function requireUser() {
-  return requireUserFromHeaders(
-    await headers(),
-  )
-}
+export const requireUser = cache(
+  async function requireUser() {
+    return requireUserFromHeaders(
+      await headers(),
+    )
+  },
+)
 
 export async function requireCompanyMember(
   companyId: string,
@@ -49,38 +57,40 @@ export async function requireCompanyOwner(
   )
 }
 
-export async function requireCompanyActor() {
-  const startedAt =
-    Date.now()
+export const requireCompanyActor = cache(
+  async function requireCompanyActor() {
+    const startedAt =
+      Date.now()
 
-  const userStartedAt =
-    Date.now()
+    const userStartedAt =
+      Date.now()
 
-  const user =
-    await requireUser()
+    const user =
+      await requireUser()
 
-  const userMs =
-    Date.now() - userStartedAt
+    const userMs =
+      Date.now() - userStartedAt
 
-  const actorStartedAt =
-    Date.now()
+    const actorStartedAt =
+      Date.now()
 
-  const actor =
-    await resolveCompanyActorFromUser(
-      user,
-    )
+    const actor =
+      await resolveCompanyActorFromUser(
+        user,
+      )
 
-  const actorMs =
-    Date.now() - actorStartedAt
+    const actorMs =
+      Date.now() - actorStartedAt
 
-  const totalMs =
-    Date.now() - startedAt
+    const totalMs =
+      Date.now() - startedAt
 
-  if (totalMs >= 100) {
-    console.info(
-      `[esigenta-perf] [require-company-actor] requireUser=${userMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
-    )
-  }
+    if (totalMs >= 100) {
+      console.info(
+        `[esigenta-perf] [require-company-actor] requireUser=${userMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
+      )
+    }
 
-  return actor
-}
+    return actor
+  },
+)
