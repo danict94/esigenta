@@ -52,8 +52,6 @@ export type CreateCompanyCustomerConversationResult =
       conversationId: string
       requestId: string
       requestUnlockId: string
-      companyParticipantId: string
-      customerParticipantId: string
       created: boolean
     }
   | {

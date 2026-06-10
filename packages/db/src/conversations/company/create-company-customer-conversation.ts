@@ -1,8 +1,4 @@
 import type { CompanyActor } from "../../identity/company/actor"
-import type {
-  ConversationParticipant,
-} from "@prisma/client"
-
 
 import {
   prisma,
@@ -22,41 +18,6 @@ function normalizeRequiredId(
   return normalized
     ? normalized
     : null
-}
-
-function findParticipantId({
-  participants,
-  actorType,
-  companyId,
-  customerId,
-}: {
-  participants: Array<
-    Pick<
-      ConversationParticipant,
-      | "actorType"
-      | "companyId"
-      | "customerId"
-      | "id"
-    >
-  >
-  actorType: "COMPANY" | "CUSTOMER"
-  companyId?: string
-  customerId?: string
-}): string | null {
-  const participant =
-    participants.find((item) => {
-      if (item.actorType !== actorType) {
-        return false
-      }
-
-      if (actorType === "COMPANY") {
-        return item.companyId === companyId
-      }
-
-      return item.customerId === customerId
-    })
-
-  return participant?.id ?? null
 }
 
 async function measurePerf<T>(
@@ -129,46 +90,35 @@ export async function createCompanyCustomerConversation({
   }
 
   return prisma.$transaction(async (tx) => {
-    await measurePerf(
-      "unlock-lock",
-      recordPerf,
-      () =>
-        tx.$queryRaw<Array<{ id: string }>>`
-          SELECT "id"
-          FROM "RequestUnlock"
-          WHERE "requestId" = ${normalizedRequestId}
-            AND "companyId" = ${normalizedCompanyId}
-          FOR UPDATE
-        `,
-    )
-
-    const requestUnlock =
+    // Single query: SELECT FOR UPDATE lock + full unlock data (replaces lock + findUnique)
+    const unlockRows =
       await measurePerf(
         "unlock-lookup",
         recordPerf,
         () =>
-          tx.requestUnlock.findUnique({
-            where: {
-              requestId_companyId: {
-                requestId:
-                  normalizedRequestId,
-                companyId:
-                  normalizedCompanyId,
-              },
-            },
-            select: {
-              id: true,
-              refundedAt: true,
-              request: {
-                select: {
-                  customerId: true,
-                },
-              },
-            },
-          }),
+          tx.$queryRaw<
+            Array<{
+              id: string
+              refundedAt: Date | null
+              customerId: string | null
+            }>
+          >`
+            SELECT
+              ru."id",
+              ru."refundedAt",
+              r."customerId"
+            FROM "RequestUnlock" ru
+            JOIN "Request" r ON r."id" = ru."requestId"
+            WHERE ru."requestId" = ${normalizedRequestId}
+              AND ru."companyId" = ${normalizedCompanyId}
+            FOR UPDATE OF ru
+          `,
       )
 
-    if (!requestUnlock) {
+    const unlockRow =
+      unlockRows[0] ?? null
+
+    if (!unlockRow) {
       return {
         ok: false,
         code: "request_unlock_not_found",
@@ -177,7 +127,7 @@ export async function createCompanyCustomerConversation({
       }
     }
 
-    if (requestUnlock.refundedAt) {
+    if (unlockRow.refundedAt) {
       return {
         ok: false,
         code: "request_unlock_not_valid",
@@ -187,7 +137,7 @@ export async function createCompanyCustomerConversation({
     }
 
     const customerId =
-      requestUnlock.request.customerId
+      unlockRow.customerId
 
     if (!customerId) {
       return {
@@ -229,55 +179,25 @@ export async function createCompanyCustomerConversation({
             },
             select: {
               id: true,
-              participants: {
-                select: {
-                  id: true,
-                  actorType: true,
-                  companyId: true,
-                  customerId: true,
-                },
-              },
             },
           }),
       )
 
     if (existingConversation) {
-      const companyParticipantId =
-        findParticipantId({
-          participants:
-            existingConversation.participants,
-          actorType: "COMPANY",
-          companyId: normalizedCompanyId,
-        })
-      const customerParticipantId =
-        findParticipantId({
-          participants:
-            existingConversation.participants,
-          actorType: "CUSTOMER",
-          customerId,
-        })
+      recordPerf?.(
+        "conversation-create",
+        0,
+      )
 
-      if (
-        companyParticipantId &&
-        customerParticipantId
-      ) {
-        recordPerf?.(
-          "conversation-create",
-          0,
-        )
-
-        return {
-          ok: true,
-          conversationId:
-            existingConversation.id,
-          requestId:
-            normalizedRequestId,
-          requestUnlockId:
-            requestUnlock.id,
-          companyParticipantId,
-          customerParticipantId,
-          created: false,
-        }
+      return {
+        ok: true,
+        conversationId:
+          existingConversation.id,
+        requestId:
+          normalizedRequestId,
+        requestUnlockId:
+          unlockRow.id,
+        created: false,
       }
     }
 
@@ -296,7 +216,7 @@ export async function createCompanyCustomerConversation({
               },
               requestUnlock: {
                 connect: {
-                  id: requestUnlock.id,
+                  id: unlockRow.id,
                 },
               },
               participants: {
@@ -323,52 +243,15 @@ export async function createCompanyCustomerConversation({
             },
             select: {
               id: true,
-              participants: {
-                select: {
-                  id: true,
-                  actorType: true,
-                  companyId: true,
-                  customerId: true,
-                },
-              },
             },
           }),
       )
-
-    const companyParticipantId =
-      findParticipantId({
-        participants:
-          conversation.participants,
-        actorType: "COMPANY",
-        companyId: normalizedCompanyId,
-      })
-    const customerParticipantId =
-      findParticipantId({
-        participants:
-          conversation.participants,
-        actorType: "CUSTOMER",
-        customerId,
-      })
-
-    if (
-      !companyParticipantId ||
-      !customerParticipantId
-    ) {
-      return {
-        ok: false,
-        code: "customer_not_found",
-        message:
-          "Partecipanti del canale messaggi non disponibili.",
-      }
-    }
 
     return {
       ok: true,
       conversationId: conversation.id,
       requestId: normalizedRequestId,
-      requestUnlockId: requestUnlock.id,
-      companyParticipantId,
-      customerParticipantId,
+      requestUnlockId: unlockRow.id,
       created: true,
     }
   })

@@ -455,35 +455,67 @@ async function loadAvailableRequestsForCompany({
     createFilterOptions({
       active: normalizedFilters,
     })
-  const company =
-    await prisma.company.findUnique({
-      where: {
-        id: companyId,
-      },
-      select: {
-        isActive: true,
-        deletedAt: true,
-        status: true,
-        onboardingCategorySlug: true,
-        name: true,
-        city: true,
-        postalCode: true,
-        province: true,
-        latitude: true,
-        longitude: true,
-        operatingRadiusKm: true,
-        categories: {
-          select: {
-            categoryId: true,
+  const [
+    company,
+    allCategories,
+    categoryServices,
+  ] =
+    await Promise.all([
+      prisma.company.findUnique({
+        where: {
+          id: companyId,
+        },
+        select: {
+          isActive: true,
+          deletedAt: true,
+          status: true,
+          onboardingCategorySlug: true,
+          name: true,
+          city: true,
+          postalCode: true,
+          province: true,
+          latitude: true,
+          longitude: true,
+          operatingRadiusKm: true,
+          categories: {
+            select: {
+              categoryId: true,
+            },
+          },
+          services: {
+            select: {
+              serviceId: true,
+            },
           },
         },
-        services: {
-          select: {
-            serviceId: true,
+      }),
+      prisma.category.findMany({
+        orderBy: {
+          name: "asc",
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      }),
+      prisma.categoryService.findMany({
+        select: {
+          categoryId: true,
+          serviceId: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          service: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
-      },
-    })
+      }),
+    ])
 
   if (!company) {
     return {
@@ -591,41 +623,12 @@ async function loadAvailableRequestsForCompany({
     }
   }
 
-  const allCategories =
-    await prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    })
   const allCategoryIdSet =
     new Set(
       allCategories.map(
         (category) => category.id,
       ),
     )
-
-  const categoryServices =
-    await prisma.categoryService.findMany({
-      select: {
-        categoryId: true,
-        serviceId: true,
-        category: {
-          select: {
-            name: true,
-          },
-        },
-        service: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    })
 
   const categoryServiceIds =
     Array.from(

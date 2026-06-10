@@ -1,7 +1,6 @@
 import type { CompanyActor } from "../../identity/company/actor"
 import {
   getAdminProfileForUser,
-  getCompanyActorForUser,
 } from "../../identity"
 import {
   prisma,
@@ -23,13 +22,6 @@ import type {
   GetCustomerConversationThreadByTokenResult,
 } from "../types"
 
-type LoadedConversationThread =
-  NonNullable<
-    Awaited<
-      ReturnType<typeof loadConversationThread>
-    >
-  >
-
 const threadMessageLimit = 30
 
 function normalizeRequiredText(
@@ -43,170 +35,254 @@ function normalizeRequiredText(
     : null
 }
 
-function createActorLabel({
-  participant,
-}: {
-  participant: LoadedConversationThread["messages"][number]["senderParticipant"]
-}): string {
-  if (participant.actorType === "COMPANY") {
-    return participant.company?.name ?? "Impresa"
-  }
-
-  if (participant.actorType === "CUSTOMER") {
-    return participant.customer?.name ?? "Cliente"
-  }
-
-  if (participant.actorType === "ADMIN") {
-    return participant.user?.name ?? "Admin"
-  }
-
-  return participant.user?.name ?? "Operatore"
-}
+type LoadedConversationThread = NonNullable<
+  Awaited<ReturnType<typeof loadConversationThread>>
+>
 
 function mapConversationThread(
-  conversation: LoadedConversationThread,
+  loaded: LoadedConversationThread,
 ): ConversationThread {
   const companyParticipant =
-    conversation.participants.find(
-      (participant) =>
-        participant.actorType === "COMPANY",
+    loaded.participants.find(
+      (p) => p.actorType === "COMPANY",
     )
   const customerParticipant =
-    conversation.participants.find(
-      (participant) =>
-        participant.actorType === "CUSTOMER",
+    loaded.participants.find(
+      (p) => p.actorType === "CUSTOMER",
     )
 
   return {
-    id: conversation.id,
-    type: conversation.type,
-    requestId: conversation.requestId,
-    requestUnlockId:
-      conversation.requestUnlockId,
-    createdAt: conversation.createdAt,
-    updatedAt: conversation.updatedAt,
-    isResolved:
-      conversation.isResolved,
-    resolvedAt:
-      conversation.resolvedAt,
-    resolvedBy:
-      conversation.resolvedBy,
-    request: conversation.request,
+    id: loaded.id,
+    type: loaded.type,
+    requestId: loaded.requestId,
+    requestUnlockId: loaded.requestUnlockId,
+    createdAt: loaded.createdAt,
+    updatedAt: loaded.updatedAt,
+    isResolved: loaded.isResolved,
+    resolvedAt: loaded.resolvedAt,
+    resolvedBy: loaded.resolvedBy,
+    request: loaded.request,
     company:
       companyParticipant?.company ?? null,
     customer:
       customerParticipant?.customer ?? null,
-    messages: [
-      ...conversation.messages,
-    ].reverse().map(
-      (message) => ({
+    messages: [...loaded.messages]
+      .reverse()
+      .map((message) => ({
         id: message.id,
         body: message.body,
         createdAt: message.createdAt,
-        senderActorType:
-          message.senderParticipant.actorType,
-        senderLabel: createActorLabel({
-          participant:
-            message.senderParticipant,
-        }),
-      }),
-    ),
+        senderActorType: message.senderActorType,
+        senderLabel: message.senderLabel,
+      })),
   }
 }
 
 async function loadConversationThread(
   conversationId: string,
 ) {
-  return prisma.conversation.findUnique({
-    where: {
-      id: conversationId,
-    },
-    select: {
-      id: true,
-      type: true,
-      requestId: true,
-      requestUnlockId: true,
-      createdAt: true,
-      updatedAt: true,
-      isResolved: true,
-      resolvedAt: true,
-      resolvedBy: {
+  // Phase 1: conversation metadata + participants + messages, all independent
+  const [conversation, participantRows, messages] =
+    await Promise.all([
+      prisma.conversation.findUnique({
+        where: { id: conversationId },
         select: {
           id: true,
-          name: true,
-          email: true,
-        },
-      },
-      requestUnlock: {
-        select: {
-          refundedAt: true,
-        },
-      },
-      request: {
-        select: {
-          id: true,
-          requestCode: true,
-          status: true,
-          interventionSlug: true,
-          city: true,
+          type: true,
+          requestId: true,
+          requestUnlockId: true,
+          resolvedById: true,
           createdAt: true,
+          updatedAt: true,
+          isResolved: true,
+          resolvedAt: true,
         },
-      },
-      participants: {
+      }),
+      prisma.conversationParticipant.findMany({
+        where: { conversationId },
         select: {
+          id: true,
           actorType: true,
           userId: true,
           companyId: true,
-          company: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
           customerId: true,
-          customer: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              phone: true,
-            },
-          },
         },
-      },
-      messages: {
-        orderBy: {
-          createdAt: "desc",
-        },
+      }),
+      prisma.message.findMany({
+        where: { conversationId },
+        orderBy: { createdAt: "desc" },
         take: threadMessageLimit,
         select: {
           id: true,
           body: true,
           createdAt: true,
-          senderParticipant: {
-            select: {
-              actorType: true,
-              company: {
-                select: {
-                  name: true,
-                },
-              },
-              customer: {
-                select: {
-                  name: true,
-                },
-              },
-              user: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
+          senderParticipantId: true,
         },
-      },
-    },
+      }),
+    ])
+
+  if (!conversation) {
+    return null
+  }
+
+  // Phase 2: related entities, all independent and parallel
+  const companyIds = participantRows
+    .map((p) => p.companyId)
+    .filter((id): id is string => id !== null)
+  const customerIds = participantRows
+    .map((p) => p.customerId)
+    .filter((id): id is string => id !== null)
+  const userIds = participantRows
+    .map((p) => p.userId)
+    .filter((id): id is string => id !== null)
+
+  const [
+    requestData,
+    requestUnlockData,
+    resolvedByUser,
+    companies,
+    customers,
+    users,
+  ] = await Promise.all([
+    conversation.requestId
+      ? prisma.request.findUnique({
+          where: { id: conversation.requestId },
+          select: {
+            id: true,
+            requestCode: true,
+            status: true,
+            interventionSlug: true,
+            city: true,
+            createdAt: true,
+          },
+        })
+      : Promise.resolve(null),
+    conversation.requestUnlockId
+      ? prisma.requestUnlock.findUnique({
+          where: { id: conversation.requestUnlockId },
+          select: { refundedAt: true },
+        })
+      : Promise.resolve(null),
+    conversation.resolvedById
+      ? prisma.user.findUnique({
+          where: { id: conversation.resolvedById },
+          select: { id: true, name: true, email: true },
+        })
+      : Promise.resolve(null),
+    companyIds.length > 0
+      ? prisma.company.findMany({
+          where: { id: { in: companyIds } },
+          select: { id: true, name: true },
+        })
+      : Promise.resolve([] as Array<{ id: string; name: string }>),
+    customerIds.length > 0
+      ? prisma.customer.findMany({
+          where: { id: { in: customerIds } },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            phone: true,
+          },
+        })
+      : Promise.resolve(
+          [] as Array<{
+            id: string
+            email: string
+            name: string | null
+            phone: string | null
+          }>,
+        ),
+    userIds.length > 0
+      ? prisma.user.findMany({
+          where: { id: { in: userIds } },
+          select: { id: true, name: true },
+        })
+      : Promise.resolve([] as Array<{ id: string; name: string | null }>),
+  ])
+
+  // Build lookup maps
+  const companyMap = new Map(
+    companies.map((c) => [c.id, c]),
+  )
+  const customerMap = new Map(
+    customers.map((c) => [c.id, c]),
+  )
+  const userMap = new Map(
+    users.map((u) => [u.id, u]),
+  )
+
+  // Enrich participants and build label map in one pass
+  const participantLabelMap = new Map<
+    string,
+    { actorType: string; label: string }
+  >()
+  const participants = participantRows.map((p) => {
+    const company =
+      p.companyId ? (companyMap.get(p.companyId) ?? null) : null
+    const customer =
+      p.customerId ? (customerMap.get(p.customerId) ?? null) : null
+    const user =
+      p.userId ? (userMap.get(p.userId) ?? null) : null
+
+    let label: string
+    if (p.actorType === "COMPANY") {
+      label = company?.name ?? "Impresa"
+    } else if (p.actorType === "CUSTOMER") {
+      label = customer?.name ?? "Cliente"
+    } else if (p.actorType === "ADMIN") {
+      label = user?.name ?? "Admin"
+    } else {
+      label = user?.name ?? "Operatore"
+    }
+
+    participantLabelMap.set(p.id, {
+      actorType: p.actorType,
+      label,
+    })
+
+    return {
+      id: p.id,
+      actorType: p.actorType,
+      userId: p.userId,
+      companyId: p.companyId,
+      customerId: p.customerId,
+      company,
+      customer,
+      user,
+    }
   })
+
+  // Annotate messages with sender info from map (no extra DB queries)
+  const enrichedMessages = messages.map((m) => {
+    const sender = participantLabelMap.get(
+      m.senderParticipantId,
+    )
+    return {
+      id: m.id,
+      body: m.body,
+      createdAt: m.createdAt,
+      senderActorType: (sender?.actorType ??
+        "CUSTOMER") as import("@prisma/client").ConversationActorType,
+      senderLabel: sender?.label ?? "Utente",
+    }
+  })
+
+  return {
+    id: conversation.id,
+    type: conversation.type,
+    requestId: conversation.requestId,
+    requestUnlockId: conversation.requestUnlockId,
+    createdAt: conversation.createdAt,
+    updatedAt: conversation.updatedAt,
+    isResolved: conversation.isResolved,
+    resolvedAt: conversation.resolvedAt,
+    resolvedBy: resolvedByUser ?? null,
+    request: requestData,
+    requestUnlock: requestUnlockData,
+    participants,
+    messages: enrichedMessages,
+  }
 }
 
 export async function getCompanyConversationThread({
@@ -257,12 +333,12 @@ export async function getCompanyConversationThread({
     }
   }
 
-  const conversation =
+  const loaded =
     await loadConversationThread(
       normalizedConversationId,
     )
 
-  if (!conversation) {
+  if (!loaded) {
     return {
       ok: false,
       code: "conversation_not_found",
@@ -271,12 +347,10 @@ export async function getCompanyConversationThread({
   }
 
   const hasCompanyParticipant =
-    conversation.participants.some(
-      (participant) =>
-        participant.actorType ===
-          "COMPANY" &&
-        participant.companyId ===
-          normalizedCompanyId,
+    loaded.participants.some(
+      (p) =>
+        p.actorType === "COMPANY" &&
+        p.companyId === normalizedCompanyId,
     )
 
   if (!hasCompanyParticipant) {
@@ -289,10 +363,9 @@ export async function getCompanyConversationThread({
   }
 
   if (
-    conversation.type ===
-      "COMPANY_CUSTOMER" &&
-    (!conversation.requestUnlock ||
-      conversation.requestUnlock.refundedAt)
+    loaded.type === "COMPANY_CUSTOMER" &&
+    (!loaded.requestUnlock ||
+      loaded.requestUnlock.refundedAt)
   ) {
     return {
       ok: false,
@@ -304,8 +377,7 @@ export async function getCompanyConversationThread({
 
   return {
     ok: true,
-    thread:
-      mapConversationThread(conversation),
+    thread: mapConversationThread(loaded),
   }
 }
 
@@ -348,12 +420,12 @@ export async function getAdminConversationThread({
     }
   }
 
-  const conversation =
+  const loaded =
     await loadConversationThread(
       normalizedConversationId,
     )
 
-  if (!conversation) {
+  if (!loaded) {
     return {
       ok: false,
       code: "conversation_not_found",
@@ -362,16 +434,15 @@ export async function getAdminConversationThread({
   }
 
   const hasAdminParticipant =
-    conversation.participants.some(
-      (participant) =>
-        participant.actorType === "ADMIN" &&
-        participant.userId ===
-          normalizedUserId,
+    loaded.participants.some(
+      (p) =>
+        p.actorType === "ADMIN" &&
+        p.userId === normalizedUserId,
     )
 
   if (
     !hasAdminParticipant &&
-    conversation.type === "SUPPORT"
+    loaded.type === "SUPPORT"
   ) {
     await ensureSupportAdminParticipant({
       conversationId:
@@ -389,8 +460,7 @@ export async function getAdminConversationThread({
 
   return {
     ok: true,
-    thread:
-      mapConversationThread(conversation),
+    thread: mapConversationThread(loaded),
   }
 }
 
@@ -408,12 +478,12 @@ export async function getCustomerConversationThreadByToken({
     return access
   }
 
-  const conversation =
+  const loaded =
     await loadConversationThread(
       access.conversationId,
     )
 
-  if (!conversation) {
+  if (!loaded) {
     return {
       ok: false,
       code: "conversation_not_found",
@@ -424,7 +494,7 @@ export async function getCustomerConversationThreadByToken({
   return {
     ok: true,
     access,
-    thread:
-      mapConversationThread(conversation),
+    thread: mapConversationThread(loaded),
   }
 }
+
