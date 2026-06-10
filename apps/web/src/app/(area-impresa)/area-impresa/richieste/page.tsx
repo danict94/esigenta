@@ -18,6 +18,12 @@ import {
 import { requireCompanyActor } from "../../../../auth/server"
 
 import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+
+import {
   CompanyRequestList,
 } from "../_components/company-request-list"
 import {
@@ -181,6 +187,13 @@ function formatProfileSummary({
 export default async function RichiestePage({
   searchParams,
 }: RichiestePageProps) {
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.model.requestsList.start", {})
+  }
+
   const [
     resolvedSearchParams,
     actor,
@@ -194,11 +207,27 @@ export default async function RichiestePage({
       resolvedSearchParams,
     )
 
+  const requestQueryStart = areaTimestamp()
   const result =
     await listAvailableRequestsForCompany({
       companyId: actor.company.id,
       filters,
     })
+  const requestQueryMs = Math.round(areaTimestamp() - requestQueryStart)
+
+  if (monitored) {
+    areaLog("area.model.requestsList.end", {
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      hasSearch: Boolean(filters.q),
+      hasCategory: Boolean(filters.categoryId),
+      hasRadius: Boolean(filters.radiusKm),
+      sort: filters.sort ?? "recommended",
+      candidateLimit: 300,
+      returnedCount: result.ok ? result.requests.length : 0,
+      result: result.ok ? "ok" : result.code,
+      requestQueryMs,
+    })
+  }
 
   const activeFilters =
     result.filters.active

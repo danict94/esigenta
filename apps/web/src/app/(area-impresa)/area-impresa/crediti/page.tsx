@@ -15,6 +15,13 @@ import {
 } from "../../../../auth/server"
 
 import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+  shortId,
+} from "../../../../lib/area-monitoring"
+
+import {
   CreditCheckoutStatusBanner,
 } from "./credit-checkout-status-banner"
 
@@ -54,6 +61,13 @@ function formatDate(date: Date) {
 export default async function CompanyCreditsPage({
   searchParams,
 }: CreditsPageProps) {
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.credits.page.start", {})
+  }
+
   const actor =
     await requireCompanyActor()
   const params =
@@ -63,14 +77,35 @@ export default async function CompanyCreditsPage({
     "APPROVED"
 
   const [
-    accountSummary,
-    creditPackages,
+    [accountSummary, balanceMs],
+    [creditPackages, packagesMs],
   ] = await Promise.all([
-    getCompanyCreditAccountSummary({
-      companyId:
-        actor.company.id,
-    }),
-    listActiveCreditPackagesForPurchase(),
+    (async () => {
+      if (monitored) {
+        areaLog("area.credits.balance.start", {
+          companyIdSafe: shortId(actor.company.id),
+        })
+      }
+      const s = areaTimestamp()
+      const r = await getCompanyCreditAccountSummary({
+        companyId: actor.company.id,
+      })
+      const ms = Math.round(areaTimestamp() - s)
+      if (monitored) {
+        areaLog("area.credits.balance.end", {
+          companyIdSafe: shortId(actor.company.id),
+          result: r.ok ? "ok" : r.code,
+          balance: r.ok ? r.data.balance : null,
+          durationMs: ms,
+        })
+      }
+      return [r, ms] as const
+    })(),
+    (async () => {
+      const s = areaTimestamp()
+      const r = await listActiveCreditPackagesForPurchase()
+      return [r, Math.round(areaTimestamp() - s)] as const
+    })(),
   ])
 
   if (!accountSummary.ok) {
@@ -90,6 +125,18 @@ export default async function CompanyCreditsPage({
             : params.checkout === "error"
               ? "Checkout non completato: riprova tra poco o contatta il supporto."
               : null
+
+  if (monitored) {
+    areaLog("area.credits.page.end", {
+      result: "ok",
+      canBuyCredits,
+      balance: accountSummary.data.balance,
+      packageCount: creditPackages.length,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      balanceMs,
+      packagesMs,
+    })
+  }
 
   return (
     <PageShell

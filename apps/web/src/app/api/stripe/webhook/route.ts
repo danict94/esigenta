@@ -24,6 +24,11 @@ import {
   getStripePaymentIntentId,
 } from "../../../../lib/stripe/credit-checkout"
 
+import {
+  areaLog,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+
 function jsonResponse(
   body: Record<string, unknown>,
   status = 200,
@@ -399,6 +404,26 @@ async function markPaymentIntentFailed(
 }
 
 export async function POST(request: Request) {
+  const monitored = isAreaMonitoringEnabled()
+  const webhookStart = performance.now()
+
+  if (monitored) {
+    areaLog("area.credits.webhook.start", {})
+  }
+
+  const response = await handleStripeWebhook(request)
+
+  if (monitored) {
+    areaLog("area.credits.webhook.end", {
+      httpStatus: response.status,
+      durationMs: Math.round(performance.now() - webhookStart),
+    })
+  }
+
+  return response
+}
+
+async function handleStripeWebhook(request: Request) {
   const signature =
     request.headers.get("stripe-signature")
   const rawBody = await request.text()

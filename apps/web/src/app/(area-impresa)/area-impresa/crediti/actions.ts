@@ -14,6 +14,11 @@ import {
 } from "../../../../auth/server"
 
 import {
+  areaLog,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+
+import {
   createStripeCreditPackageCheckoutSession,
   getAppUrl,
 } from "../../../../lib/stripe/credit-checkout"
@@ -31,6 +36,13 @@ import {
 export async function createCreditPackageCheckoutAction(
   formData: FormData,
 ) {
+  const monitored = isAreaMonitoringEnabled()
+  const actionStart = performance.now()
+
+  if (monitored) {
+    areaLog("area.credits.checkout.start", {})
+  }
+
   const actor =
     await requireCompanyActor()
 
@@ -51,6 +63,14 @@ export async function createCreditPackageCheckoutAction(
         ...getStripeRuntimeDebugConfig(),
       },
     )
+
+    if (monitored) {
+      areaLog("area.credits.checkout.end", {
+        result: "config-error",
+        errorStep: "base_url_missing",
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
 
     redirect(
       "/area-impresa/crediti?checkout=config",
@@ -77,6 +97,14 @@ export async function createCreditPackageCheckoutAction(
       },
     )
 
+    if (monitored) {
+      areaLog("area.credits.checkout.end", {
+        result: "config-error",
+        errorStep: "stripe_client_unavailable",
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
+
     redirect(
       "/area-impresa/crediti?checkout=config",
     )
@@ -99,6 +127,14 @@ export async function createCreditPackageCheckoutAction(
         code: orderResult.code,
       },
     )
+
+    if (monitored) {
+      areaLog("area.credits.checkout.end", {
+        result: orderResult.code,
+        errorStep: "order_creation_failed",
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
 
     redirect(
       "/area-impresa/crediti?checkout=unavailable",
@@ -137,6 +173,14 @@ export async function createCreditPackageCheckoutAction(
             : "unknown_error",
       },
     )
+
+    if (monitored) {
+      areaLog("area.credits.checkout.end", {
+        result: "stripe-error",
+        errorStep: "session_creation_failed",
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
 
     redirect(
       "/area-impresa/crediti?checkout=error",
@@ -195,6 +239,14 @@ export async function createCreditPackageCheckoutAction(
       },
     )
 
+    if (monitored) {
+      areaLog("area.credits.checkout.end", {
+        result: markResult.code,
+        errorStep: "order_attach_failed",
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
+
     redirect(
       "/area-impresa/crediti?checkout=error",
     )
@@ -213,9 +265,25 @@ export async function createCreditPackageCheckoutAction(
       },
     )
 
+    if (monitored) {
+      areaLog("area.credits.checkout.end", {
+        result: "stripe-error",
+        errorStep: "session_url_missing",
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
+
     redirect(
       "/area-impresa/crediti?checkout=error",
     )
+  }
+
+  if (monitored) {
+    areaLog("area.credits.checkout.end", {
+      result: "ok",
+      durationMs: Math.round(performance.now() - actionStart),
+      // session.url intentionally not logged
+    })
   }
 
   redirect(session.url)

@@ -10,6 +10,12 @@ import {
 
 import { Container } from "@esigenta/ui";
 
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../lib/area-monitoring";
+
 import { ImpresaSidebar } from "./_components/impresa-sidebar";
 
 function isNamedError(error: unknown, name: string): boolean {
@@ -57,16 +63,47 @@ export default async function AreaImpresaLayout({
 }: {
   children: ReactNode;
 }) {
+  const monitored = isAreaMonitoringEnabled()
+  const shellStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.shell.start", {})
+  }
+
   const actor = await requireAreaImpresaAccess();
-  const [unreadNotificationCount, unreadMessageSummary] =
-    await Promise.all([
-      countUnreadCompanyNotifications(actor.company.id),
-      countUnreadCompanyConversationSummary({
+
+  const [
+    [unreadNotificationCount, notifDurationMs],
+    [unreadMessageSummary, unreadDurationMs],
+  ] = await Promise.all([
+    (async () => {
+      const s = areaTimestamp()
+      const r = await countUnreadCompanyNotifications(actor.company.id)
+      return [r, Math.round(areaTimestamp() - s)] as const
+    })(),
+    (async () => {
+      const s = areaTimestamp()
+      const r = await countUnreadCompanyConversationSummary({
         companyId: actor.company.id,
         userId: actor.user.id,
         authorizedActor: actor,
-      }),
-    ]);
+      })
+      return [r, Math.round(areaTimestamp() - s)] as const
+    })(),
+  ]);
+
+  if (monitored) {
+    areaLog("area.shell.end", {
+      durationMs: Math.round(areaTimestamp() - shellStart),
+      notificationCount: unreadNotificationCount,
+      unreadTotal: unreadMessageSummary.ok
+        ? unreadMessageSummary.totalCount
+        : 0,
+      notificationCountDurationMs: notifDurationMs,
+      unreadConversationDurationMs: unreadDurationMs,
+      usedAuthorizedActorForUnread: true,
+    })
+  }
   const accountLabel =
     actor.user.name ??
     actor.user.email ??

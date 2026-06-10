@@ -1,5 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server"
 
+import {
+  areaLog,
+  classifyAreaRequest,
+  isAreaMonitoringEnabled,
+  safePath,
+} from "./lib/area-monitoring"
+
+// Paths that, when navigated to from /area-impresa/accedi, indicate
+// likely noise from the login page (prefetch or programmatic navigation).
+const LOGIN_NOISE_DESTINATIONS = new Set([
+  "/area-impresa/iscriviti",
+  "/area-impresa/recupera-password",
+  "/privacy",
+  "/termini",
+  "/area-impresa/richieste",
+])
+
 function traceAreaImpresaRequest(request: NextRequest): string {
   const path = request.nextUrl.pathname
 
@@ -22,11 +39,11 @@ function traceAreaImpresaRequest(request: NextRequest): string {
   const accept = headers.get("accept") || ""
   const refererRaw = headers.get("referer") || ""
 
-  let referer = "-"
+  let refererPath = "-"
   try {
-    referer = refererRaw ? new URL(refererRaw).pathname : "-"
+    refererPath = refererRaw ? new URL(refererRaw).pathname : "-"
   } catch {
-    referer = refererRaw || "-"
+    refererPath = refererRaw || "-"
   }
 
   const isPrefetch =
@@ -41,6 +58,10 @@ function traceAreaImpresaRequest(request: NextRequest): string {
 
   const mode = isPrefetch ? "prefetch" : isRsc ? "rsc" : "document"
 
+  const secFetchMode = headers.get("sec-fetch-mode") || "-"
+  const secFetchDest = headers.get("sec-fetch-dest") || "-"
+  const secFetchSite = headers.get("sec-fetch-site") || "-"
+
   console.info(
     [
       "[esigenta-trace]",
@@ -50,7 +71,7 @@ function traceAreaImpresaRequest(request: NextRequest): string {
       `path=${path}`,
       `search=${request.nextUrl.search || "-"}`,
       `mode=${mode}`,
-      `referer=${referer}`,
+      `referer=${refererPath}`,
       `prefetch=${isPrefetch ? "1" : "0"}`,
       `rsc=${isRsc ? "1" : "0"}`,
       `purpose=${purpose || "-"}`,
@@ -58,11 +79,44 @@ function traceAreaImpresaRequest(request: NextRequest): string {
       `nextRouterPrefetch=${nextRouterPrefetch || "-"}`,
       `nextUrl=${nextUrl || "-"}`,
       `nextRouterStateTree=${nextRouterStateTree}`,
-      `secFetchMode=${headers.get("sec-fetch-mode") || "-"}`,
-      `secFetchDest=${headers.get("sec-fetch-dest") || "-"}`,
-      `secFetchSite=${headers.get("sec-fetch-site") || "-"}`,
+      `secFetchMode=${secFetchMode}`,
+      `secFetchDest=${secFetchDest}`,
+      `secFetchSite=${secFetchSite}`,
     ].join(" "),
   )
+
+  if (isAreaMonitoringEnabled()) {
+    const requestKind = classifyAreaRequest(headers, request.method, path)
+
+    areaLog("area.request.edge", {
+      traceId,
+      path: safePath(path),
+      method: request.method,
+      requestKind,
+      refererPath: safePath(refererPath),
+      nextUrl: nextUrl ? safePath(nextUrl) : null,
+      secFetchMode,
+      secFetchDest,
+      rsc: isRsc,
+      prefetch: isPrefetch,
+    })
+
+    // Detect navigation noise from the login page.
+    if (
+      refererPath === "/area-impresa/accedi" &&
+      LOGIN_NOISE_DESTINATIONS.has(path)
+    ) {
+      areaLog("area.navigation.noise", {
+        traceId,
+        from: "/area-impresa/accedi",
+        to: path,
+        requestKind,
+        nextUrl: nextUrl ? safePath(nextUrl) : null,
+        reason: "request_from_login_page_to_unexpected_destination",
+        shouldInvestigate: true,
+      })
+    }
+  }
 
   return traceId
 }

@@ -17,6 +17,12 @@ import {
   requireUserFromHeaders,
 } from "@esigenta/db/auth"
 
+import {
+  areaLog,
+  isAreaMonitoringEnabled,
+  shortId,
+} from "../lib/area-monitoring"
+
 export const getCurrentUser = cache(
   async function getCurrentUser() {
     return getCurrentUserFromHeaders(
@@ -59,38 +65,63 @@ export async function requireCompanyOwner(
 
 export const requireCompanyActor = cache(
   async function requireCompanyActor() {
-    const startedAt =
-      Date.now()
+    const monitored = isAreaMonitoringEnabled()
+    const startedAt = Date.now()
+    const perfStart = performance.now()
 
-    const userStartedAt =
-      Date.now()
-
-    const user =
-      await requireUser()
-
-    const userMs =
-      Date.now() - userStartedAt
-
-    const actorStartedAt =
-      Date.now()
-
-    const actor =
-      await resolveCompanyActorFromUser(
-        user,
-      )
-
-    const actorMs =
-      Date.now() - actorStartedAt
-
-    const totalMs =
-      Date.now() - startedAt
-
-    if (totalMs >= 100) {
-      console.info(
-        `[esigenta-perf] [require-company-actor] requireUser=${userMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
-      )
+    if (monitored) {
+      areaLog("area.auth.start", {
+        cacheNote: "react-cache-active",
+      })
     }
 
-    return actor
+    try {
+      const userStartedAt = Date.now()
+      const user = await requireUser()
+      const userMs = Date.now() - userStartedAt
+
+      const actorStartedAt = Date.now()
+      const actor = await resolveCompanyActorFromUser(user)
+      const actorMs = Date.now() - actorStartedAt
+
+      const totalMs = Date.now() - startedAt
+
+      if (totalMs >= 100) {
+        console.info(
+          `[esigenta-perf] [require-company-actor] requireUser=${userMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
+        )
+      }
+
+      if (monitored) {
+        areaLog("area.auth.end", {
+          durationMs: Math.round(performance.now() - perfStart),
+          result: "ok",
+          actorResolved: true,
+          userIdSafe: shortId(actor.user.id),
+          companyIdSafe: shortId(actor.company.id),
+          role: actor.role,
+          cacheNote: "react-cache-active",
+        })
+      }
+
+      return actor
+    } catch (error) {
+      if (monitored) {
+        areaLog("area.auth.end", {
+          durationMs: Math.round(performance.now() - perfStart),
+          result:
+            error instanceof Error &&
+            (error.name === "AuthenticationRequiredError" ||
+              error.name === "CompanyAuthorizationError" ||
+              error.name === "AmbiguousCompanyMembershipError")
+              ? "redirect"
+              : "error",
+          actorResolved: false,
+          errorType: error instanceof Error ? error.name : "unknown",
+          cacheNote: "react-cache-active",
+        })
+      }
+      throw error
+    }
   },
 )

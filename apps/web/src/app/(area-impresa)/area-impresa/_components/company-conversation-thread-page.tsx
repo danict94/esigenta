@@ -20,6 +20,12 @@ import {
   requireCompanyActor,
 } from "../../../../auth/server"
 import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+  shortId,
+} from "../../../../lib/area-monitoring"
+import {
   MessageThread,
 } from "./message-thread"
 import {
@@ -106,6 +112,13 @@ export async function CompanyConversationThreadPage({
   hrefBase,
   listPath,
 }: CompanyConversationThreadPageProps) {
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.model.conversationThread.start", {})
+  }
+
   const [
     resolvedParams,
     resolvedSearchParams,
@@ -117,6 +130,8 @@ export async function CompanyConversationThreadPage({
   ])
   const { conversationId } =
     resolvedParams
+
+  const threadStart = areaTimestamp()
   const result =
     await getCompanyConversationThread({
       conversationId,
@@ -124,6 +139,7 @@ export async function CompanyConversationThreadPage({
       userId: actor.user.id,
     authorizedActor: actor,
     })
+  const threadMs = Math.round(areaTimestamp() - threadStart)
 
   if (result.ok) {
     const isSupportThread =
@@ -137,6 +153,14 @@ export async function CompanyConversationThreadPage({
       isWrongSupportRoute ||
       isWrongCustomerRoute
     ) {
+      if (monitored) {
+        areaLog("area.model.conversationThread.end", {
+          conversationIdSafe: shortId(conversationId),
+          result: "wrong-route-redirect",
+          durationMs: Math.round(areaTimestamp() - pageStart),
+          threadMs,
+        })
+      }
       redirect(
         buildCompanyConversationHref({
           conversationId,
@@ -156,6 +180,16 @@ export async function CompanyConversationThreadPage({
     })
   }
 
+  if (monitored) {
+    areaLog("area.model.conversationThread.end", {
+      conversationIdSafe: shortId(conversationId),
+      result: result.ok ? "ok" : result.code,
+      threadKind: kind,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      threadMs,
+    })
+  }
+
   const statusMessage =
     getStatusMessage({
       sent: readSearchParam(
@@ -170,6 +204,15 @@ export async function CompanyConversationThreadPage({
     formData: FormData,
   ) {
     "use server"
+
+    const sendMonitored = isAreaMonitoringEnabled()
+    const sendStart = areaTimestamp()
+
+    if (sendMonitored) {
+      areaLog("area.message.send.start", {
+        conversationIdSafe: shortId(conversationId),
+      })
+    }
 
     const currentActor =
       await requireCompanyActor()
@@ -189,6 +232,13 @@ export async function CompanyConversationThreadPage({
       })
 
     if (!sendResult.ok) {
+      if (sendMonitored) {
+        areaLog("area.message.send.end", {
+          conversationIdSafe: shortId(conversationId),
+          result: sendResult.code,
+          durationMs: Math.round(areaTimestamp() - sendStart),
+        })
+      }
       redirect(
         buildThreadHref({
           hrefBase,
@@ -198,6 +248,14 @@ export async function CompanyConversationThreadPage({
           },
         }),
       )
+    }
+
+    if (sendMonitored) {
+      areaLog("area.message.send.end", {
+        conversationIdSafe: shortId(conversationId),
+        result: "ok",
+        durationMs: Math.round(areaTimestamp() - sendStart),
+      })
     }
 
     revalidatePath(listPath)

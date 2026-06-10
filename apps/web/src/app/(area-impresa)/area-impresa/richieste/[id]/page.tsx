@@ -20,6 +20,13 @@ import {
 } from "../../../../../auth/server"
 
 import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+  shortId,
+} from "../../../../../lib/area-monitoring"
+
+import {
   RequestDetailCard,
 } from "../../_components/request-detail-card"
 import {
@@ -58,6 +65,9 @@ export default async function RequestDetailPage({
   params,
   searchParams,
 }: RequestDetailPageProps) {
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
   const trace = createPerfTrace({
     scope: "request-detail",
   })
@@ -66,17 +76,36 @@ export default async function RequestDetailPage({
     searchParams,
   ])
 
+  if (monitored) {
+    areaLog("area.model.requestDetail.start", {
+      requestIdSafe: shortId(id),
+    })
+  }
+
+  const authStart = areaTimestamp()
   const actor = await trace.measure("actor", () =>
     requireCompanyActor(),
   )
+  const authMs = Math.round(areaTimestamp() - authStart)
 
+  const detailStart = areaTimestamp()
   const visibility = await getAvailableRequestForCompanyDetail({
     companyId: actor.company.id,
     requestId: id,
     recordPerf: trace.add,
   })
+  const detailMs = Math.round(areaTimestamp() - detailStart)
 
   if (!visibility.ok || !visibility.request) {
+    if (monitored) {
+      areaLog("area.model.requestDetail.end", {
+        requestIdSafe: shortId(id),
+        result: "not-found",
+        durationMs: Math.round(areaTimestamp() - pageStart),
+        authMs,
+        detailMs,
+      })
+    }
     trace.finish({
       requestId: id,
       status: "not-found",
@@ -97,6 +126,17 @@ export default async function RequestDetailPage({
       error: resolvedSearchParams.error,
     }),
   )
+
+  if (monitored) {
+    areaLog("area.model.requestDetail.end", {
+      requestIdSafe: shortId(id),
+      result: "ok",
+      hasUnlocked: viewModel.hasUnlocked,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      authMs,
+      detailMs,
+    })
+  }
 
   trace.finish({
     requestId: id,

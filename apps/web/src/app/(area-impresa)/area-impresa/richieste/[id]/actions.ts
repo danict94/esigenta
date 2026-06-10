@@ -19,6 +19,12 @@ import {
 } from "../../../../../auth/server"
 
 import {
+  areaLog,
+  isAreaMonitoringEnabled,
+  shortId,
+} from "../../../../../lib/area-monitoring"
+
+import {
   createPerfTrace,
 } from "../../_lib/perf-log"
 
@@ -56,10 +62,20 @@ function revalidateRequestSurfaces(requestId: string) {
 }
 
 export async function unlockRequestAction(formData: FormData) {
+  const monitored = isAreaMonitoringEnabled()
+  const actionStart = performance.now()
+
   const actor = await requireCompanyActor()
   const requestId = String(
     formData.get("requestId") ?? "",
   ).trim()
+
+  if (monitored) {
+    areaLog("area.unlock.start", {
+      requestIdSafe: shortId(requestId),
+      companyIdSafe: shortId(actor.company.id),
+    })
+  }
 
   const result = await unlockRequestForCompany({
     companyId: actor.company.id,
@@ -67,6 +83,13 @@ export async function unlockRequestAction(formData: FormData) {
   })
 
   if (!result.ok) {
+    if (monitored) {
+      areaLog("area.unlock.end", {
+        requestIdSafe: shortId(requestId),
+        result: result.code,
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
     redirect(
       buildRequestDetailHref({
         requestId,
@@ -78,18 +101,36 @@ export async function unlockRequestAction(formData: FormData) {
     )
   }
 
+  if (monitored) {
+    areaLog("area.unlock.end", {
+      requestIdSafe: shortId(requestId),
+      result: "ok",
+      durationMs: Math.round(performance.now() - actionStart),
+    })
+  }
+
   revalidateRequestSurfaces(requestId)
   revalidatePath("/area-impresa/contatti")
   redirect(buildRequestDetailHref({ requestId, unlocked: true }))
 }
 
 export async function contactCustomerAction(formData: FormData) {
+  const monitored = isAreaMonitoringEnabled()
+  const actionStart = performance.now()
+
   const trace = createPerfTrace({
     scope: "contact-customer-action",
   })
   const requestId = String(
     formData.get("requestId") ?? "",
   ).trim()
+
+  if (monitored) {
+    areaLog("area.action.contactCustomer.start", {
+      requestIdSafe: shortId(requestId),
+    })
+  }
+
   const actor = await trace.measure("actor", () =>
     requireCompanyActor(),
   )
@@ -107,6 +148,14 @@ export async function contactCustomerAction(formData: FormData) {
       buildRequestDetailHref({ requestId, error: result.code }),
     )
 
+    if (monitored) {
+      areaLog("area.action.contactCustomer.end", {
+        requestIdSafe: shortId(requestId),
+        result: result.code,
+        durationMs: Math.round(performance.now() - actionStart),
+      })
+    }
+
     trace.finish({
       requestId,
       redirect: redirectHref,
@@ -119,6 +168,15 @@ export async function contactCustomerAction(formData: FormData) {
     "redirect",
     () => `/area-impresa/contatti/${result.conversationId}`,
   )
+
+  if (monitored) {
+    areaLog("area.action.contactCustomer.end", {
+      requestIdSafe: shortId(requestId),
+      result: result.created ? "created" : "existing",
+      durationMs: Math.round(performance.now() - actionStart),
+      conversationIdSafe: shortId(result.conversationId),
+    })
+  }
 
   trace.finish({
     requestId,
