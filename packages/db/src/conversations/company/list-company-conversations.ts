@@ -1,15 +1,14 @@
-import {
-  getCompanyActorForUser,
-} from "../identity"
+import type { CompanyActor } from "../../identity/company/actor"
+
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import type {
   CompanyConversationListItem,
   ListCompanyConversationsInput,
   ListCompanyConversationsResult,
-} from "./types"
+} from "../types"
 
 const defaultLimit = 50
 const maxLimit = 100
@@ -44,7 +43,7 @@ export async function listCompanyConversations({
   companyId,
   userId,
   limit,
-}: ListCompanyConversationsInput & { authorizedActor?: NonNullable<Awaited<ReturnType<typeof getCompanyActorForUser>>> }): Promise<ListCompanyConversationsResult> {
+}: ListCompanyConversationsInput & { authorizedActor: CompanyActor }): Promise<ListCompanyConversationsResult> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
   const normalizedUserId =
@@ -66,14 +65,7 @@ export async function listCompanyConversations({
     }
   }
 
-  const actor =
-    authorizedActor?.companyId === normalizedCompanyId &&
-    authorizedActor.userId === normalizedUserId
-      ? authorizedActor
-      : await getCompanyActorForUser({
-      userId: normalizedUserId,
-      companyId: normalizedCompanyId,
-    })
+  const actor = authorizedActor
 
   if (!actor) {
     return {

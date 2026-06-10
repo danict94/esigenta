@@ -3,40 +3,34 @@
   getAdminProfileForUser,
   requireAdminFromUser,
   requireSuperAdminFromUser,
-} from "./admin-guards"
+} from "./admin"
 
 export type {
   AdminProfileForUser,
-} from "./admin-guards"
-
-export {
-  CompanyOnboardingError,
-  createCompanyForUser,
-} from "./company-onboarding"
-
-export type {
-  CompanyOperatingRadiusKm,
-  CreateCompanyForUserInput,
-  CreateCompanyForUserResult,
-  CreateCompanyProfileInput,
-} from "./company-onboarding"
+} from "./admin"
 
 export {
   AmbiguousCompanyMembershipError,
   CompanyAuthorizationError,
+  CompanyDeactivatedError,
   CompanyMarketplaceAuthorizationError,
+  CompanyOnboardingError,
   assertCompanyCanBuyCredits,
   assertCompanyCanUseMarketplace,
+  createCompanyForUser,
   getCompanyActorForUser,
   isCompanyMarketplaceApproved,
   listCompanyActorsForUser,
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,
-} from "./company-guards"
-export {
   resolveCompanyActorFromUser,
-} from "./company-actor"
+} from "./company"
 
 export type {
   CompanyActor,
-} from "./company-actor"
+  CompanyMarketplaceState,
+  CompanyOperatingRadiusKm,
+  CreateCompanyForUserInput,
+  CreateCompanyForUserResult,
+  CreateCompanyProfileInput,
+} from "./company"

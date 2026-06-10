@@ -1,16 +1,16 @@
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 import {
   hashVerificationToken,
-} from "../requests/verification-token"
+} from "../../requests/verification-token"
 
 import type {
   ResolveCustomerConversationAccessByTokenInput,
   ResolveCustomerConversationAccessByTokenResult,
   ResolveCustomerConversationAccessInput,
   ResolveCustomerConversationAccessResult,
-} from "./types"
+} from "../types"
 
 function normalizeRequiredText(
   value: string,

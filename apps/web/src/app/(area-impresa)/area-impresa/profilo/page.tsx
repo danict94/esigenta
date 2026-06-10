@@ -60,7 +60,7 @@ async function updateCompanyProfileAction(formData: FormData) {
   const actor = await requireCompanyActor();
 
   const result = await updateCompanyProfile({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
     website: normalizeText(formData.get("website")) || null,
     address: normalizeText(formData.get("address")) || null,
     city: normalizeText(formData.get("city")) || null,
@@ -88,7 +88,7 @@ async function requestCompanyContactChangeAction(formData: FormData) {
   ]);
 
   const result = await requestCompanyPhoneContactChange({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
     requestedByUserId: user.id,
     requestedPhone: normalizeText(formData.get("phone")) || null,
   });
@@ -107,9 +107,9 @@ async function deactivateAccountAction() {
   const actor = await requireCompanyActor();
 
   const result = await deactivateCompanyAccount({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
 
-    userId: actor.userId,
+    userId: actor.user.id,
   });
 
   if (!result.ok) {
@@ -181,7 +181,7 @@ export default async function ProfiloImpresaPage({
     services,
     pendingContactChangeRequests,
   } = await getCompanyProfilePageData({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
   });
 
   if (!company) {

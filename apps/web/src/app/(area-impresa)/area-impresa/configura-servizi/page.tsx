@@ -40,7 +40,7 @@ export default async function ConfiguraServiziPage({
 
   const { company, categories } =
     await getCompanyServiceConfigurationPageData({
-      companyId: actor.companyId,
+      companyId: actor.company.id,
     });
 
   if (!company) {

@@ -34,7 +34,7 @@ export async function bootstrapSuperAdmin() {
 
   const {
     prisma,
-  } = await import("../prisma/client")
+  } = await import("../../prisma/client")
 
   const user =
     await prisma.user.findUnique({

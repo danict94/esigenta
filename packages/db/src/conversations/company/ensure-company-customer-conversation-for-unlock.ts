@@ -4,12 +4,12 @@ import {
 
 import {
   hashVerificationToken,
-} from "../requests/verification-token"
+} from "../../requests/verification-token"
 
 import type {
   EnsureCompanyCustomerConversationForUnlockInput,
   EnsureCompanyCustomerConversationForUnlockResult,
-} from "./types"
+} from "../types"
 
 function createRawCustomerToken({
   conversationId,

@@ -71,7 +71,7 @@ export default async function RequestDetailPage({
   )
 
   const visibility = await getAvailableRequestForCompanyDetail({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
     requestId: id,
     recordPerf: trace.add,
   })

@@ -98,7 +98,7 @@ export async function GET(request: Request) {
       hasSessionId:
         Boolean(sessionId),
       companyId:
-        actor.companyId,
+        actor.company.id,
     },
   )
 
@@ -124,7 +124,7 @@ export async function GET(request: Request) {
       "checkout_status.stripe_client_unavailable",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         error:
           error instanceof Error
             ? error.message
@@ -153,7 +153,7 @@ export async function GET(request: Request) {
       "checkout_status.session_retrieve_failed",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         checkoutSessionId:
           sessionId,
         error:
@@ -175,7 +175,7 @@ export async function GET(request: Request) {
   const result =
     await getCreditOrderCheckoutStatus({
       companyId:
-        actor.companyId,
+        actor.company.id,
       checkoutSessionId:
         session.id,
       clientReferenceId:
@@ -189,7 +189,7 @@ export async function GET(request: Request) {
       "checkout_status.lookup_failed",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         checkoutSessionId:
           session.id,
         creditOrderId:
@@ -227,7 +227,7 @@ export async function GET(request: Request) {
     "checkout_status.resolved",
     {
       companyId:
-        actor.companyId,
+        actor.company.id,
       creditOrderId:
         result.data.creditOrderId,
       checkoutSessionId:

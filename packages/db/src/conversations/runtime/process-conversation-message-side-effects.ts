@@ -1,22 +1,22 @@
 import {
   conversationMessageEmail,
   sendEmail,
-} from "../email"
+} from "../../email"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 import {
   buildCompanyConversationUrl,
   buildCustomerConversationUrl,
-} from "../requests/request-links"
+} from "../../requests/request-links"
 
 import {
   createCustomerConversationToken,
-} from "./create-customer-conversation-token"
+} from "../customer/create-customer-conversation-token"
 import type {
   ConversationActor,
   ConversationMessageSideEffects,
-} from "./types"
+} from "../types"
 
 const PREVIEW_MAX_LENGTH = 240
 

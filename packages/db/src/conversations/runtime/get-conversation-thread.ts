@@ -1,17 +1,18 @@
+import type { CompanyActor } from "../../identity/company/actor"
 import {
   getAdminProfileForUser,
   getCompanyActorForUser,
-} from "../identity"
+} from "../../identity"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import {
   resolveCustomerConversationAccessByToken,
-} from "./resolve-customer-conversation-access"
+} from "../customer/resolve-customer-conversation-access"
 import {
   ensureSupportAdminParticipant,
-} from "./support-admin-participants"
+} from "../support/support-admin-participants"
 import type {
   ConversationThread,
   GetAdminConversationThreadInput,
@@ -20,7 +21,7 @@ import type {
   GetCompanyConversationThreadResult,
   GetCustomerConversationThreadByTokenInput,
   GetCustomerConversationThreadByTokenResult,
-} from "./types"
+} from "../types"
 
 type LoadedConversationThread =
   NonNullable<
@@ -213,7 +214,7 @@ export async function getCompanyConversationThread({
   companyId,
   userId,
   conversationId,
-}: GetCompanyConversationThreadInput & { authorizedActor?: NonNullable<Awaited<ReturnType<typeof getCompanyActorForUser>>> }): Promise<GetCompanyConversationThreadResult> {
+}: GetCompanyConversationThreadInput & { authorizedActor: CompanyActor }): Promise<GetCompanyConversationThreadResult> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
   const normalizedUserId =
@@ -245,14 +246,7 @@ export async function getCompanyConversationThread({
     }
   }
 
-  const actor =
-    authorizedActor?.companyId === normalizedCompanyId &&
-    authorizedActor.userId === normalizedUserId
-      ? authorizedActor
-      : await getCompanyActorForUser({
-      userId: normalizedUserId,
-      companyId: normalizedCompanyId,
-    })
+  const actor = authorizedActor
 
   if (!actor) {
     return {

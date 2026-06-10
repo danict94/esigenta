@@ -65,7 +65,7 @@ async function markNotificationReadAction(formData: FormData) {
   const notificationId = String(formData.get("notificationId") ?? "").trim();
 
   const result = await markCompanyNotificationRead({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
     notificationId,
   });
 
@@ -79,7 +79,7 @@ async function markNotificationReadAction(formData: FormData) {
 
 export default async function NotifichePage() {
   const actor = await requireCompanyActor();
-  const notifications = await listCompanyNotifications(actor.companyId);
+  const notifications = await listCompanyNotifications(actor.company.id);
   const unreadCount = notifications.filter(
     (notification) => notification.readAt === null,
   ).length;

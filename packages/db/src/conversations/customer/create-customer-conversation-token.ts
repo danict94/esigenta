@@ -5,18 +5,18 @@ import {
 import {
   getAdminProfileForUser,
   getCompanyActorForUser,
-} from "../identity"
+} from "../../identity"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 import {
   hashVerificationToken,
-} from "../requests/verification-token"
+} from "../../requests/verification-token"
 
 import type {
   CreateCustomerConversationTokenInput,
   CreateCustomerConversationTokenResult,
-} from "./types"
+} from "../types"
 
 function createRawCustomerToken({
   conversationId,

@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic"
 export default async function RichiesteSalvatePage() {
   const actor = await requireCompanyActor()
   const requests = await listCompanySavedRequests({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
   })
 
   return (

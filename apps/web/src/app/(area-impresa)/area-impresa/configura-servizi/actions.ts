@@ -73,7 +73,7 @@ export async function saveCompanyServicesAction(
 
   const result =
     await updateCompanyServiceConfiguration({
-      companyId: actor.companyId,
+      companyId: actor.company.id,
       selectedCategoryIds,
       selectedServiceIds,
       requestedRequestMatchingMode,

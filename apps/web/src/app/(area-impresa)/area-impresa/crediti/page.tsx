@@ -59,7 +59,7 @@ export default async function CompanyCreditsPage({
   const params =
     searchParams ? await searchParams : {}
   const canBuyCredits =
-    actor.companyStatus ===
+    actor.company.status ===
     "APPROVED"
 
   const [
@@ -68,7 +68,7 @@ export default async function CompanyCreditsPage({
   ] = await Promise.all([
     getCompanyCreditAccountSummary({
       companyId:
-        actor.companyId,
+        actor.company.id,
     }),
     listActiveCreditPackagesForPurchase(),
   ])

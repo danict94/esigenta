@@ -1,17 +1,17 @@
 import {
   getAdminProfileForUser,
   getCompanyActorForUser,
-} from "../identity"
+} from "../../identity"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import {
   resolveCustomerConversationAccess,
-} from "./resolve-customer-conversation-access"
+} from "../customer/resolve-customer-conversation-access"
 import {
   ensureSupportAdminParticipant,
-} from "./support-admin-participants"
+} from "../support/support-admin-participants"
 import type {
   CountUnreadCompanyConversationsInput,
   CountUnreadCompanyConversationsResult,
@@ -21,7 +21,7 @@ import type {
   CountUnreadAdminConversationsResult,
   MarkConversationReadInput,
   MarkConversationReadResult,
-} from "./types"
+} from "../types"
 
 type CompanyUnreadScopeResult =
   | {

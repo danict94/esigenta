@@ -120,8 +120,8 @@ export async function CompanyConversationThreadPage({
   const result =
     await getCompanyConversationThread({
       conversationId,
-      companyId: actor.companyId,
-      userId: actor.userId,
+      companyId: actor.company.id,
+      userId: actor.user.id,
     authorizedActor: actor,
     })
 
@@ -149,8 +149,8 @@ export async function CompanyConversationThreadPage({
       conversationId,
       reader: {
         actorType: "COMPANY",
-        companyId: actor.companyId,
-        userId: actor.userId,
+        companyId: actor.company.id,
+        userId: actor.user.id,
       },
     })
   }
@@ -181,9 +181,9 @@ export async function CompanyConversationThreadPage({
         sender: {
           actorType: "COMPANY",
           companyId:
-            currentActor.companyId,
+            currentActor.company.id,
           userId:
-            currentActor.userId,
+            currentActor.user.id,
         },
       })
 

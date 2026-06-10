@@ -1,52 +1,52 @@
 export {
   createCompanyCustomerConversation,
-} from "./create-company-customer-conversation"
+} from "./company/create-company-customer-conversation"
 
 export {
   createSupportConversation,
-} from "./create-support-conversation"
+} from "./support/create-support-conversation"
 
 export {
   ensureCompanyCustomerConversationForUnlock,
-} from "./ensure-company-customer-conversation-for-unlock"
+} from "./company/ensure-company-customer-conversation-for-unlock"
 
 export {
   createCustomerConversationToken,
-} from "./create-customer-conversation-token"
+} from "./customer/create-customer-conversation-token"
 
 export {
   listCompanyConversations,
-} from "./list-company-conversations"
+} from "./company/list-company-conversations"
 
 export {
   listAdminSupportConversations,
-} from "./list-admin-support-conversations"
+} from "./support/list-admin-support-conversations"
 
 export {
   getCompanyConversationThread,
   getAdminConversationThread,
   getCustomerConversationThreadByToken,
-} from "./get-conversation-thread"
+} from "./runtime/get-conversation-thread"
 
 export {
   resolveCustomerConversationAccessByToken,
   resolveCustomerConversationAccess,
-} from "./resolve-customer-conversation-access"
+} from "./customer/resolve-customer-conversation-access"
 
 export {
   sendConversationMessage,
-} from "./send-conversation-message"
+} from "./runtime/send-conversation-message"
 
 export {
   resolveSupportConversation,
-} from "./resolve-support-conversation"
+} from "./support/resolve-support-conversation"
 
 export {
   countUnreadCompanyConversationSummary,
   countUnreadAdminConversations,
   countUnreadCompanyConversations,
   markConversationRead,
-} from "./conversation-read-state"
+} from "./runtime/conversation-read-state"
 
 export type {
   AdminConversationActor,

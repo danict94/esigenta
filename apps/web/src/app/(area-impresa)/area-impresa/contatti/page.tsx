@@ -22,8 +22,8 @@ export default async function CompanyContactsPage() {
     await requireCompanyActor()
   const result =
     await listCompanyConversations({
-      companyId: actor.companyId,
-      userId: actor.userId,
+      companyId: actor.company.id,
+      userId: actor.user.id,
     authorizedActor: actor,
     })
   const contacts =

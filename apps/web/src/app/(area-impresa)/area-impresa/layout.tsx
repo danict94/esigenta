@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 
-import { requireUser, requireCompanyActor } from "../../../auth/server";
+import { requireCompanyActor } from "../../../auth/server";
 
 import {
   countUnreadCompanyConversationSummary,
@@ -58,23 +58,25 @@ export default async function AreaImpresaLayout({
   children: ReactNode;
 }) {
   const actor = await requireAreaImpresaAccess();
-  const [user, unreadNotificationCount, unreadMessageSummary] =
+  const [unreadNotificationCount, unreadMessageSummary] =
     await Promise.all([
-      requireUser(),
-      countUnreadCompanyNotifications(actor.companyId),
+      countUnreadCompanyNotifications(actor.company.id),
       countUnreadCompanyConversationSummary({
-        companyId: actor.companyId,
-        userId: actor.userId,
+        companyId: actor.company.id,
+        userId: actor.user.id,
       }),
     ]);
-  const accountLabel = user.name || user.email;
+  const accountLabel =
+    actor.user.name ??
+    actor.user.email ??
+    "Account";
   const unreadContactCount = unreadMessageSummary.ok
     ? unreadMessageSummary.contactsCount
     : 0;
   const unreadSupportCount = unreadMessageSummary.ok
     ? unreadMessageSummary.supportCount
     : 0;
-  const companyStatus = actor.companyStatus;
+  const companyStatus = actor.company.status;
   const marketplaceEnabled = companyStatus === "APPROVED";
   const statusNotice = getCompanyStatusNotice(companyStatus);
 

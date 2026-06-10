@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic"
 export default async function RichiesteAcquistatePage() {
   const actor = await requireCompanyActor()
   const requests = await listCompanyUnlockedRequests({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
   })
 
   return (

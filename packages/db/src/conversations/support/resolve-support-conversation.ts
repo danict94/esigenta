@@ -1,9 +1,9 @@
 import {
   getAdminProfileForUser,
-} from "../identity"
+} from "../../identity"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import {
   ensureSupportAdminParticipant,
@@ -11,7 +11,7 @@ import {
 import type {
   ResolveSupportConversationInput,
   ResolveSupportConversationResult,
-} from "./types"
+} from "../types"
 
 function normalizeRequiredText(
   value: string,

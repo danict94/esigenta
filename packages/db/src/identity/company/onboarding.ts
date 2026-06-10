@@ -1,10 +1,10 @@
-﻿import {
+import {
   Prisma,
 } from "@prisma/client"
 
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 const allowedOperatingRadiusKm = [
   10,

@@ -1,15 +1,15 @@
 import {
   getAdminProfileForUser,
-} from "../identity"
+} from "../../identity"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import type {
   AdminSupportConversationListItem,
   ListAdminSupportConversationsInput,
   ListAdminSupportConversationsResult,
-} from "./types"
+} from "../types"
 
 const defaultLimit = 50
 const maxLimit = 100

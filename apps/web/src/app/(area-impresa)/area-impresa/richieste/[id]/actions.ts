@@ -62,7 +62,7 @@ export async function unlockRequestAction(formData: FormData) {
   ).trim()
 
   const result = await unlockRequestForCompany({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
     requestId,
   })
 
@@ -95,8 +95,8 @@ export async function contactCustomerAction(formData: FormData) {
   )
 
   const result = await createCompanyCustomerConversation({
-    companyId: actor.companyId,
-    userId: actor.userId,
+    companyId: actor.company.id,
+    userId: actor.user.id,
     authorizedActor: actor,
     requestId,
     recordPerf: trace.add,
@@ -146,7 +146,7 @@ export async function createRefundRequestAction(
     : null
 
   const result = await createCreditRefundRequest({
-    companyId: actor.companyId,
+    companyId: actor.company.id,
     requestUnlockId,
     reason: String(
       formData.get("reason") ?? "",

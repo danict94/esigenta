@@ -47,7 +47,7 @@ export async function createCreditPackageCheckoutAction(
       "checkout.base_url_missing",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         ...getStripeRuntimeDebugConfig(),
       },
     )
@@ -69,7 +69,7 @@ export async function createCreditPackageCheckoutAction(
       "checkout.stripe_client_unavailable",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         error:
           error instanceof Error
             ? error.message
@@ -85,7 +85,7 @@ export async function createCreditPackageCheckoutAction(
   const orderResult =
     await createPendingCreditOrder({
       companyId:
-        actor.companyId,
+        actor.company.id,
       packageId,
     })
 
@@ -94,7 +94,7 @@ export async function createCreditPackageCheckoutAction(
       "checkout.order_creation_failed",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         packageId,
         code: orderResult.code,
       },
@@ -120,7 +120,7 @@ export async function createCreditPackageCheckoutAction(
         stripe,
         appUrl,
         companyId:
-          actor.companyId,
+          actor.company.id,
         order,
       })
   } catch (error) {
@@ -128,7 +128,7 @@ export async function createCreditPackageCheckoutAction(
       "checkout.session_creation_failed",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         creditOrderId:
           order.orderId,
         error:
@@ -154,7 +154,7 @@ export async function createCreditPackageCheckoutAction(
     "checkout.session_created",
     {
       companyId:
-        actor.companyId,
+        actor.company.id,
       creditOrderId:
         order.orderId,
       packageId:
@@ -186,7 +186,7 @@ export async function createCreditPackageCheckoutAction(
       "checkout.order_attach_failed",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         creditOrderId:
           order.orderId,
         checkoutSessionId:
@@ -205,7 +205,7 @@ export async function createCreditPackageCheckoutAction(
       "checkout.session_url_missing",
       {
         companyId:
-          actor.companyId,
+          actor.company.id,
         creditOrderId:
           order.orderId,
         checkoutSessionId:

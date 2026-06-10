@@ -196,7 +196,7 @@ export default async function RichiestePage({
 
   const result =
     await listAvailableRequestsForCompany({
-      companyId: actor.companyId,
+      companyId: actor.company.id,
       filters,
     })
 

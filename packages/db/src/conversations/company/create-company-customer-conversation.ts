@@ -1,18 +1,17 @@
+import type { CompanyActor } from "../../identity/company/actor"
 import type {
   ConversationParticipant,
 } from "@prisma/client"
 
-import {
-  getCompanyActorForUser,
-} from "../identity"
+
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import type {
   CreateCompanyCustomerConversationInput,
   CreateCompanyCustomerConversationResult,
-} from "./types"
+} from "../types"
 
 function normalizeRequiredId(
   value: string,
@@ -86,7 +85,7 @@ export async function createCompanyCustomerConversation({
   requestId,
   userId,
   recordPerf,
-}: CreateCompanyCustomerConversationInput & { authorizedActor?: NonNullable<Awaited<ReturnType<typeof getCompanyActorForUser>>> }): Promise<CreateCompanyCustomerConversationResult> {
+}: CreateCompanyCustomerConversationInput & { authorizedActor: CompanyActor }): Promise<CreateCompanyCustomerConversationResult> {
   const normalizedCompanyId =
     normalizeRequiredId(companyId)
   const normalizedRequestId =
@@ -118,19 +117,7 @@ export async function createCompanyCustomerConversation({
     }
   }
 
-  const actor =
-    authorizedActor?.companyId === normalizedCompanyId &&
-    authorizedActor.userId === normalizedUserId
-      ? authorizedActor
-      : await measurePerf(
-      "authorization",
-      recordPerf,
-      () =>
-        getCompanyActorForUser({
-          userId: normalizedUserId,
-          companyId: normalizedCompanyId,
-        }),
-    )
+  const actor = authorizedActor
 
   if (!actor) {
     return {

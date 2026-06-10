@@ -38,8 +38,8 @@ export default async function CompanySupportPage() {
     await requireCompanyActor()
   const result =
     await listCompanyConversations({
-      companyId: actor.companyId,
-      userId: actor.userId,
+      companyId: actor.company.id,
+      userId: actor.user.id,
     authorizedActor: actor,
     })
   const supportConversation =
@@ -58,9 +58,9 @@ export default async function CompanySupportPage() {
     const supportResult =
       await createSupportConversation({
         companyId:
-          currentActor.companyId,
+          currentActor.company.id,
         userId:
-          currentActor.userId,
+          currentActor.user.id,
       })
 
     if (!supportResult.ok) {

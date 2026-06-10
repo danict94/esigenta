@@ -36,8 +36,8 @@ export default async function LegacyCompanyConversationThreadPage({
   const result =
     await getCompanyConversationThread({
       conversationId,
-      companyId: actor.companyId,
-      userId: actor.userId,
+      companyId: actor.company.id,
+      userId: actor.user.id,
     authorizedActor: actor,
     })
 

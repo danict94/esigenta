@@ -1,26 +1,26 @@
 import {
   getAdminProfileForUser,
   getCompanyActorForUser,
-} from "../identity"
+} from "../../identity"
 import {
   prisma,
-} from "../prisma/client"
+} from "../../prisma/client"
 
 import {
   processConversationMessageSideEffects,
 } from "./process-conversation-message-side-effects"
 import {
   resolveCustomerConversationAccess,
-} from "./resolve-customer-conversation-access"
+} from "../customer/resolve-customer-conversation-access"
 import {
   ensureSupportAdminParticipant,
-} from "./support-admin-participants"
+} from "../support/support-admin-participants"
 import type {
   ConversationActor,
   ConversationMessageSideEffects,
   SendConversationMessageInput,
   SendConversationMessageResult,
-} from "./types"
+} from "../types"
 
 const emptySideEffects: ConversationMessageSideEffects = {
   companyNotificationCreated: false,
