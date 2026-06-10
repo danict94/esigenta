@@ -50,10 +50,37 @@ export async function requireCompanyOwner(
 }
 
 export async function requireCompanyActor() {
+  const startedAt =
+    Date.now()
+
+  const userStartedAt =
+    Date.now()
+
   const user =
     await requireUser()
 
-  return resolveCompanyActorFromUser(
-    user,
-  )
+  const userMs =
+    Date.now() - userStartedAt
+
+  const actorStartedAt =
+    Date.now()
+
+  const actor =
+    await resolveCompanyActorFromUser(
+      user,
+    )
+
+  const actorMs =
+    Date.now() - actorStartedAt
+
+  const totalMs =
+    Date.now() - startedAt
+
+  if (totalMs >= 100) {
+    console.info(
+      `[esigenta-perf] [require-company-actor] requireUser=${userMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
+    )
+  }
+
+  return actor
 }
