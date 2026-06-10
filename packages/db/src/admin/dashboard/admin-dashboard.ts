@@ -3,11 +3,11 @@ import type {
   RequestStatus,
 } from "@prisma/client"
 
-import { prisma } from "./prisma/client"
+import { prisma } from "../../prisma/client"
 
 import {
   countUnreadAdminConversations,
-} from "./conversations"
+} from "../../conversations"
 
 export type AdminDashboardMetrics = {
   pendingRequests: number

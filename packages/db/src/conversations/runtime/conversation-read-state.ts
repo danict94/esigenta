@@ -168,13 +168,38 @@ async function markCompanyConversationRead({
         conversationId,
         actorType: "COMPANY",
         companyId,
+        OR: [
+          { lastReadAt: null },
+          { lastReadAt: { lt: now } },
+        ],
       },
       data: {
         lastReadAt: now,
       },
     })
 
-  if (updated.count !== 1) {
+  if (updated.count === 0) {
+    const existing =
+      await prisma.conversationParticipant.findFirst({
+        where: {
+          conversationId,
+          actorType: "COMPANY",
+          companyId,
+        },
+        select: {
+          id: true,
+        },
+      })
+
+    if (existing) {
+      return {
+        ok: true,
+        conversationId,
+        participantId: existing.id,
+        readAt: now,
+      }
+    }
+
     const conversation =
       await prisma.conversation.findUnique({
         where: {
@@ -203,6 +228,10 @@ async function markCompanyConversationRead({
         conversationId,
         actorType: "ADMIN",
         userId,
+        OR: [
+          { lastReadAt: null },
+          { lastReadAt: { lt: now } },
+        ],
       },
       data: {
         lastReadAt: now,
@@ -210,23 +239,10 @@ async function markCompanyConversationRead({
     })
   }
 
-  const participant =
-    await prisma.conversationParticipant.findFirst({
-      where: {
-        conversationId,
-        actorType: "COMPANY",
-        companyId,
-      },
-      select: {
-        id: true,
-      },
-    })
-
   return {
     ok: true,
     conversationId,
-    participantId:
-      participant?.id ?? "",
+    participantId: "",
     readAt: now,
   }
 }

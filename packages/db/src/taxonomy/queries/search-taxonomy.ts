@@ -1,10 +1,10 @@
-import { prisma } from "./prisma/client"
+import { prisma } from "../../prisma/client"
 
 import {
   listInterventionsForCategory,
-} from "./taxonomy/domain"
+} from "../domain"
 
-import type { TaxonomySearchResult } from "./taxonomy/shared/types"
+import type { TaxonomySearchResult } from "../shared/types"
 
 type SearchParams = {
   query: string

@@ -4,7 +4,7 @@ import type {
 
 import {
   prisma,
-} from "./prisma/client"
+} from "../../prisma/client"
 
 export type AdminCompanyStatusFilter =
   | CompanyStatus

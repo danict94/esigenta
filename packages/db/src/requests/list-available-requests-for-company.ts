@@ -89,6 +89,12 @@ export type ListAvailableRequestsForCompanyResult =
       hasSelectedServices: boolean
       filters: RequestDashboardFilterOptions
       requests: AvailableCompanyRequest[]
+      page: number
+      pageSize: number
+      hasNextPage: boolean
+      dbFetchedCount: number
+      returnedCount: number
+      boundingBoxApplied: boolean
     }
   | {
       ok: false
@@ -370,6 +376,33 @@ function matchesKeyword({
   )
 }
 
+function computeBoundingBox({
+  latDeg,
+  lngDeg,
+  radiusKm,
+}: {
+  latDeg: number
+  lngDeg: number
+  radiusKm: number
+}): {
+  minLat: number
+  maxLat: number
+  minLng: number
+  maxLng: number
+} {
+  const latDelta = radiusKm / 111.32
+  const lngDelta =
+    radiusKm /
+    (111.32 *
+      Math.cos((latDeg * Math.PI) / 180))
+  return {
+    minLat: latDeg - latDelta,
+    maxLat: latDeg + latDelta,
+    minLng: lngDeg - lngDelta,
+    maxLng: lngDeg + lngDelta,
+  }
+}
+
 function sortVisibleRequests(
   left: SortableAvailableCompanyRequest,
   right: SortableAvailableCompanyRequest,
@@ -397,10 +430,25 @@ function sortVisibleRequests(
 async function loadAvailableRequestsForCompany({
   companyId,
   filters,
+  page = 1,
+  pageSize = 50,
 }: {
   companyId: string
   filters?: RequestDashboardFilters | undefined
+  page?: number
+  pageSize?: number
 }): Promise<ListAvailableRequestsForCompanyResult> {
+  const normalizedPage = Math.max(
+    1,
+    Number.isFinite(page) ? Math.floor(page) : 1,
+  )
+  const normalizedPageSize = Math.min(
+    100,
+    Math.max(
+      1,
+      Number.isFinite(pageSize) ? Math.floor(pageSize) : 50,
+    ),
+  )
   const normalizedFilters =
     normalizeReadModelFilters(filters)
   const emptyFilterOptions =
@@ -711,6 +759,12 @@ async function loadAvailableRequestsForCompany({
         selectedServiceIds.size > 0,
       filters: filterOptions,
       requests: [],
+      page: normalizedPage,
+      pageSize: normalizedPageSize,
+      hasNextPage: false,
+      dbFetchedCount: 0,
+      returnedCount: 0,
+      boundingBoxApplied: false,
     }
   }
 
@@ -752,8 +806,20 @@ async function loadAvailableRequestsForCompany({
         selectedServiceIds.size > 0,
       filters: filterOptions,
       requests: [],
+      page: normalizedPage,
+      pageSize: normalizedPageSize,
+      hasNextPage: false,
+      dbFetchedCount: 0,
+      returnedCount: 0,
+      boundingBoxApplied: false,
     }
   }
+
+  const bbox = computeBoundingBox({
+    latDeg: companyLatitude,
+    lngDeg: companyLongitude,
+    radiusKm: effectiveRadiusKm,
+  })
 
   const requests =
     await prisma.request.findMany({
@@ -762,10 +828,12 @@ async function loadAvailableRequestsForCompany({
           in: visibleRequestStatuses,
         },
         latitude: {
-          not: null,
+          gte: bbox.minLat,
+          lte: bbox.maxLat,
         },
         longitude: {
-          not: null,
+          gte: bbox.minLng,
+          lte: bbox.maxLng,
         },
         requiredServices: {
           some: {
@@ -778,7 +846,7 @@ async function loadAvailableRequestsForCompany({
       orderBy: {
         createdAt: "desc",
       },
-      take: 300,
+      take: 100,
       select: {
         id: true,
         requestCode: true,
@@ -817,7 +885,9 @@ async function loadAvailableRequestsForCompany({
       },
     })
 
-  const visibleRequests =
+  const dbFetchedCount = requests.length
+
+  const allVisibleRequests =
     requests
       .flatMap((request) => {
         if (
@@ -890,25 +960,47 @@ async function loadAvailableRequestsForCompany({
         return request
       })
 
+  const pageStart =
+    (normalizedPage - 1) * normalizedPageSize
+  const paginatedRequests =
+    allVisibleRequests.slice(
+      pageStart,
+      pageStart + normalizedPageSize,
+    )
+
   return {
     ok: true,
     company: companyProfile,
     hasSelectedServices:
       selectedServiceIds.size > 0,
     filters: filterOptions,
-    requests: visibleRequests,
+    requests: paginatedRequests,
+    page: normalizedPage,
+    pageSize: normalizedPageSize,
+    hasNextPage:
+      allVisibleRequests.length >
+      pageStart + normalizedPageSize,
+    dbFetchedCount,
+    returnedCount: paginatedRequests.length,
+    boundingBoxApplied: true,
   }
 }
 
 export async function listAvailableRequestsForCompany({
   companyId,
   filters,
+  page,
+  pageSize,
 }: {
   companyId: string
   filters?: RequestDashboardFilters | undefined
+  page?: number
+  pageSize?: number
 }): Promise<ListAvailableRequestsForCompanyResult> {
   return loadAvailableRequestsForCompany({
     companyId,
     filters,
+    ...(page !== undefined && { page }),
+    ...(pageSize !== undefined && { pageSize }),
   })
 }

@@ -1,6 +1,6 @@
 import {
   prisma,
-} from "./prisma/client"
+} from "../../../prisma/client"
 
 const maximumCompanyServiceCategories =
   6

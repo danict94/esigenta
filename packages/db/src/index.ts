@@ -1,4 +1,4 @@
-export { getPopularInterventions, searchTaxonomy } from "./search-taxonomy";
+export { getPopularInterventions, searchTaxonomy } from "./taxonomy/queries";
 
 export * from "./funnel";
 
@@ -8,7 +8,7 @@ export * from "./identity";
 
 export * from "./credits";
 
-export * from "./company-contact-change-requests";
+export * from "./company/profile/contact-change-requests";
 
 export { prisma } from "./prisma/client";
 
@@ -16,9 +16,9 @@ export type { Prisma } from "@prisma/client";
 
 export * from "./conversations";
 
-export * from "./admin-dashboard";
+export * from "./admin/dashboard";
 
-export * from "./admin-companies";
+export * from "./admin/companies";
 
 export type {
   TaxonomySearchEntityType,
@@ -29,8 +29,8 @@ export * from "./taxonomy/domain";
 
 export * from "./company/account";
 
-export * from "./company-service-configuration";
+export * from "./company/services/configuration";
 
-export * from "./company-profile";
+export * from "./company/profile";
 
-export * from "./public-business-area";
+export * from "./public/business-area";

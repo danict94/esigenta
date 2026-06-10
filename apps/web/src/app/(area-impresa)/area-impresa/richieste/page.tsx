@@ -43,6 +43,7 @@ type RichiestePageProps = {
     categoryId?: string | string[]
     serviceId?: string | string[]
     sort?: string | string[]
+    page?: string | string[]
   }>
 }
 
@@ -207,11 +208,20 @@ export default async function RichiestePage({
       resolvedSearchParams,
     )
 
+  const pageParam = Number(
+    readSearchParam(resolvedSearchParams.page) ?? "1",
+  )
+  const currentPage =
+    Number.isFinite(pageParam) && pageParam >= 1
+      ? Math.floor(pageParam)
+      : 1
+
   const requestQueryStart = areaTimestamp()
   const result =
     await listAvailableRequestsForCompany({
       companyId: actor.company.id,
       filters,
+      page: currentPage,
     })
   const requestQueryMs = Math.round(areaTimestamp() - requestQueryStart)
 
@@ -222,11 +232,32 @@ export default async function RichiestePage({
       hasCategory: Boolean(filters.categoryId),
       hasRadius: Boolean(filters.radiusKm),
       sort: filters.sort ?? "recommended",
-      candidateLimit: 300,
-      returnedCount: result.ok ? result.requests.length : 0,
+      page: result.ok ? result.page : currentPage,
+      pageSize: result.ok ? result.pageSize : 50,
+      dbFetchedCount: result.ok ? result.dbFetchedCount : 0,
+      returnedCount: result.ok ? result.returnedCount : 0,
+      hasNextPage: result.ok ? result.hasNextPage : false,
+      boundingBoxApplied: result.ok ? result.boundingBoxApplied : false,
       result: result.ok ? "ok" : result.code,
       requestQueryMs,
     })
+  }
+
+  function buildPageHref(targetPage: number) {
+    const params = new URLSearchParams()
+    const active = result.filters.active
+    if (active.q) params.set("q", active.q)
+    if (active.radiusKm !== null)
+      params.set("radiusKm", String(active.radiusKm))
+    if (active.categoryId)
+      params.set("categoryId", active.categoryId)
+    if (active.serviceId)
+      params.set("serviceId", active.serviceId)
+    if (active.sort !== "recommended")
+      params.set("sort", active.sort)
+    if (targetPage > 1) params.set("page", String(targetPage))
+    const qs = params.toString()
+    return qs ? `/area-impresa/richieste?${qs}` : "/area-impresa/richieste"
   }
 
   const activeFilters =
@@ -366,6 +397,33 @@ export default async function RichiestePage({
               emptyMessage="Nessuna richiesta disponibile al momento."
               savedAction={toggleSavedRequestAction}
             />
+
+            {(result.page > 1 || result.hasNextPage) ? (
+              <div className="flex items-center justify-between gap-4 pt-2">
+                <div>
+                  {result.page > 1 ? (
+                    <Link
+                      href={buildPageHref(result.page - 1)}
+                      className="text-sm font-medium text-brand-primary"
+                      prefetch={false}
+                    >
+                      &larr; Pagina precedente
+                    </Link>
+                  ) : null}
+                </div>
+                <div>
+                  {result.hasNextPage ? (
+                    <Link
+                      href={buildPageHref(result.page + 1)}
+                      className="text-sm font-medium text-brand-primary"
+                      prefetch={false}
+                    >
+                      Pagina successiva &rarr;
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
           </>
         )}
       </section>

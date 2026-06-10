@@ -2,13 +2,13 @@
 import type {
   CompanyContactChangeRequestResult,
   CreateCompanyContactChangeRequestData,
-} from "./company-contact-change-requests"
+} from "./contact-change-requests"
 import {
   createCompanyContactChangeRequest,
-} from "./company-contact-change-requests"
+} from "./contact-change-requests"
 import {
   prisma,
-} from "./prisma/client"
+} from "../../prisma/client"
 
 const allowedRadiusKm = [
   10,

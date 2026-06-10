@@ -3,7 +3,7 @@ import type {
   CompanyContactChangeStatus,
 } from "@prisma/client"
 
-import { prisma } from "./prisma/client"
+import { prisma } from "../../../prisma/client"
 
 export type CompanyContactChangeRequestResult<T> =
   | {

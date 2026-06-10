@@ -1,7 +1,7 @@
 
 import {
   prisma,
-} from "./prisma/client"
+} from "../../prisma/client"
 
 export type PublicBusinessAreaCategory = {
   slug: string
