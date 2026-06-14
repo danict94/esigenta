@@ -132,11 +132,6 @@ export type {
 
 export * from "./normalization"
 
-export {
-  buildRuntimeRequestDraft,
-  createRuntimeFunnel,
-} from "./orchestration/create-runtime-funnel"
-
 export type {
   BuildRuntimeRequestDraftInput,
   CreateRuntimeFunnelInput,

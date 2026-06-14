@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { createRuntimeFunnel } from '@esigenta/funnel'
+import { createRuntimeFunnel } from '@esigenta/funnel/server'
 
 import {
   normalizeRuntimeText,

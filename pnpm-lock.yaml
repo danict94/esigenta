@@ -271,6 +271,9 @@ importers:
       '@esigenta/uploads':
         specifier: workspace:*
         version: link:../uploads
+      server-only:
+        specifier: '*'
+        version: 0.0.1
     devDependencies:
       '@types/node':
         specifier: ^20.19.39
@@ -3993,6 +3996,9 @@ packages:
 
   seq-queue@0.0.5:
     resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
+
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   set-cookie-parser@3.1.0:
     resolution: {integrity: sha512-kjnC1DXBHcxaOaOXBHBeRtltsDG2nUiUni+jP92M9gYdW12rsmx92UsfpH7o5tDRs7I1ZZPSQJQGv3UaRfCiuw==}
@@ -8093,6 +8099,8 @@ snapshots:
   semver@7.7.4: {}
 
   seq-queue@0.0.5: {}
+
+  server-only@0.0.1: {}
 
   set-cookie-parser@3.1.0: {}
 

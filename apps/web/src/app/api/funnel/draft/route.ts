@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { buildRuntimeRequestDraft } from '@esigenta/funnel'
+import { buildRuntimeRequestDraft } from '@esigenta/funnel/server'
 
 import {
   normalizeRuntimeText,
