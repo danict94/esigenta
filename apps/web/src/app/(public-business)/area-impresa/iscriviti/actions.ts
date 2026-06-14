@@ -2,7 +2,7 @@
 
 import {
   CompanyOnboardingError,
-} from "@esigenta/db"
+} from "@esigenta/auth"
 
 import {
   createCompanyForCurrentUser,

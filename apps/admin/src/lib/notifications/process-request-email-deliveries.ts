@@ -3,11 +3,11 @@ import {
   markNotificationDeliveryFailed,
   markNotificationDeliverySending,
   markNotificationDeliverySent,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import type {
   PendingEmailNotificationDelivery,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import {
   sendRequestEmailWithResend,

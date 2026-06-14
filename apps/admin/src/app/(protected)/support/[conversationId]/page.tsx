@@ -10,7 +10,7 @@ import {
   markConversationRead,
   resolveSupportConversation,
   sendConversationMessage,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 import {
   Button,
   Card,

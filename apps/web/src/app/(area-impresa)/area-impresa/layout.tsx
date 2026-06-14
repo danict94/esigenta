@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
-import { redirect } from "next/navigation";
-
-import { requireCompanyActor } from "../../../auth/server";
+import { requireAreaImpresaAccess } from "../../../auth/server";
 
 import {
   countUnreadCompanyConversationSummary,
   countUnreadCompanyNotifications,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 
 import { Container } from "@esigenta/ui";
 
@@ -18,29 +16,6 @@ import {
 
 import { ImpresaSidebar } from "./_components/impresa-sidebar";
 
-function isNamedError(error: unknown, name: string): boolean {
-  return error instanceof Error && error.name === name;
-}
-
-async function requireAreaImpresaAccess() {
-  try {
-    return await requireCompanyActor();
-  } catch (error) {
-    if (isNamedError(error, "AuthenticationRequiredError")) {
-      redirect("/area-impresa/accedi");
-    }
-
-    if (isNamedError(error, "CompanyAuthorizationError")) {
-      redirect("/area-impresa");
-    }
-
-    if (isNamedError(error, "AmbiguousCompanyMembershipError")) {
-      redirect("/area-impresa/seleziona-impresa");
-    }
-
-    throw error;
-  }
-}
 
 function getCompanyStatusNotice(status: string) {
   if (status === "PENDING_REVIEW") {

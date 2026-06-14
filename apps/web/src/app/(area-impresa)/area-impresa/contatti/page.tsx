@@ -1,6 +1,6 @@
 import {
   listCompanyConversations,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 import {
   Card,
   CardContent,
@@ -8,8 +8,13 @@ import {
 } from "@esigenta/ui"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
 
 import {
   ContactList,
@@ -18,14 +23,24 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function CompanyContactsPage() {
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+  if (monitored) areaLog("area.model.contacts.start", {})
+
   const actor =
-    await requireCompanyActor()
+    await requireAreaImpresaAccess()
   const result =
     await listCompanyConversations({
       companyId: actor.company.id,
       userId: actor.user.id,
     authorizedActor: actor,
     })
+
+  if (monitored) areaLog("area.model.contacts.end", {
+    result: result.ok ? "ok" : "error",
+    durationMs: Math.round(areaTimestamp() - pageStart),
+  })
+
   const contacts =
     result.ok
       ? result.conversations.filter(

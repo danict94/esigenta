@@ -10,7 +10,7 @@ import {
   tokens,
 } from "@esigenta/ui";
 
-import { sendCustomerRequestsAccessEmail } from "@esigenta/db";
+import { sendCustomerRequestsAccessEmail } from "@esigenta/domain";
 
 import { PublicShell } from "../../../../components/layout/public-shell";
 

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import {
   countUnreadAdminConversations,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 
 import { requireAdmin } from "../../auth/server";
 import { AdminShell } from "../../components/admin-shell";

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type {
   AdminSupportConversationListItem,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 import {
   Badge,
   Card,

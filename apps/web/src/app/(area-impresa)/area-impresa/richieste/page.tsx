@@ -10,18 +10,22 @@ import {
 } from "@esigenta/ui"
 
 import {
-  listAvailableRequestsForCompany,
+  getCompanyRequestsListPage,
   type RequestDashboardFilters,
   type RequestDashboardSort,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
-import { requireCompanyActor } from "../../../../auth/server"
+import { requireAreaImpresaAccess } from "../../../../auth/server"
 
 import {
   areaLog,
   areaTimestamp,
   isAreaMonitoringEnabled,
 } from "../../../../lib/area-monitoring"
+
+import {
+  createPerfTrace,
+} from "../_lib/perf-log"
 
 import {
   CompanyRequestList,
@@ -200,7 +204,7 @@ export default async function RichiestePage({
     actor,
   ] = await Promise.all([
     searchParams,
-    requireCompanyActor(),
+    requireAreaImpresaAccess(),
   ])
 
   const filters =
@@ -216,16 +220,25 @@ export default async function RichiestePage({
       ? Math.floor(pageParam)
       : 1
 
+  const requestTrace = monitored
+    ? createPerfTrace({ scope: "request-list" })
+    : null
+
   const requestQueryStart = areaTimestamp()
-  const result =
-    await listAvailableRequestsForCompany({
-      companyId: actor.company.id,
-      filters,
-      page: currentPage,
-    })
+  const result = await getCompanyRequestsListPage(
+    actor,
+    filters,
+    currentPage,
+    requestTrace !== null ? requestTrace.add : undefined,
+  )
   const requestQueryMs = Math.round(areaTimestamp() - requestQueryStart)
 
   if (monitored) {
+    requestTrace?.finish({
+      result: result.ok ? "ok" : result.code,
+      dbFetchedCount: result.ok ? result.dbFetchedCount : 0,
+      returnedCount: result.ok ? result.returnedCount : 0,
+    })
     areaLog("area.model.requestsList.end", {
       durationMs: Math.round(areaTimestamp() - pageStart),
       hasSearch: Boolean(filters.q),

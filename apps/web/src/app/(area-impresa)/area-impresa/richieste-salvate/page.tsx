@@ -3,12 +3,22 @@ import {
 } from "@esigenta/ui"
 
 import {
-  listCompanySavedRequests,
-} from "@esigenta/db"
+  getCompanySavedRequestsPage,
+} from "@esigenta/domain"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
+
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+
+import {
+  createPerfTrace,
+} from "../_lib/perf-log"
 
 import {
   CompanyRequestList,
@@ -21,10 +31,37 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function RichiesteSalvatePage() {
-  const actor = await requireCompanyActor()
-  const requests = await listCompanySavedRequests({
-    companyId: actor.company.id,
-  })
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.model.savedRequests.start", {})
+  }
+
+  const actor = await requireAreaImpresaAccess()
+
+  const savedTrace = monitored
+    ? createPerfTrace({ scope: "saved-requests" })
+    : null
+
+  const queryStart = areaTimestamp()
+  const result = await getCompanySavedRequestsPage(
+    actor,
+    savedTrace !== null ? savedTrace.add : undefined,
+  )
+  const queryMs = Math.round(areaTimestamp() - queryStart)
+
+  if (monitored) {
+    savedTrace?.finish({
+      count: result.requests.length,
+    })
+    areaLog("area.model.savedRequests.end", {
+      result: "ok",
+      count: result.requests.length,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      queryMs,
+    })
+  }
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -39,12 +76,12 @@ export default async function RichiesteSalvatePage() {
           </h1>
 
           <p className="mt-1 text-sm text-text-secondary">
-            {requests.length} richieste
+            {result.requests.length} richieste
           </p>
         </div>
 
         <CompanyRequestList
-          requests={requests}
+          requests={result.requests}
           mode="saved"
           emptyMessage="Non hai ancora salvato richieste."
           savedAction={toggleSavedRequestAction}

@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import type {
   CompanyConversationListItem,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 import {
   Badge,
   Card,

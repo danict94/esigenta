@@ -4,7 +4,7 @@ import {
 
 import {
   storeUploadedRequestPhoto,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import {
   REQUEST_PHOTO_MAX_FILES,

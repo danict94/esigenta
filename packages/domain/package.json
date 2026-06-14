@@ -1,0 +1,25 @@
+{
+  "name": "@esigenta/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@esigenta/auth": "workspace:*",
+    "@esigenta/billing": "workspace:*",
+    "@esigenta/database": "workspace:*",
+    "@esigenta/funnel": "workspace:*",
+    "@esigenta/notifications": "workspace:*",
+    "@esigenta/shared": "workspace:*",
+    "@esigenta/uploads": "workspace:*",
+    "@prisma/client": "^7.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39"
+  }
+}

@@ -1,9 +1,9 @@
 import {
   createCompanyForUser,
-} from "@esigenta/db"
+} from "@esigenta/auth"
 import type {
   CreateCompanyProfileInput,
-} from "@esigenta/db"
+} from "@esigenta/auth"
 
 import {
   requireUser,

@@ -278,7 +278,8 @@ export function FunnelEntry({
       setCategoryDiscovery(
         (current) => {
           if (
-            current?.categorySlug !==
+            !current ||
+            current.categorySlug !==
             result.slug
           ) {
             return current
@@ -296,7 +297,8 @@ export function FunnelEntry({
       setCategoryDiscovery(
         (current) => {
           if (
-            current?.categorySlug !==
+            !current ||
+            current.categorySlug !==
             result.slug
           ) {
             return current

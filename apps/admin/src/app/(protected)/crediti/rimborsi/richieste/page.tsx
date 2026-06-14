@@ -9,7 +9,7 @@ import {
   approveCreditRefundRequest,
   listCreditRefundRequestsForAdminReview,
   rejectCreditRefundRequest,
-} from "@esigenta/db"
+} from "@esigenta/billing"
 
 import {
   Badge,

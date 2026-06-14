@@ -3,12 +3,22 @@ import {
 } from "@esigenta/ui"
 
 import {
-  listCompanyUnlockedRequests,
-} from "@esigenta/db"
+  getCompanyPurchasedRequestsPage,
+} from "@esigenta/domain"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
+
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+
+import {
+  createPerfTrace,
+} from "../_lib/perf-log"
 
 import {
   CompanyRequestList,
@@ -21,10 +31,37 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function RichiesteAcquistatePage() {
-  const actor = await requireCompanyActor()
-  const requests = await listCompanyUnlockedRequests({
-    companyId: actor.company.id,
-  })
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.model.purchasedRequests.start", {})
+  }
+
+  const actor = await requireAreaImpresaAccess()
+
+  const purchasedTrace = monitored
+    ? createPerfTrace({ scope: "purchased-requests" })
+    : null
+
+  const queryStart = areaTimestamp()
+  const result = await getCompanyPurchasedRequestsPage(
+    actor,
+    purchasedTrace !== null ? purchasedTrace.add : undefined,
+  )
+  const queryMs = Math.round(areaTimestamp() - queryStart)
+
+  if (monitored) {
+    purchasedTrace?.finish({
+      count: result.requests.length,
+    })
+    areaLog("area.model.purchasedRequests.end", {
+      result: "ok",
+      count: result.requests.length,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      queryMs,
+    })
+  }
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
@@ -39,12 +76,12 @@ export default async function RichiesteAcquistatePage() {
           </h1>
 
           <p className="mt-1 text-sm text-text-secondary">
-            {requests.length} richieste
+            {result.requests.length} richieste
           </p>
         </div>
 
         <CompanyRequestList
-          requests={requests}
+          requests={result.requests}
           mode="purchased"
           emptyMessage="Non hai ancora acquistato richieste."
           savedAction={toggleSavedRequestAction}

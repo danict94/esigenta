@@ -7,16 +7,15 @@ import {
 } from "@esigenta/ui"
 
 import {
-  getAvailableRequestForCompanyDetail,
-  listAttachedRequestPhotos,
-} from "@esigenta/db"
+  getCompanyRequestDetailPage,
+} from "@esigenta/domain"
 
 import {
   createRequestPhotoDisplayItems,
 } from "@esigenta/uploads/server"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../../auth/server"
 
 import {
@@ -84,19 +83,19 @@ export default async function RequestDetailPage({
 
   const authStart = areaTimestamp()
   const actor = await trace.measure("actor", () =>
-    requireCompanyActor(),
+    requireAreaImpresaAccess(),
   )
   const authMs = Math.round(areaTimestamp() - authStart)
 
   const detailStart = areaTimestamp()
-  const visibility = await getAvailableRequestForCompanyDetail({
-    companyId: actor.company.id,
-    requestId: id,
-    recordPerf: trace.add,
-  })
+  const pageData = await getCompanyRequestDetailPage(
+    actor,
+    id,
+    trace.add,
+  )
   const detailMs = Math.round(areaTimestamp() - detailStart)
 
-  if (!visibility.ok || !visibility.request) {
+  if (!pageData.ok) {
     if (monitored) {
       areaLog("area.model.requestDetail.end", {
         requestIdSafe: shortId(id),
@@ -113,12 +112,9 @@ export default async function RequestDetailPage({
     notFound()
   }
 
-  const request = visibility.request
-  const attachedPhotos = await trace.measure("attachments-db", () =>
-    listAttachedRequestPhotos(request.id),
-  )
+  const request = pageData.request
   const photos = await trace.measure("uploadthing-sign", () =>
-    createRequestPhotoDisplayItems(attachedPhotos),
+    createRequestPhotoDisplayItems(pageData.photos),
   )
   const viewModel = trace.measureSync("render-final", () =>
     buildRequestDetailViewModel({
@@ -175,17 +171,17 @@ export default async function RequestDetailPage({
               },
             }
           : {})}
-        requestId={visibility.request.id}
-        isSaved={visibility.request.isSaved}
+        requestId={request.id}
+        isSaved={request.isSaved}
         savedAction={toggleSavedRequestAction}
         creditCost={request.creditCost}
         maxUnlocks={request.maxUnlocks}
         unlockCount={request.unlockCount}
         hasUnlocked={viewModel.hasUnlocked}
-        requestUnlockId={visibility.request.requestUnlockId}
+        requestUnlockId={request.requestUnlockId}
         unlockedAt={
-          visibility.request.unlockedAt
-            ? formatDate(visibility.request.unlockedAt)
+          request.unlockedAt
+            ? formatDate(request.unlockedAt)
             : null
         }
         unlockAction={unlockRequestAction}

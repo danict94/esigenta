@@ -6,7 +6,7 @@ import Link from "next/link"
 import {
   type AdminDashboardMetrics,
   getAdminDashboardMetrics,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 import {
   Badge,
   PageShell,

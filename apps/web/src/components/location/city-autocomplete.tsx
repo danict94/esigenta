@@ -18,21 +18,60 @@ import {
 } from '@esigenta/ui'
 
 import {
-  isRuntimeLocationAnswerComplete,
-  readRuntimeLocationAnswer,
-} from '@esigenta/db/funnel-normalization'
-
-import type {
-  RequestGeoDraft,
-} from '@esigenta/db'
-import {
   COOKIE_CONSENT_CHANGED_EVENT,
   hasFunctionalCookieConsent,
   openCookiePreferences,
 } from '../privacy/cookie-consent-storage'
 
-export type NormalizedLocation =
-  RequestGeoDraft
+export type NormalizedLocation = {
+  address?: string
+  city?: string
+  postalCode?: string
+  latitude?: number
+  longitude?: number
+}
+
+function isRuntimeRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
+}
+
+function readRawString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
+function normalizeRuntimeNumber(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  if (typeof value !== 'string') return undefined
+  const parsed = Number(value.replace(',', '.'))
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+function readRuntimeLocationAnswer(value: unknown): NormalizedLocation {
+  const text = readRawString(value)
+  if (text) return { address: text }
+  if (!isRuntimeRecord(value)) return {}
+  const latitude = normalizeRuntimeNumber(value.latitude) ?? normalizeRuntimeNumber(value.lat)
+  const longitude = normalizeRuntimeNumber(value.longitude) ?? normalizeRuntimeNumber(value.lng)
+  return {
+    address: readRawString(value.address) ?? '',
+    city: readRawString(value.city) ?? '',
+    postalCode: readRawString(value.postalCode) ?? readRawString(value.cap) ?? '',
+    ...(latitude !== undefined ? { latitude } : {}),
+    ...(longitude !== undefined ? { longitude } : {}),
+  }
+}
+
+function isRuntimeLocationAnswerComplete(value: unknown): boolean {
+  const location = readRuntimeLocationAnswer(value)
+  return Boolean(
+    location.address &&
+      location.city &&
+      typeof location.latitude === 'number' &&
+      Number.isFinite(location.latitude) &&
+      typeof location.longitude === 'number' &&
+      Number.isFinite(location.longitude),
+  )
+}
 
 type GoogleAddressComponent = {
   long_name: string

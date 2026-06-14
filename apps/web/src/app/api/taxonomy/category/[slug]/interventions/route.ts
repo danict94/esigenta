@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 import {
   listInterventionsForCategory,
-} from '@esigenta/db'
+} from '@esigenta/taxonomy'
 
 type CategoryInterventionsRouteContext = {
   params: Promise<{

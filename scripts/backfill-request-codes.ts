@@ -2,6 +2,7 @@ import {
   existsSync,
   readFileSync,
 } from "node:fs"
+import { randomInt } from "node:crypto"
 import { resolve } from "node:path"
 
 function loadEnvFile(path: string) {
@@ -42,44 +43,59 @@ function loadEnvFile(path: string) {
   }
 }
 
+const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+const CODE_LENGTH = 6
+const MAX_ATTEMPTS = 10
+
+function createRequestCode(): string {
+  let code = ""
+  for (let i = 0; i < CODE_LENGTH; i += 1) {
+    code += ALPHABET[randomInt(ALPHABET.length)]
+  }
+  return `REQ-${code}`
+}
+
+async function generateUniqueRequestCode(
+  client: { request: { findFirst: (args: unknown) => Promise<{ id: string } | null> } },
+): Promise<string> {
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+    const requestCode = createRequestCode()
+    const existing = await client.request.findFirst({
+      where: { requestCode },
+      select: { id: true },
+    })
+    if (!existing) {
+      return requestCode
+    }
+  }
+  throw new Error(`Could not generate a unique request code after ${MAX_ATTEMPTS} attempts.`)
+}
+
 async function main() {
   loadEnvFile(".env")
 
-  const { prisma, generateUniqueRequestCode } =
-    await import("../packages/db/src/index")
+  const { prisma } = await import("@esigenta/database")
 
   let updatedCount = 0
 
   while (true) {
-    const requests =
-      await prisma.request.findMany({
-        where: {
-          requestCode: null,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-        take: 100,
-        select: {
-          id: true,
-        },
-      })
+    const requests = await prisma.request.findMany({
+      where: { requestCode: null },
+      orderBy: { createdAt: "asc" },
+      take: 100,
+      select: { id: true },
+    })
 
     if (requests.length === 0) {
       break
     }
 
     for (const request of requests) {
-      const requestCode =
-        await generateUniqueRequestCode(prisma)
+      const requestCode = await generateUniqueRequestCode(prisma)
 
       await prisma.request.update({
-        where: {
-          id: request.id,
-        },
-        data: {
-          requestCode,
-        },
+        where: { id: request.id },
+        data: { requestCode },
       })
 
       updatedCount += 1
@@ -95,9 +111,7 @@ async function main() {
 
 main().catch(async (error: unknown) => {
   console.error(error)
-
-  const { prisma } = await import("../packages/db/src/index")
+  const { prisma } = await import("@esigenta/database")
   await prisma.$disconnect()
-
   process.exit(1)
 })

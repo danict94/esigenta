@@ -8,14 +8,16 @@ import {
 } from "next/navigation"
 
 import {
-  createCompanyCustomerConversation,
-  createCreditRefundRequest,
-  unlockRequestForCompany,
-  type CreateCreditRefundRequestInput,
-} from "@esigenta/db"
+  contactCustomerForRequest,
+  unlockCompanyRequest,
+} from "@esigenta/domain"
 
 import {
-  requireCompanyActor,
+  requestCompanyCreditRefund,
+} from "@esigenta/billing"
+
+import {
+  requireAreaImpresaAccess,
 } from "../../../../../auth/server"
 
 import {
@@ -65,7 +67,7 @@ export async function unlockRequestAction(formData: FormData) {
   const monitored = isAreaMonitoringEnabled()
   const actionStart = performance.now()
 
-  const actor = await requireCompanyActor()
+  const actor = await requireAreaImpresaAccess()
   const requestId = String(
     formData.get("requestId") ?? "",
   ).trim()
@@ -77,10 +79,7 @@ export async function unlockRequestAction(formData: FormData) {
     })
   }
 
-  const result = await unlockRequestForCompany({
-    companyId: actor.company.id,
-    requestId,
-  })
+  const result = await unlockCompanyRequest(actor, requestId)
 
   if (!result.ok) {
     if (monitored) {
@@ -132,16 +131,10 @@ export async function contactCustomerAction(formData: FormData) {
   }
 
   const actor = await trace.measure("actor", () =>
-    requireCompanyActor(),
+    requireAreaImpresaAccess(),
   )
 
-  const result = await createCompanyCustomerConversation({
-    companyId: actor.company.id,
-    userId: actor.user.id,
-    authorizedActor: actor,
-    requestId,
-    recordPerf: trace.add,
-  })
+  const result = await contactCustomerForRequest(actor, requestId, trace.add)
 
   if (!result.ok) {
     const redirectHref = trace.measureSync("redirect", () =>
@@ -189,7 +182,7 @@ export async function contactCustomerAction(formData: FormData) {
 export async function createRefundRequestAction(
   formData: FormData,
 ) {
-  const actor = await requireCompanyActor()
+  const actor = await requireAreaImpresaAccess()
   const requestId = String(
     formData.get("requestId") ?? "",
   ).trim()
@@ -203,15 +196,11 @@ export async function createRefundRequestAction(
     ? new Date(`${lastContactAttemptValue}T00:00:00`)
     : null
 
-  const result = await createCreditRefundRequest({
-    companyId: actor.company.id,
+  const result = await requestCompanyCreditRefund(actor, {
     requestUnlockId,
-    reason: String(
-      formData.get("reason") ?? "",
-    ) as CreateCreditRefundRequestInput["reason"],
+    reason: String(formData.get("reason") ?? ""),
     description: String(formData.get("description") ?? ""),
-    companyContactAttempted:
-      formData.get("companyContactAttempted") === "on",
+    companyContactAttempted: formData.get("companyContactAttempted") === "on",
     lastContactAttemptAt,
   })
 

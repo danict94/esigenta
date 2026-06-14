@@ -6,17 +6,17 @@ import {
 
 import {
   toggleCompanySavedRequest,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
 
 export async function toggleSavedRequestAction(
   formData: FormData,
 ) {
   const actor =
-    await requireCompanyActor()
+    await requireAreaImpresaAccess()
   const requestId = String(
     formData.get("requestId") ?? "",
   ).trim()

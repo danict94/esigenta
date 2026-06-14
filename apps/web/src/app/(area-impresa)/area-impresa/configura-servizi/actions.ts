@@ -5,40 +5,22 @@ import {
 } from "next/navigation"
 
 import {
-  updateCompanyServiceConfiguration,
-} from "@esigenta/db"
+  updateCompanyServicesConfiguration,
+} from "@esigenta/domain"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
 
-function normalizeServiceIds(
-  values: FormDataEntryValue[],
-) {
-  return Array.from(
-    new Set(
-      values
-        .map((value) =>
-          typeof value === "string"
-            ? value.trim()
-            : "",
-        )
-        .filter(Boolean),
-    ),
-  )
-}
+import {
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
 
-function normalizeCategoryIds(
-  values: FormDataEntryValue[],
-) {
+function normalizeIds(values: FormDataEntryValue[]): string[] {
   return Array.from(
     new Set(
       values
-        .map((value) =>
-          typeof value === "string"
-            ? value.trim()
-            : "",
-        )
+        .map((v) => (typeof v === "string" ? v.trim() : ""))
         .filter(Boolean),
     ),
   )
@@ -53,31 +35,40 @@ function redirectWithError(code: string): never {
 export async function saveCompanyServicesAction(
   formData: FormData,
 ) {
-  const actor =
-    await requireCompanyActor()
+  const monitored = isAreaMonitoringEnabled()
+  const actionStart = performance.now()
 
-  const selectedServiceIds =
-    normalizeServiceIds(
-      formData.getAll("serviceIds"),
-    )
-  const selectedCategoryIds =
-    normalizeCategoryIds(
-      formData.getAll("categoryIds"),
-    )
+  const actor = await requireAreaImpresaAccess()
+  const actorMs = Math.round(performance.now() - actionStart)
+
+  const selectedServiceIds  = normalizeIds(formData.getAll("serviceIds"))
+  const selectedCategoryIds = normalizeIds(formData.getAll("categoryIds"))
 
   const requestedRequestMatchingMode =
-    formData.get("requestMatchingMode") ===
-    "SELECTED_SERVICES_ONLY"
+    formData.get("requestMatchingMode") === "SELECTED_SERVICES_ONLY"
       ? "SELECTED_SERVICES_ONLY"
       : "CATEGORY_WITH_SERVICE_PRIORITY"
 
-  const result =
-    await updateCompanyServiceConfiguration({
-      companyId: actor.company.id,
+  const result = await updateCompanyServicesConfiguration(
+    actor,
+    {
       selectedCategoryIds,
       selectedServiceIds,
       requestedRequestMatchingMode,
-    })
+    },
+    monitored
+      ? (label, ms) =>
+          console.info(
+            `[esigenta-perf] [services-config-action] ${label}=${ms}ms`,
+          )
+      : undefined,
+  )
+
+  if (monitored) {
+    console.info(
+      `[esigenta-perf] [services-config-action] actor=${actorMs}ms total=${Math.round(performance.now() - actionStart)}ms result=${result.ok ? "ok" : result.code}`,
+    )
+  }
 
   if (!result.ok) {
     redirectWithError(result.code)

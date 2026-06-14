@@ -1,0 +1,24 @@
+{
+  "name": "@esigenta/taxonomy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "taxonomy:build": "tsx src/orchestrator/build-taxonomy.ts",
+    "taxonomy:generate": "tsx src/orchestrator/generate-taxonomy.ts",
+    "taxonomy:seed": "tsx src/orchestrator/seed-taxonomy.ts"
+  },
+  "dependencies": {
+    "@esigenta/database": "workspace:*",
+    "@prisma/client": "^7.8.0",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "tsx": "^4.21.0"
+  }
+}

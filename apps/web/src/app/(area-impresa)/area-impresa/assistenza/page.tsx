@@ -1,14 +1,6 @@
 import {
-  revalidatePath,
-} from "next/cache"
-import {
-  redirect,
-} from "next/navigation"
-
-import {
-  createSupportConversation,
-  listCompanyConversations,
-} from "@esigenta/db"
+  getCompanySupportPage,
+} from "@esigenta/domain"
 import {
   Badge,
   Button,
@@ -21,8 +13,20 @@ import {
 } from "@esigenta/ui"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+import {
+  createPerfTrace,
+} from "../_lib/perf-log"
+
+import {
+  openSupportAction,
+} from "./actions"
 
 export const dynamic = "force-dynamic"
 
@@ -34,54 +38,28 @@ function formatDateTime(date: Date) {
 }
 
 export default async function CompanySupportPage() {
-  const actor =
-    await requireCompanyActor()
-  const result =
-    await listCompanyConversations({
-      companyId: actor.company.id,
-      userId: actor.user.id,
-    authorizedActor: actor,
+  const actor = await requireAreaImpresaAccess()
+
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+  const trace = createPerfTrace({ scope: "support-page" })
+
+  if (monitored) {
+    areaLog("area.model.support.start", {})
+  }
+
+  const { supportConversation } = await trace.measure("data", () =>
+    getCompanySupportPage(actor, trace.add),
+  )
+
+  trace.finish({})
+
+  if (monitored) {
+    areaLog("area.model.support.end", {
+      result: "ok",
+      hasConversation: Boolean(supportConversation),
+      durationMs: Math.round(areaTimestamp() - pageStart),
     })
-  const supportConversation =
-    result.ok
-      ? result.conversations.find(
-          (conversation) =>
-            conversation.type === "SUPPORT",
-        ) ?? null
-      : null
-
-  async function contactSupportAction() {
-    "use server"
-
-    const currentActor =
-      await requireCompanyActor()
-    const supportResult =
-      await createSupportConversation({
-        companyId:
-          currentActor.company.id,
-        userId:
-          currentActor.user.id,
-      })
-
-    if (!supportResult.ok) {
-      redirect(
-        `/area-impresa/assistenza?error=${encodeURIComponent(
-          supportResult.code,
-        )}`,
-      )
-    }
-
-    revalidatePath("/area-impresa/assistenza")
-    revalidatePath(
-      "/area-impresa",
-      "layout",
-    )
-
-    redirect(
-      `/area-impresa/assistenza/${encodeURIComponent(
-        supportResult.conversationId,
-      )}`,
-    )
   }
 
   return (
@@ -130,9 +108,7 @@ export default async function CompanySupportPage() {
 
             {supportConversation ? (
               <time className="text-sm text-text-muted">
-                {formatDateTime(
-                  supportConversation.updatedAt,
-                )}
+                {formatDateTime(supportConversation.updatedAt)}
               </time>
             ) : null}
           </CardHeader>
@@ -143,7 +119,7 @@ export default async function CompanySupportPage() {
                 "Scrivi al team Esigenta se hai bisogno di supporto su richieste, crediti o profilo impresa."}
             </p>
 
-            <form action={contactSupportAction}>
+            <form action={openSupportAction}>
               <Button type="submit">
                 {supportConversation
                   ? "Apri assistenza"
@@ -152,16 +128,6 @@ export default async function CompanySupportPage() {
             </form>
           </CardContent>
         </Card>
-
-        {!result.ok ? (
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-sm text-text-secondary">
-                {result.message}
-              </p>
-            </CardContent>
-          </Card>
-        ) : null}
       </section>
     </PageShell>
   )

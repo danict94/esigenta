@@ -6,10 +6,11 @@ import {
 } from "next/navigation"
 
 import {
-  getCompanyConversationThread,
+  getCompanyConversationThreadPage,
   markConversationRead,
-  sendConversationMessage,
-} from "@esigenta/db"
+  processConversationMessageSideEffects,
+  sendCompanyConversationMessage,
+} from "@esigenta/domain"
 import {
   Card,
   CardContent,
@@ -17,7 +18,7 @@ import {
 } from "@esigenta/ui"
 
 import {
-  requireCompanyActor,
+  requireAreaImpresaAccess,
 } from "../../../../auth/server"
 import {
   areaLog,
@@ -25,6 +26,9 @@ import {
   isAreaMonitoringEnabled,
   shortId,
 } from "../../../../lib/area-monitoring"
+import {
+  traceSideEffect,
+} from "../../../../lib/area-monitoring.server"
 import {
   MessageThread,
 } from "./message-thread"
@@ -35,6 +39,9 @@ import {
 import {
   buildCompanyConversationHref,
 } from "../_lib/conversation-routes"
+import {
+  createPerfTrace,
+} from "../_lib/perf-log"
 
 type ConversationThreadKind =
   | "SUPPORT"
@@ -114,6 +121,7 @@ export async function CompanyConversationThreadPage({
 }: CompanyConversationThreadPageProps) {
   const monitored = isAreaMonitoringEnabled()
   const pageStart = areaTimestamp()
+  const trace = createPerfTrace({ scope: "contact-thread-page" })
 
   if (monitored) {
     areaLog("area.model.conversationThread.start", {})
@@ -126,19 +134,16 @@ export async function CompanyConversationThreadPage({
   ] = await Promise.all([
     params,
     searchParams,
-    requireCompanyActor(),
+    trace.measure("actor", () => requireAreaImpresaAccess()),
   ])
   const { conversationId } =
     resolvedParams
 
   const threadStart = areaTimestamp()
-  const result =
-    await getCompanyConversationThread({
-      conversationId,
-      companyId: actor.company.id,
-      userId: actor.user.id,
-    authorizedActor: actor,
-    })
+  const result = await trace.measure(
+    "thread-data",
+    () => getCompanyConversationThreadPage(actor, conversationId, trace.add),
+  )
   const threadMs = Math.round(areaTimestamp() - threadStart)
 
   if (result.ok) {
@@ -161,6 +166,7 @@ export async function CompanyConversationThreadPage({
           threadMs,
         })
       }
+      trace.finish({ conversationId, result: "wrong-route-redirect" })
       redirect(
         buildCompanyConversationHref({
           conversationId,
@@ -169,15 +175,17 @@ export async function CompanyConversationThreadPage({
       )
     }
 
-    await markConversationRead({
-      conversationId,
-      reader: {
-        actorType: "COMPANY",
-        companyId: actor.company.id,
-        userId: actor.user.id,
-      },
-      authorizedActor: actor,
-    })
+    traceSideEffect("markConversationRead", () =>
+      markConversationRead({
+        conversationId,
+        reader: {
+          actorType: "COMPANY",
+          companyId: actor.company.id,
+          userId: actor.user.id,
+        },
+        authorizedActor: actor,
+      }),
+    )
   }
 
   if (monitored) {
@@ -214,22 +222,30 @@ export async function CompanyConversationThreadPage({
       })
     }
 
+    const actorStart = areaTimestamp()
     const currentActor =
-      await requireCompanyActor()
+      await requireAreaImpresaAccess()
+    const actorMs = Math.round(areaTimestamp() - actorStart)
+
     const body =
       String(formData.get("body") ?? "")
+
+    const cmdStart = areaTimestamp()
     const sendResult =
-      await sendConversationMessage({
+      await sendCompanyConversationMessage(
+        currentActor,
         conversationId,
         body,
-        sender: {
-          actorType: "COMPANY",
-          companyId:
-            currentActor.company.id,
-          userId:
-            currentActor.user.id,
-        },
-      })
+        (label, ms) =>
+          console.info(
+            `[esigenta-perf] [send-command-detail] ${label}=${ms}ms`,
+          ),
+      )
+    const cmdMs = Math.round(areaTimestamp() - cmdStart)
+
+    console.info(
+      `[esigenta-perf] [send-company-action] actor=${actorMs}ms send-command=${cmdMs}ms total=${Math.round(areaTimestamp() - sendStart)}ms`,
+    )
 
     if (!sendResult.ok) {
       if (sendMonitored) {
@@ -258,13 +274,20 @@ export async function CompanyConversationThreadPage({
       })
     }
 
-    revalidatePath(listPath)
-    revalidatePath(
-      buildThreadHref({
-        hrefBase,
-        conversationId,
+    traceSideEffect("processConversationMessageSideEffects", () =>
+      processConversationMessageSideEffects({
+        messageId: sendResult.messageId,
+        sender: {
+          actorType: "COMPANY",
+          companyId:
+            currentActor.company.id,
+          userId:
+            currentActor.user.id,
+        },
       }),
     )
+
+    revalidatePath(listPath)
     revalidatePath(
       "/area-impresa",
       "layout",
@@ -280,6 +303,12 @@ export async function CompanyConversationThreadPage({
       }),
     )
   }
+
+  trace.finish({
+    conversationId,
+    result: result.ok ? "ok" : result.code,
+    threadKind: kind,
+  })
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">

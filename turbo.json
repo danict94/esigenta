@@ -40,9 +40,9 @@
                                                 "dist/**"
                                             ]
                             },
-                  "@esigenta/db#build":  {
-                                             "cache":  false
-                                         },
+                  "@esigenta/database#build":  {
+                                                  "cache":  false
+                                              },
                   "typecheck":  {
                                     "dependsOn":  [
                                                       "^typecheck"

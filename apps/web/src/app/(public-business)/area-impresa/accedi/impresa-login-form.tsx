@@ -13,10 +13,6 @@ import {
   Mail,
 } from "lucide-react"
 import {
-  useRouter,
-} from "next/navigation"
-
-import {
   Button,
   Input,
 } from "@esigenta/ui"
@@ -26,9 +22,6 @@ import {
 } from "../../../../auth/client"
 
 export function ImpresaLoginForm() {
-  const router =
-    useRouter()
-
   const [email, setEmail] =
     useState("")
 
@@ -81,8 +74,7 @@ export function ImpresaLoginForm() {
         return
       }
 
-      router.replace("/area-impresa/richieste")
-      router.refresh()
+      window.location.href = "/area-impresa/richieste"
     } catch {
       setError(
         "Impossibile accedere. Riprova tra poco.",

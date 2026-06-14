@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 import { Button, Card, Input, cn, tokens } from "@esigenta/ui";
 
-import type { TaxonomySearchResult } from "@esigenta/db";
+import type { TaxonomySearchResult } from "@esigenta/taxonomy";
 
 export type SearchBarSelection = {
   result: TaxonomySearchResult;

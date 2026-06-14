@@ -1,8 +1,4 @@
-import {
-  Resend,
-} from "resend"
-
-let resendClient: Resend | null = null
+import { getResendClient, getResendFromEmail } from "@esigenta/notifications"
 
 export type SendRequestEmailWithResendInput = {
   to: string
@@ -17,35 +13,6 @@ export type SendRequestEmailWithResendResult = {
   providerMessageId: string | null
 }
 
-function getRequiredEnv(
-  name: string,
-) {
-  const value =
-    process.env[name]?.trim()
-
-  if (!value) {
-    throw new Error(
-      `${name} is required to send request email notifications.`,
-    )
-  }
-
-  return value
-}
-
-function getResendClient() {
-  resendClient ??= new Resend(
-    getRequiredEnv("RESEND_API_KEY"),
-  )
-
-  return resendClient
-}
-
-function getResendFromEmail() {
-  return getRequiredEnv(
-    "RESEND_FROM_EMAIL",
-  )
-}
-
 export async function sendRequestEmailWithResend({
   to,
   subject,
@@ -53,19 +20,18 @@ export async function sendRequestEmailWithResend({
   html,
   idempotencyKey,
 }: SendRequestEmailWithResendInput): Promise<SendRequestEmailWithResendResult> {
-  const result =
-    await getResendClient().emails.send(
-      {
-        from: getResendFromEmail(),
-        to,
-        subject,
-        text,
-        html,
-      },
-      {
-        idempotencyKey,
-      },
-    )
+  const result = await getResendClient().emails.send(
+    {
+      from: getResendFromEmail(),
+      to,
+      subject,
+      text,
+      html,
+    },
+    {
+      idempotencyKey,
+    },
+  )
 
   if (result.error) {
     throw new Error(
@@ -76,7 +42,6 @@ export async function sendRequestEmailWithResend({
 
   return {
     provider: "resend",
-    providerMessageId:
-      result.data?.id ?? null,
+    providerMessageId: result.data?.id ?? null,
   }
 }

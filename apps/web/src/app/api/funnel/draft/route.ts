@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 
-import { buildRuntimeRequestDraft } from '@esigenta/db/funnel'
+import { buildRuntimeRequestDraft } from '@esigenta/funnel'
 
 import {
   normalizeRuntimeText,
   readRuntimeAnswers,
-} from '@esigenta/db/funnel-normalization'
+} from '@esigenta/funnel'
 
 export async function POST(request: Request) {
   const body =

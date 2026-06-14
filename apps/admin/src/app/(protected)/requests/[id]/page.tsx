@@ -10,7 +10,7 @@ import {
   RequestPublishingRequirementsError,
   reviewRequest,
   updateRequestCommercialSettings,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 import {
   createRequestPhotoDisplayItems,
 } from "@esigenta/uploads/server";

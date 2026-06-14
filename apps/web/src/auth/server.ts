@@ -7,15 +7,19 @@ import {
 } from "next/headers"
 
 import {
-  requireCompanyMemberFromUser,
-  requireCompanyOwnerFromUser,
-  resolveCompanyActorFromUser,
-} from "@esigenta/db"
+  redirect,
+} from "next/navigation"
 
 import {
+  AmbiguousCompanyMembershipError,
+  AuthenticationRequiredError,
+  CompanyAuthorizationError,
   getCurrentUserFromHeaders,
+  requireCompanyMemberFromUser,
+  requireCompanyOwnerFromUser,
   requireUserFromHeaders,
-} from "@esigenta/db/auth"
+  resolveCompanyActorFromUser,
+} from "@esigenta/auth"
 
 import {
   areaLog,
@@ -63,11 +67,27 @@ export async function requireCompanyOwner(
   )
 }
 
+export async function requireAreaImpresaAccess() {
+  try {
+    return await requireCompanyActor()
+  } catch (error) {
+    if (error instanceof AuthenticationRequiredError) {
+      redirect("/area-impresa/accedi")
+    }
+    if (error instanceof CompanyAuthorizationError) {
+      redirect("/area-impresa")
+    }
+    if (error instanceof AmbiguousCompanyMembershipError) {
+      redirect("/area-impresa/seleziona-impresa")
+    }
+    throw error
+  }
+}
+
 export const requireCompanyActor = cache(
   async function requireCompanyActor() {
     const monitored = isAreaMonitoringEnabled()
-    const startedAt = Date.now()
-    const perfStart = performance.now()
+    const traceStart = performance.now()
 
     if (monitored) {
       areaLog("area.auth.start", {
@@ -76,25 +96,23 @@ export const requireCompanyActor = cache(
     }
 
     try {
-      const userStartedAt = Date.now()
+      const sessionStart = performance.now()
       const user = await requireUser()
-      const userMs = Date.now() - userStartedAt
+      const sessionMs = Math.round(performance.now() - sessionStart)
 
-      const actorStartedAt = Date.now()
+      const actorStart = performance.now()
       const actor = await resolveCompanyActorFromUser(user)
-      const actorMs = Date.now() - actorStartedAt
+      const actorMs = Math.round(performance.now() - actorStart)
 
-      const totalMs = Date.now() - startedAt
+      const totalMs = Math.round(performance.now() - traceStart)
 
-      if (totalMs >= 100) {
-        console.info(
-          `[esigenta-perf] [require-company-actor] requireUser=${userMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
-        )
-      }
+      console.info(
+        `[esigenta-perf] [require-company-actor] requireUser=${sessionMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
+      )
 
       if (monitored) {
         areaLog("area.auth.end", {
-          durationMs: Math.round(performance.now() - perfStart),
+          durationMs: totalMs,
           result: "ok",
           actorResolved: true,
           userIdSafe: shortId(actor.user.id),
@@ -108,7 +126,7 @@ export const requireCompanyActor = cache(
     } catch (error) {
       if (monitored) {
         areaLog("area.auth.end", {
-          durationMs: Math.round(performance.now() - perfStart),
+          durationMs: Math.round(performance.now() - traceStart),
           result:
             error instanceof Error &&
             (error.name === "AuthenticationRequiredError" ||

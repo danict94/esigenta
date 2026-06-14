@@ -1,34 +1,32 @@
-import Link from "next/link";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import Link from "next/link"
 
-import { Badge, Button, Card, Input, PageShell, Select } from "@esigenta/ui";
+import { Badge, Button, Card, Input, PageShell, Select } from "@esigenta/ui"
 
+import { getCompanyProfilePage } from "@esigenta/domain"
+
+import { requireAreaImpresaAccess } from "../../../../auth/server"
+import { areaLog, isAreaMonitoringEnabled } from "../../../../lib/area-monitoring"
+import { createPerfTrace } from "../_lib/perf-log"
+
+import { CompanyLocationFields } from "./company-location-fields"
+import { DeactivateAccountForm } from "./deactivate-account-form"
 import {
-  deactivateCompanyAccount,
-  getCompanyCreditAccountSummary,
-  getCompanyProfilePageData,
-  requestCompanyPhoneContactChange,
-  updateCompanyProfile,
-} from "@esigenta/db";
+  deactivateAccountAction,
+  requestCompanyContactChangeAction,
+  updateCompanyProfileAction,
+} from "./actions"
 
-import { requireCompanyActor, requireUser } from "../../../../auth/server";
-
-import { CompanyLocationFields } from "./company-location-fields";
-
-import { DeactivateAccountForm } from "./deactivate-account-form";
-
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 type ProfiloPageProps = {
   searchParams?: Promise<{
-    contactRequested?: string;
-    error?: string;
-    saved?: string;
-  }>;
-};
+    contactRequested?: string
+    error?: string
+    saved?: string
+  }>
+}
 
-const allowedRadiusKm = [10, 20, 30, 50, 75, 100] as const;
+const allowedRadiusKm = [10, 20, 30, 50, 75, 100] as const
 
 const errorMessages: Record<string, string> = {
   invalid_website: "Inserisci un URL valido per il sito web.",
@@ -44,101 +42,22 @@ const errorMessages: Record<string, string> = {
     "Esiste gia una richiesta in revisione per questo dato.",
   company_membership_not_found:
     "Non puoi richiedere modifiche per questa impresa.",
-};
-
-function normalizeText(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function redirectWithError(code: string): never {
-  redirect(`/area-impresa/profilo?error=${encodeURIComponent(code)}`);
-}
-
-async function updateCompanyProfileAction(formData: FormData) {
-  "use server";
-
-  const actor = await requireCompanyActor();
-
-  const result = await updateCompanyProfile({
-    companyId: actor.company.id,
-    website: normalizeText(formData.get("website")) || null,
-    address: normalizeText(formData.get("address")) || null,
-    city: normalizeText(formData.get("city")) || null,
-    postalCode: normalizeText(formData.get("postalCode")) || null,
-    province: normalizeText(formData.get("province")) || null,
-    latitude: normalizeText(formData.get("latitude")) || null,
-    longitude: normalizeText(formData.get("longitude")) || null,
-    operatingRadiusKm: normalizeText(formData.get("operatingRadiusKm")) || null,
-  });
-
-  if (!result.ok) {
-    redirectWithError(result.code);
-  }
-
-  revalidatePath("/area-impresa/profilo");
-  redirect("/area-impresa/profilo?saved=1");
-}
-
-async function requestCompanyContactChangeAction(formData: FormData) {
-  "use server";
-
-  const [actor, user] = await Promise.all([
-    requireCompanyActor(),
-    requireUser(),
-  ]);
-
-  const result = await requestCompanyPhoneContactChange({
-    companyId: actor.company.id,
-    requestedByUserId: user.id,
-    requestedPhone: normalizeText(formData.get("phone")) || null,
-  });
-
-  if (!result.ok) {
-    redirectWithError(result.code);
-  }
-
-  revalidatePath("/area-impresa/profilo");
-  redirect("/area-impresa/profilo?contactRequested=1");
-}
-
-async function deactivateAccountAction() {
-  "use server";
-
-  const actor = await requireCompanyActor();
-
-  const result = await deactivateCompanyAccount({
-    companyId: actor.company.id,
-
-    userId: actor.user.id,
-  });
-
-  if (!result.ok) {
-    throw new Error(result.message);
-  }
-
-  redirect("/");
 }
 
 function formatValue(value?: string | number | null) {
   if (value === null || value === undefined || value === "") {
-    return "Non impostato";
+    return "Non impostato"
   }
-
-  return String(value);
+  return String(value)
 }
 
 function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("it-IT", {
-    dateStyle: "medium",
-  }).format(date);
+  return new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(date)
 }
 
 function formatContactChangeField(field: string) {
-  if (field === "PHONE") {
-    return "Telefono aziendale";
-  }
-
-  return field;
+  if (field === "PHONE") return "Telefono aziendale"
+  return field
 }
 
 function ReadOnlyRow({
@@ -146,85 +65,77 @@ function ReadOnlyRow({
   value,
   note,
 }: {
-  label: string;
-  value?: string | number | null;
-  note?: string;
+  label: string
+  value?: string | number | null
+  note?: string
 }) {
   return (
     <div className="grid gap-1 border-b border-border-primary py-4 last:border-b-0 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
       <dt className="text-sm font-medium text-text-muted">{label}</dt>
-
       <dd>
-        <p className="text-sm font-semibold text-text-primary">
-          {formatValue(value)}
-        </p>
-
+        <p className="text-sm font-semibold text-text-primary">{formatValue(value)}</p>
         {note ? (
           <p className="mt-1 text-xs leading-5 text-text-secondary">{note}</p>
         ) : null}
       </dd>
     </div>
-  );
+  )
 }
-export default async function ProfiloImpresaPage({
-  searchParams,
-}: ProfiloPageProps) {
-  const params = searchParams ? await searchParams : {};
-  const [actor, user] = await Promise.all([
-    requireCompanyActor(),
-    requireUser(),
-  ]);
 
-  const {
-    company,
-    categories,
-    services,
-    pendingContactChangeRequests,
-  } = await getCompanyProfilePageData({
-    companyId: actor.company.id,
-  });
+export default async function ProfiloImpresaPage({ searchParams }: ProfiloPageProps) {
+  const actor = await requireAreaImpresaAccess()
+
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = performance.now()
+  const trace = createPerfTrace({ scope: "company-profile" })
+  const params = searchParams ? await searchParams : {}
+
+  if (monitored) {
+    areaLog("area.model.companyProfile.start", {})
+  }
+
+  const { company, categories, services, contactChangeRequests, credit } =
+    await getCompanyProfilePage(actor, trace.add)
+
+  const durationMs = Math.round(performance.now() - pageStart)
+
+  if (monitored) {
+    trace.finish()
+    areaLog("area.model.companyProfile.end", { durationMs })
+  }
 
   if (!company) {
     return (
       <PageShell size="lg">
         <Card className="p-8">
           <Badge variant="warning">Profilo non disponibile</Badge>
-
           <h1 className="mt-5 text-2xl font-semibold tracking-tight text-text-primary">
             Non troviamo il tuo profilo impresa
           </h1>
-
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
             L&apos;account risulta autenticato, ma non e collegato a un profilo
             impresa valido.
           </p>
         </Card>
       </PageShell>
-    );
+    )
   }
 
-  const accountSummary =
-    await getCompanyCreditAccountSummary({
-      companyId: company.id,
-    });
-
-  const savedMessage = params.saved === "1" ? "Profilo aggiornato." : null;
+  const savedMessage = params.saved === "1" ? "Profilo aggiornato." : null
   const contactRequestedMessage =
     params.contactRequested === "1"
       ? "Richiesta inviata. Il team Esigenta la valutera prima di applicare la modifica."
-      : null;
-  const errorMessage = params.error ? errorMessages[params.error] : null;
+      : null
+  const errorMessage = params.error ? errorMessages[params.error] : null
 
   return (
     <PageShell size="lg" className="py-8 md:py-10">
       <section className="space-y-6">
         <header className="border-b border-border-primary pb-7">
           <Badge>Profilo impresa</Badge>
-
           <h1 className="mt-5 text-3xl font-semibold tracking-tight text-text-primary">
             Profilo impresa
           </h1>
-
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
             Gestisci le informazioni operative del profilo. I dati sensibili
             restano protetti e richiedono una verifica manuale.
@@ -233,25 +144,19 @@ export default async function ProfiloImpresaPage({
 
         {savedMessage ? (
           <Card className="p-5">
-            <p className="text-sm font-semibold text-text-primary">
-              {savedMessage}
-            </p>
+            <p className="text-sm font-semibold text-text-primary">{savedMessage}</p>
           </Card>
         ) : null}
 
         {contactRequestedMessage ? (
           <Card className="p-5">
-            <p className="text-sm font-semibold text-text-primary">
-              {contactRequestedMessage}
-            </p>
+            <p className="text-sm font-semibold text-text-primary">{contactRequestedMessage}</p>
           </Card>
         ) : null}
 
         {errorMessage ? (
           <Card className="border-border-focus bg-surface-secondary p-5">
-            <p className="text-sm font-semibold text-text-primary">
-              {errorMessage}
-            </p>
+            <p className="text-sm font-semibold text-text-primary">{errorMessage}</p>
           </Card>
         ) : null}
 
@@ -272,7 +177,7 @@ export default async function ProfiloImpresaPage({
             <ReadOnlyRow label="Partita IVA" value={company.vatNumber} />
             <ReadOnlyRow
               label="Email impresa"
-              value={user.email}
+              value={actor.user.email}
               note="Email ufficiale usata per accesso, notifiche e comunicazioni sulle richieste."
             />
           </dl>
@@ -297,17 +202,12 @@ export default async function ProfiloImpresaPage({
               </label>
             </div>
 
-            {pendingContactChangeRequests.length > 0 ? (
+            {contactChangeRequests.length > 0 ? (
               <div className="rounded-md border border-border-primary bg-surface-secondary p-4">
-                <p className="text-sm font-semibold text-text-primary">
-                  Richieste in revisione
-                </p>
+                <p className="text-sm font-semibold text-text-primary">Richieste in revisione</p>
                 <ul className="mt-3 grid gap-2">
-                  {pendingContactChangeRequests.map((request) => (
-                    <li
-                      key={request.id}
-                      className="text-sm leading-6 text-text-secondary"
-                    >
+                  {contactChangeRequests.map((request) => (
+                    <li key={request.id} className="text-sm leading-6 text-text-secondary">
                       <span className="font-medium text-text-primary">
                         {formatContactChangeField(request.field)}
                       </span>
@@ -328,23 +228,20 @@ export default async function ProfiloImpresaPage({
             </div>
           </form>
         </Card>
+
         <Card className="p-6">
           <div className="border-b border-border-primary pb-5">
             <h2 className="text-xl font-semibold tracking-tight text-text-primary">
               Sede operativa
             </h2>
-
             <p className="mt-2 text-sm leading-6 text-text-secondary">
-              Aggiorna sito web, sede operativa e raggio usati per la dashboard
-              richieste.
+              Aggiorna sito web, sede operativa e raggio usati per la dashboard richieste.
             </p>
           </div>
 
           <form action={updateCompanyProfileAction} className="mt-6 grid gap-5">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-text-primary">
-                Sito web
-              </span>
+              <span className="text-sm font-medium text-text-primary">Sito web</span>
               <Input
                 type="url"
                 name="website"
@@ -362,13 +259,8 @@ export default async function ProfiloImpresaPage({
             />
 
             <label className="grid gap-2 md:max-w-xs">
-              <span className="text-sm font-medium text-text-primary">
-                Raggio operativo
-              </span>
-              <Select
-                name="operatingRadiusKm"
-                defaultValue={String(company.operatingRadiusKm)}
-              >
+              <span className="text-sm font-medium text-text-primary">Raggio operativo</span>
+              <Select name="operatingRadiusKm" defaultValue={String(company.operatingRadiusKm)}>
                 {allowedRadiusKm.map((radiusKm) => (
                   <option key={radiusKm} value={radiusKm}>
                     {radiusKm} km
@@ -376,8 +268,7 @@ export default async function ProfiloImpresaPage({
                 ))}
               </Select>
               <span className="text-xs leading-5 text-text-secondary">
-                Questo raggio modifica la copertura operativa permanente del
-                profilo impresa.
+                Questo raggio modifica la copertura operativa permanente del profilo impresa.
               </span>
             </label>
 
@@ -393,13 +284,11 @@ export default async function ProfiloImpresaPage({
               <h2 className="text-xl font-semibold tracking-tight text-text-primary">
                 Categorie e servizi
               </h2>
-
               <p className="mt-2 text-sm leading-6 text-text-secondary">
                 Le categorie definiscono la visibilita ampia; i servizi aiutano
                 Esigenta a dare priorita alle richieste piu pertinenti.
               </p>
             </div>
-
             <Link
               href="/area-impresa/configura-servizi"
               className="text-sm font-medium text-brand-primary"
@@ -411,10 +300,7 @@ export default async function ProfiloImpresaPage({
 
           <div className="mt-5 grid gap-5">
             <div>
-              <p className="text-sm font-semibold text-text-primary">
-                Categorie operative
-              </p>
-
+              <p className="text-sm font-semibold text-text-primary">Categorie operative</p>
               {categories.length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {categories.map((category) => (
@@ -431,10 +317,7 @@ export default async function ProfiloImpresaPage({
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-text-primary">
-                Servizi selezionati
-              </p>
-
+              <p className="text-sm font-semibold text-text-primary">Servizi selezionati</p>
               {services.length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {services.map((service) => (
@@ -446,8 +329,7 @@ export default async function ProfiloImpresaPage({
               ) : (
                 <p className="mt-2 text-sm leading-6 text-text-secondary">
                   Hai selezionato categorie operative. I servizi sono opzionali
-                  e aiutano Esigenta a dare priorita alle richieste piu
-                  pertinenti.
+                  e aiutano Esigenta a dare priorita alle richieste piu pertinenti.
                 </p>
               )}
             </div>
@@ -458,22 +340,17 @@ export default async function ProfiloImpresaPage({
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm font-medium text-text-muted">Crediti</p>
-
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
-                {accountSummary.ok
-                  ? `${accountSummary.data.balance} crediti`
-                  : "Saldo non disponibile"}
+                {credit !== null ? `${credit.balance} crediti` : "Saldo non disponibile"}
               </h2>
-
               <p className="mt-2 text-sm text-text-secondary">
-                {accountSummary.ok && accountSummary.data.expiresAt
-                  ? `Scadenza: ${formatDate(accountSummary.data.expiresAt)}`
-                  : accountSummary.ok
+                {credit !== null && credit.expiresAt
+                  ? `Scadenza: ${formatDate(credit.expiresAt)}`
+                  : credit !== null
                     ? "Nessuna scadenza attiva"
-                    : accountSummary.message}
+                    : ""}
               </p>
             </div>
-
             <Link
               href="/area-impresa/crediti"
               className="text-sm font-medium text-brand-primary"
@@ -483,25 +360,23 @@ export default async function ProfiloImpresaPage({
             </Link>
           </div>
         </Card>
+
         <Card className="border-border-primary bg-surface-secondary p-6">
           <div className="border-b border-border-primary pb-5">
             <Badge variant="danger" size="sm">
               Area critica
             </Badge>
-
             <h2 className="mt-4 text-xl font-semibold tracking-tight text-text-primary">
               Elimina account
             </h2>
-
             <p className="mt-2 text-sm leading-6 text-text-secondary">
               La tua impresa verra disattivata e non ricevera piu richieste. Lo
               storico verra preservato per motivi amministrativi e di sicurezza.
             </p>
           </div>
-
           <DeactivateAccountForm action={deactivateAccountAction} />
         </Card>
       </section>
     </PageShell>
-  );
+  )
 }

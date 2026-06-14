@@ -1,9 +1,4 @@
-import {
-  buildCompanyConversationHref,
-} from "../_lib/conversation-routes";
-
-import Link from "next/link";
-import { revalidatePath } from "next/cache";
+import Link from "next/link"
 
 import {
   Badge,
@@ -16,89 +11,108 @@ import {
   Input,
   PageShell,
   cn,
-} from "@esigenta/ui";
+} from "@esigenta/ui"
 
+import { getCompanyNotificationsPage } from "@esigenta/domain"
+
+import { requireAreaImpresaAccess } from "../../../../auth/server"
 import {
-  listCompanyNotifications,
-  markCompanyNotificationRead,
-} from "@esigenta/db";
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+import { createPerfTrace } from "../_lib/perf-log"
 
-import { requireCompanyActor } from "../../../../auth/server";
+import { buildCompanyConversationHref } from "../_lib/conversation-routes"
+import {
+  markAllNotificationsReadAction,
+  markNotificationReadAction,
+} from "./actions"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("it-IT", {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(date);
+  }).format(date)
 }
 
 function formatIntervention(slug: string | null) {
   if (!slug) {
-    return "Richiesta";
+    return "Richiesta"
   }
 
-  const readable = slug.replace(/[-_]/g, " ").trim();
+  const readable = slug.replace(/[-_]/g, " ").trim()
 
   return readable
     ? readable.charAt(0).toUpperCase() + readable.slice(1)
-    : "Richiesta";
+    : "Richiesta"
 }
 
 function formatLocation({
   city,
   postalCode,
 }: {
-  city: string | null;
-  postalCode: string | null;
+  city: string | null
+  postalCode: string | null
 }) {
-  const location = [city, postalCode].filter(Boolean).join(" ");
+  const location = [city, postalCode].filter(Boolean).join(" ")
 
-  return location || "Area compatibile";
-}
-
-async function markNotificationReadAction(formData: FormData) {
-  "use server";
-
-  const actor = await requireCompanyActor();
-  const notificationId = String(formData.get("notificationId") ?? "").trim();
-
-  const result = await markCompanyNotificationRead({
-    companyId: actor.company.id,
-    notificationId,
-  });
-
-  if (!result.ok) {
-    throw new Error(result.message);
-  }
-
-  revalidatePath("/area-impresa/notifiche");
-  revalidatePath("/area-impresa", "layout");
+  return location || "Area compatibile"
 }
 
 export default async function NotifichePage() {
-  const actor = await requireCompanyActor();
-  const notifications = await listCompanyNotifications(actor.company.id);
-  const unreadCount = notifications.filter(
-    (notification) => notification.readAt === null,
-  ).length;
+  const actor = await requireAreaImpresaAccess()
+
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+  const trace = createPerfTrace({ scope: "notifications-page" })
+
+  if (monitored) {
+    areaLog("area.model.notifications.start", {})
+  }
+
+  const { notifications, unreadCount } = await trace.measure("data", () =>
+    getCompanyNotificationsPage(actor, trace.add),
+  )
+
+  trace.finish({})
+
+  if (monitored) {
+    areaLog("area.model.notifications.end", {
+      result: "ok",
+      count: notifications.length,
+      unreadCount,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+    })
+  }
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
       <section className="space-y-7">
-        <div className="pt-4">
-          <p className="text-sm font-medium text-text-secondary">
-            Dashboard impresa
-          </p>
+        <div className="flex items-end justify-between pt-4">
+          <div>
+            <p className="text-sm font-medium text-text-secondary">
+              Dashboard impresa
+            </p>
 
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
-            Notifiche
-          </h1>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+              Notifiche
+            </h1>
 
-          <p className="mt-1 text-sm text-text-secondary">
-            {unreadCount} non lette
-          </p>
+            <p className="mt-1 text-sm text-text-secondary">
+              {unreadCount} non lette
+            </p>
+          </div>
+
+          {unreadCount > 0 ? (
+            <form action={markAllNotificationsReadAction}>
+              <Button type="submit" variant="secondary" size="sm">
+                Segna tutte come lette
+              </Button>
+            </form>
+          ) : null}
         </div>
 
         {notifications.length === 0 ? (
@@ -110,26 +124,24 @@ export default async function NotifichePage() {
         ) : (
           <div className="space-y-4">
             {notifications.map((notification) => {
-              const unread = notification.readAt === null;
-              const request = notification.request;
+              const unread = notification.readAt === null
+              const request = notification.request
               const requestHref = notification.requestId
                 ? `/area-impresa/richieste/${notification.requestId}`
-                : null;
+                : null
               const conversationHref =
                 notification.conversationId && notification.conversation
                   ? buildCompanyConversationHref({
-                      conversationId:
-                        notification.conversationId,
-                      conversationType:
-                        notification.conversation.type,
+                      conversationId: notification.conversationId,
+                      conversationType: notification.conversation.type,
                     })
-                  : null;
-              const primaryHref = conversationHref ?? requestHref;
+                  : null
+              const primaryHref = conversationHref ?? requestHref
               const primaryActionLabel = conversationHref
                 ? notification.conversation?.type === "SUPPORT"
                   ? "Apri assistenza"
                   : "Apri contatto"
-                : "Apri richiesta";
+                : "Apri richiesta"
 
               return (
                 <Card
@@ -203,7 +215,7 @@ export default async function NotifichePage() {
                         </div>
 
                         <div className="border border-border-primary bg-surface-secondary p-3">
-                          <dt className="text-xs text-text-muted">Località </dt>
+                          <dt className="text-xs text-text-muted">Località</dt>
                           <dd className="mt-1 font-medium text-text-primary">
                             {formatLocation({
                               city: request.city,
@@ -234,11 +246,11 @@ export default async function NotifichePage() {
                     ) : null}
                   </CardContent>
                 </Card>
-              );
+              )
             })}
           </div>
         )}
       </section>
     </PageShell>
-  );
+  )
 }

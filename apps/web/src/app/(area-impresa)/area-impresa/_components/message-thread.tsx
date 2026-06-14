@@ -4,7 +4,7 @@ import type {
 
 import type {
   ConversationThread as MessageThreadData,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 import {
   Badge,
   Card,

@@ -17,7 +17,7 @@ import {
 import {
   getPasswordResetTokenState,
   resetPasswordWithToken,
-} from "@esigenta/db/auth"
+} from "@esigenta/auth"
 
 type CompanyResetPasswordPageProps = {
   searchParams?: Promise<{

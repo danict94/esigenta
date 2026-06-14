@@ -7,7 +7,7 @@ import {
   createCreditPackage,
   listCreditPackages,
   updateCreditPackage,
-} from "@esigenta/db"
+} from "@esigenta/billing"
 
 import {
   Badge,

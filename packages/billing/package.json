@@ -1,0 +1,22 @@
+{
+  "name": "@esigenta/billing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@esigenta/auth": "workspace:*",
+    "@esigenta/database": "workspace:*",
+    "@esigenta/shared": "workspace:*",
+    "@prisma/client": "^7.8.0",
+    "stripe": "^22.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39"
+  }
+}

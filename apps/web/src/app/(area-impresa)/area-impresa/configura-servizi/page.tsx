@@ -1,47 +1,85 @@
-import Link from "next/link";
+import Link from "next/link"
+
+import { Badge, Card, PageShell } from "@esigenta/ui"
 
 import {
-  getCompanyServiceConfigurationPageData,
-} from "@esigenta/db";
-import { Badge, Card, PageShell } from "@esigenta/ui";
+  getCompanyServicesConfigurationPage,
+} from "@esigenta/domain"
 
-import { requireCompanyActor } from "../../../../auth/server";
+import { requireAreaImpresaAccess } from "../../../../auth/server"
 
-import { saveCompanyServicesAction } from "./actions";
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../lib/area-monitoring"
+
+import {
+  createPerfTrace,
+} from "../_lib/perf-log"
+
+import { saveCompanyServicesAction } from "./actions"
 import {
   CategoryServicesSelector,
   type CategoryOption,
-} from "./category-services-selector";
+} from "./category-services-selector"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 type ConfiguraServiziPageProps = {
   searchParams: Promise<{
-    error?: string;
-  }>;
-};
+    error?: string
+  }>
+}
 
 const errorMessages: Record<string, string> = {
   missing_categories: "Seleziona almeno una categoria prima di continuare.",
   too_many_categories: "Puoi selezionare al massimo 6 categorie operative.",
   invalid_services:
     "Alcuni servizi non sono collegati alle categorie selezionate.",
-  company_not_found:
-    "Non troviamo il profilo impresa collegato a questo account.",
-};
+}
 
 export default async function ConfiguraServiziPage({
   searchParams,
 }: ConfiguraServiziPageProps) {
+  const monitored = isAreaMonitoringEnabled()
+  const pageStart = areaTimestamp()
+
+  if (monitored) {
+    areaLog("area.model.servicesConfiguration.start", {})
+  }
+
   const [{ error }, actor] = await Promise.all([
     searchParams,
-    requireCompanyActor(),
-  ]);
+    requireAreaImpresaAccess(),
+  ])
 
-  const { company, categories } =
-    await getCompanyServiceConfigurationPageData({
-      companyId: actor.company.id,
-    });
+  const configTrace = monitored
+    ? createPerfTrace({ scope: "services-config" })
+    : null
+
+  const queryStart = areaTimestamp()
+  const result = await getCompanyServicesConfigurationPage(
+    actor,
+    configTrace !== null ? configTrace.add : undefined,
+  )
+  const queryMs = Math.round(areaTimestamp() - queryStart)
+
+  if (monitored) {
+    configTrace?.finish({
+      hasCompany: result.company !== null,
+      categoryCount: result.categories.length,
+    })
+    areaLog("area.model.servicesConfiguration.end", {
+      result: "ok",
+      hasCompany: result.company !== null,
+      categoryCount: result.categories.length,
+      durationMs: Math.round(areaTimestamp() - pageStart),
+      queryMs,
+    })
+  }
+
+  const { company, categories } = result
 
   if (!company) {
     return (
@@ -54,12 +92,12 @@ export default async function ConfiguraServiziPage({
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-            L&apos;account risulta autenticato, ma non Ã¨ collegato a un profilo
+            L&apos;account risulta autenticato, ma non è collegato a un profilo
             impresa valido.
           </p>
         </Card>
       </PageShell>
-    );
+    )
   }
 
   if (categories.length === 0) {
@@ -86,37 +124,31 @@ export default async function ConfiguraServiziPage({
           </Link>
         </Card>
       </PageShell>
-    );
+    )
   }
 
   const categoryOptions: CategoryOption[] = categories.map((category) => ({
     id: category.id,
     name: category.name,
     sectorName: category.sector?.name ?? null,
-    services: category.services.map(({ service }) => ({
-      id: service.id,
-      name: service.name,
-      description: service.description ?? null,
+    services: category.services.map((svc) => ({
+      id: svc.id,
+      name: svc.name,
+      description: svc.description,
     })),
-  }));
+  }))
 
-  const savedCategoryIds = company.categories.map(
-    (category) => category.categoryId,
-  );
+  const savedCategoryIds = company.categoryIds
   const onboardingCategoryId =
-    categories.find(
-      (category) => category.slug === company.onboardingCategorySlug,
-    )?.id ?? null;
+    categories.find((cat) => cat.slug === company.onboardingCategorySlug)?.id ?? null
   const initialCategoryIds =
     savedCategoryIds.length > 0
       ? savedCategoryIds
       : onboardingCategoryId
         ? [onboardingCategoryId]
-        : [];
-  const selectedServiceIds = company.services.map(
-    (service) => service.serviceId,
-  );
-  const errorMessage = error ? errorMessages[error] : null;
+        : []
+  const selectedServiceIds = company.serviceIds
+  const errorMessage = error ? (errorMessages[error] ?? null) : null
 
   return (
     <PageShell size="lg">
@@ -127,7 +159,7 @@ export default async function ConfiguraServiziPage({
 
         <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
           Le categorie determinano quali richieste puoi vedere. I servizi sono
-          opzionali: aiutano Esigenta a mostrarti prima le richieste piÃ¹
+          opzionali: aiutano Esigenta a mostrarti prima le richieste più
           pertinenti.
         </p>
 
@@ -163,5 +195,5 @@ export default async function ConfiguraServiziPage({
         </Card>
       </div>
     </PageShell>
-  );
+  )
 }

@@ -5,12 +5,9 @@ import {
 import {
   requireAdminFromUser,
   requireSuperAdminFromUser,
-} from "@esigenta/db"
-
-import {
   getCurrentUserFromHeaders,
   requireUserFromHeaders,
-} from "@esigenta/db/auth"
+} from "@esigenta/auth"
 
 export async function getCurrentAdmin() {
   const user =

@@ -7,10 +7,10 @@ import { CheckCircle2 } from "lucide-react";
 import {
   getPublicBusinessAreaPageData,
   reactivateCompanyAccount,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 import {
   getCurrentUserFromHeaders,
-} from "@esigenta/db/auth";
+} from "@esigenta/auth";
 
 import {
   Badge,

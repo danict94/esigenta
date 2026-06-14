@@ -4,14 +4,14 @@ import Link from "next/link";
 
 import { Button, Input, Textarea, cn, tokens } from "@esigenta/ui";
 
-import type { RuntimeCapability } from "@esigenta/db/funnel";
+import type { RuntimeCapability } from "@esigenta/funnel";
 
 import {
   readRuntimeContactAnswer,
   updateRuntimeContactAnswerField,
-} from "@esigenta/db/funnel-normalization";
+} from "@esigenta/funnel";
 
-import type { RuntimeContactAnswerField } from "@esigenta/db/funnel-normalization";
+import type { RuntimeContactAnswerField } from "@esigenta/funnel";
 
 import { CityAutocomplete } from "../location/city-autocomplete";
 import { PhotoUploadStep } from "./photo-upload-step";

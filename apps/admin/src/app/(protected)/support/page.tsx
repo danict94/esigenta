@@ -1,6 +1,6 @@
 import {
   listAdminSupportConversations,
-} from "@esigenta/db";
+} from "@esigenta/domain";
 import {
   Badge,
   Card,

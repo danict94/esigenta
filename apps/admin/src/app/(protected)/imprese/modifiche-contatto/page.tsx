@@ -9,7 +9,7 @@ import {
   approveCompanyContactChangeRequest,
   listCompanyContactChangeRequestsForAdminReview,
   rejectCompanyContactChangeRequest,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import {
   Badge,

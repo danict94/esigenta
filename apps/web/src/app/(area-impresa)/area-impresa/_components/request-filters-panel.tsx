@@ -24,7 +24,7 @@ import {
 
 import type {
   RequestDashboardSort,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import {
   PendingRequestLink,

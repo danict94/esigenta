@@ -22,6 +22,10 @@ export function isAreaMonitoringEnabled(): boolean {
   return process.env["ESIGENTA_AREA_MONITORING"] === "1"
 }
 
+export function isAreaImpresaDebugEnabled(): boolean {
+  return process.env["ESIGENTA_AREA_IMPRESA_DEBUG"] === "1"
+}
+
 export function areaLog(event: string, payload: AreaPayload): void {
   if (!isAreaMonitoringEnabled()) return
   console.info(

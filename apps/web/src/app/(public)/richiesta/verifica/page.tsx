@@ -7,7 +7,7 @@ import {
 import {
   RequestFlowError,
   verifyRequestEmail,
-} from '@esigenta/db'
+} from '@esigenta/domain'
 
 import { PublicShell } from '../../../../components/layout/public-shell'
 import { CustomerRequestsNav } from '../../richieste/_components/customer-requests-nav'

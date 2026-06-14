@@ -1,0 +1,20 @@
+{
+  "name": "@esigenta/funnel",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@esigenta/shared": "workspace:*",
+    "@esigenta/taxonomy": "workspace:*",
+    "@esigenta/uploads": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39"
+  }
+}

@@ -13,7 +13,7 @@ import {
 
 import {
   requestPasswordReset,
-} from "@esigenta/db/auth";
+} from "@esigenta/auth";
 
 type AdminForgotPasswordPageProps = {
   searchParams?: Promise<{

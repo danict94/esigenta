@@ -12,7 +12,7 @@ import {
   suspendCompanyForMarketplace,
   type AdminCompanyListItem,
   type AdminCompanyStatusFilter,
-} from "@esigenta/db"
+} from "@esigenta/domain"
 
 import {
   Badge,

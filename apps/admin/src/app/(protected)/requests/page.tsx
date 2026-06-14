@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { listAdminRequests } from "@esigenta/db";
+import { listAdminRequests } from "@esigenta/domain";
 import { Badge, Card, PageShell } from "@esigenta/ui";
 
 export const dynamic = "force-dynamic";
