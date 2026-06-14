@@ -375,6 +375,13 @@ function buildFallbackCategoryServicesQuery(categoryId: string) {
   })
 }
 
+function buildTaxonomyCategoriesQuery() {
+  return prisma.category.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  })
+}
+
 function buildRequestsQuery(
   serviceIds: string[],
   companyId: string,
@@ -441,22 +448,34 @@ export async function getCompanyRequestsListPage(
     active: normalizedFilters,
   }
 
-  // ── Batch 1 (truly parallel): lean company + company-scoped category services ─
+  // ── Batch 1 (truly parallel): company + category services + taxonomy filter data ─
   //
-  // buildCompanyCategoryServicesQuery uses a relation subquery that resolves
-  // the company's categories internally — no dependency on company data.
-  // On Neon cold, both share one cold-start cost. On warm, both are ~50ms.
-  // After Batch 1, we have everything needed to launch Phase C immediately.
+  // All four queries are independent and run in parallel:
+  // - company: profile, location, selected services
+  // - companyCategoryServices: resolves operational service IDs for request matching
+  // - taxonomyCategories: all marketplace categories for filter dropdown (lean, stable)
+  // - taxonomyCategoryServices: services for the URL-selected category (null if none selected)
+  //
+  // Same 2 round-trips as before. Taxonomy queries are lightweight (no joins beyond select).
 
   const batch1Start = performance.now()
-  const [company, categoryServices] = await Promise.all([
-    measureAsync("batch1-company", recordPerf, () =>
-      buildCompanyQuery(companyId),
-    ),
-    measureAsync("batch1-category-services", recordPerf, () =>
-      buildCompanyCategoryServicesQuery(companyId),
-    ),
-  ])
+  const [company, categoryServices, allTaxonomyCategories, categoryServicesForFilter] =
+    await Promise.all([
+      measureAsync("batch1-company", recordPerf, () =>
+        buildCompanyQuery(companyId),
+      ),
+      measureAsync("batch1-category-services", recordPerf, () =>
+        buildCompanyCategoryServicesQuery(companyId),
+      ),
+      measureAsync("batch1-taxonomy-categories", recordPerf, () =>
+        buildTaxonomyCategoriesQuery(),
+      ),
+      normalizedFilters.categoryId
+        ? measureAsync("batch1-taxonomy-category-services", recordPerf, () =>
+            buildFallbackCategoryServicesQuery(normalizedFilters.categoryId!),
+          )
+        : (Promise.resolve(null) as Promise<CategoryServiceRow[] | null>),
+    ])
   recordPerf?.("batch1-total", Math.round(performance.now() - batch1Start))
 
   if (!company) {
@@ -564,20 +583,20 @@ export async function getCompanyRequestsListPage(
   }
 
   const resolvedCategoryIdSet = new Set(resolvedCategoryIds)
+  const allCategoryIdSet = new Set(allTaxonomyCategories.map((c) => c.id))
 
-  // All filter validation uses Batch 1 data — no extra queries needed.
+  // Category filter validated against ALL taxonomy categories (not just company ones).
+  // Companies can filter by any category, including ones not yet in their profile.
   const activeCategoryId =
     normalizedFilters.categoryId &&
-    resolvedCategoryIdSet.has(normalizedFilters.categoryId)
+    allCategoryIdSet.has(normalizedFilters.categoryId)
       ? normalizedFilters.categoryId
       : null
 
+  // Services for the active category come from the taxonomy fetch (parallel with Batch 1).
+  // This covers both configured and unconfigured categories without extra queries.
   const activeCategoryServiceSet = activeCategoryId
-    ? new Set(
-        resolvedCategoryServices
-          .filter((cs) => cs.categoryId === activeCategoryId)
-          .map((cs) => cs.serviceId),
-      )
+    ? new Set((categoryServicesForFilter ?? []).map((cs) => cs.serviceId))
     : operationalServiceIds
 
   const activeServiceId =
@@ -631,7 +650,15 @@ export async function getCompanyRequestsListPage(
     buildRequestsQuery(visibilityServiceIds, companyId, bbox),
   )
 
-  // ── Build filter options from Batch 1 results ─────────────────────────────
+  // ── Build filter options ──────────────────────────────────────────────────
+  //
+  // filterCategories: ALL taxonomy categories (from Batch 1), marked isConfigured
+  //   based on whether the company has that category in its profile.
+  //   Already sorted by name from the query (orderBy: { name: "asc" }).
+  //
+  // filterServices: only services for the SELECTED category (from Batch 1 taxonomy fetch).
+  //   Empty when no category is selected — services dropdown is disabled in that state.
+  //   Sending all services upfront is wasteful; this sends exactly what the UI needs.
 
   const categoryNamesByServiceId = resolvedCategoryServices.reduce(
     (map, cs) => {
@@ -642,32 +669,40 @@ export async function getCompanyRequestsListPage(
     },
     new Map<string, string[]>(),
   )
+  // Extend map with selected category's services so keyword search works
+  // even when the company filters by a category not yet in their profile.
+  if (categoryServicesForFilter) {
+    for (const cs of categoryServicesForFilter) {
+      if (!categoryNamesByServiceId.has(cs.serviceId)) {
+        categoryNamesByServiceId.set(cs.serviceId, [cs.category.name])
+      }
+    }
+  }
 
-  const filterCategories = resolvedCategoryServices
-    .reduce(
-      (acc, cs) => {
-        if (!acc.some((c) => c.id === cs.category.id)) {
-          acc.push({ id: cs.category.id, name: cs.category.name, isConfigured: true })
-        }
-        return acc
-      },
-      [] as Array<{ id: string; name: string; isConfigured: boolean }>,
-    )
-    .sort((a, b) => a.name.localeCompare(b.name, "it"))
+  const filterCategories = allTaxonomyCategories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    isConfigured: resolvedCategoryIdSet.has(c.id),
+  }))
 
-  const filterServices = resolvedCategoryServices
-    .map((cs) => ({
-      id: cs.service.id,
-      name: cs.service.name,
-      categoryId: cs.categoryId,
-      isConfigured: selectedServiceIds.has(cs.serviceId),
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name, "it"))
+  const filterServices =
+    activeCategoryId && categoryServicesForFilter
+      ? categoryServicesForFilter
+          .map((cs) => ({
+            id: cs.service.id,
+            name: cs.service.name,
+            categoryId: cs.categoryId,
+            isConfigured: selectedServiceIds.has(cs.serviceId),
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name, "it"))
+      : []
 
   const filterOptions: RequestDashboardFilterOptions = {
     categories: filterCategories,
     services: filterServices,
-    activeCategoryIsConfigured: activeCategoryId ? true : null,
+    activeCategoryIsConfigured: activeCategoryId
+      ? resolvedCategoryIdSet.has(activeCategoryId)
+      : null,
     active: activeFilters,
   }
 
