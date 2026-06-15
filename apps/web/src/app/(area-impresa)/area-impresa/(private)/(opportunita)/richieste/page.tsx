@@ -15,17 +15,17 @@ import {
   type RequestDashboardSort,
 } from "@esigenta/domain"
 
-import { requireAreaImpresaAccess } from "../../../../auth/server"
+import { requireAreaImpresaAccess } from "../../../../../../auth/server"
 
 import {
   areaLog,
   areaTimestamp,
   isAreaMonitoringEnabled,
-} from "../../../../lib/area-monitoring"
+} from "../../../../../../lib/area-monitoring"
 
 import {
   createPerfTrace,
-} from "../_lib/perf-log"
+} from "../../../_lib/perf-log"
 
 import {
   CompanyRequestList,

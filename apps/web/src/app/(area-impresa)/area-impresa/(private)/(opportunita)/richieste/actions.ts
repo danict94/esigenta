@@ -10,7 +10,7 @@ import {
 
 import {
   requireAreaImpresaAccess,
-} from "../../../../auth/server"
+} from "../../../../../../auth/server"
 
 export async function toggleSavedRequestAction(
   formData: FormData,

@@ -18,17 +18,17 @@ import {
 
 import {
   requireAreaImpresaAccess,
-} from "../../../../../auth/server"
+} from "../../../../../../../auth/server"
 
 import {
   areaLog,
   isAreaMonitoringEnabled,
   shortId,
-} from "../../../../../lib/area-monitoring"
+} from "../../../../../../../lib/area-monitoring"
 
 import {
   createPerfTrace,
-} from "../../_lib/perf-log"
+} from "../../../../_lib/perf-log"
 
 function buildRequestDetailHref({
   requestId,

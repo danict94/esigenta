@@ -3,22 +3,22 @@ import {
 } from "@esigenta/ui"
 
 import {
-  getCompanySavedRequestsPage,
+  getCompanyPurchasedRequestsPage,
 } from "@esigenta/domain"
 
 import {
   requireAreaImpresaAccess,
-} from "../../../../auth/server"
+} from "../../../../../../auth/server"
 
 import {
   areaLog,
   areaTimestamp,
   isAreaMonitoringEnabled,
-} from "../../../../lib/area-monitoring"
+} from "../../../../../../lib/area-monitoring"
 
 import {
   createPerfTrace,
-} from "../_lib/perf-log"
+} from "../../../_lib/perf-log"
 
 import {
   CompanyRequestList,
@@ -30,32 +30,32 @@ import {
 
 export const dynamic = "force-dynamic"
 
-export default async function RichiesteSalvatePage() {
+export default async function RichiesteAcquistatePage() {
   const monitored = isAreaMonitoringEnabled()
   const pageStart = areaTimestamp()
 
   if (monitored) {
-    areaLog("area.model.savedRequests.start", {})
+    areaLog("area.model.purchasedRequests.start", {})
   }
 
   const actor = await requireAreaImpresaAccess()
 
-  const savedTrace = monitored
-    ? createPerfTrace({ scope: "saved-requests" })
+  const purchasedTrace = monitored
+    ? createPerfTrace({ scope: "purchased-requests" })
     : null
 
   const queryStart = areaTimestamp()
-  const result = await getCompanySavedRequestsPage(
+  const result = await getCompanyPurchasedRequestsPage(
     actor,
-    savedTrace !== null ? savedTrace.add : undefined,
+    purchasedTrace !== null ? purchasedTrace.add : undefined,
   )
   const queryMs = Math.round(areaTimestamp() - queryStart)
 
   if (monitored) {
-    savedTrace?.finish({
+    purchasedTrace?.finish({
       count: result.requests.length,
     })
-    areaLog("area.model.savedRequests.end", {
+    areaLog("area.model.purchasedRequests.end", {
       result: "ok",
       count: result.requests.length,
       durationMs: Math.round(areaTimestamp() - pageStart),
@@ -72,7 +72,7 @@ export default async function RichiesteSalvatePage() {
           </p>
 
           <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
-            Richieste salvate
+            Richieste acquistate
           </h1>
 
           <p className="mt-1 text-sm text-text-secondary">
@@ -82,8 +82,8 @@ export default async function RichiesteSalvatePage() {
 
         <CompanyRequestList
           requests={result.requests}
-          mode="saved"
-          emptyMessage="Non hai ancora salvato richieste."
+          mode="purchased"
+          emptyMessage="Non hai ancora acquistato richieste."
           savedAction={toggleSavedRequestAction}
         />
       </section>
