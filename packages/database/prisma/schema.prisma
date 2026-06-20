@@ -323,6 +323,7 @@ model Company {
   creditAccount            CompanyCreditAccount?
   creditOrders             CreditOrder[]
   creditTransactions       CompanyCreditTransaction[]
+  creditLots               CreditLot[]
   requestUnlocks           RequestUnlock[]
   savedRequests            CompanySavedRequest[]
   requestDispatches        RequestDispatch[]
@@ -439,6 +440,8 @@ model User {
   companyContactChangeRequests         CompanyContactChangeRequest[] @relation("CompanyContactChangeRequestedBy")
   reviewedCompanyContactChangeRequests CompanyContactChangeRequest[] @relation("CompanyContactChangeReviewedBy")
   resolvedConversations                Conversation[]                @relation("ConversationResolvedBy")
+  archivedRequests                     Request[]                     @relation("RequestArchivedBy")
+  deletedRequests                      Request[]                     @relation("RequestDeletedBy")
 
   sessions                 Session[]
   accounts                 Account[]
@@ -696,6 +699,31 @@ model Request {
   unlockCount Int  @default(0)
 
   ///////////////////////////////////////////////////////////
+  // ADMIN LIFECYCLE (archive / soft-delete) — D-020
+  ///////////////////////////////////////////////////////////
+
+  /**
+   * Archiving hides a request from default admin/marketplace lists while
+   * keeping all data and history. Independent of `status`: an archived
+   * request keeps whatever editorial status it already had. Reversible.
+   */
+  archivedAt            DateTime?
+  archivedByAdminUserId String?
+  archivedByAdminUser   User?     @relation("RequestArchivedBy", fields: [archivedByAdminUserId], references: [id], onDelete: SetNull)
+  archiveReason         String?
+
+  /**
+   * Soft-delete only: never a hard delete. Excludes the request from every
+   * default admin/marketplace list. Existing company relationships
+   * (unlocks, conversations, credit transactions) are never touched.
+   * Reversible.
+   */
+  deletedAt            DateTime?
+  deletedByAdminUserId String?
+  deletedByAdminUser   User?     @relation("RequestDeletedBy", fields: [deletedByAdminUserId], references: [id], onDelete: SetNull)
+  deleteReason         String?
+
+  ///////////////////////////////////////////////////////////
   // TIMESTAMPS
   ///////////////////////////////////////////////////////////
 
@@ -732,6 +760,10 @@ model Request {
   @@index([latitude, longitude])
   @@index([status, creditCost])
   @@index([unlockCount])
+  @@index([archivedAt])
+  @@index([deletedAt])
+  @@index([archivedByAdminUserId])
+  @@index([deletedByAdminUserId])
 }
 
 model RequestPhoto {
@@ -953,6 +985,7 @@ model CreditOrder {
   updatedAt DateTime @updatedAt
 
   transactions CompanyCreditTransaction[]
+  creditLots   CreditLot[]
 
   @@index([companyId, status])
   @@index([packageId])
@@ -1011,6 +1044,7 @@ model CompanyCreditTransaction {
   unlockChargeFor      RequestUnlock?        @relation("RequestUnlockCharge")
   unlockRefundFor      RequestUnlock?        @relation("RequestUnlockRefund")
   creditRefundRequests CreditRefundRequest[]
+  lotConsumptions      CreditLotConsumption[]
 
   @@index([companyId, createdAt])
   @@index([accountId, createdAt])
@@ -1018,6 +1052,91 @@ model CompanyCreditTransaction {
   @@index([creditOrderId])
   @@index([type, status])
   @@index([adminUserId])
+}
+
+///////////////////////////////////////////////////////////
+// CREDIT LOTS (FEFO) — D-011
+///////////////////////////////////////////////////////////
+
+enum CreditLotSource {
+  PACKAGE_PURCHASE
+  REFUND
+  ADMIN_ADJUSTMENT
+  LEGACY_MIGRATION
+}
+
+enum CreditLotStatus {
+  ACTIVE
+  EXPIRED
+  CONSUMED
+}
+
+model CreditLot {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /**
+   * Null for lots not tied to a single purchase (refund, admin adjustment,
+   * legacy migration of the pre-FEFO pooled balance).
+   */
+  creditOrderId String?
+  creditOrder   CreditOrder? @relation(fields: [creditOrderId], references: [id], onDelete: SetNull)
+
+  source CreditLotSource
+
+  /**
+   * quantityRemaining is decremented by FEFO consumption and by lazy
+   * per-lot expiration. quantityInitial never changes after creation.
+   * Invariant: quantityRemaining = quantityInitial - SUM(consumptions.amount).
+   */
+  quantityInitial   Int
+  quantityRemaining Int
+
+  /**
+   * Each lot owns its own expiry. A new purchase/refund never extends the
+   * expiresAt of a previously existing lot (D-011 requirement).
+   */
+  expiresAt DateTime
+
+  status CreditLotStatus @default(ACTIVE)
+
+  /**
+   * Idempotency for lot creation (one lot per fulfillment/refund/admin
+   * event/migration backfill).
+   */
+  idempotencyKey String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  consumptions CreditLotConsumption[]
+
+  @@index([companyId, status, expiresAt])
+  @@index([creditOrderId])
+}
+
+model CreditLotConsumption {
+  id String @id @default(cuid())
+
+  creditLotId String
+  creditLot   CreditLot @relation(fields: [creditLotId], references: [id], onDelete: Cascade)
+
+  creditTransactionId String
+  creditTransaction   CompanyCreditTransaction @relation(fields: [creditTransactionId], references: [id], onDelete: Cascade)
+
+  /**
+   * Amount removed from creditLot.quantityRemaining by this transaction.
+   * Always positive: covers both FEFO debit consumption and per-lot expiration write-off.
+   */
+  amount Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([creditLotId, creditTransactionId])
+  @@index([creditLotId])
+  @@index([creditTransactionId])
 }
 
 model RequestUnlock {

@@ -11,6 +11,7 @@ import { facciateDomains } from "./domains/facciate";
 import { tettiDomains } from "./domains/tetti";
 import { climaEnergiaDomains } from "./domains/clima-energia";
 import { impiantiElettriciDomains } from "./domains/impianti-elettrici";
+import { sicurezzaElettronicaDomains } from "./domains/sicurezza-elettronica";
 
 import { elettricistaInterventions } from "./interventions/impianti/elettricista";
 import { sicurezzaInterventions } from "./interventions/impianti/sicurezza";
@@ -83,6 +84,7 @@ const taxonomyRegistry = {
     tettiDomains,
     climaEnergiaDomains,
     impiantiElettriciDomains,
+    sicurezzaElettronicaDomains,
   ],
 };
 

@@ -7,6 +7,8 @@ import type { CompanyUnlockedRequestListItem } from "./saved-requests"
 
 type PerfRecorder = (label: string, ms: number) => void
 
+const PAGE_SIZE = 50
+
 type PurchasedRequestRow = {
   unlock_id: string
   unlock_credit_cost: number | bigint
@@ -29,13 +31,24 @@ type PurchasedRequestRow = {
 
 export type GetCompanyPurchasedRequestsPageResult = {
   requests: CompanyUnlockedRequestListItem[]
+  page: number
+  pageSize: number
+  hasNextPage: boolean
 }
 
 export async function getCompanyPurchasedRequestsPage(
   actor: CompanyActor,
+  page?: number,
   recordPerf?: PerfRecorder,
 ): Promise<GetCompanyPurchasedRequestsPageResult> {
-  // Single SQL JOIN — replaces 2 ORM queries (findMany RequestUnlock + IN CompanySavedRequest)
+  const normalizedPage = Math.max(
+    1,
+    Number.isFinite(page) ? Math.floor(page ?? 1) : 1,
+  )
+  const offset = (normalizedPage - 1) * PAGE_SIZE
+
+  // Single SQL JOIN — replaces 2 ORM queries (findMany RequestUnlock + IN CompanySavedRequest).
+  // LIMIT pageSize+1 / OFFSET: DB-side pagination, no unbounded fetch.
   const t0 = performance.now()
   const rows = await prisma.$queryRaw<Array<PurchasedRequestRow>>`
     SELECT
@@ -67,10 +80,15 @@ export async function getCompanyPurchasedRequestsPage(
     ) csr ON true
     WHERE ru."companyId" = ${actor.company.id}
     ORDER BY ru."createdAt" DESC
+    LIMIT ${PAGE_SIZE + 1}
+    OFFSET ${offset}
   `
   recordPerf?.("purchased-requests-query", Math.round(performance.now() - t0))
 
-  const requests: CompanyUnlockedRequestListItem[] = rows.map((row) => ({
+  const hasNextPage = rows.length > PAGE_SIZE
+  const pageRows = hasNextPage ? rows.slice(0, PAGE_SIZE) : rows
+
+  const requests: CompanyUnlockedRequestListItem[] = pageRows.map((row) => ({
     id: row.id,
     requestCode: row.request_code,
     status: row.status,
@@ -91,5 +109,10 @@ export async function getCompanyPurchasedRequestsPage(
     isSaved: row.saved_at !== null,
   }))
 
-  return { requests }
+  return {
+    requests,
+    page: normalizedPage,
+    pageSize: PAGE_SIZE,
+    hasNextPage,
+  }
 }

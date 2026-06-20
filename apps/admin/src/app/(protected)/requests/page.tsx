@@ -195,7 +195,10 @@ export default async function RequestsModerationPage() {
                     </div>
 
                     <div className="flex shrink-0 md:justify-end">
-                      {/* TODO: add admin actions for edit/archive/soft delete after schema decision */}
+                      {/* D-020: edit (commercial settings), archive and
+                          soft-delete actions live on the request detail
+                          page, consistent with the existing review/edit
+                          actions already there. */}
                       <Link
                         href={`/requests/${request.id}`}
                         className="inline-flex h-11 items-center justify-center border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"

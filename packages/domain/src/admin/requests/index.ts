@@ -17,11 +17,40 @@ export {
   getRequestById,
 } from "./get-request-by-id"
 export type {
+  ModerationRequestAdminActor,
   ModerationRequestCategory,
   ModerationRequestDetail,
   ModerationRequestIntervention,
   ModerationRequestService,
 } from "./get-request-by-id"
+
+export {
+  archiveRequest,
+  unarchiveRequest,
+} from "./archive-request"
+export type {
+  ArchiveRequestData,
+  ArchiveRequestErrorCode,
+  ArchiveRequestInput,
+  ArchiveRequestResult,
+  UnarchiveRequestErrorCode,
+  UnarchiveRequestInput,
+  UnarchiveRequestResult,
+} from "./archive-request"
+
+export {
+  restoreRequest,
+  softDeleteRequest,
+} from "./soft-delete-request"
+export type {
+  RestoreRequestErrorCode,
+  RestoreRequestInput,
+  RestoreRequestResult,
+  SoftDeleteRequestData,
+  SoftDeleteRequestErrorCode,
+  SoftDeleteRequestInput,
+  SoftDeleteRequestResult,
+} from "./soft-delete-request"
 
 export {
   publishReviewedRequest,

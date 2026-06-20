@@ -363,7 +363,6 @@ export async function createRequestFromDraft({
   })
 
   const verificationUrl = buildRequestVerificationUrl({
-    requestId: request.id,
     token: verification.token,
   })
 

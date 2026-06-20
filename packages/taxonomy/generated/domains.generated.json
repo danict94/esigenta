@@ -48,6 +48,7 @@
     "interventions": [
       "cambiare-rubinetto",
       "perdita-acqua",
+      "rifare-impianto-idraulico",
       "sostituire-sanitari",
       "sostituire-tubi"
     ]
@@ -137,6 +138,15 @@
       "lavori di ristrutturazione",
       "ristrutturare immobile",
       "ristrutturazioni edili"
+    ]
+  },
+  {
+    "slug": "sicurezza",
+    "name": "Sicurezza elettronica",
+    "interventions": [
+      "installare-antifurto",
+      "installare-controllo-accessi",
+      "installare-telecamere"
     ]
   },
   {

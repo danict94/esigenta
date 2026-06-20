@@ -325,6 +325,72 @@ async function verifyWithLegacyStructuredDataToken({
   }
 }
 
+export type VerifyRequestEmailByTokenInput = {
+  token: string
+}
+
+/**
+ * Single-token verification entrypoint (D-014): looks up the request purely
+ * from the token (CustomerAccessToken.requestId), no requestId needed in the
+ * URL. Only supports tokens issued via createRequestVerificationAccessToken
+ * (every request created since this mechanism shipped — see
+ * public/requests/create-request.ts). Legacy requests whose verification
+ * token lives only in Request.structuredData (pre-dating that table) are not
+ * reachable here and keep using the requestId+token query-param route via
+ * verifyRequestEmail, which remains unchanged for backward compatibility
+ * with already-emitted links.
+ */
+export async function verifyRequestEmailByToken({
+  token,
+}: VerifyRequestEmailByTokenInput): Promise<VerifyRequestEmailResult> {
+  const verifiedAt = new Date()
+
+  const accessToken = await findValidRequestVerificationAccessToken({
+    tokenHash: hashVerificationToken(token),
+    now: verifiedAt,
+  })
+
+  if (!accessToken || !accessToken.requestId) {
+    throw new RequestFlowError({
+      code: "invalid_verification_token",
+      message: "Request verification link is not valid.",
+      statusCode: 400,
+    })
+  }
+
+  const request = await prisma.request.findUnique({
+    where: { id: accessToken.requestId },
+    select: {
+      id: true,
+      status: true,
+      verifiedAt: true,
+      customerEmail: true,
+      customerId: true,
+      structuredData: true,
+    },
+  })
+
+  if (!request) {
+    throw new RequestFlowError({
+      code: "request_not_found",
+      message: "Request could not be found.",
+      statusCode: 404,
+    })
+  }
+
+  if (request.verifiedAt || request.status !== "PENDING_VERIFICATION") {
+    return { requestId: request.id, status: "ALREADY_VERIFIED" }
+  }
+
+  return verifyWithAccessToken({
+    request,
+    tokenId: accessToken.id,
+    tokenRequestId: accessToken.requestId,
+    tokenEmail: accessToken.email,
+    verifiedAt,
+  })
+}
+
 export async function verifyRequestEmail({
   requestId,
   token,

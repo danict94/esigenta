@@ -1,6 +1,13 @@
 import { prisma } from "@esigenta/database"
 import { markCreditCheckoutCreated } from "../checkout/checkout-order"
 import { logStripeDebug } from "./stripe-config"
+import {
+  ensureCreditAccountRowInTransaction,
+  expireStaleLotsInTransaction,
+  deriveCreditSummaryInTransaction,
+  createCreditLotInTransaction,
+  syncCompanyCreditAccountCacheInTransaction,
+} from "../credits/lot-ledger"
 
 export type FulfillCreditOrderInput = {
   checkoutSessionId: string
@@ -108,12 +115,6 @@ type TxRow = {
   expires_at_after: Date | null
 }
 
-type AccountRow = {
-  id: string
-  balance: bigint
-  expires_at: Date | null
-}
-
 type GrantResult =
   | { ok: true; data: { transactionId: string; balanceAfter: number; expiresAtAfter: Date } }
   | { ok: false; code: string; message: string }
@@ -181,49 +182,12 @@ async function grantCreditOrderFulfillment(
         return { transactionId: r.id, balanceAfter: Number(r.balance_after), expiresAtAfter: r.expires_at_after ?? now }
       }
 
-      // Upsert + lock account
-      await tx.$executeRaw`
-        INSERT INTO "CompanyCreditAccount" ("id", "companyId", "balance", "expiresAt", "createdAt", "updatedAt")
-        VALUES (gen_random_uuid()::text, ${companyId}, 0, NULL, now(), now())
-        ON CONFLICT ("companyId") DO NOTHING
-      `
+      const accountId = await ensureCreditAccountRowInTransaction(tx, companyId)
+      await expireStaleLotsInTransaction(tx, companyId, now)
 
-      const accountRows = await tx.$queryRaw<Array<AccountRow>>`
-        SELECT id, balance, "expiresAt" AS expires_at
-        FROM "CompanyCreditAccount"
-        WHERE "companyId" = ${companyId}
-        FOR UPDATE
-      `
-      const account = accountRows[0]
-      if (!account) throw new Error("Credit account lock failed.")
-
-      // Expire stale account
-      if (account.expires_at !== null && account.expires_at <= now) {
-        const balance = Number(account.balance)
-        if (balance > 0) {
-          const expKey = `credit-expiration:${companyId}:${account.expires_at.toISOString()}`
-          await tx.$executeRaw`
-            INSERT INTO "CompanyCreditTransaction" (
-              "id","companyId","accountId","type","status","amount","balanceBefore","balanceAfter",
-              "expiresAtBefore","expiresAtAfter","idempotencyKey","reason","createdAt"
-            ) VALUES (
-              gen_random_uuid()::text,${companyId},${account.id},
-              'CREDIT_EXPIRATION','COMPLETED',
-              ${-balance},${balance},0,${account.expires_at},NULL,${expKey},'Scadenza crediti',now()
-            )
-            ON CONFLICT ("idempotencyKey") DO NOTHING
-          `
-        }
-        await tx.$executeRaw`
-          UPDATE "CompanyCreditAccount" SET "balance"=0,"expiresAt"=NULL,"updatedAt"=now()
-          WHERE "id"=${account.id}
-        `
-        account.balance = 0n
-        account.expires_at = null
-      }
-
-      // Re-check by order after acquiring lock
-      const txAfterLock = await tx.$queryRaw<Array<TxRow>>`
+      // Re-check by order after the expiration pass (covers a concurrent
+      // fulfillment that committed between the pre-checks above and here).
+      const txAfterExpire = await tx.$queryRaw<Array<TxRow>>`
         SELECT id, "balanceAfter" AS balance_after, "expiresAtAfter" AS expires_at_after
         FROM "CompanyCreditTransaction"
         WHERE "creditOrderId" = ${creditOrderId}
@@ -232,50 +196,70 @@ async function grantCreditOrderFulfillment(
         ORDER BY "createdAt" ASC
         LIMIT 1
       `
-      if (txAfterLock[0]) {
-        const r = txAfterLock[0]
+      if (txAfterExpire[0]) {
+        const r = txAfterExpire[0]
         return { transactionId: r.id, balanceAfter: Number(r.balance_after), expiresAtAfter: r.expires_at_after ?? now }
       }
 
-      const balanceBefore = Number(account.balance)
-      const balanceAfter = balanceBefore + credits
-      const expiresAtBefore = account.expires_at
-      const expirationBase = expiresAtBefore && expiresAtBefore > now ? expiresAtBefore : now
-      const expiresAtAfter = new Date(expirationBase.getTime() + validityDays * 24 * 60 * 60 * 1000)
+      const before = await deriveCreditSummaryInTransaction(tx, companyId)
+
+      // Each purchase is its own lot with its own expiry — a new purchase
+      // never extends a previously existing lot's expiresAt (D-011).
+      const lotExpiresAt = new Date(now.getTime() + validityDays * 24 * 60 * 60 * 1000)
+
+      const lot = await createCreditLotInTransaction(tx, {
+        companyId,
+        creditOrderId,
+        source: "PACKAGE_PURCHASE",
+        credits,
+        expiresAt: lotExpiresAt,
+        idempotencyKey: `credit-lot:package-purchase:${creditOrderId}`,
+      })
 
       const newTxRows = await tx.$queryRaw<Array<{ id: string }>>`
         INSERT INTO "CompanyCreditTransaction" (
           "id","companyId","accountId","type","status","amount","balanceBefore","balanceAfter",
           "expiresAtBefore","expiresAtAfter","creditOrderId","idempotencyKey","createdAt"
         ) VALUES (
-          gen_random_uuid()::text,${companyId},${account.id},
+          gen_random_uuid()::text,${companyId},${accountId},
           'PACKAGE_PURCHASE','COMPLETED',
-          ${credits},${balanceBefore},${balanceAfter},
-          ${expiresAtBefore},${expiresAtAfter},${creditOrderId},${idempotencyKey},now()
+          ${credits},${before.balance},${before.balance + credits},
+          ${before.expiresAt},${lotExpiresAt},${creditOrderId},${idempotencyKey},now()
         )
+        ON CONFLICT ("idempotencyKey") DO NOTHING
         RETURNING id
       `
 
-      const txId = newTxRows[0]?.id
+      let txId = newTxRows[0]?.id
+      if (!txId) {
+        const retryTx = await tx.$queryRaw<Array<{ id: string }>>`
+          SELECT id FROM "CompanyCreditTransaction" WHERE "idempotencyKey" = ${idempotencyKey} LIMIT 1
+        `
+        txId = retryTx[0]?.id
+      }
       if (!txId) throw new Error("Failed to create credit transaction.")
 
-      await tx.$executeRaw`
-        UPDATE "CompanyCreditAccount"
-        SET "balance"=${balanceAfter},"expiresAt"=${expiresAtAfter},"updatedAt"=now()
-        WHERE "id"=${account.id}
-      `
+      const after = await syncCompanyCreditAccountCacheInTransaction(tx, companyId)
+
+      if (!lot.alreadyExisted) {
+        await tx.$executeRaw`
+          UPDATE "CompanyCreditTransaction"
+          SET "balanceAfter" = ${after.balance}, "expiresAtAfter" = ${after.expiresAt}
+          WHERE "id" = ${txId}
+        `
+      }
 
       await tx.$executeRaw`
         UPDATE "CreditOrder"
         SET "status"='PAID',
             "paidAt"=COALESCE("paidAt",${now}),
-            "validFrom"=${expirationBase},
-            "validUntil"=${expiresAtAfter},
+            "validFrom"=${now},
+            "validUntil"=${lotExpiresAt},
             "updatedAt"=now()
         WHERE "id"=${creditOrderId}
       `
 
-      return { transactionId: txId, balanceAfter, expiresAtAfter }
+      return { transactionId: txId, balanceAfter: after.balance, expiresAtAfter: lotExpiresAt }
     })
 
     return { ok: true, data: result }

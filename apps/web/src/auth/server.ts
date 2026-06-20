@@ -17,7 +17,6 @@ import {
   getCurrentUserFromHeaders,
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,
-  requireUserFromHeaders,
   resolveCompanyActorFromUser,
 } from "@esigenta/auth"
 
@@ -25,7 +24,7 @@ import {
   areaLog,
   isAreaMonitoringEnabled,
   shortId,
-} from "../lib/area-monitoring"
+} from "../platform/monitoring/area-monitoring"
 
 export const getCurrentUser = cache(
   async function getCurrentUser() {
@@ -37,9 +36,9 @@ export const getCurrentUser = cache(
 
 export const requireUser = cache(
   async function requireUser() {
-    return requireUserFromHeaders(
-      await headers(),
-    )
+    const user = await getCurrentUser()
+    if (!user) throw new AuthenticationRequiredError()
+    return user
   },
 )
 
@@ -106,13 +105,11 @@ export const requireCompanyActor = cache(
 
       const totalMs = Math.round(performance.now() - traceStart)
 
-      console.info(
-        `[esigenta-perf] [require-company-actor] requireUser=${sessionMs}ms resolveCompanyActor=${actorMs}ms total=${totalMs}ms`,
-      )
-
       if (monitored) {
         areaLog("area.auth.end", {
           durationMs: totalMs,
+          requireUserMs: sessionMs,
+          resolveCompanyActorMs: actorMs,
           result: "ok",
           actorResolved: true,
           userIdSafe: shortId(actor.user.id),

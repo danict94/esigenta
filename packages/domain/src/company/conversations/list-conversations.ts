@@ -32,6 +32,7 @@ export async function listCompanyConversations({
   companyId,
   userId,
   limit,
+  excludeType,
 }: ListCompanyConversationsInput & { authorizedActor: CompanyActor }): Promise<ListCompanyConversationsResult> {
   const normalizedCompanyId =
     normalizeRequiredText(companyId)
@@ -75,6 +76,13 @@ export async function listCompanyConversations({
               normalizedCompanyId,
           },
         },
+        ...(excludeType
+          ? {
+              type: {
+                not: excludeType,
+              },
+            }
+          : {}),
       },
       orderBy: {
         updatedAt: "desc",

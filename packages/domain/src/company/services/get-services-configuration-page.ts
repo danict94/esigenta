@@ -18,6 +18,7 @@ type CategoryRow = {
   sector_name: string | null
   services: Array<{
     id: string
+    slug: string
     name: string
     description: string | null
   }>
@@ -38,6 +39,7 @@ export type ConfigurableServiceCategory = {
   sector: { name: string } | null
   services: Array<{
     id: string
+    slug: string
     name: string
     description: string | null
   }>
@@ -87,6 +89,7 @@ export async function getCompanyServicesConfigurationPage(
           json_agg(
             jsonb_build_object(
               'id',          svc."id",
+              'slug',        svc."slug",
               'name',        svc."name",
               'description', svc."description"
             ) ORDER BY svc."name"

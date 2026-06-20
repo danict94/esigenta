@@ -29,6 +29,12 @@ export type ModerationRequestIntervention = {
   services: ModerationRequestService[]
 }
 
+export type ModerationRequestAdminActor = {
+  id: string
+  name: string | null
+  email: string
+}
+
 export type ModerationRequestDetail = {
   id: string
   requestCode: string | null
@@ -47,6 +53,12 @@ export type ModerationRequestDetail = {
   maxUnlocks: number | null
   unlockCount: number
   createdAt: Date
+  archivedAt: Date | null
+  archivedByAdminUser: ModerationRequestAdminActor | null
+  archiveReason: string | null
+  deletedAt: Date | null
+  deletedByAdminUser: ModerationRequestAdminActor | null
+  deleteReason: string | null
   intervention: ModerationRequestIntervention | null
   requiredServices: ModerationRequestService[]
 }
@@ -108,6 +120,16 @@ export async function getRequestById(
       maxUnlocks: true,
       unlockCount: true,
       createdAt: true,
+      archivedAt: true,
+      archiveReason: true,
+      archivedByAdminUser: {
+        select: { id: true, name: true, email: true },
+      },
+      deletedAt: true,
+      deleteReason: true,
+      deletedByAdminUser: {
+        select: { id: true, name: true, email: true },
+      },
       requiredServices: {
         select: {
           service: {

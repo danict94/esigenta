@@ -15,23 +15,29 @@ function getWebUrl(): string {
   )
 }
 
+/**
+ * D-014: single-token verification URL. The token alone resolves to its
+ * request via CustomerAccessToken.requestId (see verifyRequestEmailByToken),
+ * so no requestId is needed in the path. The legacy ?requestId=&token= route
+ * (/verifica-richiesta/page.tsx) stays untouched and fully functional for
+ * already-emitted links — this function only changes what NEW emails embed.
+ */
 export function buildRequestVerificationUrl({
-  requestId,
   token,
 }: {
-  requestId: string
   token: string
 }): string {
-  const url = new URL("/richiesta/verifica", getWebUrl())
-  url.searchParams.set("requestId", requestId)
-  url.searchParams.set("token", token)
-  return url.toString()
+  return new URL(
+    `/verifica-richiesta/${encodeURIComponent(token)}`,
+    getWebUrl(),
+  ).toString()
 }
 
 export function buildRequestStatusUrl({ token }: { token: string }): string {
-  const url = new URL("/richiesta/stato", getWebUrl())
-  url.searchParams.set("token", token)
-  return url.toString()
+  return new URL(
+    `/stato-richiesta/${encodeURIComponent(token)}`,
+    getWebUrl(),
+  ).toString()
 }
 
 export function buildCustomerRequestsUrl({ token }: { token: string }): string {

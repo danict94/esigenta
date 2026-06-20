@@ -1,6 +1,7 @@
-import type { TaxonomyService } from "../../shared/types"
+import type { TaxonomyService } from "../../shared/types";
 
 export const impiantiServices: TaxonomyService[] = [
+  // Idraulico
   {
     slug: "riparazione-perdite-acqua",
     name: "Riparazione perdite acqua",
@@ -21,12 +22,12 @@ export const impiantiServices: TaxonomyService[] = [
     name: "Installazione sanitari",
   },
 
-   {
+  {
     slug: "impianto-idraulico",
-    name: "impianto-idraulico",
+    name: "Impianto idraulico",
   },
 
-   // Elettricista
+  // Elettricista
 
   {
     slug: "impianto-elettrico",
@@ -83,17 +84,13 @@ export const impiantiServices: TaxonomyService[] = [
   {
     slug: "impianti-fotovoltaici",
     name: "Impianti fotovoltaici",
-    runtimePresetSlugs: [
-      "QUICK_SERVICE",
-    ],
+    runtimePresetSlugs: ["QUICK_SERVICE"],
   },
 
   {
     slug: "climatizzatori",
     name: "Climatizzatori",
-    runtimePresetSlugs: [
-      "QUICK_SERVICE",
-    ],
+    runtimePresetSlugs: ["QUICK_SERVICE"],
   },
 
   // Sicurezza elettronica
@@ -127,4 +124,4 @@ export const impiantiServices: TaxonomyService[] = [
     slug: "videoregistratori",
     name: "Videoregistratori",
   },
-]
+];

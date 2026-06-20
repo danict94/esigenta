@@ -1,6 +1,9 @@
 import type { CompanyActor } from "@esigenta/auth"
 
-import { listCompanyNotifications } from "./notifications"
+import {
+  countUnreadCompanyNotifications,
+  listCompanyNotifications,
+} from "./notifications"
 import type { CompanyNotificationListItem } from "./notifications"
 
 type PerfRecorder = (label: string, ms: number) => void
@@ -16,8 +19,14 @@ export async function getCompanyNotificationsPage(
 ): Promise<GetCompanyNotificationsPageResult> {
   const t0 = performance.now()
 
-  const notifications = await listCompanyNotifications(actor.company.id)
-  const unreadCount = notifications.filter((n) => n.readAt === null).length
+  // unreadCount comes from a real COUNT query, not a filter over the capped
+  // (take 50) list — otherwise it undercounts once a company passes 50
+  // unread notifications, and would silently disagree with the shell badge
+  // (getAreaImpresaShellCounts), which already does a real count.
+  const [notifications, unreadCount] = await Promise.all([
+    listCompanyNotifications(actor.company.id),
+    countUnreadCompanyNotifications(actor.company.id),
+  ])
 
   recordPerf?.("notifications-page", Math.round(performance.now() - t0))
 

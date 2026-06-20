@@ -1,7 +1,7 @@
 import { prisma } from "@esigenta/database"
 
 import {
-  listInterventionsForCategory,
+  listServicesForCategory,
 } from "../domain"
 
 import type { TaxonomySearchResult } from "../shared/types"
@@ -91,7 +91,6 @@ const SEARCH_LAYER_RELEVANCE = {
   categoryDiscovery: 3000,
   serviceDiscovery: 2500,
   domainDiscovery: 2000,
-  category: 1000,
 } as const
 
 const POPULAR_INTERVENTION_SLUGS = [
@@ -587,13 +586,17 @@ export async function searchTaxonomy({
     },
   })
 
+  // CATEGORY è solo un meccanismo interno di discovery (Phase 20.9G): una
+  // query che matcha una Category (es. "impresa edile") espande direttamente
+  // ai suoi Intervention come risultati INTERVENTION — non viene mai
+  // restituita/mostrata una Category come risultato cliccabile a sé.
   const categoryDiscoveryResults =
     await Promise.all(
       matchedCategories.map(
         async (category) => ({
           category,
-          interventions:
-            await listInterventionsForCategory(
+          services:
+            await listServicesForCategory(
               category.slug,
             ),
         }),
@@ -602,7 +605,7 @@ export async function searchTaxonomy({
 
   for (const {
     category,
-    interventions,
+    services,
   } of categoryDiscoveryResults) {
     const textScore = scoreSearchTexts(
       searchQuery,
@@ -619,7 +622,26 @@ export async function searchTaxonomy({
       continue
     }
 
-    for (const intervention of interventions) {
+    const interventionsById = new Map<
+      string,
+      {
+        id: string
+        slug: string
+        name: string
+        description: string | null
+      }
+    >()
+
+    for (const service of services) {
+      for (const intervention of service.interventions) {
+        interventionsById.set(
+          intervention.id,
+          intervention,
+        )
+      }
+    }
+
+    for (const intervention of interventionsById.values()) {
       addResult(resultMap, {
         id: intervention.id,
         type: "INTERVENTION",
@@ -632,18 +654,6 @@ export async function searchTaxonomy({
         ),
       })
     }
-
-    addResult(resultMap, {
-      id: category.id,
-      type: "CATEGORY",
-      slug: category.slug,
-      name: category.name,
-      description: category.description,
-      relevance: buildRelevance(
-        SEARCH_LAYER_RELEVANCE.category,
-        textScore,
-      ),
-    })
   }
 
   const matchedServices = await prisma.service.findMany({

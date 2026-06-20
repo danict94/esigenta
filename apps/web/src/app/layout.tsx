@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import localFont from "next/font/local"
 
 import "./globals.css"
-import { CookieConsent } from "../components/privacy/cookie-consent"
+import { CookieConsent } from "../site/shell/cookie-consent"
 
 const plusJakartaSans = localFont({
   src: [
@@ -25,6 +25,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: "Esigenta",
   description: "Trova professionisti verificati per i tuoi interventi.",
 }

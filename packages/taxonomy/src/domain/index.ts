@@ -1,8 +1,9 @@
 export {
-  listInterventionsForCategory,
+  listServicesForCategory,
   sortTaxonomyDiscoveryInterventions,
-} from "./list-interventions-for-category"
+} from "./list-services-for-category"
 
 export type {
   TaxonomyDiscoveryIntervention,
-} from "./list-interventions-for-category"
+  TaxonomyDiscoveryService,
+} from "./list-services-for-category"

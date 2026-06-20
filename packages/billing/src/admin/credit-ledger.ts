@@ -1,11 +1,15 @@
-import type {
-  CompanyCreditAccount,
-} from "@prisma/client"
 import {
   Prisma,
 } from "@prisma/client"
 
 import { prisma } from "@esigenta/database"
+import {
+  ensureCreditAccountRowInTransaction,
+  expireStaleLotsInTransaction,
+  deriveCreditSummaryInTransaction,
+  createCreditLotInTransaction,
+  syncCompanyCreditAccountCacheInTransaction,
+} from "../credits/lot-ledger"
 
 export type CreditLedgerResult<T> =
   | {
@@ -35,12 +39,6 @@ export type RefundCompanyCreditsForRequestUnlockData = {
 type CreditTransactionClient =
   Prisma.TransactionClient
 
-type LockedCompanyCreditAccount =
-  Pick<
-    CompanyCreditAccount,
-    "id" | "companyId" | "balance" | "expiresAt"
-  >
-
 const REFUND_VALIDITY_DAYS = 30
 
 function addDays(
@@ -66,150 +64,6 @@ async function findTransactionByIdempotencyKey(
       accountId: true,
       balanceAfter: true,
       expiresAtAfter: true,
-    },
-  })
-}
-
-async function getOrCreateCompanyCreditAccount(
-  tx: CreditTransactionClient,
-  companyId: string,
-): Promise<LockedCompanyCreditAccount> {
-  const existing =
-    await tx.companyCreditAccount.findUnique({
-      where: {
-        companyId,
-      },
-      select: {
-        id: true,
-        companyId: true,
-        balance: true,
-        expiresAt: true,
-      },
-    })
-
-  if (existing) {
-    return existing
-  }
-
-  return tx.companyCreditAccount.create({
-    data: {
-      companyId,
-      balance: 0,
-      expiresAt: null,
-    },
-    select: {
-      id: true,
-      companyId: true,
-      balance: true,
-      expiresAt: true,
-    },
-  })
-}
-
-async function lockCompanyCreditAccountForUpdate(
-  tx: CreditTransactionClient,
-  companyId: string,
-): Promise<LockedCompanyCreditAccount> {
-  await tx.$queryRaw<Array<{ id: string }>>`
-    SELECT "id"
-    FROM "CompanyCreditAccount"
-    WHERE "companyId" = ${companyId}
-    FOR UPDATE
-  `
-
-  const account =
-    await tx.companyCreditAccount.findUnique({
-      where: {
-        companyId,
-      },
-      select: {
-        id: true,
-        companyId: true,
-        balance: true,
-        expiresAt: true,
-      },
-    })
-
-  if (!account) {
-    throw new Error(
-      "Company credit account lock failed.",
-    )
-  }
-
-  return account
-}
-
-async function lockFreshCompanyCreditAccount(
-  tx: CreditTransactionClient,
-  companyId: string,
-) {
-  await getOrCreateCompanyCreditAccount(
-    tx,
-    companyId,
-  )
-
-  return lockCompanyCreditAccountForUpdate(
-    tx,
-    companyId,
-  )
-}
-
-async function ensureCreditAccountFreshInTransaction(
-  tx: CreditTransactionClient,
-  {
-    companyId,
-    now,
-  }: {
-    companyId: string
-    now: Date
-  },
-): Promise<LockedCompanyCreditAccount> {
-  const account =
-    await lockFreshCompanyCreditAccount(
-      tx,
-      companyId,
-    )
-
-  if (
-    account.expiresAt === null ||
-    account.expiresAt > now
-  ) {
-    return account
-  }
-
-  if (account.balance > 0) {
-    await tx.companyCreditTransaction.create({
-      data: {
-        companyId,
-        accountId: account.id,
-        type: "CREDIT_EXPIRATION",
-        status: "COMPLETED",
-        amount: -account.balance,
-        balanceBefore: account.balance,
-        balanceAfter: 0,
-        expiresAtBefore:
-          account.expiresAt,
-        expiresAtAfter: null,
-        idempotencyKey:
-          `credit-expiration:${companyId}:${account.expiresAt.toISOString()}`,
-        reason: "Scadenza crediti",
-      },
-    })
-  }
-
-  return tx.companyCreditAccount.update({
-    where: {
-      id: account.id,
-    },
-    data: {
-      balance: 0,
-      expiresAt: null,
-    },
-    select: {
-      id: true,
-      companyId: true,
-      balance: true,
-      expiresAt: true,
     },
   })
 }
@@ -383,49 +237,58 @@ export async function refundCompanyCreditsForRequestUnlockInTransaction(
     }
   }
 
-  const freshAccount =
-    await ensureCreditAccountFreshInTransaction(
+  const accountId =
+    await ensureCreditAccountRowInTransaction(
       tx,
-      {
-        companyId:
-          requestUnlock.companyId,
-        now,
-      },
+      requestUnlock.companyId,
     )
 
-  const balanceBefore =
-    freshAccount.balance
-  const balanceAfter =
-    balanceBefore +
-    requestUnlock.creditCost
-  const expiresAtBefore =
-    freshAccount.expiresAt
-  const refundMinimumExpiresAt =
+  await expireStaleLotsInTransaction(
+    tx,
+    requestUnlock.companyId,
+    now,
+  )
+
+  const before =
+    await deriveCreditSummaryInTransaction(
+      tx,
+      requestUnlock.companyId,
+    )
+
+  // A refund is a brand new lot with its own expiry floor (REFUND_VALIDITY_DAYS):
+  // it never resurrects or extends the lot the original debit consumed from (D-011).
+  const lotExpiresAt =
     addDays(
       now,
       REFUND_VALIDITY_DAYS,
     )
-  const expiresAtAfter =
-    expiresAtBefore &&
-    expiresAtBefore >
-      refundMinimumExpiresAt
-      ? expiresAtBefore
-      : refundMinimumExpiresAt
+
+  await createCreditLotInTransaction(
+    tx,
+    {
+      companyId: requestUnlock.companyId,
+      creditOrderId: null,
+      source: "REFUND",
+      credits: requestUnlock.creditCost,
+      expiresAt: lotExpiresAt,
+      idempotencyKey: `credit-lot:refund:${normalizedRequestUnlockId}`,
+    },
+  )
 
   const refundTransaction =
     await tx.companyCreditTransaction.create({
       data: {
         companyId:
           requestUnlock.companyId,
-        accountId: freshAccount.id,
+        accountId,
         type: "REFUND",
         status: "COMPLETED",
         amount:
           requestUnlock.creditCost,
-        balanceBefore,
-        balanceAfter,
-        expiresAtBefore,
-        expiresAtAfter,
+        balanceBefore: before.balance,
+        balanceAfter: before.balance + requestUnlock.creditCost,
+        expiresAtBefore: before.expiresAt,
+        expiresAtAfter: lotExpiresAt,
         requestId:
           requestUnlock.requestId,
         relatedTransactionId:
@@ -441,15 +304,11 @@ export async function refundCompanyCreditsForRequestUnlockInTransaction(
       },
     })
 
-  await tx.companyCreditAccount.update({
-    where: {
-      id: freshAccount.id,
-    },
-    data: {
-      balance: balanceAfter,
-      expiresAt: expiresAtAfter,
-    },
-  })
+  const after =
+    await syncCompanyCreditAccountCacheInTransaction(
+      tx,
+      requestUnlock.companyId,
+    )
 
   await tx.requestUnlock.update({
     where: {
@@ -471,8 +330,8 @@ export async function refundCompanyCreditsForRequestUnlockInTransaction(
         requestUnlock.id,
       refundTransactionId:
         refundTransaction.id,
-      balanceAfter,
-      expiresAtAfter,
+      balanceAfter: after.balance,
+      expiresAtAfter: after.expiresAt,
     },
   }
 }

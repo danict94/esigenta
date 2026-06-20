@@ -5,7 +5,7 @@ import {
   classifyAreaRequest,
   isAreaMonitoringEnabled,
   safePath,
-} from "./lib/area-monitoring"
+} from "./platform/monitoring/area-monitoring"
 
 // Paths that, when navigated to from /area-impresa/accedi, indicate
 // likely noise from the login page (prefetch or programmatic navigation).
@@ -62,30 +62,30 @@ function traceAreaImpresaRequest(request: NextRequest): string {
   const secFetchDest = headers.get("sec-fetch-dest") || "-"
   const secFetchSite = headers.get("sec-fetch-site") || "-"
 
-  console.info(
-    [
-      "[esigenta-trace]",
-      "[area-request]",
-      `traceId=${traceId}`,
-      `method=${request.method}`,
-      `path=${path}`,
-      `search=${request.nextUrl.search || "-"}`,
-      `mode=${mode}`,
-      `referer=${refererPath}`,
-      `prefetch=${isPrefetch ? "1" : "0"}`,
-      `rsc=${isRsc ? "1" : "0"}`,
-      `purpose=${purpose || "-"}`,
-      `secPurpose=${secPurpose || "-"}`,
-      `nextRouterPrefetch=${nextRouterPrefetch || "-"}`,
-      `nextUrl=${nextUrl || "-"}`,
-      `nextRouterStateTree=${nextRouterStateTree}`,
-      `secFetchMode=${secFetchMode}`,
-      `secFetchDest=${secFetchDest}`,
-      `secFetchSite=${secFetchSite}`,
-    ].join(" "),
-  )
-
   if (isAreaMonitoringEnabled()) {
+    console.info(
+      [
+        "[esigenta-trace]",
+        "[area-request]",
+        `traceId=${traceId}`,
+        `method=${request.method}`,
+        `path=${path}`,
+        `search=${request.nextUrl.search || "-"}`,
+        `mode=${mode}`,
+        `referer=${refererPath}`,
+        `prefetch=${isPrefetch ? "1" : "0"}`,
+        `rsc=${isRsc ? "1" : "0"}`,
+        `purpose=${purpose || "-"}`,
+        `secPurpose=${secPurpose || "-"}`,
+        `nextRouterPrefetch=${nextRouterPrefetch || "-"}`,
+        `nextUrl=${nextUrl || "-"}`,
+        `nextRouterStateTree=${nextRouterStateTree}`,
+        `secFetchMode=${secFetchMode}`,
+        `secFetchDest=${secFetchDest}`,
+        `secFetchSite=${secFetchSite}`,
+      ].join(" "),
+    )
+
     const requestKind = classifyAreaRequest(headers, request.method, path)
 
     areaLog("area.request.edge", {

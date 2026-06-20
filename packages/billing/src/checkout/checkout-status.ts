@@ -118,6 +118,41 @@ export async function getCheckoutSessionStatus({
   sessionId: string
   companyId: string
 }): Promise<CheckoutStatusResult> {
+  // DB-first: resolve terminal states without calling Stripe when the webhook
+  // has already fulfilled or cancelled the order. This avoids a Stripe API call
+  // on every poll after the webhook fires.
+  const dbResult = await getCreditOrderCheckoutStatus({
+    companyId,
+    checkoutSessionId: sessionId,
+    clientReferenceId: null,
+    metadata: null,
+  })
+
+  if (dbResult.ok) {
+    const { fulfilled, orderStatus, creditOrderId } = dbResult.data
+
+    if (fulfilled) {
+      return {
+        ok: true,
+        data: { status: "fulfilled", creditOrderId, orderStatus, paymentStatus: null },
+      }
+    }
+    if (orderStatus === "FAILED") {
+      return {
+        ok: true,
+        data: { status: "failed", creditOrderId, orderStatus, paymentStatus: null },
+      }
+    }
+    if (orderStatus === "CANCELLED") {
+      return {
+        ok: true,
+        data: { status: "cancelled", creditOrderId, orderStatus, paymentStatus: null },
+      }
+    }
+    // PENDING: fall through to Stripe for authoritative status
+  }
+
+  // Stripe fallback: order is PENDING or not yet linked to this session in DB
   let stripe: ReturnType<typeof getStripeServerClient>
 
   try {

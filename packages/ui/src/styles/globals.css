@@ -1,7 +1,7 @@
 ﻿:root {
   /* Physical visual values; TypeScript tokens select their semantic usage. */
   --fp-font-nav: var(--font-inter, var(--font-plus-jakarta-sans, Arial));
-  --fp-letter-spacing-canvas: -0.06em;
+  --fp-letter-spacing-canvas: -0.04em;
 
   --fp-color-neutral-white: #ffffff;
   --fp-color-neutral-black: #000000;

@@ -132,6 +132,8 @@ export async function getCompanyRequestDetailPage(
         where: {
           id: trimmedRequestId,
           status: { in: visibleRequestStatuses },
+          archivedAt: null,
+          deletedAt: null,
           latitude: { not: null },
           longitude: { not: null },
         },

@@ -1,5 +1,6 @@
 import type { CompanyActor } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
+import { getCompanyCreditSummary } from "@esigenta/billing"
 
 type PerfRecorder = (label: string, ms: number) => void
 
@@ -28,12 +29,6 @@ type ContactChangeRow = {
   current_value: string | null
   requested_value: string
   created_at: Date
-}
-
-type CreditAccountRow = {
-  id: string
-  balance: number
-  expires_at: Date | null
 }
 
 export type CompanyProfileData = {
@@ -80,59 +75,12 @@ async function getCreditSummary(
   companyId: string,
   now: Date,
 ): Promise<CompanyProfileCreditSummary> {
-  return prisma.$transaction(async (tx) => {
-    // Create account if it doesn't exist yet
-    await tx.$executeRaw`
-      INSERT INTO "CompanyCreditAccount" ("id", "companyId", "balance", "expiresAt", "createdAt", "updatedAt")
-      VALUES (gen_random_uuid()::text, ${companyId}, 0, NULL, now(), now())
-      ON CONFLICT ("companyId") DO NOTHING
-    `
-
-    const rows = await tx.$queryRaw<Array<CreditAccountRow>>`
-      SELECT "id", "balance", "expiresAt" AS expires_at
-      FROM "CompanyCreditAccount"
-      WHERE "companyId" = ${companyId}
-      FOR UPDATE
-    `
-
-    const account = rows[0]
-    if (!account) return null
-
-    // Credits expired — reset balance
-    if (account.expires_at !== null && account.expires_at <= now) {
-      if (account.balance > 0) {
-        await tx.$executeRaw`
-          INSERT INTO "CompanyCreditTransaction" (
-            "id", "companyId", "accountId", "type", "status",
-            "amount", "balanceBefore", "balanceAfter",
-            "expiresAtBefore", "expiresAtAfter",
-            "idempotencyKey", "reason",
-            "createdAt", "updatedAt"
-          ) VALUES (
-            gen_random_uuid()::text,
-            ${companyId}, ${account.id},
-            'CREDIT_EXPIRATION', 'COMPLETED',
-            ${-account.balance}, ${account.balance}, 0,
-            ${account.expires_at}, NULL,
-            ${'credit-expiration:' + companyId + ':' + account.expires_at.toISOString()},
-            'Scadenza crediti',
-            now(), now()
-          )
-          ON CONFLICT ("idempotencyKey") DO NOTHING
-        `
-      }
-
-      await tx.$executeRaw`
-        UPDATE "CompanyCreditAccount"
-        SET "balance" = 0, "expiresAt" = NULL, "updatedAt" = now()
-        WHERE "id" = ${account.id}
-      `
-
-      return { balance: 0, expiresAt: null }
-    }
-
-    return { balance: account.balance, expiresAt: account.expires_at }
-  })
+  // Always derives from CreditLot (the financial source of truth, D-011):
+  // never reads/writes CompanyCreditAccount directly. expiresAt here is the
+  // nearest active lot expiry — the date meaningful to show a company on
+  // its profile, not the cache's MAX-of-all-lots safety value.
+  const summary = await getCompanyCreditSummary(companyId, now)
+  return { balance: summary.balance, expiresAt: summary.nearestExpiresAt }
 }
 
 export async function getCompanyProfilePage(

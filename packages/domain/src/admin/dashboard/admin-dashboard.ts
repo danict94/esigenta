@@ -79,12 +79,16 @@ export async function getAdminDashboardMetrics({
     prisma.request.count({
       where: {
         status: "PENDING_REVIEW",
+        archivedAt: null,
+        deletedAt: null,
       },
     }),
     prisma.request.count(),
     prisma.request.count({
       where: {
         status: "PUBLISHED",
+        archivedAt: null,
+        deletedAt: null,
       },
     }),
     prisma.request.count({
@@ -95,6 +99,8 @@ export async function getAdminDashboardMetrics({
             "PUBLISHED",
           ],
         },
+        archivedAt: null,
+        deletedAt: null,
         OR: [
           {
             creditCost: null,

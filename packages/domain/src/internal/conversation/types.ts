@@ -172,6 +172,7 @@ export type ListCompanyConversationsInput = {
   companyId: string
   userId: string
   limit?: number
+  excludeType?: ConversationType
 }
 
 export type CompanyConversationListItem = {

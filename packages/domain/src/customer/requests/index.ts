@@ -1,9 +1,11 @@
 export {
   verifyRequestEmail,
+  verifyRequestEmailByToken,
 } from "./verify-request"
 export type {
   VerifyRequestEmailInput,
   VerifyRequestEmailResult,
+  VerifyRequestEmailByTokenInput,
 } from "./verify-request"
 
 export {

@@ -11,6 +11,7 @@ export const idraulicaDomains: TaxonomyDomain[] = [
       "cambiare-rubinetto",
       "sostituire-sanitari",
       "sostituire-tubi",
+      "rifare-impianto-idraulico",
     ],
   },
 ]

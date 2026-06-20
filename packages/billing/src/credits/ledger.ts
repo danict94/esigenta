@@ -1,5 +1,14 @@
 import { Prisma } from "@prisma/client"
 
+import {
+  ensureCreditAccountRowInTransaction,
+  expireStaleLotsInTransaction,
+  lockAndPlanFefoConsumptionInTransaction,
+  applyFefoConsumptionPlanInTransaction,
+  deriveCreditSummaryInTransaction,
+  syncCompanyCreditAccountCacheInTransaction,
+} from "./lot-ledger"
+
 type CreditTxClient = Prisma.TransactionClient
 
 export type DebitCreditsInput = {
@@ -28,24 +37,13 @@ export type DebitCreditsResult =
   | { ok: true; data: DebitCreditsData }
   | { ok: false; code: DebitCreditsErrorCode; message: string }
 
-type AccountRow = {
-  id: string
-  balance: bigint
-  expires_at: Date | null
-}
-
-type TxRow = {
-  id: string
-  account_id: string
-  balance_after: bigint
-  expires_at_after: Date | null
-}
-
 async function findIdempotentTx(
   tx: CreditTxClient,
   idempotencyKey: string,
-): Promise<TxRow | null> {
-  const rows = await tx.$queryRaw<Array<TxRow>>`
+): Promise<{ id: string; account_id: string; balance_after: number; expires_at_after: Date | null } | null> {
+  const rows = await tx.$queryRaw<
+    Array<{ id: string; account_id: string; balance_after: number; expires_at_after: Date | null }>
+  >`
     SELECT "id", "accountId" AS account_id, "balanceAfter" AS balance_after, "expiresAtAfter" AS expires_at_after
     FROM "CompanyCreditTransaction"
     WHERE "idempotencyKey" = ${idempotencyKey}
@@ -54,59 +52,12 @@ async function findIdempotentTx(
   return rows[0] ?? null
 }
 
-async function lockFreshAccount(
-  tx: CreditTxClient,
-  companyId: string,
-  now: Date,
-): Promise<AccountRow> {
-  await tx.$executeRaw`
-    INSERT INTO "CompanyCreditAccount" ("id", "companyId", "balance", "expiresAt", "createdAt", "updatedAt")
-    VALUES (gen_random_uuid()::text, ${companyId}, 0, NULL, now(), now())
-    ON CONFLICT ("companyId") DO NOTHING
-  `
-
-  const rows = await tx.$queryRaw<Array<AccountRow>>`
-    SELECT "id", "balance", "expiresAt" AS expires_at
-    FROM "CompanyCreditAccount"
-    WHERE "companyId" = ${companyId}
-    FOR UPDATE
-  `
-
-  const account = rows[0]
-  if (!account) throw new Error("Credit account lock failed after insert.")
-
-  if (account.expires_at !== null && account.expires_at <= now) {
-    const balance = Number(account.balance)
-    if (balance > 0) {
-      const expKey = `credit-expiration:${companyId}:${account.expires_at.toISOString()}`
-      await tx.$executeRaw`
-        INSERT INTO "CompanyCreditTransaction" (
-          "id", "companyId", "accountId", "type", "status",
-          "amount", "balanceBefore", "balanceAfter",
-          "expiresAtBefore", "expiresAtAfter",
-          "idempotencyKey", "reason", "createdAt"
-        ) VALUES (
-          gen_random_uuid()::text, ${companyId}, ${account.id},
-          'CREDIT_EXPIRATION', 'COMPLETED',
-          ${-balance}, ${balance}, 0,
-          ${account.expires_at}, NULL,
-          ${expKey},
-          'Scadenza crediti', now()
-        )
-        ON CONFLICT ("idempotencyKey") DO NOTHING
-      `
-    }
-    await tx.$executeRaw`
-      UPDATE "CompanyCreditAccount"
-      SET "balance" = 0, "expiresAt" = NULL, "updatedAt" = now()
-      WHERE "id" = ${account.id}
-    `
-    return { id: account.id, balance: 0n, expires_at: null }
-  }
-
-  return account
-}
-
+/**
+ * Debits credits FEFO across the company's active credit lots (D-011).
+ * Preserves the exact external contract relied on by
+ * packages/domain/src/company/requests/unlock-request.ts: same input shape,
+ * same error codes ("insufficient_credits" etc.), same success data shape.
+ */
 export async function debitCompanyCreditsInTransaction(
   tx: CreditTxClient,
   input: DebitCreditsInput,
@@ -136,15 +87,15 @@ export async function debitCompanyCreditsInTransaction(
     }
   }
 
-  const account = await lockFreshAccount(tx, companyId, now)
-  const balanceBefore = Number(account.balance)
+  const accountId = await ensureCreditAccountRowInTransaction(tx, companyId)
+  await expireStaleLotsInTransaction(tx, companyId, now)
 
-  if (balanceBefore < amount) {
+  const before = await deriveCreditSummaryInTransaction(tx, companyId)
+
+  const planResult = await lockAndPlanFefoConsumptionInTransaction(tx, companyId, amount)
+  if (!planResult.ok) {
     return { ok: false, code: "insufficient_credits", message: "Crediti insufficienti." }
   }
-
-  const balanceAfter = balanceBefore - amount
-  const expiresAtAfter = account.expires_at
 
   const txRows = await tx.$queryRaw<Array<{ id: string }>>`
     INSERT INTO "CompanyCreditTransaction" (
@@ -154,31 +105,34 @@ export async function debitCompanyCreditsInTransaction(
       "requestId", "idempotencyKey", "reason",
       "createdAt"
     ) VALUES (
-      gen_random_uuid()::text, ${companyId}, ${account.id},
+      gen_random_uuid()::text, ${companyId}, ${accountId},
       'REQUEST_UNLOCK', 'COMPLETED',
-      ${-amount}, ${balanceBefore}, ${balanceAfter},
-      ${account.expires_at}, ${expiresAtAfter},
+      ${-amount}, ${before.balance}, ${before.balance - amount},
+      ${before.expiresAt}, ${before.expiresAt},
       ${requestId}, ${idempotencyKey}, ${reason},
       now()
     )
     RETURNING "id"
   `
-
   const txId = txRows[0]!.id
 
+  await applyFefoConsumptionPlanInTransaction(tx, planResult.plan, txId)
+
+  const after = await syncCompanyCreditAccountCacheInTransaction(tx, companyId)
+
   await tx.$executeRaw`
-    UPDATE "CompanyCreditAccount"
-    SET "balance" = ${balanceAfter}, "updatedAt" = now()
-    WHERE "id" = ${account.id}
+    UPDATE "CompanyCreditTransaction"
+    SET "balanceAfter" = ${after.balance}, "expiresAtAfter" = ${after.expiresAt}
+    WHERE "id" = ${txId}
   `
 
   return {
     ok: true,
     data: {
-      accountId: account.id,
+      accountId,
       transactionId: txId,
-      balanceAfter,
-      expiresAtAfter,
+      balanceAfter: after.balance,
+      expiresAtAfter: after.expiresAt,
     },
   }
 }

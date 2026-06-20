@@ -21,8 +21,11 @@ export {
 export type { InterventionForFunnel } from "./queries"
 
 export {
-  listInterventionsForCategory,
+  listServicesForCategory,
   sortTaxonomyDiscoveryInterventions,
 } from "./domain"
 
-export type { TaxonomyDiscoveryIntervention } from "./domain"
+export type {
+  TaxonomyDiscoveryIntervention,
+  TaxonomyDiscoveryService,
+} from "./domain"

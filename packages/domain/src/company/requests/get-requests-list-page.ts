@@ -1,5 +1,7 @@
-import type {
+import {
   Prisma,
+} from "@prisma/client"
+import type {
   RequestStatus,
 } from "@prisma/client"
 
@@ -10,10 +12,6 @@ import type {
 import {
   prisma,
 } from "@esigenta/database"
-
-import {
-  getDistanceKm,
-} from "@esigenta/shared"
 
 // ─── Public types ────────────────────────────────────────────────────────────
 
@@ -112,33 +110,30 @@ export type CompanyRequestsListPageResult =
 
 // ─── Internal types ───────────────────────────────────────────────────────────
 
-type RequestRow = {
-  id: string
-  requestCode: string | null
-  status: RequestStatus
-  interventionSlug: string | null
-  city: string | null
-  address: string | null
-  postalCode: string | null
-  latitude: number | null
-  longitude: number | null
-  structuredData: Prisma.JsonValue | null
-  creditCost: number | null
-  maxUnlocks: number | null
-  unlockCount: number
-  createdAt: Date
-  savedByCompanies: Array<{ createdAt: Date }>
-  requiredServices: Array<{
-    serviceId: string
-    service: { name: string; slug: string }
-  }>
-}
-
 type CategoryServiceRow = {
   categoryId: string
   serviceId: string
   category: { id: string; name: string }
   service: { id: string; name: string; slug: string }
+}
+
+type RequestListRow = {
+  id: string
+  request_code: string | null
+  status: RequestStatus
+  intervention_slug: string | null
+  city: string | null
+  address: string | null
+  postal_code: string | null
+  latitude: number | null
+  longitude: number | null
+  structured_data: Prisma.JsonValue | null
+  credit_cost: number | null
+  max_unlocks: number | null
+  unlock_count: number
+  created_at: Date
+  is_saved: boolean
+  match_level: CompanyRequestMatchLevel
 }
 
 type PerfRecorder = (operation: string, durationMs: number) => void
@@ -230,93 +225,15 @@ function computeBoundingBox(latDeg: number, lngDeg: number, radiusKm: number) {
   }
 }
 
-// ─── Keyword search ───────────────────────────────────────────────────────────
+// ─── Keyword search escaping ───────────────────────────────────────────────────
 
-function normalizeText(v: string) {
-  return v
-    .toLocaleLowerCase("it")
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+// Escapes ILIKE special characters so a literal "%"/"_" typed by the company
+// is matched literally instead of being treated as a SQL wildcard.
+function escapeLikeTerm(term: string): string {
+  return term.replace(/[\\%_]/g, (char) => `\\${char}`)
 }
 
-function collectJsonValues(v: Prisma.JsonValue | null): string[] {
-  if (v === null) return []
-  if (typeof v === "string" || typeof v === "number" || typeof v === "boolean")
-    return [String(v)]
-  if (Array.isArray(v)) return v.flatMap(collectJsonValues)
-  if (typeof v === "object")
-    return Object.values(v).flatMap((item) =>
-      item === undefined ? [] : collectJsonValues(item),
-    )
-  return []
-}
-
-function matchesKeyword(
-  categoryNamesByServiceId: Map<string, string[]>,
-  query: string | null,
-  request: RequestRow,
-): boolean {
-  if (!query) return true
-  const norm = normalizeText(query)
-  const serviceTexts = request.requiredServices.flatMap((rs) => [
-    rs.service.name,
-    rs.service.slug,
-    ...(categoryNamesByServiceId.get(rs.serviceId) ?? []),
-  ])
-  const searchable = [
-    request.requestCode,
-    request.interventionSlug,
-    request.city,
-    request.postalCode,
-    request.address,
-    ...serviceTexts,
-    ...collectJsonValues(request.structuredData),
-  ]
-    .filter((v): v is string => typeof v === "string" && v.trim().length > 0)
-    .map(normalizeText)
-    .join(" ")
-
-  return searchable.includes(norm)
-}
-
-// ─── Mapping and sorting ──────────────────────────────────────────────────────
-
-function computeMatchLevel(
-  request: RequestRow,
-  operationalServiceIds: Set<string>,
-  selectedServiceIds: Set<string>,
-): CompanyRequestMatchLevel {
-  if (
-    selectedServiceIds.size > 0 &&
-    request.requiredServices.some((rs) => selectedServiceIds.has(rs.serviceId))
-  ) {
-    return "selected_service"
-  }
-  if (request.requiredServices.some((rs) => operationalServiceIds.has(rs.serviceId))) {
-    return "category"
-  }
-  return "explore"
-}
-
-function sortRequests(
-  left: AvailableCompanyRequest & { distanceKm: number },
-  right: AvailableCompanyRequest & { distanceKm: number },
-  sort: RequestDashboardSort,
-): number {
-  if (sort === "newest") {
-    return right.createdAt.getTime() - left.createdAt.getTime()
-  }
-  if (sort === "nearest") {
-    const d = left.distanceKm - right.distanceKm
-    if (d !== 0) return d
-  }
-  if (left.matchLevel !== right.matchLevel) {
-    return left.matchLevel === "selected_service" ? -1 : 1
-  }
-  return right.createdAt.getTime() - left.createdAt.getTime()
-}
-
-// ─── DB query builders ────────────────────────────────────────────────────────
+// ─── DB query builders (Batch 1 + Phase B — unchanged) ────────────────────────
 
 function buildCompanyQuery(companyId: string) {
   return prisma.company.findUnique({
@@ -382,48 +299,180 @@ function buildTaxonomyCategoriesQuery() {
   })
 }
 
-function buildRequestsQuery(
-  serviceIds: string[],
-  companyId: string,
-  bbox: ReturnType<typeof computeBoundingBox>,
-) {
-  return prisma.request.findMany({
-    where: {
-      status: { in: visibleRequestStatuses },
-      latitude: { gte: bbox.minLat, lte: bbox.maxLat },
-      longitude: { gte: bbox.minLng, lte: bbox.maxLng },
-      requiredServices: { some: { serviceId: { in: serviceIds } } },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 100,
-    select: {
-      id: true,
-      requestCode: true,
-      status: true,
-      interventionSlug: true,
-      city: true,
-      address: true,
-      postalCode: true,
-      latitude: true,
-      longitude: true,
-      structuredData: true,
-      creditCost: true,
-      maxUnlocks: true,
-      unlockCount: true,
-      createdAt: true,
-      savedByCompanies: {
-        where: { companyId },
-        select: { createdAt: true },
-        take: 1,
-      },
-      requiredServices: {
-        select: {
-          serviceId: true,
-          service: { select: { name: true, slug: true } },
-        },
-      },
-    },
-  })
+// ─── DB-side filtered + sorted + paginated requests query (P0) ────────────────
+//
+// Replaces the previous approach (findMany take:100, then JS-side precise
+// distance filter, keyword search, sort and slice). All of that now happens
+// in a single SQL statement:
+// - status + bounding box filter, EXISTS service visibility filter (DB, uses
+//   existing indexes on status/createdAt and [latitude, longitude])
+// - precise haversine distance (computed in SQL, same formula as
+//   @esigenta/shared getDistanceKm, filtered in the outer WHERE)
+// - keyword search across request fields, structuredData (as text), service
+//   name/slug and category name (DB, ILIKE with escaped wildcards)
+// - match level (selected_service / category / explore) computed once as a
+//   numeric rank, reused for both sorting and the returned label
+// - sort (recommended / newest / nearest) and pagination (LIMIT pageSize+1 /
+//   OFFSET) fully in SQL — no fixed upstream cap, no JS slice.
+
+function buildOrderByClause(sort: RequestDashboardSort) {
+  if (sort === "newest") {
+    return Prisma.sql`ORDER BY created_at DESC`
+  }
+  if (sort === "nearest") {
+    return Prisma.sql`ORDER BY distance_km ASC, match_rank ASC, created_at DESC`
+  }
+  return Prisma.sql`ORDER BY match_rank ASC, created_at DESC`
+}
+
+async function queryPaginatedRequests({
+  companyId,
+  visibilityServiceIds,
+  selectedServiceIds,
+  operationalServiceIds,
+  companyLat,
+  companyLng,
+  effectiveRadiusKm,
+  bbox,
+  q,
+  sort,
+  page,
+}: {
+  companyId: string
+  visibilityServiceIds: string[]
+  selectedServiceIds: string[]
+  operationalServiceIds: string[]
+  companyLat: number
+  companyLng: number
+  effectiveRadiusKm: number
+  bbox: ReturnType<typeof computeBoundingBox>
+  q: string | null
+  sort: RequestDashboardSort
+  page: number
+}): Promise<{ rows: RequestListRow[]; hasNextPage: boolean }> {
+  const offset = (page - 1) * PAGE_SIZE
+  const likeTerm = q ? `%${escapeLikeTerm(q)}%` : null
+  const orderByClause = buildOrderByClause(sort)
+
+  const rows = await prisma.$queryRaw<RequestListRow[]>`
+    WITH scoped AS (
+      SELECT
+        r."id"               AS id,
+        r."requestCode"      AS request_code,
+        r."status"           AS status,
+        r."interventionSlug" AS intervention_slug,
+        r."city"             AS city,
+        r."address"          AS address,
+        r."postalCode"       AS postal_code,
+        r."latitude"         AS latitude,
+        r."longitude"        AS longitude,
+        r."structuredData"   AS structured_data,
+        r."creditCost"       AS credit_cost,
+        r."maxUnlocks"       AS max_unlocks,
+        r."unlockCount"      AS unlock_count,
+        r."createdAt"        AS created_at,
+        (csr."companyId" IS NOT NULL) AS is_saved,
+        CASE
+          WHEN EXISTS (
+            SELECT 1 FROM "RequestRequiredService" mrs
+            WHERE mrs."requestId" = r."id"
+              AND mrs."serviceId" = ANY(${selectedServiceIds}::text[])
+          ) THEN 0
+          WHEN EXISTS (
+            SELECT 1 FROM "RequestRequiredService" mrs
+            WHERE mrs."requestId" = r."id"
+              AND mrs."serviceId" = ANY(${operationalServiceIds}::text[])
+          ) THEN 1
+          ELSE 2
+        END AS match_rank,
+        (
+          2 * 6371 * asin(sqrt(
+            power(sin(radians(r."latitude" - ${companyLat}) / 2), 2) +
+            cos(radians(${companyLat})) * cos(radians(r."latitude")) *
+            power(sin(radians(r."longitude" - ${companyLng}) / 2), 2)
+          ))
+        ) AS distance_km
+      FROM "Request" r
+      LEFT JOIN "CompanySavedRequest" csr
+        ON csr."requestId" = r."id" AND csr."companyId" = ${companyId}
+      WHERE r."status" IN ('APPROVED', 'PUBLISHED')
+        AND r."archivedAt" IS NULL
+        AND r."deletedAt" IS NULL
+        AND r."latitude" IS NOT NULL
+        AND r."longitude" IS NOT NULL
+        AND r."latitude" BETWEEN ${bbox.minLat} AND ${bbox.maxLat}
+        AND r."longitude" BETWEEN ${bbox.minLng} AND ${bbox.maxLng}
+        AND EXISTS (
+          SELECT 1 FROM "RequestRequiredService" vrs
+          WHERE vrs."requestId" = r."id"
+            AND vrs."serviceId" = ANY(${visibilityServiceIds}::text[])
+        )
+        AND (
+          ${likeTerm}::text IS NULL
+          OR r."requestCode" ILIKE ${likeTerm}
+          OR r."interventionSlug" ILIKE ${likeTerm}
+          OR r."city" ILIKE ${likeTerm}
+          OR r."postalCode" ILIKE ${likeTerm}
+          OR r."address" ILIKE ${likeTerm}
+          OR r."structuredData"::text ILIKE ${likeTerm}
+          OR EXISTS (
+            SELECT 1 FROM "RequestRequiredService" srs
+            JOIN "Service" sv ON sv."id" = srs."serviceId"
+            WHERE srs."requestId" = r."id"
+              AND (sv."name" ILIKE ${likeTerm} OR sv."slug" ILIKE ${likeTerm})
+          )
+          OR EXISTS (
+            SELECT 1 FROM "RequestRequiredService" crs
+            JOIN "CategoryService" cs ON cs."serviceId" = crs."serviceId"
+            JOIN "Category" c ON c."id" = cs."categoryId"
+            WHERE crs."requestId" = r."id"
+              AND c."name" ILIKE ${likeTerm}
+          )
+        )
+    )
+    SELECT
+      id, request_code, status, intervention_slug, city, address, postal_code,
+      latitude, longitude, structured_data, credit_cost, max_unlocks,
+      unlock_count, created_at, is_saved,
+      CASE match_rank
+        WHEN 0 THEN 'selected_service'
+        WHEN 1 THEN 'category'
+        ELSE 'explore'
+      END AS match_level
+    FROM scoped
+    WHERE distance_km <= ${effectiveRadiusKm}
+    ${orderByClause}
+    LIMIT ${PAGE_SIZE + 1}
+    OFFSET ${offset}
+  `
+
+  const hasNextPage = rows.length > PAGE_SIZE
+
+  return {
+    rows: hasNextPage ? rows.slice(0, PAGE_SIZE) : rows,
+    hasNextPage,
+  }
+}
+
+function mapRowToAvailableRequest(row: RequestListRow): AvailableCompanyRequest {
+  return {
+    id: row.id,
+    requestCode: row.request_code,
+    status: row.status,
+    interventionSlug: row.intervention_slug,
+    city: row.city,
+    address: row.address,
+    postalCode: row.postal_code,
+    latitude: row.latitude,
+    longitude: row.longitude,
+    structuredData: row.structured_data,
+    creditCost: row.credit_cost !== null ? Number(row.credit_cost) : null,
+    maxUnlocks: row.max_unlocks !== null ? Number(row.max_unlocks) : null,
+    unlockCount: Number(row.unlock_count),
+    isSaved: row.is_saved,
+    createdAt: row.created_at,
+    matchLevel: row.match_level,
+  }
 }
 
 // ─── Orchestrator ─────────────────────────────────────────────────────────────
@@ -641,15 +690,6 @@ export async function getCompanyRequestsListPage(
 
   const bbox = computeBoundingBox(companyLat, companyLng, effectiveRadiusKm)
 
-  // ── Phase C: geo-filtered requests ────────────────────────────────────────
-  //
-  // Uses a warm connection from the Batch 1 pool — no cold-start overhead.
-  // Service IDs come from Batch 1 data (no dependency chain).
-
-  const requests = await measureAsync("phase-c-requests-findmany", recordPerf, () =>
-    buildRequestsQuery(visibilityServiceIds, companyId, bbox),
-  )
-
   // ── Build filter options ──────────────────────────────────────────────────
   //
   // filterCategories: ALL taxonomy categories (from Batch 1), marked isConfigured
@@ -659,25 +699,6 @@ export async function getCompanyRequestsListPage(
   // filterServices: only services for the SELECTED category (from Batch 1 taxonomy fetch).
   //   Empty when no category is selected — services dropdown is disabled in that state.
   //   Sending all services upfront is wasteful; this sends exactly what the UI needs.
-
-  const categoryNamesByServiceId = resolvedCategoryServices.reduce(
-    (map, cs) => {
-      const current = map.get(cs.serviceId) ?? []
-      current.push(cs.category.name)
-      map.set(cs.serviceId, current)
-      return map
-    },
-    new Map<string, string[]>(),
-  )
-  // Extend map with selected category's services so keyword search works
-  // even when the company filters by a category not yet in their profile.
-  if (categoryServicesForFilter) {
-    for (const cs of categoryServicesForFilter) {
-      if (!categoryNamesByServiceId.has(cs.serviceId)) {
-        categoryNamesByServiceId.set(cs.serviceId, [cs.category.name])
-      }
-    }
-  }
 
   const filterCategories = allTaxonomyCategories.map((c) => ({
     id: c.id,
@@ -706,69 +727,30 @@ export async function getCompanyRequestsListPage(
     active: activeFilters,
   }
 
-  // ── Mapping, geo-filter, keyword search, sort, paginate ───────────────────
+  // ── Phase C: DB-side filtered, sorted, paginated requests (P0) ─────────────
 
-  const dbFetchedCount = requests.length
-
-  const allVisible = measureSync("mapping-js", recordPerf, () =>
-    requests
-      .flatMap((request) => {
-        if (
-          !hasFiniteNumber(request.latitude) ||
-          !hasFiniteNumber(request.longitude)
-        ) {
-          return []
-        }
-        const distanceKm = getDistanceKm({
-          fromLatitude: companyLat,
-          fromLongitude: companyLng,
-          toLatitude: request.latitude,
-          toLongitude: request.longitude,
-        })
-        if (distanceKm > effectiveRadiusKm) return []
-
-        if (
-          !matchesKeyword(categoryNamesByServiceId, activeFilters.q, request)
-        ) {
-          return []
-        }
-
-        if (
-          activeServiceId &&
-          !request.requiredServices.some(
-            (rs) => rs.serviceId === activeServiceId,
-          )
-        ) {
-          return []
-        }
-
-        const matchLevel = computeMatchLevel(
-          request,
-          operationalServiceIds,
-          selectedServiceIds,
-        )
-
-        const { savedByCompanies, requiredServices: _, ...fields } = request
-        void _
-
-        return [
-          {
-            ...fields,
-            isSaved: savedByCompanies.length > 0,
-            matchLevel,
-            distanceKm,
-          },
-        ]
-      })
-      .sort((l, r) => sortRequests(l, r, activeFilters.sort))
-      .map(({ distanceKm, ...req }) => {
-        void distanceKm
-        return req
+  const { rows, hasNextPage } = await measureAsync(
+    "phase-c-requests-query",
+    recordPerf,
+    () =>
+      queryPaginatedRequests({
+        companyId,
+        visibilityServiceIds,
+        selectedServiceIds: Array.from(selectedServiceIds),
+        operationalServiceIds: Array.from(operationalServiceIds),
+        companyLat,
+        companyLng,
+        effectiveRadiusKm,
+        bbox,
+        q: activeFilters.q,
+        sort: activeFilters.sort,
+        page: normalizedPage,
       }),
   )
 
-  const pageStart = (normalizedPage - 1) * PAGE_SIZE
-  const paginatedRequests = allVisible.slice(pageStart, pageStart + PAGE_SIZE)
+  const paginatedRequests = measureSync("mapping-rows", recordPerf, () =>
+    rows.map(mapRowToAvailableRequest),
+  )
 
   return {
     ok: true,
@@ -778,8 +760,8 @@ export async function getCompanyRequestsListPage(
     requests: paginatedRequests,
     page: normalizedPage,
     pageSize: PAGE_SIZE,
-    hasNextPage: allVisible.length > pageStart + PAGE_SIZE,
-    dbFetchedCount,
+    hasNextPage,
+    dbFetchedCount: paginatedRequests.length,
     returnedCount: paginatedRequests.length,
     boundingBoxApplied: true,
   }

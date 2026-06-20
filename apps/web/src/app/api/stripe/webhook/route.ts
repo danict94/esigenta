@@ -5,7 +5,7 @@ import { handleStripeWebhook } from "@esigenta/billing"
 import {
   areaLog,
   isAreaMonitoringEnabled,
-} from "../../../../lib/area-monitoring"
+} from "../../../../platform/monitoring/area-monitoring"
 
 export async function POST(request: Request) {
   const monitored = isAreaMonitoringEnabled()

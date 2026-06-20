@@ -25,17 +25,10 @@ export type CurrentAuthUser =
 export async function getCurrentUserFromHeaders(
   headers: Headers,
 ): Promise<CurrentAuthUser | null> {
-  const start = performance.now()
-
   const session =
     await auth.api.getSession({
       headers,
     })
-
-  console.info(
-    "[esigenta-perf] [auth]",
-    `getSession ${(performance.now() - start).toFixed(1)}ms`,
-  )
 
   return session?.user ?? null
 }

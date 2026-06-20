@@ -1,13 +1,9 @@
 import type { CompanyActor } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
 
-type PerfRecorder = (label: string, ms: number) => void
+import { getActiveCreditLotsReadModel, type CreditLotListItem } from "./lot-ledger"
 
-type CreditAccountRow = {
-  id: string
-  balance: number
-  expires_at: Date | null
-}
+type PerfRecorder = (label: string, ms: number) => void
 
 type CreditPackageRow = {
   id: string
@@ -25,6 +21,8 @@ export type CompanyCreditAccountSummary = {
   expiresAt: Date | null
 }
 
+export type CreditLotSummary = CreditLotListItem
+
 export type PurchasableCreditPackage = {
   id: string
   name: string
@@ -38,59 +36,14 @@ export type PurchasableCreditPackage = {
 
 export type GetCompanyCreditsPageResult = {
   account: CompanyCreditAccountSummary
+  /**
+   * Per-lot breakdown (FEFO, D-011): each purchase/refund is its own lot
+   * with its own expiry. account.balance is the sum of these lots'
+   * remaining credits.
+   */
+  lots: CreditLotSummary[]
+  nearestLotExpiresAt: Date | null
   packages: PurchasableCreditPackage[]
-}
-
-async function ensureFreshCreditAccount(
-  companyId: string,
-  now: Date,
-): Promise<CompanyCreditAccountSummary> {
-  return prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`
-      INSERT INTO "CompanyCreditAccount" ("id", "companyId", "balance", "expiresAt", "createdAt", "updatedAt")
-      VALUES (gen_random_uuid()::text, ${companyId}, 0, NULL, now(), now())
-      ON CONFLICT ("companyId") DO NOTHING
-    `
-
-    const rows = await tx.$queryRaw<Array<CreditAccountRow>>`
-      SELECT "id", "balance", "expiresAt" AS expires_at
-      FROM "CompanyCreditAccount"
-      WHERE "companyId" = ${companyId}
-      FOR UPDATE
-    `
-
-    const account = rows[0]
-    if (!account) throw new Error("Credit account lock failed after insert.")
-
-    if (account.expires_at !== null && account.expires_at <= now) {
-      if (account.balance > 0) {
-        await tx.$executeRaw`
-          INSERT INTO "CompanyCreditTransaction" (
-            "id", "companyId", "accountId", "type", "status",
-            "amount", "balanceBefore", "balanceAfter",
-            "expiresAtBefore", "expiresAtAfter",
-            "idempotencyKey", "reason", "createdAt"
-          ) VALUES (
-            gen_random_uuid()::text, ${companyId}, ${account.id},
-            'CREDIT_EXPIRATION', 'COMPLETED',
-            ${-account.balance}, ${account.balance}, 0,
-            ${account.expires_at}, NULL,
-            ${'credit-expiration:' + companyId + ':' + account.expires_at.toISOString()},
-            'Scadenza crediti', now()
-          )
-          ON CONFLICT ("idempotencyKey") DO NOTHING
-        `
-      }
-      await tx.$executeRaw`
-        UPDATE "CompanyCreditAccount"
-        SET "balance" = 0, "expiresAt" = NULL, "updatedAt" = now()
-        WHERE "id" = ${account.id}
-      `
-      return { balance: 0, expiresAt: null }
-    }
-
-    return { balance: account.balance, expiresAt: account.expires_at }
-  })
 }
 
 export async function getCompanyCreditsPage(
@@ -100,8 +53,8 @@ export async function getCompanyCreditsPage(
   const t0 = performance.now()
   const now = new Date()
 
-  const [account, packageRows] = await Promise.all([
-    ensureFreshCreditAccount(actor.company.id, now),
+  const [creditState, packageRows] = await Promise.all([
+    getActiveCreditLotsReadModel(actor.company.id, now),
 
     prisma.$queryRaw<Array<CreditPackageRow>>`
       SELECT
@@ -132,5 +85,10 @@ export async function getCompanyCreditsPage(
     sortOrder: Number(row.sort_order),
   }))
 
-  return { account, packages }
+  return {
+    account: { balance: creditState.balance, expiresAt: creditState.nearestExpiresAt },
+    lots: creditState.lots,
+    nearestLotExpiresAt: creditState.nearestExpiresAt,
+    packages,
+  }
 }

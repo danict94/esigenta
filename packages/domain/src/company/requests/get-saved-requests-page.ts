@@ -7,6 +7,8 @@ import type { CompanySavedRequestListItem } from "./saved-requests"
 
 type PerfRecorder = (label: string, ms: number) => void
 
+const PAGE_SIZE = 50
+
 type SavedRequestRow = {
   saved_at: Date
   id: string
@@ -27,13 +29,24 @@ type SavedRequestRow = {
 
 export type GetCompanySavedRequestsPageResult = {
   requests: CompanySavedRequestListItem[]
+  page: number
+  pageSize: number
+  hasNextPage: boolean
 }
 
 export async function getCompanySavedRequestsPage(
   actor: CompanyActor,
+  page?: number,
   recordPerf?: PerfRecorder,
 ): Promise<GetCompanySavedRequestsPageResult> {
-  // Single SQL JOIN — replaces 2 ORM queries (findMany + IN for unlocks)
+  const normalizedPage = Math.max(
+    1,
+    Number.isFinite(page) ? Math.floor(page ?? 1) : 1,
+  )
+  const offset = (normalizedPage - 1) * PAGE_SIZE
+
+  // Single SQL JOIN — replaces 2 ORM queries (findMany + IN for unlocks).
+  // LIMIT pageSize+1 / OFFSET: DB-side pagination, no unbounded fetch.
   const t0 = performance.now()
   const rows = await prisma.$queryRaw<Array<SavedRequestRow>>`
     SELECT
@@ -63,10 +76,15 @@ export async function getCompanySavedRequestsPage(
     ) ru ON true
     WHERE csr."companyId" = ${actor.company.id}
     ORDER BY csr."createdAt" DESC
+    LIMIT ${PAGE_SIZE + 1}
+    OFFSET ${offset}
   `
   recordPerf?.("saved-requests-query", Math.round(performance.now() - t0))
 
-  const requests: CompanySavedRequestListItem[] = rows.map((row) => ({
+  const hasNextPage = rows.length > PAGE_SIZE
+  const pageRows = hasNextPage ? rows.slice(0, PAGE_SIZE) : rows
+
+  const requests: CompanySavedRequestListItem[] = pageRows.map((row) => ({
     id: row.id,
     requestCode: row.request_code,
     status: row.status,
@@ -86,5 +104,10 @@ export async function getCompanySavedRequestsPage(
     isSaved: true,
   }))
 
-  return { requests }
+  return {
+    requests,
+    page: normalizedPage,
+    pageSize: PAGE_SIZE,
+    hasNextPage,
+  }
 }

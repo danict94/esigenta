@@ -5,10 +5,14 @@ import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 
 import {
+  archiveRequest,
   getRequestById,
   listAttachedRequestPhotos,
+  restoreRequest,
   RequestPublishingRequirementsError,
   reviewRequest,
+  softDeleteRequest,
+  unarchiveRequest,
   updateRequestCommercialSettings,
 } from "@esigenta/domain";
 import {
@@ -392,6 +396,80 @@ async function updateCommercialSettingsAction(formData: FormData) {
     creditCost: parseOptionalInteger(formData.get("creditCost")),
     maxUnlocks: parseOptionalInteger(formData.get("maxUnlocks")),
   });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+}
+
+async function archiveRequestAction(formData: FormData) {
+  "use server";
+
+  const admin = await requireAdmin();
+  const requestId = String(formData.get("requestId") ?? "");
+  const reason = String(formData.get("reason") ?? "").trim();
+
+  const result = await archiveRequest({
+    requestId,
+    adminUserId: admin.userId,
+    reason: reason || null,
+  });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+}
+
+async function unarchiveRequestAction(formData: FormData) {
+  "use server";
+
+  await requireAdmin();
+  const requestId = String(formData.get("requestId") ?? "");
+
+  const result = await unarchiveRequest({ requestId });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+}
+
+async function softDeleteRequestAction(formData: FormData) {
+  "use server";
+
+  const admin = await requireAdmin();
+  const requestId = String(formData.get("requestId") ?? "");
+  const reason = String(formData.get("reason") ?? "").trim();
+
+  const result = await softDeleteRequest({
+    requestId,
+    adminUserId: admin.userId,
+    reason: reason || null,
+  });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+}
+
+async function restoreRequestAction(formData: FormData) {
+  "use server";
+
+  await requireAdmin();
+  const requestId = String(formData.get("requestId") ?? "");
+
+  const result = await restoreRequest({ requestId });
 
   if (!result.ok) {
     throw new Error(result.message);
@@ -918,6 +996,122 @@ export default async function RequestDetailPage({
                 <li>• Nessun contenuto spam</li>
               </ul>
             </div>
+          </Card>
+
+          <Card className="p-5">
+            <div>
+              <p className="text-sm font-medium text-text-muted">
+                Gestione richiesta
+              </p>
+
+              <h2 className="mt-1 text-xl font-semibold text-text-primary">
+                Archiviazione e rimozione
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-text-secondary">
+                Non eliminano mai dati o storico: nascondono solo la
+                richiesta dalle liste operative e dal marketplace.
+              </p>
+            </div>
+
+            {request.deletedAt ? (
+              <div className="mt-5 space-y-4">
+                <div className="border border-border-primary bg-surface-secondary p-4">
+                  <p className="text-sm font-medium text-text-primary">
+                    Richiesta eliminata (soft-delete)
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-text-muted">
+                    {formatDate(request.deletedAt)}
+                    {request.deletedByAdminUser
+                      ? ` · ${request.deletedByAdminUser.name ?? request.deletedByAdminUser.email}`
+                      : null}
+                  </p>
+                  {request.deleteReason ? (
+                    <p className="mt-3 text-sm leading-6 text-text-secondary">
+                      {request.deleteReason}
+                    </p>
+                  ) : null}
+                </div>
+
+                <form action={restoreRequestAction}>
+                  <input type="hidden" name="requestId" value={request.id} />
+                  <Button type="submit" variant="secondary">
+                    Ripristina richiesta
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <div className="mt-5 space-y-5">
+                {request.archivedAt ? (
+                  <div className="space-y-3">
+                    <div className="border border-border-primary bg-surface-secondary p-4">
+                      <p className="text-sm font-medium text-text-primary">
+                        Richiesta archiviata
+                      </p>
+                      <p className="mt-2 text-xs leading-5 text-text-muted">
+                        {formatDate(request.archivedAt)}
+                        {request.archivedByAdminUser
+                          ? ` · ${request.archivedByAdminUser.name ?? request.archivedByAdminUser.email}`
+                          : null}
+                      </p>
+                      {request.archiveReason ? (
+                        <p className="mt-3 text-sm leading-6 text-text-secondary">
+                          {request.archiveReason}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <form action={unarchiveRequestAction}>
+                      <input type="hidden" name="requestId" value={request.id} />
+                      <Button type="submit" variant="secondary">
+                        Ripristina da archivio
+                      </Button>
+                    </form>
+                  </div>
+                ) : (
+                  <form action={archiveRequestAction} className="space-y-3">
+                    <input type="hidden" name="requestId" value={request.id} />
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-text-primary">
+                        Motivo archiviazione (opzionale)
+                      </span>
+                      <Textarea
+                        name="reason"
+                        rows={2}
+                        placeholder="Nota interna opzionale."
+                      />
+                    </label>
+
+                    <Button type="submit" variant="secondary">
+                      Archivia richiesta
+                    </Button>
+                  </form>
+                )}
+
+                <form
+                  action={softDeleteRequestAction}
+                  className="space-y-3 border-t border-border-primary pt-5"
+                >
+                  <input type="hidden" name="requestId" value={request.id} />
+
+                  <label className="grid gap-2">
+                    <span className="text-sm font-medium text-text-primary">
+                      Motivo eliminazione (opzionale)
+                    </span>
+                    <Textarea
+                      name="reason"
+                      rows={2}
+                      placeholder="Nota interna opzionale."
+                    />
+                  </label>
+
+                  <Button type="submit" variant="secondary">
+                    Elimina richiesta (soft-delete)
+                  </Button>
+                </form>
+              </div>
+            )}
           </Card>
         </aside>
       </div>
