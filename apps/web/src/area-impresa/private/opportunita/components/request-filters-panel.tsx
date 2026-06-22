@@ -34,7 +34,7 @@ export type RequestFiltersState = {
   q: string | null
   radiusKm: number | null
   categoryId: string | null
-  serviceId: string | null
+  interventionId: string | null
   sort: RequestDashboardSort
 }
 
@@ -44,17 +44,16 @@ export type RequestFilterOption = {
   isConfigured: boolean
 }
 
-export type RequestServiceFilterOption = {
+export type RequestInterventionFilterOption = {
   id: string
   name: string
-  categoryId: string
   isConfigured: boolean
 }
 
 type RequestFiltersPanelProps = {
   active: RequestFiltersState
   categories: RequestFilterOption[]
-  services: RequestServiceFilterOption[]
+  interventions: RequestInterventionFilterOption[]
   activeCategoryIsConfigured: boolean | null
   activeFilterCount: boolean
 }
@@ -114,10 +113,10 @@ function buildFilterHref(
     )
   }
 
-  if (next.serviceId) {
+  if (next.interventionId) {
     params.set(
-      "serviceId",
-      next.serviceId,
+      "interventionId",
+      next.interventionId,
     )
   }
 
@@ -160,12 +159,12 @@ function PreservedFilterInputs({
         />
       ) : null}
 
-      {active.serviceId &&
-      !except.includes("serviceId") ? (
+      {active.interventionId &&
+      !except.includes("interventionId") ? (
         <Input
           type="hidden"
-          name="serviceId"
-          defaultValue={active.serviceId}
+          name="interventionId"
+          defaultValue={active.interventionId}
         />
       ) : null}
 
@@ -184,11 +183,11 @@ function PreservedFilterInputs({
 function getActiveFilterLabels({
   active,
   categories,
-  services,
+  interventions,
 }: {
   active: RequestFiltersState
   categories: RequestFilterOption[]
-  services: RequestServiceFilterOption[]
+  interventions: RequestInterventionFilterOption[]
 }) {
   const labels: string[] = []
 
@@ -209,13 +208,13 @@ function getActiveFilterLabels({
     labels.push(`Categoria: ${category.name}`)
   }
 
-  const service =
-    services.find(
-      (item) => item.id === active.serviceId,
+  const intervention =
+    interventions.find(
+      (item) => item.id === active.interventionId,
     )
 
-  if (service) {
-    labels.push(`Servizio: ${service.name}`)
+  if (intervention) {
+    labels.push(`Intervento: ${intervention.name}`)
   }
 
   const sort =
@@ -233,7 +232,7 @@ function getActiveFilterLabels({
 export function RequestFiltersPanel({
   active,
   categories,
-  services,
+  interventions,
   activeCategoryIsConfigured,
   activeFilterCount,
 }: RequestFiltersPanelProps) {
@@ -246,24 +245,21 @@ export function RequestFiltersPanel({
     Boolean(
       active.radiusKm ||
         active.categoryId ||
-        active.serviceId ||
+        active.interventionId ||
         active.sort !== "recommended",
     )
   const [filtersOpen, setFiltersOpen] =
     useState(hasAdvancedFilters)
-  const visibleServices =
-    active.categoryId
-      ? services.filter(
-          (service) =>
-            service.categoryId ===
-            active.categoryId,
-        )
-      : []
+  // Already scoped server-side to the active category — no client-side
+  // filter needed (interventions has no single categoryId to filter by
+  // anymore: a ProjectGroup, and therefore its interventions, can be
+  // referenced by more than one Category).
+  const visibleInterventions = active.categoryId ? interventions : []
   const activeLabels =
     getActiveFilterLabels({
       active,
       categories,
-      services,
+      interventions,
     })
   const selectedCategory =
     categories.find(
@@ -399,7 +395,7 @@ export function RequestFiltersPanel({
                   buildFilterHref(active, {
                     categoryId:
                       event.target.value || null,
-                    serviceId: null,
+                    interventionId: null,
                   }),
                 )
               }}
@@ -422,18 +418,18 @@ export function RequestFiltersPanel({
 
           <label className="grid gap-2">
             <span className="text-sm font-medium text-text-primary">
-              Servizio
+              Intervento
             </span>
 
             <Select
-              value={active.serviceId ?? ""}
+              value={active.interventionId ?? ""}
               disabled={
                 isPending || !active.categoryId
               }
               onChange={(event) => {
                 navigateTo(
                   buildFilterHref(active, {
-                    serviceId:
+                    interventionId:
                       event.target.value || null,
                   }),
                 )
@@ -441,17 +437,17 @@ export function RequestFiltersPanel({
             >
               <option value="">
                 {active.categoryId
-                  ? "Tutti i servizi"
+                  ? "Tutti gli interventi"
                   : "Scegli prima categoria"}
               </option>
-              {visibleServices.map((service) => (
+              {visibleInterventions.map((intervention) => (
                 <option
-                  key={`${service.categoryId}-${service.id}`}
-                  value={service.id}
+                  key={intervention.id}
+                  value={intervention.id}
                 >
-                  {service.isConfigured
-                    ? service.name
-                    : `${service.name} (non configurato)`}
+                  {intervention.isConfigured
+                    ? intervention.name
+                    : `${intervention.name} (non configurato)`}
                 </option>
               ))}
             </Select>
@@ -526,16 +522,16 @@ export function RequestFiltersPanel({
       {filtersOpen ? (
         !active.categoryId ? (
           <p className="text-sm leading-6 text-text-secondary">
-            Seleziona una categoria per filtrare i servizi collegati.
+            Seleziona una categoria per filtrare gli interventi collegati.
           </p>
         ) : activeCategoryIsConfigured === false ? (
           <p className="max-w-3xl text-sm leading-6 text-text-secondary">
             Questa categoria non è ancora nel tuo profilo. Puoi configurarla
             per ricevere richieste più pertinenti.
           </p>
-        ) : visibleServices.length === 0 ? (
+        ) : visibleInterventions.length === 0 ? (
           <p className="text-sm leading-6 text-text-secondary">
-            Nessun servizio collegato a {selectedCategory?.name ?? "questa categoria"}.
+            Nessun intervento collegato a {selectedCategory?.name ?? "questa categoria"}.
           </p>
         ) : null
       ) : null}

@@ -14,6 +14,7 @@
     "@better-auth/prisma-adapter": "^1.6.11",
     "@esigenta/database": "workspace:*",
     "@esigenta/notifications": "workspace:*",
+    "@esigenta/shared": "workspace:*",
     "@prisma/client": "^7.8.0",
     "better-auth": "^1.6.11"
   },

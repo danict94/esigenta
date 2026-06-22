@@ -20,8 +20,12 @@ import {
 } from "@esigenta/ui"
 
 import {
+  isGeoPlace,
+  type GeoPlace,
+} from "@esigenta/shared"
+
+import {
   CityAutocomplete,
-  type NormalizedLocation,
 } from "../../../ui/location/city-autocomplete"
 
 export type CompanyLeadCategoryOption = {
@@ -31,21 +35,6 @@ export type CompanyLeadCategoryOption = {
 
 type CompanyLeadFormProps = {
   categories: CompanyLeadCategoryOption[]
-}
-
-function appendParam(
-  params: URLSearchParams,
-  key: string,
-  value: string | number | undefined,
-) {
-  if (
-    value === undefined ||
-    value === ""
-  ) {
-    return
-  }
-
-  params.set(key, String(value))
 }
 
 export function CompanyLeadForm({
@@ -58,7 +47,7 @@ export function CompanyLeadForm({
     useState("")
 
   const [location, setLocation] =
-    useState<NormalizedLocation>({})
+    useState<GeoPlace | null>(null)
 
   const [error, setError] =
     useState<string | null>(null)
@@ -78,14 +67,9 @@ export function CompanyLeadForm({
   ) {
     event.preventDefault()
 
-    const normalizedCity =
-      location.city?.trim()
-
     if (
       !selectedCategory ||
-      !normalizedCity ||
-      location.latitude === undefined ||
-      location.longitude === undefined
+      !isGeoPlace(location)
     ) {
       setError(
         "Seleziona la tua attività e scegli la città dai suggerimenti.",
@@ -96,40 +80,17 @@ export function CompanyLeadForm({
     const params =
       new URLSearchParams()
 
-    appendParam(
-      params,
+    params.set(
       "categorySlug",
       selectedCategory.slug,
     )
-    appendParam(
-      params,
+    params.set(
       "activity",
       selectedCategory.name,
     )
-    appendParam(
-      params,
-      "city",
-      normalizedCity,
-    )
-    appendParam(
-      params,
-      "postalCode",
-      location.postalCode?.trim(),
-    )
-    appendParam(
-      params,
-      "address",
-      location.address?.trim(),
-    )
-    appendParam(
-      params,
-      "latitude",
-      location.latitude,
-    )
-    appendParam(
-      params,
-      "longitude",
-      location.longitude,
+    params.set(
+      "geoPlace",
+      JSON.stringify(location),
     )
 
     router.push(

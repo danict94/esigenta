@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-import { Badge, PageShell, cn, tokens } from "@esigenta/ui";
+import { PageShell, cn, tokens } from "@esigenta/ui";
 
 import {
   listSeoInterventionLandings,
@@ -40,10 +40,6 @@ export function InterventionLandingPage({
                 { label: landing.title },
               ]}
             />
-
-            <Badge variant="success" className="w-fit">
-              {formatSlugLabel(landing.domainSlug)}
-            </Badge>
 
             <div className="space-y-5">
               <h1 className="text-4xl font-semibold leading-tight text-text-primary md:text-5xl">

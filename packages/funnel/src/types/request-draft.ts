@@ -22,35 +22,20 @@
  */
 
 import type {
+  GeoPlace,
+} from "@esigenta/shared"
+
+import type {
   RuntimeCapabilityId,
 } from "./runtime-profile"
 
-export type RequestGeoDraft = {
-  /**
-   * Normalized human-readable address.
-   */
-  address?: string
-
-  /**
-   * Normalized city/locality.
-   */
-  city?: string
-
-  /**
-   * Normalized postal code.
-   */
-  postalCode?: string
-
-  /**
-   * Geographic latitude.
-   */
-  latitude?: number
-
-  /**
-   * Geographic longitude.
-   */
-  longitude?: number
-}
+/**
+ * GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md): the funnel's
+ * "location" answer is a complete GeoPlace or nothing — there is no
+ * partial geo draft anymore. See @esigenta/shared's resolvePlaceFromGooglePlace,
+ * the only constructor.
+ */
+export type RequestGeoDraft = GeoPlace | null
 
 export type RequestContactDraft = {
   /**
@@ -140,26 +125,6 @@ export type RequestRoutingSignals = {
   geoResolved?: boolean
 }
 
-export type RequestMatchingSignals = {
-  /**
-   * Canonical services resolved
-   * through taxonomy semantics.
-   *
-   * IMPORTANT:
-   * Runtime matching remains:
-   *
-   * request.requiredServices
-   * vs
-   * company.selectedServices
-   */
-  requiredServiceSlugs: string[]
-
-  /**
-   * Resolved categories for marketplace exposure.
-   */
-  categorySlugs: string[]
-}
-
 export type RequestDraft = {
   /**
    * Canonical intervention resolved
@@ -218,11 +183,6 @@ export type RequestDraft = {
    * Runtime routing preparation signals.
    */
   routingSignals: RequestRoutingSignals
-
-  /**
-   * Runtime matching preparation signals.
-   */
-  matchingSignals: RequestMatchingSignals
 
   /**
    * Free-form customer description.

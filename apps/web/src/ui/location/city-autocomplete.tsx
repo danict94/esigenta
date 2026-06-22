@@ -18,60 +18,15 @@ import {
 } from '@esigenta/ui'
 
 import {
+  type GeoPlace,
+  resolvePlaceFromGooglePlace,
+} from '@esigenta/shared'
+
+import {
   COOKIE_CONSENT_CHANGED_EVENT,
   hasFunctionalCookieConsent,
   openCookiePreferences,
 } from '../../site/shell/cookie-consent-storage'
-
-export type NormalizedLocation = {
-  address?: string
-  city?: string
-  postalCode?: string
-  latitude?: number
-  longitude?: number
-}
-
-function isRuntimeRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
-}
-
-function readRawString(value: unknown): string | undefined {
-  return typeof value === 'string' ? value : undefined
-}
-
-function normalizeRuntimeNumber(value: unknown): number | undefined {
-  if (typeof value === 'number' && Number.isFinite(value)) return value
-  if (typeof value !== 'string') return undefined
-  const parsed = Number(value.replace(',', '.'))
-  return Number.isFinite(parsed) ? parsed : undefined
-}
-
-function readRuntimeLocationAnswer(value: unknown): NormalizedLocation {
-  const text = readRawString(value)
-  if (text) return { address: text }
-  if (!isRuntimeRecord(value)) return {}
-  const latitude = normalizeRuntimeNumber(value.latitude) ?? normalizeRuntimeNumber(value.lat)
-  const longitude = normalizeRuntimeNumber(value.longitude) ?? normalizeRuntimeNumber(value.lng)
-  return {
-    address: readRawString(value.address) ?? '',
-    city: readRawString(value.city) ?? '',
-    postalCode: readRawString(value.postalCode) ?? readRawString(value.cap) ?? '',
-    ...(latitude !== undefined ? { latitude } : {}),
-    ...(longitude !== undefined ? { longitude } : {}),
-  }
-}
-
-function isRuntimeLocationAnswerComplete(value: unknown): boolean {
-  const location = readRuntimeLocationAnswer(value)
-  return Boolean(
-    location.address &&
-      location.city &&
-      typeof location.latitude === 'number' &&
-      Number.isFinite(location.latitude) &&
-      typeof location.longitude === 'number' &&
-      Number.isFinite(location.longitude),
-  )
-}
 
 type GoogleAddressComponent = {
   long_name: string
@@ -80,6 +35,7 @@ type GoogleAddressComponent = {
 }
 
 type GooglePlaceResult = {
+  place_id?: string
   formatted_address?: string
   address_components?: GoogleAddressComponent[]
   geometry?: {
@@ -124,8 +80,8 @@ type GoogleMapsWindow = Window &
 
 type CityAutocompleteProps = {
   id?: string
-  value: unknown
-  onChange: (value: NormalizedLocation) => void
+  value: GeoPlace | null
+  onChange: (value: GeoPlace | null) => void
   placeholder?: string
   className?: string
 }
@@ -238,76 +194,21 @@ function loadGoogleMapsPlaces(
   return googleMapsPlacesPromise
 }
 
-function getAddressComponent(
+function toResolverInput(
   place: GooglePlaceResult,
-  types: string[],
 ) {
-  return place.address_components
-    ?.find((component) =>
-      types.some((type) =>
-        component.types.includes(type),
-      ),
-    )
-    ?.long_name
-}
-
-function normalizeGooglePlace(
-  place: GooglePlaceResult,
-  fallbackAddress: string,
-): NormalizedLocation {
-  const address =
-    place.formatted_address ??
-    fallbackAddress.trim()
-
-  const city =
-    getAddressComponent(place, [
-      'locality',
-      'postal_town',
-      'administrative_area_level_3',
-      'administrative_area_level_2',
-    ])
-
-  const postalCode =
-    getAddressComponent(place, [
-      'postal_code',
-    ])
-
-  const latitude =
-    place.geometry?.location?.lat()
-
-  const longitude =
-    place.geometry?.location?.lng()
-
   return {
-    ...(address
-      ? {
-          address,
-        }
-      : {}),
-    ...(city
-      ? {
-          city,
-        }
-      : {}),
-    ...(postalCode
-      ? {
-          postalCode,
-        }
-      : {}),
-    ...(typeof latitude ===
-      'number' &&
-    Number.isFinite(latitude)
-      ? {
-          latitude,
-        }
-      : {}),
-    ...(typeof longitude ===
-      'number' &&
-    Number.isFinite(longitude)
-      ? {
-          longitude,
-        }
-      : {}),
+    placeId: place.place_id,
+    formattedAddress: place.formatted_address,
+    addressComponents: place.address_components?.map(
+      (component) => ({
+        longName: component.long_name,
+        shortName: component.short_name,
+        types: component.types,
+      }),
+    ),
+    latitude: place.geometry?.location?.lat(),
+    longitude: place.geometry?.location?.lng(),
   }
 }
 
@@ -331,16 +232,11 @@ export function CityAutocomplete({
       null,
     )
 
-  const location =
-    readRuntimeLocationAnswer(
-      value,
-    )
-
   const [
     inputValue,
     setInputValue,
   ] = useState(
-    location.address ?? '',
+    value?.formattedAddress ?? '',
   )
 
   const [message, setMessage] =
@@ -388,7 +284,7 @@ export function CityAutocomplete({
 
   useEffect(() => {
     const nextAddress =
-      location.address
+      value?.formattedAddress
 
     if (
       nextAddress &&
@@ -407,7 +303,7 @@ export function CityAutocomplete({
     return undefined
   }, [
     inputValue,
-    location.address,
+    value?.formattedAddress,
   ])
 
   useEffect(() => {
@@ -473,6 +369,7 @@ export function CityAutocomplete({
             inputRef.current,
             {
               fields: [
+                'place_id',
                 'formatted_address',
                 'address_components',
                 'geometry',
@@ -488,28 +385,25 @@ export function CityAutocomplete({
           autocomplete.addListener(
             'place_changed',
             () => {
-              const fallback =
-                inputRef.current?.value ?? ''
-
-              const normalized =
-                normalizeGooglePlace(
-                  autocomplete.getPlace(),
-                  fallback,
+              const resolved =
+                resolvePlaceFromGooglePlace(
+                  toResolverInput(
+                    autocomplete.getPlace(),
+                  ),
                 )
 
               setInputValue(
-                normalized.address ??
-                  fallback,
+                resolved?.formattedAddress ??
+                  inputRef.current?.value ??
+                  '',
               )
 
               onChangeRef.current(
-                normalized,
+                resolved,
               )
 
               setMessage(
-                isRuntimeLocationAnswerComplete(
-                  normalized,
-                )
+                resolved
                   ? null
                   : 'Seleziona un indirizzo dai suggerimenti.',
               )
@@ -549,9 +443,13 @@ export function CityAutocomplete({
               event.target.value
 
             setInputValue(address)
-            onChange({
-              address,
-            })
+
+            // Editing the text invalidates any previously selected place —
+            // a GeoPlace is only ever produced whole, from a real Google
+            // selection (see resolvePlaceFromGooglePlace). There is no
+            // partial/typed-only GeoPlace.
+            onChange(null)
+
             setMessage(
               address.trim()
                 ? 'Seleziona un indirizzo dai suggerimenti.'

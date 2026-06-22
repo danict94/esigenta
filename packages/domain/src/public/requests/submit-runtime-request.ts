@@ -79,8 +79,6 @@ export async function submitRuntimeRequest(
         answerKeys: Object.keys(answers),
         contact: describeRuntimeContactAnswerPresence(answers.contact),
         location: describeRuntimeLocationAnswerPresence(answers.location),
-        requiredServiceSlugs:
-          requestDraft?.matchingSignals.requiredServiceSlugs ?? [],
         message: error.message,
       })
 
@@ -99,8 +97,6 @@ export async function submitRuntimeRequest(
         answerKeys: Object.keys(answers),
         contact: describeRuntimeContactAnswerPresence(answers.contact),
         location: describeRuntimeLocationAnswerPresence(answers.location),
-        requiredServiceSlugs:
-          requestDraft?.matchingSignals.requiredServiceSlugs ?? [],
         error,
       },
     )

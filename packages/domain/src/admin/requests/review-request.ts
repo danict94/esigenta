@@ -91,8 +91,8 @@ function createDispatchFailureMessage(
     return "Impossibile pubblicare la richiesta: coordinate mancanti per il dispatch."
   }
 
-  if (code === "request_services_not_resolved") {
-    return "Impossibile pubblicare la richiesta: servizi operativi non risolti per il dispatch."
+  if (code === "request_intervention_not_resolved") {
+    return "Impossibile pubblicare la richiesta: intervento non risolto per il dispatch."
   }
 
   return "Impossibile pubblicare la richiesta: richiesta non trovata."

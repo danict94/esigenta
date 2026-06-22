@@ -10,13 +10,24 @@ import type {
 } from "@esigenta/auth"
 
 import {
+  isCompanyMarketplaceReady,
+} from "@esigenta/auth"
+
+import {
   prisma,
 } from "@esigenta/database"
+
+import {
+  getDefaultVisibilityInterventionIds,
+  loadInterventionsForCategoryIds,
+  resolveCompanyRequestEligibility,
+  type EligibilityInterventionRow,
+} from "./company-request-eligibility"
 
 // ─── Public types ────────────────────────────────────────────────────────────
 
 export type CompanyRequestMatchLevel =
-  | "selected_service"
+  | "selected_intervention"
   | "category"
   | "explore"
 
@@ -29,7 +40,7 @@ export type RequestDashboardFilters = {
   q?: string | null
   radiusKm?: number | null
   categoryId?: string | null
-  serviceId?: string | null
+  interventionId?: string | null
   sort?: RequestDashboardSort
 }
 
@@ -39,10 +50,9 @@ export type RequestDashboardFilterOptions = {
     name: string
     isConfigured: boolean
   }>
-  services: Array<{
+  interventions: Array<{
     id: string
     name: string
-    categoryId: string
     isConfigured: boolean
   }>
   activeCategoryIsConfigured: boolean | null
@@ -50,7 +60,7 @@ export type RequestDashboardFilterOptions = {
     q: string | null
     radiusKm: number | null
     categoryId: string | null
-    serviceId: string | null
+    interventionId: string | null
     sort: RequestDashboardSort
   }
 }
@@ -87,7 +97,7 @@ export type CompanyRequestsListPageResult =
   | {
       ok: true
       company: RequestDashboardCompanyProfile
-      hasSelectedServices: boolean
+      hasSelectedInterventions: boolean
       filters: RequestDashboardFilterOptions
       requests: AvailableCompanyRequest[]
       page: number
@@ -109,13 +119,6 @@ export type CompanyRequestsListPageResult =
     }
 
 // ─── Internal types ───────────────────────────────────────────────────────────
-
-type CategoryServiceRow = {
-  categoryId: string
-  serviceId: string
-  category: { id: string; name: string }
-  service: { id: string; name: string; slug: string }
-}
 
 type RequestListRow = {
   id: string
@@ -141,8 +144,6 @@ type PerfRecorder = (operation: string, durationMs: number) => void
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 50
-
-const visibleRequestStatuses: RequestStatus[] = ["APPROVED", "PUBLISHED"]
 
 const allowedRadiusFilters = new Set([10, 20, 30, 50, 75, 100])
 const allowedSortFilters = new Set<RequestDashboardSort>([
@@ -196,14 +197,14 @@ function normalizeFilters(
     raw?.sort && allowedSortFilters.has(raw.sort) ? raw.sort : "recommended"
   const categoryId =
     typeof raw?.categoryId === "string" ? raw.categoryId.trim() : ""
-  const serviceId =
-    typeof raw?.serviceId === "string" ? raw.serviceId.trim() : ""
+  const interventionId =
+    typeof raw?.interventionId === "string" ? raw.interventionId.trim() : ""
 
   return {
     q: q || null,
     radiusKm,
     categoryId: categoryId || null,
-    serviceId: serviceId || null,
+    interventionId: interventionId || null,
     sort,
   }
 }
@@ -214,17 +215,6 @@ function hasFiniteNumber(v: number | null): v is number {
   return typeof v === "number" && Number.isFinite(v)
 }
 
-function computeBoundingBox(latDeg: number, lngDeg: number, radiusKm: number) {
-  const latDelta = radiusKm / 111.32
-  const lngDelta = radiusKm / (111.32 * Math.cos((latDeg * Math.PI) / 180))
-  return {
-    minLat: latDeg - latDelta,
-    maxLat: latDeg + latDelta,
-    minLng: lngDeg - lngDelta,
-    maxLng: lngDeg + lngDelta,
-  }
-}
-
 // ─── Keyword search escaping ───────────────────────────────────────────────────
 
 // Escapes ILIKE special characters so a literal "%"/"_" typed by the company
@@ -233,61 +223,33 @@ function escapeLikeTerm(term: string): string {
   return term.replace(/[\\%_]/g, (char) => `\\${char}`)
 }
 
-// ─── DB query builders (Batch 1 + Phase B — unchanged) ────────────────────────
+// ─── DB query builders ─────────────────────────────────────────────────────────
+//
+// Marketplace visibility/ranking is Intervention-only (Phase 14): no
+// Service, CategoryService, CompanyService, or RequestRequiredService
+// anywhere in this file. Category still has no direct relation to
+// Intervention — the only path is Category.projectGroupIds (a plain
+// string[] column, no join) -> Intervention.projectGroupId.
 
 function buildCompanyQuery(companyId: string) {
   return prisma.company.findUnique({
     where: { id: companyId },
     select: {
-      onboardingCategorySlug: true,
       name: true,
-      city: true,
-      postalCode: true,
-      province: true,
-      latitude: true,
-      longitude: true,
       operatingRadiusKm: true,
-      // Only selected service IDs — no category join
-      services: { select: { serviceId: true } },
-    },
-  })
-}
-
-// Returns category services for this company's categories via relation subquery.
-// Independent of company query — runs in parallel with buildCompanyQuery.
-function buildCompanyCategoryServicesQuery(companyId: string) {
-  return prisma.categoryService.findMany({
-    where: {
-      category: {
-        companies: {
-          some: { companyId },
+      geoLocation: {
+        select: {
+          city: true,
+          postalCode: true,
+          province: true,
+          latitude: true,
+          longitude: true,
         },
       },
-    },
-    select: {
-      categoryId: true,
-      serviceId: true,
-      category: { select: { id: true, name: true } },
-      service: { select: { id: true, name: true, slug: true } },
-    },
-  })
-}
-
-function buildFallbackCategoryQuery(slug: string) {
-  return prisma.category.findUnique({
-    where: { slug },
-    select: { id: true, name: true },
-  })
-}
-
-function buildFallbackCategoryServicesQuery(categoryId: string) {
-  return prisma.categoryService.findMany({
-    where: { categoryId },
-    select: {
-      categoryId: true,
-      serviceId: true,
-      category: { select: { id: true, name: true } },
-      service: { select: { id: true, name: true, slug: true } },
+      // selectedInterventionIds/operationalInterventionIds now come from
+      // resolveCompanyRequestEligibility (company-request-eligibility.ts)
+      // — the same canonical computation request-detail uses, see
+      // docs/domain-invariants/03_REQUEST_VISIBILITY.md.
     },
   })
 }
@@ -299,21 +261,18 @@ function buildTaxonomyCategoriesQuery() {
   })
 }
 
-// ─── DB-side filtered + sorted + paginated requests query (P0) ────────────────
+// ─── DB-side filtered + sorted + paginated requests query ─────────────────────
 //
-// Replaces the previous approach (findMany take:100, then JS-side precise
-// distance filter, keyword search, sort and slice). All of that now happens
-// in a single SQL statement:
-// - status + bounding box filter, EXISTS service visibility filter (DB, uses
-//   existing indexes on status/createdAt and [latitude, longitude])
-// - precise haversine distance (computed in SQL, same formula as
-//   @esigenta/shared getDistanceKm, filtered in the outer WHERE)
-// - keyword search across request fields, structuredData (as text), service
-//   name/slug and category name (DB, ILIKE with escaped wildcards)
-// - match level (selected_service / category / explore) computed once as a
-//   numeric rank, reused for both sorting and the returned label
-// - sort (recommended / newest / nearest) and pagination (LIMIT pageSize+1 /
-//   OFFSET) fully in SQL — no fixed upstream cap, no JS slice.
+// Single SQL statement: status filter, intervention visibility filter
+// (direct Request.interventionId comparison — no junction table), radius
+// filter via the GiST-indexed earthdistance extension (cube/earthdistance —
+// see docs/geo-refoundation/01_DESIGN.md §5/§6; not a JS-side haversine scan
+// and not a manually-computed bounding box — earth_box() is itself the
+// index-accelerated pre-filter, earth_distance() the exact circle check),
+// keyword search (request fields, structuredData, intervention name/slug,
+// category name via Category.projectGroupIds -> Intervention.projectGroupId),
+// match level (selected_intervention / category / explore) computed once as
+// a numeric rank, sort and pagination fully in SQL.
 
 function buildOrderByClause(sort: RequestDashboardSort) {
   if (sort === "newest") {
@@ -327,25 +286,23 @@ function buildOrderByClause(sort: RequestDashboardSort) {
 
 async function queryPaginatedRequests({
   companyId,
-  visibilityServiceIds,
-  selectedServiceIds,
-  operationalServiceIds,
+  visibilityInterventionIds,
+  selectedInterventionIds,
+  operationalInterventionIds,
   companyLat,
   companyLng,
   effectiveRadiusKm,
-  bbox,
   q,
   sort,
   page,
 }: {
   companyId: string
-  visibilityServiceIds: string[]
-  selectedServiceIds: string[]
-  operationalServiceIds: string[]
+  visibilityInterventionIds: string[]
+  selectedInterventionIds: string[]
+  operationalInterventionIds: string[]
   companyLat: number
   companyLng: number
   effectiveRadiusKm: number
-  bbox: ReturnType<typeof computeBoundingBox>
   q: string | null
   sort: RequestDashboardSort
   page: number
@@ -353,6 +310,7 @@ async function queryPaginatedRequests({
   const offset = (page - 1) * PAGE_SIZE
   const likeTerm = q ? `%${escapeLikeTerm(q)}%` : null
   const orderByClause = buildOrderByClause(sort)
+  const radiusMeters = effectiveRadiusKm * 1000
 
   const rows = await prisma.$queryRaw<RequestListRow[]>`
     WITH scoped AS (
@@ -361,11 +319,11 @@ async function queryPaginatedRequests({
         r."requestCode"      AS request_code,
         r."status"           AS status,
         r."interventionSlug" AS intervention_slug,
-        r."city"             AS city,
-        r."address"          AS address,
-        r."postalCode"       AS postal_code,
-        r."latitude"         AS latitude,
-        r."longitude"        AS longitude,
+        rg."city"             AS city,
+        rg."formattedAddress" AS address,
+        rg."postalCode"       AS postal_code,
+        rg."latitude"         AS latitude,
+        rg."longitude"        AS longitude,
         r."structuredData"   AS structured_data,
         r."creditCost"       AS credit_cost,
         r."maxUnlocks"       AS max_unlocks,
@@ -373,59 +331,45 @@ async function queryPaginatedRequests({
         r."createdAt"        AS created_at,
         (csr."companyId" IS NOT NULL) AS is_saved,
         CASE
-          WHEN EXISTS (
-            SELECT 1 FROM "RequestRequiredService" mrs
-            WHERE mrs."requestId" = r."id"
-              AND mrs."serviceId" = ANY(${selectedServiceIds}::text[])
-          ) THEN 0
-          WHEN EXISTS (
-            SELECT 1 FROM "RequestRequiredService" mrs
-            WHERE mrs."requestId" = r."id"
-              AND mrs."serviceId" = ANY(${operationalServiceIds}::text[])
-          ) THEN 1
+          WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[]) THEN 0
+          WHEN r."interventionId" = ANY(${operationalInterventionIds}::text[]) THEN 1
           ELSE 2
         END AS match_rank,
         (
-          2 * 6371 * asin(sqrt(
-            power(sin(radians(r."latitude" - ${companyLat}) / 2), 2) +
-            cos(radians(${companyLat})) * cos(radians(r."latitude")) *
-            power(sin(radians(r."longitude" - ${companyLng}) / 2), 2)
-          ))
+          earth_distance(
+            ll_to_earth(${companyLat}, ${companyLng}),
+            ll_to_earth(rg."latitude", rg."longitude")
+          ) / 1000
         ) AS distance_km
       FROM "Request" r
+      JOIN "GeoLocation" rg ON rg."id" = r."geoLocationId"
       LEFT JOIN "CompanySavedRequest" csr
         ON csr."requestId" = r."id" AND csr."companyId" = ${companyId}
       WHERE r."status" IN ('APPROVED', 'PUBLISHED')
         AND r."archivedAt" IS NULL
         AND r."deletedAt" IS NULL
-        AND r."latitude" IS NOT NULL
-        AND r."longitude" IS NOT NULL
-        AND r."latitude" BETWEEN ${bbox.minLat} AND ${bbox.maxLat}
-        AND r."longitude" BETWEEN ${bbox.minLng} AND ${bbox.maxLng}
-        AND EXISTS (
-          SELECT 1 FROM "RequestRequiredService" vrs
-          WHERE vrs."requestId" = r."id"
-            AND vrs."serviceId" = ANY(${visibilityServiceIds}::text[])
-        )
+        AND earth_box(
+          ll_to_earth(${companyLat}, ${companyLng}),
+          ${radiusMeters}
+        ) @> ll_to_earth(rg."latitude", rg."longitude")
+        AND r."interventionId" = ANY(${visibilityInterventionIds}::text[])
         AND (
           ${likeTerm}::text IS NULL
           OR r."requestCode" ILIKE ${likeTerm}
           OR r."interventionSlug" ILIKE ${likeTerm}
-          OR r."city" ILIKE ${likeTerm}
-          OR r."postalCode" ILIKE ${likeTerm}
-          OR r."address" ILIKE ${likeTerm}
+          OR rg."city" ILIKE ${likeTerm}
+          OR rg."postalCode" ILIKE ${likeTerm}
+          OR rg."formattedAddress" ILIKE ${likeTerm}
           OR r."structuredData"::text ILIKE ${likeTerm}
           OR EXISTS (
-            SELECT 1 FROM "RequestRequiredService" srs
-            JOIN "Service" sv ON sv."id" = srs."serviceId"
-            WHERE srs."requestId" = r."id"
-              AND (sv."name" ILIKE ${likeTerm} OR sv."slug" ILIKE ${likeTerm})
+            SELECT 1 FROM "Intervention" iv
+            WHERE iv."id" = r."interventionId"
+              AND iv."name" ILIKE ${likeTerm}
           )
           OR EXISTS (
-            SELECT 1 FROM "RequestRequiredService" crs
-            JOIN "CategoryService" cs ON cs."serviceId" = crs."serviceId"
-            JOIN "Category" c ON c."id" = cs."categoryId"
-            WHERE crs."requestId" = r."id"
+            SELECT 1 FROM "Intervention" iv
+            JOIN "Category" c ON iv."projectGroupId" = ANY(c."projectGroupIds")
+            WHERE iv."id" = r."interventionId"
               AND c."name" ILIKE ${likeTerm}
           )
         )
@@ -435,7 +379,7 @@ async function queryPaginatedRequests({
       latitude, longitude, structured_data, credit_cost, max_unlocks,
       unlock_count, created_at, is_saved,
       CASE match_rank
-        WHEN 0 THEN 'selected_service'
+        WHEN 0 THEN 'selected_intervention'
         WHEN 1 THEN 'category'
         ELSE 'explore'
       END AS match_level
@@ -492,40 +436,36 @@ export async function getCompanyRequestsListPage(
 
   const emptyFilterOptions: RequestDashboardFilterOptions = {
     categories: [],
-    services: [],
+    interventions: [],
     activeCategoryIsConfigured: null,
     active: normalizedFilters,
   }
 
-  // ── Batch 1 (truly parallel): company + category services + taxonomy filter data ─
+  // ── Batch 1 (truly parallel): company + operational interventions + taxonomy filter data ─
   //
-  // All four queries are independent and run in parallel:
-  // - company: profile, location, selected services
-  // - companyCategoryServices: resolves operational service IDs for request matching
-  // - taxonomyCategories: all marketplace categories for filter dropdown (lean, stable)
-  // - taxonomyCategoryServices: services for the URL-selected category (null if none selected)
-  //
-  // Same 2 round-trips as before. Taxonomy queries are lightweight (no joins beyond select).
+  // All independent, run in parallel:
+  // - company: profile, location, selected interventions (CompanyIntervention)
+  // - operationalInterventions: Category.projectGroupIds -> Intervention for
+  //   this company's CompanyCategory rows (the "broad net" set)
+  // - taxonomyCategories: all marketplace categories for filter dropdown
+  // - filterCategoryInterventions: interventions for the URL-selected
+  //   category (null if none selected)
 
-  const batch1Start = performance.now()
-  const [company, categoryServices, allTaxonomyCategories, categoryServicesForFilter] =
-    await Promise.all([
-      measureAsync("batch1-company", recordPerf, () =>
-        buildCompanyQuery(companyId),
-      ),
-      measureAsync("batch1-category-services", recordPerf, () =>
-        buildCompanyCategoryServicesQuery(companyId),
-      ),
-      measureAsync("batch1-taxonomy-categories", recordPerf, () =>
-        buildTaxonomyCategoriesQuery(),
-      ),
-      normalizedFilters.categoryId
-        ? measureAsync("batch1-taxonomy-category-services", recordPerf, () =>
-            buildFallbackCategoryServicesQuery(normalizedFilters.categoryId!),
-          )
-        : (Promise.resolve(null) as Promise<CategoryServiceRow[] | null>),
-    ])
-  recordPerf?.("batch1-total", Math.round(performance.now() - batch1Start))
+  const [
+    company,
+    eligibility,
+    allTaxonomyCategories,
+  ] = await Promise.all([
+    measureAsync("batch1-company", recordPerf, () =>
+      buildCompanyQuery(companyId),
+    ),
+    measureAsync("batch1-eligibility", recordPerf, () =>
+      resolveCompanyRequestEligibility(companyId),
+    ),
+    measureAsync("batch1-taxonomy-categories", recordPerf, () =>
+      buildTaxonomyCategoriesQuery(),
+    ),
+  ])
 
   if (!company) {
     return {
@@ -537,17 +477,19 @@ export async function getCompanyRequestsListPage(
     }
   }
 
-  if (actor.company.status !== "APPROVED") {
+  const companyProfileBase = {
+    name: company.name,
+    city: company.geoLocation?.city ?? null,
+    postalCode: company.geoLocation?.postalCode ?? null,
+    province: company.geoLocation?.province ?? null,
+    operatingRadiusKm: company.operatingRadiusKm,
+    operationalCategoryCount: 0,
+  }
+
+  if (!isCompanyMarketplaceReady(actor.company)) {
     return {
       ok: false,
-      company: {
-        name: company.name,
-        city: company.city,
-        postalCode: company.postalCode,
-        province: company.province,
-        operatingRadiusKm: company.operatingRadiusKm,
-        operationalCategoryCount: 0,
-      },
+      company: companyProfileBase,
       code: "company_not_approved_for_marketplace",
       message:
         "Il profilo impresa deve essere approvato prima di usare il marketplace.",
@@ -555,73 +497,45 @@ export async function getCompanyRequestsListPage(
     }
   }
 
+  const companyLatCandidate = company.geoLocation?.latitude ?? null
+  const companyLngCandidate = company.geoLocation?.longitude ?? null
+
   if (
-    !hasFiniteNumber(company.latitude) ||
-    !hasFiniteNumber(company.longitude) ||
+    !hasFiniteNumber(companyLatCandidate) ||
+    !hasFiniteNumber(companyLngCandidate) ||
     !Number.isFinite(company.operatingRadiusKm)
   ) {
     return {
       ok: false,
-      company: {
-        name: company.name,
-        city: company.city,
-        postalCode: company.postalCode,
-        province: company.province,
-        operatingRadiusKm: company.operatingRadiusKm,
-        operationalCategoryCount: 0,
-      },
+      company: companyProfileBase,
       code: "missing_location",
       message: "Completa sede operativa e raggio d'azione dell'impresa.",
       filters: emptyFilterOptions,
     }
   }
 
-  const companyLat = company.latitude
-  const companyLng = company.longitude
+  const companyLat = companyLatCandidate
+  const companyLng = companyLngCandidate
   const operatingRadiusKm = company.operatingRadiusKm
-  const selectedServiceIds = new Set(company.services.map((s) => s.serviceId))
 
-  // ── Phase B: fallback category ────────────────────────────────────────────
-  //
-  // If company has no configured categories (categoryServices empty from Batch 1),
-  // fall back to onboardingCategorySlug. This path is rare (onboarding state).
-
-  let resolvedCategoryServices: CategoryServiceRow[] = categoryServices
-
-  if (resolvedCategoryServices.length === 0 && company.onboardingCategorySlug) {
-    const fallbackCategory = await measureAsync(
-      "phase-b-fallback-category",
-      recordPerf,
-      () => buildFallbackCategoryQuery(company.onboardingCategorySlug!),
-    )
-    if (fallbackCategory) {
-      resolvedCategoryServices = await measureAsync(
-        "phase-b-fallback-services",
-        recordPerf,
-        () => buildFallbackCategoryServicesQuery(fallbackCategory.id),
-      )
-    }
-  } else {
-    recordPerf?.("phase-b-fallback-category", 0)
-  }
-
-  const operationalServiceIds = new Set(
-    resolvedCategoryServices.map((cs) => cs.serviceId),
-  )
-  const resolvedCategoryIds = Array.from(
-    new Set(resolvedCategoryServices.map((cs) => cs.categoryId)),
-  )
+  // Canonical eligibility (docs/domain-invariants/03_REQUEST_VISIBILITY.md)
+  // — the same computation request-detail uses. No onboardingCategorySlug
+  // fallback (docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md): an
+  // unconfigured company correctly falls through to the missing_category
+  // empty state below, the same one matching/dispatch implicitly enforces.
+  const {
+    resolvedCategoryIds,
+    selectedInterventionIds,
+    operationalInterventionIds,
+    isConfigured,
+  } = eligibility
 
   const companyProfile: RequestDashboardCompanyProfile = {
-    name: company.name,
-    city: company.city,
-    postalCode: company.postalCode,
-    province: company.province,
-    operatingRadiusKm: company.operatingRadiusKm,
+    ...companyProfileBase,
     operationalCategoryCount: resolvedCategoryIds.length,
   }
 
-  if (resolvedCategoryIds.length === 0 || operationalServiceIds.size === 0) {
+  if (!isConfigured) {
     return {
       ok: false,
       company: companyProfile,
@@ -642,36 +556,55 @@ export async function getCompanyRequestsListPage(
       ? normalizedFilters.categoryId
       : null
 
-  // Services for the active category come from the taxonomy fetch (parallel with Batch 1).
-  // This covers both configured and unconfigured categories without extra queries.
-  const activeCategoryServiceSet = activeCategoryId
-    ? new Set((categoryServicesForFilter ?? []).map((cs) => cs.serviceId))
-    : operationalServiceIds
+  // Interventions for the active category — only fetched when a category
+  // filter is active, scoped to exactly that category's ProjectGroups.
+  const { interventions: filterCategoryInterventions } = activeCategoryId
+    ? await measureAsync(
+        "filter-category-interventions",
+        recordPerf,
+        () => loadInterventionsForCategoryIds([activeCategoryId]),
+      )
+    : { interventions: [] as EligibilityInterventionRow[] }
 
-  const activeServiceId =
-    normalizedFilters.serviceId &&
+  const activeCategoryInterventionSet = activeCategoryId
+    ? new Set(filterCategoryInterventions.map((iv) => iv.id))
+    : operationalInterventionIds
+
+  const activeInterventionId =
+    normalizedFilters.interventionId &&
     activeCategoryId &&
-    activeCategoryServiceSet.has(normalizedFilters.serviceId)
-      ? normalizedFilters.serviceId
+    activeCategoryInterventionSet.has(normalizedFilters.interventionId)
+      ? normalizedFilters.interventionId
       : null
 
   const activeFilters = {
     ...normalizedFilters,
     categoryId: activeCategoryId,
-    serviceId: activeServiceId,
+    interventionId: activeInterventionId,
   }
 
-  const visibilityServiceIds: string[] = activeServiceId
-    ? [activeServiceId]
+  // Default (no filter) visibility is the UNION of directly-selected and
+  // category-derived interventions, not just the category-derived set.
+  // In the legacy model these were always the same set by construction
+  // (CompanyService was validated against the selected categories'
+  // CategoryService rows at write time). The frozen model deliberately
+  // dropped that cross-validation (Category must never gate Intervention
+  // selection, confirmed in Phase 9) — a company can select an
+  // intervention outside its own categories' ProjectGroups, and dispatch
+  // (CompanyIntervention-only) already notifies them for it. The
+  // dashboard must not be stricter than dispatch, or a company stops
+  // seeing requests it's actually being notified about.
+  const visibilityInterventionIds: string[] = activeInterventionId
+    ? [activeInterventionId]
     : activeCategoryId
-      ? Array.from(activeCategoryServiceSet)
-      : Array.from(operationalServiceIds)
+      ? Array.from(activeCategoryInterventionSet)
+      : Array.from(getDefaultVisibilityInterventionIds(eligibility))
 
-  if (visibilityServiceIds.length === 0) {
+  if (visibilityInterventionIds.length === 0) {
     return {
       ok: true,
       company: companyProfile,
-      hasSelectedServices: selectedServiceIds.size > 0,
+      hasSelectedInterventions: selectedInterventionIds.size > 0,
       filters: emptyFilterOptions,
       requests: [],
       page: normalizedPage,
@@ -688,17 +621,7 @@ export async function getCompanyRequestsListPage(
       ? operatingRadiusKm
       : Math.min(normalizedFilters.radiusKm, operatingRadiusKm)
 
-  const bbox = computeBoundingBox(companyLat, companyLng, effectiveRadiusKm)
-
   // ── Build filter options ──────────────────────────────────────────────────
-  //
-  // filterCategories: ALL taxonomy categories (from Batch 1), marked isConfigured
-  //   based on whether the company has that category in its profile.
-  //   Already sorted by name from the query (orderBy: { name: "asc" }).
-  //
-  // filterServices: only services for the SELECTED category (from Batch 1 taxonomy fetch).
-  //   Empty when no category is selected — services dropdown is disabled in that state.
-  //   Sending all services upfront is wasteful; this sends exactly what the UI needs.
 
   const filterCategories = allTaxonomyCategories.map((c) => ({
     id: c.id,
@@ -706,28 +629,26 @@ export async function getCompanyRequestsListPage(
     isConfigured: resolvedCategoryIdSet.has(c.id),
   }))
 
-  const filterServices =
-    activeCategoryId && categoryServicesForFilter
-      ? categoryServicesForFilter
-          .map((cs) => ({
-            id: cs.service.id,
-            name: cs.service.name,
-            categoryId: cs.categoryId,
-            isConfigured: selectedServiceIds.has(cs.serviceId),
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name, "it"))
-      : []
+  const filterInterventions = activeCategoryId
+    ? filterCategoryInterventions
+        .map((iv) => ({
+          id: iv.id,
+          name: iv.name,
+          isConfigured: selectedInterventionIds.has(iv.id),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name, "it"))
+    : []
 
   const filterOptions: RequestDashboardFilterOptions = {
     categories: filterCategories,
-    services: filterServices,
+    interventions: filterInterventions,
     activeCategoryIsConfigured: activeCategoryId
       ? resolvedCategoryIdSet.has(activeCategoryId)
       : null,
     active: activeFilters,
   }
 
-  // ── Phase C: DB-side filtered, sorted, paginated requests (P0) ─────────────
+  // ── DB-side filtered, sorted, paginated requests ────────────────────────────
 
   const { rows, hasNextPage } = await measureAsync(
     "phase-c-requests-query",
@@ -735,13 +656,12 @@ export async function getCompanyRequestsListPage(
     () =>
       queryPaginatedRequests({
         companyId,
-        visibilityServiceIds,
-        selectedServiceIds: Array.from(selectedServiceIds),
-        operationalServiceIds: Array.from(operationalServiceIds),
+        visibilityInterventionIds,
+        selectedInterventionIds: Array.from(selectedInterventionIds),
+        operationalInterventionIds: Array.from(operationalInterventionIds),
         companyLat,
         companyLng,
         effectiveRadiusKm,
-        bbox,
         q: activeFilters.q,
         sort: activeFilters.sort,
         page: normalizedPage,
@@ -755,7 +675,7 @@ export async function getCompanyRequestsListPage(
   return {
     ok: true,
     company: companyProfile,
-    hasSelectedServices: selectedServiceIds.size > 0,
+    hasSelectedInterventions: selectedInterventionIds.size > 0,
     filters: filterOptions,
     requests: paginatedRequests,
     page: normalizedPage,

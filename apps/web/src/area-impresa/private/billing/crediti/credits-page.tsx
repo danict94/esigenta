@@ -1,6 +1,7 @@
 import { Badge, Button, Card, PageShell } from "@esigenta/ui"
 import { getCompanyCreditsPage } from "@esigenta/billing"
 import { isCompanyMarketplaceEnabled } from "@esigenta/domain"
+import { formatCentsAsCurrency } from "@esigenta/shared"
 
 import { requireAreaImpresaAccess } from "../../../../auth/server"
 import { areaLog, isAreaMonitoringEnabled } from "../../../../platform/monitoring/area-monitoring"
@@ -15,13 +16,6 @@ export type CreditsPageProps = {
     orderId?: string
     session_id?: string
   }>
-}
-
-function formatPrice({ amountCents, currency }: { amountCents: number; currency: string }) {
-  return new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency,
-  }).format(amountCents / 100)
 }
 
 function formatDate(date: Date) {
@@ -191,10 +185,10 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-text-muted">Prezzo</dt>
                     <dd className="font-semibold text-text-primary">
-                      {formatPrice({
-                        amountCents: creditPackage.priceCents,
-                        currency: creditPackage.currency,
-                      })}
+                      {formatCentsAsCurrency(
+                        creditPackage.priceCents,
+                        creditPackage.currency,
+                      )}
                     </dd>
                   </div>
                 </dl>

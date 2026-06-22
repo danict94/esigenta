@@ -34,7 +34,7 @@ export function ProfessionalCta() {
               href={professionalAreaHref}
               className={`group ${tokens.home.professionalCta.cta}`}
             >
-              <span>Scopri l'area professionisti</span>
+              <span>Scopri l&apos;area professionisti</span>
               <span
                 className={tokens.home.professionalCta.ctaIcon}
                 aria-hidden={true}

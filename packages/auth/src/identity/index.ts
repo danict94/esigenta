@@ -19,7 +19,7 @@ export {
   assertCompanyCanUseMarketplace,
   createCompanyForUser,
   getCompanyActorForUser,
-  isCompanyMarketplaceApproved,
+  isCompanyMarketplaceReady,
   listCompanyActorsForUser,
   requireCompanyMemberFromUser,
   requireCompanyOwnerFromUser,

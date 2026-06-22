@@ -71,8 +71,6 @@ export type PublicServiceMacroArea = {
   description?: string;
   sortOrder: number;
   showInIndex: boolean;
-  /** Solo per documentazione/lettura umana — la membership reale viene da coverage.ts. */
-  includedDomainSlugs?: readonly string[];
   includedInterventionSlugs?: readonly string[];
 };
 

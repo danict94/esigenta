@@ -133,17 +133,32 @@ async function loadConversationThread(
     users,
   ] = await Promise.all([
     conversation.requestId
-      ? prisma.request.findUnique({
-          where: { id: conversation.requestId },
-          select: {
-            id: true,
-            requestCode: true,
-            status: true,
-            interventionSlug: true,
-            city: true,
-            createdAt: true,
-          },
-        })
+      ? prisma.request
+          .findUnique({
+            where: { id: conversation.requestId },
+            select: {
+              id: true,
+              requestCode: true,
+              status: true,
+              interventionSlug: true,
+              geoLocation: {
+                select: { city: true },
+              },
+              createdAt: true,
+            },
+          })
+          .then((request) =>
+            request
+              ? {
+                  id: request.id,
+                  requestCode: request.requestCode,
+                  status: request.status,
+                  interventionSlug: request.interventionSlug,
+                  city: request.geoLocation?.city ?? null,
+                  createdAt: request.createdAt,
+                }
+              : null,
+          )
       : Promise.resolve(null),
     conversation.requestUnlockId
       ? prisma.requestUnlock.findUnique({

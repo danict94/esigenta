@@ -39,7 +39,9 @@ export async function getCompanySupportConversation(
             requestCode: true,
             status: true,
             interventionSlug: true,
-            city: true,
+            geoLocation: {
+              select: { city: true },
+            },
             createdAt: true,
           },
         },
@@ -109,7 +111,17 @@ export async function getCompanySupportConversation(
       conversation.requestUnlockId,
     createdAt: conversation.createdAt,
     updatedAt: conversation.updatedAt,
-    request: conversation.request,
+    request: conversation.request
+      ? {
+          id: conversation.request.id,
+          requestCode: conversation.request.requestCode,
+          status: conversation.request.status,
+          interventionSlug:
+            conversation.request.interventionSlug,
+          city: conversation.request.geoLocation?.city ?? null,
+          createdAt: conversation.request.createdAt,
+        }
+      : null,
     customer: null,
     lastMessage: lastMessage
       ? {

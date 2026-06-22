@@ -4,7 +4,13 @@ import {
 
 import {
   prisma,
+  setCompanyLocationWithClient,
 } from "@esigenta/database"
+
+import {
+  isFreshGeoPlace,
+  type GeoPlace,
+} from "@esigenta/shared"
 
 const allowedOperatingRadiusKm = [
   10,
@@ -52,14 +58,7 @@ export type CreateCompanyProfileInput = {
   vatNumber: string
   phone: string
   website?: string
-  address?: string
-  street?: string
-  streetNo?: string
-  city?: string
-  postalCode?: string
-  province?: string
-  latitude?: number
-  longitude?: number
+  geoPlace: GeoPlace
   operatingRadiusKm?: number
 }
 
@@ -122,15 +121,6 @@ function normalizeVatNumber(
   return normalizeText(normalized)
 }
 
-function normalizeFiniteNumber(
-  value: number | undefined,
-): number | undefined {
-  return typeof value === "number" &&
-    Number.isFinite(value)
-    ? value
-    : undefined
-}
-
 function normalizeOperatingRadiusKm(
   value: number | undefined,
 ): CompanyOperatingRadiusKm {
@@ -181,33 +171,20 @@ function normalizeCompanyProfile(
     )
   }
 
+  if (!isFreshGeoPlace(company.geoPlace)) {
+    throw new CompanyOnboardingError(
+      "La sede operativa selezionata non e valida.",
+    )
+  }
+
   return {
     name,
     vatNumber,
     phone,
     website:
       normalizeText(company.website),
-    address:
-      normalizeText(company.address),
-    street:
-      normalizeText(company.street),
-    streetNo:
-      normalizeText(company.streetNo),
-    city:
-      normalizeText(company.city),
-    postalCode:
-      normalizeText(company.postalCode),
-    province:
-      normalizeText(company.province)
-        ?.toUpperCase(),
-    latitude:
-      normalizeFiniteNumber(
-        company.latitude,
-      ),
-    longitude:
-      normalizeFiniteNumber(
-        company.longitude,
-      ),
+    geoPlace:
+      company.geoPlace,
     operatingRadiusKm:
       normalizeOperatingRadiusKm(
         company.operatingRadiusKm,
@@ -239,54 +216,6 @@ function buildCompanyCreateData({
       ? {
           website:
             company.website,
-        }
-      : {}),
-    ...(company.address
-      ? {
-          address:
-            company.address,
-        }
-      : {}),
-    ...(company.street
-      ? {
-          street:
-            company.street,
-        }
-      : {}),
-    ...(company.streetNo
-      ? {
-          streetNo:
-            company.streetNo,
-        }
-      : {}),
-    ...(company.city
-      ? {
-          city:
-            company.city,
-        }
-      : {}),
-    ...(company.postalCode
-      ? {
-          postalCode:
-            company.postalCode,
-        }
-      : {}),
-    ...(company.province
-      ? {
-          province:
-            company.province,
-        }
-      : {}),
-    ...(company.latitude !== undefined
-      ? {
-          latitude:
-            company.latitude,
-        }
-      : {}),
-    ...(company.longitude !== undefined
-      ? {
-          longitude:
-            company.longitude,
         }
       : {}),
     ...(onboardingCategorySlug
@@ -370,6 +299,12 @@ export async function createCompanyForUser({
               id: true,
             },
           })
+
+        await setCompanyLocationWithClient(
+          tx,
+          companyRecord.id,
+          normalizedCompany.geoPlace,
+        )
 
         const membership =
           await tx.companyMembership.create({

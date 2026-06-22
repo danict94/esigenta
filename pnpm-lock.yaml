@@ -41,6 +41,9 @@ importers:
       '@esigenta/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
+      '@esigenta/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@esigenta/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -93,6 +96,9 @@ importers:
       '@esigenta/funnel':
         specifier: workspace:*
         version: link:../../packages/funnel
+      '@esigenta/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@esigenta/taxonomy':
         specifier: workspace:*
         version: link:../../packages/taxonomy
@@ -160,6 +166,9 @@ importers:
       '@esigenta/notifications':
         specifier: workspace:*
         version: link:../notifications
+      '@esigenta/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@prisma/client':
         specifier: ^7.8.0
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(typescript@5.9.3)
@@ -255,10 +264,16 @@ importers:
       '@prisma/client':
         specifier: ^7.8.0
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(typescript@5.9.3)
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
     devDependencies:
       '@types/node':
         specifier: ^20.19.39
         version: 20.19.39
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
 
   packages/funnel:
     dependencies:

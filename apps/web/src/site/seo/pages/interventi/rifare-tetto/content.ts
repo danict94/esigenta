@@ -10,7 +10,6 @@ export const rifareTettoLanding: SeoInterventionLanding = {
   metaDescription:
     "Devi rifare il tetto? Scopri cosa incide sul costo, quali lavori puoi richiedere e confronta preventivi da imprese qualificate.",
   funnelSlug: "rifare-tetto",
-  domainSlug: "tetti",
   image: {
     src: "/assets/images/rifare-tetto.webp",
     alt: "Rifacimento tetto e copertura",
@@ -22,9 +21,7 @@ export const rifareTettoLanding: SeoInterventionLanding = {
   },
   relatedInterventionSlugs: [
     "riparare-tetto",
-    "fare-copertura-edile",
-    "sostituire-grondaie",
-    "installare-scossaline",
+    "sistemare-grondaie",
   ],
   professionalCategorySlugs: ["impresa-edile"],
   costSlug: "rifare-tetto",

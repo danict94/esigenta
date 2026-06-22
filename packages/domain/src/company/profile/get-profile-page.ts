@@ -1,6 +1,9 @@
 import type { CompanyActor } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
 import { getCompanyCreditSummary } from "@esigenta/billing"
+import type { GeoPlace } from "@esigenta/shared"
+
+import { deriveCompanyConfigurationStatus } from "../configuration/company-configuration-status"
 
 type PerfRecorder = (label: string, ms: number) => void
 
@@ -10,17 +13,19 @@ type CompanyProfileRow = {
   vat_number: string
   phone: string
   website: string | null
-  address: string | null
-  city: string | null
-  postal_code: string | null
-  province: string | null
-  latitude: number | null
-  longitude: number | null
+  geo_place_id: string | null
+  geo_place_id_external: string | null
+  geo_formatted_address: string | null
+  geo_city: string | null
+  geo_postal_code: string | null
+  geo_province: string | null
+  geo_latitude: number | null
+  geo_longitude: number | null
+  geo_source: "GOOGLE_PLACES" | "LEGACY_BACKFILL" | null
+  geo_resolved_at: Date | null
   operating_radius_km: number
-  onboarding_category_slug: string | null
   categories: Array<{ id: string; name: string }> | null
-  services: Array<{ id: string; name: string }> | null
-  fallback_category: { id: string; name: string } | null
+  interventions: Array<{ id: string; name: string }> | null
 }
 
 type ContactChangeRow = {
@@ -37,18 +42,13 @@ export type CompanyProfileData = {
   vatNumber: string
   phone: string
   website: string | null
-  address: string | null
-  city: string | null
-  postalCode: string | null
-  province: string | null
-  latitude: number | null
-  longitude: number | null
+  geoPlace: GeoPlace | null
   operatingRadiusKm: number
-  onboardingCategorySlug: string | null
+  isConfigured: boolean
 }
 
 export type CompanyProfileCategory = { id: string; name: string }
-export type CompanyProfileService = { id: string; name: string }
+export type CompanyProfileIntervention = { id: string; name: string }
 
 export type CompanyContactChangePendingRequest = {
   id: string
@@ -66,9 +66,35 @@ export type CompanyProfileCreditSummary = {
 export type GetCompanyProfilePageResult = {
   company: CompanyProfileData | null
   categories: CompanyProfileCategory[]
-  services: CompanyProfileService[]
+  interventions: CompanyProfileIntervention[]
   contactChangeRequests: CompanyContactChangePendingRequest[]
   credit: CompanyProfileCreditSummary
+}
+
+function rowToGeoPlace(row: CompanyProfileRow): GeoPlace | null {
+  if (
+    !row.geo_place_id ||
+    !row.geo_formatted_address ||
+    !row.geo_city ||
+    row.geo_latitude === null ||
+    row.geo_longitude === null ||
+    !row.geo_source ||
+    !row.geo_resolved_at
+  ) {
+    return null
+  }
+
+  return {
+    placeId: row.geo_place_id_external,
+    formattedAddress: row.geo_formatted_address,
+    city: row.geo_city,
+    postalCode: row.geo_postal_code,
+    province: row.geo_province,
+    latitude: row.geo_latitude,
+    longitude: row.geo_longitude,
+    source: row.geo_source,
+    resolvedAt: row.geo_resolved_at.toISOString(),
+  }
 }
 
 async function getCreditSummary(
@@ -91,7 +117,7 @@ export async function getCompanyProfilePage(
   const now = new Date()
 
   const [companyRows, contactRows, credit] = await Promise.all([
-    // Company + categories + services (fallback category included)
+    // Company + geo location + categories + interventions
     prisma.$queryRaw<Array<CompanyProfileRow>>`
       SELECT
         c."id"                     AS id,
@@ -99,14 +125,17 @@ export async function getCompanyProfilePage(
         c."vatNumber"              AS vat_number,
         c."phone"                  AS phone,
         c."website"                AS website,
-        c."address"                AS address,
-        c."city"                   AS city,
-        c."postalCode"             AS postal_code,
-        c."province"               AS province,
-        c."latitude"               AS latitude,
-        c."longitude"              AS longitude,
+        gl."id"                    AS geo_place_id,
+        gl."placeId"               AS geo_place_id_external,
+        gl."formattedAddress"      AS geo_formatted_address,
+        gl."city"                  AS geo_city,
+        gl."postalCode"            AS geo_postal_code,
+        gl."province"              AS geo_province,
+        gl."latitude"              AS geo_latitude,
+        gl."longitude"             AS geo_longitude,
+        gl."source"                AS geo_source,
+        gl."resolvedAt"            AS geo_resolved_at,
         c."operatingRadiusKm"      AS operating_radius_km,
-        c."onboardingCategorySlug" AS onboarding_category_slug,
         (
           SELECT COALESCE(
             json_agg(jsonb_build_object('id', cat."id", 'name', cat."name") ORDER BY cc."createdAt"),
@@ -118,23 +147,15 @@ export async function getCompanyProfilePage(
         )                          AS categories,
         (
           SELECT COALESCE(
-            json_agg(jsonb_build_object('id', svc."id", 'name', svc."name") ORDER BY svc."name"),
+            json_agg(jsonb_build_object('id', iv."id", 'name', iv."name") ORDER BY iv."name"),
             '[]'::json
           )
-          FROM "CompanyService" cs
-          JOIN "Service" svc ON svc."id" = cs."serviceId"
-          WHERE cs."companyId" = c."id"
-        )                          AS services,
-        (
-          SELECT jsonb_build_object('id', fc."id", 'name', fc."name")
-          FROM "Category" fc
-          WHERE fc."slug" = c."onboardingCategorySlug"
-            AND NOT EXISTS (
-              SELECT 1 FROM "CompanyCategory" cc2
-              WHERE cc2."companyId" = c."id"
-            )
-        )                          AS fallback_category
+          FROM "CompanyIntervention" ci
+          JOIN "Intervention" iv ON iv."id" = ci."interventionId"
+          WHERE ci."companyId" = c."id"
+        )                          AS interventions
       FROM "Company" c
+      LEFT JOIN "GeoLocation" gl ON gl."id" = c."geoLocationId"
       WHERE c."id" = ${actor.company.id}
     `,
 
@@ -163,24 +184,24 @@ export async function getCompanyProfilePage(
     return {
       company: null,
       categories: [],
-      services: [],
+      interventions: [],
       contactChangeRequests: [],
       credit,
     }
   }
 
-  const rawCategories = (row.categories as Array<{ id: string; name: string }> | null) ?? []
-  const fallback = row.fallback_category as { id: string; name: string } | null
-
+  // Real saved configuration only — no onboardingCategorySlug fallback.
+  // See docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md.
   const categories: CompanyProfileCategory[] =
-    rawCategories.length > 0
-      ? rawCategories
-      : fallback
-        ? [fallback]
-        : []
+    (row.categories as Array<{ id: string; name: string }> | null) ?? []
 
-  const services: CompanyProfileService[] =
-    (row.services as Array<{ id: string; name: string }> | null) ?? []
+  const interventions: CompanyProfileIntervention[] =
+    (row.interventions as Array<{ id: string; name: string }> | null) ?? []
+
+  const { isConfigured } = deriveCompanyConfigurationStatus({
+    categoryIds: categories.map((c) => c.id),
+    interventionIds: interventions.map((i) => i.id),
+  })
 
   const contactChangeRequests: CompanyContactChangePendingRequest[] = contactRows.map(
     (r) => ({
@@ -198,15 +219,10 @@ export async function getCompanyProfilePage(
     vatNumber: row.vat_number,
     phone: row.phone,
     website: row.website,
-    address: row.address,
-    city: row.city,
-    postalCode: row.postal_code,
-    province: row.province,
-    latitude: row.latitude,
-    longitude: row.longitude,
+    geoPlace: rowToGeoPlace(row),
     operatingRadiusKm: Number(row.operating_radius_km),
-    onboardingCategorySlug: row.onboarding_category_slug,
+    isConfigured,
   }
 
-  return { company, categories, services, contactChangeRequests, credit }
+  return { company, categories, interventions, contactChangeRequests, credit }
 }

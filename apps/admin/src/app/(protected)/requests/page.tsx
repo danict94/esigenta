@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { listAdminRequests } from "@esigenta/domain";
+import { listAdminRequests, listUnverifiedRequests } from "@esigenta/domain";
 import { Badge, Card, PageShell } from "@esigenta/ui";
 
 export const dynamic = "force-dynamic";
@@ -91,7 +91,10 @@ function getStatusLabel(status: string) {
 }
 
 export default async function RequestsModerationPage() {
-  const requests = await listAdminRequests();
+  const [requests, unverifiedRequests] = await Promise.all([
+    listAdminRequests(),
+    listUnverifiedRequests(),
+  ]);
 
   return (
     <PageShell size="lg">
@@ -120,6 +123,29 @@ export default async function RequestsModerationPage() {
           </Link>
         </div>
       </header>
+
+      {unverifiedRequests.length > 0 ? (
+        <Link href="/requests/non-verificate" className="mt-8 block">
+          <Card className="border-2 border-border-focus bg-surface-secondary p-5 transition-colors hover:border-brand-primary">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-text-primary">
+                  Richieste in attesa di verifica email
+                </p>
+                <p className="mt-1 text-sm text-text-secondary">
+                  Non sono nella coda di revisione e non possono entrare nel
+                  marketplace finché il cliente non conferma l&apos;email (o
+                  un admin la verifica manualmente).
+                </p>
+              </div>
+
+              <Badge variant="danger">
+                {unverifiedRequests.length} da recuperare
+              </Badge>
+            </div>
+          </Card>
+        </Link>
+      ) : null}
 
       <section className="mt-8 border border-border-primary bg-surface-secondary p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

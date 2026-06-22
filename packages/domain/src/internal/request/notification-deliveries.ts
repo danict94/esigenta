@@ -131,8 +131,9 @@ export async function listPendingEmailNotificationDeliveriesForRequest(
                 id: true,
                 requestCode: true,
                 interventionSlug: true,
-                city: true,
-                postalCode: true,
+                geoLocation: {
+                  select: { city: true, postalCode: true },
+                },
                 createdAt: true,
               },
             },
@@ -149,8 +150,15 @@ export async function listPendingEmailNotificationDeliveriesForRequest(
     idempotencyKey:
       delivery.idempotencyKey,
     attemptCount: delivery.attemptCount,
-    request:
-      delivery.requestDispatch.request,
+    request: {
+      id: delivery.requestDispatch.request.id,
+      requestCode: delivery.requestDispatch.request.requestCode,
+      interventionSlug: delivery.requestDispatch.request.interventionSlug,
+      city: delivery.requestDispatch.request.geoLocation?.city ?? null,
+      postalCode:
+        delivery.requestDispatch.request.geoLocation?.postalCode ?? null,
+      createdAt: delivery.requestDispatch.request.createdAt,
+    },
   }))
 }
 

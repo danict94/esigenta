@@ -125,13 +125,7 @@ function resolveComplexity(
 function hasGeoContext(
   draft: RequestDraft,
 ): boolean {
-  return Boolean(
-    draft.geo.latitude !== undefined ||
-      draft.geo.longitude !== undefined ||
-      draft.geo.address ||
-      draft.geo.city ||
-      draft.geo.postalCode,
-  )
+  return draft.geo !== null
 }
 
 function hasContactContext(

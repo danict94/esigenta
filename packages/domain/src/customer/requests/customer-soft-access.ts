@@ -194,7 +194,9 @@ export async function getRequestStatusByToken({
         requestCode: true,
         status: true,
         interventionSlug: true,
-        city: true,
+        geoLocation: {
+          select: { city: true },
+        },
         createdAt: true,
         verifiedAt: true,
         customerEmail: true,
@@ -233,7 +235,7 @@ export async function getRequestStatusByToken({
     status: request.status,
     interventionSlug:
       request.interventionSlug,
-    city: request.city,
+    city: request.geoLocation?.city ?? null,
     createdAt: request.createdAt,
     verifiedAt: request.verifiedAt,
     historyAccessToken:
@@ -357,7 +359,9 @@ export async function getCustomerRequestsByHistoryToken(
         requestCode: true,
         status: true,
         interventionSlug: true,
-        city: true,
+        geoLocation: {
+          select: { city: true },
+        },
         createdAt: true,
       },
     })
@@ -368,7 +372,7 @@ export async function getCustomerRequestsByHistoryToken(
     status: request.status,
     interventionSlug:
       request.interventionSlug,
-    city: request.city,
+    city: request.geoLocation?.city ?? null,
     createdAt: request.createdAt,
   }))
 }
@@ -396,7 +400,9 @@ export async function getCustomerRequestByHistoryToken({
         requestCode: true,
         status: true,
         interventionSlug: true,
-        city: true,
+        geoLocation: {
+          select: { city: true },
+        },
         createdAt: true,
         structuredData: true,
       },
@@ -417,7 +423,7 @@ export async function getCustomerRequestByHistoryToken({
     status: request.status,
     interventionSlug:
       request.interventionSlug,
-    city: request.city,
+    city: request.geoLocation?.city ?? null,
     createdAt: request.createdAt,
     structuredData:
       request.structuredData,

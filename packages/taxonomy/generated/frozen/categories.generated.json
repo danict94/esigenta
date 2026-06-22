@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cartongessista",
+    "slug": "cartongessista",
+    "name": "Cartongessista",
+    "projectGroups": [
+      "cartongesso"
+    ]
+  },
+  {
+    "id": "elettricista",
+    "slug": "elettricista",
+    "name": "Elettricista",
+    "projectGroups": [
+      "impianti-elettrici"
+    ],
+    "aliases": [
+      "impresa elettrica"
+    ]
+  },
+  {
+    "id": "idraulico",
+    "slug": "idraulico",
+    "name": "Idraulico",
+    "projectGroups": [
+      "impianti-idraulici"
+    ],
+    "aliases": [
+      "impresa idraulica"
+    ]
+  },
+  {
+    "id": "imbianchino",
+    "slug": "imbianchino",
+    "name": "Imbianchino",
+    "projectGroups": [
+      "finiture"
+    ],
+    "aliases": [
+      "pittore",
+      "tinteggiatore"
+    ]
+  },
+  {
+    "id": "impresa-edile",
+    "slug": "impresa-edile",
+    "name": "Impresa edile",
+    "projectGroups": [
+      "opere-murarie",
+      "ristrutturazioni",
+      "tetti"
+    ],
+    "aliases": [
+      "ditta edile",
+      "impresa di costruzioni"
+    ]
+  },
+  {
+    "id": "installatore-fotovoltaico",
+    "slug": "installatore-fotovoltaico",
+    "name": "Installatore fotovoltaico",
+    "projectGroups": [
+      "fotovoltaico"
+    ]
+  },
+  {
+    "id": "tecnico-climatizzazione",
+    "slug": "tecnico-climatizzazione",
+    "name": "Tecnico climatizzazione",
+    "projectGroups": [
+      "climatizzazione"
+    ]
+  }
+]

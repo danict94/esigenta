@@ -21,6 +21,15 @@ export type CompanyActor = {
   company: {
     id: string
     status: CompanyStatus
+    /**
+     * Carried on the actor (not re-fetched by callers) specifically so
+     * isCompanyMarketplaceReady (marketplace-policy.ts) can be called
+     * directly with actor.company, with no implicit reliance on the
+     * isActive/deletedAt filter already applied below — see
+     * docs/domain-invariants/02_MARKETPLACE_READINESS.md.
+     */
+    isActive: boolean
+    deletedAt: Date | null
   }
   role: CompanyMemberRole
 }
@@ -35,6 +44,8 @@ type MembershipRow = {
   user_email: string
   company_id: string
   company_status: CompanyStatus
+  company_is_active: boolean
+  company_deleted_at: Date | null
 }
 
 function rowToActor(row: MembershipRow): CompanyActor {
@@ -47,6 +58,8 @@ function rowToActor(row: MembershipRow): CompanyActor {
     company: {
       id: row.company_id,
       status: row.company_status,
+      isActive: row.company_is_active,
+      deletedAt: row.company_deleted_at,
     },
     role: row.role,
   }
@@ -63,7 +76,9 @@ async function listActiveMembershipsForUser(userId: string): Promise<CompanyActo
       u."name"        AS user_name,
       u."email"       AS user_email,
       co."id"         AS company_id,
-      co."status"     AS company_status
+      co."status"     AS company_status,
+      co."isActive"   AS company_is_active,
+      co."deletedAt"  AS company_deleted_at
     FROM "CompanyMembership" cm
     JOIN "User"    u  ON u."id"  = cm."userId"
     JOIN "Company" co ON co."id" = cm."companyId"
@@ -84,7 +99,9 @@ async function getActiveMembershipForUser(userId: string, companyId: string): Pr
       u."name"        AS user_name,
       u."email"       AS user_email,
       co."id"         AS company_id,
-      co."status"     AS company_status
+      co."status"     AS company_status,
+      co."isActive"   AS company_is_active,
+      co."deletedAt"  AS company_deleted_at
     FROM "CompanyMembership" cm
     JOIN "User"    u  ON u."id"  = cm."userId"
     JOIN "Company" co ON co."id" = cm."companyId"

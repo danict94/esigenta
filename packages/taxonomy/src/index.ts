@@ -1,31 +1,30 @@
 export type {
   RuntimePresetSlug,
-  TaxonomyCategory,
-  TaxonomyDomain,
-  TaxonomyIntervention,
   TaxonomySearchEntityType,
   TaxonomySearchResult,
-  TaxonomySector,
-  TaxonomyService,
-  TaxonomySource,
 } from "./shared/types"
 
-export { taxonomySource } from "./source"
+export { frozenTaxonomySource } from "./frozen"
+
+export type {
+  FrozenCategory,
+  FrozenIntervention,
+  FrozenProjectGroup,
+  FrozenAlias,
+  FrozenTaxonomySource,
+} from "./frozen"
 
 export {
   getPopularInterventions,
+  getProfessionPage,
+  listProfessionPageCategorySlugs,
   resolveInterventionForFunnel,
   searchTaxonomy,
 } from "./queries"
 
-export type { InterventionForFunnel } from "./queries"
-
-export {
-  listServicesForCategory,
-  sortTaxonomyDiscoveryInterventions,
-} from "./domain"
-
 export type {
-  TaxonomyDiscoveryIntervention,
-  TaxonomyDiscoveryService,
-} from "./domain"
+  InterventionForFunnel,
+  ProfessionPage,
+  ProfessionPageIntervention,
+  ProfessionPageProjectGroup,
+} from "./queries"

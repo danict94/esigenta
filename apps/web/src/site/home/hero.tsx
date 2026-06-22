@@ -1,8 +1,16 @@
+import { BadgeCheck, Gift, Lock } from "lucide-react";
+
 import { Container, tokens } from "@esigenta/ui";
 
 import { Navbar } from "../shell/navbar";
 
 import { FunnelEntry } from "./funnel-entry";
+
+const trustRowItems = [
+  { Icon: Gift, text: "Richiesta gratuita e senza impegno" },
+  { Icon: Lock, text: "I dati arrivano solo ai professionisti che scegli" },
+  { Icon: BadgeCheck, text: "Professionisti verificati prima di risponderti" },
+] as const;
 
 /**
  * Hero (Phase 20.9E) è responsabile solo di layout/titolo/contenitore
@@ -35,6 +43,15 @@ export function Hero() {
           <div className={tokens.home.hero.searchWrap}>
             <FunnelEntry searchVariant="hero" />
           </div>
+
+          <ul className={tokens.home.hero.trustRow}>
+            {trustRowItems.map(({ Icon, text }) => (
+              <li key={text} className={tokens.home.hero.trustItem}>
+                <Icon className={tokens.home.hero.trustIcon} aria-hidden={true} />
+                <span className={tokens.home.hero.trustText}>{text}</span>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
     </>

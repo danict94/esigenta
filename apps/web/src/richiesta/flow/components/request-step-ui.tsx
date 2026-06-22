@@ -13,15 +13,13 @@ import {
 
 import type { RuntimeContactAnswerField } from "@esigenta/funnel";
 
+import type { GeoPlace } from "@esigenta/shared";
+
 import { CityAutocomplete } from "../../../ui/location/city-autocomplete";
 import { RequestPhotoUpload } from "./request-photo-upload";
 
 type FunnelSubmittedRequest = {
-  requestDraft: {
-    matchingSignals: {
-      requiredServiceSlugs: string[];
-    };
-  };
+  requestDraft: unknown;
 };
 
 type RequestStepUIProps = {
@@ -129,7 +127,12 @@ function renderCapabilityInput({
     }
 
     case "location":
-      return <CityAutocomplete value={value} onChange={onChange} />;
+      return (
+        <CityAutocomplete
+          value={value as GeoPlace | null}
+          onChange={onChange}
+        />
+      );
 
     case "single_select":
       return (

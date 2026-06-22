@@ -5,7 +5,13 @@ import type {
 
 import type { CompanyActor } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
-import { getDistanceKm } from "@esigenta/shared"
+
+import {
+  resolveCompanyRequestEligibility,
+} from "./company-request-eligibility"
+import {
+  evaluateRequestVisibility,
+} from "./request-visibility"
 
 import {
   listAttachedRequestPhotos,
@@ -86,13 +92,13 @@ async function measureAsync<T>(
   }
 }
 
-// ─── Type guard ───────────────────────────────────────────────────────────────
-
-function hasFiniteNumber(v: number | null): v is number {
-  return typeof v === "number" && Number.isFinite(v)
-}
-
 // ─── Orchestrator ─────────────────────────────────────────────────────────────
+//
+// Visibility is decided in exactly one place — evaluateRequestVisibility
+// (request-visibility.ts) — combining the same eligibility computation the
+// browse list uses (company-request-eligibility.ts) with this request's
+// grants (unlock/save/dispatch). See
+// docs/domain-invariants/03_REQUEST_VISIBILITY.md.
 
 export async function getCompanyRequestDetailPage(
   actor: CompanyActor,
@@ -106,24 +112,16 @@ export async function getCompanyRequestDetailPage(
     return { ok: false, code: "not_found", message: "Richiesta non trovata." }
   }
 
-  // Marketplace check via actor — resolveCompanyActorFromUser guarantees
-  // isActive: true and deletedAt: null, so only status needs checking.
-  if (actor.company.status !== "APPROVED") {
-    return { ok: false, code: "not_found", message: "Richiesta non trovata." }
-  }
-
-  // Parallel batch: lean company geo + request + unlock + photos.
-  // No JOINs on company — actor already validated isActive/deletedAt/status.
   const batchStart = performance.now()
-  const [company, request, unlock, photos] = await Promise.all([
-    // Only geo fields needed — status/isActive/categories not required here
+  const [company, request, unlock, eligibility, photos] = await Promise.all([
     measureAsync("detail-company-geo", recordPerf, () =>
       prisma.company.findUnique({
         where: { id: companyId },
         select: {
-          latitude: true,
-          longitude: true,
           operatingRadiusKm: true,
+          geoLocation: {
+            select: { latitude: true, longitude: true },
+          },
         },
       }),
     ),
@@ -134,19 +132,23 @@ export async function getCompanyRequestDetailPage(
           status: { in: visibleRequestStatuses },
           archivedAt: null,
           deletedAt: null,
-          latitude: { not: null },
-          longitude: { not: null },
+          geoLocationId: { not: null },
         },
         select: {
           id: true,
           requestCode: true,
           status: true,
+          interventionId: true,
           interventionSlug: true,
-          city: true,
-          address: true,
-          postalCode: true,
-          latitude: true,
-          longitude: true,
+          geoLocation: {
+            select: {
+              city: true,
+              formattedAddress: true,
+              postalCode: true,
+              latitude: true,
+              longitude: true,
+            },
+          },
           structuredData: true,
           creditCost: true,
           maxUnlocks: true,
@@ -158,6 +160,11 @@ export async function getCompanyRequestDetailPage(
           savedByCompanies: {
             where: { companyId },
             select: { createdAt: true },
+            take: 1,
+          },
+          dispatches: {
+            where: { companyId },
+            select: { id: true },
             take: 1,
           },
         },
@@ -182,38 +189,39 @@ export async function getCompanyRequestDetailPage(
         },
       }),
     ),
+    measureAsync("detail-eligibility", recordPerf, () =>
+      resolveCompanyRequestEligibility(companyId),
+    ),
     measureAsync("detail-photos", recordPerf, () =>
       listAttachedRequestPhotos(trimmedRequestId),
     ),
   ])
   recordPerf?.("detail-batch-total", Math.round(performance.now() - batchStart))
 
-  if (
-    !company ||
-    !hasFiniteNumber(company.latitude) ||
-    !hasFiniteNumber(company.longitude) ||
-    !hasFiniteNumber(company.operatingRadiusKm)
-  ) {
+  if (!request?.geoLocation) {
     return { ok: false, code: "not_found", message: "Richiesta non trovata." }
   }
 
-  if (
-    !request ||
-    !hasFiniteNumber(request.latitude) ||
-    !hasFiniteNumber(request.longitude)
-  ) {
-    return { ok: false, code: "not_found", message: "Richiesta non trovata." }
-  }
+  const hasSaved = request.savedByCompanies.length > 0
+  const hasDispatch = request.dispatches.length > 0
 
-  // Geo visibility check
-  const distanceKm = getDistanceKm({
-    fromLatitude: company.latitude,
-    fromLongitude: company.longitude,
-    toLatitude: request.latitude,
-    toLongitude: request.longitude,
+  const { visible } = evaluateRequestVisibility({
+    company: actor.company,
+    eligibility,
+    companyCoordinates: company?.geoLocation ?? null,
+    operatingRadiusKm: company?.operatingRadiusKm ?? null,
+    request: {
+      interventionId: request.interventionId,
+      coordinates: request.geoLocation,
+    },
+    grants: {
+      hasUnlock: Boolean(unlock),
+      hasSaved,
+      hasDispatch,
+    },
   })
 
-  if (distanceKm > company.operatingRadiusKm) {
+  if (!visible) {
     return { ok: false, code: "not_found", message: "Richiesta non trovata." }
   }
 
@@ -225,17 +233,17 @@ export async function getCompanyRequestDetailPage(
       requestCode: request.requestCode,
       status: request.status,
       interventionSlug: request.interventionSlug,
-      city: request.city,
-      address: request.address,
-      postalCode: request.postalCode,
-      latitude: request.latitude,
-      longitude: request.longitude,
+      city: request.geoLocation.city,
+      address: request.geoLocation.formattedAddress,
+      postalCode: request.geoLocation.postalCode,
+      latitude: request.geoLocation.latitude,
+      longitude: request.geoLocation.longitude,
       structuredData: request.structuredData,
       creditCost: request.creditCost,
       maxUnlocks: request.maxUnlocks,
       unlockCount: request.unlockCount,
       createdAt: request.createdAt,
-      isSaved: request.savedByCompanies.length > 0,
+      isSaved: hasSaved,
       hasUnlocked: Boolean(unlock),
       requestUnlockId: unlock?.id ?? null,
       unlockedAt: unlock?.createdAt ?? null,

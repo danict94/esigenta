@@ -7,6 +7,21 @@ export type {
 } from "./list-admin-requests"
 
 export {
+  listUnverifiedRequests,
+} from "./list-unverified-requests"
+export type {
+  AdminUnverifiedRequestItem,
+} from "./list-unverified-requests"
+
+export {
+  resendRequestVerificationEmail,
+} from "./resend-request-verification"
+export type {
+  ResendRequestVerificationEmailInput,
+  ResendRequestVerificationEmailResult,
+} from "./resend-request-verification"
+
+export {
   listPendingRequests,
 } from "./list-pending-requests"
 export type {

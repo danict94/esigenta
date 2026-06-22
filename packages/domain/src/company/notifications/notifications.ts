@@ -65,7 +65,7 @@ export async function listCompanyNotifications(
     return []
   }
 
-  return prisma.companyNotification.findMany({
+  const notifications = await prisma.companyNotification.findMany({
     where: {
       companyId: normalizedCompanyId,
     },
@@ -89,8 +89,9 @@ export async function listCompanyNotifications(
           id: true,
           requestCode: true,
           interventionSlug: true,
-          city: true,
-          postalCode: true,
+          geoLocation: {
+            select: { city: true, postalCode: true },
+          },
           createdAt: true,
         },
       },
@@ -103,6 +104,20 @@ export async function listCompanyNotifications(
       },
     },
   })
+
+  return notifications.map((notification) => ({
+    ...notification,
+    request: notification.request
+      ? {
+          id: notification.request.id,
+          requestCode: notification.request.requestCode,
+          interventionSlug: notification.request.interventionSlug,
+          city: notification.request.geoLocation?.city ?? null,
+          postalCode: notification.request.geoLocation?.postalCode ?? null,
+          createdAt: notification.request.createdAt,
+        }
+      : null,
+  }))
 }
 
 export async function countUnreadCompanyNotifications(

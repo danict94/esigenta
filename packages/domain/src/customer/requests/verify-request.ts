@@ -58,6 +58,78 @@ function createHistoryTokenExpiresAt(): Date {
   )
 }
 
+/**
+ * Single transition point for PENDING_VERIFICATION -> PENDING_REVIEW.
+ * Shared by the customer's own email-link verification
+ * (verifyWithAccessToken) and the admin "verify manually" recovery action
+ * (verifyRequestManually below) so the two paths can never diverge in what
+ * "verified" actually means for a request — no parallel publication
+ * lifecycle. Must run inside the caller's own transaction so it stays
+ * atomic with token consumption when a token is involved.
+ */
+async function advanceVerifiedRequestToReviewInTransaction({
+  tx,
+  request,
+  tokenEmail,
+  verifiedAt,
+}: {
+  tx: Prisma.TransactionClient
+  request: RequestForVerification
+  tokenEmail: string
+  verifiedAt: Date
+}): Promise<{
+  statusAccessToken: string
+  historyAccessToken: string
+}> {
+  await tx.request.update({
+    where: {
+      id: request.id,
+    },
+    data: {
+      status: "PENDING_REVIEW",
+      verifiedAt,
+    },
+  })
+
+  await tx.customer.updateMany({
+    where: request.customerId
+      ? {
+          id: request.customerId,
+          verifiedAt: null,
+        }
+      : {
+          email: tokenEmail,
+          verifiedAt: null,
+        },
+    data: {
+      verifiedAt,
+    },
+  })
+
+  const statusToken =
+    await createRequestStatusAccessToken({
+      client: tx,
+      email: tokenEmail,
+      requestId: request.id,
+      expiresAt:
+        createStatusTokenExpiresAt(),
+    })
+
+  const historyToken =
+    await createRequestStatusAccessToken({
+      client: tx,
+      email: tokenEmail,
+      requestId: null,
+      expiresAt:
+        createHistoryTokenExpiresAt(),
+    })
+
+  return {
+    statusAccessToken: statusToken.token,
+    historyAccessToken: historyToken.token,
+  }
+}
+
 async function verifyWithAccessToken({
   request,
   tokenId,
@@ -80,14 +152,7 @@ async function verifyWithAccessToken({
     })
   }
 
-  let statusAccessToken:
-    | string
-    | undefined
-  let historyAccessToken:
-    | string
-    | undefined
-
-  await prisma.$transaction(
+  const tokens = await prisma.$transaction(
     async (tx) => {
       const consumed =
         await consumeRequestVerificationAccessToken({
@@ -105,70 +170,20 @@ async function verifyWithAccessToken({
         })
       }
 
-      await tx.request.update({
-        where: {
-          id: request.id,
-        },
-        data: {
-          status: "PENDING_REVIEW",
-          verifiedAt,
-        },
+      return advanceVerifiedRequestToReviewInTransaction({
+        tx,
+        request,
+        tokenEmail,
+        verifiedAt,
       })
-
-      await tx.customer.updateMany({
-        where: request.customerId
-          ? {
-              id: request.customerId,
-              verifiedAt: null,
-            }
-          : {
-              email: tokenEmail,
-              verifiedAt: null,
-            },
-        data: {
-          verifiedAt,
-        },
-      })
-
-      const statusToken =
-        await createRequestStatusAccessToken({
-          client: tx,
-          email: tokenEmail,
-          requestId: request.id,
-          expiresAt:
-            createStatusTokenExpiresAt(),
-        })
-
-      statusAccessToken =
-        statusToken.token
-
-      const historyToken =
-        await createRequestStatusAccessToken({
-          client: tx,
-          email: tokenEmail,
-          requestId: null,
-          expiresAt:
-            createHistoryTokenExpiresAt(),
-        })
-
-      historyAccessToken =
-        historyToken.token
     },
   )
 
   return {
     requestId: request.id,
     status: "PENDING_REVIEW",
-    ...(statusAccessToken
-      ? {
-          statusAccessToken,
-        }
-      : {}),
-    ...(historyAccessToken
-      ? {
-          historyAccessToken,
-        }
-      : {}),
+    statusAccessToken: tokens.statusAccessToken,
+    historyAccessToken: tokens.historyAccessToken,
   }
 }
 
@@ -458,4 +473,82 @@ export async function verifyRequestEmail({
     token,
     verifiedAt,
   })
+}
+
+export type VerifyRequestManuallyInput = {
+  requestId: string
+}
+
+/**
+ * Admin recovery path for PENDING_VERIFICATION RECOVERY (P0): lets an admin
+ * push a request into the normal moderation workflow when the customer
+ * never received/clicked their verification email. Does NOT bypass
+ * moderation or create a second publish path — it only performs the exact
+ * same PENDING_VERIFICATION -> PENDING_REVIEW transition the customer's own
+ * email link performs (advanceVerifiedRequestToReviewInTransaction above),
+ * minus the token-consumption step, since there is no customer token
+ * involved here. publishReviewedRequest/reviewRequest remain the only way
+ * to move a request past PENDING_REVIEW. See
+ * docs/pre-release/PENDING_VERIFICATION_RECOVERY_IMPLEMENTATION.md.
+ */
+export async function verifyRequestManually({
+  requestId,
+}: VerifyRequestManuallyInput): Promise<VerifyRequestEmailResult> {
+  const verifiedAt = new Date()
+
+  const request = await prisma.request.findUnique({
+    where: {
+      id: requestId,
+    },
+    select: {
+      id: true,
+      status: true,
+      verifiedAt: true,
+      customerEmail: true,
+      customerId: true,
+      structuredData: true,
+    },
+  })
+
+  if (!request) {
+    throw new RequestFlowError({
+      code: "request_not_found",
+      message: "Request could not be found.",
+      statusCode: 404,
+    })
+  }
+
+  if (
+    request.verifiedAt ||
+    request.status !== "PENDING_VERIFICATION"
+  ) {
+    return {
+      requestId: request.id,
+      status: "ALREADY_VERIFIED",
+    }
+  }
+
+  if (!request.customerEmail) {
+    throw new RequestFlowError({
+      code: "missing_customer_email",
+      message: "Request has no customer email to verify.",
+      statusCode: 400,
+    })
+  }
+
+  const tokens = await prisma.$transaction((tx) =>
+    advanceVerifiedRequestToReviewInTransaction({
+      tx,
+      request,
+      tokenEmail: request.customerEmail as string,
+      verifiedAt,
+    }),
+  )
+
+  return {
+    requestId: request.id,
+    status: "PENDING_REVIEW",
+    statusAccessToken: tokens.statusAccessToken,
+    historyAccessToken: tokens.historyAccessToken,
+  }
 }

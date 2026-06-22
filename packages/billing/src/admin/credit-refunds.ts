@@ -369,7 +369,9 @@ export async function listCreditRefundRequestsForAdminReview(): Promise<
           select: {
             id: true,
             requestCode: true,
-            city: true,
+            geoLocation: {
+              select: { city: true },
+            },
             interventionSlug: true,
             status: true,
             customerName: true,
@@ -468,6 +470,10 @@ export async function listCreditRefundRequestsForAdminReview(): Promise<
 
       return {
         ...refundRequest,
+        request: {
+          ...refundRequest.request,
+          city: refundRequest.request.geoLocation?.city ?? null,
+        },
         companyRefundRequestsLast30Days:
           counts.total,
         companyApprovedRefundRequestsLast30Days:

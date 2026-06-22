@@ -89,7 +89,7 @@ function mapCompanyListItem(company: {
   name: string
   vatNumber: string
   phone: string
-  city: string | null
+  geoLocation: { city: string } | null
   status: CompanyStatus
   approvedAt: Date | null
   suspendedAt: Date | null
@@ -109,7 +109,7 @@ function mapCompanyListItem(company: {
     name: company.name,
     vatNumber: company.vatNumber,
     phone: company.phone,
-    city: company.city,
+    city: company.geoLocation?.city ?? null,
     status: company.status,
     approvedAt: company.approvedAt,
     suspendedAt: company.suspendedAt,
@@ -154,7 +154,9 @@ export async function listAdminCompanies({
         name: true,
         vatNumber: true,
         phone: true,
-        city: true,
+        geoLocation: {
+          select: { city: true },
+        },
         status: true,
         approvedAt: true,
         suspendedAt: true,

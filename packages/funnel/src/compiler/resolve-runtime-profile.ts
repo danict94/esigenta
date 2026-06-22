@@ -42,12 +42,6 @@ import {
 export type ResolvedIntervention = {
   interventionSlug: string
 
-  categorySlugs: string[]
-
-  serviceSlugs: string[]
-
-  domainSlugs: string[]
-
   runtimePresetSlugs?: RuntimePresetSlug[]
 }
 

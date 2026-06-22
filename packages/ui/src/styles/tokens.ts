@@ -230,6 +230,16 @@ const formControlTokens = {
   checkbox: `${sizingTokens.checkbox.md} accent-brand-primary`,
 } as const;
 
+// Shared display/subtitle scale for homepage section headings — keeps
+// hero / howItWorks / professionalCta / projectIdeas on one type system
+// instead of each section carrying its own bespoke clamp values.
+const homeTypeScale = {
+  title:
+    "text-[2.25rem] font-semibold leading-[1.12] tracking-[-0.045em] text-text-primary md:text-[2.75rem] lg:text-[3.25rem]",
+  subtitle:
+    "mt-6 max-w-[40rem] text-[1.25rem] font-normal leading-[1.4] tracking-[-0.02em] text-text-primary md:mt-7 md:text-[1.5rem]",
+} as const;
+
 const homeTokens = {
   railFrame: "",
   rail: "",
@@ -263,7 +273,7 @@ const homeTokens = {
       "hidden items-center gap-10 md:flex lg:gap-12 xl:gap-14",
     desktopMenuEmbedded: "gap-6 lg:gap-9",
     link:
-      "font-[family-name:var(--fp-font-nav)] text-[0.9375rem] font-medium leading-none tracking-[-0.06em] text-text-primary transition-colors hover:text-accent-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-elevated lg:text-base",
+      "font-[family-name:var(--fp-font-nav)] text-[0.9375rem] font-medium leading-none tracking-[-0.06em] text-text-primary transition-colors hover:text-accent-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-elevated lg:text-",
     linkEmbedded:
       "text-text-on-hero-secondary hover:text-text-on-hero-primary focus-visible:ring-offset-surface-dark lg:text-sm",
     accentLink: "font-semibold text-text-primary",
@@ -296,10 +306,15 @@ const homeTokens = {
     container:
       "flex min-h-[var(--fp-home-hero-min-height)] flex-col items-center justify-center py-14 text-center md:min-h-[30rem] md:py-16 lg:min-h-[32.5rem] lg:py-[4.25rem]",
     title:
-      "max-w-[var(--fp-home-hero-title-max-width)] text-[2.35rem] font-semibold leading-[1.08] tracking-[-0.04em] text-text-primary sm:text-[2.6rem] md:text-[3.1rem] lg:text-[3.85rem]",
+      `max-w-[var(--fp-home-hero-title-max-width)] ${homeTypeScale.title}`,
     titleAccent: "text-accent-warm",
     question:
       "mt-9 text-[1.35rem] font-medium leading-tight tracking-[-0.02em] text-text-primary md:mt-10 md:text-[1.65rem]",
+    trustRow:
+      "mt-6 flex w-full max-w-[var(--fp-home-hero-search-width)] flex-col items-center gap-3 text-sm text-text-secondary sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6 sm:gap-y-2 md:mt-7",
+    trustItem: "inline-flex items-center gap-2",
+    trustIcon: "size-4 shrink-0 text-text-muted",
+    trustText: "leading-tight",
     searchWrap:
       "relative mt-5 w-full max-w-[var(--fp-home-hero-search-width)] md:mt-6",
     searchForm:
@@ -331,10 +346,8 @@ const homeTokens = {
     root:
       `${semanticSurfaceTokens.muted} py-16 font-[family-name:var(--fp-font-nav)] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] md:py-20 lg:py-24`,
     header: "max-w-3xl",
-    title:
-      "text-[2.625rem] font-normal leading-[1.06] tracking-[-0.06em] text-text-primary md:text-[3.5rem] lg:text-[3.75rem] lg:leading-[1.06]",
-    subtitle:
-      "mt-6 max-w-[46rem] text-[1.45rem] font-normal leading-[1.3] tracking-[-0.06em] text-text-primary md:mt-7 md:text-[1.75rem] md:leading-[1.3]",
+    title: homeTypeScale.title,
+    subtitle: homeTypeScale.subtitle,
     list:
       "relative mt-12 grid gap-10 md:mt-14 md:gap-11 lg:mt-16 lg:grid-cols-3 lg:gap-8",
     line:
@@ -366,12 +379,10 @@ const homeTokens = {
     phoneImage: "object-contain",
     copy:
       "mx-auto w-full max-w-[38rem] lg:mx-0 lg:pt-8",
-    title:
-      "text-[2.375rem] font-normal leading-[1.14] tracking-[-0.06em] text-text-primary md:text-[3.25rem] md:leading-[1.16] lg:text-[4rem] lg:leading-[1.16]",
+    title: homeTypeScale.title,
     accentLine:
       "mt-8 h-1.5 w-20 rounded-full bg-accent-warm md:mt-9 md:w-[5.5rem]",
-    subtitle:
-      "mt-10 text-[1.625rem] font-normal leading-[1.35] tracking-[-0.06em] text-text-primary md:text-[1.875rem] md:leading-[1.4] lg:text-[2.125rem]",
+    subtitle: homeTypeScale.subtitle,
     cta:
       "mt-12 inline-flex max-w-full items-center gap-4 text-[1.375rem] font-normal leading-tight tracking-[-0.06em] text-accent-warm transition-colors hover:text-accent-warm-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-base md:mt-14 md:gap-5 md:text-[1.625rem] lg:mt-16 lg:text-[1.875rem]",
     ctaIcon:
@@ -389,10 +400,8 @@ const homeTokens = {
       "order-2 h-[clamp(20rem,92vw,26.25rem)] w-full max-w-full rounded-xl bg-surface-muted md:h-[26rem] lg:order-none lg:aspect-[259/284] lg:h-auto lg:max-w-none",
     copy:
       "order-1 flex w-full max-w-full flex-col items-start pt-1 lg:order-none lg:-mt-3 lg:max-w-[28.25rem]",
-    title:
-      "max-w-full text-[2.375rem] font-normal leading-[1.05] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] sm:text-[2.5rem] md:text-[3.25rem] md:leading-[1.04] lg:max-w-[28.25rem] lg:text-[4rem] lg:font-semibold lg:leading-[1.02]",
-    description:
-      "mt-5 max-w-full text-[1.75rem] font-normal leading-[1.22] tracking-[-0.06em] text-text-primary [word-spacing:0.08em] md:mt-7 md:text-[2.25rem] md:leading-[1.18] lg:mt-6 lg:max-w-[20rem] lg:text-5xl lg:font-medium lg:leading-[1.4]",
+    title: `max-w-full lg:max-w-[28.25rem] ${homeTypeScale.title}`,
+    description: `max-w-full lg:max-w-[20rem] ${homeTypeScale.subtitle}`,
     cta:
       "mt-7 inline-flex items-center gap-2 text-base font-normal leading-none tracking-[-0.06em] text-text-primary [word-spacing:0.08em] transition-colors hover:text-accent-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm focus-visible:ring-offset-4 focus-visible:ring-offset-surface-base md:mt-8 lg:ml-12 lg:mt-10 lg:text-[0.9375rem] lg:font-medium",
     ctaIcon:

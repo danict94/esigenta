@@ -3,16 +3,22 @@ import type {
 } from "@prisma/client"
 
 import { prisma } from "@esigenta/database"
-import { getDistanceKm } from "@esigenta/shared"
+import { MAX_OPERATING_RADIUS_KM } from "@esigenta/shared"
 
 import type {
   RequestDispatchCandidate,
-  RequestDispatchServiceSource,
   ResolveRequestDispatchCandidatesResult,
 } from "./types"
 
 type DispatchResolverClient =
   Prisma.TransactionClient
+
+type CandidateRow = {
+  company_id: string
+  recipient_email: string | null
+  distance_km: number
+  operating_radius_km: number
+}
 
 function normalizeRequiredId(
   value: string,
@@ -20,15 +26,6 @@ function normalizeRequiredId(
   const trimmed = value.trim()
 
   return trimmed ? trimmed : null
-}
-
-function hasValidNumber(
-  value: number | null,
-): value is number {
-  return (
-    typeof value === "number" &&
-    Number.isFinite(value)
-  )
 }
 
 function normalizeEmail(
@@ -47,253 +44,90 @@ function normalizeEmail(
     : null
 }
 
-function uniqueStrings(values: string[]) {
-  return Array.from(new Set(values))
-}
-
-async function resolveRequestServiceIds({
-  client,
-  requestId,
-  interventionSlug,
-  requiredServiceIds,
-}: {
-  client: DispatchResolverClient
-  requestId: string
-  interventionSlug: string | null
-  requiredServiceIds: string[]
-}): Promise<
-  | {
-      ok: true
-      serviceSource: RequestDispatchServiceSource
-      serviceIds: string[]
-    }
-  | {
-      ok: false
-    }
-> {
-  const requestRequiredServiceIds =
-    uniqueStrings(requiredServiceIds)
-
-  if (requestRequiredServiceIds.length > 0) {
-    return {
-      ok: true,
-      serviceSource:
-        "request_required_service",
-      serviceIds: requestRequiredServiceIds,
-    }
-  }
-
-  const normalizedInterventionSlug =
-    interventionSlug?.trim()
-
-  if (!normalizedInterventionSlug) {
-    return {
-      ok: false,
-    }
-  }
-
-  const intervention =
-    await client.intervention.findUnique({
-      where: {
-        slug: normalizedInterventionSlug,
-      },
-      select: {
-        services: {
-          select: {
-            serviceId: true,
-          },
-        },
-      },
-    })
-
-  const interventionServiceIds =
-    uniqueStrings(
-      intervention?.services.map(
-        (service) => service.serviceId,
-      ) ?? [],
-    )
-
-  if (interventionServiceIds.length === 0) {
-    return {
-      ok: false,
-    }
-  }
-
-  return {
-    ok: true,
-    serviceSource: "intervention_service",
-    serviceIds: interventionServiceIds,
-  }
-}
-
+/**
+ * Intervention is the only matching unit (docs/taxonomy.md). A single
+ * indexed semi-join against CompanyIntervention, no Category/Service
+ * traversal — see
+ * docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §1-2 and
+ * docs/taxonomy-refoundation/07_QUERY_AND_INDEX_PLAN.md §B.
+ *
+ * GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md §5/§6): the radius
+ * check runs in SQL via the GiST-indexed earthdistance/cube extension, not
+ * as a JS-side full-table haversine scan. Each company has its own
+ * operatingRadiusKm, so the index pre-filter uses the shared upper bound
+ * (MAX_OPERATING_RADIUS_KM) — every company within that worst-case
+ * distance is fetched index-accelerated, then the exact per-company radius
+ * is applied as a second, cheap filter over that already-small set.
+ */
 async function resolveCandidates({
   client,
   requestLatitude,
   requestLongitude,
-  serviceIds,
-  categoryIds,
-  serviceSource,
+  interventionId,
 }: {
   client: DispatchResolverClient
   requestLatitude: number
   requestLongitude: number
-  serviceIds: string[]
-  categoryIds: string[]
-  serviceSource: RequestDispatchServiceSource
+  interventionId: string
 }): Promise<RequestDispatchCandidate[]> {
-  if (categoryIds.length === 0) {
-    return []
-  }
+  const maxRadiusMeters = MAX_OPERATING_RADIUS_KM * 1000
 
-  const companies =
-    await client.company.findMany({
-      where: {
-        isActive: true,
-        deletedAt: null,
-        status: "APPROVED",
-        latitude: {
-          not: null,
-        },
-        longitude: {
-          not: null,
-        },
-        operatingRadiusKm: {
-          gt: 0,
-        },
-        categories: {
-          some: {
-            categoryId: {
-              in: categoryIds,
-            },
-          },
-        },
-      },
-      select: {
-        id: true,
-        requestMatchingMode: true,
-        memberships: {
-          where: {
-            role: "OWNER",
-          },
-          take: 1,
-          select: {
-            user: {
-              select: {
-                email: true,
-              },
-            },
-          },
-        },
-        latitude: true,
-        longitude: true,
-        operatingRadiusKm: true,
-        categories: {
-          where: {
-            categoryId: {
-              in: categoryIds,
-            },
-          },
-          select: {
-            categoryId: true,
-          },
-        },
-        services: {
-          where: {
-            serviceId: {
-              in: serviceIds,
-            },
-          },
-          select: {
-            serviceId: true,
-          },
-        },
-      },
-    })
+  const rows = await client.$queryRaw<CandidateRow[]>`
+    SELECT
+      c."id" AS company_id,
+      u."email" AS recipient_email,
+      (
+        earth_distance(
+          ll_to_earth(${requestLatitude}, ${requestLongitude}),
+          ll_to_earth(gl."latitude", gl."longitude")
+        ) / 1000
+      ) AS distance_km,
+      c."operatingRadiusKm" AS operating_radius_km
+    FROM "Company" c
+    JOIN "GeoLocation" gl ON gl."id" = c."geoLocationId"
+    JOIN "CompanyIntervention" ci
+      ON ci."companyId" = c."id" AND ci."interventionId" = ${interventionId}
+    LEFT JOIN "CompanyMembership" cm
+      ON cm."companyId" = c."id" AND cm."role" = 'OWNER'
+    LEFT JOIN "User" u ON u."id" = cm."userId"
+    WHERE c."isActive" = true
+      AND c."deletedAt" IS NULL
+      AND c."status" = 'APPROVED'::"CompanyStatus"
+      AND c."operatingRadiusKm" > 0
+      AND earth_box(
+        ll_to_earth(${requestLatitude}, ${requestLongitude}),
+        ${maxRadiusMeters}
+      ) @> ll_to_earth(gl."latitude", gl."longitude")
+      AND earth_distance(
+        ll_to_earth(${requestLatitude}, ${requestLongitude}),
+        ll_to_earth(gl."latitude", gl."longitude")
+      ) <= c."operatingRadiusKm" * 1000
+    ORDER BY cm."createdAt" ASC
+  `
 
-  return companies.flatMap((company) => {
-    if (
-      !hasValidNumber(company.latitude) ||
-      !hasValidNumber(company.longitude) ||
-      company.operatingRadiusKm <= 0
-    ) {
+  const seenCompanyIds = new Set<string>()
+
+  return rows.flatMap((row) => {
+    if (seenCompanyIds.has(row.company_id)) {
       return []
     }
+    seenCompanyIds.add(row.company_id)
 
-    const matchedCategoryIds =
-      uniqueStrings(
-        company.categories.map(
-          (category) => category.categoryId,
-        ),
-      )
-
-    if (matchedCategoryIds.length === 0) {
-      return []
-    }
-
-    const matchedServiceIds =
-      uniqueStrings(
-        company.services.map(
-          (service) => service.serviceId,
-        ),
-      )
-
-    if (
-      company.requestMatchingMode ===
-        "SELECTED_SERVICES_ONLY" &&
-      matchedServiceIds.length === 0
-    ) {
-      return []
-    }
-
-    const distanceKm =
-      getDistanceKm({
-        fromLatitude: company.latitude,
-        fromLongitude: company.longitude,
-        toLatitude: requestLatitude,
-        toLongitude: requestLongitude,
-      })
-
-    if (
-      distanceKm > company.operatingRadiusKm
-    ) {
-      return []
-    }
-
-    const matchStrength =
-      matchedServiceIds.length > 0
-        ? "SERVICE_MATCH"
-        : "CATEGORY_MATCH"
+    const distanceKm = Number(row.distance_km)
+    const operatingRadiusKm = Number(row.operating_radius_km)
 
     const matchReason: Prisma.InputJsonObject = {
-      requestMatchingMode:
-        company.requestMatchingMode,
-      categoryMatchMode:
-        "derived_from_resolved_services",
-      serviceSource,
-      serviceMatchMode:
-        matchedServiceIds.length > 0
-          ? "any"
-          : "category_fallback",
-      matchStrength,
-      resolvedServiceIds: serviceIds,
-      derivedCategoryIds: categoryIds,
-      matchedCategoryIds,
-      matchedServiceIds,
+      interventionId,
       distanceKm,
-      operatingRadiusKm:
-        company.operatingRadiusKm,
+      operatingRadiusKm,
     }
 
     return [
       {
-        companyId: company.id,
-        recipientEmail: normalizeEmail(
-          company.memberships[0]?.user.email ?? null,
-        ),
+        companyId: row.company_id,
+        recipientEmail: normalizeEmail(row.recipient_email),
         distanceKm,
-        operatingRadiusKm:
-          company.operatingRadiusKm,
-        matchedServiceIds,
+        operatingRadiusKm,
         matchReason,
       },
     ]
@@ -324,12 +158,12 @@ export async function resolveRequestDispatchCandidatesWithClient(
         id: true,
         requestCode: true,
         interventionSlug: true,
-        city: true,
-        latitude: true,
-        longitude: true,
-        requiredServices: {
+        interventionId: true,
+        geoLocation: {
           select: {
-            serviceId: true,
+            city: true,
+            latitude: true,
+            longitude: true,
           },
         },
       },
@@ -343,10 +177,7 @@ export async function resolveRequestDispatchCandidatesWithClient(
     }
   }
 
-  if (
-    !hasValidNumber(request.latitude) ||
-    !hasValidNumber(request.longitude)
-  ) {
+  if (!request.geoLocation) {
     return {
       ok: false,
       code: "request_missing_coordinates",
@@ -355,57 +186,21 @@ export async function resolveRequestDispatchCandidatesWithClient(
     }
   }
 
-  const serviceResolution =
-    await resolveRequestServiceIds({
-      client,
-      requestId: request.id,
-      interventionSlug:
-        request.interventionSlug,
-      requiredServiceIds:
-        request.requiredServices.map(
-          (service) => service.serviceId,
-        ),
-    })
-
-  if (!serviceResolution.ok) {
+  if (!request.interventionId) {
     return {
       ok: false,
-      code: "request_services_not_resolved",
+      code: "request_intervention_not_resolved",
       message:
-        "Request services could not be resolved for dispatch.",
+        "Request intervention could not be resolved for dispatch.",
     }
   }
-
-  const categoryServices =
-    await client.categoryService.findMany({
-      where: {
-        serviceId: {
-          in: serviceResolution.serviceIds,
-        },
-      },
-      select: {
-        categoryId: true,
-      },
-    })
-
-  const categoryIds =
-    uniqueStrings(
-      categoryServices.map(
-        (categoryService) =>
-          categoryService.categoryId,
-      ),
-    )
 
   const candidates =
     await resolveCandidates({
       client,
-      requestLatitude: request.latitude,
-      requestLongitude: request.longitude,
-      serviceIds:
-        serviceResolution.serviceIds,
-      categoryIds,
-      serviceSource:
-        serviceResolution.serviceSource,
+      requestLatitude: request.geoLocation.latitude,
+      requestLongitude: request.geoLocation.longitude,
+      interventionId: request.interventionId,
     })
 
   return {
@@ -414,11 +209,8 @@ export async function resolveRequestDispatchCandidatesWithClient(
     requestCode: request.requestCode,
     interventionSlug:
       request.interventionSlug,
-    city: request.city,
-    resolvedServiceIds:
-      serviceResolution.serviceIds,
-    resolvedServiceCount:
-      serviceResolution.serviceIds.length,
+    interventionId: request.interventionId,
+    city: request.geoLocation.city,
     eligibleCompanyCount:
       candidates.length,
     candidates,

@@ -6,9 +6,9 @@ import { PageShell, cn, tokens } from "@esigenta/ui";
 import { listFeaturedServiceCatalogItems, getServiceCatalogItemHref } from "./catalog";
 // Side-effect (Phase 19.6H/19.6I): esegue il guard di coverage del catalogo
 // pubblico taxonomy-derived (validators.selftest + assertValidPublicCatalog). Deve
-// restare in un Server Component: taxonomySource trascina query Prisma/pg non
-// bundlabili per il browser — mai importare public-navigation/** da un Client
-// Component o dal barrel site/services/index.ts usato dalla home.
+// restare in un Server Component: il barrel pubblico di @esigenta/taxonomy trascina
+// query Prisma/pg non bundlabili per il browser — mai importare public-navigation/**
+// da un Client Component o dal barrel site/services/index.ts usato dalla home.
 import { buildPublicServiceMacroAreasWithItems } from "./public-navigation";
 import type { PublicServiceCard } from "./public-navigation";
 

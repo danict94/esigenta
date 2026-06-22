@@ -1,0 +1,106 @@
+[
+  {
+    "id": "cartongesso",
+    "slug": "cartongesso",
+    "name": "Cartongesso",
+    "interventionSlugs": [
+      "realizzare-controparete",
+      "realizzare-controsoffitto",
+      "realizzare-parete-cartongesso"
+    ],
+    "aliases": [
+      "cartongesso e pareti",
+      "lavori in cartongesso"
+    ]
+  },
+  {
+    "id": "climatizzazione",
+    "slug": "climatizzazione",
+    "name": "Climatizzazione",
+    "interventionSlugs": [
+      "fare-manutenzione-climatizzatore",
+      "installare-climatizzatore"
+    ]
+  },
+  {
+    "id": "finiture",
+    "slug": "finiture",
+    "name": "Finiture",
+    "interventionSlugs": [
+      "applicare-stucco-decorativo",
+      "intonacare-pareti",
+      "ripristinare-intonaco",
+      "tinteggiare-esterni",
+      "tinteggiare-interni"
+    ],
+    "aliases": [
+      "finiture edili",
+      "finiture interne",
+      "lavori di finitura"
+    ]
+  },
+  {
+    "id": "fotovoltaico",
+    "slug": "fotovoltaico",
+    "name": "Fotovoltaico",
+    "interventionSlugs": [
+      "installare-fotovoltaico",
+      "installare-fotovoltaico-con-accumulo"
+    ]
+  },
+  {
+    "id": "impianti-elettrici",
+    "slug": "impianti-elettrici",
+    "name": "Impianti elettrici",
+    "interventionSlugs": [
+      "fare-impianto-elettrico-nuovo",
+      "installare-illuminazione",
+      "rifare-impianto-elettrico",
+      "riparare-guasto-elettrico",
+      "riparare-quadro-elettrico"
+    ]
+  },
+  {
+    "id": "impianti-idraulici",
+    "slug": "impianti-idraulici",
+    "name": "Impianti idraulici",
+    "interventionSlugs": [
+      "disostruire-scarichi",
+      "installare-sanitari",
+      "rifare-impianto-idraulico-bagno",
+      "riparare-perdita-acqua",
+      "sostituire-box-doccia"
+    ]
+  },
+  {
+    "id": "opere-murarie",
+    "slug": "opere-murarie",
+    "name": "Opere murarie",
+    "interventionSlugs": [
+      "fare-massetto",
+      "fare-opere-murarie",
+      "ripristino-frontalino"
+    ]
+  },
+  {
+    "id": "ristrutturazioni",
+    "slug": "ristrutturazioni",
+    "name": "Ristrutturazioni",
+    "interventionSlugs": [
+      "ristrutturare-appartamento",
+      "ristrutturare-bagno",
+      "ristrutturare-casa",
+      "ristrutturare-cucina"
+    ]
+  },
+  {
+    "id": "tetti",
+    "slug": "tetti",
+    "name": "Tetti",
+    "interventionSlugs": [
+      "rifare-tetto",
+      "riparare-tetto",
+      "sistemare-grondaie"
+    ]
+  }
+]

@@ -48,46 +48,56 @@ model Category {
   sectorId String
   sector   Sector @relation(fields: [sectorId], references: [id], onDelete: Cascade)
 
-  services  CategoryService[]
   aliases   CategoryAlias[]
   companies CompanyCategory[]
+
+  /**
+   * FROZEN TAXONOMY (Phase 14 — renamed from defaultProjectGroupIds)
+   * ProjectGroup ids associated with this Category. Used for: onboarding
+   * bootstrap, search expansion, discovery, SEO/profession pages, and
+   * marketplace dashboard visibility. NEVER used for: matching, dispatch,
+   * notifications, or authorization — Category still never participates
+   * in matching. See docs/taxonomy.md and
+   * docs/taxonomy-refoundation/14_DISCOVERY_AND_VISIBILITY_CUTOVER_REPORT.md.
+   */
+  projectGroupIds String[] @default([])
 
   @@index([sectorId])
 }
 
-///////////////////////////////////////////////////////////
-// REAL OPERATIONAL CAPABILITIES
-///////////////////////////////////////////////////////////
-
-model Service {
+/**
+ * FROZEN TAXONOMY (Phase 8 — additive; Phase 14 added aliases)
+ * Persisted, first-class, NON-operational: catalog organization, public
+ * navigation, SEO hubs, discovery, analytics, reporting. Must never
+ * participate in matching, dispatch, notifications, requests, or funnel
+ * routing. See docs/taxonomy.md.
+ */
+model ProjectGroup {
   id          String  @id @default(cuid())
   slug        String  @unique
   name        String
   description String?
 
-  /**
-   * REAL OPERATIONAL CAPABILITY
-   * Service defines:
-   * - operational capabilities
-   * - matching capabilities
-   * - notification capabilities
-   * Service is NOT:
-   * - SEO
-   * - navigation
-   * - customer intent
-   */
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  categories    CategoryService[]
-  interventions InterventionService[]
-  aliases       ServiceAlias[]
-
-  companyServices         CompanyService[]
-  requestRequiredServices RequestRequiredService[]
+  interventions Intervention[]
+  aliases       ProjectGroupAlias[]
 
   @@index([name])
+}
+
+model ProjectGroupAlias {
+  id String @id @default(cuid())
+
+  value String @unique
+
+  projectGroupId String
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([projectGroupId])
 }
 
 ///////////////////////////////////////////////////////////
@@ -114,44 +124,33 @@ model Intervention {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  services InterventionService[]
-  domains  DomainIntervention[]
-
   aliases InterventionAlias[]
 
-  @@index([name])
-}
-
-///////////////////////////////////////////////////////////
-// SEO / NAVIGATION LAYER
-///////////////////////////////////////////////////////////
-
-model Domain {
-  id          String  @id @default(cuid())
-  slug        String  @unique
-  name        String
-  description String?
+  /**
+   * FROZEN TAXONOMY (Phase 8 — additive, not yet read by any code path)
+   * Nullable until the Phase 9+ backfill assigns every Intervention to its
+   * ProjectGroup. ProjectGroup is NON-operational — this relation exists
+   * for catalog organization only, never for matching. onDelete: SetNull
+   * so ProjectGroup catalog reorganization never blocks on Intervention
+   * rows. See docs/taxonomy.md.
+   */
+  projectGroupId String?
+  projectGroup   ProjectGroup? @relation(fields: [projectGroupId], references: [id], onDelete: SetNull)
 
   /**
-   * SEO + NAVIGATION ONLY
-   * Domain defines:
-   * - SEO hubs
-   * - navigation clusters
-   * - discovery grouping
-   * Domain MUST NEVER:
-   * - drive runtime matching
-   * - drive notification routing
-   * - drive operational filtering
+   * FROZEN TAXONOMY (Phase 14.5) — the canonical source for funnel preset
+   * resolution. Replaces the legacy per-Service/per-Category
+   * runtimePresetSlugs cross-reference in
+   * packages/funnel/src/orchestration/create-runtime-funnel.ts. Opaque to
+   * taxonomy itself — see docs/taxonomy-refoundation/14_5_CONSISTENCY_REPORT.md.
    */
+  runtimePresetSlugs String[] @default([])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  interventions DomainIntervention[]
-
-  aliases DomainAlias[]
+  companyInterventions CompanyIntervention[]
+  requests             Request[]
 
   @@index([name])
+  @@index([projectGroupId])
 }
 
 ///////////////////////////////////////////////////////////
@@ -171,19 +170,6 @@ model InterventionAlias {
   @@index([interventionId])
 }
 
-model ServiceAlias {
-  id String @id @default(cuid())
-
-  value String @unique
-
-  serviceId String
-  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@index([serviceId])
-}
-
 model CategoryAlias {
   id String @id @default(cuid())
 
@@ -197,67 +183,63 @@ model CategoryAlias {
   @@index([categoryId])
 }
 
-model DomainAlias {
+///////////////////////////////////////////////////////////
+// GEO DOMAIN (docs/geo-refoundation/01_DESIGN.md)
+///////////////////////////////////////////////////////////
+
+/**
+ * GOOGLE_PLACES: resolved live from a Google Places Autocomplete selection
+ * via resolvePlaceFromGooglePlace (@esigenta/shared) — the only path that
+ * produces new GeoLocation rows going forward.
+ * LEGACY_BACKFILL: produced once, by the geo-refoundation migration, for
+ * pre-existing Company/Request rows that never had a placeId captured.
+ * Never written by application code after the migration.
+ */
+enum GeoSource {
+  GOOGLE_PLACES
+  LEGACY_BACKFILL
+}
+
+/**
+ * One row = one resolved place, captured once, never edited field-by-field.
+ * Company and Request each hold at most one GeoLocation through a unique
+ * FK (geoLocationId) — this is the only table in the schema with
+ * address/city/postalCode/province/latitude/longitude columns. There is no
+ * parallel copy of any of these fields anywhere else.
+ *
+ * placeId is nullable at the schema level only to allow LEGACY_BACKFILL
+ * rows whose original Google Place was never captured (see
+ * docs/geo-refoundation/02_BACKFILL_AUDIT.md) — every row written through
+ * the write boundary (packages/domain/src/company/geo,
+ * packages/domain/src/request/geo) always has one.
+ */
+model GeoLocation {
   id String @id @default(cuid())
 
-  value String @unique
-
-  domainId String
-  domain   Domain @relation(fields: [domainId], references: [id], onDelete: Cascade)
+  placeId          String?
+  formattedAddress String
+  city             String
+  postalCode       String?
+  province         String?
+  latitude         Float
+  longitude        Float
+  source           GeoSource @default(GOOGLE_PLACES)
+  resolvedAt       DateTime
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@index([domainId])
-}
+  company Company?
+  request Request?
 
-///////////////////////////////////////////////////////////
-// GRAPH RELATIONS
-///////////////////////////////////////////////////////////
-
-model CategoryService {
-  categoryId String
-  serviceId  String
-
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  service  Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  @@id([categoryId, serviceId])
-  @@index([categoryId])
-  @@index([serviceId])
-}
-
-model InterventionService {
-  interventionId String
-  serviceId      String
-
-  intervention Intervention @relation(fields: [interventionId], references: [id], onDelete: Cascade)
-  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  @@id([interventionId, serviceId])
-  @@index([interventionId])
-  @@index([serviceId])
-}
-
-model DomainIntervention {
-  domainId       String
-  interventionId String
-
-  domain       Domain       @relation(fields: [domainId], references: [id], onDelete: Cascade)
-  intervention Intervention @relation(fields: [interventionId], references: [id], onDelete: Cascade)
-
-  @@id([domainId, interventionId])
-  @@index([domainId])
-  @@index([interventionId])
+  @@index([city])
+  @@index([latitude, longitude])
+  @@index([placeId])
 }
 
 ///////////////////////////////////////////////////////////
 // RUNTIME OPERATIONAL LAYER
 ///////////////////////////////////////////////////////////
-
-enum CompanyRequestMatchingMode {
-  CATEGORY_WITH_SERVICE_PRIORITY
-  SELECTED_SERVICES_ONLY
-}
 
 enum CompanyStatus {
   PENDING_REVIEW
@@ -273,15 +255,18 @@ model Company {
   vatNumber         String  @unique
   phone             String
   website           String?
-  address           String?
-  street            String?
-  streetNo          String?
-  city              String?
-  postalCode        String?
-  province          String?
-  latitude          Float?
-  longitude         Float?
   operatingRadiusKm Int     @default(30)
+
+  /**
+   * GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md)
+   * The company's operating address/coordinates are not scalar columns
+   * here anymore — they live in exactly one place, GeoLocation, reached
+   * through this relation. There is no parallel address/city/lat/lng on
+   * this model. See packages/database/src/geo/set-company-location.ts for
+   * the only code allowed to attach/replace it.
+   */
+  geoLocationId String?      @unique
+  geoLocation   GeoLocation? @relation(fields: [geoLocationId], references: [id])
 
   isActive Boolean @default(true)
 
@@ -291,8 +276,6 @@ model Company {
   approvedAt  DateTime?
   suspendedAt DateTime?
   blockedAt   DateTime?
-
-  requestMatchingMode CompanyRequestMatchingMode @default(CATEGORY_WITH_SERVICE_PRIORITY)
 
   /**
    * ONBOARDING CONTEXT ONLY
@@ -305,8 +288,7 @@ model Company {
    * IMPORTANT
    * Company marketplace eligibility is defined by:
    * - CompanyCategory as broad professional coverage
-   * - CompanyService as declared operational specialization
-   * - requestMatchingMode as the explicit strictness choice
+   * - CompanyIntervention as the sole matching/dispatch signal
    * NOT by:
    * - sectors
    * - SEO
@@ -316,8 +298,8 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  services    CompanyService[]
   categories  CompanyCategory[]
+  interventions CompanyIntervention[]
   memberships CompanyMembership[]
 
   creditAccount            CompanyCreditAccount?
@@ -332,26 +314,9 @@ model Company {
   contactChangeRequests    CompanyContactChangeRequest[]
   conversationParticipants ConversationParticipant[]
 
-  @@index([city])
-  @@index([postalCode])
-  @@index([latitude, longitude])
   @@index([onboardingCategorySlug])
   @@index([status])
   @@index([createdAt])
-}
-
-model CompanyService {
-  companyId String
-  serviceId String
-
-  createdAt DateTime @default(now())
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  @@id([companyId, serviceId])
-  @@index([companyId])
-  @@index([serviceId])
 }
 
 model CompanyCategory {
@@ -364,6 +329,24 @@ model CompanyCategory {
 
   @@id([companyId, categoryId])
   @@index([categoryId])
+}
+
+/**
+ * FROZEN TAXONOMY (Phase 8). Intervention is the only matching unit, so
+ * this is the sole signal matching/dispatch needs — see
+ * docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md.
+ */
+model CompanyIntervention {
+  companyId      String
+  interventionId String
+  createdAt      DateTime @default(now())
+
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  intervention Intervention @relation(fields: [interventionId], references: [id], onDelete: Cascade)
+
+  @@id([companyId, interventionId])
+  @@index([companyId])
+  @@index([interventionId])
 }
 
 ///////////////////////////////////////////////////////////
@@ -634,6 +617,16 @@ model Request {
 
   interventionSlug String?
 
+  /**
+   * FROZEN TAXONOMY (Phase 8). Resolved once at creation time; never
+   * re-resolved. onDelete: Restrict because historical requests must
+   * remain stable. interventionSlug remains the permanent, immutable
+   * snapshot regardless of this column's lifecycle. See
+   * docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §6.
+   */
+  interventionId String?
+  intervention   Intervention? @relation(fields: [interventionId], references: [id], onDelete: Restrict)
+
   ///////////////////////////////////////////////////////////
   // CUSTOMER SNAPSHOT
   ///////////////////////////////////////////////////////////
@@ -643,15 +636,18 @@ model Request {
   customerPhone String?
 
   ///////////////////////////////////////////////////////////
-  // GEO SNAPSHOT
+  // GEO (docs/geo-refoundation/01_DESIGN.md)
   ///////////////////////////////////////////////////////////
 
-  city       String?
-  address    String?
-  postalCode String?
-
-  latitude  Float?
-  longitude Float?
+  /**
+   * Job-site location. Same model as Company — one GeoLocation row through
+   * a unique FK, no scalar address/city/lat/lng columns on Request itself.
+   * Written once at creation by
+   * packages/database/src/geo/set-request-location.ts; never edited
+   * afterward (a request's job site does not move).
+   */
+  geoLocationId String?      @unique
+  geoLocation   GeoLocation? @relation(fields: [geoLocationId], references: [id])
 
   ///////////////////////////////////////////////////////////
   // FUNNEL SNAPSHOT
@@ -734,7 +730,6 @@ model Request {
   // RELATIONS
   ///////////////////////////////////////////////////////////
 
-  requiredServices     RequestRequiredService[]
   photos               RequestPhoto[]
   accessTokens         CustomerAccessToken[]
   unlocks              RequestUnlock[]
@@ -754,10 +749,9 @@ model Request {
   @@index([customerEmail])
   @@index([customerId])
   @@index([interventionSlug])
-  @@index([city])
+  @@index([interventionId])
   @@index([status, createdAt])
   @@index([customerId, createdAt])
-  @@index([latitude, longitude])
   @@index([status, creditCost])
   @@index([unlockCount])
   @@index([archivedAt])
@@ -786,26 +780,6 @@ model RequestPhoto {
   @@index([requestId])
 }
 
-model RequestRequiredService {
-  requestId String
-  serviceId String
-
-  createdAt DateTime @default(now())
-
-  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
-
-  /**
-   * SNAPSHOT RELATION
-   * Restrict deletion because:
-   * historical requests must remain stable.
-   */
-  service Service @relation(fields: [serviceId], references: [id], onDelete: Restrict)
-
-  @@id([requestId, serviceId])
-  @@index([requestId])
-  @@index([serviceId])
-}
-
 ///////////////////////////////////////////////////////////
 // REQUEST DISPATCH / NOTIFICATION LAYER
 ///////////////////////////////////////////////////////////
@@ -821,9 +795,8 @@ model RequestDispatch {
 
   status RequestDispatchStatus @default(CREATED)
 
-  matchedServiceIds Json?
-  distanceKm        Float?
-  matchReason       Json?
+  distanceKm  Float?
+  matchReason Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

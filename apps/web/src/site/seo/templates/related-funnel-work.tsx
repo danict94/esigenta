@@ -1,24 +1,24 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { taxonomySource } from "@esigenta/taxonomy";
+import { frozenTaxonomySource } from "@esigenta/taxonomy";
 import { cn, tokens } from "@esigenta/ui";
 
 /**
  * Phase 19.8 — pilota "lavori collegati funnel-diretto". Usato SOLO da
  * intervention-page-template.tsx (server-only, /interventi/[slug]). Non importare
- * mai questo file da un Client Component o dalla home: taxonomySource trascina
- * query Prisma/pg non bundlabili per il browser (stesso vincolo di Phase 19.6H).
+ * mai questo file da un Client Component o dalla home: il barrel pubblico di
+ * @esigenta/taxonomy trascina query Prisma/pg non bundlabili per il browser
+ * (stesso vincolo di Phase 19.6H).
  */
 export type RelatedFunnelWorkProps = {
   taxonomyInterventionSlugs: readonly string[];
 };
 
 const interventionsBySlug = new Map(
-  taxonomySource.interventions.map((intervention) => [
-    intervention.slug,
-    intervention,
-  ]),
+  frozenTaxonomySource.projectGroups
+    .flatMap((projectGroup) => projectGroup.interventions)
+    .map((intervention) => [intervention.slug, intervention]),
 );
 
 export function RelatedFunnelWork({
@@ -34,8 +34,8 @@ export function RelatedFunnelWork({
     if (!intervention) {
       throw new Error(
         `RelatedFunnelWork: taxonomyInterventionSlug "${slug}" does not exist in ` +
-          `@esigenta/taxonomy. Only real TaxonomyIntervention slugs are allowed — ` +
-          `never a TaxonomyService/Category/Domain slug.`,
+          `@esigenta/taxonomy. Only real frozen Intervention slugs are allowed — ` +
+          `never a Category or ProjectGroup slug.`,
       );
     }
 

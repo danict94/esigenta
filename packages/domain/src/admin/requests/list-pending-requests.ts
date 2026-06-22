@@ -11,7 +11,7 @@ export type PendingModerationRequest = {
 export async function listPendingRequests(): Promise<
   PendingModerationRequest[]
 > {
-  return prisma.request.findMany({
+  const requests = await prisma.request.findMany({
     where: {
       status: "PENDING_REVIEW",
     },
@@ -21,9 +21,19 @@ export async function listPendingRequests(): Promise<
     select: {
       id: true,
       interventionSlug: true,
-      city: true,
+      geoLocation: {
+        select: { city: true },
+      },
       customerName: true,
       createdAt: true,
     },
   })
+
+  return requests.map((request) => ({
+    id: request.id,
+    interventionSlug: request.interventionSlug,
+    city: request.geoLocation?.city ?? null,
+    customerName: request.customerName,
+    createdAt: request.createdAt,
+  }))
 }

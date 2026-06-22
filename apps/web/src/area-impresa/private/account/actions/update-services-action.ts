@@ -41,20 +41,14 @@ export async function updateServicesAction(
   const actor = await requireAreaImpresaAccess()
   const actorMs = Math.round(performance.now() - actionStart)
 
-  const selectedServiceIds  = normalizeIds(formData.getAll("serviceIds"))
+  const selectedInterventionIds = normalizeIds(formData.getAll("interventionIds"))
   const selectedCategoryIds = normalizeIds(formData.getAll("categoryIds"))
-
-  const requestedRequestMatchingMode =
-    formData.get("requestMatchingMode") === "SELECTED_SERVICES_ONLY"
-      ? "SELECTED_SERVICES_ONLY"
-      : "CATEGORY_WITH_SERVICE_PRIORITY"
 
   const result = await updateCompanyServicesConfiguration(
     actor,
     {
       selectedCategoryIds,
-      selectedServiceIds,
-      requestedRequestMatchingMode,
+      selectedInterventionIds,
     },
     monitored
       ? (label, ms) =>

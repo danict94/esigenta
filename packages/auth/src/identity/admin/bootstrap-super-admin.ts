@@ -16,27 +16,52 @@ const currentDir =
   dirname(fileURLToPath(import.meta.url))
 
 const packageDir =
-  resolve(currentDir, "../..")
+  resolve(currentDir, "../../..")
+
+const repoRoot =
+  resolve(packageDir, "../..")
 
 config({
-  path: resolve(packageDir, "../../.env"),
+  path: resolve(repoRoot, ".env"),
 })
+
+const DEFAULT_SUPER_ADMIN_NAME =
+  "Esigenta Super Admin"
+
+function requireEnvValue(name: string): string {
+  const value =
+    process.env[name]?.trim()
+
+  if (!value) {
+    throw new Error(`${name} is required.`)
+  }
+
+  return value
+}
 
 export async function bootstrapSuperAdmin() {
   const email =
-    process.env.ESIGENTA_SUPER_ADMIN_EMAIL?.trim()
+    requireEnvValue(
+      "ESIGENTA_SUPER_ADMIN_EMAIL",
+    ).toLowerCase()
 
-  if (!email) {
-    throw new Error(
-      "ESIGENTA_SUPER_ADMIN_EMAIL is required.",
+  const password =
+    requireEnvValue(
+      "ESIGENTA_SUPER_ADMIN_PASSWORD",
     )
-  }
+
+  const name =
+    process.env.ESIGENTA_SUPER_ADMIN_NAME?.trim() ||
+    DEFAULT_SUPER_ADMIN_NAME
 
   const {
     prisma,
   } = await import("@esigenta/database")
+  const {
+    auth,
+  } = await import("../../auth/core")
 
-  const user =
+  const existingUser =
     await prisma.user.findUnique({
       where: {
         email,
@@ -47,54 +72,95 @@ export async function bootstrapSuperAdmin() {
       },
     })
 
-  if (!user) {
-    throw new Error(
-      "Create/login the user first, then run bootstrap.",
-    )
+  let userId =
+    existingUser?.id
+
+  let userEmail =
+    existingUser?.email
+
+  let userCreated =
+    false
+
+  if (!userId) {
+    try {
+      const result =
+        await auth.api.signUpEmail({
+          body: {
+            email,
+            password,
+            name,
+          },
+        })
+
+      userId =
+        result?.user?.id
+      userEmail =
+        result?.user?.email ?? email
+
+      if (!userId) {
+        throw new Error(
+          "Better Auth signUpEmail did not return a user id.",
+        )
+      }
+
+      userCreated = true
+    } catch (error) {
+      const userAfterCreateRace =
+        await prisma.user.findUnique({
+          where: {
+            email,
+          },
+          select: {
+            id: true,
+            email: true,
+          },
+        })
+
+      if (!userAfterCreateRace) {
+        throw error
+      }
+
+      userId =
+        userAfterCreateRace.id
+      userEmail =
+        userAfterCreateRace.email
+    }
   }
 
-  const existingProfile =
+  const profileBefore =
     await prisma.adminProfile.findUnique({
       where: {
-        userId: user.id,
+        userId,
       },
       select: {
-        id: true,
         role: true,
       },
     })
 
-  if (existingProfile) {
-    if (existingProfile.role !== "SUPER_ADMIN") {
-      await prisma.adminProfile.update({
-        where: {
-          id: existingProfile.id,
-        },
-        data: {
-          role: "SUPER_ADMIN",
-        },
-      })
-    }
-
-    return {
-      email: user.email,
-      role: "SUPER_ADMIN" as const,
-      changed:
-        existingProfile.role !== "SUPER_ADMIN",
-    }
-  }
-
-  await prisma.adminProfile.create({
-    data: {
-      userId: user.id,
-      role: "SUPER_ADMIN",
-    },
-  })
+  const adminProfile =
+    await prisma.adminProfile.upsert({
+      where: {
+        userId,
+      },
+      update: {
+        role: "SUPER_ADMIN",
+      },
+      create: {
+        userId,
+        role: "SUPER_ADMIN",
+      },
+      select: {
+        role: true,
+      },
+    })
 
   return {
-    email: user.email,
-    role: "SUPER_ADMIN" as const,
-    changed: true,
+    email: userEmail ?? email,
+    role: adminProfile.role,
+    userCreated,
+    changed:
+      userCreated ||
+      profileBefore?.role !== "SUPER_ADMIN",
   }
 }
 

@@ -23,7 +23,7 @@ export {
   CompanyMarketplaceAuthorizationError,
   assertCompanyCanBuyCredits,
   assertCompanyCanUseMarketplace,
-  isCompanyMarketplaceApproved,
+  isCompanyMarketplaceReady,
 } from "./marketplace-policy"
 
 export type {

@@ -1,5 +1,6 @@
 import type { CompanyActor } from "@esigenta/auth"
-import { prisma } from "@esigenta/database"
+import { prisma, setCompanyLocationWithClient } from "@esigenta/database"
+import { isFreshGeoPlace, type GeoPlace } from "@esigenta/shared"
 
 type PerfRecorder = (label: string, ms: number) => void
 
@@ -8,7 +9,7 @@ const ALLOWED_RADIUS_KM = [10, 20, 30, 50, 75, 100] as const
 export type UpdateCompanyProfileErrorCode =
   | "invalid_website"
   | "invalid_radius"
-  | "invalid_coordinates"
+  | "invalid_location"
   | "company_not_found"
 
 export type UpdateCompanyProfileResult =
@@ -17,13 +18,8 @@ export type UpdateCompanyProfileResult =
 
 export type UpdateCompanyProfileInput = {
   website: string | null
-  address: string | null
-  city: string | null
-  postalCode: string | null
-  province: string | null
-  latitude: string | null
-  longitude: string | null
   operatingRadiusKm: string | null
+  geoPlace: GeoPlace
 }
 
 function normalizeWebsite(raw: string | null): string | null | undefined {
@@ -36,19 +32,6 @@ function normalizeWebsite(raw: string | null): string | null | undefined {
   } catch {
     return undefined
   }
-}
-
-function normalizeCoordinate(raw: string | null): number | null | undefined {
-  const normalized = raw?.trim()
-  if (!normalized) return null
-
-  const n = Number(normalized.replace(",", "."))
-  return Number.isFinite(n) ? n : undefined
-}
-
-function normalizeOptional(raw: string | null): string | null {
-  const s = raw?.trim()
-  return s || null
 }
 
 export async function updateCompanyProfile(
@@ -64,39 +47,31 @@ export async function updateCompanyProfile(
     return { ok: false, code: "invalid_radius" }
   }
 
-  const latitude = normalizeCoordinate(input.latitude)
-  const longitude = normalizeCoordinate(input.longitude)
-
-  if (
-    latitude === undefined ||
-    longitude === undefined ||
-    (latitude === null && longitude !== null) ||
-    (latitude !== null && longitude === null)
-  ) {
-    return { ok: false, code: "invalid_coordinates" }
+  if (!isFreshGeoPlace(input.geoPlace)) {
+    return { ok: false, code: "invalid_location" }
   }
 
   const t0 = performance.now()
 
-  const rows = await prisma.$queryRaw<Array<{ id: string }>>`
-    UPDATE "Company"
-    SET
-      "website"           = ${website},
-      "address"           = ${normalizeOptional(input.address)},
-      "city"              = ${normalizeOptional(input.city)},
-      "postalCode"        = ${normalizeOptional(input.postalCode)},
-      "province"          = ${normalizeOptional(input.province)},
-      "latitude"          = ${latitude}::double precision,
-      "longitude"         = ${longitude}::double precision,
-      "operatingRadiusKm" = ${radiusValue},
-      "updatedAt"         = now()
-    WHERE "id" = ${actor.company.id}
-    RETURNING "id"
-  `
+  const result = await prisma.$transaction(async (tx) => {
+    const updated = await tx.company.updateMany({
+      where: { id: actor.company.id },
+      data: {
+        website,
+        operatingRadiusKm: radiusValue,
+      },
+    })
+
+    if (updated.count === 0) {
+      return { ok: false as const, code: "company_not_found" as const }
+    }
+
+    await setCompanyLocationWithClient(tx, actor.company.id, input.geoPlace)
+
+    return { ok: true as const }
+  })
 
   recordPerf?.("profile-update", Math.round(performance.now() - t0))
 
-  if (rows.length === 0) return { ok: false, code: "company_not_found" }
-
-  return { ok: true }
+  return result
 }

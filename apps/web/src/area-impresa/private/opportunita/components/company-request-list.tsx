@@ -42,7 +42,7 @@ type CompanyRequestListItem = {
   unlockedAt?: Date | null
   refundedAt?: Date | null
   matchLevel?:
-    | "selected_service"
+    | "selected_intervention"
     | "category"
     | "explore"
 }
@@ -58,13 +58,13 @@ type CompanyRequestListProps<
 
 function getMatchLabel(
   matchLevel:
-    | "selected_service"
+    | "selected_intervention"
     | "category"
     | "explore"
     | null
     | undefined,
 ) {
-  if (matchLevel === "selected_service") {
+  if (matchLevel === "selected_intervention") {
     return "Molto compatibile"
   }
 

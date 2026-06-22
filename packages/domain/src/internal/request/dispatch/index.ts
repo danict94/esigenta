@@ -13,6 +13,5 @@ export type {
   RequestDispatchCandidate,
   RequestDispatchFailure,
   RequestDispatchFailureCode,
-  RequestDispatchServiceSource,
   ResolveRequestDispatchCandidatesResult,
 } from "./types"

@@ -60,9 +60,9 @@ export async function getCompanyPurchasedRequestsPage(
       r."requestCode"      AS request_code,
       r."status"           AS status,
       r."interventionSlug" AS intervention_slug,
-      r."city"             AS city,
-      r."address"          AS address,
-      r."postalCode"       AS postal_code,
+      rg."city"             AS city,
+      rg."formattedAddress" AS address,
+      rg."postalCode"       AS postal_code,
       r."structuredData"   AS structured_data,
       r."creditCost"       AS credit_cost,
       r."maxUnlocks"       AS max_unlocks,
@@ -71,6 +71,7 @@ export async function getCompanyPurchasedRequestsPage(
       csr."createdAt"      AS saved_at
     FROM "RequestUnlock" ru
     JOIN "Request" r ON r."id" = ru."requestId"
+    LEFT JOIN "GeoLocation" rg ON rg."id" = r."geoLocationId"
     LEFT JOIN LATERAL (
       SELECT "createdAt"
       FROM   "CompanySavedRequest"

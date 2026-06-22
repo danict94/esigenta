@@ -5,7 +5,11 @@ import { Badge, Button, Card, Input, PageShell, Select } from "@esigenta/ui"
 import { getCompanyProfilePage } from "@esigenta/domain"
 
 import { requireAreaImpresaAccess } from "../../../../auth/server"
-import { areaLog, isAreaMonitoringEnabled } from "../../../../platform/monitoring/area-monitoring"
+import {
+  areaLog,
+  areaTimestamp,
+  isAreaMonitoringEnabled,
+} from "../../../../platform/monitoring/area-monitoring"
 import { createPerfTrace } from "../../../monitoring/area-impresa-perf-trace"
 
 import { CompanyLocationFields } from "./company-location-fields"
@@ -29,8 +33,8 @@ const allowedRadiusKm = [10, 20, 30, 50, 75, 100] as const
 const errorMessages: Record<string, string> = {
   invalid_website: "Inserisci un URL valido per il sito web.",
   invalid_radius: "Seleziona un raggio operativo valido.",
-  invalid_coordinates:
-    "Inserisci latitudine e longitudine valide, oppure lascia entrambi i campi vuoti.",
+  invalid_location:
+    "Seleziona la sede operativa dai suggerimenti dell'indirizzo.",
   company_not_found:
     "Non troviamo il profilo impresa collegato a questo account.",
   invalid_requested_value: "Inserisci almeno un nuovo dato di contatto valido.",
@@ -84,7 +88,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
   const actor = await requireAreaImpresaAccess()
 
   const monitored = isAreaMonitoringEnabled()
-  const pageStart = performance.now()
+  const pageStart = areaTimestamp()
   const trace = createPerfTrace({ scope: "company-profile" })
   const params = searchParams ? await searchParams : {}
 
@@ -92,10 +96,10 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
     areaLog("area.model.companyProfile.start", {})
   }
 
-  const { company, categories, services, contactChangeRequests, credit } =
+  const { company, categories, interventions, contactChangeRequests, credit } =
     await getCompanyProfilePage(actor, trace.add)
 
-  const durationMs = Math.round(performance.now() - pageStart)
+  const durationMs = Math.round(areaTimestamp() - pageStart)
 
   if (monitored) {
     trace.finish()
@@ -248,12 +252,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
               />
             </label>
             <CompanyLocationFields
-              address={company.address}
-              city={company.city}
-              postalCode={company.postalCode}
-              province={company.province}
-              latitude={company.latitude}
-              longitude={company.longitude}
+              geoPlace={company.geoPlace}
             />
 
             <label className="grid gap-2 md:max-w-xs">
@@ -280,11 +279,11 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
           <div className="flex flex-col gap-4 border-b border-border-primary pb-5 md:flex-row md:items-start md:justify-between">
             <div>
               <h2 className="text-xl font-semibold tracking-tight text-text-primary">
-                Categorie e servizi
+                Categorie e interventi
               </h2>
               <p className="mt-2 text-sm leading-6 text-text-secondary">
-                Le categorie definiscono la visibilita ampia; i servizi aiutano
-                Esigenta a dare priorita alle richieste piu pertinenti.
+                Le categorie definiscono la visibilita ampia; gli interventi
+                aiutano Esigenta a dare priorita alle richieste piu pertinenti.
               </p>
             </div>
             <Link
@@ -315,19 +314,20 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-text-primary">Servizi selezionati</p>
-              {services.length > 0 ? (
+              <p className="text-sm font-semibold text-text-primary">Interventi selezionati</p>
+              {interventions.length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {services.map((service) => (
-                    <Badge key={service.id} variant="neutral">
-                      {service.name}
+                  {interventions.map((intervention) => (
+                    <Badge key={intervention.id} variant="neutral">
+                      {intervention.name}
                     </Badge>
                   ))}
                 </div>
               ) : (
                 <p className="mt-2 text-sm leading-6 text-text-secondary">
-                  Hai selezionato categorie operative. I servizi sono opzionali
-                  e aiutano Esigenta a dare priorita alle richieste piu pertinenti.
+                  Hai selezionato categorie operative. Gli interventi sono
+                  opzionali e aiutano Esigenta a dare priorita alle richieste
+                  piu pertinenti.
                 </p>
               )}
             </div>

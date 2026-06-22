@@ -9,12 +9,29 @@ import {
   updateCompanyProfile,
 } from "@esigenta/domain"
 
+import { isGeoPlace } from "@esigenta/shared"
+
 import { requireAreaImpresaAccess } from "../../../../auth/server"
 import { isAreaMonitoringEnabled } from "../../../../platform/monitoring/area-monitoring"
 
 
 function normalizeText(value: FormDataEntryValue | null): string {
   return typeof value === "string" ? value.trim() : ""
+}
+
+function parseGeoPlace(value: FormDataEntryValue | null) {
+  const raw = normalizeText(value)
+
+  if (!raw) {
+    return null
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    return isGeoPlace(parsed) ? parsed : null
+  } catch {
+    return null
+  }
 }
 
 function redirectWithError(code: string): never {
@@ -28,17 +45,18 @@ export async function updateCompanyProfileAction(formData: FormData) {
   const actor = await requireAreaImpresaAccess()
   const actorMs = Math.round(performance.now() - t0)
 
+  const geoPlace = parseGeoPlace(formData.get("geoPlace"))
+
+  if (!geoPlace) {
+    redirectWithError("invalid_location")
+  }
+
   const result = await updateCompanyProfile(
     actor,
     {
       website: normalizeText(formData.get("website")) || null,
-      address: normalizeText(formData.get("address")) || null,
-      city: normalizeText(formData.get("city")) || null,
-      postalCode: normalizeText(formData.get("postalCode")) || null,
-      province: normalizeText(formData.get("province")) || null,
-      latitude: normalizeText(formData.get("latitude")) || null,
-      longitude: normalizeText(formData.get("longitude")) || null,
       operatingRadiusKm: normalizeText(formData.get("operatingRadiusKm")) || null,
+      geoPlace,
     },
     monitored
       ? (label, ms) =>

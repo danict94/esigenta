@@ -3,7 +3,8 @@ import type { Prisma } from "@prisma/client"
 import { validateRequestPhotoAnswer } from "@esigenta/uploads"
 import type { RequestPhotoMetadata } from "@esigenta/uploads"
 
-import { prisma } from "@esigenta/database"
+import { prisma, setRequestLocationWithClient } from "@esigenta/database"
+import { isFreshGeoPlace, type GeoPlace } from "@esigenta/shared"
 
 import type { RequestDraft } from "@esigenta/funnel"
 import { buildRuntimeContactName, normalizeRuntimeText } from "@esigenta/funnel"
@@ -35,51 +36,32 @@ function isValidPhone(value: string): boolean {
   return /^[+\d][+\d\s().-]{5,}$/.test(value)
 }
 
-function isValidLatitude(value: number | undefined): value is number {
-  return (
-    typeof value === "number" &&
-    Number.isFinite(value) &&
-    value >= -90 &&
-    value <= 90
-  )
-}
-
-function isValidLongitude(value: number | undefined): value is number {
-  return (
-    typeof value === "number" &&
-    Number.isFinite(value) &&
-    value >= -180 &&
-    value <= 180
-  )
-}
-
-async function resolveRequiredServiceIds(
-  serviceSlugs: string[],
-): Promise<string[]> {
-  const uniqueSlugs = Array.from(new Set(serviceSlugs))
-
-  if (uniqueSlugs.length === 0) {
-    throw new RequestFlowError({
-      code: "missing_required_services",
-      message: "Request requires at least one required service snapshot.",
-      statusCode: 400,
-    })
-  }
-
-  const services = await prisma.service.findMany({
-    where: { slug: { in: uniqueSlugs } },
-    select: { id: true, slug: true },
+/**
+ * Resolves Request.interventionId from the same canonical
+ * draft.interventionSlug already stored as the interventionSlug snapshot —
+ * no second/independent intent signal. The funnel orchestration layer
+ * (resolveInterventionForFunnel) already validates this slug resolves to a
+ * live Intervention before a draft can ever be built, so this should never
+ * realistically throw — guarded anyway, mirroring resolveRequiredServiceIds
+ * above. See docs/taxonomy-refoundation/10_REQUEST_PERSISTENCE_AUDIT.md.
+ */
+async function resolveInterventionId(
+  interventionSlug: string,
+): Promise<string> {
+  const intervention = await prisma.intervention.findUnique({
+    where: { slug: interventionSlug },
+    select: { id: true },
   })
 
-  if (services.length !== uniqueSlugs.length) {
+  if (!intervention) {
     throw new RequestFlowError({
-      code: "invalid_required_services",
-      message: "One or more required services could not be resolved.",
+      code: "invalid_intervention",
+      message: "Intervention could not be resolved for the request.",
       statusCode: 400,
     })
   }
 
-  return services.map((service) => service.id)
+  return intervention.id
 }
 
 function validateDraftForCreation(draft: RequestDraft): {
@@ -152,23 +134,8 @@ function validateDraftForCreation(draft: RequestDraft): {
   }
 }
 
-function validateGeoForCreation(draft: RequestDraft): {
-  address: string
-  city: string
-  postalCode?: string
-  latitude: number
-  longitude: number
-} {
-  const address = normalizeRuntimeText(draft.geo.address)
-  const city = normalizeRuntimeText(draft.geo.city)
-  const postalCode = normalizeRuntimeText(draft.geo.postalCode)
-
-  if (
-    !address ||
-    !city ||
-    !isValidLatitude(draft.geo.latitude) ||
-    !isValidLongitude(draft.geo.longitude)
-  ) {
+function validateGeoForCreation(draft: RequestDraft): GeoPlace {
+  if (!isFreshGeoPlace(draft.geo)) {
     throw new RequestFlowError({
       code: "invalid_request_location",
       message: "A normalized request location is required.",
@@ -176,13 +143,7 @@ function validateGeoForCreation(draft: RequestDraft): {
     })
   }
 
-  return {
-    address,
-    city,
-    latitude: draft.geo.latitude,
-    longitude: draft.geo.longitude,
-    ...(postalCode ? { postalCode } : {}),
-  }
+  return draft.geo
 }
 
 function validateRequestPhotosForCreation(draft: RequestDraft): {
@@ -294,33 +255,31 @@ export async function createRequestFromDraft({
   const customer = validateDraftForCreation(persistedDraft)
   const geo = validateGeoForCreation(persistedDraft)
 
-  const requiredServiceIds = await resolveRequiredServiceIds(
-    persistedDraft.matchingSignals.requiredServiceSlugs,
-  )
+  const [interventionId, requestCode] = await Promise.all([
+    resolveInterventionId(persistedDraft.interventionSlug),
+    generateUniqueRequestCode(),
+  ])
 
   const verification = createRequestVerificationToken()
 
+  // RequestRequiredService is no longer written here (Phase 14): its last
+  // real reader, the company browse dashboard
+  // (get-requests-list-page.ts), was rewritten onto
+  // Request.interventionId + CompanyIntervention — see
+  // docs/taxonomy-refoundation/14_DISCOVERY_AND_VISIBILITY_CUTOVER_REPORT.md.
+  // The admin moderation detail view's requiredServices display already
+  // falls back to the live Intervention->Service derivation when empty.
   const data: Omit<Prisma.RequestCreateInput, "customer"> = {
     status: "PENDING_VERIFICATION",
-    requestCode: await generateUniqueRequestCode(),
+    requestCode,
     interventionSlug: persistedDraft.interventionSlug,
+    intervention: { connect: { id: interventionId } },
     customerEmail: customer.customerEmail,
     structuredData: toRequestStructuredData({ draft: persistedDraft }),
-    requiredServices: {
-      create: requiredServiceIds.map((serviceId) => ({
-        service: { connect: { id: serviceId } },
-      })),
-    },
   }
 
   if (customer.customerName) data.customerName = customer.customerName
   if (customer.customerPhone) data.customerPhone = customer.customerPhone
-
-  data.city = geo.city
-  data.address = geo.address
-  if (geo.postalCode) data.postalCode = geo.postalCode
-  data.latitude = geo.latitude
-  data.longitude = geo.longitude
 
   const request = await prisma.$transaction(async (tx) => {
     const persistedCustomer = await tx.customer.upsert({
@@ -344,6 +303,8 @@ export async function createRequestFromDraft({
       },
       select: { id: true, status: true },
     })
+
+    await setRequestLocationWithClient(tx, createdRequest.id, geo)
 
     await attachRequestPhotos({
       tx,

@@ -10,7 +10,6 @@ export const installareClimatizzatoreLanding: SeoInterventionLanding = {
   metaDescription:
     "Devi installare o sostituire un climatizzatore? Scopri cosa valutare e richiedi preventivi da tecnici qualificati nella tua zona.",
   funnelSlug: "installare-climatizzatore",
-  domainSlug: "clima-energia",
   image: {
     src: "/assets/images/climatizzazione.webp",
     alt: "Installazione climatizzatore in abitazione",
@@ -22,11 +21,10 @@ export const installareClimatizzatoreLanding: SeoInterventionLanding = {
   },
   relatedInterventionSlugs: [
     "installare-fotovoltaico",
-    "impianto-elettrico-nuovo",
-    "aggiungere-presa-elettrica",
+    "rifare-impianto-elettrico",
     "riparare-quadro-elettrico",
   ],
-  professionalCategorySlugs: ["impiantista", "elettricista"],
+  professionalCategorySlugs: ["tecnico-climatizzazione", "elettricista"],
   costSlug: "installare-climatizzatore",
   requestItems: [
     "installazione nuovo climatizzatore",

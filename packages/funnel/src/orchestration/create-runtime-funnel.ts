@@ -1,6 +1,5 @@
 import {
   resolveInterventionForFunnel as findInterventionForFunnel,
-  taxonomySource,
 } from "@esigenta/taxonomy"
 
 import type {
@@ -116,12 +115,35 @@ type FunnelResolution = {
   resolvedIntervention: ResolvedIntervention
 }
 
-function sortedRuntimePresetSlugs(
-  values: RuntimePresetSlug[],
+const VALID_RUNTIME_PRESET_SLUGS = new Set<RuntimePresetSlug>([
+  "INTERIOR_WORK",
+  "EXTERIOR_WORK",
+  "EMERGENCY_REPAIR",
+  "RENOVATION",
+  "QUICK_SERVICE",
+  "PAINTING",
+  "PLUMBING_EMERGENCY",
+  "HOME_RENOVATION",
+  "BATHROOM_RENOVATION",
+  "ELECTRICAL_WORK",
+  "GENERIC",
+])
+
+function isRuntimePresetSlug(value: string): value is RuntimePresetSlug {
+  return VALID_RUNTIME_PRESET_SLUGS.has(value as RuntimePresetSlug)
+}
+
+// Canonical source (Phase 14.5): Intervention.runtimePresetSlugs, read
+// directly off the DB row via findInterventionForFunnel. Replaces the
+// legacy cross-reference through taxonomySource.services/.categories —
+// taxonomy now carries this as one opaque, pre-merged field per
+// Intervention, nothing to merge here anymore. Validated at this boundary
+// since the DB column has no compile-time guarantee of matching the
+// RuntimePresetSlug union.
+function sortedValidRuntimePresetSlugs(
+  values: string[],
 ): RuntimePresetSlug[] {
-  return Array.from(
-    new Set(values),
-  ).sort()
+  return Array.from(new Set(values.filter(isRuntimePresetSlug))).sort()
 }
 
 function normalizeOptionalText(
@@ -130,59 +152,6 @@ function normalizeOptionalText(
   const trimmed = value?.trim()
 
   return trimmed ? trimmed : undefined
-}
-
-function resolveTaxonomyRuntimePresetSlugs({
-  interventionSlug,
-  serviceSlugs,
-  categorySlugs,
-  domainSlugs,
-}: {
-  interventionSlug: string
-  serviceSlugs: string[]
-  categorySlugs: string[]
-  domainSlugs: string[]
-}): RuntimePresetSlug[] {
-  const serviceSlugSet = new Set(serviceSlugs)
-  const categorySlugSet = new Set(categorySlugs)
-  const domainSlugSet = new Set(domainSlugs)
-
-  const interventionPresets =
-    taxonomySource.interventions.find(
-      (intervention) =>
-        intervention.slug === interventionSlug,
-    )?.runtimePresetSlugs ?? []
-
-  const servicePresets =
-    taxonomySource.services.flatMap(
-      (service) =>
-        serviceSlugSet.has(service.slug)
-          ? service.runtimePresetSlugs ?? []
-          : [],
-    )
-
-  const categoryPresets =
-    taxonomySource.categories.flatMap(
-      (category) =>
-        categorySlugSet.has(category.slug)
-          ? category.runtimePresetSlugs ?? []
-          : [],
-    )
-
-  const domainPresets =
-    taxonomySource.domains.flatMap(
-      (domain) =>
-        domainSlugSet.has(domain.slug)
-          ? domain.runtimePresetSlugs ?? []
-          : [],
-    )
-
-  return sortedRuntimePresetSlugs([
-    ...interventionPresets,
-    ...servicePresets,
-    ...categoryPresets,
-    ...domainPresets,
-  ])
 }
 
 async function resolveInterventionForFunnel(
@@ -201,15 +170,9 @@ async function resolveInterventionForFunnel(
     },
     resolvedIntervention: {
       interventionSlug: data.slug,
-      serviceSlugs: data.serviceSlugs,
-      categorySlugs: data.categorySlugs,
-      domainSlugs: data.domainSlugs,
-      runtimePresetSlugs: resolveTaxonomyRuntimePresetSlugs({
-        interventionSlug: data.slug,
-        serviceSlugs: data.serviceSlugs,
-        categorySlugs: data.categorySlugs,
-        domainSlugs: data.domainSlugs,
-      }),
+      runtimePresetSlugs: sortedValidRuntimePresetSlugs(
+        data.runtimePresetSlugs,
+      ),
     },
   }
 }

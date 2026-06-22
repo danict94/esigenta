@@ -9,8 +9,7 @@ export const ristrutturareBagnoLanding: SeoInterventionLanding = {
   metaTitle: "Ristrutturare bagno: preventivi da professionisti",
   metaDescription:
     "Devi ristrutturare un bagno? Scopri cosa puoi richiedere, da cosa dipende il costo e confronta preventivi da professionisti qualificati.",
-  funnelSlug: "rifare-bagno",
-  domainSlug: "ristrutturazione",
+  funnelSlug: "ristrutturare-bagno",
   image: {
     src: "/assets/images/rifacimento-bagno.webp",
     alt: "Ristrutturazione bagno con sanitari e rivestimenti moderni",
@@ -22,20 +21,16 @@ export const ristrutturareBagnoLanding: SeoInterventionLanding = {
   },
   relatedInterventionSlugs: [
     "ristrutturare-casa",
-    "rifare-cucina",
-    "posare-piastrelle",
+    "ristrutturare-cucina",
     "tinteggiare-interni",
   ],
   professionalCategorySlugs: ["impresa-edile", "idraulico"],
   // Pilota Phase 19.8 — solo TaxonomyIntervention reali, verificate contro
   // @esigenta/taxonomy da templates/related-funnel-work.tsx.
   relatedFunnelWork: [
-    "sostituire-sanitari",
-    "impermeabilizzare-bagno",
-    "posare-piastrelle",
-    "posare-rivestimento",
-    "rifare-impianto-idraulico",
-    "cambiare-rubinetto",
+    "installare-sanitari",
+    "sostituire-box-doccia",
+    "rifare-impianto-idraulico-bagno",
   ],
   costSlug: "ristrutturare-bagno",
   requestItems: [

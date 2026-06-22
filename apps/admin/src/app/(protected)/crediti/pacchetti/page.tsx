@@ -10,6 +10,12 @@ import {
 } from "@esigenta/billing"
 
 import {
+  centsToEuros,
+  eurosToCents,
+  formatCentsAsCurrency,
+} from "@esigenta/shared"
+
+import {
   Badge,
   Button,
   Card,
@@ -36,25 +42,23 @@ function parseInteger(
     : fallback
 }
 
+function parsePriceEurosToCents(
+  value: FormDataEntryValue | null,
+) {
+  const parsed =
+    Number(String(value ?? "").trim())
+
+  return Number.isFinite(parsed)
+    ? eurosToCents(parsed)
+    : 0
+}
+
 function parseStatus(
   value: FormDataEntryValue | null,
 ) {
   return String(value) === "INACTIVE"
     ? "INACTIVE"
     : "ACTIVE"
-}
-
-function formatPrice({
-  amountCents,
-  currency,
-}: {
-  amountCents: number
-  currency: string
-}) {
-  return new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency,
-  }).format(amountCents / 100)
 }
 
 async function createPackageAction(
@@ -77,8 +81,8 @@ async function createPackageAction(
           formData.get("credits"),
         ),
       priceCents:
-        parseInteger(
-          formData.get("priceCents"),
+        parsePriceEurosToCents(
+          formData.get("priceEuros"),
         ),
       validityDays:
         parseInteger(
@@ -128,8 +132,8 @@ async function updatePackageAction(
           formData.get("credits"),
         ),
       priceCents:
-        parseInteger(
-          formData.get("priceCents"),
+        parsePriceEurosToCents(
+          formData.get("priceEuros"),
         ),
       validityDays:
         parseInteger(
@@ -237,13 +241,14 @@ export default async function CreditPackagesPage() {
                 />
               </Field>
 
-              <Field label="Prezzo centesimi">
+              <Field label="Prezzo (€)">
                 <Input
-                  name="priceCents"
+                  name="priceEuros"
                   type="number"
-                  min={1}
+                  min={0.01}
+                  step={0.01}
                   required
-                  placeholder="9900"
+                  placeholder="99.00"
                 />
               </Field>
             </div>
@@ -345,12 +350,10 @@ export default async function CreditPackagesPage() {
 
                         <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
                           {creditPackage.credits} crediti ·{" "}
-                          {formatPrice({
-                            amountCents:
-                              creditPackage.priceCents,
-                            currency:
-                              creditPackage.currency,
-                          })}{" "}
+                          {formatCentsAsCurrency(
+                            creditPackage.priceCents,
+                            creditPackage.currency,
+                          )}{" "}
                           · {creditPackage.validityDays} giorni
                         </span>
                       </div>
@@ -400,13 +403,16 @@ export default async function CreditPackagesPage() {
                       />
                     </Field>
 
-                    <Field label="Prezzo centesimi">
+                    <Field label="Prezzo (€)">
                       <Input
-                        name="priceCents"
+                        name="priceEuros"
                         type="number"
-                        min={1}
+                        min={0.01}
+                        step={0.01}
                         defaultValue={
-                          creditPackage.priceCents
+                          centsToEuros(
+                            creditPackage.priceCents,
+                          )
                         }
                         required
                       />

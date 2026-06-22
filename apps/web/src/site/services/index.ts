@@ -20,7 +20,7 @@ export {
 
 // NOTA (Phase 19.6H): public-navigation/** NON viene re-esportato da questo barrel.
 // site/services/index.ts è importato anche da professional-areas.tsx (Client
-// Component, home), e public-navigation/builders.ts importa taxonomySource da
+// Component, home), e public-navigation/builders.ts importa frozenTaxonomySource da
 // @esigenta/taxonomy, il cui barrel pubblico trascina anche query Prisma/pg — non
 // bundlabile per il browser. Il guard viene invece eseguito da un punto
 // esclusivamente server-side (site/services/services-hub-page.tsx), per non

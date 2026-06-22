@@ -9,7 +9,7 @@ const catalogItems: readonly ServiceCatalogItem[] = [
     categorySlug: "ristrutturazioni",
     status: "SEO_PAGE",
     seoInterventionSlug: "ristrutturare-bagno",
-    funnelSlug: "rifare-bagno",
+    funnelSlug: "ristrutturare-bagno",
     order: 1,
     homeFeature: {
       description: "Rinnova il bagno con professionisti qualificati.",
@@ -24,7 +24,7 @@ const catalogItems: readonly ServiceCatalogItem[] = [
     categorySlug: "impianti",
     status: "SEO_PAGE",
     seoInterventionSlug: "rifare-impianto-elettrico",
-    funnelSlug: "impianto-elettrico-nuovo",
+    funnelSlug: "rifare-impianto-elettrico",
     order: 1,
     homeFeature: {
       description: "Adegua o rinnova l'impianto della tua abitazione.",
@@ -76,21 +76,6 @@ const catalogItems: readonly ServiceCatalogItem[] = [
       image: "/assets/images/climatizzazione.webp",
       icon: "fan",
       order: 5,
-    },
-  },
-  {
-    slug: "cartongesso-e-finiture",
-    title: "Cartongesso e finiture",
-    categorySlug: "finiture",
-    status: "SEO_PAGE",
-    seoInterventionSlug: "cartongesso-e-finiture",
-    funnelSlug: "fare-lavori-cartongesso",
-    order: 1,
-    homeFeature: {
-      description: "Pareti, controsoffitti, rasature e pittura.",
-      image: "/assets/images/cartongesso.webp",
-      icon: "paintbrush",
-      order: 6,
     },
   },
   // Audit Phase 19.6B: nessuna corrispondenza per CILA/SCIA/APE/geometra/architetto/

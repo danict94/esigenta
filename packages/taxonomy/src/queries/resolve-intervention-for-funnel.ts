@@ -5,13 +5,10 @@ export type InterventionForFunnel = {
   slug: string
   name: string
   description: string | null
-  serviceSlugs: string[]
-  categorySlugs: string[]
-  domainSlugs: string[]
-}
-
-function sortedUnique(values: string[]): string[] {
-  return Array.from(new Set(values.filter((v) => v.trim()))).sort()
+  // Canonical source (Phase 14.5): read straight from Intervention, no
+  // Service/Category cross-reference. Opaque to taxonomy — interpreted
+  // only by packages/funnel.
+  runtimePresetSlugs: string[]
 }
 
 export async function resolveInterventionForFunnel(
@@ -24,29 +21,7 @@ export async function resolveInterventionForFunnel(
       slug: true,
       name: true,
       description: true,
-      services: {
-        select: {
-          service: {
-            select: {
-              slug: true,
-              categories: {
-                select: {
-                  category: {
-                    select: { slug: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      domains: {
-        select: {
-          domain: {
-            select: { slug: true },
-          },
-        },
-      },
+      runtimePresetSlugs: true,
     },
   })
 
@@ -57,16 +32,6 @@ export async function resolveInterventionForFunnel(
     slug: intervention.slug,
     name: intervention.name,
     description: intervention.description,
-    serviceSlugs: sortedUnique(
-      intervention.services.map((r) => r.service.slug),
-    ),
-    categorySlugs: sortedUnique(
-      intervention.services.flatMap((r) =>
-        r.service.categories.map((cr) => cr.category.slug),
-      ),
-    ),
-    domainSlugs: sortedUnique(
-      intervention.domains.map((r) => r.domain.slug),
-    ),
+    runtimePresetSlugs: intervention.runtimePresetSlugs,
   }
 }

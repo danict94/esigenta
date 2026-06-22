@@ -53,7 +53,7 @@ export async function listAdminRequests({
   const statuses =
     normalizeStatusFilter(status)
 
-  return prisma.request.findMany({
+  const requests = await prisma.request.findMany({
     where: {
       status: {
         in: statuses,
@@ -68,9 +68,20 @@ export async function listAdminRequests({
       id: true,
       status: true,
       interventionSlug: true,
-      city: true,
+      geoLocation: {
+        select: { city: true },
+      },
       customerName: true,
       createdAt: true,
     },
   })
+
+  return requests.map((request) => ({
+    id: request.id,
+    status: request.status,
+    interventionSlug: request.interventionSlug,
+    city: request.geoLocation?.city ?? null,
+    customerName: request.customerName,
+    createdAt: request.createdAt,
+  }))
 }

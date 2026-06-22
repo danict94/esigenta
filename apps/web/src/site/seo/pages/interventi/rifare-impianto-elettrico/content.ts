@@ -9,8 +9,7 @@ export const rifareImpiantoElettricoLanding: SeoInterventionLanding = {
   metaTitle: "Rifare impianto elettrico: preventivi elettricista",
   metaDescription:
     "Devi rifare o adeguare l'impianto elettrico? Scopri cosa incide sul costo e richiedi preventivi da elettricisti qualificati.",
-  funnelSlug: "impianto-elettrico-nuovo",
-  domainSlug: "impianti-elettrici",
+  funnelSlug: "rifare-impianto-elettrico",
   image: {
     src: "/assets/images/impianto-elettrico.webp",
     alt: "Intervento su impianto elettrico domestico",
@@ -22,8 +21,7 @@ export const rifareImpiantoElettricoLanding: SeoInterventionLanding = {
   },
   relatedInterventionSlugs: [
     "riparare-quadro-elettrico",
-    "aggiungere-presa-elettrica",
-    "montare-lampadario",
+    "installare-illuminazione",
     "installare-fotovoltaico",
   ],
   professionalCategorySlugs: ["elettricista"],

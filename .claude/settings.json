@@ -3,7 +3,10 @@
     "allow": [
       "Bash(pnpm --filter web build)",
       "Bash(rg \"\\\\\\(public-business\\\\\\)/area-impresa|\\\\\\(area-impresa\\\\\\)/area-impresa\" apps/web/src --glob \"*.{ts,tsx}\" -l)",
-      "Bash(rg \"area-monitoring|perf-log\" apps/web/src --glob \"*.{ts,tsx}\" -l)"
+      "Bash(rg \"area-monitoring|perf-log\" apps/web/src --glob \"*.{ts,tsx}\" -l)",
+      "Bash(git status *)",
+      "Bash(npx tsx *)",
+      "Bash(npx tsc *)"
     ]
   }
 }

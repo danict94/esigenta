@@ -10,7 +10,6 @@ export const installareFotovoltaicoLanding: SeoInterventionLanding = {
   metaDescription:
     "Vuoi installare un impianto fotovoltaico? Scopri cosa valutare e confronta preventivi da professionisti per pannelli solari domestici.",
   funnelSlug: "installare-fotovoltaico",
-  domainSlug: "clima-energia",
   image: {
     src: "/assets/images/installazione-fotovoltaico.webp",
     alt: "Installazione di pannelli fotovoltaici su abitazione",
@@ -21,12 +20,12 @@ export const installareFotovoltaicoLanding: SeoInterventionLanding = {
       "Indica dove vuoi realizzare l'intervento e confronta professionisti attivi nella tua area.",
   },
   relatedInterventionSlugs: [
-    "impianto-elettrico-nuovo",
+    "rifare-impianto-elettrico",
     "installare-climatizzatore",
     "rifare-tetto",
     "riparare-quadro-elettrico",
   ],
-  professionalCategorySlugs: ["impiantista", "elettricista"],
+  professionalCategorySlugs: ["installatore-fotovoltaico", "elettricista"],
   costSlug: "fotovoltaico",
   requestItems: [
     "installazione pannelli fotovoltaici",

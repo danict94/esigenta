@@ -1,0 +1,533 @@
+{
+  "takenAt": "2026-06-21T14:42:22.877Z",
+  "counts": {
+    "services": 31,
+    "serviceAliases": 0,
+    "categoryServices": 31,
+    "companyServices": 0,
+    "interventionServices": 31,
+    "requestRequiredServices": 1,
+    "companiesWithNonDefaultMatchingMode": 0,
+    "dispatchesWithMatchedServiceIds": 0
+  },
+  "data": {
+    "services": [
+      {
+        "id": "cmqm6fnyi0004i8c447nhapdv",
+        "slug": "controsoffitti-in-cartongesso",
+        "name": "Controsoffitti in cartongesso",
+        "description": "Realizzazione di controsoffitti in cartongesso.",
+        "createdAt": "2026-06-20T09:50:15.306Z",
+        "updatedAt": "2026-06-20T09:50:15.306Z"
+      },
+      {
+        "id": "cmqm6fo3x0005i8c4fx2seppw",
+        "slug": "demolizioni",
+        "name": "Demolizioni",
+        "description": "Demolizione di murature, tramezzi o strutture interne.",
+        "createdAt": "2026-06-20T09:50:15.502Z",
+        "updatedAt": "2026-06-20T09:50:15.502Z"
+      },
+      {
+        "id": "cmqm6fo9u0006i8c4n3gmb9w4",
+        "slug": "disostruzione-scarichi",
+        "name": "Disostruzione scarichi",
+        "description": "Disostruzione di scarichi e tubazioni otturate.",
+        "createdAt": "2026-06-20T09:50:15.714Z",
+        "updatedAt": "2026-06-20T09:50:15.714Z"
+      },
+      {
+        "id": "cmqm6fohb0007i8c4wsdrh33o",
+        "slug": "faretti-led",
+        "name": "Faretti LED",
+        "description": "Installazione di faretti e illuminazione a LED.",
+        "createdAt": "2026-06-20T09:50:15.983Z",
+        "updatedAt": "2026-06-20T09:50:15.983Z"
+      },
+      {
+        "id": "cmqm6foo30008i8c4jb73jvel",
+        "slug": "fotovoltaico-con-accumulo",
+        "name": "Fotovoltaico con accumulo",
+        "description": "Installazione di un impianto fotovoltaico con batteria di accumulo.",
+        "createdAt": "2026-06-20T09:50:16.227Z",
+        "updatedAt": "2026-06-20T09:50:16.227Z"
+      },
+      {
+        "id": "cmqm6fp1z0009i8c4s7vluwyk",
+        "slug": "grondaie",
+        "name": "Grondaie",
+        "description": "Installazione o sostituzione di grondaie e pluviali.",
+        "createdAt": "2026-06-20T09:50:16.727Z",
+        "updatedAt": "2026-06-20T09:50:16.727Z"
+      },
+      {
+        "id": "cmqm6fp7j000ai8c4ydhncqm2",
+        "slug": "impianto-elettrico-nuovo",
+        "name": "Impianto elettrico nuovo",
+        "description": "Realizzazione di un nuovo impianto elettrico.",
+        "createdAt": "2026-06-20T09:50:16.927Z",
+        "updatedAt": "2026-06-20T09:50:16.927Z"
+      },
+      {
+        "id": "cmqm6fpdm000bi8c4bfetldit",
+        "slug": "installazione-climatizzatore",
+        "name": "Installazione climatizzatore",
+        "description": "Installazione di uno o più climatizzatori.",
+        "createdAt": "2026-06-20T09:50:17.146Z",
+        "updatedAt": "2026-06-20T09:50:17.146Z"
+      },
+      {
+        "id": "cmqm6fplw000ci8c4edzb1t5o",
+        "slug": "installazione-fotovoltaico",
+        "name": "Installazione fotovoltaico",
+        "description": "Installazione di un impianto fotovoltaico.",
+        "createdAt": "2026-06-20T09:50:17.444Z",
+        "updatedAt": "2026-06-20T09:50:17.444Z"
+      },
+      {
+        "id": "cmqm6fps4000di8c496x0c30t",
+        "slug": "installazione-illuminazione",
+        "name": "Installazione illuminazione",
+        "description": "Installazione di punti luce e lampadari.",
+        "createdAt": "2026-06-20T09:50:17.668Z",
+        "updatedAt": "2026-06-20T09:50:17.668Z"
+      },
+      {
+        "id": "cmqm6fpxl000ei8c404ie8c6p",
+        "slug": "installazione-sanitari",
+        "name": "Installazione sanitari",
+        "description": "Installazione o sostituzione di sanitari da bagno.",
+        "createdAt": "2026-06-20T09:50:17.865Z",
+        "updatedAt": "2026-06-20T09:50:17.865Z"
+      },
+      {
+        "id": "cmqm6fq2a000fi8c4t0m0n8fy",
+        "slug": "lattoneria",
+        "name": "Lattoneria",
+        "description": "Lavori di lattoneria su coperture, scossaline e canali di gronda.",
+        "createdAt": "2026-06-20T09:50:18.034Z",
+        "updatedAt": "2026-06-20T09:50:18.034Z"
+      },
+      {
+        "id": "cmqm6fqhh000gi8c4nyuhzf8a",
+        "slug": "manutenzione-climatizzatore",
+        "name": "Manutenzione climatizzatore",
+        "description": "Manutenzione, pulizia o ricarica gas del climatizzatore.",
+        "createdAt": "2026-06-20T09:50:18.581Z",
+        "updatedAt": "2026-06-20T09:50:18.581Z"
+      },
+      {
+        "id": "cmqm6fqsv000hi8c4ojk0a8mn",
+        "slug": "massetti",
+        "name": "Massetti",
+        "description": "Realizzazione di massetti e sottofondi per pavimentazioni.",
+        "createdAt": "2026-06-20T09:50:18.991Z",
+        "updatedAt": "2026-06-20T09:50:18.991Z"
+      },
+      {
+        "id": "cmqm6fqyl000ii8c41yj3rrft",
+        "slug": "pareti-in-cartongesso",
+        "name": "Pareti in cartongesso",
+        "description": "Realizzazione di pareti divisorie in cartongesso.",
+        "createdAt": "2026-06-20T09:50:19.197Z",
+        "updatedAt": "2026-06-20T09:50:19.197Z"
+      },
+      {
+        "id": "cmqm6fr4e000ji8c406zs7ow6",
+        "slug": "quadro-elettrico",
+        "name": "Quadro elettrico",
+        "description": "Sostituzione o adeguamento del quadro elettrico.",
+        "createdAt": "2026-06-20T09:50:19.406Z",
+        "updatedAt": "2026-06-20T09:50:19.406Z"
+      },
+      {
+        "id": "cmqm6frab000ki8c4n4q9ayxn",
+        "slug": "rifacimento-impianto-elettrico",
+        "name": "Rifacimento impianto elettrico",
+        "description": "Adeguamento o rifacimento completo di un impianto elettrico esistente.",
+        "createdAt": "2026-06-20T09:50:19.619Z",
+        "updatedAt": "2026-06-20T09:50:19.619Z"
+      },
+      {
+        "id": "cmqm6frfl000li8c4dp5gi6g7",
+        "slug": "rifacimento-impianto-idraulico-bagno",
+        "name": "Rifacimento impianto idraulico bagno",
+        "description": "Rifacimento delle tubazioni e dell'impianto idraulico del bagno.",
+        "createdAt": "2026-06-20T09:50:19.809Z",
+        "updatedAt": "2026-06-20T09:50:19.809Z"
+      },
+      {
+        "id": "cmqm6frtv000mi8c4od2oa6bq",
+        "slug": "rifacimento-tetto",
+        "name": "Rifacimento tetto",
+        "description": "Rifacimento completo della copertura e della struttura del tetto.",
+        "createdAt": "2026-06-20T09:50:20.323Z",
+        "updatedAt": "2026-06-20T09:50:20.323Z"
+      },
+      {
+        "id": "cmqm6fs2e000ni8c4hx99gq1h",
+        "slug": "riparazione-guasti-elettrici",
+        "name": "Riparazione guasti elettrici",
+        "description": "Diagnosi e riparazione di guasti sull'impianto elettrico.",
+        "createdAt": "2026-06-20T09:50:20.630Z",
+        "updatedAt": "2026-06-20T09:50:20.630Z"
+      },
+      {
+        "id": "cmqm6fsax000oi8c4mtq0yqc4",
+        "slug": "riparazione-perdita-acqua",
+        "name": "Riparazione perdita acqua",
+        "description": "Intervento urgente per perdite d'acqua.",
+        "createdAt": "2026-06-20T09:50:20.937Z",
+        "updatedAt": "2026-06-20T09:50:20.937Z"
+      },
+      {
+        "id": "cmqm6fsgl000pi8c4761l7bpy",
+        "slug": "riparazione-tetto",
+        "name": "Riparazione tetto",
+        "description": "Riparazione localizzata di infiltrazioni o danni alla copertura.",
+        "createdAt": "2026-06-20T09:50:21.141Z",
+        "updatedAt": "2026-06-20T09:50:21.141Z"
+      },
+      {
+        "id": "cmqm6fsmc000qi8c4csurhh6z",
+        "slug": "ristrutturazione-appartamento",
+        "name": "Ristrutturazione appartamento",
+        "description": "Ristrutturazione completa di un appartamento.",
+        "createdAt": "2026-06-20T09:50:21.348Z",
+        "updatedAt": "2026-06-20T09:50:21.348Z"
+      },
+      {
+        "id": "cmqm6fsry000ri8c4sb111n8g",
+        "slug": "ristrutturazione-bagno",
+        "name": "Ristrutturazione bagno",
+        "description": "Ristrutturazione completa del bagno, dalla demolizione alle finiture.",
+        "createdAt": "2026-06-20T09:50:21.550Z",
+        "updatedAt": "2026-06-20T09:50:21.550Z"
+      },
+      {
+        "id": "cmqm6ft69000si8c4vbwjwbur",
+        "slug": "ristrutturazione-casa",
+        "name": "Ristrutturazione casa",
+        "description": "Ristrutturazione completa di una casa indipendente o villa.",
+        "createdAt": "2026-06-20T09:50:22.065Z",
+        "updatedAt": "2026-06-20T09:50:22.065Z"
+      },
+      {
+        "id": "cmqm6fth0000ti8c40zhc6awo",
+        "slug": "ristrutturazione-cucina",
+        "name": "Ristrutturazione cucina",
+        "description": "Ristrutturazione completa della cucina.",
+        "createdAt": "2026-06-20T09:50:22.452Z",
+        "updatedAt": "2026-06-20T09:50:22.452Z"
+      },
+      {
+        "id": "cmqm6ftnb000ui8c4apw5n3vl",
+        "slug": "salvavita",
+        "name": "Salvavita",
+        "description": "Sostituzione o riparazione dell'interruttore salvavita.",
+        "createdAt": "2026-06-20T09:50:22.679Z",
+        "updatedAt": "2026-06-20T09:50:22.679Z"
+      },
+      {
+        "id": "cmqm6ftsh000vi8c427i2lg5o",
+        "slug": "sostituzione-box-doccia",
+        "name": "Sostituzione box doccia",
+        "description": "Sostituzione del box doccia esistente.",
+        "createdAt": "2026-06-20T09:50:22.865Z",
+        "updatedAt": "2026-06-20T09:50:22.865Z"
+      },
+      {
+        "id": "cmqm6fu1i000wi8c4pku1px2y",
+        "slug": "tinteggiatura-esterni",
+        "name": "Tinteggiatura esterni",
+        "description": "Tinteggiatura di facciate e superfici esterne.",
+        "createdAt": "2026-06-20T09:50:23.190Z",
+        "updatedAt": "2026-06-20T09:50:23.190Z"
+      },
+      {
+        "id": "cmqm6fui4000xi8c404jl96hq",
+        "slug": "tinteggiatura-interni",
+        "name": "Tinteggiatura interni",
+        "description": "Tinteggiatura di pareti e soffitti interni.",
+        "createdAt": "2026-06-20T09:50:23.788Z",
+        "updatedAt": "2026-06-20T09:50:23.788Z"
+      },
+      {
+        "id": "cmqm6fur3000yi8c4hygudwq7",
+        "slug": "tramezzi",
+        "name": "Tramezzi",
+        "description": "Costruzione di nuove pareti divisorie interne.",
+        "createdAt": "2026-06-20T09:50:24.111Z",
+        "updatedAt": "2026-06-20T09:50:24.111Z"
+      }
+    ],
+    "serviceAliases": [],
+    "categoryServices": [
+      {
+        "categoryId": "cmqm6fuww000zi8c4m721gk0j",
+        "serviceId": "cmqm6fnyi0004i8c447nhapdv"
+      },
+      {
+        "categoryId": "cmqm6fuww000zi8c4m721gk0j",
+        "serviceId": "cmqm6fqyl000ii8c41yj3rrft"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6fohb0007i8c4wsdrh33o"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6fp7j000ai8c4ydhncqm2"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6fps4000di8c496x0c30t"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6fr4e000ji8c406zs7ow6"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6frab000ki8c4n4q9ayxn"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6fs2e000ni8c4hx99gq1h"
+      },
+      {
+        "categoryId": "cmqm6fv850010i8c49qg1ev7t",
+        "serviceId": "cmqm6ftnb000ui8c4apw5n3vl"
+      },
+      {
+        "categoryId": "cmqm6fw3g0012i8c484woi0mc",
+        "serviceId": "cmqm6fo9u0006i8c4n3gmb9w4"
+      },
+      {
+        "categoryId": "cmqm6fw3g0012i8c484woi0mc",
+        "serviceId": "cmqm6fpxl000ei8c404ie8c6p"
+      },
+      {
+        "categoryId": "cmqm6fw3g0012i8c484woi0mc",
+        "serviceId": "cmqm6frfl000li8c4dp5gi6g7"
+      },
+      {
+        "categoryId": "cmqm6fw3g0012i8c484woi0mc",
+        "serviceId": "cmqm6fsax000oi8c4mtq0yqc4"
+      },
+      {
+        "categoryId": "cmqm6fw3g0012i8c484woi0mc",
+        "serviceId": "cmqm6ftsh000vi8c427i2lg5o"
+      },
+      {
+        "categoryId": "cmqm6fwiv0014i8c4x4c5lobi",
+        "serviceId": "cmqm6fu1i000wi8c4pku1px2y"
+      },
+      {
+        "categoryId": "cmqm6fwiv0014i8c4x4c5lobi",
+        "serviceId": "cmqm6fui4000xi8c404jl96hq"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fo3x0005i8c4fx2seppw"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fp1z0009i8c4s7vluwyk"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fq2a000fi8c4t0m0n8fy"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fqsv000hi8c4ojk0a8mn"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6frtv000mi8c4od2oa6bq"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fsgl000pi8c4761l7bpy"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fsmc000qi8c4csurhh6z"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fsry000ri8c4sb111n8g"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6ft69000si8c4vbwjwbur"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fth0000ti8c40zhc6awo"
+      },
+      {
+        "categoryId": "cmqm6fwq80015i8c4r08tmoyg",
+        "serviceId": "cmqm6fur3000yi8c4hygudwq7"
+      },
+      {
+        "categoryId": "cmqm6fxfu0018i8c4g40wkax1",
+        "serviceId": "cmqm6foo30008i8c4jb73jvel"
+      },
+      {
+        "categoryId": "cmqm6fxfu0018i8c4g40wkax1",
+        "serviceId": "cmqm6fplw000ci8c4edzb1t5o"
+      },
+      {
+        "categoryId": "cmqm6fxlh0019i8c4358fnkfr",
+        "serviceId": "cmqm6fpdm000bi8c4bfetldit"
+      },
+      {
+        "categoryId": "cmqm6fxlh0019i8c4358fnkfr",
+        "serviceId": "cmqm6fqhh000gi8c4nyuhzf8a"
+      }
+    ],
+    "companyServices": [],
+    "interventionServices": [
+      {
+        "interventionId": "cmqm6fxrd001ai8c4005f7gxc",
+        "serviceId": "cmqm6fnyi0004i8c447nhapdv"
+      },
+      {
+        "interventionId": "cmqm6fxrd001ai8c4005f7gxc",
+        "serviceId": "cmqm6fqyl000ii8c41yj3rrft"
+      },
+      {
+        "interventionId": "cmqm6fy5g001ei8c41jvf6xeg",
+        "serviceId": "cmqm6fo9u0006i8c4n3gmb9w4"
+      },
+      {
+        "interventionId": "cmqm6fys6001hi8c4z1gz2wg7",
+        "serviceId": "cmqm6fp7j000ai8c4ydhncqm2"
+      },
+      {
+        "interventionId": "cmqm6fzhs001ki8c4d0wgawdg",
+        "serviceId": "cmqm6fqhh000gi8c4nyuhzf8a"
+      },
+      {
+        "interventionId": "cmqm6g04i001ni8c4m2rc2ag3",
+        "serviceId": "cmqm6fqsv000hi8c4ojk0a8mn"
+      },
+      {
+        "interventionId": "cmqm6g0ll001qi8c4hmpvfn0a",
+        "serviceId": "cmqm6fo3x0005i8c4fx2seppw"
+      },
+      {
+        "interventionId": "cmqm6g0ll001qi8c4hmpvfn0a",
+        "serviceId": "cmqm6fur3000yi8c4hygudwq7"
+      },
+      {
+        "interventionId": "cmqm6g12o001ui8c45us41yv9",
+        "serviceId": "cmqm6fpdm000bi8c4bfetldit"
+      },
+      {
+        "interventionId": "cmqm6g1xy001xi8c4o7lemf71",
+        "serviceId": "cmqm6fplw000ci8c4edzb1t5o"
+      },
+      {
+        "interventionId": "cmqm6g2hu0020i8c4p29ppxd0",
+        "serviceId": "cmqm6foo30008i8c4jb73jvel"
+      },
+      {
+        "interventionId": "cmqm6g37h0023i8c48dxo7f5a",
+        "serviceId": "cmqm6fohb0007i8c4wsdrh33o"
+      },
+      {
+        "interventionId": "cmqm6g37h0023i8c48dxo7f5a",
+        "serviceId": "cmqm6fps4000di8c496x0c30t"
+      },
+      {
+        "interventionId": "cmqm6g3x30027i8c45p8kac75",
+        "serviceId": "cmqm6fpxl000ei8c404ie8c6p"
+      },
+      {
+        "interventionId": "cmqm6g4pj002ai8c4syf1y88z",
+        "serviceId": "cmqm6frab000ki8c4n4q9ayxn"
+      },
+      {
+        "interventionId": "cmqm6g56l002ei8c4uggulb8c",
+        "serviceId": "cmqm6frfl000li8c4dp5gi6g7"
+      },
+      {
+        "interventionId": "cmqm6g5w5002gi8c4rxyxrkfi",
+        "serviceId": "cmqm6frtv000mi8c4od2oa6bq"
+      },
+      {
+        "interventionId": "cmqm6g6lq002ji8c4kxbggj9y",
+        "serviceId": "cmqm6fs2e000ni8c4hx99gq1h"
+      },
+      {
+        "interventionId": "cmqm6g6lq002ji8c4kxbggj9y",
+        "serviceId": "cmqm6ftnb000ui8c4apw5n3vl"
+      },
+      {
+        "interventionId": "cmqm6g7bf002ni8c48m10b58g",
+        "serviceId": "cmqm6fsax000oi8c4mtq0yqc4"
+      },
+      {
+        "interventionId": "cmqm6g80z002qi8c4iu5l73th",
+        "serviceId": "cmqm6fr4e000ji8c406zs7ow6"
+      },
+      {
+        "interventionId": "cmqm6g8ql002si8c40v150gau",
+        "serviceId": "cmqm6fsgl000pi8c4761l7bpy"
+      },
+      {
+        "interventionId": "cmqm6g99k002vi8c4t19owmu3",
+        "serviceId": "cmqm6fsmc000qi8c4csurhh6z"
+      },
+      {
+        "interventionId": "cmqm6ga02002yi8c4e83a22sk",
+        "serviceId": "cmqm6fsry000ri8c4sb111n8g"
+      },
+      {
+        "interventionId": "cmqm6gapo0032i8c40k3zjd9x",
+        "serviceId": "cmqm6ft69000si8c4vbwjwbur"
+      },
+      {
+        "interventionId": "cmqm6gbfa0035i8c4mc72yfid",
+        "serviceId": "cmqm6fth0000ti8c40zhc6awo"
+      },
+      {
+        "interventionId": "cmqm6gc4x0038i8c44pdn43u3",
+        "serviceId": "cmqm6fp1z0009i8c4s7vluwyk"
+      },
+      {
+        "interventionId": "cmqm6gc4x0038i8c44pdn43u3",
+        "serviceId": "cmqm6fq2a000fi8c4t0m0n8fy"
+      },
+      {
+        "interventionId": "cmqm6gcuh003ci8c4w2cbeifl",
+        "serviceId": "cmqm6ftsh000vi8c427i2lg5o"
+      },
+      {
+        "interventionId": "cmqm6gdh7003fi8c4og4dtn9c",
+        "serviceId": "cmqm6fu1i000wi8c4pku1px2y"
+      },
+      {
+        "interventionId": "cmqm6gei9003ii8c45z34ccsz",
+        "serviceId": "cmqm6fui4000xi8c404jl96hq"
+      }
+    ],
+    "requestRequiredServices": [
+      {
+        "requestId": "cmqmx4f9d0001fsc48wedmq90",
+        "serviceId": "cmqm6fsax000oi8c4mtq0yqc4",
+        "createdAt": "2026-06-20T22:17:20.449Z"
+      }
+    ],
+    "companyRequestMatchingModes": [
+      {
+        "id": "cmqmj5k68000004jlh7m8ovw3",
+        "requestMatchingMode": "CATEGORY_WITH_SERVICE_PRIORITY"
+      }
+    ],
+    "dispatchMatchedServiceIds": []
+  }
+}

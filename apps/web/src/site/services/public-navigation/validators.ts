@@ -1,4 +1,4 @@
-import { taxonomySource } from "@esigenta/taxonomy";
+import { frozenTaxonomySource } from "@esigenta/taxonomy";
 
 import { interventionCoverage } from "./coverage";
 import { getPublicServiceMacroAreaBySlug } from "./macro-areas";
@@ -161,9 +161,9 @@ export type PublicCatalogValidationIssue = {
 export function validatePublicCatalog(): PublicCatalogValidationIssue[] {
   const issues: PublicCatalogValidationIssue[] = [];
 
-  const taxonomyInterventionSlugs = taxonomySource.interventions.map(
-    (intervention) => intervention.slug,
-  );
+  const taxonomyInterventionSlugs = frozenTaxonomySource.projectGroups
+    .flatMap((projectGroup) => projectGroup.interventions)
+    .map((intervention) => intervention.slug);
   const taxonomyInterventionSlugSet = new Set(taxonomyInterventionSlugs);
   const coverageSlugs = interventionCoverage.map((input) => input.taxonomyInterventionSlug);
   const coverageSlugSet = new Set(coverageSlugs);

@@ -1,53 +1,53 @@
 import type { LucideIcon } from "lucide-react";
 
-import { Scale, ShieldCheck, UsersRound } from "lucide-react";
+import { BadgeCheck, Gift, Lock } from "lucide-react";
 
 import { tokens } from "@esigenta/ui";
 
 import { HomeContentRail } from "../shell/home-content-rail";
 
-type SafetyStep = {
+type ProcessStep = {
   description: string;
   Icon: LucideIcon;
   title: string;
 };
 
-const safetySteps: SafetyStep[] = [
+const processSteps: ProcessStep[] = [
   {
-    title: "Ricevi più proposte",
+    title: "Professionisti verificati",
     description:
-      "Pubblica una sola richiesta e ricevi l'interesse di più professionisti",
-    Icon: UsersRound,
+      "Controlliamo i dati dell'attività e la corrispondenza con la categoria prima che possano rispondere alla tua richiesta.",
+    Icon: BadgeCheck,
   },
   {
-    title: "Confronta prima di decidere",
+    title: "I tuoi dati restano tuoi",
     description:
-      "Valuta prezzi, disponibilità ed esperienza in un unico posto.",
-    Icon: Scale,
+      "Il tuo contatto viene condiviso solo con i professionisti a cui scegli di rispondere, non con l'intero elenco.",
+    Icon: Lock,
   },
   {
-    title: "Scegli con fiducia",
+    title: "Gratuito, senza impegno",
     description:
-      "Decidi quando trovi la soluzione più adatta al tuo progetto.",
-    Icon: ShieldCheck,
+      "Richiedere un preventivo non costa nulla: sono i professionisti a sostenere il costo per accedere alle richieste.",
+    Icon: Gift,
   },
 ];
 
 export function HowItWorks() {
   return (
     <section
-      id="scegli-con-piu-sicurezza"
+      id="come-funziona-la-trasparenza"
       className={tokens.home.howItWorks.root}
     >
       <HomeContentRail>
         <div className={tokens.home.howItWorks.header}>
           <h2 className={tokens.home.howItWorks.title}>
-            Scegli con più sicurezza
+            Come funziona, in modo trasparente
           </h2>
 
           <p className={tokens.home.howItWorks.subtitle}>
-            Confrontare più professionisti ti aiuta a scegliere la soluzione più
-            adatta al tuo progetto.
+            Niente recensioni da costruire: solo regole chiare su verifica,
+            dati e costi, prima che tu invii una richiesta.
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export function HowItWorks() {
             aria-hidden={true}
           />
 
-          {safetySteps.map((step, index) => (
+          {processSteps.map((step, index) => (
             <li
               key={step.title}
               className={tokens.home.howItWorks.item}

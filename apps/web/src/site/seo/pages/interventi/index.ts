@@ -3,7 +3,6 @@ import { rifareImpiantoElettricoLanding } from "./rifare-impianto-elettrico/cont
 import { installareFotovoltaicoLanding } from "./installare-fotovoltaico/content";
 import { rifareTettoLanding } from "./rifare-tetto/content";
 import { installareClimatizzatoreLanding } from "./installare-climatizzatore/content";
-import { cartongessoeFiniture } from "./cartongesso-e-finiture/content";
 import type { SeoInterventionLanding } from "./types";
 
 export type { SeoInterventionLanding } from "./types";
@@ -14,7 +13,6 @@ const all: readonly SeoInterventionLanding[] = [
   installareFotovoltaicoLanding,
   rifareTettoLanding,
   installareClimatizzatoreLanding,
-  cartongessoeFiniture,
 ];
 
 const bySlug: ReadonlyMap<string, SeoInterventionLanding> = new Map(

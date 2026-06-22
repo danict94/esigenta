@@ -47,9 +47,20 @@ function normalizeCompanyId(
     : null
 }
 
-export function isCompanyMarketplaceApproved(
+/**
+ * THE canonical answer to "can this company participate in the
+ * marketplace?" — see docs/domain-invariants/02_MARKETPLACE_READINESS.md.
+ * Deliberately narrow: active, not deleted, APPROVED status. Does NOT
+ * include CompanyConfigured (categories/interventions) or CompanyCoverage
+ * (geo/radius) — those are separate invariants that gate *what a company
+ * can see/match*, not *whether it can use the marketplace at all*. An
+ * APPROVED-but-unconfigured company is marketplace-ready (can unlock, can
+ * buy credits) and simply sees nothing until it configures — that is a
+ * CompanyConfigured concern, not this one.
+ */
+export function isCompanyMarketplaceReady(
   company: CompanyMarketplaceState,
-) {
+): boolean {
   return (
     company.isActive &&
     company.deletedAt === null &&
@@ -117,7 +128,7 @@ async function assertCompanyMarketplaceState({
   }
 
   if (
-    !isCompanyMarketplaceApproved(
+    !isCompanyMarketplaceReady(
       company,
     )
   ) {

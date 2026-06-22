@@ -19,6 +19,10 @@ import {
 } from "@esigenta/ui"
 
 import {
+  type GeoPlace,
+} from "@esigenta/shared"
+
+import {
   authClient,
 } from "../../../../auth/client"
 
@@ -26,17 +30,9 @@ import {
   completeCompanyOnboardingAction,
 } from "../actions/signup-action"
 
-type InitialCompanyInput = {
-  address?: string
-  city?: string
-  postalCode?: string
-  latitude?: number
-  longitude?: number
-}
-
 type ImpresaSignupFormProps = {
   categorySlug?: string
-  initialCompany?: InitialCompanyInput
+  geoPlace: GeoPlace | null
   hasValidLeadLocation: boolean
 }
 
@@ -59,7 +55,7 @@ function hasText(value: string) {
 
 export function ImpresaSignupForm({
   categorySlug,
-  initialCompany = {},
+  geoPlace,
   hasValidLeadLocation,
 }: ImpresaSignupFormProps) {
   const router =
@@ -195,6 +191,13 @@ export function ImpresaSignupForm({
         return
       }
 
+      if (!geoPlace) {
+        setError(
+          "Seleziona prima la città dalla pagina professionisti.",
+        )
+        return
+      }
+
       const onboardingResult =
         await completeCompanyOnboardingAction({
           name: companyName,
@@ -202,36 +205,7 @@ export function ImpresaSignupForm({
           phone,
           categorySlug,
           operatingRadiusKm,
-          ...(initialCompany.address
-            ? {
-                address:
-                  initialCompany.address,
-              }
-            : {}),
-          ...(initialCompany.city
-            ? {
-                city:
-                  initialCompany.city,
-              }
-            : {}),
-          ...(initialCompany.postalCode
-            ? {
-                postalCode:
-                  initialCompany.postalCode,
-              }
-            : {}),
-          ...(initialCompany.latitude !== undefined
-            ? {
-                latitude:
-                  initialCompany.latitude,
-              }
-            : {}),
-          ...(initialCompany.longitude !== undefined
-            ? {
-                longitude:
-                  initialCompany.longitude,
-              }
-            : {}),
+          geoPlace,
         })
 
       if (!onboardingResult.ok) {

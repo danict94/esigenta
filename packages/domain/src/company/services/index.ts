@@ -3,7 +3,8 @@ export {
 } from "./get-services-configuration-page"
 export type {
   CompanyServicesConfigurationState,
-  ConfigurableServiceCategory,
+  ConfigurableCategory,
+  ConfigurableProjectGroup,
   GetCompanyServicesConfigurationPageResult,
 } from "./get-services-configuration-page"
 

@@ -1,0 +1,542 @@
+[
+  {
+    "value": "impresa elettrica",
+    "ownerType": "category",
+    "ownerSlug": "elettricista"
+  },
+  {
+    "value": "impresa idraulica",
+    "ownerType": "category",
+    "ownerSlug": "idraulico"
+  },
+  {
+    "value": "pittore",
+    "ownerType": "category",
+    "ownerSlug": "imbianchino"
+  },
+  {
+    "value": "tinteggiatore",
+    "ownerType": "category",
+    "ownerSlug": "imbianchino"
+  },
+  {
+    "value": "ditta edile",
+    "ownerType": "category",
+    "ownerSlug": "impresa-edile"
+  },
+  {
+    "value": "impresa di costruzioni",
+    "ownerType": "category",
+    "ownerSlug": "impresa-edile"
+  },
+  {
+    "value": "finitura decorativa",
+    "ownerType": "intervention",
+    "ownerSlug": "applicare-stucco-decorativo"
+  },
+  {
+    "value": "stucco decorativo",
+    "ownerType": "intervention",
+    "ownerSlug": "applicare-stucco-decorativo"
+  },
+  {
+    "value": "stucco veneziano",
+    "ownerType": "intervention",
+    "ownerSlug": "applicare-stucco-decorativo"
+  },
+  {
+    "value": "disostruzione scarichi",
+    "ownerType": "intervention",
+    "ownerSlug": "disostruire-scarichi"
+  },
+  {
+    "value": "scarico otturato",
+    "ownerType": "intervention",
+    "ownerSlug": "disostruire-scarichi"
+  },
+  {
+    "value": "tubo intasato",
+    "ownerType": "intervention",
+    "ownerSlug": "disostruire-scarichi"
+  },
+  {
+    "value": "impianto elettrico da zero",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-impianto-elettrico-nuovo"
+  },
+  {
+    "value": "impianto elettrico nuovo",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-impianto-elettrico-nuovo"
+  },
+  {
+    "value": "nuovo impianto elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-impianto-elettrico-nuovo"
+  },
+  {
+    "value": "manutenzione climatizzatore",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-climatizzatore"
+  },
+  {
+    "value": "pulizia climatizzatore",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-climatizzatore"
+  },
+  {
+    "value": "ricarica gas climatizzatore",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-climatizzatore"
+  },
+  {
+    "value": "gettare massetto",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "massetti",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "rifare il sottofondo",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "costruire parete divisoria",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-opere-murarie"
+  },
+  {
+    "value": "demolire muro",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-opere-murarie"
+  },
+  {
+    "value": "demolizioni",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-opere-murarie"
+  },
+  {
+    "value": "tramezzi",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-opere-murarie"
+  },
+  {
+    "value": "installare aria condizionata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-climatizzatore"
+  },
+  {
+    "value": "installazione climatizzatore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-climatizzatore"
+  },
+  {
+    "value": "montare condizionatore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-climatizzatore"
+  },
+  {
+    "value": "impianto fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
+    "value": "installazione fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
+    "value": "pannelli solari",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
+    "value": "fotovoltaico con accumulo",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico-con-accumulo"
+  },
+  {
+    "value": "fotovoltaico con batteria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico-con-accumulo"
+  },
+  {
+    "value": "impianto con accumulo",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico-con-accumulo"
+  },
+  {
+    "value": "faretti led",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "installare faretti led",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "installazione illuminazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "montare lampadario",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "punti luce",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "installazione sanitari",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-sanitari"
+  },
+  {
+    "value": "montare sanitari bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-sanitari"
+  },
+  {
+    "value": "sostituire sanitari",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-sanitari"
+  },
+  {
+    "value": "intonacatura pareti",
+    "ownerType": "intervention",
+    "ownerSlug": "intonacare-pareti"
+  },
+  {
+    "value": "intonaco esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "intonacare-pareti"
+  },
+  {
+    "value": "intonaco interno",
+    "ownerType": "intervention",
+    "ownerSlug": "intonacare-pareti"
+  },
+  {
+    "value": "controparete in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-controparete"
+  },
+  {
+    "value": "isolamento parete interna",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-controparete"
+  },
+  {
+    "value": "abbassamento soffitto",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-controsoffitto"
+  },
+  {
+    "value": "controsoffitto in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-controsoffitto"
+  },
+  {
+    "value": "soffitto in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-controsoffitto"
+  },
+  {
+    "value": "divisorio in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-parete-cartongesso"
+  },
+  {
+    "value": "parete in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-parete-cartongesso"
+  },
+  {
+    "value": "tramezza in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-parete-cartongesso"
+  },
+  {
+    "value": "adeguare impianto elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-impianto-elettrico"
+  },
+  {
+    "value": "ammodernare impianto elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-impianto-elettrico"
+  },
+  {
+    "value": "rifacimento impianto elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-impianto-elettrico"
+  },
+  {
+    "value": "rifacimento impianto idraulico bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-impianto-idraulico-bagno"
+  },
+  {
+    "value": "rifacimento tubazioni bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-impianto-idraulico-bagno"
+  },
+  {
+    "value": "rifacimento tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "sostituire il tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "guasto elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "riparazione guasti elettrici",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "saltata la corrente",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "salvavita",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "salvavita che scatta",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "perdita acqua",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-perdita-acqua"
+  },
+  {
+    "value": "riparazione perdita acqua",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-perdita-acqua"
+  },
+  {
+    "value": "tubo che perde",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-perdita-acqua"
+  },
+  {
+    "value": "quadro elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-quadro-elettrico"
+  },
+  {
+    "value": "sostituire quadro elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-quadro-elettrico"
+  },
+  {
+    "value": "infiltrazioni tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "perdita dal tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "riparazione tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "rifacimento intonaco",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-intonaco"
+  },
+  {
+    "value": "riparazione intonaco",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-intonaco"
+  },
+  {
+    "value": "rifacimento frontalino",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
+    "value": "ripristinare frontalino",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
+    "value": "ristrutturare casa intera",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-appartamento"
+  },
+  {
+    "value": "ristrutturazione appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-appartamento"
+  },
+  {
+    "value": "rifare il bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
+    "value": "ristrutturare il bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
+    "value": "ristrutturazione bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
+    "value": "ristrutturare villa",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "ristrutturazione casa",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "ristrutturazione casa indipendente",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "rifare la cucina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-cucina"
+  },
+  {
+    "value": "ristrutturazione cucina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-cucina"
+  },
+  {
+    "value": "grondaie",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "grondaie rotte",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "lattoneria",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "lattoniere",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "riparare grondaie",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "cambiare box doccia",
+    "ownerType": "intervention",
+    "ownerSlug": "sostituire-box-doccia"
+  },
+  {
+    "value": "nuova doccia",
+    "ownerType": "intervention",
+    "ownerSlug": "sostituire-box-doccia"
+  },
+  {
+    "value": "sostituzione box doccia",
+    "ownerType": "intervention",
+    "ownerSlug": "sostituire-box-doccia"
+  },
+  {
+    "value": "imbiancare facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-esterni"
+  },
+  {
+    "value": "tinteggiatura esterna",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-esterni"
+  },
+  {
+    "value": "tinteggiatura esterni",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-esterni"
+  },
+  {
+    "value": "verniciare facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-esterni"
+  },
+  {
+    "value": "imbiancare appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-interni"
+  },
+  {
+    "value": "imbiancare casa",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-interni"
+  },
+  {
+    "value": "tinteggiatura interni",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-interni"
+  },
+  {
+    "value": "tinteggiatura pareti interne",
+    "ownerType": "intervention",
+    "ownerSlug": "tinteggiare-interni"
+  },
+  {
+    "value": "cartongesso e pareti",
+    "ownerType": "projectGroup",
+    "ownerSlug": "cartongesso"
+  },
+  {
+    "value": "lavori in cartongesso",
+    "ownerType": "projectGroup",
+    "ownerSlug": "cartongesso"
+  },
+  {
+    "value": "finiture edili",
+    "ownerType": "projectGroup",
+    "ownerSlug": "finiture"
+  },
+  {
+    "value": "finiture interne",
+    "ownerType": "projectGroup",
+    "ownerSlug": "finiture"
+  },
+  {
+    "value": "lavori di finitura",
+    "ownerType": "projectGroup",
+    "ownerSlug": "finiture"
+  }
+]

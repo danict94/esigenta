@@ -2,7 +2,7 @@ export const ristrutturareBagnoFamilyKey = "costGuide:ristrutturare-bagno";
 
 export const ristrutturareBagnoBase = {
   slug: "ristrutturare-bagno",
-  funnelSlug: "rifare-bagno",
+  funnelSlug: "ristrutturare-bagno",
   interventionSeoSlug: "ristrutturare-bagno",
   title: "Costi ristrutturazione bagno",
   h1: "Quanto costa ristrutturare un bagno?",

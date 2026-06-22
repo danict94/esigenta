@@ -3,7 +3,7 @@ export type {
   GetCompanyProfilePageResult,
   CompanyProfileData,
   CompanyProfileCategory,
-  CompanyProfileService,
+  CompanyProfileIntervention,
   CompanyContactChangePendingRequest,
   CompanyProfileCreditSummary,
 } from "./get-profile-page"

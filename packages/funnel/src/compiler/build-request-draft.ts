@@ -80,18 +80,6 @@ export type BuildRequestDraftInput = {
   createdAt?: Date
 }
 
-function sortedUnique(
-  values: string[],
-): string[] {
-  return Array.from(
-    new Set(
-      values.filter(
-        (value) => value.trim(),
-      ),
-    ),
-  ).sort()
-}
-
 function pickActiveAnswers(
   profile: RuntimeProfile,
   answers: RuntimeAnswers,
@@ -180,18 +168,6 @@ export function buildRequestDraft({
     derivedSignals: {},
 
     routingSignals: {},
-
-    matchingSignals: {
-      requiredServiceSlugs:
-        sortedUnique(
-          resolved.serviceSlugs,
-        ),
-
-      categorySlugs:
-        sortedUnique(
-          resolved.categorySlugs,
-        ),
-    },
 
     createdAt:
       createdAt ?? new Date(),

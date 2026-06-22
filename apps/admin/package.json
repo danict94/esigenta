@@ -14,6 +14,7 @@
     "@esigenta/config": "workspace:*",
     "@esigenta/domain": "workspace:*",
     "@esigenta/notifications": "workspace:*",
+    "@esigenta/shared": "workspace:*",
     "@esigenta/ui": "workspace:*",
     "@esigenta/uploads": "workspace:*",
     "better-auth": "^1.6.11",

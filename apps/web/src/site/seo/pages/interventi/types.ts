@@ -6,7 +6,6 @@ export type SeoInterventionLanding = {
   metaTitle: string;
   metaDescription: string;
   funnelSlug: string;
-  domainSlug: string;
   image: {
     src: string;
     alt: string;

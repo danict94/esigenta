@@ -1,3 +1,7 @@
+import {
+  isGeoPlace,
+} from "@esigenta/shared"
+
 import type {
   RuntimeCapability,
 } from "../types/capability"
@@ -33,9 +37,7 @@ export type RuntimeContactAnswerPresence = {
 
 export type RuntimeLocationAnswerPresence = {
   shape: string
-  hasAddress: boolean
-  hasCity: boolean
-  hasCoordinates: boolean
+  isCompleteGeoPlace: boolean
 }
 
 function isRuntimeRecord(
@@ -67,29 +69,6 @@ export function normalizeRuntimeText(
     value.trim()
 
   return trimmed || undefined
-}
-
-export function normalizeRuntimeNumber(
-  value: unknown,
-): number | undefined {
-  if (
-    typeof value === "number" &&
-    Number.isFinite(value)
-  ) {
-    return value
-  }
-
-  if (typeof value !== "string") {
-    return undefined
-  }
-
-  const parsed = Number(
-    value.replace(",", "."),
-  )
-
-  return Number.isFinite(parsed)
-    ? parsed
-    : undefined
 }
 
 function splitLegacyContactName(
@@ -305,106 +284,21 @@ export function updateRuntimeContactAnswerField(
   }
 }
 
+/**
+ * The funnel's "location" answer is a complete GeoPlace or nothing — see
+ * RequestGeoDraft. Anything else (a typed-but-unselected string, a partial
+ * object from a stale client) is not a location at all.
+ */
 export function readRuntimeLocationAnswer(
   value: unknown,
 ): RequestGeoDraft {
-  const text =
-    readRawString(value)
-
-  if (text) {
-    return {
-      address: text,
-    }
-  }
-
-  if (!isRuntimeRecord(value)) {
-    return {}
-  }
-
-  const latitude =
-    normalizeRuntimeNumber(
-      value.latitude,
-    ) ??
-    normalizeRuntimeNumber(value.lat)
-
-  const longitude =
-    normalizeRuntimeNumber(
-      value.longitude,
-    ) ??
-    normalizeRuntimeNumber(value.lng)
-
-  return {
-    address:
-      readRawString(value.address) ?? "",
-    city:
-      readRawString(value.city) ?? "",
-    postalCode:
-      readRawString(value.postalCode) ??
-      readRawString(value.cap) ??
-      "",
-    ...(latitude !== undefined
-      ? {
-          latitude,
-        }
-      : {}),
-    ...(longitude !== undefined
-      ? {
-          longitude,
-        }
-      : {}),
-  }
+  return isGeoPlace(value) ? value : null
 }
 
 export function normalizeRuntimeLocationAnswer(
   value: unknown,
 ): RequestGeoDraft {
-  const readable =
-    readRuntimeLocationAnswer(value)
-
-  const address =
-    normalizeRuntimeText(
-      readable.address,
-    )
-
-  const city =
-    normalizeRuntimeText(
-      readable.city,
-    )
-
-  const postalCode =
-    normalizeRuntimeText(
-      readable.postalCode,
-    )
-
-  return {
-    ...(address
-      ? {
-          address,
-        }
-      : {}),
-    ...(city
-      ? {
-          city,
-        }
-      : {}),
-    ...(postalCode
-      ? {
-          postalCode,
-        }
-      : {}),
-    ...(readable.latitude !== undefined
-      ? {
-          latitude:
-            readable.latitude,
-        }
-      : {}),
-    ...(readable.longitude !== undefined
-      ? {
-          longitude:
-            readable.longitude,
-        }
-      : {}),
-  }
+  return readRuntimeLocationAnswer(value)
 }
 
 export function readRuntimeAnswers(
@@ -521,23 +415,7 @@ export function isRuntimeContactAnswerComplete(
 export function isRuntimeLocationAnswerComplete(
   value: unknown,
 ): boolean {
-  const location =
-    readRuntimeLocationAnswer(value)
-
-  return Boolean(
-    location.address &&
-      location.city &&
-      typeof location.latitude ===
-        "number" &&
-      Number.isFinite(
-        location.latitude,
-      ) &&
-      typeof location.longitude ===
-        "number" &&
-      Number.isFinite(
-        location.longitude,
-      ),
-  )
+  return isGeoPlace(value)
 }
 
 export function isRuntimeCapabilityAnswerComplete(
@@ -624,37 +502,12 @@ export function describeRuntimeContactAnswerPresence(
 export function describeRuntimeLocationAnswerPresence(
   value: unknown,
 ): RuntimeLocationAnswerPresence {
-  const text =
-    normalizeRuntimeText(value)
-
-  if (!isRuntimeRecord(value)) {
-    return {
-      shape: typeof value,
-      hasAddress:
-        Boolean(text),
-      hasCity: false,
-      hasCoordinates: false,
-    }
-  }
-
   return {
-    shape: "object",
-    hasAddress:
-      Boolean(
-        normalizeRuntimeText(
-          value.address,
-        ),
-      ),
-    hasCity:
-      Boolean(
-        normalizeRuntimeText(value.city),
-      ),
-    hasCoordinates:
-      normalizeRuntimeNumber(
-        value.latitude,
-      ) !== undefined &&
-      normalizeRuntimeNumber(
-        value.longitude,
-      ) !== undefined,
+    shape:
+      value === null
+        ? "null"
+        : typeof value,
+    isCompleteGeoPlace:
+      isGeoPlace(value),
   }
 }

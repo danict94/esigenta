@@ -1,4 +1,5 @@
 import type { CompanyActor } from "@esigenta/auth"
+import { isCompanyMarketplaceReady } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
 import { debitCompanyCreditsInTransaction } from "@esigenta/billing"
 import { ensureCompanyCustomerConversationForUnlock } from "../../internal/conversation"
@@ -53,7 +54,7 @@ export async function unlockCompanyRequest(
   requestId: string,
   recordPerf?: PerfRecorder,
 ): Promise<UnlockCompanyRequestResult> {
-  if (actor.company.status !== "APPROVED") {
+  if (!isCompanyMarketplaceReady(actor.company)) {
     return {
       ok: false,
       code: "company_not_approved",

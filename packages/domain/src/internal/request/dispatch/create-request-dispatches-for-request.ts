@@ -139,8 +139,6 @@ export async function createRequestDispatchesForRequestWithClient(
             (candidate) => ({
               requestId: resolved.requestId,
               companyId: candidate.companyId,
-              matchedServiceIds:
-                candidate.matchedServiceIds,
               distanceKm:
                 candidate.distanceKm,
               matchReason:
@@ -275,8 +273,6 @@ export async function createRequestDispatchesForRequestWithClient(
   return {
     ok: true,
     requestId: resolved.requestId,
-    resolvedServiceCount:
-      resolved.resolvedServiceCount,
     eligibleCompanyCount:
       resolved.eligibleCompanyCount,
     dispatchCreatedCount:

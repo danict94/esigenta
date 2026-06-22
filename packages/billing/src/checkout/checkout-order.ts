@@ -1,4 +1,5 @@
 import type { CompanyActor } from "@esigenta/auth"
+import { isCompanyMarketplaceReady } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
 
 export type CheckoutOrderErrorCode =
@@ -43,7 +44,7 @@ export async function createCreditPackageCheckoutOrder(
   packageId: string,
   recordPerf?: PerfRecorder,
 ): Promise<CreateCheckoutOrderResult> {
-  if (actor.company.status !== "APPROVED") {
+  if (!isCompanyMarketplaceReady(actor.company)) {
     return {
       ok: false,
       code: "COMPANY_NOT_APPROVED_FOR_CREDITS",

@@ -1,4 +1,4 @@
-import { taxonomySource } from "@esigenta/taxonomy";
+import { frozenTaxonomySource } from "@esigenta/taxonomy";
 
 import { interventionCoverage } from "./coverage";
 import { buildSeoPageMap } from "./seo-page-map";
@@ -90,10 +90,9 @@ function buildDecision(
 
 export function buildInterventionCoverageDecisions(): readonly InterventionCoverageDecision[] {
   const interventionsBySlug = new Map(
-    taxonomySource.interventions.map((intervention) => [
-      intervention.slug,
-      intervention,
-    ]),
+    frozenTaxonomySource.projectGroups
+      .flatMap((projectGroup) => projectGroup.interventions)
+      .map((intervention) => [intervention.slug, intervention]),
   );
 
   const seoPageMap = buildSeoPageMap();

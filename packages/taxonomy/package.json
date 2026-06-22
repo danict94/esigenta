@@ -8,9 +8,9 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "taxonomy:build": "tsx src/orchestrator/build-taxonomy.ts",
-    "taxonomy:generate": "tsx src/orchestrator/generate-taxonomy.ts",
-    "taxonomy:seed": "tsx src/orchestrator/seed-taxonomy.ts"
+    "taxonomy:frozen:build": "tsx src/frozen/orchestrator/build-taxonomy.ts",
+    "taxonomy:frozen:generate": "tsx src/frozen/orchestrator/generate-taxonomy.ts",
+    "taxonomy:frozen:sync-db": "tsx src/frozen/orchestrator/sync-catalog-to-database.ts"
   },
   "dependencies": {
     "@esigenta/database": "workspace:*",

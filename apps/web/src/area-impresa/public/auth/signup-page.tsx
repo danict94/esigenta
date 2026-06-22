@@ -6,6 +6,11 @@ import {
   HeroSurface,
 } from "@esigenta/ui"
 
+import {
+  isGeoPlace,
+  type GeoPlace,
+} from "@esigenta/shared"
+
 import { PublicShell } from "../../../site/shell/public-shell"
 
 import {
@@ -16,11 +21,7 @@ export type AreaImpresaSignupPageProps = {
   searchParams: Promise<{
     categorySlug?: string
     activity?: string
-    city?: string
-    postalCode?: string
-    address?: string
-    latitude?: string
-    longitude?: string
+    geoPlace?: string
   }>
 }
 
@@ -28,13 +29,23 @@ function getValue(value: string | undefined) {
   return value?.trim() || null
 }
 
-function getCoordinate(value: string | undefined) {
-  const parsed =
-    Number(value)
+function parseGeoPlace(
+  value: string | undefined,
+): GeoPlace | null {
+  if (!value) {
+    return null
+  }
 
-  return Number.isFinite(parsed)
-    ? parsed
-    : null
+  try {
+    const parsed: unknown =
+      JSON.parse(value)
+
+    return isGeoPlace(parsed)
+      ? parsed
+      : null
+  } catch {
+    return null
+  }
 }
 
 export async function AreaImpresaSignupPage({
@@ -45,51 +56,11 @@ export async function AreaImpresaSignupPage({
 
   const categorySlug =
     getValue(params.categorySlug)
-  const city =
-    getValue(params.city)
-  const postalCode =
-    getValue(params.postalCode)
-  const address =
-    getValue(params.address)
-  const latitude =
-    getCoordinate(params.latitude)
-  const longitude =
-    getCoordinate(params.longitude)
+  const geoPlace =
+    parseGeoPlace(params.geoPlace)
 
   const hasValidLeadLocation =
-    Boolean(
-      city &&
-        latitude !== null &&
-        longitude !== null,
-    )
-
-  const initialCompany = {
-    ...(address
-      ? {
-          address,
-        }
-      : {}),
-    ...(city
-      ? {
-          city,
-        }
-      : {}),
-    ...(postalCode
-      ? {
-          postalCode,
-        }
-      : {}),
-    ...(latitude !== null
-      ? {
-          latitude,
-        }
-      : {}),
-    ...(longitude !== null
-      ? {
-          longitude,
-        }
-      : {}),
-  }
+    geoPlace !== null
 
   return (
     <PublicShell>
@@ -116,7 +87,7 @@ export async function AreaImpresaSignupPage({
                 categorySlug={
                   categorySlug ?? undefined
                 }
-                initialCompany={initialCompany}
+                geoPlace={geoPlace}
                 hasValidLeadLocation={hasValidLeadLocation}
               />
 

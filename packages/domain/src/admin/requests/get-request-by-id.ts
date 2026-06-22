@@ -26,6 +26,14 @@ export type ModerationRequestIntervention = {
   slug: string
   name: string
   description: string | null
+  // Frozen taxonomy path (Phase 15B): the categories an intervention
+  // belongs to come from Intervention.projectGroupId -> Category
+  // (Category.projectGroupIds), the same relation search/discovery use —
+  // no Service/CategoryService/InterventionService traversal. Kept as a
+  // single-element "services" array (rather than exposing categories
+  // directly on the intervention) so the admin UI's existing card list
+  // and category-derivation logic need no changes: the Intervention is
+  // now the sole operational unit a "service" used to represent.
   services: ModerationRequestService[]
 }
 
@@ -60,38 +68,25 @@ export type ModerationRequestDetail = {
   deletedByAdminUser: ModerationRequestAdminActor | null
   deleteReason: string | null
   intervention: ModerationRequestIntervention | null
-  requiredServices: ModerationRequestService[]
 }
 
-function mapService(service: {
+function mapCategory(category: {
   slug: string
   name: string
   description: string | null
-  categories: Array<{
-    category: {
-      slug: string
-      name: string
-      description: string | null
-      sector: {
-        slug: string
-        name: string
-      }
-    }
-  }>
-}): ModerationRequestService {
+  sector: {
+    slug: string
+    name: string
+  }
+}): ModerationRequestCategory {
   return {
-    slug: service.slug,
-    name: service.name,
-    description: service.description,
-    categories: service.categories.map(({ category }) => ({
-      slug: category.slug,
-      name: category.name,
-      description: category.description,
-      sector: {
-        slug: category.sector.slug,
-        name: category.sector.name,
-      },
-    })),
+    slug: category.slug,
+    name: category.name,
+    description: category.description,
+    sector: {
+      slug: category.sector.slug,
+      name: category.sector.name,
+    },
   }
 }
 
@@ -110,11 +105,15 @@ export async function getRequestById(
       customerName: true,
       customerEmail: true,
       customerPhone: true,
-      city: true,
-      address: true,
-      postalCode: true,
-      latitude: true,
-      longitude: true,
+      geoLocation: {
+        select: {
+          city: true,
+          formattedAddress: true,
+          postalCode: true,
+          latitude: true,
+          longitude: true,
+        },
+      },
       structuredData: true,
       creditCost: true,
       maxUnlocks: true,
@@ -129,34 +128,6 @@ export async function getRequestById(
       deleteReason: true,
       deletedByAdminUser: {
         select: { id: true, name: true, email: true },
-      },
-      requiredServices: {
-        select: {
-          service: {
-            select: {
-              slug: true,
-              name: true,
-              description: true,
-              categories: {
-                select: {
-                  category: {
-                    select: {
-                      slug: true,
-                      name: true,
-                      description: true,
-                      sector: {
-                        select: {
-                          slug: true,
-                          name: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
       },
     },
   })
@@ -174,54 +145,47 @@ export async function getRequestById(
           slug: true,
           name: true,
           description: true,
-          services: {
-            select: {
-              service: {
-                select: {
-                  slug: true,
-                  name: true,
-                  description: true,
-                  categories: {
-                    select: {
-                      category: {
-                        select: {
-                          slug: true,
-                          name: true,
-                          description: true,
-                          sector: {
-                            select: {
-                              slug: true,
-                              name: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+          projectGroupId: true,
         },
       })
     : null
 
-  const { requiredServices, ...requestFields } =
-    request
+  const categories = intervention?.projectGroupId
+    ? await prisma.category.findMany({
+        where: {
+          projectGroupIds: { has: intervention.projectGroupId },
+        },
+        select: {
+          slug: true,
+          name: true,
+          description: true,
+          sector: { select: { slug: true, name: true } },
+        },
+      })
+    : []
+
+  const { geoLocation, ...requestFields } = request
 
   return {
     ...requestFields,
-    requiredServices: requiredServices.map(
-      ({ service }) => mapService(service),
-    ),
+    city: geoLocation?.city ?? null,
+    address: geoLocation?.formattedAddress ?? null,
+    postalCode: geoLocation?.postalCode ?? null,
+    latitude: geoLocation?.latitude ?? null,
+    longitude: geoLocation?.longitude ?? null,
     intervention: intervention
       ? {
           slug: intervention.slug,
           name: intervention.name,
           description: intervention.description,
-          services: intervention.services.map(
-            ({ service }) => mapService(service),
-          ),
+          services: [
+            {
+              slug: intervention.slug,
+              name: intervention.name,
+              description: intervention.description,
+              categories: categories.map(mapCategory),
+            },
+          ],
         }
       : null,
   }

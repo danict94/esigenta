@@ -173,7 +173,9 @@ async function loadMessageContext(
             select: {
               requestCode: true,
               interventionSlug: true,
-              city: true,
+              geoLocation: {
+                select: { city: true },
+              },
             },
           },
           participants: {
@@ -256,32 +258,60 @@ async function sendConversationEmail({
   })
 }
 
-async function createCompanyMessageNotification({
-  message,
-  requestTitle,
-  senderLabel,
-}: {
-  message: LoadedMessageContext
-  requestTitle: string
-  senderLabel: string
-}) {
+// ── Eligibility (decided exactly once; channels below only deliver) ────────────
+//
+// THE recipient resolution for a CONVERSATION_MESSAGE notification — see
+// docs/domain-invariants/04_NOTIFICATION_ARCHITECTURE.md. Previously the
+// in-app and email branches each independently re-derived the company
+// participant via their own `.find()` over message.conversation.participants
+// — same data, same logic, computed twice. A third channel (WhatsApp/SMS/
+// Push) would have been a third independent derivation. Now there is one.
+type CompanyMessageRecipients = {
+  companyId: string
+  users: Array<{ email: string; name: string | null }>
+}
+
+function resolveCompanyMessageRecipients(
+  message: LoadedMessageContext,
+): CompanyMessageRecipients | null {
   const companyParticipant =
     message.conversation.participants.find(
       (participant) =>
-        participant.actorType ===
-          "COMPANY" &&
+        participant.actorType === "COMPANY" &&
         participant.companyId,
     )
 
   if (!companyParticipant?.companyId) {
-    return false
+    return null
   }
 
+  return {
+    companyId: companyParticipant.companyId,
+    users: uniqueRecipients(
+      companyParticipant.company?.memberships.map(
+        (companyMember) => companyMember.user,
+      ) ?? [],
+    ),
+  }
+}
+
+// ── Delivery: app channel ───────────────────────────────────────────────────
+
+async function createCompanyMessageNotification({
+  message,
+  recipients,
+  requestTitle,
+  senderLabel,
+}: {
+  message: LoadedMessageContext
+  recipients: CompanyMessageRecipients
+  requestTitle: string
+  senderLabel: string
+}) {
   const existingNotification =
     await prisma.companyNotification.findFirst({
       where: {
-        companyId:
-          companyParticipant.companyId,
+        companyId: recipients.companyId,
         messageId: message.id,
         type: "CONVERSATION_MESSAGE",
       },
@@ -298,8 +328,7 @@ async function createCompanyMessageNotification({
     await prisma.companyNotification.createMany({
       data: [
         {
-          companyId:
-            companyParticipant.companyId,
+          companyId: recipients.companyId,
           requestId:
             message.conversation.requestId,
           conversationId:
@@ -317,32 +346,21 @@ async function createCompanyMessageNotification({
   return result.count > 0
 }
 
+// ── Delivery: email channel ─────────────────────────────────────────────────
+
 async function notifyCompanyRecipients({
   message,
+  recipients,
   senderLabel,
   requestTitle,
   messagePreview,
 }: {
   message: LoadedMessageContext
+  recipients: CompanyMessageRecipients
   senderLabel: string
   requestTitle: string
   messagePreview: string
 }) {
-  const companyParticipant =
-    message.conversation.participants.find(
-      (participant) =>
-        participant.actorType ===
-          "COMPANY" &&
-        participant.company,
-    )
-  const recipients =
-    uniqueRecipients(
-      companyParticipant?.company
-        ?.memberships.map(
-          (companyMember) =>
-            companyMember.user,
-        ) ?? [],
-    )
   const accessUrl =
     buildCompanyConversationUrl({
       conversationId:
@@ -353,7 +371,7 @@ async function notifyCompanyRecipients({
 
   const results =
     await Promise.allSettled(
-      recipients.map((recipient) =>
+      recipients.users.map((recipient) =>
         sendConversationEmail({
           to: recipient.email,
           recipientLabel:
@@ -479,17 +497,28 @@ export async function processConversationMessageSideEffects({
     message.senderParticipant.actorType !==
     "COMPANY"
   ) {
+    // Eligibility decided exactly once; both channels below deliver to the
+    // same resolved recipient set — see resolveCompanyMessageRecipients.
+    const recipients =
+      resolveCompanyMessageRecipients(message)
+
+    if (!recipients) {
+      return emptySideEffects
+    }
+
     const [
       companyNotificationCreated,
       companyEmail,
     ] = await Promise.all([
       createCompanyMessageNotification({
         message,
+        recipients,
         requestTitle,
         senderLabel,
       }),
       notifyCompanyRecipients({
         message,
+        recipients,
         senderLabel,
         requestTitle,
         messagePreview,

@@ -43,7 +43,7 @@ export type RequestsPageProps = {
     q?: string | string[]
     radiusKm?: string | string[]
     categoryId?: string | string[]
-    serviceId?: string | string[]
+    interventionId?: string | string[]
     sort?: string | string[]
     page?: string | string[]
   }>
@@ -93,8 +93,8 @@ function normalizeRequestDashboardFilters(
     readSearchParam(searchParams.categoryId)
       ?.trim()
 
-  const serviceId =
-    readSearchParam(searchParams.serviceId)
+  const interventionId =
+    readSearchParam(searchParams.interventionId)
       ?.trim()
 
   return {
@@ -105,7 +105,7 @@ function normalizeRequestDashboardFilters(
         ? Number(radiusValue)
         : null,
     categoryId: categoryId || null,
-    serviceId: serviceId || null,
+    interventionId: interventionId || null,
     sort:
       sortValue &&
       allowedSort.has(
@@ -120,7 +120,7 @@ type ActiveFilters = {
   q: string | null
   radiusKm: number | null
   categoryId: string | null
-  serviceId: string | null
+  interventionId: string | null
   sort: RequestDashboardSort
 }
 
@@ -131,7 +131,7 @@ function hasActiveFilters(
     active.q ||
       active.radiusKm ||
       active.categoryId ||
-      active.serviceId ||
+      active.interventionId ||
       active.sort !== "recommended",
   )
 }
@@ -262,8 +262,8 @@ export async function RequestsPage({
       params.set("radiusKm", String(active.radiusKm))
     if (active.categoryId)
       params.set("categoryId", active.categoryId)
-    if (active.serviceId)
-      params.set("serviceId", active.serviceId)
+    if (active.interventionId)
+      params.set("interventionId", active.interventionId)
     if (active.sort !== "recommended")
       params.set("sort", active.sort)
     if (targetPage > 1) params.set("page", String(targetPage))
@@ -355,7 +355,7 @@ export async function RequestsPage({
           <RequestFiltersPanel
             active={activeFilters}
             categories={result.filters.categories}
-            services={result.filters.services}
+            interventions={result.filters.interventions}
             activeCategoryIsConfigured={
               result.filters.activeCategoryIsConfigured
             }
@@ -385,11 +385,11 @@ export async function RequestsPage({
           </Card>
         ) : (
           <>
-            {!result.hasSelectedServices ? (
+            {!result.hasSelectedInterventions ? (
               <Card className="bg-surface-secondary p-5">
                 <p className="text-sm font-semibold text-text-primary">
-                  Seleziona i servizi che offri per vedere prima le richieste
-                  più adatte.
+                  Seleziona gli interventi che offri per vedere prima le
+                  richieste più adatte.
                 </p>
 
                 <Link

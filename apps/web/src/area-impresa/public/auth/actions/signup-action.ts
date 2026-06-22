@@ -5,6 +5,11 @@ import {
 } from "@esigenta/auth"
 
 import {
+  isFreshGeoPlace,
+  type GeoPlace,
+} from "@esigenta/shared"
+
+import {
   createCompanyForCurrentUser,
 } from "./create-company-for-current-user"
 
@@ -22,11 +27,7 @@ export type CompleteCompanyOnboardingInput = {
   vatNumber: string
   phone: string
   categorySlug?: string
-  address?: string
-  city?: string
-  postalCode?: string
-  latitude?: number
-  longitude?: number
+  geoPlace: GeoPlace
   operatingRadiusKm?: number
 }
 
@@ -70,15 +71,6 @@ function normalizeOptionalText(
 
   return trimmed
     ? trimmed
-    : undefined
-}
-
-function normalizeFiniteNumber(
-  value: number | undefined,
-) {
-  return typeof value === "number" &&
-    Number.isFinite(value)
-    ? value
     : undefined
 }
 
@@ -165,26 +157,7 @@ export async function completeCompanyOnboardingAction(
     }
   }
 
-  const address =
-    normalizeOptionalText(input.address)
-
-  const city =
-    normalizeOptionalText(input.city)
-
-  const postalCode =
-    normalizeOptionalText(input.postalCode)
-
-  const latitude =
-    normalizeFiniteNumber(input.latitude)
-
-  const longitude =
-    normalizeFiniteNumber(input.longitude)
-
-  if (
-    !city ||
-    latitude === undefined ||
-    longitude === undefined
-  ) {
+  if (!isFreshGeoPlace(input.geoPlace)) {
     return {
       ok: false,
       code: "invalid_company_location",
@@ -202,36 +175,7 @@ export async function completeCompanyOnboardingAction(
           vatNumber: vatNumber.value,
           phone: phone.value,
           operatingRadiusKm,
-
-          ...(address
-            ? {
-                address,
-              }
-            : {}),
-
-          ...(city
-            ? {
-                city,
-              }
-            : {}),
-
-          ...(postalCode
-            ? {
-                postalCode,
-              }
-            : {}),
-
-          ...(latitude !== undefined
-            ? {
-                latitude,
-              }
-            : {}),
-
-          ...(longitude !== undefined
-            ? {
-                longitude,
-              }
-            : {}),
+          geoPlace: input.geoPlace,
         },
       })
 

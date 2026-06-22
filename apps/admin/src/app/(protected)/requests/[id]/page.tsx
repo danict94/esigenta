@@ -8,12 +8,14 @@ import {
   archiveRequest,
   getRequestById,
   listAttachedRequestPhotos,
+  resendRequestVerificationEmail,
   restoreRequest,
   RequestPublishingRequirementsError,
   reviewRequest,
   softDeleteRequest,
   unarchiveRequest,
   updateRequestCommercialSettings,
+  verifyRequestManually,
 } from "@esigenta/domain";
 import {
   createRequestPhotoDisplayItems,
@@ -134,6 +136,10 @@ function getStatusBadgeVariant(status: string) {
     return "warning";
   }
 
+  if (status === "PENDING_VERIFICATION") {
+    return "danger";
+  }
+
   return "neutral";
 }
 
@@ -156,6 +162,10 @@ function getStatusLabel(status: string) {
 
   if (status === "CLOSED") {
     return "Chiusa";
+  }
+
+  if (status === "PENDING_VERIFICATION") {
+    return "Email non verificata";
   }
 
   return status;
@@ -479,6 +489,35 @@ async function restoreRequestAction(formData: FormData) {
   revalidatePath(`/requests/${requestId}`);
 }
 
+async function resendVerificationEmailAction(formData: FormData) {
+  "use server";
+
+  await requireAdmin();
+  const requestId = String(formData.get("requestId") ?? "");
+
+  await resendRequestVerificationEmail({ requestId });
+
+  revalidatePath("/requests/non-verificate");
+  revalidatePath(`/requests/${requestId}`);
+}
+
+async function verifyRequestManuallyAction(formData: FormData) {
+  "use server";
+
+  await requireAdmin();
+  const requestId = String(formData.get("requestId") ?? "");
+
+  // Only advances PENDING_VERIFICATION -> PENDING_REVIEW (the same
+  // transition the customer's own email link performs). Publishing and the
+  // resulting dispatch/notification emails remain reviewRequestAction's
+  // job, unchanged below.
+  await verifyRequestManually({ requestId });
+
+  revalidatePath("/requests");
+  revalidatePath("/requests/non-verificate");
+  revalidatePath(`/requests/${requestId}`);
+}
+
 function DetailSection({
   eyebrow,
   title,
@@ -551,10 +590,7 @@ export default async function RequestDetailPage({
   const customerDescription =
     findDescription(request.structuredData);
 
-  const primaryServices =
-    request.requiredServices.length > 0
-      ? request.requiredServices
-      : request.intervention?.services ?? [];
+  const primaryServices = request.intervention?.services ?? [];
 
   const categories = uniqueCategories(
     primaryServices.flatMap((service) => service.categories),
@@ -905,7 +941,40 @@ export default async function RequestDetailPage({
               </div>
             </div>
 
-            {request.status === "PENDING_REVIEW" ? (
+            {request.status === "PENDING_VERIFICATION" ? (
+              <div className="mt-5 space-y-4">
+                <div className="border border-border-primary bg-surface-secondary p-4">
+                  <p className="text-sm font-medium text-text-primary">
+                    Email cliente non verificata
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-text-secondary">
+                    Il cliente non ha ancora confermato la richiesta tramite
+                    il link inviato per email. Finché resta in questo stato
+                    non entra nella coda di revisione e non può essere
+                    pubblicata. Invia di nuovo l&apos;email oppure verifica
+                    manualmente se hai già confermato il contatto con il
+                    cliente (es. telefono).
+                  </p>
+                </div>
+
+                <form action={resendVerificationEmailAction}>
+                  <input type="hidden" name="requestId" value={request.id} />
+                  <Button type="submit" variant="secondary">
+                    Invia di nuovo l&apos;email di verifica
+                  </Button>
+                </form>
+
+                <form
+                  action={verifyRequestManuallyAction}
+                  className="border-t border-border-primary pt-4"
+                >
+                  <input type="hidden" name="requestId" value={request.id} />
+                  <Button type="submit">
+                    Verifica manualmente e invia in revisione
+                  </Button>
+                </form>
+              </div>
+            ) : request.status === "PENDING_REVIEW" ? (
               <div className="mt-5 space-y-4">
                 {!hasRequiredPublishingSettings ? (
                   <div className="border border-border-primary bg-surface-secondary p-4">

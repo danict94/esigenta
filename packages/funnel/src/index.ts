@@ -11,7 +11,6 @@ export type {
   RequestDerivedSignals,
   RequestDraft,
   RequestGeoDraft,
-  RequestMatchingSignals,
   RequestRoutingSignals,
 } from "./types/request-draft"
 
