@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { Inter } from "next/font/google"
 import localFont from "next/font/local"
+import { GeistSans } from "geist/font/sans"
 
 import "./globals.css"
 import { CookieConsent } from "../site/shell/cookie-consent"
@@ -38,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${plusJakartaSans.variable} ${inter.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${inter.variable} ${GeistSans.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-surface-primary font-sans text-text-primary">
         {children}

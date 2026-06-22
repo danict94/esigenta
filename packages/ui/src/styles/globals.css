@@ -95,9 +95,6 @@
    * Public home tuning variables.
    * These are intentionally editable from DevTools for visual calibration.
    */
-  --fp-home-hero-min-height: 28rem;
-  --fp-home-hero-title-max-width: 58rem;
-  --fp-home-hero-search-width: 42.5rem;
   --fp-home-content-inset-x: 8.5%;
   --fp-home-section-y: 3rem;
   --fp-home-section-y-compact: 2.5rem;

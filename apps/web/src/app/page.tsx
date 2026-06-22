@@ -1,5 +1,5 @@
-import { HomePage } from "../site/home/home-page"
+import { HomePageV2 } from "../site/home-v2/home-page-v2"
 
 export default function Page() {
-  return <HomePage />
+  return <HomePageV2 />
 }
