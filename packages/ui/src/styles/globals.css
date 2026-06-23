@@ -101,6 +101,30 @@
   --fp-home-section-gap: 1.25rem;
   --fp-home-search-inner-height: 72px;
   --fp-home-search-button-size: 72px;
+
+  /*
+   * Cantiere Calmo — Homepage-derived primitives (Sprint 2: Primitive
+   * Convergence). Source of truth: apps/web/src/site/shell/palette.ts.
+   * Additive only — promoted for future availability. No existing
+   * component or token consumes these yet.
+   */
+  --fp-color-cantiere-ink: #171511;
+  --fp-color-cantiere-ink-secondary: #5b5648;
+  --fp-color-cantiere-paper: #faf8f4;
+  --fp-color-cantiere-paper-translucent: rgba(250, 248, 244, 0.72);
+  --fp-color-cantiere-surface: #f1eee7;
+  --fp-color-cantiere-linen: #ece4d4;
+  --fp-color-cantiere-hairline: #e4e0d6;
+  --fp-color-cantiere-accent: #cc785c;
+  --fp-color-cantiere-accent-hover: #b05e3f;
+  --fp-color-cantiere-accent-tint: #f5e8df;
+
+  --fp-shadow-cantiere-elevation:
+    0 1px 2px rgba(23, 21, 17, 0.04),
+    0 12px 32px rgba(23, 21, 17, 0.07);
+  --fp-shadow-cantiere-slab:
+    0 18px 40px -16px rgba(23, 21, 17, 0.28),
+    0 6px 14px -8px rgba(23, 21, 17, 0.18);
 }
 
 @theme inline {
@@ -166,6 +190,21 @@
   --shadow-surface: var(--fp-shadow-surface);
   --shadow-card: var(--fp-shadow-card);
   --shadow-home-hero-card: var(--fp-shadow-home-hero-card);
+
+  /* Cantiere Calmo — homepage-derived primitives. See :root block above. */
+  --color-cantiere-ink: var(--fp-color-cantiere-ink);
+  --color-cantiere-ink-secondary: var(--fp-color-cantiere-ink-secondary);
+  --color-cantiere-paper: var(--fp-color-cantiere-paper);
+  --color-cantiere-paper-translucent: var(--fp-color-cantiere-paper-translucent);
+  --color-cantiere-surface: var(--fp-color-cantiere-surface);
+  --color-cantiere-linen: var(--fp-color-cantiere-linen);
+  --color-cantiere-hairline: var(--fp-color-cantiere-hairline);
+  --color-cantiere-accent: var(--fp-color-cantiere-accent);
+  --color-cantiere-accent-hover: var(--fp-color-cantiere-accent-hover);
+  --color-cantiere-accent-tint: var(--fp-color-cantiere-accent-tint);
+
+  --shadow-cantiere-elevation: var(--fp-shadow-cantiere-elevation);
+  --shadow-cantiere-slab: var(--fp-shadow-cantiere-slab);
 }
 
 body {

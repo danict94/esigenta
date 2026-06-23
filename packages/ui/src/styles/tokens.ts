@@ -161,7 +161,6 @@ const cardTokens = {
   base: `${radiusTokens.lg} border border-border-primary ${semanticSurfaceTokens.elevated} shadow-card`,
   header: `${densityTokens.stack.tight} ${densityTokens.panel.default}`,
   content: `${densityTokens.panel.default} pt-0`,
-  footer: `flex items-center ${densityTokens.panel.default} pt-0`,
   title: "text-lg font-semibold leading-none tracking-tight text-text-primary",
   description: "text-sm text-text-secondary",
 } as const;
@@ -201,8 +200,6 @@ const interactiveTokens = {
       "border border-accent-warm bg-accent-warm text-accent-on-warm hover:border-accent-warm-hover hover:bg-accent-warm-hover",
     brandOutline:
       "border border-brand-primary bg-transparent text-brand-primary hover:bg-brand-primary hover:text-brand-on-primary",
-    dark:
-      "border border-surface-dark bg-surface-dark text-text-inverse hover:border-surface-dark hover:bg-surface-dark",
     ghost:
       "border border-transparent bg-transparent text-text-secondary hover:bg-surface-secondary hover:text-text-primary",
   },
@@ -231,8 +228,6 @@ const formControlTokens = {
 } as const;
 
 const homeTokens = {
-  railFrame: "",
-  rail: "",
   section: "py-12 md:py-[calc(var(--fp-home-section-y)+0.5rem)]",
   softSection: `${semanticSurfaceTokens.soft} py-[var(--fp-home-section-y-compact)] md:py-[var(--fp-home-section-y)]`,
   compactSoftSection:
@@ -312,6 +307,56 @@ const funnelTokens = {
   actionButton: "min-w-40",
 } as const;
 
+/*
+ * Cantiere Calmo — Homepage-derived primitives (Sprint 2: Primitive
+ * Convergence). Source of truth: apps/web/src/site/shell/palette.ts.
+ *
+ * These are LEGACY-ADJACENT, not legacy: they promote the approved
+ * Homepage's visual language into the shared layer so it becomes
+ * available for future component work. They are additive only — no
+ * existing token, component, or consumer references them yet.
+ *
+ * `color` intentionally holds raw hex (mirroring palette.ts 1:1) rather
+ * than utility-class strings, since current Homepage/Shell consumers use
+ * them via inline `style`, not Tailwind classes. The matching CSS
+ * variables in globals.css also make `bg-cantiere-*` / `text-cantiere-*` /
+ * `border-cantiere-*` / `shadow-cantiere-*` Tailwind utilities available
+ * for any future consumer that prefers classes over inline styles.
+ */
+const cantiereColorTokens = {
+  ink: "#171511",
+  inkSecondary: "#5B5648",
+  paper: "#FAF8F4",
+  paperTranslucent: "rgba(250, 248, 244, 0.72)",
+  surface: "#F1EEE7",
+  linen: "#ECE4D4",
+  hairline: "#E4E0D6",
+  accent: "#CC785C",
+  accentHover: "#B05E3F",
+  accentTint: "#F5E8DF",
+} as const;
+
+const cantiereShadowTokens = {
+  elevation: "shadow-cantiere-elevation",
+  slab: "shadow-cantiere-slab",
+} as const;
+
+// 4 / 6 / 8px family observed across the Homepage (photo slabs, nav accent
+// link, search/CTA controls). Expressed as arbitrary-value Tailwind classes
+// rather than new CSS variables, since the family is small and not yet
+// proven stable enough to warrant its own --fp-radius-* physical values.
+const cantiereRadiusTokens = {
+  sm: "rounded-[4px]",
+  md: "rounded-[6px]",
+  lg: "rounded-[8px]",
+} as const;
+
+const cantiereTokens = {
+  color: cantiereColorTokens,
+  shadow: cantiereShadowTokens,
+  radius: cantiereRadiusTokens,
+} as const;
+
 export const tokens = {
   // Backward-compatible alias; layout.container.widths owns width selection.
   containers: containerWidthTokens,
@@ -380,6 +425,10 @@ export const tokens = {
   interactive: interactiveTokens,
   density: densityTokens,
   formControls: formControlTokens,
+
+  // Homepage-derived primitives (Sprint 2: Primitive Convergence). See
+  // `cantiereTokens` above for scope and intent.
+  cantiere: cantiereTokens,
 } as const;
 
 export type Tokens = typeof tokens;
@@ -420,5 +469,10 @@ export type PanelDensityToken = keyof typeof tokens.density.panel;
 export type StackDensityToken = keyof typeof tokens.density.stack;
 
 export type FormControlToken = keyof typeof tokens.formControls;
+
+export type CantiereToken = keyof typeof tokens.cantiere;
+export type CantiereColorToken = keyof typeof tokens.cantiere.color;
+export type CantiereShadowToken = keyof typeof tokens.cantiere.shadow;
+export type CantiereRadiusToken = keyof typeof tokens.cantiere.radius;
 export type FormControlStateToken = keyof typeof tokens.formControls.states;
 export type FormControlSizeToken = keyof typeof tokens.formControls.inputSizes;

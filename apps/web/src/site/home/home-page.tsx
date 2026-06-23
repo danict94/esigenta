@@ -1,26 +1,24 @@
-import { cc } from "./palette";
-import { Mark } from "./mark";
+import { cc } from "../shell/palette";
+import { Navbar } from "../shell/navbar";
+import { Footer } from "../shell/footer";
 import { Explosion } from "./explosion";
-import { ModuleStack } from "./module-stack";
-import { Moment } from "./moment";
 import { IndexDirectory } from "./index-directory";
-import { Close } from "./close";
+import { Moment } from "./moment";
 import { Grain } from "./grain";
 
-export function HomePageV2() {
+export function HomePage() {
   return (
     <div style={{ backgroundColor: cc.paper }}>
       <Grain />
-      <Mark />
+      <Navbar />
 
       <main>
         <Explosion />
-        <ModuleStack />
-        <Moment />
         <IndexDirectory />
+        <Moment />
       </main>
 
-      <Close />
+      <Footer />
     </div>
   );
 }

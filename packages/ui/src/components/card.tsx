@@ -66,21 +66,6 @@ export function CardContent({
   )
 }
 
-export function CardFooter({
-  className,
-  children,
-  ...props
-}: CardSectionProps) {
-  return (
-    <div
-      className={cn(tokens.card.footer, className)}
-      {...props}
-    >
-      {children}
-    </div>
-  )
-}
-
 export type CardTitleProps = {
   children: ReactNode
   className?: string

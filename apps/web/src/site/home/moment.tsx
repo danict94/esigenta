@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { HomeImage } from "../home/home-image";
+import { HomeImage } from "./home-image";
 
-import { cc, ccFont, ccPhotoGrade, ccType } from "./palette";
-import { ArrowRightIcon } from "./icons";
+import { cc, ccFont, ccPhotoGrade, ccType } from "../shell/palette";
+import { ArrowRightIcon } from "../shell/icons";
 
 const professionalPhoto = {
   alt: "Professionista al lavoro su un cantiere",
@@ -11,8 +11,10 @@ const professionalPhoto = {
   src: "/assets/images/professionisti.webp",
 };
 
-// The one full-bleed beat on the page — no card, no container, no rounded
-// corners. A deliberate pause between the busy module stack and the guides list.
+// The page's closing beat and its one full-bleed moment — no card, no
+// container, no rounded corners. This is also the single audience handoff on
+// the page: everything above speaks to homeowners; the eyebrow flips the
+// address to tradespeople before the footer.
 export function Moment() {
   return (
     <section style={ccFont} className="relative">
@@ -33,7 +35,11 @@ export function Moment() {
         />
 
         <div className="absolute inset-x-0 bottom-0 px-5 pb-12 sm:px-10 sm:pb-16 md:px-16 md:pb-20">
-          <h2 className={`max-w-xl font-medium tracking-[-0.01em] ${ccType.heading}`} style={{ color: cc.paper }}>
+          <p className="text-[12px] uppercase tracking-[0.1em]" style={{ color: "rgba(250,248,244,0.65)" }}>
+            Per i professionisti
+          </p>
+
+          <h2 className={`mt-3 max-w-xl font-medium tracking-[-0.01em] ${ccType.heading}`} style={{ color: cc.paper }}>
             Richieste reali, nella tua zona
           </h2>
 

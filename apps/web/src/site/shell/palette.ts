@@ -1,5 +1,5 @@
-// Cantiere Calmo — Esigenta V2 visual identity.
-// Scoped to the homepage only. Do not import outside site/home-v2/**.
+// Cantiere Calmo — Esigenta visual identity.
+// Canonical palette for the site shell (navbar, footer) and homepage sections.
 
 export const cc = {
   ink: "#171511",
@@ -7,14 +7,15 @@ export const cc = {
   paper: "#FAF8F4",
   paperTranslucent: "rgba(250, 248, 244, 0.72)",
   surface: "#F1EEE7",
+  // Warm linen — deeper and warmer than `surface`. Now the hero ground.
+  linen: "#ECE4D4",
   hairline: "#E4E0D6",
-  // Refinement pass: evolved from the original Clay (terracotta) toward a
-  // muted blue-violet. Warm Paper/Ink neutrals stay the foundation; the
-  // accent is the one cool note, used exactly as sparingly as Clay was —
-  // CTA fill, search affordance, focus states, process numerals.
-  accent: "#4B49A8",
-  accentHover: "#3A3886",
-  accentTint: "#ECEAF7",
+  // The accent: Claude's terracotta/clay. Warm Paper/Ink neutrals stay the
+  // foundation; the accent is the one warm signal, used sparingly —
+  // CTA fill, search affordance, focus states, links.
+  accent: "#CC785C",
+  accentHover: "#B05E3F",
+  accentTint: "#F5E8DF",
 } as const;
 
 export const ccFont = { fontFamily: "var(--font-geist-sans)" } as const;
@@ -36,17 +37,7 @@ export const ccType = {
 export const ccElevation =
   "0 1px 2px rgba(23,21,17,0.04), 0 12px 32px rgba(23,21,17,0.07)";
 
-// The hero inverts to this near-black ink for the Exploded System — the one
-// section of the homepage allowed to break from the paper/ink foundation.
-export const ccVoid = {
-  bg: "#13110D",
-  surface: "#1F1C16",
-  hairline: "rgba(250,248,244,0.14)",
-  text: "#FAF8F4",
-  textSecondary: "rgba(250,248,244,0.62)",
-} as const;
-
-// Hard shadow for the photographic slabs in the hero — deliberately heavier
-// than ccElevation, which stays reserved for paper-surface panels.
+// Soft warm-ink shadow for the photographic slabs in the hero — heavier than
+// ccElevation, but tuned for the light linen ground (warm ink, not black).
 export const ccSlabShadow =
-  "0 30px 60px -12px rgba(0,0,0,0.55), 0 10px 20px -8px rgba(0,0,0,0.4)";
+  "0 18px 40px -16px rgba(23,21,17,0.28), 0 6px 14px -8px rgba(23,21,17,0.18)";

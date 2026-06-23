@@ -1,277 +1,141 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Button, Container, cn, tokens } from "@esigenta/ui";
+import { cc, ccElevation, ccFont } from "./palette";
+import { CloseIcon, MenuIcon } from "./icons";
 
-export type NavbarVariant = "default" | "embedded" | "hero" | "funnel";
+export type NavbarVariant = "default" | "funnel";
 
 type NavbarProps = {
   variant?: NavbarVariant;
 };
 
 type NavItem = {
-  accent?: boolean;
   href: string;
   label: string;
+  accent?: boolean;
 };
 
-const navLinks: NavItem[] = [
-  {
-    href: "/richieste/accesso",
-    label: "Le mie richieste",
-  },
-  {
-    href: "/area-impresa/accedi",
-    label: "Accedi",
-  },
-  {
-    href: "/area-impresa",
-    label: "Sei un professionista?",
-    accent: true,
-  },
-] as const;
+const navItems: NavItem[] = [
+  { href: "/richieste/accesso", label: "Le mie richieste" },
+  { href: "/area-impresa/accedi", label: "Accedi" },
+  { href: "/area-impresa", label: "Sei un professionista?", accent: true },
+];
 
 export function Navbar({ variant = "default" }: NavbarProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const visibleNavLinks = variant === "funnel" ? navLinks.slice(1) : navLinks;
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  function closeMenu() {
-    setIsMenuOpen(false);
-  }
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 8);
+    }
 
-  if (variant === "hero") {
-    return (
-      <header className="pointer-events-none absolute inset-0 z-50">
-        <Logo onClick={closeMenu} className={tokens.home.nav.heroLogo} />
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          aria-label={isMenuOpen ? "Chiudi menu" : "Apri menu"}
-          aria-expanded={isMenuOpen}
-          className="pointer-events-auto absolute right-4 top-3 lg:hidden"
-          onClick={() => {
-            setIsMenuOpen((current) => !current);
-          }}
-        >
-          {isMenuOpen ? (
-            <X className="size-5" aria-hidden="true" />
-          ) : (
-            <Menu className="size-5" aria-hidden="true" />
-          )}
-        </Button>
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
-        <nav
-          aria-label="Navigazione principale"
-          className={tokens.home.nav.heroMenu}
-        >
-          {visibleNavLinks.map((link) => (
-            <NavLink
-              key={link.href}
-              href={link.href}
-              label={link.label}
-              onClick={closeMenu}
-              className={cn(
-                tokens.home.nav.heroLink,
-                link.accent && tokens.home.nav.heroAccentLink,
-              )}
-            />
-          ))}
-        </nav>
-
-        {isMenuOpen ? (
-          <MobileMenu links={visibleNavLinks} onClick={closeMenu} />
-        ) : null}
-      </header>
-    );
-  }
-
-  const isEmbedded = variant === "embedded";
+  const solid = scrolled || menuOpen;
+  const visibleNavItems = variant === "funnel" ? navItems.slice(1) : navItems;
 
   return (
     <header
-      className={cn(
-        tokens.home.nav.root,
-        isEmbedded && tokens.home.nav.embeddedRoot,
-      )}
+      style={ccFont}
+      className="fixed left-0 right-0 top-0 z-50 backdrop-blur-md transition-shadow duration-300"
     >
-      <Container
-        size="lg"
-        gutter="md"
-        className={cn(
-          isEmbedded
-            ? cn(tokens.home.nav.container, tokens.home.nav.embeddedContainer)
-            : tokens.home.nav.container,
-        )}
+      <div
+        className="flex h-[72px] items-center justify-between border-b px-5 transition-colors duration-300 sm:px-10 lg:px-16"
+        style={{
+          backgroundColor: solid ? cc.paperTranslucent : "transparent",
+          borderColor: scrolled ? cc.hairline : "transparent",
+          boxShadow: scrolled ? ccElevation : "none",
+        }}
       >
-        <Logo onClick={closeMenu} inverse={isEmbedded} />
-
-        <nav
-          aria-label="Navigazione principale"
-          className={cn(
-            tokens.home.nav.desktopMenu,
-            isEmbedded && tokens.home.nav.desktopMenuEmbedded,
-          )}
+        <Link
+          href="/"
+          className="text-[17px] font-semibold tracking-[-0.01em]"
+          style={{ color: cc.ink }}
+          prefetch={false}
         >
-          {visibleNavLinks.map((link) => (
-            <NavLink
-              key={link.href}
-              href={link.href}
-              label={link.label}
-              onClick={closeMenu}
-              className={cn(
-                tokens.home.nav.link,
-                isEmbedded ? tokens.home.nav.linkEmbedded : undefined,
-                link.accent &&
-                  (isEmbedded
-                    ? tokens.home.nav.accentLinkEmbedded
-                    : tokens.home.nav.accentLink),
-              )}
-            />
-          ))}
+          esigenta
+        </Link>
+
+        <nav className="hidden items-center gap-6 text-[15px] lg:flex">
+          {visibleNavItems.map((item) =>
+            item.accent ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={false}
+                className="rounded-[6px] border px-3 py-1.5 text-[14px] font-medium transition-colors duration-300 hover:bg-[#CC785C]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#CC785C]"
+                style={{ borderColor: cc.accent, color: cc.accent }}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={false}
+                className="rounded-sm transition-opacity duration-300 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#CC785C]"
+                style={{ color: cc.inkSecondary }}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="sm"
-          aria-label={isMenuOpen ? "Chiudi menu" : "Apri menu"}
-          aria-expanded={isMenuOpen}
-          className={cn(
-            tokens.home.nav.mobileToggle,
-            isEmbedded && tokens.home.nav.mobileToggleEmbedded,
-          )}
-          onClick={() => {
-            setIsMenuOpen((current) => !current);
-          }}
+          aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="flex h-11 w-11 items-center justify-center rounded-[8px] lg:hidden"
+          style={{ color: cc.ink }}
         >
-          {isMenuOpen ? (
-            <X className="size-5" aria-hidden="true" />
-          ) : (
-            <Menu className="size-5" aria-hidden="true" />
-          )}
-        </Button>
-      </Container>
+          {menuOpen ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
+        </button>
+      </div>
 
-      {isMenuOpen ? (
-        <div
-          className={cn(
-            tokens.home.nav.mobilePanel,
-            isEmbedded && tokens.home.nav.mobilePanelEmbedded,
-          )}
+      {menuOpen ? (
+        <nav
+          aria-label="Navigazione principale"
+          className="flex flex-col gap-1 border-b px-5 pb-5 pt-2 sm:px-10 lg:hidden"
+          style={{ backgroundColor: cc.paper, borderColor: cc.hairline, boxShadow: ccElevation }}
         >
-          <Container size="lg" gutter="md">
-            <MobileMenuContent
-              links={visibleNavLinks}
-              onClick={closeMenu}
-              inverse={isEmbedded}
-            />
-          </Container>
-        </div>
+          {visibleNavItems.map((item) =>
+            item.accent ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={false}
+                onClick={() => setMenuOpen(false)}
+                className="mt-2 inline-flex w-fit items-center rounded-[8px] border px-4 py-2.5 text-[15px] font-medium"
+                style={{ borderColor: cc.accent, color: cc.accent }}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={false}
+                onClick={() => setMenuOpen(false)}
+                className="py-3 text-[16px]"
+                style={{ color: cc.ink }}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
+        </nav>
       ) : null}
     </header>
-  );
-}
-
-type LogoProps = {
-  className?: string;
-  inverse?: boolean;
-  onClick: () => void;
-};
-
-function Logo({ className, inverse = false, onClick }: LogoProps) {
-  return (
-    <Link
-      href="/"
-      onClick={onClick}
-      className={cn(
-        tokens.home.nav.logo,
-        inverse && tokens.home.nav.logoInverse,
-        className,
-      )}
-      aria-label="esigenta home"
-     prefetch={false}>
-      <span
-        aria-hidden="true"
-        className={cn(
-          tokens.home.nav.logoMark,
-          inverse && tokens.home.nav.logoMarkInverse,
-        )}
-      >
-        e
-      </span>
-
-      <span className={tokens.home.nav.logoText}>
-        <span>esi</span>
-        <span className="text-accent-warm">genta</span>
-      </span>
-    </Link>
-  );
-}
-
-type NavLinkProps = {
-  className?: string;
-  href: string;
-  label: string;
-  onClick: () => void;
-};
-
-function NavLink({ className, href, label, onClick }: NavLinkProps) {
-  return (
-    <Link href={href} onClick={onClick} className={className} prefetch={false}>
-      <span>{label}</span>
-    </Link>
-  );
-}
-
-function MobileMenu({
-  links,
-  onClick,
-}: {
-  links: NavItem[];
-  onClick: () => void;
-}) {
-  return (
-    <div className="pointer-events-auto absolute left-0 right-0 top-14 border-t border-border-primary bg-surface-elevated lg:hidden">
-      <Container size="lg">
-        <MobileMenuContent links={links} onClick={onClick} />
-      </Container>
-    </div>
-  );
-}
-
-function MobileMenuContent({
-  inverse = false,
-  links,
-  onClick,
-}: {
-  inverse?: boolean;
-  links: NavItem[];
-  onClick: () => void;
-}) {
-  return (
-    <nav
-      aria-label="Navigazione principale"
-      className={tokens.home.nav.mobileMenu}
-    >
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          onClick={onClick}
-          className={cn(
-            tokens.home.nav.mobileLink,
-            inverse && tokens.home.nav.mobileLinkEmbedded,
-            link.accent && tokens.home.nav.mobileAccentLink,
-          )}
-         prefetch={false}>
-          {link.label}
-        </Link>
-      ))}
-    </nav>
   );
 }

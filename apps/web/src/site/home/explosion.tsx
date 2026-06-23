@@ -5,11 +5,11 @@ import { useEffect, useRef, useState } from "react";
 
 import type { TaxonomySearchResult } from "@esigenta/taxonomy";
 
-import { HomeImage } from "../home/home-image";
+import { HomeImage } from "./home-image";
 
 import { getHomeSystems } from "./systems";
-import { cc, ccFont, ccPhotoGrade, ccSlabShadow, ccVoid } from "./palette";
-import { ArrowRightIcon } from "./icons";
+import { cc, ccFont, ccPhotoGrade, ccSlabShadow } from "../shell/palette";
+import { ArrowRightIcon } from "../shell/icons";
 import { Reveal } from "./reveal";
 
 const preloadedResults: TaxonomySearchResult[] = [
@@ -117,20 +117,27 @@ export function Explosion() {
   const showDropdown = isFocused && results.length > 0;
 
   return (
-    <section style={{ ...ccFont, backgroundColor: ccVoid.bg }} className="overflow-hidden">
-      <div className="mx-auto max-w-[1280px] px-5 pb-20 pt-16 sm:px-10 sm:pt-20 md:px-12 md:pb-28 md:pt-24 lg:px-16">
+    <section
+      style={{
+        ...ccFont,
+        backgroundColor: cc.linen,
+        backgroundImage: `linear-gradient(180deg, ${cc.paper} 0%, ${cc.linen} 100%)`,
+      }}
+      className="overflow-hidden"
+    >
+      <div className="mx-auto flex max-w-[1280px] flex-col px-5 pb-20 pt-16 sm:px-10 sm:pt-20 md:px-12 md:pb-28 md:pt-24 lg:px-16">
         <h1
-          className="max-w-[18ch] font-medium leading-[1.02] tracking-[-0.02em] text-[clamp(2.5rem,1.6rem+5vw,5.75rem)]"
-          style={{ color: ccVoid.text }}
+          className="order-1 max-w-[18ch] font-medium leading-[1.02] tracking-[-0.02em] text-[clamp(2.5rem,1.6rem+5vw,5.75rem)]"
+          style={{ color: cc.ink }}
         >
           Bagni, tetti, impianti elettrici. Vicino a te.
         </h1>
 
-        <p className="mt-5 max-w-[36ch] text-[17px] leading-[1.5]" style={{ color: ccVoid.textSecondary }}>
+        <p className="order-2 mt-5 max-w-[36ch] text-[17px] leading-[1.5]" style={{ color: cc.inkSecondary }}>
           Ogni mestiere della tua casa, scomposto e affidato a un professionista verificato.
         </p>
 
-        <div className="mt-14 hidden items-start gap-6 overflow-visible md:flex">
+        <div className="mt-14 hidden items-start gap-6 overflow-visible md:order-3 md:flex">
           {systems.map((system, index) => {
             const layout = desktopSlabs[index % desktopSlabs.length]!;
 
@@ -139,7 +146,7 @@ export function Explosion() {
                 <a href={system.href} className="group block">
                   <div
                     className={`relative overflow-hidden rounded-[4px] border-[6px] ${layout.aspect} ${layout.rotate} transition-transform duration-300 group-hover:rotate-0`}
-                    style={{ borderColor: ccVoid.text, boxShadow: ccSlabShadow }}
+                    style={{ borderColor: "#FFFFFF", boxShadow: ccSlabShadow }}
                   >
                     <HomeImage
                       src={system.image}
@@ -151,7 +158,7 @@ export function Explosion() {
                     />
                   </div>
 
-                  <p className="mt-3 text-[13px]" style={{ color: ccVoid.textSecondary }}>
+                  <p className="mt-3 text-[13px]" style={{ color: cc.inkSecondary }}>
                     {system.title}
                   </p>
                 </a>
@@ -160,7 +167,7 @@ export function Explosion() {
           })}
         </div>
 
-        <div className="mt-10 flex flex-col gap-5 md:hidden">
+        <div className="order-5 mt-10 flex flex-col gap-5 md:hidden">
           {systems.map((system, index) => {
             const layout = mobileSlabs[index % mobileSlabs.length]!;
 
@@ -169,7 +176,7 @@ export function Explosion() {
                 <a href={system.href} className={`block ${layout.rotate}`}>
                   <div
                     className="relative aspect-[4/3] overflow-hidden rounded-[4px] border-[5px]"
-                    style={{ borderColor: ccVoid.text, boxShadow: ccSlabShadow }}
+                    style={{ borderColor: "#FFFFFF", boxShadow: ccSlabShadow }}
                   >
                     <HomeImage
                       src={system.image}
@@ -181,7 +188,7 @@ export function Explosion() {
                     />
                   </div>
 
-                  <p className="mt-2 text-[13px]" style={{ color: ccVoid.textSecondary }}>
+                  <p className="mt-2 text-[13px]" style={{ color: cc.inkSecondary }}>
                     {system.title}
                   </p>
                 </a>
@@ -190,17 +197,19 @@ export function Explosion() {
           })}
         </div>
 
-        <p className="mt-16 text-[12px] uppercase tracking-[0.1em] md:mt-20" style={{ color: ccVoid.textSecondary }}>
+        <p className="order-3 mt-16 text-[12px] uppercase tracking-[0.1em] md:order-4 md:mt-20" style={{ color: cc.inkSecondary }}>
           Cosa devi sistemare?
         </p>
 
-        <div className="relative mt-3 max-w-2xl">
+        <div className="relative order-4 mt-3 max-w-2xl md:order-5">
           <div
             className="flex h-16 items-center gap-2 border-b border-t-2 pl-1 pr-1.5 transition-shadow duration-300"
             style={{
               borderTopColor: cc.accent,
-              borderBottomColor: ccVoid.hairline,
-              boxShadow: isFocused ? `0 0 0 1px ${cc.accent}` : "none",
+              borderBottomColor: cc.hairline,
+              boxShadow: isFocused
+                ? `0 0 0 1px ${cc.accent}, 0 0 28px -4px ${cc.accent}AA`
+                : `0 0 18px -8px ${cc.accent}66`,
             }}
           >
             <input
@@ -225,7 +234,7 @@ export function Explosion() {
               }}
               placeholder="ad esempio: tinteggiatura"
               className="h-full min-w-0 flex-1 bg-transparent text-[20px] outline-none"
-              style={{ color: ccVoid.text }}
+              style={{ color: cc.ink }}
             />
 
             <button
@@ -246,15 +255,15 @@ export function Explosion() {
           {showDropdown ? (
             <ul
               className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-[8px] border"
-              style={{ borderColor: ccVoid.hairline, backgroundColor: ccVoid.surface }}
+              style={{ borderColor: cc.hairline, backgroundColor: cc.paper, boxShadow: ccSlabShadow }}
             >
               {results.map((result) => (
                 <li key={result.id}>
                   <button
                     type="button"
                     onClick={() => goToResult(result)}
-                    className="block w-full px-4 py-3 text-left text-[15px] transition-colors hover:bg-white/5"
-                    style={{ color: ccVoid.text }}
+                    className="block w-full px-4 py-3 text-left text-[15px] transition-colors hover:bg-black/5"
+                    style={{ color: cc.ink }}
                   >
                     {result.name}
                   </button>
@@ -263,6 +272,15 @@ export function Explosion() {
             </ul>
           ) : null}
         </div>
+
+        <a
+          href="/servizi"
+          className="group order-6 mt-6 inline-flex w-fit items-center gap-1.5 self-start text-[14px]"
+          style={{ color: cc.inkSecondary }}
+        >
+          Esplora tutti gli interventi
+          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+        </a>
       </div>
     </section>
   );

@@ -44,6 +44,10 @@ export type {
   FormControlToken,
   FormControlStateToken,
   FormControlSizeToken,
+  CantiereToken,
+  CantiereColorToken,
+  CantiereShadowToken,
+  CantiereRadiusToken,
 } from './styles/tokens'
 export * from './components/button'
 export * from './components/input'

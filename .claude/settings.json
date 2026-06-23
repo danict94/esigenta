@@ -6,7 +6,8 @@
       "Bash(rg \"area-monitoring|perf-log\" apps/web/src --glob \"*.{ts,tsx}\" -l)",
       "Bash(git status *)",
       "Bash(npx tsx *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(echo \"ADMIN_TSC:$?\")"
     ]
   }
 }
