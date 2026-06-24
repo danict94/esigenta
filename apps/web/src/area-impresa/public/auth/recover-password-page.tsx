@@ -1,15 +1,8 @@
 import Link from "next/link"
 
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Container,
-  Input,
-} from "@esigenta/ui"
+import { Button, Input } from "@esigenta/ui"
+
+import { AuthShell } from "./auth-shell"
 
 import {
   requestCompanyPasswordResetAction,
@@ -39,98 +32,88 @@ function getErrorMessage(
 export async function CompanyForgotPasswordPage({
   searchParams,
 }: CompanyForgotPasswordPageProps) {
-  const params =
-    searchParams ? await searchParams : {}
-  const sent =
-    params.sent === "1"
-  const errorMessage =
-    getErrorMessage(params.error)
+  const params = searchParams ? await searchParams : {}
+  const sent = params.sent === "1"
+  const errorMessage = getErrorMessage(params.error)
 
   return (
-    <main className="min-h-screen bg-cantiere-paper text-cantiere-ink">
-      <Container size="sm">
-        <div className="flex min-h-screen items-center py-12">
-          <Card className="w-full">
-            <CardHeader>
-              <p className="text-sm font-medium text-cantiere-accent">
-                Area impresa
-              </p>
-              <CardTitle>
-                Recupera password
-              </CardTitle>
-              <CardDescription>
-                Inserisci l&apos;email del tuo account impresa. Se l&apos;account esiste,
-                riceverai un link sicuro per reimpostare la password.
-              </CardDescription>
-            </CardHeader>
+    <AuthShell>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="font-medium tracking-[-0.01em] text-cantiere-ink text-[clamp(1.5rem,1.2rem+1vw,2rem)]">
+            Recupera password
+          </h1>
 
-            <CardContent>
-              {sent ? (
-                <div className="border border-cantiere-hairline bg-cantiere-linen px-4 py-3 text-sm leading-6 text-cantiere-ink">
-                  Se l&apos;email è associata a un account impresa, riceverai a
-                  breve il link per reimpostare la password.
-                </div>
-              ) : (
-                <form
-                  action={requestCompanyPasswordResetAction}
-                  className="grid gap-5"
-                >
-                  <label className="grid gap-2">
-                    <span className="text-sm font-medium text-cantiere-ink">
-                      Email
-                    </span>
-                    <Input
-                      type="email"
-                      name="email"
-                      autoComplete="email"
-                      required
-                      placeholder="azienda@esempio.it"
-                    />
-                  </label>
-
-                  {errorMessage ? (
-                    <p className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
-                      {errorMessage}
-                    </p>
-                  ) : null}
-
-                  <Button type="submit">
-                    Invia link di reset
-                  </Button>
-
-                  <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
-                    Per maggiori informazioni leggi l&apos;
-                    <Link
-                      href="/privacy"
-                      className="font-medium text-cantiere-accent"
-                    >
-                      informativa privacy
-                    </Link>{" "}
-                    e i{" "}
-                    <Link
-                      href="/termini"
-                      className="font-medium text-cantiere-accent"
-                    >
-                      termini del servizio
-                    </Link>
-                    .
-                  </p>
-                </form>
-              )}
-
-              <p className="mt-6 text-center text-sm text-cantiere-ink-secondary">
-                Hai ricordato la password?{" "}
-                <Link
-                  href="/area-impresa/accedi"
-                  className="font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
-                >
-                  Torna all&apos;accesso
-                </Link>
-              </p>
-            </CardContent>
-          </Card>
+          <p className="text-[15px] leading-[1.5] text-cantiere-ink-secondary">
+            Inserisci l&apos;email del tuo account impresa. Se l&apos;account
+            esiste, riceverai un link sicuro per reimpostare la password.
+          </p>
         </div>
-      </Container>
-    </main>
+
+        {sent ? (
+          <div className="rounded-[8px] border border-cantiere-hairline bg-cantiere-linen px-4 py-3 text-sm leading-6 text-cantiere-ink">
+            Se l&apos;email è associata a un account impresa, riceverai a breve
+            il link per reimpostare la password.
+          </div>
+        ) : (
+          <form
+            action={requestCompanyPasswordResetAction}
+            className="flex flex-col gap-5"
+          >
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-cantiere-ink">
+                Email
+              </span>
+
+              <Input
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                placeholder="azienda@esempio.it"
+              />
+            </label>
+
+            {errorMessage ? (
+              <p className="rounded-[8px] border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
+                {errorMessage}
+              </p>
+            ) : null}
+
+            <Button type="submit" size="lg" className="w-full">
+              Invia link di reset
+            </Button>
+
+            <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
+              Per maggiori informazioni leggi l&apos;
+              <Link
+                href="/privacy"
+                className="font-medium text-cantiere-accent"
+              >
+                informativa privacy
+              </Link>{" "}
+              e i{" "}
+              <Link
+                href="/termini"
+                className="font-medium text-cantiere-accent"
+              >
+                termini del servizio
+              </Link>
+              .
+            </p>
+          </form>
+        )}
+
+        <p className="text-center text-sm text-cantiere-ink-secondary">
+          Hai ricordato la password?{" "}
+          <Link
+            href="/area-impresa/accedi"
+            className="font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+          >
+            Torna all&apos;accesso
+          </Link>
+        </p>
+      </div>
+    </AuthShell>
   )
 }

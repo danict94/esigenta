@@ -1,19 +1,12 @@
 import Link from "next/link"
 
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Container,
-  Input,
-} from "@esigenta/ui"
+import { Button, Input } from "@esigenta/ui"
 
 import {
   getPasswordResetTokenState,
 } from "@esigenta/auth"
+
+import { AuthShell } from "./auth-shell"
 
 import {
   resetCompanyPasswordAction,
@@ -58,126 +51,108 @@ function getResetErrorMessage(
 export async function CompanyResetPasswordPage({
   searchParams,
 }: CompanyResetPasswordPageProps) {
-  const params =
-    searchParams ? await searchParams : {}
-  const token =
-    params.token?.trim() ?? ""
-  const tokenState =
-    await getPasswordResetTokenState({
-      audience:
-        "company",
-      token,
-    })
-  const errorMessage =
-    getResetErrorMessage(
-      params.error ??
-        (tokenState.ok
-          ? undefined
-          : tokenState.code),
-    )
-  const canReset =
-    tokenState.ok
+  const params = searchParams ? await searchParams : {}
+  const token = params.token?.trim() ?? ""
+  const tokenState = await getPasswordResetTokenState({
+    audience: "company",
+    token,
+  })
+  const errorMessage = getResetErrorMessage(
+    params.error ?? (tokenState.ok ? undefined : tokenState.code),
+  )
+  const canReset = tokenState.ok
 
   return (
-    <main className="min-h-screen bg-cantiere-paper text-cantiere-ink">
-      <Container size="sm">
-        <div className="flex min-h-screen items-center py-12">
-          <Card className="w-full">
-            <CardHeader>
-              <p className="text-sm font-medium text-cantiere-accent">
-                Area impresa
-              </p>
-              <CardTitle>
-                Reimposta password
-              </CardTitle>
-              <CardDescription>
-                Scegli una nuova password per il tuo accesso impresa.
-              </CardDescription>
-            </CardHeader>
+    <AuthShell>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="font-medium tracking-[-0.01em] text-cantiere-ink text-[clamp(1.5rem,1.2rem+1vw,2rem)]">
+            Reimposta password
+          </h1>
 
-            <CardContent>
-              {errorMessage ? (
-                <p className="mb-5 border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
-                  {errorMessage}
-                </p>
-              ) : null}
-
-              {canReset ? (
-                <form
-                  action={resetCompanyPasswordAction}
-                  className="grid gap-5"
-                >
-                  <input
-                    type="hidden"
-                    name="token"
-                    value={token}
-                  />
-
-                  <label className="grid gap-2">
-                    <span className="text-sm font-medium text-cantiere-ink">
-                      Nuova password
-                    </span>
-                    <Input
-                      type="password"
-                      name="password"
-                      autoComplete="new-password"
-                      minLength={8}
-                      required
-                    />
-                  </label>
-
-                  <label className="grid gap-2">
-                    <span className="text-sm font-medium text-cantiere-ink">
-                      Conferma password
-                    </span>
-                    <Input
-                      type="password"
-                      name="confirmPassword"
-                      autoComplete="new-password"
-                      minLength={8}
-                      required
-                    />
-                  </label>
-
-                  <Button type="submit">
-                    Salva nuova password
-                  </Button>
-
-                  <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
-                    Per maggiori informazioni leggi l&apos;
-                    <Link
-                      href="/privacy"
-                      className="font-medium text-cantiere-accent"
-                    >
-                      informativa privacy
-                    </Link>{" "}
-                    e i{" "}
-                    <Link
-                      href="/termini"
-                      className="font-medium text-cantiere-accent"
-                    >
-                      termini del servizio
-                    </Link>
-                    .
-                  </p>
-                </form>
-              ) : (
-                <div className="grid gap-4">
-                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                    Richiedi un nuovo link per continuare.
-                  </p>
-                  <Link
-                    href="/area-impresa/recupera-password"
-                    className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
-                  >
-                    Richiedi nuovo link
-                  </Link>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <p className="text-[15px] leading-[1.5] text-cantiere-ink-secondary">
+            Scegli una nuova password per il tuo accesso impresa.
+          </p>
         </div>
-      </Container>
-    </main>
+
+        {errorMessage ? (
+          <p className="rounded-[8px] border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
+            {errorMessage}
+          </p>
+        ) : null}
+
+        {canReset ? (
+          <form
+            action={resetCompanyPasswordAction}
+            className="flex flex-col gap-5"
+          >
+            <input type="hidden" name="token" value={token} />
+
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-cantiere-ink">
+                Nuova password
+              </span>
+
+              <Input
+                type="password"
+                name="password"
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-cantiere-ink">
+                Conferma password
+              </span>
+
+              <Input
+                type="password"
+                name="confirmPassword"
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+            </label>
+
+            <Button type="submit" size="lg" className="w-full">
+              Salva nuova password
+            </Button>
+
+            <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
+              Per maggiori informazioni leggi l&apos;
+              <Link
+                href="/privacy"
+                className="font-medium text-cantiere-accent"
+              >
+                informativa privacy
+              </Link>{" "}
+              e i{" "}
+              <Link
+                href="/termini"
+                className="font-medium text-cantiere-accent"
+              >
+                termini del servizio
+              </Link>
+              .
+            </p>
+          </form>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm leading-6 text-cantiere-ink-secondary">
+              Richiedi un nuovo link per continuare.
+            </p>
+
+            <Link
+              href="/area-impresa/recupera-password"
+              className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+            >
+              Richiedi nuovo link
+            </Link>
+          </div>
+        )}
+      </div>
+    </AuthShell>
   )
 }

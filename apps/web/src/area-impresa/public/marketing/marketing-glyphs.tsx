@@ -209,3 +209,24 @@ export function UnlockGlyph({ className }: GlyphProps) {
     </Svg>
   );
 }
+
+// Crediti — a coin marked with the euro sign in accent.
+export function CreditGlyph({ className }: GlyphProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth={1.5} />
+      <path
+        d="M14.6 9.4a3.4 3.4 0 1 0 0 5.2"
+        stroke={ACCENT}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+      />
+      <path
+        d="M8.6 11h4.4M8.6 13h3.6"
+        stroke={ACCENT}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+      />
+    </Svg>
+  );
+}

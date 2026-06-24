@@ -8,11 +8,6 @@ import {
 } from "react"
 import Link from "next/link"
 import {
-  Eye,
-  Lock,
-  Mail,
-} from "lucide-react"
-import {
   Button,
   Input,
 } from "@esigenta/ui"
@@ -98,28 +93,20 @@ export function ImpresaLoginForm() {
           Email
         </label>
 
-        <div className="relative">
-          <Mail
-            aria-hidden="true"
-            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
-          />
-
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="username"
-            autoCapitalize="none"
-            spellCheck={false}
-            required
-            value={email}
-            onChange={(event) =>
-              setEmail(event.target.value)
-            }
-            placeholder="es.azienda@esempio.it"
-            className="pl-12"
-          />
-        </div>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
+          required
+          value={email}
+          onChange={(event) =>
+            setEmail(event.target.value)
+          }
+          placeholder="es.azienda@esempio.it"
+        />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -130,35 +117,22 @@ export function ImpresaLoginForm() {
           Password
         </label>
 
-        <div className="relative">
-          <Lock
-            aria-hidden="true"
-            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
-          />
-
-          <Input
-            id="password"
-            name="company-login-password"
-            type="password"
-            autoComplete="new-password"
-            required
-            readOnly={!isPasswordEditable}
-            value={password}
-            onFocus={() =>
-              setIsPasswordEditable(true)
-            }
-            onChange={(event) =>
-              setPassword(event.target.value)
-            }
-            placeholder="Inserisci la password"
-            className="pl-12 pr-12"
-          />
-
-          <Eye
-            aria-hidden="true"
-            className="absolute right-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
-          />
-        </div>
+        <Input
+          id="password"
+          name="company-login-password"
+          type="password"
+          autoComplete="new-password"
+          required
+          readOnly={!isPasswordEditable}
+          value={password}
+          onFocus={() =>
+            setIsPasswordEditable(true)
+          }
+          onChange={(event) =>
+            setPassword(event.target.value)
+          }
+          placeholder="Inserisci la password"
+        />
       </div>
 
       <div className="flex justify-end">
