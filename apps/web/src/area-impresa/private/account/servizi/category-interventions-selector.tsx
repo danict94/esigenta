@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Badge, Button, Checkbox, Input, cn } from "@esigenta/ui";
@@ -32,6 +31,46 @@ export type CategoryInterventionsSelectorProps = {
 
 const maxCategories = 6;
 const interventionBatchSize = 10;
+const visibleChipLimit = 12;
+
+// Same hand as site/shell/icons.tsx: 24x24 grid, 1.5px stroke, round
+// caps/joins, currentColor. Kept local instead of importing the site/shell
+// icon set, since area-impresa and the marketing site are separate domains.
+function ChevronGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <path
+        d="M6 9.5 12 15.5 18 9.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CheckGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <path
+        d="M5 12.5 9.5 17 19 7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CloseGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <path d="M6 6 18 18M18 6 6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 function normalizeSearchText(value: string) {
   return value
@@ -112,10 +151,10 @@ export function CategoryInterventionsSelector({
     );
   }
 
-  function getSelectedInterventionCount(interventions: InterventionOption[]) {
+  function getSelectedInterventions(interventions: InterventionOption[]) {
     return interventions.filter((intervention) =>
       selectedInterventionIdSet.has(intervention.id),
-    ).length;
+    );
   }
 
   function isProjectGroupFullySelected(projectGroup: ProjectGroupOption) {
@@ -157,66 +196,48 @@ export function CategoryInterventionsSelector({
     return visibleInterventionCounts[projectGroupId] ?? interventionBatchSize;
   }
 
+  // Stable alphabetical order regardless of selection — selection state
+  // must never reorder this list, otherwise the row a user just clicked
+  // jumps away from under the pointer/finger.
   function getFilteredInterventions(projectGroup: ProjectGroupOption) {
     const query = getQuery(projectGroup.id);
 
     return projectGroup.interventions
-      .filter(
-        (intervention) =>
-          selectedInterventionIdSet.has(intervention.id) ||
-          getInterventionMatchesQuery(intervention, query),
-      )
-      .sort((left, right) => {
-        const leftSelected = selectedInterventionIdSet.has(left.id);
-        const rightSelected = selectedInterventionIdSet.has(right.id);
-
-        if (leftSelected !== rightSelected) {
-          return leftSelected ? -1 : 1;
-        }
-
-        return left.name.localeCompare(right.name, "it");
-      });
+      .filter((intervention) => getInterventionMatchesQuery(intervention, query))
+      .sort((left, right) => left.name.localeCompare(right.name, "it"));
   }
 
   function getVisibleInterventions(projectGroup: ProjectGroupOption) {
-    const filtered = getFilteredInterventions(projectGroup);
-    const selected = filtered.filter((intervention) =>
-      selectedInterventionIdSet.has(intervention.id),
+    return getFilteredInterventions(projectGroup).slice(
+      0,
+      getVisibleCount(projectGroup.id),
     );
-    const unselected = filtered.filter(
-      (intervention) => !selectedInterventionIdSet.has(intervention.id),
-    );
-
-    return [
-      ...selected,
-      ...unselected.slice(0, getVisibleCount(projectGroup.id)),
-    ];
   }
 
   function hasMoreInterventions(projectGroup: ProjectGroupOption) {
-    const filtered = getFilteredInterventions(projectGroup);
-    const unselected = filtered.filter(
-      (intervention) => !selectedInterventionIdSet.has(intervention.id),
+    return (
+      getFilteredInterventions(projectGroup).length >
+      getVisibleCount(projectGroup.id)
     );
-
-    return unselected.length > getVisibleCount(projectGroup.id);
   }
 
-  // Only the active (expanded) ProjectGroup renders its intervention
-  // checkboxes. Selected interventions belonging to collapsed groups still
-  // need to reach the form submission, so they get a hidden input here —
-  // otherwise collapsing a group after selecting its interventions would
-  // silently drop the selection on save.
-  const hiddenSelectedInterventionIds = selectedInterventionIds.filter(
-    (interventionId) => {
-      const activeGroup = projectGroups.find(
-        (projectGroup) => projectGroup.id === activeProjectGroupId,
-      );
+  const activeProjectGroup = projectGroups.find(
+    (projectGroup) => projectGroup.id === activeProjectGroupId,
+  );
+  const renderedInterventionIdSet = new Set(
+    activeProjectGroup
+      ? getVisibleInterventions(activeProjectGroup).map(
+          (intervention) => intervention.id,
+        )
+      : [],
+  );
 
-      return !activeGroup?.interventions.some(
-        (intervention) => intervention.id === interventionId,
-      );
-    },
+  // Every selected intervention must reach the form submission even when
+  // it isn't currently rendered as a checkbox — either its group is
+  // collapsed, or it's outside the active group's current search/page
+  // window. Whatever isn't on screen right now gets a hidden input instead.
+  const hiddenSelectedInterventionIds = selectedInterventionIds.filter(
+    (interventionId) => !renderedInterventionIdSet.has(interventionId),
   );
 
   return (
@@ -231,24 +252,24 @@ export function CategoryInterventionsSelector({
         />
       ))}
 
-      <section className="space-y-4">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <section className="space-y-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-base font-semibold text-cantiere-ink">
-              Scegli fino a 6 categorie
+              Identità: fino a 6 categorie
             </h3>
 
             <p className="mt-1 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
-              Le categorie determinano la tua identità professionale.
+              Determinano come la tua impresa si presenta.
             </p>
           </div>
 
           <Badge variant="neutral">
-            {selectedCategoryIds.length}/{maxCategories} categorie selezionate
+            {selectedCategoryIds.length}/{maxCategories} selezionate
           </Badge>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => {
             const selected = selectedCategoryIdSet.has(category.id);
             const disabled =
@@ -258,8 +279,10 @@ export function CategoryInterventionsSelector({
               <label
                 key={category.id}
                 className={cn(
-                  "flex cursor-pointer gap-4 rounded-2xl border border-cantiere-hairline bg-cantiere-paper p-4 transition-colors hover:border-cantiere-accent",
-                  selected ? "border-cantiere-accent bg-cantiere-linen" : "",
+                  "relative flex cursor-pointer items-center gap-3 rounded-[8px] border border-cantiere-hairline bg-cantiere-paper p-3 transition-colors hover:border-cantiere-accent",
+                  selected
+                    ? "border-cantiere-accent bg-cantiere-accent-tint"
+                    : "",
                   disabled ? "cursor-not-allowed opacity-60" : "",
                 )}
               >
@@ -269,53 +292,55 @@ export function CategoryInterventionsSelector({
                   checked={selected}
                   disabled={disabled}
                   onChange={() => toggleCategory(category.id)}
-                  className="mt-1"
                 />
 
                 <span className="min-w-0 flex-1 text-sm font-semibold text-cantiere-ink">
                   {category.name}
                 </span>
+
+                {selected ? (
+                  <CheckGlyph className="h-4 w-4 shrink-0 text-cantiere-accent" />
+                ) : null}
               </label>
             );
           })}
         </div>
       </section>
 
-      <section className="space-y-4 border-t border-cantiere-hairline pt-6">
+      <section className="space-y-3 border-t border-cantiere-hairline pt-6">
         <div>
           <h3 className="text-base font-semibold text-cantiere-ink">
-            Interventi
+            Operativo: interventi
           </h3>
 
-          <div className="mt-1 max-w-3xl space-y-1 text-sm leading-6 text-cantiere-ink-secondary">
-            <p>
-              Scegli gli interventi che vuoi ricevere, organizzati per area di
-              lavoro. Puoi selezionare un&apos;intera area con &quot;Seleziona
-              tutti&quot; oppure scegliere singoli interventi.
-            </p>
-          </div>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-cantiere-ink-secondary">
+            Scegli gli interventi che vuoi ricevere, organizzati per area di
+            lavoro.
+          </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {projectGroups.map((projectGroup) => {
             const open = activeProjectGroupId === projectGroup.id;
-            const selectedCount = getSelectedInterventionCount(
+            const selected = getSelectedInterventions(
               projectGroup.interventions,
             );
             const allSelected = isProjectGroupFullySelected(projectGroup);
             const visibleInterventions = getVisibleInterventions(projectGroup);
             const showSearch =
               projectGroup.interventions.length > interventionBatchSize;
+            const visibleChips = selected.slice(0, visibleChipLimit);
+            const hiddenChipCount = selected.length - visibleChips.length;
 
             return (
               <div
                 key={projectGroup.id}
-                className="overflow-hidden rounded-2xl border border-cantiere-hairline bg-cantiere-paper"
+                className="overflow-hidden rounded-[8px] border border-cantiere-hairline bg-cantiere-paper"
               >
                 <Button
                   type="button"
                   variant="ghost"
-                  className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-cantiere-linen"
+                  className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-cantiere-surface"
                   aria-expanded={open}
                   onClick={() => {
                     setActiveProjectGroupId((currentId) =>
@@ -329,28 +354,53 @@ export function CategoryInterventionsSelector({
                     </span>
                     <span className="mt-1 block text-xs font-normal text-cantiere-ink-secondary">
                       {projectGroup.interventions.length > 0
-                        ? `${selectedCount}/${projectGroup.interventions.length} interventi selezionati`
+                        ? `${selected.length}/${projectGroup.interventions.length} interventi selezionati`
                         : "Nessun intervento disponibile"}
                     </span>
                   </span>
 
-                  <ChevronDown
+                  <ChevronGlyph
                     className={cn(
-                      "size-4 shrink-0 text-cantiere-ink-secondary transition-transform",
+                      "h-4 w-4 shrink-0 text-cantiere-ink-secondary transition-transform",
                       open ? "rotate-180" : "",
                     )}
-                    aria-hidden="true"
                   />
                 </Button>
 
                 {open ? (
-                  <div className="space-y-4 border-t border-cantiere-hairline bg-cantiere-linen p-4">
+                  <div className="space-y-4 border-t border-cantiere-hairline bg-cantiere-surface p-4">
                     {projectGroup.interventions.length === 0 ? (
                       <p className="text-sm text-cantiere-ink-secondary">
                         Nessun intervento disponibile per questa area.
                       </p>
                     ) : (
                       <>
+                        {selected.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {visibleChips.map((intervention) => (
+                              <button
+                                key={intervention.id}
+                                type="button"
+                                onClick={() =>
+                                  toggleIntervention(intervention.id)
+                                }
+                                className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-cantiere-accent px-3 py-1 text-xs font-medium text-cantiere-paper transition-colors hover:bg-cantiere-accent-hover"
+                              >
+                                <span className="truncate">
+                                  {intervention.name}
+                                </span>
+                                <CloseGlyph className="h-3 w-3 shrink-0" />
+                              </button>
+                            ))}
+
+                            {hiddenChipCount > 0 ? (
+                              <span className="inline-flex items-center rounded-full bg-cantiere-linen px-3 py-1 text-xs font-medium text-cantiere-ink-secondary">
+                                +{hiddenChipCount} altri selezionati
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
+
                         <label className="flex cursor-pointer items-center gap-3">
                           <Checkbox
                             checked={allSelected}
@@ -384,28 +434,33 @@ export function CategoryInterventionsSelector({
                           </label>
                         ) : null}
 
-                        <div className="grid gap-3">
+                        <div className="grid gap-2">
                           {visibleInterventions.map((intervention) => {
-                            const selected = selectedInterventionIdSet.has(
+                            const isSelected = selectedInterventionIdSet.has(
                               intervention.id,
                             );
 
                             return (
                               <label
                                 key={intervention.id}
-                                className="flex cursor-pointer gap-4 rounded-2xl border border-cantiere-hairline bg-cantiere-paper p-4 transition-colors hover:border-cantiere-accent"
+                                className={cn(
+                                  "flex cursor-pointer gap-3 rounded-[6px] border border-cantiere-hairline bg-cantiere-paper p-3 transition-colors hover:border-cantiere-accent",
+                                  isSelected
+                                    ? "border-cantiere-accent bg-cantiere-accent-tint"
+                                    : "",
+                                )}
                               >
                                 <Checkbox
                                   name="interventionIds"
                                   value={intervention.id}
-                                  checked={selected}
+                                  checked={isSelected}
                                   onChange={() =>
                                     toggleIntervention(intervention.id)
                                   }
-                                  className="mt-1"
+                                  className="mt-0.5"
                                 />
 
-                                <span className="min-w-0">
+                                <span className="min-w-0 flex-1">
                                   <span className="block text-sm font-semibold text-cantiere-ink">
                                     {intervention.name}
                                   </span>
@@ -416,6 +471,10 @@ export function CategoryInterventionsSelector({
                                     </span>
                                   ) : null}
                                 </span>
+
+                                {isSelected ? (
+                                  <CheckGlyph className="h-4 w-4 shrink-0 text-cantiere-accent" />
+                                ) : null}
                               </label>
                             );
                           })}

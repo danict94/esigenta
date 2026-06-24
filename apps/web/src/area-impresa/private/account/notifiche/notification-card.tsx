@@ -55,6 +55,68 @@ function formatLocation({
   return location || "Area compatibile"
 }
 
+// Same hand as site/shell/icons.tsx: 16x16 grid, 1.5px stroke, round
+// caps/joins, currentColor only. These three sit inline next to the meta
+// text they describe, so they stay structural (no accent) — the accent is
+// already spent on the unread dot, it shouldn't repeat on every line.
+function PinGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" className={className} fill="none" aria-hidden="true">
+      <path
+        d="M8 14s4.3-3.7 4.3-6.9A4.3 4.3 0 0 0 3.7 7.1C3.7 10.3 8 14 8 14Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="8" cy="6.9" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  )
+}
+
+function TagGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" className={className} fill="none" aria-hidden="true">
+      <path
+        d="M2.5 8.3 8.3 2.5h4.2a1 1 0 0 1 1 1v4.2L7.7 13.5a1 1 0 0 1-1.4 0L2.5 9.7a1 1 0 0 1 0-1.4Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="10.3" cy="5.7" r="1" fill="currentColor" />
+    </svg>
+  )
+}
+
+function ClockGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" className={className} fill="none" aria-hidden="true">
+      <circle cx="8" cy="8" r="5.7" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M8 5.2V8l2 1.3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function MetaItem({
+  icon,
+  children,
+}: {
+  icon: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-cantiere-ink-secondary">
+      <span className="text-cantiere-ink-secondary/70">{icon}</span>
+      {children}
+    </span>
+  )
+}
+
 export function NotificationCard({
   notification,
   markReadAction,
@@ -81,22 +143,28 @@ export function NotificationCard({
   return (
     <Card
       className={cn(
-        "overflow-hidden transition-colors",
+        "overflow-hidden transition-shadow",
+        // Unread cards get the deeper "featured" lift (same token used for
+        // the premium credit package) instead of just a thin border — the
+        // weight of the card itself signals priority, not only a label.
         unread
-          ? "border-cantiere-accent bg-cantiere-paper"
-          : "bg-cantiere-paper",
+          ? "border-cantiere-accent shadow-cantiere-elevation-lg"
+          : "border-cantiere-hairline",
       )}
     >
       <CardHeader className="border-b border-cantiere-hairline">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge
-                variant={unread ? "success" : "neutral"}
-                size="sm"
-              >
-                {unread ? "Nuova" : "Letta"}
-              </Badge>
+              {unread ? (
+                // Solid chip, not the shared outline Badge: this is the one
+                // status that must be impossible to miss while scanning a
+                // list, so it gets real fill instead of a thin border.
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-cantiere-accent px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-cantiere-paper">
+                  <span className="h-1.5 w-1.5 rounded-full bg-cantiere-paper" />
+                  Nuova
+                </span>
+              ) : null}
 
               {request ? (
                 <Badge variant="warning" size="sm">
@@ -105,9 +173,9 @@ export function NotificationCard({
               ) : null}
 
               {notification.type === "CONVERSATION_MESSAGE" ? (
-                <Badge variant="danger" size="sm">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-cantiere-bronze-tint px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-cantiere-ink">
                   Messaggio
-                </Badge>
+                </span>
               ) : null}
             </div>
 
@@ -140,33 +208,24 @@ export function NotificationCard({
         </p>
 
         {request ? (
-          <dl className="grid gap-3 text-sm sm:grid-cols-3">
-            <div className="border border-cantiere-hairline bg-cantiere-linen p-3">
-              <dt className="text-xs text-cantiere-ink-secondary">Codice</dt>
-              <dd className="mt-1 font-medium text-cantiere-ink">
-                {request.requestCode ?? request.id}
-              </dd>
-            </div>
-
-            <div className="border border-cantiere-hairline bg-cantiere-linen p-3">
-              <dt className="text-xs text-cantiere-ink-secondary">Località</dt>
-              <dd className="mt-1 font-medium text-cantiere-ink">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-cantiere-hairline pt-4 text-sm">
+            <MetaItem icon={<PinGlyph className="h-4 w-4" />}>
+              <span className="font-medium text-cantiere-ink">
                 {formatLocation({
                   city: request.city,
                   postalCode: request.postalCode,
                 })}
-              </dd>
-            </div>
+              </span>
+            </MetaItem>
 
-            <div className="border border-cantiere-hairline bg-cantiere-linen p-3">
-              <dt className="text-xs text-cantiere-ink-secondary">
-                Pubblicata
-              </dt>
-              <dd className="mt-1 font-medium text-cantiere-ink">
-                {formatDate(request.createdAt)}
-              </dd>
-            </div>
-          </dl>
+            <MetaItem icon={<ClockGlyph className="h-4 w-4" />}>
+              Pubblicata {formatDate(request.createdAt)}
+            </MetaItem>
+
+            <MetaItem icon={<TagGlyph className="h-4 w-4" />}>
+              {request.requestCode ?? request.id}
+            </MetaItem>
+          </div>
         ) : null}
 
         {primaryHref ? (

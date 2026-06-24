@@ -4,6 +4,7 @@ import type { CompanyActor } from "@esigenta/auth";
 import {
   isCompanyMarketplaceEnabled,
 } from "@esigenta/domain";
+import { getCompanyCreditSummary } from "@esigenta/billing";
 
 import { Container } from "@esigenta/ui";
 
@@ -51,7 +52,10 @@ export async function AreaImpresaPrivateLayout({
   const actor = await requireAreaImpresaAccess();
 
   const countsStart = areaTimestamp();
-  const counts = await getAreaImpresaShellCountsCached(actor);
+  const [counts, creditSummary] = await Promise.all([
+    getAreaImpresaShellCountsCached(actor),
+    getCompanyCreditSummary(actor.company.id),
+  ]);
   const countsDurationMs = Math.round(areaTimestamp() - countsStart);
 
   if (monitored) {
@@ -70,13 +74,14 @@ export async function AreaImpresaPrivateLayout({
   const statusNotice = getCompanyStatusNotice(companyStatus);
 
   return (
-    <div className="min-h-screen bg-cantiere-paper text-cantiere-ink">
+    <div className="min-h-screen bg-white text-cantiere-ink">
       <ImpresaSidebar
         accountLabel={accountLabel}
         unreadNotificationCount={counts.unreadNotificationCount}
         unreadContactCount={counts.unreadContactCount}
         unreadSupportCount={counts.unreadSupportCount}
         marketplaceEnabled={marketplaceEnabled}
+        creditBalance={creditSummary.balance}
       />
       {statusNotice ? (
         <Container size="xl" className="pt-4">

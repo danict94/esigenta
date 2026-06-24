@@ -43,7 +43,7 @@ import {
   readSearchParam,
 } from "../view-models/conversation-view-model"
 
-export type ConversationThreadKind =
+type ConversationThreadKind =
   | "SUPPORT"
   | "CUSTOMER"
 

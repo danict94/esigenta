@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, Menu, UserRound, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Badge, Button, Card, Container, cn } from "@esigenta/ui";
+import { Button, Card, cn } from "@esigenta/ui";
 
 import { authClient } from "../../../auth/client";
+import {
+  ChevronDownIcon,
+  CloseIcon,
+  CreditCoinIcon,
+  MenuIcon,
+} from "../../../site/shell/icons";
 
 type NavigationItem = {
   label: string;
@@ -90,18 +95,12 @@ function formatUnreadCount(count: number) {
 
 function Brand() {
   return (
-    <span className="inline-flex flex-col leading-none">
-      <span className="text-2xl font-bold tracking-tight md:text-3xl">
-        <span className="text-cantiere-ink">esi</span>
-        <span className="text-cantiere-accent">genta</span>
+    <span className="inline-flex items-baseline gap-2">
+      <span className="text-[17px] font-semibold tracking-[-0.01em] text-cantiere-ink">
+        esigenta
       </span>
 
-      <span
-        className={cn(
-          "mt-0.5 font-semibold text-cantiere-accent",
-          "text-[10px] uppercase tracking-[0.18em]",
-        )}
-      >
+      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cantiere-accent">
         Imprese
       </span>
     </span>
@@ -110,16 +109,29 @@ function Brand() {
 
 function NavBadge({ value }: { value: string }) {
   return (
-    <Badge
-      variant="danger"
-      size="sm"
-      className={cn(
-        "ml-1 min-w-5 justify-center px-1.5",
-        "text-[10px] leading-none",
-      )}
-    >
+    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cantiere-accent px-1 text-[11px] font-semibold leading-none text-cantiere-paper">
       {value}
-    </Badge>
+    </span>
+  );
+}
+
+function CreditBalanceChip({
+  balance,
+  onClick,
+}: {
+  balance: number;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      href="/area-impresa/crediti"
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5 rounded-full border border-cantiere-hairline bg-cantiere-surface px-3 py-1.5 text-xs font-semibold text-cantiere-ink transition-colors hover:border-cantiere-accent"
+      prefetch={false}
+    >
+      <CreditCoinIcon className="size-3.5 text-cantiere-ink-secondary" />
+      {balance} {balance === 1 ? "credito" : "crediti"}
+    </Link>
   );
 }
 
@@ -131,7 +143,7 @@ function DesktopNavLink({
   active: boolean;
 }) {
   const className = cn(
-    "relative inline-flex items-center gap-1.5 py-7 text-sm font-medium transition-colors",
+    "relative inline-flex h-[72px] items-center gap-1.5 text-sm font-medium transition-colors",
     active
       ? "text-cantiere-accent"
       : "text-cantiere-ink-secondary hover:text-cantiere-ink",
@@ -268,12 +280,14 @@ export function ImpresaSidebar({
   unreadContactCount,
   unreadSupportCount,
   marketplaceEnabled,
+  creditBalance,
 }: {
   accountLabel: string;
   unreadNotificationCount: number;
   unreadContactCount: number;
   unreadSupportCount: number;
   marketplaceEnabled: boolean;
+  creditBalance: number;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -388,10 +402,7 @@ export function ImpresaSidebar({
 
   return (
     <header className="sticky top-0 z-50 border-b border-cantiere-hairline bg-cantiere-paper">
-      <Container
-        size="xl"
-        className="flex h-16 items-center justify-between md:h-20"
-      >
+      <div className="mx-auto flex h-[72px] items-center justify-between px-5 sm:px-10 lg:px-16">
         <Link
           href="/area-impresa/richieste"
           onClick={closeMenus}
@@ -414,7 +425,9 @@ export function ImpresaSidebar({
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-3 md:flex">
+          <CreditBalanceChip balance={creditBalance} />
+
           <div ref={accountMenuRef} className="relative">
             <Button
               type="button"
@@ -425,16 +438,13 @@ export function ImpresaSidebar({
               aria-haspopup="menu"
               onClick={() => setAccountOpen((open) => !open)}
             >
-              <UserRound className="size-4" aria-hidden="true" />
-
               <span className="max-w-40 truncate">Il mio account</span>
 
-              <ChevronDown
+              <ChevronDownIcon
                 className={cn(
                   "size-4 text-cantiere-ink-secondary transition-transform",
                   accountOpen ? "rotate-180" : "",
                 )}
-                aria-hidden="true"
               />
             </Button>
 
@@ -496,20 +506,27 @@ export function ImpresaSidebar({
           }}
         >
           {isMenuOpen ? (
-            <X className="size-5" aria-hidden="true" />
+            <CloseIcon className="size-5" />
           ) : (
-            <Menu className="size-5" aria-hidden="true" />
+            <MenuIcon className="size-5" />
           )}
         </Button>
-      </Container>
+      </div>
 
       {isMenuOpen ? (
         <div className="border-t border-cantiere-hairline bg-cantiere-paper md:hidden">
-          <Container size="xl">
+          <div className="px-5 sm:px-10">
             <nav
               className="flex flex-col gap-1 py-4"
               aria-label="Navigazione area impresa mobile"
             >
+              <div className="px-2 pb-3">
+                <CreditBalanceChip
+                  balance={creditBalance}
+                  onClick={closeMenus}
+                />
+              </div>
+
               {mainNavigationItems.map((item) => (
                 <MobileNavLink
                   key={item.href}
@@ -544,7 +561,7 @@ export function ImpresaSidebar({
                 Esci
               </Button>
             </nav>
-          </Container>
+          </div>
         </div>
       ) : null}
     </header>

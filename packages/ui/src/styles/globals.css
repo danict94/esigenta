@@ -9,12 +9,27 @@
   --fp-color-cantiere-accent: #cc785c;
   --fp-color-cantiere-accent-hover: #b05e3f;
   --fp-color-cantiere-accent-tint: #f5e8df;
+  /* Lighter step of the same terracotta, for a "middle tier" detail that
+     must read as less saturated than the full accent without introducing
+     a new hue (e.g. the standard-tier medal star). */
+  --fp-color-cantiere-accent-soft: #dda88e;
+  /* Distinct warm gold/bronze hue (not just a darker accent) reserved for
+     the top-tier detail, so "premium" reads as its own material rather
+     than "bigger orange". Paired with bronze-tint for its background wash. */
+  --fp-color-cantiere-bronze: #9c7233;
+  --fp-color-cantiere-bronze-tint: #decfba;
 
   --fp-shadow-cantiere-elevation:
     0 1px 2px rgba(23, 21, 17, 0.04), 0 12px 32px rgba(23, 21, 17, 0.07);
   --fp-shadow-cantiere-slab:
     0 18px 40px -16px rgba(23, 21, 17, 0.28),
     0 6px 14px -8px rgba(23, 21, 17, 0.18);
+  /* Stronger lift for a single "featured" card inside a same-size grid
+     (e.g. the recommended tier in a pricing/package picker), so it reads
+     as raised above its siblings without leaving the Cantiere shadow
+     language (still warm/soft, just a deeper spread than `elevation`). */
+  --fp-shadow-cantiere-elevation-lg:
+    0 2px 4px rgba(23, 21, 17, 0.06), 0 24px 48px rgba(23, 21, 17, 0.12);
 }
 
 @theme inline {
@@ -32,9 +47,13 @@
   --color-cantiere-accent: var(--fp-color-cantiere-accent);
   --color-cantiere-accent-hover: var(--fp-color-cantiere-accent-hover);
   --color-cantiere-accent-tint: var(--fp-color-cantiere-accent-tint);
+  --color-cantiere-accent-soft: var(--fp-color-cantiere-accent-soft);
+  --color-cantiere-bronze: var(--fp-color-cantiere-bronze);
+  --color-cantiere-bronze-tint: var(--fp-color-cantiere-bronze-tint);
 
   --shadow-cantiere-elevation: var(--fp-shadow-cantiere-elevation);
   --shadow-cantiere-slab: var(--fp-shadow-cantiere-slab);
+  --shadow-cantiere-elevation-lg: var(--fp-shadow-cantiere-elevation-lg);
 }
 
 body {

@@ -4,13 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import {
-  Badge,
   Button,
   Card,
-  Checkbox,
-  Input,
-  Select,
-  Textarea,
 } from "@esigenta/ui";
 
 import {
@@ -21,13 +16,16 @@ import {
 import {
   PendingSubmitButton,
 } from "./request-pending-controls";
+import {
+  RequestRefundDisclosure,
+} from "./request-refund-disclosure";
 
 export type RequestFormDetail = {
   label: string;
   value: string;
 };
 
-export type CustomerContactDetail = {
+type CustomerContactDetail = {
   name?: string | null;
   email?: string | null;
   phone?: string | null;
@@ -65,6 +63,7 @@ export type RequestDetailCardProps = {
   isSaved: boolean;
   savedAction: (formData: FormData) => Promise<void>;
   creditCost: number | null;
+  creditBalance: number;
   maxUnlocks: number | null;
   unlockCount: number;
   hasUnlocked: boolean;
@@ -343,76 +342,189 @@ function formatContactValue(value?: string | null) {
   return trimmed || "Non disponibile";
 }
 
-function ContactRow({
-  label,
-  value,
-}: {
-  label: string;
-  value?: string | null;
-}) {
-  return (
-    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 py-1.5">
-      <dt className="text-sm text-cantiere-ink-secondary">{label}</dt>
-      <dd className="truncate text-right text-sm font-medium text-cantiere-ink">
-        {formatContactValue(value)}
-      </dd>
-    </div>
-  );
-}
-
 function formatMaxUnlocks(value: number | null) {
   return value === null ? "Non impostato" : `${value} imprese`;
 }
 
-const refundReasonOptions = [
-  {
-    value: "CUSTOMER_NOT_RESPONDING",
-    label: "Cliente non risponde",
-  },
-  {
-    value: "INVALID_CONTACTS",
-    label: "Contatti errati o non funzionanti",
-  },
-  {
-    value: "REQUEST_ALREADY_RESOLVED",
-    label: "Richiesta gi\u00e0 risolta",
-  },
-  {
-    value: "INVALID_OR_SPAM_REQUEST",
-    label: "Richiesta non valida, spam o falsa",
-  },
-  {
-    value: "DUPLICATE_REQUEST",
-    label: "Richiesta duplicata",
-  },
-  {
-    value: "OTHER",
-    label: "Altro motivo da valutare",
-  },
-] as const;
+function SealIcon({ filled }: { filled: boolean }) {
+  return (
+    <span
+      className={
+        filled
+          ? "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cantiere-accent text-cantiere-paper"
+          : "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-cantiere-hairline text-cantiere-ink-secondary"
+      }
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {filled ? (
+          <path d="m7 12.5 3 3 7-7" />
+        ) : (
+          <circle cx="12" cy="12" r="7" />
+        )}
+      </svg>
+    </span>
+  );
+}
 
-function getUnlockStatusLabel({
-  hasUnlocked,
-  isCommerciallyConfigured,
-  isSoldOut,
+function AvailabilityDot({ tone }: { tone: "ok" | "low" | "off" }) {
+  return (
+    <span
+      className={
+        tone === "ok"
+          ? "h-1.5 w-1.5 rounded-full bg-cantiere-accent"
+          : tone === "low"
+            ? "h-1.5 w-1.5 rounded-full bg-cantiere-ink"
+            : "h-1.5 w-1.5 rounded-full bg-cantiere-ink-secondary"
+      }
+      aria-hidden="true"
+    />
+  );
+}
+
+function ContactLine({
+  icon,
+  href,
+  value,
 }: {
-  hasUnlocked: boolean;
-  isCommerciallyConfigured: boolean;
-  isSoldOut: boolean;
+  icon: ReactNode;
+  href?: string;
+  value: string;
 }) {
-  if (hasUnlocked) {
-    return "Richiesta sbloccata";
+  const content = (
+    <span className="flex items-center gap-3 text-sm font-medium text-cantiere-ink">
+      {icon}
+      <span className="truncate">{value}</span>
+    </span>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="block py-1.5 transition-colors hover:text-cantiere-accent"
+      >
+        {content}
+      </Link>
+    );
   }
 
-  if (!isCommerciallyConfigured) {
-    return "Non ancora acquistabile";
+  return <div className="py-1.5">{content}</div>;
+}
+
+function PhoneGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4 shrink-0 text-cantiere-ink-secondary"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 5 6a2 2 0 0 1 2-2Z" />
+    </svg>
+  );
+}
+
+function MailGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4 shrink-0 text-cantiere-ink-secondary"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 6h16v12H4Z" />
+      <path d="m4 7 8 6 8-6" />
+    </svg>
+  );
+}
+
+function StatusRow({
+  label,
+  detail,
+  href,
+}: {
+  label: string;
+  detail?: string;
+  href?: string;
+}) {
+  return (
+    <div className="flex items-baseline gap-2 py-1 text-sm">
+      <span
+        className="h-1.5 w-1.5 shrink-0 translate-y-[2px] rounded-full bg-cantiere-accent"
+        aria-hidden="true"
+      />
+      <span>
+        <span className="font-medium text-cantiere-ink">{label}</span>
+        {detail ? (
+          href ? (
+            <>
+              {" "}
+              \u00b7{" "}
+              <Link
+                href={href}
+                className="text-cantiere-accent hover:text-cantiere-accent-hover"
+                prefetch={false}
+              >
+                {detail}
+              </Link>
+            </>
+          ) : (
+            <span className="text-cantiere-ink-secondary"> \u00b7 {detail}</span>
+          )
+        ) : null}
+      </span>
+    </div>
+  );
+}
+
+function getRefundRequestStatusRow(refundRequest: RefundRequestDetail) {
+  if (refundRequest.status === "PENDING_REVIEW") {
+    return {
+      label: "In revisione",
+      detail: `Segnalazione inviata il ${refundRequest.createdAt}`,
+    };
   }
 
-  if (isSoldOut) {
-    return "Posti terminati";
+  if (refundRequest.status === "APPROVED") {
+    return {
+      label: "Approvata",
+      detail: "Rimborso in elaborazione",
+    };
   }
 
-  return "Disponibile per lo sblocco";
+  if (refundRequest.status === "REJECTED") {
+    return {
+      label: "Non approvata",
+      detail: "Contatta assistenza",
+      href: "/area-impresa/assistenza",
+    };
+  }
+
+  if (refundRequest.status === "CANCELLED") {
+    return {
+      label: "Segnalazione annullata",
+    };
+  }
+
+  return {
+    label: "Segnalazione inviata",
+    detail: refundRequest.createdAt,
+  };
 }
 
 function getUnlockStatusMessage({
@@ -455,6 +567,7 @@ export function RequestDetailCard({
   isSaved,
   savedAction,
   creditCost,
+  creditBalance,
   maxUnlocks,
   unlockCount,
   hasUnlocked,
@@ -481,10 +594,17 @@ export function RequestDetailCard({
     cityWithProvince && postalCode
       ? `${cityWithProvince} - ${postalCode}`
       : cityWithProvince || postalCode || "Non specificato";
+  const hasSufficientCredits =
+    creditCost === null ? true : creditBalance >= creditCost;
+  const balanceAfterUnlock =
+    creditCost === null ? null : Math.max(creditBalance - creditCost, 0);
+  const creditDeficit =
+    creditCost === null ? 0 : Math.max(creditCost - creditBalance, 0);
   const canUnlock =
     commercialState.isCommerciallyConfigured &&
     !commercialState.isSoldOut &&
-    !hasUnlocked;
+    !hasUnlocked &&
+    hasSufficientCredits;
   const hasRefundedUnlock =
     Boolean(requestUnlockRefundedAt || requestUnlockRefundTransactionId);
   const canRequestRefund =
@@ -493,7 +613,10 @@ export function RequestDetailCard({
     !hasRefundedUnlock &&
     !refundRequest;
   const showInsufficientCreditsRecovery =
-    unlockError === "insufficient_credits" && !hasUnlocked;
+    !hasUnlocked &&
+    commercialState.isCommerciallyConfigured &&
+    !commercialState.isSoldOut &&
+    (unlockError === "insufficient_credits" || !hasSufficientCredits);
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start">
@@ -610,282 +733,273 @@ export function RequestDetailCard({
         </section>
       </main>
 
-      <aside className="lg:sticky lg:top-24">
-        <Card className="p-6 shadow-sm">
-          <p className="text-sm font-medium text-cantiere-ink-secondary">
-            Crediti
-          </p>
-
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
-            Sblocco richiesta
-          </h2>
-
-          <Badge variant="warning" size="sm" className="mt-4">
-            {getUnlockStatusLabel({
-              ...commercialState,
-              hasUnlocked,
-            })}
-          </Badge>
-
-          <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-            {getUnlockStatusMessage({
-              ...commercialState,
-              hasUnlocked,
-            })}
-          </p>
-
-          {showInsufficientCreditsRecovery ? (
-            <div className="mt-5 rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
-              <p className="text-sm font-semibold text-cantiere-ink">
-                Crediti insufficienti per sbloccare questa richiesta.
-              </p>
-              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
-                Acquista un pacchetto crediti per continuare e contattare il
-                cliente.
-              </p>
-              <Link
-                href="/area-impresa/crediti"
-                className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
-                prefetch={false}
-              >
-                Acquista crediti
-              </Link>
-            </div>
-          ) : null}
-
-          <form action={savedAction} className="mt-5">
-            <PendingSubmitButton
-              type="submit"
-              name="requestId"
-              value={requestId}
-              variant="secondary"
-              className="w-full"
-              pendingChildren="Aggiornamento..."
-            >
-              {isSaved
-                ? "Rimuovi dai preferiti"
-                : "Salva nei preferiti"}
-            </PendingSubmitButton>
-          </form>
-
-          <dl className="mt-5 grid gap-3 border-t border-cantiere-hairline pt-5">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-cantiere-ink-secondary">Costo in crediti</dt>
-              <dd className="text-sm font-semibold text-cantiere-ink">
-                {formatCreditCost(creditCost)}
-              </dd>
-            </div>
-
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-cantiere-ink-secondary">Limite imprese</dt>
-              <dd className="text-sm font-semibold text-cantiere-ink">
-                {formatMaxUnlocks(maxUnlocks)}
-              </dd>
-            </div>
-
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-cantiere-ink-secondary">Sblocchi attuali</dt>
-              <dd className="text-sm font-semibold text-cantiere-ink">
-                {unlockCount}
-              </dd>
-            </div>
-
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-cantiere-ink-secondary">Posti disponibili</dt>
-              <dd className="text-sm font-semibold text-cantiere-ink">
-                {formatUnlockAvailability(commercialState.availableUnlockSlots)}
-              </dd>
-            </div>
-          </dl>
-
-          <div className="mt-8">
-            <h2 className="text-sm font-semibold text-cantiere-ink">
-              {hasUnlocked ? "Contatti cliente" : "Contatti protetti"}
-            </h2>
-
-            {hasUnlocked ? (
-              <>
-                {unlockedAt ? (
-                  <p className="mt-2 text-xs font-medium text-cantiere-ink-secondary">
-                    Sbloccata il {unlockedAt}
-                  </p>
-                ) : null}
-
-                <dl className="mt-4">
-                  <ContactRow label="Nome" value={customerContact?.name} />
-                  <ContactRow label="Email" value={customerContact?.email} />
-                  <ContactRow label="Telefono" value={customerContact?.phone} />
-                </dl>
-
-                {contactCustomerAction && !hasRefundedUnlock ? (
-                  <form action={contactCustomerAction} className="mt-5">
-                    <input type="hidden" name="requestId" value={requestId} />
-                    <PendingSubmitButton
-                      type="submit"
-                      variant="secondary"
-                      className="w-full"
-                      pendingChildren="Apertura contatto..."
-                    >
-                      Contatta cliente
-                    </PendingSubmitButton>
-                  </form>
-                ) : null}
-              </>
-            ) : (
-              <div className="mt-4 rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
-                <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                  Sblocca la richiesta con i crediti per visualizzare i
-                  contatti del cliente.
-                </p>
-              </div>
-            )}
-          </div>
-
+      <aside className="lg:sticky lg:top-24 lg:pb-0 pb-20">
+        <Card className="p-6">
           {hasUnlocked ? (
-            <div className="mt-6 border-t border-cantiere-hairline pt-6">
-              {hasRefundedUnlock ? (
-                <div className="rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
+            <>
+              <div className="flex items-center gap-3">
+                <SealIcon filled />
+                <div>
                   <p className="text-sm font-semibold text-cantiere-ink">
-                    Crediti rimborsati
+                    Contatto sbloccato
                   </p>
-                  {requestUnlockRefundedAt ? (
-                    <p className="mt-1 text-xs text-cantiere-ink-secondary">
-                      Rimborso registrato il {requestUnlockRefundedAt}
+                  {unlockedAt ? (
+                    <p className="text-xs text-cantiere-ink-secondary">
+                      Sbloccato il {unlockedAt}
                     </p>
                   ) : null}
                 </div>
-              ) : refundRequest ? (
-                <div className="rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
-                  <p className="text-sm font-semibold text-cantiere-ink">
-                    Richiesta rimborso in revisione
-                  </p>
-                  <p className="mt-1 text-xs text-cantiere-ink-secondary">
-                    Inviata il {refundRequest.createdAt}
-                  </p>
-                </div>
-              ) : canRequestRefund ? (
-                <form action={refundRequestAction} className="grid gap-4">
-                  <input type="hidden" name="requestId" value={requestId} />
-                  <input
-                    type="hidden"
-                    name="requestUnlockId"
-                    value={requestUnlockId ?? ""}
+              </div>
+
+              <div className="mt-5 rounded-[6px] border border-cantiere-hairline bg-cantiere-linen p-4">
+                <p className="text-base font-semibold leading-6 text-cantiere-ink">
+                  {formatContactValue(customerContact?.name)}
+                </p>
+
+                <div className="mt-2 divide-y divide-cantiere-hairline">
+                  <ContactLine
+                    icon={<PhoneGlyph />}
+                    value={formatContactValue(customerContact?.phone)}
+                    href={
+                      customerContact?.phone
+                        ? `tel:${customerContact.phone}`
+                        : undefined
+                    }
                   />
+                  <ContactLine
+                    icon={<MailGlyph />}
+                    value={formatContactValue(customerContact?.email)}
+                    href={
+                      customerContact?.email
+                        ? `mailto:${customerContact.email}`
+                        : undefined
+                    }
+                  />
+                </div>
+              </div>
 
-                  <div>
-                    <h2 className="text-sm font-semibold text-cantiere-ink">
-                      Richiedi rimborso
-                    </h2>
-                    <p className="mt-2 text-xs leading-5 text-cantiere-ink-secondary">
-                      La richiesta sar\u00e0 verificata dal team Esigenta. Il
-                      rimborso non \u00e8 automatico.
-                    </p>
-                  </div>
-
-                  <label className="grid gap-2">
-                    <span className="text-sm font-medium text-cantiere-ink">
-                      Motivo
-                    </span>
-                    <Select
-                      name="reason"
-                      required
-                    >
-                      {refundReasonOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </Select>
-                  </label>
-
-                  <p className="text-xs leading-5 text-cantiere-ink-secondary">
-                    Puoi richiedere il rimborso se hai provato a contattare il
-                    cliente e non hai ricevuto risposta.
-                  </p>
-
-                  <label className="grid gap-2">
-                    <span className="text-sm font-medium text-cantiere-ink">
-                      Descrizione
-                    </span>
-                    <Textarea
-                      name="description"
-                      required
-                      minLength={20}
-                      rows={4}
-                      placeholder="Spiega cosa hai verificato e perché chiedi la revisione."
-                    />
-                  </label>
-
-                  <label className="flex items-start gap-3 text-sm leading-6 text-cantiere-ink-secondary">
-                    <Checkbox
-                      name="companyContactAttempted"
-                      className="mt-1"
-                    />
-                    <span>
-                      Confermo di aver provato a contattare il cliente
-                    </span>
-                  </label>
-
-                  <label className="grid gap-2">
-                    <span className="text-sm font-medium text-cantiere-ink">
-                      Ultimo tentativo contatto
-                    </span>
-                    <Input
-                      type="date"
-                      name="lastContactAttemptAt"
-                    />
-                  </label>
-
+              {contactCustomerAction && !hasRefundedUnlock ? (
+                <form action={contactCustomerAction} className="mt-5">
+                  <input type="hidden" name="requestId" value={requestId} />
                   <PendingSubmitButton
                     type="submit"
-                    variant="secondary"
-                    pendingChildren="Invio in corso..."
+                    className="w-full"
+                    pendingChildren="Apertura contatto..."
                   >
-                    Invia richiesta rimborso
+                    Contatta cliente
                   </PendingSubmitButton>
                 </form>
               ) : null}
-            </div>
-          ) : null}
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-3">
+                <SealIcon filled={false} />
+                <div>
+                  <p className="text-sm font-semibold text-cantiere-ink">
+                    Sblocco richiesta
+                  </p>
+                  <p className="text-xs text-cantiere-ink-secondary">
+                    {getUnlockStatusMessage({
+                      ...commercialState,
+                      hasUnlocked,
+                    })}
+                  </p>
+                </div>
+              </div>
 
-          <div className="mt-6">
-            <p className="mb-3 text-xs font-medium text-cantiere-ink-secondary">
-              Costo: {formatCreditCost(creditCost)}
-            </p>
+              {commercialState.isCommerciallyConfigured ? (
+                <div className="mt-5 rounded-[6px] border border-cantiere-hairline bg-cantiere-linen p-4">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-sm text-cantiere-ink-secondary">
+                      Costo sblocco
+                    </span>
+                    <span className="text-lg font-semibold text-cantiere-ink">
+                      {formatCreditCost(creditCost)}
+                    </span>
+                  </div>
 
-            {canUnlock ? (
-              <form action={unlockAction}>
-                <input type="hidden" name="requestId" value={requestId} />
+                  <div
+                    className="my-3 border-t border-dashed border-cantiere-hairline"
+                    aria-hidden="true"
+                  />
+
+                  <div className="flex items-center justify-between gap-2 text-sm">
+                    <span className="text-cantiere-ink-secondary">
+                      {creditBalance} crediti
+                    </span>
+                    <span className="text-cantiere-ink-secondary" aria-hidden="true">
+                      &rarr;
+                    </span>
+                    <span className="font-semibold text-cantiere-ink">
+                      {hasSufficientCredits && balanceAfterUnlock !== null
+                        ? `${balanceAfterUnlock} crediti`
+                        : `manca ${creditDeficit}`}
+                    </span>
+                  </div>
+
+                  {showInsufficientCreditsRecovery ? (
+                    <>
+                      <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
+                        Ti mancano {creditDeficit} crediti per sbloccare
+                        questa richiesta.
+                      </p>
+                      <Link
+                        href="/area-impresa/crediti"
+                        className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-[6px] border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
+                        prefetch={false}
+                      >
+                        Acquista crediti
+                      </Link>
+                    </>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <div className="mt-4 flex items-center gap-2 text-sm">
+                <AvailabilityDot
+                  tone={
+                    commercialState.isSoldOut
+                      ? "off"
+                      : !commercialState.isCommerciallyConfigured
+                        ? "low"
+                        : "ok"
+                  }
+                />
+                <span className="text-cantiere-ink-secondary">
+                  {commercialState.isSoldOut
+                    ? "Posti terminati"
+                    : `${formatUnlockAvailability(commercialState.availableUnlockSlots)} su ${formatMaxUnlocks(maxUnlocks)}`}
+                </span>
+              </div>
+
+              <div className="mt-5 hidden sm:block">
+                {canUnlock ? (
+                  <form action={unlockAction}>
+                    <input type="hidden" name="requestId" value={requestId} />
+                    <PendingSubmitButton
+                      type="submit"
+                      className="w-full"
+                      pendingChildren="Sblocco in corso..."
+                    >
+                      Sblocca richiesta
+                    </PendingSubmitButton>
+                  </form>
+                ) : (
+                  <Button type="button" disabled className="w-full">
+                    {commercialState.isSoldOut
+                      ? "Posti terminati"
+                      : !hasSufficientCredits
+                        ? "Crediti insufficienti"
+                        : "Sblocco non disponibile"}
+                  </Button>
+                )}
+              </div>
+
+              <p className="mt-3 text-xs leading-5 text-cantiere-ink-secondary">
+                Il costo si applica solo se confermi lo sblocco. Email e
+                telefono restano protetti finché non lo fai.
+              </p>
+            </>
+          )}
+
+          {hasUnlocked ? (
+            <>
+              {hasRefundedUnlock ? (
+                <div className="mt-5 border-t border-cantiere-hairline pt-4">
+                  <StatusRow
+                    label="Crediti rimborsati"
+                    detail={
+                      creditCost !== null
+                        ? `+${creditCost} crediti`
+                        : requestUnlockRefundedAt ?? undefined
+                    }
+                  />
+                </div>
+              ) : refundRequest ? (
+                <div className="mt-5 border-t border-cantiere-hairline pt-4">
+                  <StatusRow {...getRefundRequestStatusRow(refundRequest)} />
+                </div>
+              ) : canRequestRefund ? (
+                <RequestRefundDisclosure
+                  requestId={requestId}
+                  requestUnlockId={requestUnlockId}
+                  refundRequestAction={refundRequestAction}
+                />
+              ) : null}
+
+              <form action={savedAction} className="mt-6 border-t border-cantiere-hairline pt-4">
                 <PendingSubmitButton
                   type="submit"
+                  name="requestId"
+                  value={requestId}
+                  variant="ghost"
+                  size="sm"
                   className="w-full"
-                  pendingChildren="Sblocco in corso..."
+                  pendingChildren="Aggiornamento..."
                 >
-                  Sblocca richiesta
+                  {isSaved ? "Rimuovi dai preferiti" : "Salva nei preferiti"}
                 </PendingSubmitButton>
               </form>
-            ) : (
-              <Button
-                type="button"
-                disabled
+            </>
+          ) : (
+            <form action={savedAction} className="mt-5 border-t border-cantiere-hairline pt-4">
+              <PendingSubmitButton
+                type="submit"
+                name="requestId"
+                value={requestId}
+                variant="secondary"
                 className="w-full"
+                pendingChildren="Aggiornamento..."
               >
-                {hasUnlocked
-                  ? "Richiesta già sbloccata"
-                  : commercialState.isSoldOut
-                    ? "Posti terminati"
-                    : "Sblocco non disponibile"}
-              </Button>
-            )}
-          </div>
-
-          <p className="mt-3 text-xs leading-5 text-cantiere-ink-secondary">
-            {hasUnlocked
-              ? "I dati sono visibili solo per questa impresa dopo lo sblocco."
-              : "Email e telefono restano protetti fino allo sblocco."}
-          </p>
+                {isSaved ? "Rimuovi dai preferiti" : "Salva nei preferiti"}
+              </PendingSubmitButton>
+            </form>
+          )}
         </Card>
       </aside>
+
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-cantiere-hairline bg-cantiere-paper p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
+        {hasUnlocked ? (
+          contactCustomerAction && !hasRefundedUnlock ? (
+            <form action={contactCustomerAction}>
+              <input type="hidden" name="requestId" value={requestId} />
+              <PendingSubmitButton
+                type="submit"
+                className="w-full"
+                pendingChildren="Apertura contatto..."
+              >
+                Contatta cliente
+              </PendingSubmitButton>
+            </form>
+          ) : null
+        ) : canUnlock ? (
+          <form action={unlockAction}>
+            <input type="hidden" name="requestId" value={requestId} />
+            <PendingSubmitButton
+              type="submit"
+              className="w-full"
+              pendingChildren="Sblocco in corso..."
+            >
+              {`Sblocca · ${formatCreditCost(creditCost)}`}
+            </PendingSubmitButton>
+          </form>
+        ) : showInsufficientCreditsRecovery ? (
+          <Link
+            href="/area-impresa/crediti"
+            className="flex h-10 w-full items-center justify-center rounded-[6px] border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
+            prefetch={false}
+          >
+            Acquista crediti
+          </Link>
+        ) : (
+          <Button type="button" disabled className="w-full">
+            {commercialState.isSoldOut
+              ? "Posti terminati"
+              : "Sblocco non disponibile"}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

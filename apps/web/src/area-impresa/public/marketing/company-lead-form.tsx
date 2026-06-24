@@ -28,7 +28,7 @@ import {
   CityAutocomplete,
 } from "../../../ui/location/city-autocomplete"
 
-export type CompanyLeadCategoryOption = {
+type CompanyLeadCategoryOption = {
   slug: string
   name: string
 }

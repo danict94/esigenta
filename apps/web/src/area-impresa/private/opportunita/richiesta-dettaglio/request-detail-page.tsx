@@ -9,6 +9,9 @@ import {
 import {
   getCompanyRequestDetailPage,
 } from "@esigenta/domain"
+import {
+  getCompanyCreditSummary,
+} from "@esigenta/billing"
 
 import {
   createRequestPhotoDisplayItems,
@@ -86,11 +89,10 @@ export async function RequestDetailPage({
   const authMs = Math.round(areaTimestamp() - authStart)
 
   const detailStart = areaTimestamp()
-  const pageData = await getCompanyRequestDetailPage(
-    actor,
-    id,
-    trace.add,
-  )
+  const [pageData, creditSummary] = await Promise.all([
+    getCompanyRequestDetailPage(actor, id, trace.add),
+    getCompanyCreditSummary(actor.company.id),
+  ])
   const detailMs = Math.round(areaTimestamp() - detailStart)
 
   if (!pageData.ok) {
@@ -173,6 +175,7 @@ export async function RequestDetailPage({
         isSaved={request.isSaved}
         savedAction={toggleSavedRequestAction}
         creditCost={request.creditCost}
+        creditBalance={creditSummary.balance}
         maxUnlocks={request.maxUnlocks}
         unlockCount={request.unlockCount}
         hasUnlocked={viewModel.hasUnlocked}

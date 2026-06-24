@@ -65,13 +65,12 @@ export function Explosion() {
   useEffect(() => {
     const trimmed = query.trim();
 
-    if (!trimmed) {
-      setResults(preloadedResults);
-      return;
-    }
-
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
+    }
+
+    if (!trimmed) {
+      return;
     }
 
     const controller = new AbortController();
@@ -114,7 +113,8 @@ export function Explosion() {
     router.push(`/richiesta/${encodeURIComponent(result.slug)}${qs ? `?${qs}` : ""}`);
   }
 
-  const showDropdown = isFocused && results.length > 0;
+  const displayedResults = query.trim() ? results : preloadedResults;
+  const showDropdown = isFocused && displayedResults.length > 0;
 
   return (
     <section
@@ -217,19 +217,15 @@ export function Explosion() {
               value={query}
               onFocus={() => {
                 setIsFocused(true);
-
-                if (query.trim() === "") {
-                  setResults(preloadedResults);
-                }
               }}
               onBlur={() => {
                 setTimeout(() => setIsFocused(false), 150);
               }}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === "Enter" && results[0]) {
+                if (event.key === "Enter" && displayedResults[0]) {
                   event.preventDefault();
-                  goToResult(results[0]);
+                  goToResult(displayedResults[0]);
                 }
               }}
               placeholder="ad esempio: tinteggiatura"
@@ -241,8 +237,8 @@ export function Explosion() {
               type="button"
               aria-label="Avvia ricerca"
               onClick={() => {
-                if (results[0]) {
-                  goToResult(results[0]);
+                if (displayedResults[0]) {
+                  goToResult(displayedResults[0]);
                 }
               }}
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[8px] transition-colors"
@@ -257,7 +253,7 @@ export function Explosion() {
               className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-[8px] border"
               style={{ borderColor: cc.hairline, backgroundColor: cc.paper, boxShadow: ccSlabShadow }}
             >
-              {results.map((result) => (
+              {displayedResults.map((result) => (
                 <li key={result.id}>
                   <button
                     type="button"

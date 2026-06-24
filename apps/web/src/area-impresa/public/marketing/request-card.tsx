@@ -7,12 +7,12 @@ import { VerifiedGlyph, ZoneGlyph } from "./marketing-glyphs";
 // category, verification, available seats and the unlock action. The "Esempio
 // di richiesta" eyebrow keeps it honest: realistic, not live.
 
-export type RequestCardBadge = {
+type RequestCardBadge = {
   label: string;
   tone?: "verified" | "neutral";
 };
 
-export type RequestCardSeats = {
+type RequestCardSeats = {
   taken: number;
   total: number;
 };
