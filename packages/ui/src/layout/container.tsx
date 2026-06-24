@@ -11,7 +11,7 @@ export type ContainerSize =
   | "xxl"
   | "full"
 
-export type ContainerGutter =
+type ContainerGutter =
   | "none"
   | "sm"
   | "md"

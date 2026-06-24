@@ -121,7 +121,7 @@ function traceAreaImpresaRequest(request: NextRequest): string {
   return traceId
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const traceId = traceAreaImpresaRequest(request)
   const response = NextResponse.next()
 
