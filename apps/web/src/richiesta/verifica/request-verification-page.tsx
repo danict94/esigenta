@@ -9,8 +9,6 @@ import {
 import { PublicShell } from "../../site/shell/public-shell"
 import { CustomerRequestsNav } from "../comunicazioni/components/customer-requests-nav"
 
-export const dynamic = "force-dynamic"
-
 type RequestVerificationPageProps = {
   requestId?: string
   token?: string

@@ -1,5 +1,7 @@
 import { CustomerConversationPage } from "../../../richiesta/comunicazioni/customer-conversation-page"
 
+export const dynamic = "force-dynamic"
+
 type Props = {
   searchParams: Promise<{
     token?: string

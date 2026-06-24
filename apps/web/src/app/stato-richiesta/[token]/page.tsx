@@ -1,5 +1,7 @@
 import { RequestStatusPage } from "../../../richiesta/stato/request-status-page"
 
+export const dynamic = "force-dynamic"
+
 type Props = {
   params: Promise<{ token: string }>
 }

@@ -24,8 +24,6 @@ import {
   SendMessageForm,
 } from "../../ui/messaging/send-message-form"
 
-export const dynamic = "force-dynamic"
-
 type CustomerConversationPageProps = {
   token: string
   sent?: string

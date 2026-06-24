@@ -1,5 +1,7 @@
 import { RequestVerificationPage } from "../../../richiesta/verifica/request-verification-page"
 
+export const dynamic = "force-dynamic"
+
 type Props = {
   params: Promise<{ token: string }>
 }
