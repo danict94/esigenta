@@ -7,10 +7,13 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "audit:knip": "knip",
+    "audit:deps": "depcruise apps/web/src packages",
+    "audit:madge": "madge \"apps/web/src\" --extensions \"ts,tsx\" --ts-config apps/web/tsconfig.json --circular",
+    "audit:clean": "pnpm lint && pnpm typecheck && pnpm build && pnpm audit:knip && pnpm audit:deps"
   },
   "devDependencies": {
-    "@types/react": "^19.2.14",
     "dependency-cruiser": "^17.4.3",
     "knip": "^6.19.0",
     "madge": "^8.0.0",

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": [
+    "packages/config/eslint/base.mjs"
+  ],
+  "ignoreDependencies": [
+    "@better-auth/prisma-adapter",
+    "dotenv",
+    "playwright",
+    "vercel"
+  ],
+  "ignoreIssues": {
+    "apps/web/src/site/seo/**": ["exports", "types"],
+    "apps/web/src/site/services/**": ["exports", "types"],
+    "packages/ui/src/layout/container.tsx": ["types"]
+  }
+}

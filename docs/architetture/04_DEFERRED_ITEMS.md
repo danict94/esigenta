@@ -1622,6 +1622,92 @@ non sono pianificate per la fase corrente.
 
 ---
 
+```
+ID: D-023
+TITLE: Monorepo cleanup audit findings da chiudere in sprint dedicato
+STATUS: OPEN
+SOURCE_PHASE: Monorepo cleanup audit 2026-06-24
+OWNER: multi-owner (web/site/richiesta/packages/config/auth/domain/funnel/taxonomy/ui)
+TARGET_PHASE: sprint dedicato monorepo cleanup controllato
+FILES_INVOLVED:
+  docs/audit/MONOREPO_CLEANUP_REPORT.md
+  apps/web/src/site/home/explosion.tsx
+  packages/funnel/src/compiler/infer-presets.ts
+  packages/funnel/src/types/request-answer.ts
+  packages/funnel/src/types/runtime-step.ts
+  packages/config/eslint/base.mjs
+  reports/perf-patches/**
+  packages/database/prisma.config.ts
+  packages/auth/src/identity/admin/bootstrap-super-admin.ts
+  apps/web/src/richiesta/**
+  apps/web/src/site/services/**
+
+DESCRIPTION:
+Audit tecnico controllato eseguito con pnpm lint/typecheck/build, Knip, Dependency Cruiser e
+Madge. Il fix sicuro `server-only` e' stato applicato in apps/web/package.json. Lo sprint
+cleanup 1 ha risolto il lint fail in explosion.tsx e gli errori Dependency Cruiser su
+Prisma/dotenv in file config/bootstrap. Restano aperti: unused files/dependencies/exports/types
+da Knip, backup storici in reports/perf-patches, export `dynamic` in feature modules richiesta,
+vari type/barrel da verificare e warning audit residui.
+
+UPDATE_SPRINT_CLEANUP_1_2026_06_24:
+Pipeline audit stabilizzata senza cleanup distruttivo. Il lint fail in
+apps/web/src/site/home/explosion.tsx e' stato risolto derivando i risultati precaricati invece
+di scriverli nello state da un effect. I 3 errori Dependency Cruiser su Prisma/dotenv sono stati
+classificati come CONFIG_EXCEPTION/SCRIPT_EXCEPTION e gestiti con eccezioni esplicite in
+.dependency-cruiser.js; nessuna dipendenza prisma/dotenv e' stata spostata tra dependencies e
+devDependencies. pnpm lint/typecheck/build/audit:deps/audit:madge passano. D-023 resta OPEN solo
+per il cleanup Knip e per i warning audit residui.
+
+UPDATE_SPRINT_CLEANUP_3_2026_06_24:
+Batch A `reports/perf-patches/**` completato. Eliminati solo gli 11 file classificati da Knip
+come unused e da Sprint cleanup 2 come BACKUP_OR_PATCH_ARTIFACT: 10 backup sorgente sotto
+`backup/apps/web/src/components/**` e lo script storico `patch-6i1-shared-prefetch.cjs`.
+Mantenuti i report storici non segnalati da Knip (`git-diff`, `git-status`, `patch-summary`,
+`typecheck`, `verify-links`). Nessun codice applicativo, export/type o dipendenza toccati.
+`pnpm audit:knip` passa da 15 unused files a 4; non segnala piu' file sotto
+`reports/perf-patches/**`. D-023 resta OPEN per gli altri item Knip e warning audit residui.
+
+UPDATE_SPRINT_CLEANUP_4_2026_06_24:
+Batch B dependency review completato. Rimosse solo dipendenze classificate `REMOVE_SAFE` e
+verificate una alla volta: `@esigenta/config` da apps/admin, `class-variance-authority` e
+`@types/react-dom` da packages/ui, `tsx` da packages/domain, `@types/react` dal root. Pipeline
+verde dopo ogni micro-batch: lint/typecheck/build/audit:deps/audit:madge PASS; audit:knip resta
+FAIL atteso. Knip passa da 4 unused dependencies + 5 unused devDependencies a 2 + 2. Rinviati:
+`@better-auth/prisma-adapter` come DEFER auth owner review, `dotenv` in packages/domain come
+MOVE_SCOPE_REVIEW domain/config, `playwright` e `vercel` come KEEP_TOOLING root da documentare,
+scriptare o escludere in un batch tooling. Durante la verifica finale del turno sono emersi
+fail lint/typecheck/build in modifiche applicative area-impresa fuori scope
+(`request-detail-card.tsx`, `request-detail-page.tsx`, nuovo `request-refund-disclosure.tsx`);
+non sono stati corretti in questo sprint per rispettare il divieto di toccare codice applicativo.
+
+WHY_DEFERRED:
+La fase era audit + fix minimo consentito. Eliminare file, refactorare componenti, spostare
+dipendenze Prisma/dotenv o riscrivere codice applicativo era esplicitamente fuori scope.
+
+RISK:
+Rumore crescente negli audit, possibilita' di mantenere codice morto o dipendenze non allineate.
+`audit:clean` resta bloccato da `audit:knip`, non piu' da lint o Dependency Cruiser.
+
+RESOLUTION_RULE:
+Chiudere in batch piccoli, con owner review:
+1. fix lint in explosion.tsx senza cambio UX;
+2. decidere eccezioni o riclassificazione Dependency Cruiser per config/bootstrap;
+3. rimuovere o archiviare fuori grafo i backup reports/perf-patches;
+4. verificare e rimuovere solo i file Knip confermati morti;
+5. normalizzare export/types e config Next `dynamic` dove realmente inutili.
+
+CLOSE_WHEN:
+pnpm lint passa.
+pnpm typecheck e pnpm build passano.
+pnpm audit:deps non ha errori non intenzionali.
+pnpm audit:knip non segnala codice morto/dipendenze inutili non intenzionali, oppure le eccezioni
+sono documentate.
+pnpm audit:madge processa file reali e resta senza cicli.
+```
+
+---
+
 # LOG RISOLUZIONI
 
 Quando un item viene chiuso, aggiungere qui:

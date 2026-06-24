@@ -148,7 +148,13 @@ module.exports = {
         'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
       from: {
         path: '^(packages)',
-        pathNot: '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$'
+        pathNot: [
+          '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
+          // CONFIG_EXCEPTION: Prisma config is executed by Prisma tooling, not app runtime.
+          '^packages/database/prisma[.]config[.]ts$',
+          // SCRIPT_EXCEPTION: explicit admin bootstrap script executed via packages/auth package script.
+          '^packages/auth/src/identity/admin/bootstrap-super-admin[.]ts$'
+        ]
       },
       to: {
         dependencyTypes: [

@@ -11,7 +11,6 @@
   "dependencies": {
     "@esigenta/auth": "workspace:*",
     "@esigenta/billing": "workspace:*",
-    "@esigenta/config": "workspace:*",
     "@esigenta/domain": "workspace:*",
     "@esigenta/notifications": "workspace:*",
     "@esigenta/shared": "workspace:*",
