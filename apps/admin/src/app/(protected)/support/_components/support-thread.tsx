@@ -5,15 +5,7 @@ import type {
 import type {
   ConversationThread,
 } from "@esigenta/domain";
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  tokens,
-} from "@esigenta/ui";
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@esigenta/ui";
 
 type SupportThreadProps = {
   thread: ConversationThread;
@@ -57,7 +49,7 @@ export function SupportThread({
             </CardDescription>
 
             {thread.resolvedAt ? (
-              <p className="text-xs text-text-muted">
+              <p className="text-xs text-cantiere-ink-secondary">
                 Risolta il {formatDateTime(thread.resolvedAt)}
                 {thread.resolvedBy
                   ? ` da ${
@@ -80,8 +72,8 @@ export function SupportThread({
       <CardContent className="space-y-6">
         <div className="space-y-4">
           {thread.messages.length === 0 ? (
-            <div className="border border-border-primary bg-surface-secondary p-4">
-              <p className="text-sm text-text-secondary">
+            <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+              <p className="text-sm text-cantiere-ink-secondary">
                 Nessun messaggio ancora inviato.
               </p>
             </div>
@@ -96,10 +88,10 @@ export function SupportThread({
                   className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`${tokens.layout.messaging.bubble} border px-4 py-3 ${
+                    className={`${"max-w-[min(34rem,85%)]"} border px-4 py-3 ${
                       isAdmin
-                        ? "border-brand-primary bg-brand-primary text-brand-on-primary"
-                        : "border-border-primary bg-surface-secondary text-text-primary"
+                        ? "border-cantiere-accent bg-cantiere-accent text-cantiere-paper"
+                        : "border-cantiere-hairline bg-cantiere-linen text-cantiere-ink"
                     }`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -110,8 +102,8 @@ export function SupportThread({
                       <time
                         className={`text-xs ${
                           isAdmin
-                            ? "text-brand-on-primary"
-                            : "text-text-muted"
+                            ? "text-cantiere-paper"
+                            : "text-cantiere-ink-secondary"
                         }`}
                       >
                         {formatDateTime(message.createdAt)}
@@ -129,7 +121,7 @@ export function SupportThread({
         </div>
 
         {children ? (
-          <div className="sticky bottom-0 -mx-6 border-t border-border-primary bg-surface-elevated px-6 pb-6 pt-4">
+          <div className="sticky bottom-0 -mx-6 border-t border-cantiere-hairline bg-cantiere-paper px-6 pb-6 pt-4">
             {children}
           </div>
         ) : null}

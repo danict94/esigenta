@@ -4,9 +4,6 @@ import type {
 } from "react"
 
 import { cn } from "../lib/cn"
-import {
-  tokens,
-} from "../styles/tokens"
 
 type BadgeVariant =
   | "neutral"
@@ -17,6 +14,22 @@ type BadgeVariant =
 type BadgeSize =
   | "sm"
   | "md"
+
+const badgeBase = "inline-flex items-center border font-medium"
+
+const badgeVariants = {
+  neutral:
+    "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary",
+  success:
+    "border-cantiere-accent bg-cantiere-paper text-cantiere-accent",
+  warning: "border-cantiere-hairline bg-cantiere-linen text-cantiere-ink",
+  danger: "border-cantiere-accent bg-cantiere-paper text-cantiere-ink",
+} as const
+
+const badgeSizes = {
+  sm: "min-h-7 px-2.5 text-xs",
+  md: "min-h-8 px-3 text-xs",
+} as const
 
 export type BadgeProps = {
   variant?: BadgeVariant
@@ -35,9 +48,9 @@ export function Badge({
   return (
     <span
       className={cn(
-        tokens.badge.base,
-        tokens.badge.sizes[size],
-        tokens.badge.variants[variant],
+        badgeBase,
+        badgeSizes[size],
+        badgeVariants[variant],
         className,
       )}
       {...props}

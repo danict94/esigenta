@@ -65,14 +65,14 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
   return (
     <PageShell size="lg" className="py-8 md:py-10">
       <section className="grid gap-6">
-        <header className="border-b border-border-primary pb-7">
-          <p className="text-sm font-medium text-text-muted">Crediti impresa</p>
+        <header className="border-b border-cantiere-hairline pb-7">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">Crediti impresa</p>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
             Acquista pacchetti crediti
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
             Scegli un pacchetto e completa il pagamento su Stripe. I crediti saranno accreditati
             solo dopo la conferma sicura del pagamento.
           </p>
@@ -80,7 +80,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
 
         {checkoutMessage ? (
           <Card className="p-5">
-            <p className="text-sm font-semibold text-text-primary">{checkoutMessage}</p>
+            <p className="text-sm font-semibold text-cantiere-ink">{checkoutMessage}</p>
           </Card>
         ) : null}
 
@@ -89,8 +89,8 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         ) : null}
 
         {!canBuyCredits ? (
-          <Card className="bg-surface-secondary p-5">
-            <p className="text-sm font-semibold text-text-primary">
+          <Card className="bg-cantiere-linen p-5">
+            <p className="text-sm font-semibold text-cantiere-ink">
               Il tuo profilo impresa deve essere approvato prima di acquistare crediti.
             </p>
           </Card>
@@ -99,18 +99,18 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         <Card className="p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-medium text-text-muted">Saldo attuale</p>
+              <p className="text-sm font-medium text-cantiere-ink-secondary">Saldo attuale</p>
 
-              <p className="mt-2 text-4xl font-semibold tracking-tight text-text-primary">
+              <p className="mt-2 text-4xl font-semibold tracking-tight text-cantiere-ink">
                 {result.account.balance} crediti
               </p>
             </div>
 
-            <div className="text-sm text-text-secondary">
+            <div className="text-sm text-cantiere-ink-secondary">
               {result.nearestLotExpiresAt ? (
                 <p>
                   Prossima scadenza:{" "}
-                  <span className="font-medium text-text-primary">
+                  <span className="font-medium text-cantiere-ink">
                     {formatDate(result.nearestLotExpiresAt)}
                   </span>
                 </p>
@@ -121,8 +121,8 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
           </div>
 
           {result.lots.length > 0 ? (
-            <div className="mt-6 border-t border-border-primary pt-5">
-              <p className="text-sm font-medium text-text-muted">
+            <div className="mt-6 border-t border-cantiere-hairline pt-5">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Scadenza per lotto
               </p>
 
@@ -130,10 +130,10 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                 {result.lots.map((lot) => (
                   <li
                     key={lot.id}
-                    className="flex items-center justify-between gap-4 text-sm text-text-secondary"
+                    className="flex items-center justify-between gap-4 text-sm text-cantiere-ink-secondary"
                   >
                     <span>{lot.creditsRemaining} crediti</span>
-                    <span className="font-medium text-text-primary">
+                    <span className="font-medium text-cantiere-ink">
                       {formatDate(lot.expiresAt)}
                     </span>
                   </li>
@@ -146,7 +146,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         <section className="grid gap-4 lg:grid-cols-3">
           {result.packages.length === 0 ? (
             <Card className="p-6 lg:col-span-3">
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-cantiere-ink-secondary">
                 Nessun pacchetto crediti disponibile al momento.
               </p>
             </Card>
@@ -155,12 +155,12 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
               <Card key={creditPackage.id} className="flex h-full flex-col p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-semibold tracking-tight text-text-primary">
+                    <h2 className="text-xl font-semibold tracking-tight text-cantiere-ink">
                       {creditPackage.name}
                     </h2>
 
                     {creditPackage.description ? (
-                      <p className="mt-3 text-sm leading-6 text-text-secondary">
+                      <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                         {creditPackage.description}
                       </p>
                     ) : null}
@@ -171,20 +171,20 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
 
                 <dl className="mt-6 grid gap-3 text-sm">
                   <div className="flex items-center justify-between gap-4">
-                    <dt className="text-text-muted">Crediti</dt>
-                    <dd className="font-semibold text-text-primary">{creditPackage.credits}</dd>
+                    <dt className="text-cantiere-ink-secondary">Crediti</dt>
+                    <dd className="font-semibold text-cantiere-ink">{creditPackage.credits}</dd>
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <dt className="text-text-muted">Validita</dt>
-                    <dd className="font-semibold text-text-primary">
+                    <dt className="text-cantiere-ink-secondary">Validita</dt>
+                    <dd className="font-semibold text-cantiere-ink">
                       {creditPackage.validityDays} giorni
                     </dd>
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <dt className="text-text-muted">Prezzo</dt>
-                    <dd className="font-semibold text-text-primary">
+                    <dt className="text-cantiere-ink-secondary">Prezzo</dt>
+                    <dd className="font-semibold text-cantiere-ink">
                       {formatCentsAsCurrency(
                         creditPackage.priceCents,
                         creditPackage.currency,

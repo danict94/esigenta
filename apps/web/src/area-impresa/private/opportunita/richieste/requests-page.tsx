@@ -309,15 +309,15 @@ export async function RequestsPage({
       <section className="space-y-7">
         <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
-            <h1 className="text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-cantiere-ink md:text-4xl">
               Richieste disponibili
             </h1>
 
-            <p className="mt-2 text-base text-text-primary">
+            <p className="mt-2 text-base text-cantiere-ink">
               richieste compatibili con il tuo profilo
             </p>
 
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-text-secondary">
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-cantiere-ink-secondary">
               <span className="inline-flex items-center gap-2">
                 <MapPin
                   className="size-4"
@@ -346,7 +346,7 @@ export async function RequestsPage({
             </div>
           </div>
 
-          <div className="text-sm font-medium text-text-secondary">
+          <div className="text-sm font-medium text-cantiere-ink-secondary">
             {requestCount} richieste
           </div>
         </div>
@@ -365,18 +365,18 @@ export async function RequestsPage({
 
         {!result.ok ? (
           <Card className="p-8">
-            <p className="text-base font-semibold text-text-primary">
+            <p className="text-base font-semibold text-cantiere-ink">
               {unavailableTitle}
             </p>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
               {result.message}
             </p>
 
             {unavailableHref ? (
               <Link
                 href={unavailableHref}
-                className="mt-5 inline-flex text-sm font-medium text-brand-primary"
+                className="mt-5 inline-flex text-sm font-medium text-cantiere-accent"
                 prefetch={false}
               >
                 {unavailableCta}
@@ -386,15 +386,15 @@ export async function RequestsPage({
         ) : (
           <>
             {!result.hasSelectedInterventions ? (
-              <Card className="bg-surface-secondary p-5">
-                <p className="text-sm font-semibold text-text-primary">
+              <Card className="bg-cantiere-linen p-5">
+                <p className="text-sm font-semibold text-cantiere-ink">
                   Seleziona gli interventi che offri per vedere prima le
                   richieste più adatte.
                 </p>
 
                 <Link
                   href="/area-impresa/configura-servizi"
-                  className="mt-3 inline-flex text-sm font-medium text-brand-primary"
+                  className="mt-3 inline-flex text-sm font-medium text-cantiere-accent"
                   prefetch={false}
                 >
                   Configura servizi
@@ -415,7 +415,7 @@ export async function RequestsPage({
                   {result.page > 1 ? (
                     <Link
                       href={buildPageHref(result.page - 1)}
-                      className="text-sm font-medium text-brand-primary"
+                      className="text-sm font-medium text-cantiere-accent"
                       prefetch={false}
                     >
                       &larr; Pagina precedente
@@ -426,7 +426,7 @@ export async function RequestsPage({
                   {result.hasNextPage ? (
                     <Link
                       href={buildPageHref(result.page + 1)}
-                      className="text-sm font-medium text-brand-primary"
+                      className="text-sm font-medium text-cantiere-accent"
                       prefetch={false}
                     >
                       Pagina successiva &rarr;

@@ -20,15 +20,15 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
 
   return (
     <PageShell size="lg">
-      <header className="border-b border-border-primary pb-7">
+      <header className="border-b border-cantiere-hairline pb-7">
         <Badge variant="neutral">Professione</Badge>
 
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary">
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-cantiere-ink">
           {category.name}
         </h1>
 
         {category.description ? (
-          <p className="mt-3 max-w-2xl text-base leading-7 text-text-secondary">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-cantiere-ink-secondary">
             {category.description}
           </p>
         ) : null}
@@ -36,19 +36,19 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
 
       <div className="mt-8 space-y-8">
         {projectGroups.length === 0 ? (
-          <Card className="p-8 text-center text-text-secondary">
+          <Card className="p-8 text-center text-cantiere-ink-secondary">
             Nessuna area di lavoro disponibile per questa professione.
           </Card>
         ) : (
           projectGroups.map((projectGroup) => (
             <section key={projectGroup.id} className="space-y-4">
               <div>
-                <h2 className="text-xl font-semibold text-text-primary">
+                <h2 className="text-xl font-semibold text-cantiere-ink">
                   {projectGroup.name}
                 </h2>
 
                 {projectGroup.description ? (
-                  <p className="mt-1 max-w-2xl text-sm leading-6 text-text-secondary">
+                  <p className="mt-1 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
                     {projectGroup.description}
                   </p>
                 ) : null}
@@ -59,15 +59,15 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                   <Link
                     key={intervention.id}
                     href={getInterventionHref(intervention.slug)}
-                    className="rounded-2xl border border-border-primary bg-surface-primary p-4 transition-colors hover:border-border-focus"
+                    className="rounded-2xl border border-cantiere-hairline bg-cantiere-paper p-4 transition-colors hover:border-cantiere-accent"
                     prefetch={false}
                   >
-                    <span className="block text-sm font-semibold text-text-primary">
+                    <span className="block text-sm font-semibold text-cantiere-ink">
                       {intervention.name}
                     </span>
 
                     {intervention.description ? (
-                      <span className="mt-1 block text-sm leading-6 text-text-secondary">
+                      <span className="mt-1 block text-sm leading-6 text-cantiere-ink-secondary">
                         {intervention.description}
                       </span>
                     ) : null}

@@ -40,7 +40,7 @@ export function HomeImage({
       {hasError && minimalFallback ? (
         <div
           className={cn(
-            "absolute inset-0 bg-surface-tertiary text-text-muted",
+            "absolute inset-0 bg-cantiere-linen text-cantiere-ink-secondary",
             fallbackClassName,
           )}
         >
@@ -51,7 +51,7 @@ export function HomeImage({
       ) : hasError ? (
         <div
           className={cn(
-            "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-surface-tertiary text-center text-xs leading-5 text-text-muted",
+            "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-cantiere-linen text-center text-xs leading-5 text-cantiere-ink-secondary",
             fallbackClassName,
           )}
         >

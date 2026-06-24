@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-import { Badge, PageShell, cn, tokens } from "@esigenta/ui";
+import { Badge, PageShell, cn } from "@esigenta/ui";
 
 import {
   getCostGuidePriceNote,
@@ -44,11 +44,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             </Badge>
 
             <div className="space-y-5">
-              <h1 className="text-4xl font-semibold leading-tight text-text-primary md:text-5xl">
+              <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink md:text-5xl">
                 {guide.h1}
               </h1>
 
-              <p className="text-lg leading-8 text-text-secondary">
+              <p className="text-lg leading-8 text-cantiere-ink-secondary">
                 {guide.summary}
               </p>
             </div>
@@ -57,10 +57,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               <Link
                 href={requestHref}
                 className={cn(
-                  tokens.interactive.base,
-                  tokens.interactive.radius,
-                  tokens.interactive.sizes.xl,
-                  tokens.interactive.variants.brand,
+                  "inline-flex items-center justify-center font-medium transition-colors",
+                  "rounded-[8px]",
+                  "h-12 px-6 text-[15px]",
+                  "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                   "w-full gap-2 sm:w-auto",
                 )}
               >
@@ -72,10 +72,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 <Link
                   href={interventionHref}
                   className={cn(
-                    tokens.interactive.base,
-                    tokens.interactive.radius,
-                    tokens.interactive.sizes.xl,
-                    tokens.interactive.variants.brandOutline,
+                    "inline-flex items-center justify-center font-medium transition-colors",
+                    "rounded-[8px]",
+                    "h-12 px-6 text-[15px]",
+                    "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                     "w-full gap-2 sm:w-auto",
                   )}
                 >
@@ -88,8 +88,8 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
           <div
             className={cn(
-              tokens.radius.lg,
-              "aspect-[4/3] overflow-hidden bg-surface-muted md:aspect-[720/520]",
+              "rounded-[8px]",
+              "aspect-[4/3] overflow-hidden bg-cantiere-surface md:aspect-[720/520]",
             )}
           >
             <Image
@@ -107,18 +107,18 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         <section
           aria-labelledby="sintesi-costo-title"
           className={cn(
-            tokens.radius.lg,
-            "bg-surface-soft px-5 py-7 md:px-8 md:py-9 lg:px-10",
+            "rounded-[8px]",
+            "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
           )}
         >
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.34fr)] lg:items-start">
             <div className="space-y-5">
               <div className="space-y-3">
-                <p className={tokens.home.sectionLabel}>Sintesi costo</p>
+                <p className={"text-sm font-medium text-cantiere-accent"}>Sintesi costo</p>
 
                 <h2
                   id="sintesi-costo-title"
-                  className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+                  className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
                 >
                   Range indicativi per {guide.topicLabel}
                 </h2>
@@ -135,7 +135,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 />
               </div>
 
-              <p className="text-sm leading-6 text-text-muted">{priceNote}</p>
+              <p className="text-sm leading-6 text-cantiere-ink-secondary">{priceNote}</p>
             </div>
 
             <GeoRequestForm funnelSlug={guide.funnelSlug} />
@@ -144,11 +144,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
         <section aria-labelledby="tabella-prezzi-title" className="space-y-6">
           <div className="max-w-3xl space-y-3">
-            <p className={tokens.home.sectionLabel}>Tabella prezzi</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>Tabella prezzi</p>
 
             <h2
               id="tabella-prezzi-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Voci che compongono il preventivo
             </h2>
@@ -162,11 +162,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           className="space-y-6"
         >
           <div className="max-w-3xl space-y-3">
-            <p className={tokens.home.sectionLabel}>Esempi</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>Esempi</p>
 
             <h2
               id="dimensioni-bagno-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Esempi per dimensione e livello di finitura
             </h2>
@@ -177,19 +177,19 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               <div
                 key={example.label}
                 className={cn(
-                  tokens.radius.lg,
-                  "border border-border-primary bg-surface-elevated p-5",
+                  "rounded-[8px]",
+                  "border border-cantiere-hairline bg-cantiere-paper p-5",
                 )}
               >
-                <h3 className="text-lg font-semibold leading-7 text-text-primary">
+                <h3 className="text-lg font-semibold leading-7 text-cantiere-ink">
                   {example.label}
                 </h3>
 
-                <p className="mt-3 text-xl font-semibold leading-7 text-text-primary">
+                <p className="mt-3 text-xl font-semibold leading-7 text-cantiere-ink">
                   {example.range}
                 </p>
 
-                <p className="mt-3 text-sm leading-6 text-text-secondary">
+                <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                   {example.note}
                 </p>
               </div>
@@ -202,11 +202,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           className="grid gap-6 lg:grid-cols-[0.38fr_0.62fr] lg:items-start"
         >
           <div className="max-w-2xl space-y-3">
-            <p className={tokens.home.sectionLabel}>Fattori costo</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>Fattori costo</p>
 
             <h2
               id="fattori-costo-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Cosa incide davvero sul prezzo
             </h2>
@@ -214,17 +214,17 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
           <ul
             className={cn(
-              tokens.radius.lg,
-              "grid gap-4 border border-border-primary bg-surface-primary p-5 md:grid-cols-2 md:p-6",
+              "rounded-[8px]",
+              "grid gap-4 border border-cantiere-hairline bg-cantiere-paper p-5 md:grid-cols-2 md:p-6",
             )}
           >
             {guide.factors.map((factor) => (
               <li
                 key={factor}
-                className="flex gap-3 text-base leading-7 text-text-secondary"
+                className="flex gap-3 text-base leading-7 text-cantiere-ink-secondary"
               >
                 <CheckCircle2
-                  className="mt-1 size-5 shrink-0 text-brand-primary"
+                  className="mt-1 size-5 shrink-0 text-cantiere-accent"
                   aria-hidden={true}
                   strokeWidth={1.8}
                 />
@@ -237,16 +237,16 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         {indexableCityPages.length > 0 ? (
         <section aria-labelledby="costi-citta-title" className="space-y-6">
           <div className="max-w-3xl space-y-3">
-            <p className={tokens.home.sectionLabel}>Città</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>Città</p>
 
             <h2
               id="costi-citta-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Quanto costa {guide.topicLabel} nella tua città?
             </h2>
 
-            <p className="text-base leading-7 text-text-secondary">
+            <p className="text-base leading-7 text-cantiere-ink-secondary">
               Le differenze locali dipendono da cantiere, accessibilità,
               disponibilità dei professionisti e caratteristiche
               dell&apos;immobile. Le pagine città vengono pubblicate solo se
@@ -259,8 +259,8 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                   key={cityPage.citySlug}
                   href={cityPage.canonicalPath}
                   className={cn(
-                    tokens.radius.full,
-                    "inline-flex min-h-9 items-center border border-border-primary bg-surface-primary px-3 text-sm font-medium leading-5 text-text-secondary transition-colors hover:border-border-focus hover:text-text-primary",
+                    "rounded-full",
+                    "inline-flex min-h-9 items-center border border-cantiere-hairline bg-cantiere-paper px-3 text-sm font-medium leading-5 text-cantiere-ink-secondary transition-colors hover:border-cantiere-accent hover:text-cantiere-ink",
                   )}
                 >
                   {cityPage.city}
@@ -279,34 +279,34 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 <article
                   key={section.city}
                   className={cn(
-                    tokens.radius.lg,
-                    "border border-border-primary bg-surface-elevated p-5",
+                    "rounded-[8px]",
+                    "border border-cantiere-hairline bg-cantiere-paper p-5",
                   )}
                 >
-                  <h3 className="text-xl font-semibold leading-8 text-text-primary">
+                  <h3 className="text-xl font-semibold leading-8 text-cantiere-ink">
                     {section.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-text-secondary">
+                  <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                     {section.summary}
                   </p>
 
-                  <p className="mt-3 text-sm leading-6 text-text-secondary">
+                  <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                     {section.localReading}
                   </p>
 
                   <div className="mt-5 grid gap-5 sm:grid-cols-2">
                     <div>
-                      <h4 className="text-sm font-semibold leading-6 text-text-primary">
+                      <h4 className="text-sm font-semibold leading-6 text-cantiere-ink">
                         Casi frequenti
                       </h4>
 
-                      <ul className="mt-2 space-y-2 text-sm leading-6 text-text-secondary">
+                      <ul className="mt-2 space-y-2 text-sm leading-6 text-cantiere-ink-secondary">
                         {section.typicalCases.map((item) => (
                           <li key={item} className="flex gap-2">
                             <span
                               aria-hidden={true}
-                              className="text-brand-primary"
+                              className="text-cantiere-accent"
                             >
                               -
                             </span>
@@ -317,16 +317,16 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-semibold leading-6 text-text-primary">
+                      <h4 className="text-sm font-semibold leading-6 text-cantiere-ink">
                         Fattori locali
                       </h4>
 
-                      <ul className="mt-2 space-y-2 text-sm leading-6 text-text-secondary">
+                      <ul className="mt-2 space-y-2 text-sm leading-6 text-cantiere-ink-secondary">
                         {section.factors.map((factor) => (
                           <li key={factor} className="flex gap-2">
                             <span
                               aria-hidden={true}
-                              className="text-brand-primary"
+                              className="text-cantiere-accent"
                             >
                               -
                             </span>
@@ -341,10 +341,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     <Link
                       href={cityPage.canonicalPath}
                       className={cn(
-                        tokens.interactive.base,
-                        tokens.interactive.radius,
-                        tokens.interactive.sizes.lg,
-                        tokens.interactive.variants.brandOutline,
+                        "inline-flex items-center justify-center font-medium transition-colors",
+                        "rounded-[8px]",
+                        "h-12 px-6 text-[15px]",
+                        "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                         "mt-5 w-full gap-2 sm:w-auto",
                       )}
                     >
@@ -362,16 +362,16 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         <section
           aria-labelledby="risparmiare-title"
           className={cn(
-            tokens.radius.lg,
-            "border border-border-primary bg-surface-primary p-5 md:p-7",
+            "rounded-[8px]",
+            "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-7",
           )}
         >
           <div className="max-w-3xl space-y-3">
-            <p className={tokens.home.sectionLabel}>Consigli</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>Consigli</p>
 
             <h2
               id="risparmiare-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Come risparmiare senza perdere qualità
             </h2>
@@ -381,10 +381,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             {guide.savingTips.map((tip) => (
               <li
                 key={tip}
-                className="flex gap-3 text-base leading-7 text-text-secondary"
+                className="flex gap-3 text-base leading-7 text-cantiere-ink-secondary"
               >
                 <CheckCircle2
-                  className="mt-1 size-5 shrink-0 text-brand-primary"
+                  className="mt-1 size-5 shrink-0 text-cantiere-accent"
                   aria-hidden={true}
                   strokeWidth={1.8}
                 />
@@ -398,8 +398,8 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
         <section
           className={cn(
-            tokens.radius.lg,
-            "bg-surface-dark px-5 py-9 text-center text-text-on-hero-primary md:px-8 md:py-12",
+            "rounded-[8px]",
+            "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
           )}
         >
           <div className="mx-auto max-w-3xl space-y-5">
@@ -407,7 +407,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               Racconta il lavoro e confronta i preventivi
             </h2>
 
-            <p className="text-base leading-7 text-text-on-hero-secondary">
+            <p className="text-base leading-7 text-cantiere-paper/75">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
@@ -415,10 +415,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             <Link
               href={requestHref}
               className={cn(
-                tokens.interactive.base,
-                tokens.interactive.radius,
-                tokens.interactive.sizes.xl,
-                tokens.interactive.variants.warm,
+                "inline-flex items-center justify-center font-medium transition-colors",
+                "rounded-[8px]",
+                "h-12 px-6 text-[15px]",
+                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
               )}
             >
@@ -436,12 +436,12 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div
       className={cn(
-        tokens.radius.lg,
-        "border border-border-primary bg-surface-elevated p-5",
+        "rounded-[8px]",
+        "border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >
-      <p className="text-sm font-medium text-text-muted">{label}</p>
-      <p className="mt-2 text-xl font-semibold leading-7 text-text-primary">
+      <p className="text-sm font-medium text-cantiere-ink-secondary">{label}</p>
+      <p className="mt-2 text-xl font-semibold leading-7 text-cantiere-ink">
         {value}
       </p>
     </div>
@@ -452,11 +452,11 @@ function PriceTable({ rows }: { rows: CostGuide["priceRows"] }) {
   return (
     <div
       className={cn(
-        tokens.radius.lg,
-        "overflow-hidden border border-border-primary bg-surface-elevated",
+        "rounded-[8px]",
+        "overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
       )}
     >
-      <div className="hidden border-b border-border-primary px-4 py-3 text-sm font-semibold text-text-primary md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)] md:px-5">
+      <div className="hidden border-b border-cantiere-hairline px-4 py-3 text-sm font-semibold text-cantiere-ink md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)] md:px-5">
         <span>Voce</span>
         <span>Fascia indicativa</span>
         <span>Note</span>
@@ -469,24 +469,24 @@ function PriceTable({ rows }: { rows: CostGuide["priceRows"] }) {
             className="grid gap-3 px-4 py-4 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)] md:px-5"
           >
             <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted md:hidden">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary md:hidden">
                 Voce
               </p>
-              <p className="font-medium text-text-primary">{row.label}</p>
+              <p className="font-medium text-cantiere-ink">{row.label}</p>
             </div>
 
             <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted md:hidden">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary md:hidden">
                 Fascia indicativa
               </p>
-              <p className="font-semibold text-text-primary">{row.range}</p>
+              <p className="font-semibold text-cantiere-ink">{row.range}</p>
             </div>
 
             <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted md:hidden">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary md:hidden">
                 Note
               </p>
-              <p className="text-text-secondary">{row.note}</p>
+              <p className="text-cantiere-ink-secondary">{row.note}</p>
             </div>
           </div>
         ))}

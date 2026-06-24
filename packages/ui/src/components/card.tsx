@@ -4,9 +4,15 @@ import type {
 } from "react"
 
 import { cn } from "../lib/cn"
-import {
-  tokens,
-} from "../styles/tokens"
+
+const cardBase =
+  "rounded-[8px] border border-cantiere-hairline bg-cantiere-paper shadow-cantiere-elevation"
+
+const cardHeader = "space-y-1.5 p-6"
+const cardContent = "p-6 pt-0"
+const cardTitle =
+  "text-lg font-semibold leading-none tracking-tight text-cantiere-ink"
+const cardDescription = "text-sm text-cantiere-ink-secondary"
 
 export type CardProps = {
   children: ReactNode
@@ -21,7 +27,7 @@ export function Card({
   return (
     <div
       className={cn(
-        tokens.card.base,
+        cardBase,
         className,
       )}
       {...props}
@@ -43,7 +49,7 @@ export function CardHeader({
 }: CardSectionProps) {
   return (
     <div
-      className={cn(tokens.card.header, className)}
+      className={cn(cardHeader, className)}
       {...props}
     >
       {children}
@@ -58,7 +64,7 @@ export function CardContent({
 }: CardSectionProps) {
   return (
     <div
-      className={cn(tokens.card.content, className)}
+      className={cn(cardContent, className)}
       {...props}
     >
       {children}
@@ -79,7 +85,7 @@ export function CardTitle({
   return (
     <h3
       className={cn(
-        tokens.card.title,
+        cardTitle,
         className,
       )}
       {...props}
@@ -101,7 +107,7 @@ export function CardDescription({
 }: CardDescriptionProps) {
   return (
     <p
-      className={cn(tokens.card.description, className)}
+      className={cn(cardDescription, className)}
       {...props}
     >
       {children}

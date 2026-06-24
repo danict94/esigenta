@@ -4,15 +4,9 @@ import type {
 
 import { cn } from "../lib/cn"
 import {
-  tokens,
-  type ContainerToken,
-} from "../styles/tokens"
-import {
   Container,
+  type ContainerSize,
 } from "./container"
-import {
-  MarketingSurface,
-} from "./marketing-surface"
 
 export type HeroSurfaceProps = {
   children: ReactNode
@@ -20,7 +14,7 @@ export type HeroSurfaceProps = {
 } & (
   | {
       constrainContent?: true
-      size?: ContainerToken
+      size?: ContainerSize
       contentClassName?: string
     }
   | {
@@ -40,8 +34,8 @@ export function HeroSurface(props: HeroSurfaceProps) {
     ? children
     : (
         <Container
-          size={props.size ?? tokens.layout.heroSurface.contentContainer.defaultSize}
-          gutter={tokens.layout.heroSurface.contentContainer.gutter}
+          size={props.size ?? "lg"}
+          gutter="none"
           {...(props.contentClassName
             ? {
                 className: props.contentClassName,
@@ -53,15 +47,15 @@ export function HeroSurface(props: HeroSurfaceProps) {
       )
 
   return (
-    <MarketingSurface
-      as="section"
-      variant="hero"
+    <section
+      data-ui="marketing-surface"
+      data-variant="hero"
       className={cn(
-        tokens.layout.heroSurface.frame,
+        "relative overflow-visible bg-cantiere-ink px-5 py-6 text-cantiere-paper md:px-8 md:py-8 xl:px-10 xl:py-10",
         className,
       )}
     >
       {content}
-    </MarketingSurface>
+    </section>
   )
 }

@@ -1,8 +1,4 @@
-import {
-  Container,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+import { Container, cn } from "@esigenta/ui";
 
 import {
   RequestFlowError,
@@ -93,17 +89,17 @@ export async function RequestVerificationPage({
   const result = await verifyFromParams({ requestId, token })
 
   const primaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-semibold text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
 
   return (
     <PublicShell>
-      <section className={tokens.spacing.sectionLg}>
+      <section className={"py-20 md:py-28 lg:py-32"}>
         <Container size="sm">
           <div
             className={cn(
-              "border border-border-primary bg-surface-elevated p-6",
-              tokens.radius.lg,
-              tokens.shadows.surface,
+              "border border-cantiere-hairline bg-cantiere-paper p-6",
+              "rounded-[8px]",
+              "shadow-cantiere-elevation",
             )}
           >
             <div className="flex flex-col gap-5">
@@ -116,7 +112,7 @@ export async function RequestVerificationPage({
               <p
                 className={cn(
                   "text-sm font-medium",
-                  result.ok ? "text-brand-primary" : "text-text-muted",
+                  result.ok ? "text-cantiere-accent" : "text-cantiere-ink-secondary",
                 )}
               >
                 Conferma richiesta
@@ -125,8 +121,8 @@ export async function RequestVerificationPage({
               <div className="space-y-3">
                 <h1
                   className={cn(
-                    "text-text-primary",
-                    tokens.typography.title,
+                    "text-cantiere-ink",
+                    "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
                   )}
                 >
                   {result.title}
@@ -134,8 +130,8 @@ export async function RequestVerificationPage({
 
                 <p
                   className={cn(
-                    tokens.typography.body,
-                    "text-text-secondary",
+                    "text-base leading-7",
+                    "text-cantiere-ink-secondary",
                   )}
                 >
                   {result.message}
@@ -144,7 +140,7 @@ export async function RequestVerificationPage({
 
               {result.ok ? (
                 <>
-                  <p className="text-sm leading-6 text-text-secondary">
+                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
                     In futuro puoi tornare dalla voce Storico richieste e vedere
                     le richieste inviate con questa email.
                   </p>

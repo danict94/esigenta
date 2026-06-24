@@ -1,16 +1,10 @@
 "use client"
 
-import {
-  useEffect,
-  useState,
-} from "react"
+import { useEffect, useState, } from "react"
 import Link from "next/link"
 
 import {
-  Button,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+  Button, cn } from "@esigenta/ui";
 
 import {
   COOKIE_CONSENT_OPEN_EVENT,
@@ -146,20 +140,20 @@ export function CookieConsent() {
       {shouldShowBanner ? (
         <aside
           aria-label="Preferenze cookie"
-          className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-5xl border border-border-primary bg-surface-elevated p-4 shadow-xl md:bottom-5 md:p-5"
+          className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-5xl border border-cantiere-hairline bg-cantiere-paper p-4 shadow-xl md:bottom-5 md:p-5"
         >
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
             <div>
-              <p className="text-sm font-semibold text-text-primary">
+              <p className="text-sm font-semibold text-cantiere-ink">
                 Preferenze cookie
               </p>
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Usiamo cookie tecnici necessari. I servizi facoltativi, come i
                 suggerimenti automatici di Google Maps, partono solo se li
                 abiliti. Puoi leggere la{" "}
                 <Link
                   href="/cookie-policy"
-                  className="font-medium text-brand-primary"
+                  className="font-medium text-cantiere-accent"
                  prefetch={false}>
                   cookie policy
                 </Link>
@@ -200,32 +194,32 @@ export function CookieConsent() {
       ) : null}
 
       {isPanelOpen ? (
-        <div className="fixed inset-0 z-50 grid place-items-end bg-surface-footer/70 p-3 md:place-items-center md:p-6">
+        <div className="fixed inset-0 z-50 grid place-items-end bg-cantiere-ink/70 p-3 md:place-items-center md:p-6">
           <section
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-preferences-title"
             className={cn(
-              "max-h-[90vh] w-full max-w-2xl overflow-auto border border-border-primary bg-surface-elevated p-5",
-              tokens.radius.lg,
-              tokens.shadows.surface,
+              "max-h-[90vh] w-full max-w-2xl overflow-auto border border-cantiere-hairline bg-cantiere-paper p-5",
+              "rounded-[8px]",
+              "shadow-cantiere-elevation",
             )}
           >
             <div>
               <p
                 id="cookie-preferences-title"
-                className="text-lg font-semibold text-text-primary"
+                className="text-lg font-semibold text-cantiere-ink"
               >
                 Preferenze cookie
               </p>
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Le categorie facoltative non sono preselezionate. Puoi cambiare
                 scelta in qualsiasi momento dal footer.
               </p>
             </div>
 
             <div className="mt-5 grid gap-3">
-              <div className="border border-border-primary bg-surface-primary p-4">
+              <div className="border border-cantiere-hairline bg-cantiere-paper p-4">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
@@ -235,10 +229,10 @@ export function CookieConsent() {
                     aria-label="Cookie necessari sempre attivi"
                   />
                   <div>
-                    <p className="text-sm font-semibold text-text-primary">
+                    <p className="text-sm font-semibold text-cantiere-ink">
                       Necessari
                     </p>
-                    <p className="mt-1 text-sm leading-6 text-text-secondary">
+                    <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
                       Sempre attivi per sicurezza, sessioni e funzionamento
                       della piattaforma.
                     </p>
@@ -249,7 +243,7 @@ export function CookieConsent() {
               {optionalCategories.map((category) => (
                 <label
                   key={category.id}
-                  className="flex cursor-pointer items-start gap-3 border border-border-primary bg-surface-primary p-4"
+                  className="flex cursor-pointer items-start gap-3 border border-cantiere-hairline bg-cantiere-paper p-4"
                 >
                   <input
                     type="checkbox"
@@ -264,10 +258,10 @@ export function CookieConsent() {
                     }}
                   />
                   <span>
-                    <span className="block text-sm font-semibold text-text-primary">
+                    <span className="block text-sm font-semibold text-cantiere-ink">
                       {category.label}
                     </span>
-                    <span className="mt-1 block text-sm leading-6 text-text-secondary">
+                    <span className="mt-1 block text-sm leading-6 text-cantiere-ink-secondary">
                       {category.description}
                     </span>
                   </span>

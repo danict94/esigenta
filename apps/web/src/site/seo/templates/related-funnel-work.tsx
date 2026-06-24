@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { frozenTaxonomySource } from "@esigenta/taxonomy";
-import { cn, tokens } from "@esigenta/ui";
+import { cn } from "@esigenta/ui";
 
 /**
  * Phase 19.8 — pilota "lavori collegati funnel-diretto". Usato SOLO da
@@ -47,12 +47,12 @@ export function RelatedFunnelWork({
       <div className="max-w-2xl space-y-3">
         <h2
           id="lavori-collegati-title"
-          className="text-2xl font-semibold leading-8 text-text-primary"
+          className="text-2xl font-semibold leading-8 text-cantiere-ink"
         >
           Lavori che puoi richiedere insieme
         </h2>
 
-        <p className="text-base leading-7 text-text-secondary">
+        <p className="text-base leading-7 text-cantiere-ink-secondary">
           Oltre alla ristrutturazione completa, puoi richiedere preventivi anche
           per lavori specifici collegati. Non sono pagine dedicate: il link
           porta direttamente alla richiesta per quel lavoro.
@@ -61,18 +61,18 @@ export function RelatedFunnelWork({
 
       <ul
         className={cn(
-          tokens.radius.lg,
-          "divide-y divide-border-primary overflow-hidden border border-border-primary bg-surface-primary",
+          "rounded-[8px]",
+          "divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
         )}
       >
         {items.map((item) => (
           <li key={item.slug}>
             <Link
               href={`/richiesta/${item.slug}`}
-              className="flex items-center justify-between gap-4 px-5 py-4 text-base font-medium text-text-primary transition-colors hover:bg-surface-soft md:px-6"
+              className="flex items-center justify-between gap-4 px-5 py-4 text-base font-medium text-cantiere-ink transition-colors hover:bg-cantiere-surface md:px-6"
             >
               <span>{item.label}</span>
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-action-primary">
+              <span className="inline-flex items-center gap-1 text-sm font-medium text-cantiere-accent">
                 Richiedi preventivo
                 <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
               </span>

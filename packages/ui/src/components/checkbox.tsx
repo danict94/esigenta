@@ -18,7 +18,7 @@ export function Checkbox({
       {...props}
       type="checkbox"
       className={cn(
-        "h-4 w-4 accent-brand-primary disabled:cursor-not-allowed disabled:opacity-60",
+        "h-4 w-4 accent-cantiere-accent disabled:cursor-not-allowed disabled:opacity-60",
         className,
       )}
     />

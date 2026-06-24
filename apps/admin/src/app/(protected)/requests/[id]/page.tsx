@@ -253,8 +253,8 @@ function renderStructuredValue(value: unknown): ReactNode {
       <dl className="grid gap-2">
         {entries.map(([key, entryValue]) => (
           <div key={key} className="grid gap-1 sm:grid-cols-[10rem_1fr]">
-            <dt className="text-text-muted">{formatKey(key)}</dt>
-            <dd className="text-text-primary">
+            <dt className="text-cantiere-ink-secondary">{formatKey(key)}</dt>
+            <dd className="text-cantiere-ink">
               {renderStructuredValue(entryValue)}
             </dd>
           </div>
@@ -529,9 +529,9 @@ function DetailSection({
 }) {
   return (
     <Card className="p-6">
-      <div className="mb-5 border-b border-border-primary pb-5">
-        <p className="text-sm font-medium text-text-muted">{eyebrow}</p>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+      <div className="mb-5 border-b border-cantiere-hairline pb-5">
+        <p className="text-sm font-medium text-cantiere-ink-secondary">{eyebrow}</p>
+        <h2 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
           {title}
         </h2>
       </div>
@@ -550,10 +550,10 @@ function FieldBlock({
 }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+      <dt className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
         {label}
       </dt>
-      <dd className="mt-2 text-sm leading-6 text-text-primary">{children}</dd>
+      <dd className="mt-2 text-sm leading-6 text-cantiere-ink">{children}</dd>
     </div>
   );
 }
@@ -601,49 +601,49 @@ export default async function RequestDetailPage({
 
   return (
     <PageShell size="lg">
-      <header className="border-b border-border-primary pb-7">
+      <header className="border-b border-cantiere-hairline pb-7">
         <Link
           href="/requests"
-          className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+          className="text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
         >
           ← Coda richieste
         </Link>
 
         <div className="mt-5 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-text-muted">
+            <p className="text-sm font-medium text-cantiere-ink-secondary">
               Dossier richiesta
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
               {interventionName}
             </h1>
 
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-text-secondary">
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cantiere-ink-secondary">
               <span>
-                <span className="text-text-muted">Luogo:</span>{" "}
+                <span className="text-cantiere-ink-secondary">Luogo:</span>{" "}
                 {[request.city, request.postalCode].filter(Boolean).join(" ") ||
                   "-"}
               </span>
 
               <span>
-                <span className="text-text-muted">Cliente:</span>{" "}
+                <span className="text-cantiere-ink-secondary">Cliente:</span>{" "}
                 {request.customerName ?? "-"}
               </span>
 
               <span>
-                <span className="text-text-muted">Creata:</span>{" "}
+                <span className="text-cantiere-ink-secondary">Creata:</span>{" "}
                 {formatDate(request.createdAt)}
               </span>
             </div>
 
             <div className="mt-4 grid gap-1">
-              <p className="text-sm font-medium text-text-primary">
-                <span className="text-text-muted">Codice richiesta:</span>{" "}
+              <p className="text-sm font-medium text-cantiere-ink">
+                <span className="text-cantiere-ink-secondary">Codice richiesta:</span>{" "}
                 {publicRequestCode}
               </p>
 
-              <p className="text-xs text-text-muted">
+              <p className="text-xs text-cantiere-ink-secondary">
                 ID tecnico: {request.id}
               </p>
             </div>
@@ -664,12 +664,12 @@ export default async function RequestDetailPage({
             <dl className="grid gap-6">
               <FieldBlock label="Intervento">
                 <div className="space-y-2">
-                  <p className="text-base font-semibold text-text-primary">
+                  <p className="text-base font-semibold text-cantiere-ink">
                     {interventionName}
                   </p>
 
                   {interventionDescription ? (
-                    <p className="text-sm leading-6 text-text-secondary">
+                    <p className="text-sm leading-6 text-cantiere-ink-secondary">
                       {interventionDescription}
                     </p>
                   ) : null}
@@ -682,17 +682,17 @@ export default async function RequestDetailPage({
                     {categories.map((category) => (
                       <span
                         key={category.slug}
-                        className="border border-border-primary bg-surface-secondary px-3 py-2 text-sm font-medium text-text-primary"
+                        className="border border-cantiere-hairline bg-cantiere-linen px-3 py-2 text-sm font-medium text-cantiere-ink"
                       >
                         {category.name}
-                        <span className="ml-2 text-text-muted">
+                        <span className="ml-2 text-cantiere-ink-secondary">
                           · {category.sector.name}
                         </span>
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-text-secondary">
+                  <span className="text-cantiere-ink-secondary">
                     Categoria non derivabile dai dati disponibili.
                   </span>
                 )}
@@ -700,11 +700,11 @@ export default async function RequestDetailPage({
 
               <FieldBlock label="Descrizione cliente">
                 {customerDescription ? (
-                  <p className="whitespace-pre-line text-base leading-7 text-text-primary">
+                  <p className="whitespace-pre-line text-base leading-7 text-cantiere-ink">
                     {customerDescription}
                   </p>
                 ) : (
-                  <p className="text-sm leading-6 text-text-secondary">
+                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
                     Nessuna descrizione libera trovata nei dati salvati dal
                     funnel.
                   </p>
@@ -757,9 +757,9 @@ export default async function RequestDetailPage({
                 {photos.map((photo) => (
                   <figure
                     key={photo.src}
-                    className="overflow-hidden border border-border-primary bg-surface-primary"
+                    className="overflow-hidden border border-cantiere-hairline bg-cantiere-paper"
                   >
-                    <div className="relative aspect-video bg-surface-secondary">
+                    <div className="relative aspect-video bg-cantiere-linen">
                       <Image
                         src={photo.src}
                         alt={photo.fileName}
@@ -771,7 +771,7 @@ export default async function RequestDetailPage({
                       />
                     </div>
 
-                    <figcaption className="truncate px-3 py-2 text-xs text-text-muted">
+                    <figcaption className="truncate px-3 py-2 text-xs text-cantiere-ink-secondary">
                       {photo.fileName}
                     </figcaption>
                   </figure>
@@ -786,14 +786,14 @@ export default async function RequestDetailPage({
                 {primaryServices.map((service) => (
                   <div
                     key={service.slug}
-                    className="border border-border-primary bg-surface-primary p-4"
+                    className="border border-cantiere-hairline bg-cantiere-paper p-4"
                   >
-                    <p className="text-sm font-semibold text-text-primary">
+                    <p className="text-sm font-semibold text-cantiere-ink">
                       {service.name}
                     </p>
 
                     {service.description ? (
-                      <p className="mt-2 text-sm leading-6 text-text-secondary">
+                      <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                         {service.description}
                       </p>
                     ) : null}
@@ -801,7 +801,7 @@ export default async function RequestDetailPage({
                 ))}
               </div>
             ) : (
-              <p className="text-sm leading-6 text-text-secondary">
+              <p className="text-sm leading-6 text-cantiere-ink-secondary">
                 Nessun servizio rilevante associato alla richiesta.
               </p>
             )}
@@ -809,7 +809,7 @@ export default async function RequestDetailPage({
 
           <DetailSection eyebrow="Audit funnel" title="Dati aggiuntivi">
             {answerEntries.length === 0 ? (
-              <p className="text-sm leading-6 text-text-secondary">
+              <p className="text-sm leading-6 text-cantiere-ink-secondary">
                 Nessun dato aggiuntivo da mostrare oltre a luogo e contatto.
               </p>
             ) : (
@@ -817,12 +817,12 @@ export default async function RequestDetailPage({
                 {answerEntries.map(([key, value]) => (
                   <div
                     key={key}
-                    className="border border-border-primary bg-surface-primary p-4"
+                    className="border border-cantiere-hairline bg-cantiere-paper p-4"
                   >
-                    <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                    <dt className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                       {answerLabels[key] ?? formatKey(key)}
                     </dt>
-                    <dd className="mt-3 text-sm leading-6 text-text-primary">
+                    <dd className="mt-3 text-sm leading-6 text-cantiere-ink">
                       {renderStructuredValue(value)}
                     </dd>
                   </div>
@@ -835,39 +835,39 @@ export default async function RequestDetailPage({
         <aside className="grid gap-6 lg:sticky lg:top-6">
           <Card className="p-5">
             <div>
-              <p className="text-sm font-medium text-text-muted">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Crediti
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-text-primary">
+              <h2 className="mt-1 text-xl font-semibold text-cantiere-ink">
                 Impostazioni commerciali
               </h2>
             </div>
 
             <dl className="mt-5 grid gap-3">
-              <div className="border border-border-primary bg-surface-secondary p-4">
-                <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                   Costo attuale
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-text-primary">
+                <dd className="mt-2 text-sm font-semibold text-cantiere-ink">
                   {formatCreditCost(request.creditCost)}
                 </dd>
               </div>
 
-              <div className="border border-border-primary bg-surface-secondary p-4">
-                <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                   Limite sblocchi
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-text-primary">
+                <dd className="mt-2 text-sm font-semibold text-cantiere-ink">
                   {formatMaxUnlocks(request.maxUnlocks)}
                 </dd>
               </div>
 
-              <div className="border border-border-primary bg-surface-secondary p-4">
-                <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                   Sblocchi attuali
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-text-primary">
+                <dd className="mt-2 text-sm font-semibold text-cantiere-ink">
                   {request.unlockCount}
                 </dd>
               </div>
@@ -875,12 +875,12 @@ export default async function RequestDetailPage({
 
             <form
               action={updateCommercialSettingsAction}
-              className="mt-5 grid gap-4 border-t border-border-primary pt-5"
+              className="mt-5 grid gap-4 border-t border-cantiere-hairline pt-5"
             >
               <input type="hidden" name="requestId" value={request.id} />
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-text-primary">
+                <span className="text-sm font-medium text-cantiere-ink">
                   Costo in crediti
                 </span>
                 <Input
@@ -894,7 +894,7 @@ export default async function RequestDetailPage({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-text-primary">
+                <span className="text-sm font-medium text-cantiere-ink">
                   Limite massimo imprese
                 </span>
                 <Input
@@ -915,22 +915,22 @@ export default async function RequestDetailPage({
 
           <Card className="p-5">
             <div>
-              <p className="text-sm font-medium text-text-muted">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Decisione editoriale
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-text-primary">
+              <h2 className="mt-1 text-xl font-semibold text-cantiere-ink">
                 Revisione marketplace
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Approva solo richieste chiare, localizzabili e utili per le
                 imprese.
               </p>
             </div>
 
-            <div className="mt-5 border border-border-primary bg-surface-secondary p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+            <div className="mt-5 border border-cantiere-hairline bg-cantiere-linen p-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                 Stato attuale
               </p>
 
@@ -943,11 +943,11 @@ export default async function RequestDetailPage({
 
             {request.status === "PENDING_VERIFICATION" ? (
               <div className="mt-5 space-y-4">
-                <div className="border border-border-primary bg-surface-secondary p-4">
-                  <p className="text-sm font-medium text-text-primary">
+                <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                  <p className="text-sm font-medium text-cantiere-ink">
                     Email cliente non verificata
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-text-secondary">
+                  <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                     Il cliente non ha ancora confermato la richiesta tramite
                     il link inviato per email. Finché resta in questo stato
                     non entra nella coda di revisione e non può essere
@@ -966,7 +966,7 @@ export default async function RequestDetailPage({
 
                 <form
                   action={verifyRequestManuallyAction}
-                  className="border-t border-border-primary pt-4"
+                  className="border-t border-cantiere-hairline pt-4"
                 >
                   <input type="hidden" name="requestId" value={request.id} />
                   <Button type="submit">
@@ -977,11 +977,11 @@ export default async function RequestDetailPage({
             ) : request.status === "PENDING_REVIEW" ? (
               <div className="mt-5 space-y-4">
                 {!hasRequiredPublishingSettings ? (
-                  <div className="border border-border-primary bg-surface-secondary p-4">
-                    <p className="text-sm font-medium text-text-primary">
+                  <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                    <p className="text-sm font-medium text-cantiere-ink">
                       Configurazione commerciale incompleta
                     </p>
-                    <p className="mt-2 text-sm leading-6 text-text-secondary">
+                    <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                       Prima di pubblicare la richiesta devi impostare costo
                       crediti e limite imprese.
                     </p>
@@ -995,7 +995,7 @@ export default async function RequestDetailPage({
                   <div className="space-y-2">
                     <label
                       htmlFor="approve-moderation-notes"
-                      className="text-sm font-medium text-text-primary"
+                      className="text-sm font-medium text-cantiere-ink"
                     >
                       Nota moderazione
                     </label>
@@ -1016,14 +1016,14 @@ export default async function RequestDetailPage({
                   </Button>
                 </form>
 
-                <form action={reviewRequestAction} className="space-y-3 border-t border-border-primary pt-4">
+                <form action={reviewRequestAction} className="space-y-3 border-t border-cantiere-hairline pt-4">
                   <input type="hidden" name="requestId" value={request.id} />
                   <input type="hidden" name="status" value="REJECTED" />
 
                   <div className="space-y-2">
                     <label
                       htmlFor="reject-moderation-notes"
-                      className="text-sm font-medium text-text-primary"
+                      className="text-sm font-medium text-cantiere-ink"
                     >
                       Motivo rifiuto
                     </label>
@@ -1042,22 +1042,22 @@ export default async function RequestDetailPage({
                 </form>
               </div>
             ) : (
-              <div className="mt-5 border border-border-primary bg-surface-primary p-4">
-                <p className="text-sm font-medium text-text-primary">
+              <div className="mt-5 border border-cantiere-hairline bg-cantiere-paper p-4">
+                <p className="text-sm font-medium text-cantiere-ink">
                   Revisione chiusa
                 </p>
-                <p className="mt-2 text-sm leading-6 text-text-secondary">
+                <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                   Questa richiesta ha già ricevuto una decisione editoriale.
                 </p>
               </div>
             )}
 
-            <div className="mt-6 border-t border-border-primary pt-5">
-              <p className="text-sm font-semibold text-text-primary">
+            <div className="mt-6 border-t border-cantiere-hairline pt-5">
+              <p className="text-sm font-semibold text-cantiere-ink">
                 Checklist qualità
               </p>
 
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-text-secondary">
+              <ul className="mt-3 space-y-2 text-sm leading-6 text-cantiere-ink-secondary">
                 <li>• Intervento comprensibile</li>
                 <li>• Descrizione utile o dati funnel sufficienti</li>
                 <li>• Luogo coerente</li>
@@ -1069,15 +1069,15 @@ export default async function RequestDetailPage({
 
           <Card className="p-5">
             <div>
-              <p className="text-sm font-medium text-text-muted">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Gestione richiesta
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-text-primary">
+              <h2 className="mt-1 text-xl font-semibold text-cantiere-ink">
                 Archiviazione e rimozione
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Non eliminano mai dati o storico: nascondono solo la
                 richiesta dalle liste operative e dal marketplace.
               </p>
@@ -1085,18 +1085,18 @@ export default async function RequestDetailPage({
 
             {request.deletedAt ? (
               <div className="mt-5 space-y-4">
-                <div className="border border-border-primary bg-surface-secondary p-4">
-                  <p className="text-sm font-medium text-text-primary">
+                <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                  <p className="text-sm font-medium text-cantiere-ink">
                     Richiesta eliminata (soft-delete)
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-text-muted">
+                  <p className="mt-2 text-xs leading-5 text-cantiere-ink-secondary">
                     {formatDate(request.deletedAt)}
                     {request.deletedByAdminUser
                       ? ` · ${request.deletedByAdminUser.name ?? request.deletedByAdminUser.email}`
                       : null}
                   </p>
                   {request.deleteReason ? (
-                    <p className="mt-3 text-sm leading-6 text-text-secondary">
+                    <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                       {request.deleteReason}
                     </p>
                   ) : null}
@@ -1113,18 +1113,18 @@ export default async function RequestDetailPage({
               <div className="mt-5 space-y-5">
                 {request.archivedAt ? (
                   <div className="space-y-3">
-                    <div className="border border-border-primary bg-surface-secondary p-4">
-                      <p className="text-sm font-medium text-text-primary">
+                    <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+                      <p className="text-sm font-medium text-cantiere-ink">
                         Richiesta archiviata
                       </p>
-                      <p className="mt-2 text-xs leading-5 text-text-muted">
+                      <p className="mt-2 text-xs leading-5 text-cantiere-ink-secondary">
                         {formatDate(request.archivedAt)}
                         {request.archivedByAdminUser
                           ? ` · ${request.archivedByAdminUser.name ?? request.archivedByAdminUser.email}`
                           : null}
                       </p>
                       {request.archiveReason ? (
-                        <p className="mt-3 text-sm leading-6 text-text-secondary">
+                        <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                           {request.archiveReason}
                         </p>
                       ) : null}
@@ -1142,7 +1142,7 @@ export default async function RequestDetailPage({
                     <input type="hidden" name="requestId" value={request.id} />
 
                     <label className="grid gap-2">
-                      <span className="text-sm font-medium text-text-primary">
+                      <span className="text-sm font-medium text-cantiere-ink">
                         Motivo archiviazione (opzionale)
                       </span>
                       <Textarea
@@ -1160,12 +1160,12 @@ export default async function RequestDetailPage({
 
                 <form
                   action={softDeleteRequestAction}
-                  className="space-y-3 border-t border-border-primary pt-5"
+                  className="space-y-3 border-t border-cantiere-hairline pt-5"
                 >
                   <input type="hidden" name="requestId" value={request.id} />
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Motivo eliminazione (opzionale)
                     </span>
                     <Textarea

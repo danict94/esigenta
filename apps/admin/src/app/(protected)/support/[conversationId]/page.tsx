@@ -211,12 +211,12 @@ export default async function AdminSupportThreadPage({
   return (
     <PageShell size="lg" className="py-8 md:py-10">
       <section className="space-y-6">
-        <header className="border-b border-border-primary pb-6">
-          <p className="text-sm font-medium text-text-muted">
+        <header className="border-b border-cantiere-hairline pb-6">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">
             Assistenza
           </p>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
             Messaggi assistenza
           </h1>
         </header>
@@ -224,7 +224,7 @@ export default async function AdminSupportThreadPage({
         {statusMessage ? (
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-cantiere-ink-secondary">
                 {statusMessage}
               </p>
             </CardContent>
@@ -256,7 +256,7 @@ export default async function AdminSupportThreadPage({
         ) : (
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-cantiere-ink-secondary">
                 {result.ok
                   ? "Questo non e un canale di assistenza."
                   : result.message}

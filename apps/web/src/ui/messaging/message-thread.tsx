@@ -5,15 +5,7 @@ import type {
 import type {
   ConversationThread as MessageThreadData,
 } from "@esigenta/domain"
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  tokens,
-} from "@esigenta/ui"
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@esigenta/ui";
 
 type MessageThreadProps = {
   thread: MessageThreadData
@@ -92,8 +84,8 @@ export function MessageThread({
       <CardContent className="space-y-6">
         <div className="space-y-4">
           {thread.messages.length === 0 ? (
-            <div className="border border-border-primary bg-surface-secondary p-4">
-              <p className="text-sm text-text-secondary">
+            <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
+              <p className="text-sm text-cantiere-ink-secondary">
                 Nessun messaggio ancora inviato.
               </p>
             </div>
@@ -109,10 +101,10 @@ export function MessageThread({
                   className={`flex ${isCurrentActor ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`${tokens.layout.messaging.bubble} border px-4 py-3 ${
+                    className={`${"max-w-[min(34rem,85%)]"} border px-4 py-3 ${
                       isCurrentActor
-                        ? "border-brand-primary bg-brand-primary text-brand-on-primary"
-                        : "border-border-primary bg-surface-secondary text-text-primary"
+                        ? "border-cantiere-accent bg-cantiere-accent text-cantiere-paper"
+                        : "border-cantiere-hairline bg-cantiere-linen text-cantiere-ink"
                     }`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -123,8 +115,8 @@ export function MessageThread({
                       <time
                         className={`text-xs ${
                           isCurrentActor
-                            ? "text-brand-on-primary"
-                            : "text-text-muted"
+                            ? "text-cantiere-paper"
+                            : "text-cantiere-ink-secondary"
                         }`}
                       >
                         {formatDateTime(
@@ -144,7 +136,7 @@ export function MessageThread({
         </div>
 
         {children ? (
-          <div className="sticky bottom-0 -mx-6 border-t border-border-primary bg-surface-elevated px-6 pb-6 pt-4">
+          <div className="sticky bottom-0 -mx-6 border-t border-cantiere-hairline bg-cantiere-paper px-6 pb-6 pt-4">
             {children}
           </div>
         ) : null}

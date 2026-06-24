@@ -1,10 +1,6 @@
 import Image from "next/image"
 
-import {
-  Container,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+import { Container, cn } from "@esigenta/ui";
 
 const illustrationSrc =
   "/assets/images/area-professionista.webp"
@@ -50,12 +46,12 @@ const sideSteps = [
 
 export function BusinessHowItWorks() {
   return (
-    <section className={tokens.spacing.sectionLg}>
+    <section className={"py-20 md:py-28 lg:py-32"}>
       <Container size="xl">
         <h2
           className={cn(
-            "text-center text-text-primary",
-            tokens.typography.title,
+            "text-center text-cantiere-ink",
+            "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
           )}
         >
           Come funziona?
@@ -67,16 +63,16 @@ export function BusinessHowItWorks() {
               key={step.number}
               className="grid gap-4 sm:grid-cols-[auto_1fr]"
             >
-              <div className="flex size-10 items-center justify-center rounded-full border border-brand-primary text-xl font-medium text-brand-primary">
+              <div className="flex size-10 items-center justify-center rounded-full border border-cantiere-accent text-xl font-medium text-cantiere-accent">
                 {step.number}
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-text-primary">
+                <h3 className="text-base font-semibold text-cantiere-ink">
                   {step.title}
                 </h3>
 
-                <p className="mt-4 max-w-xs text-sm leading-6 text-text-primary">
+                <p className="mt-4 max-w-xs text-sm leading-6 text-cantiere-ink">
                   {step.description}
                 </p>
               </div>
@@ -100,13 +96,13 @@ export function BusinessHowItWorks() {
             {sideSteps.map((step) => (
               <div
                 key={step.title}
-                className="border-l-4 border-brand-primary pl-6"
+                className="border-l-4 border-cantiere-accent pl-6"
               >
-                <h3 className="text-lg font-semibold leading-6 text-text-primary">
+                <h3 className="text-lg font-semibold leading-6 text-cantiere-ink">
                   {step.title}
                 </h3>
 
-                <p className="mt-2 text-base leading-6 text-text-primary">
+                <p className="mt-2 text-base leading-6 text-cantiere-ink">
                   {step.description}
                 </p>
               </div>

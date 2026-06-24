@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { PageShell, cn, tokens } from "@esigenta/ui";
+import { PageShell, cn } from "@esigenta/ui";
 
 import { listFeaturedServiceCatalogItems, getServiceCatalogItemHref } from "./catalog";
 // Side-effect (Phase 19.6H/19.6I): esegue il guard di coverage del catalogo
@@ -20,24 +20,24 @@ export function ServicesHubPage() {
     <PageShell size="lg">
       <div className="space-y-12 md:space-y-16">
         <div className="max-w-3xl space-y-5">
-          <nav aria-label="Breadcrumb" className="text-sm text-text-secondary">
+          <nav aria-label="Breadcrumb" className="text-sm text-cantiere-ink-secondary">
             <Link
               href="/"
-              className="font-medium text-action-primary underline-offset-4 hover:underline"
+              className="font-medium text-cantiere-accent underline-offset-4 hover:underline"
             >
               Home
             </Link>
-            <span aria-hidden="true" className="mx-2 text-text-muted">
+            <span aria-hidden="true" className="mx-2 text-cantiere-ink-secondary">
               /
             </span>
-            <span className="font-medium text-text-primary">Servizi</span>
+            <span className="font-medium text-cantiere-ink">Servizi</span>
           </nav>
 
-          <h1 className="text-4xl font-semibold leading-tight text-text-primary md:text-5xl">
+          <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink md:text-5xl">
             Servizi
           </h1>
 
-          <p className="text-lg leading-8 text-text-secondary">
+          <p className="text-lg leading-8 text-cantiere-ink-secondary">
             Trova il professionista giusto per il tuo lavoro, dalla
             ristrutturazione completa alla singola riparazione.
           </p>
@@ -50,8 +50,8 @@ export function ServicesHubPage() {
                 key={area.slug}
                 href={`#area-${area.slug}`}
                 className={cn(
-                  tokens.radius.full,
-                  "inline-flex min-h-9 items-center border border-border-primary bg-surface-primary px-3 text-sm font-medium leading-5 text-text-secondary transition-colors hover:border-border-focus hover:text-text-primary",
+                  "rounded-full",
+                  "inline-flex min-h-9 items-center border border-cantiere-hairline bg-cantiere-paper px-3 text-sm font-medium leading-5 text-cantiere-ink-secondary transition-colors hover:border-cantiere-accent hover:text-cantiere-ink",
                 )}
               >
                 {area.name}
@@ -64,15 +64,15 @@ export function ServicesHubPage() {
           <section aria-labelledby="servizi-richiesti-title" className="space-y-6">
             <h2
               id="servizi-richiesti-title"
-              className="text-2xl font-semibold leading-8 text-text-primary"
+              className="text-2xl font-semibold leading-8 text-cantiere-ink"
             >
               Servizi più richiesti
             </h2>
 
             <ul
               className={cn(
-                tokens.radius.lg,
-                "divide-y divide-border-primary overflow-hidden border border-border-primary bg-surface-primary",
+                "rounded-[8px]",
+                "divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
               )}
             >
               {featuredItems.map((item) => {
@@ -86,11 +86,11 @@ export function ServicesHubPage() {
                   <li key={item.slug}>
                     <Link
                       href={href}
-                      className="flex items-center justify-between gap-4 px-5 py-4 text-base font-medium text-text-primary transition-colors hover:bg-surface-soft md:px-6"
+                      className="flex items-center justify-between gap-4 px-5 py-4 text-base font-medium text-cantiere-ink transition-colors hover:bg-cantiere-surface md:px-6"
                     >
                       <span>{item.title}</span>
                       <ArrowRight
-                        className="size-4 shrink-0 text-text-muted"
+                        className="size-4 shrink-0 text-cantiere-ink-secondary"
                         aria-hidden="true"
                       />
                     </Link>
@@ -113,15 +113,15 @@ export function ServicesHubPage() {
             ))}
           </div>
         ) : (
-          <p className="text-base leading-7 text-text-secondary">
+          <p className="text-base leading-7 text-cantiere-ink-secondary">
             Il catalogo servizi è in preparazione. Torna a trovarci presto.
           </p>
         )}
 
         <section
           className={cn(
-            tokens.radius.lg,
-            "bg-surface-dark px-5 py-9 text-center text-text-on-hero-primary md:px-8 md:py-12",
+            "rounded-[8px]",
+            "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
           )}
         >
           <div className="mx-auto max-w-3xl space-y-5">
@@ -129,7 +129,7 @@ export function ServicesHubPage() {
               Non hai trovato quello che cercavi?
             </h2>
 
-            <p className="text-base leading-7 text-text-on-hero-secondary">
+            <p className="text-base leading-7 text-cantiere-paper/75">
               Raccontaci il lavoro: ti aiutiamo a trovare il professionista
               giusto anche se non vedi il tuo servizio qui sopra.
             </p>
@@ -137,10 +137,10 @@ export function ServicesHubPage() {
             <Link
               href="/"
               className={cn(
-                tokens.interactive.base,
-                tokens.interactive.radius,
-                tokens.interactive.sizes.xl,
-                tokens.interactive.variants.warm,
+                "inline-flex items-center justify-center font-medium transition-colors",
+                "rounded-[8px]",
+                "h-12 px-6 text-[15px]",
+                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
               )}
             >
@@ -173,15 +173,15 @@ function MacroAreaSection({
     <section id={`area-${slug}`} aria-labelledby={`area-${slug}-title`}>
       <h2
         id={`area-${slug}-title`}
-        className="text-2xl font-semibold leading-8 text-text-primary"
+        className="text-2xl font-semibold leading-8 text-cantiere-ink"
       >
         {name}
       </h2>
 
       <ul
         className={cn(
-          tokens.radius.lg,
-          "mt-4 divide-y divide-border-primary overflow-hidden border border-border-primary bg-surface-primary",
+          "rounded-[8px]",
+          "mt-4 divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
         )}
       >
         {visibleItems.map((item) => (
@@ -191,14 +191,14 @@ function MacroAreaSection({
 
       {collapsedItems.length > 0 ? (
         <details className="mt-3 group">
-          <summary className="cursor-pointer text-sm font-medium text-action-primary underline-offset-4 hover:underline">
+          <summary className="cursor-pointer text-sm font-medium text-cantiere-accent underline-offset-4 hover:underline">
             Vedi altri {collapsedItems.length} servizi
           </summary>
 
           <ul
             className={cn(
-              tokens.radius.lg,
-              "mt-3 divide-y divide-border-primary overflow-hidden border border-border-primary bg-surface-primary",
+              "rounded-[8px]",
+              "mt-3 divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
             )}
           >
             {collapsedItems.map((item) => (
@@ -216,11 +216,11 @@ function ServiceListItem({ item }: { item: PublicServiceCard }) {
     <li>
       <Link
         href={item.href}
-        className="flex items-center justify-between gap-4 px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-surface-soft md:px-6"
+        className="flex items-center justify-between gap-4 px-5 py-3 text-sm font-medium text-cantiere-ink transition-colors hover:bg-cantiere-surface md:px-6"
       >
         <span>{item.label}</span>
         <ArrowRight
-          className="size-4 shrink-0 text-text-muted"
+          className="size-4 shrink-0 text-cantiere-ink-secondary"
           aria-hidden="true"
         />
       </Link>

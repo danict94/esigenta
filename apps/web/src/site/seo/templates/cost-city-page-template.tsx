@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-import { Badge, PageShell, cn, tokens } from "@esigenta/ui";
+import { Badge, PageShell, cn } from "@esigenta/ui";
 
 import type { CostGuide, CostGuideCityPage } from "../pages/costi";
 import { SeoBreadcrumb } from "./seo-breadcrumb";
@@ -36,11 +36,11 @@ export function CityCostGuidePage({
             </Badge>
 
             <div className="space-y-5">
-              <h1 className="text-4xl font-semibold leading-tight text-text-primary md:text-5xl">
+              <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink md:text-5xl">
                 {cityPage.h1}
               </h1>
 
-              <p className="text-lg leading-8 text-text-secondary">
+              <p className="text-lg leading-8 text-cantiere-ink-secondary">
                 {cityPage.summary}
               </p>
             </div>
@@ -50,10 +50,10 @@ export function CityCostGuidePage({
                 <Link
                   href={requestHref}
                   className={cn(
-                    tokens.interactive.base,
-                    tokens.interactive.radius,
-                    tokens.interactive.sizes.xl,
-                    tokens.interactive.variants.brand,
+                    "inline-flex items-center justify-center font-medium transition-colors",
+                    "rounded-[8px]",
+                    "h-12 px-6 text-[15px]",
+                    "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                     "w-full gap-2 sm:w-auto",
                   )}
                 >
@@ -64,10 +64,10 @@ export function CityCostGuidePage({
                 <Link
                   href={guide.canonicalPath}
                   className={cn(
-                    tokens.interactive.base,
-                    tokens.interactive.radius,
-                    tokens.interactive.sizes.xl,
-                    tokens.interactive.variants.brandOutline,
+                    "inline-flex items-center justify-center font-medium transition-colors",
+                    "rounded-[8px]",
+                    "h-12 px-6 text-[15px]",
+                    "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                     "w-full gap-2 sm:w-auto",
                   )}
                 >
@@ -76,7 +76,7 @@ export function CityCostGuidePage({
                 </Link>
               </div>
 
-              <p className="text-sm leading-6 text-text-secondary">
+              <p className="text-sm leading-6 text-cantiere-ink-secondary">
                 Potrai confermare il comune nel passaggio successivo.
               </p>
             </div>
@@ -84,8 +84,8 @@ export function CityCostGuidePage({
 
           <div
             className={cn(
-              tokens.radius.lg,
-              "aspect-[4/3] overflow-hidden bg-surface-muted md:aspect-[720/520]",
+              "rounded-[8px]",
+              "aspect-[4/3] overflow-hidden bg-cantiere-surface md:aspect-[720/520]",
             )}
           >
             <Image
@@ -103,8 +103,8 @@ export function CityCostGuidePage({
         <section
           aria-labelledby="range-citta-title"
           className={cn(
-            tokens.radius.lg,
-            "bg-surface-soft px-5 py-7 md:px-8 md:py-9 lg:px-10",
+            "rounded-[8px]",
+            "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
           )}
         >
           <div className="grid gap-5 md:grid-cols-2">
@@ -118,12 +118,12 @@ export function CityCostGuidePage({
           <div className="mt-6 max-w-4xl space-y-3">
             <h2
               id="range-citta-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Come leggere il prezzo a {cityPage.city}
             </h2>
 
-            <p className="text-base leading-7 text-text-secondary">
+            <p className="text-base leading-7 text-cantiere-ink-secondary">
               {cityPage.priceInterpretation}
             </p>
           </div>
@@ -134,17 +134,17 @@ export function CityCostGuidePage({
           className="grid gap-6 lg:grid-cols-[0.38fr_0.62fr] lg:items-start"
         >
           <div className="max-w-2xl space-y-3">
-            <p className={tokens.home.sectionLabel}>Lettura locale</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>Lettura locale</p>
 
             <h2
               id="lettura-locale-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Cosa può spostare il preventivo
             </h2>
           </div>
 
-          <p className="text-base leading-7 text-text-secondary">
+          <p className="text-base leading-7 text-cantiere-ink-secondary">
             {cityPage.localReading}
           </p>
         </section>
@@ -164,11 +164,11 @@ export function CityCostGuidePage({
 
         <section aria-labelledby="faq-citta-title" className="space-y-6">
           <div className="max-w-3xl">
-            <p className={tokens.home.sectionLabel}>FAQ</p>
+            <p className={"text-sm font-medium text-cantiere-accent"}>FAQ</p>
 
             <h2
               id="faq-citta-title"
-              className="mt-2 text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="mt-2 text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               Domande frequenti su {cityPage.city}
             </h2>
@@ -176,8 +176,8 @@ export function CityCostGuidePage({
 
           <div
             className={cn(
-              tokens.radius.lg,
-              "divide-y divide-border-primary border-y border-border-primary",
+              "rounded-[8px]",
+              "divide-y divide-border-primary border-y border-cantiere-hairline",
             )}
           >
             {cityPage.faq.map((item) => (
@@ -185,11 +185,11 @@ export function CityCostGuidePage({
                 key={item.question}
                 className="grid gap-3 py-5 md:grid-cols-[0.42fr_1fr] md:gap-8 md:py-6"
               >
-                <h3 className="text-lg font-semibold leading-7 text-text-primary">
+                <h3 className="text-lg font-semibold leading-7 text-cantiere-ink">
                   {item.question}
                 </h3>
 
-                <p className="text-base leading-7 text-text-secondary">
+                <p className="text-base leading-7 text-cantiere-ink-secondary">
                   {item.answer}
                 </p>
               </article>
@@ -199,8 +199,8 @@ export function CityCostGuidePage({
 
         <section
           className={cn(
-            tokens.radius.lg,
-            "bg-surface-dark px-5 py-9 text-center text-text-on-hero-primary md:px-8 md:py-12",
+            "rounded-[8px]",
+            "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
           )}
         >
           <div className="mx-auto max-w-3xl space-y-5">
@@ -208,7 +208,7 @@ export function CityCostGuidePage({
               Racconta il bagno da ristrutturare a {cityPage.city}
             </h2>
 
-            <p className="text-base leading-7 text-text-on-hero-secondary">
+            <p className="text-base leading-7 text-cantiere-paper/75">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
@@ -216,10 +216,10 @@ export function CityCostGuidePage({
             <Link
               href={requestHref}
               className={cn(
-                tokens.interactive.base,
-                tokens.interactive.radius,
-                tokens.interactive.sizes.xl,
-                tokens.interactive.variants.warm,
+                "inline-flex items-center justify-center font-medium transition-colors",
+                "rounded-[8px]",
+                "h-12 px-6 text-[15px]",
+                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
               )}
             >
@@ -237,12 +237,12 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div
       className={cn(
-        tokens.radius.lg,
-        "border border-border-primary bg-surface-elevated p-5",
+        "rounded-[8px]",
+        "border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >
-      <p className="text-sm font-medium text-text-muted">{label}</p>
-      <p className="mt-2 text-xl font-semibold leading-7 text-text-primary">
+      <p className="text-sm font-medium text-cantiere-ink-secondary">{label}</p>
+      <p className="mt-2 text-xl font-semibold leading-7 text-cantiere-ink">
         {value}
       </p>
     </div>
@@ -259,19 +259,19 @@ function ChecklistSection({
   return (
     <section
       className={cn(
-        tokens.radius.lg,
-        "border border-border-primary bg-surface-elevated p-5",
+        "rounded-[8px]",
+        "border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >
-      <h2 className="text-xl font-semibold leading-8 text-text-primary">
+      <h2 className="text-xl font-semibold leading-8 text-cantiere-ink">
         {title}
       </h2>
 
-      <ul className="mt-4 space-y-3 text-sm leading-6 text-text-secondary">
+      <ul className="mt-4 space-y-3 text-sm leading-6 text-cantiere-ink-secondary">
         {items.map((item) => (
           <li key={item} className="flex gap-3">
             <CheckCircle2
-              className="mt-0.5 size-4 shrink-0 text-brand-primary"
+              className="mt-0.5 size-4 shrink-0 text-cantiere-accent"
               aria-hidden={true}
               strokeWidth={1.8}
             />

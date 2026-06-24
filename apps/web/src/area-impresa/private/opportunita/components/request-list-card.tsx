@@ -1,18 +1,7 @@
-import {
-  Bookmark,
-  Clock3,
-  MapPin,
-  Ruler,
-  UsersRound,
-} from "lucide-react"
+import { Bookmark, Clock3, MapPin, Ruler, UsersRound, } from "lucide-react"
 
 import {
-  Badge,
-  Card,
-  cn,
-  tokens,
-  type BadgeProps,
-} from "@esigenta/ui"
+  Badge, Card, cn, type BadgeProps } from "@esigenta/ui";
 
 import {
   formatCreditCost,
@@ -166,14 +155,14 @@ export function RequestListCard({
     `/area-impresa/richieste/${id}`
 
   return (
-    <Card className="border-l-4 border-l-brand-primary p-4 transition-colors hover:border-border-focus lg:p-5">
+    <Card className="border-l-4 border-l-brand-primary p-4 transition-colors hover:border-cantiere-accent lg:p-5">
       <div className="space-y-3.5 lg:space-y-4">
         <div className="flex flex-col gap-1.5 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
-          <h2 className="text-xl font-semibold leading-snug tracking-tight text-text-primary lg:text-2xl">
+          <h2 className="text-xl font-semibold leading-snug tracking-tight text-cantiere-ink lg:text-2xl">
             {title}
           </h2>
 
-          <span className="shrink-0 text-sm font-medium text-text-primary lg:pt-1 lg:text-lg">
+          <span className="shrink-0 text-sm font-medium text-cantiere-ink lg:pt-1 lg:text-lg">
             {formatCreditCost(creditCost)}
           </span>
         </div>
@@ -198,12 +187,12 @@ export function RequestListCard({
           </div>
         ) : null}
 
-        <p className="line-clamp-2 max-w-3xl text-sm leading-6 text-text-primary lg:text-lg lg:leading-7">
+        <p className="line-clamp-2 max-w-3xl text-sm leading-6 text-cantiere-ink lg:text-lg lg:leading-7">
           {previewText}{" "}
           <PendingRequestLink
             href={detailHref}
             pendingChildren="Apertura..."
-            className="font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
+            className="font-medium text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
           >
             Leggi tutto
           </PendingRequestLink>
@@ -211,10 +200,10 @@ export function RequestListCard({
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 flex-1 space-y-3 lg:space-y-4">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-text-primary lg:gap-x-12 lg:gap-y-3 lg:text-base">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-cantiere-ink lg:gap-x-12 lg:gap-y-3 lg:text-base">
               <span className="inline-flex items-center gap-2">
                 <MapPin
-                  className="size-4 text-text-secondary lg:size-5"
+                  className="size-4 text-cantiere-ink-secondary lg:size-5"
                   aria-hidden="true"
                 />
                 {location}
@@ -222,17 +211,17 @@ export function RequestListCard({
 
               <span className="inline-flex items-center gap-2">
                 <Clock3
-                  className="size-4 text-text-secondary lg:size-5"
+                  className="size-4 text-cantiere-ink-secondary lg:size-5"
                   aria-hidden="true"
                 />
                 {createdAt}
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-text-primary lg:gap-x-12 lg:gap-y-3 lg:text-base">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-cantiere-ink lg:gap-x-12 lg:gap-y-3 lg:text-base">
               <span className="inline-flex items-center gap-2">
                 <UsersRound
-                  className="size-4 text-text-secondary lg:size-5"
+                  className="size-4 text-cantiere-ink-secondary lg:size-5"
                   aria-hidden="true"
                 />
                 {formatInterestCount({
@@ -244,7 +233,7 @@ export function RequestListCard({
               {formattedSurface ? (
                 <span className="inline-flex items-center gap-2">
                   <Ruler
-                    className="size-4 text-text-secondary lg:size-5"
+                    className="size-4 text-cantiere-ink-secondary lg:size-5"
                     aria-hidden="true"
                   />
                   {formattedSurface}
@@ -259,7 +248,7 @@ export function RequestListCard({
                     value={id}
                     variant="ghost"
                     size="sm"
-                    className="gap-2 px-0 text-sm font-normal text-text-primary hover:bg-transparent hover:text-brand-primary lg:text-base"
+                    className="gap-2 px-0 text-sm font-normal text-cantiere-ink hover:bg-transparent hover:text-cantiere-accent lg:text-base"
                     pendingChildren={
                       <>
                         <Bookmark
@@ -286,10 +275,10 @@ export function RequestListCard({
               href={detailHref}
               pendingChildren="Apertura..."
               className={cn(
-                tokens.interactive.base,
-                tokens.interactive.radius,
-                tokens.interactive.sizes.md,
-                tokens.interactive.variants.brand,
+                "inline-flex items-center justify-center font-medium transition-colors",
+                "rounded-[8px]",
+                "h-12 px-5 text-[15px]",
+                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 lg:w-auto",
               )}
             >

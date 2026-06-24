@@ -79,12 +79,12 @@ export async function CompanyResetPasswordPage({
     tokenState.ok
 
   return (
-    <main className="min-h-screen bg-surface-primary text-text-primary">
+    <main className="min-h-screen bg-cantiere-paper text-cantiere-ink">
       <Container size="sm">
         <div className="flex min-h-screen items-center py-12">
           <Card className="w-full">
             <CardHeader>
-              <p className="text-sm font-medium text-brand-primary">
+              <p className="text-sm font-medium text-cantiere-accent">
                 Area impresa
               </p>
               <CardTitle>
@@ -97,7 +97,7 @@ export async function CompanyResetPasswordPage({
 
             <CardContent>
               {errorMessage ? (
-                <p className="mb-5 border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+                <p className="mb-5 border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
                   {errorMessage}
                 </p>
               ) : null}
@@ -114,7 +114,7 @@ export async function CompanyResetPasswordPage({
                   />
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Nuova password
                     </span>
                     <Input
@@ -127,7 +127,7 @@ export async function CompanyResetPasswordPage({
                   </label>
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Conferma password
                     </span>
                     <Input
@@ -143,18 +143,18 @@ export async function CompanyResetPasswordPage({
                     Salva nuova password
                   </Button>
 
-                  <p className="text-center text-xs leading-5 text-text-muted">
+                  <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
                     Per maggiori informazioni leggi l&apos;
                     <Link
                       href="/privacy"
-                      className="font-medium text-brand-primary"
+                      className="font-medium text-cantiere-accent"
                     >
                       informativa privacy
                     </Link>{" "}
                     e i{" "}
                     <Link
                       href="/termini"
-                      className="font-medium text-brand-primary"
+                      className="font-medium text-cantiere-accent"
                     >
                       termini del servizio
                     </Link>
@@ -163,12 +163,12 @@ export async function CompanyResetPasswordPage({
                 </form>
               ) : (
                 <div className="grid gap-4">
-                  <p className="text-sm leading-6 text-text-secondary">
+                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
                     Richiedi un nuovo link per continuare.
                   </p>
                   <Link
                     href="/area-impresa/recupera-password"
-                    className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+                    className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
                   >
                     Richiedi nuovo link
                   </Link>

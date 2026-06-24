@@ -1,4 +1,4 @@
-import { cn, tokens } from "@esigenta/ui";
+import { cn } from "@esigenta/ui";
 
 export type SeoFaqItem = {
   question: string;
@@ -17,11 +17,11 @@ export function SeoFaq({ faq }: SeoFaqProps) {
   return (
     <section aria-labelledby="seo-faq-title" className="space-y-6">
       <div className="max-w-3xl">
-        <p className={tokens.home.sectionLabel}>FAQ</p>
+        <p className={"text-sm font-medium text-cantiere-accent"}>FAQ</p>
 
         <h2
           id="seo-faq-title"
-          className="mt-2 text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+          className="mt-2 text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
         >
           Domande frequenti
         </h2>
@@ -29,8 +29,8 @@ export function SeoFaq({ faq }: SeoFaqProps) {
 
       <div
         className={cn(
-          tokens.radius.lg,
-          "divide-y divide-border-primary border-y border-border-primary",
+          "rounded-[8px]",
+          "divide-y divide-border-primary border-y border-cantiere-hairline",
         )}
       >
         {faq.map((item) => (
@@ -38,11 +38,11 @@ export function SeoFaq({ faq }: SeoFaqProps) {
             key={item.question}
             className="grid gap-3 py-5 md:grid-cols-[0.42fr_1fr] md:gap-8 md:py-6"
           >
-            <h3 className="text-lg font-semibold leading-7 text-text-primary">
+            <h3 className="text-lg font-semibold leading-7 text-cantiere-ink">
               {item.question}
             </h3>
 
-            <p className="text-base leading-7 text-text-secondary">
+            <p className="text-base leading-7 text-cantiere-ink-secondary">
               {item.answer}
             </p>
           </article>

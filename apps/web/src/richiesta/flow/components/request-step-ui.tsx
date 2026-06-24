@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Button, Input, Textarea, cn, tokens } from "@esigenta/ui";
+import { Button, Input, Textarea, cn } from "@esigenta/ui";
 
 import type { RuntimeCapability } from "@esigenta/funnel";
 
@@ -101,7 +101,7 @@ function renderCapabilityInput({
           {fields.map((field) => (
             <label
               key={field.id}
-              className="grid gap-2 text-sm font-medium text-text-primary"
+              className="grid gap-2 text-sm font-medium text-cantiere-ink"
             >
               <span>{field.label}</span>
 
@@ -150,10 +150,10 @@ function renderCapabilityInput({
                 }}
                 className={cn(
                   "h-auto min-h-12 w-full justify-start whitespace-normal border px-4 py-3 text-left text-sm font-medium transition-colors",
-                  tokens.radius.lg,
+                  "rounded-[8px]",
                   selected
-                    ? "border-brand-primary bg-surface-secondary text-text-primary"
-                    : "border-border-primary bg-surface-primary text-text-secondary hover:border-border-focus hover:bg-surface-secondary",
+                    ? "border-cantiere-accent bg-cantiere-linen text-cantiere-ink"
+                    : "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary hover:border-cantiere-accent hover:bg-cantiere-linen",
                 )}
               >
                 <span className="flex w-full items-center gap-3">
@@ -161,13 +161,13 @@ function renderCapabilityInput({
                     className={cn(
                       "flex size-5 shrink-0 items-center justify-center rounded-full border",
                       selected
-                        ? "border-brand-primary bg-brand-primary"
-                        : "border-border-secondary bg-surface-elevated",
+                        ? "border-cantiere-accent bg-cantiere-accent"
+                        : "border-cantiere-hairline bg-cantiere-paper",
                     )}
                     aria-hidden="true"
                   >
                     {selected ? (
-                      <span className="size-2 rounded-full bg-brand-on-primary" />
+                      <span className="size-2 rounded-full bg-cantiere-paper" />
                     ) : null}
                   </span>
 
@@ -252,30 +252,30 @@ export function RequestStepUI({
     return (
       <div
         className={cn(
-          "border border-border-primary bg-surface-elevated p-6 md:p-8",
-          tokens.radius["3xl"],
-          tokens.shadows.surface,
+          "border border-cantiere-hairline bg-cantiere-paper p-6 md:p-8",
+          "rounded-[8px]",
+          "shadow-cantiere-elevation",
         )}
       >
         <div className="flex flex-col gap-7">
           <div className="flex flex-col items-center gap-4 text-center">
             <span
-              className="flex size-14 items-center justify-center rounded-full bg-surface-secondary text-brand-primary"
+              className="flex size-14 items-center justify-center rounded-full bg-cantiere-linen text-cantiere-accent"
               aria-hidden="true"
             >
               ✓
             </span>
 
             <div className="space-y-3">
-              <p className="text-sm font-semibold text-brand-primary">
+              <p className="text-sm font-semibold text-cantiere-accent">
                 Richiesta preparata
               </p>
 
-              <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+              <h2 className="text-2xl font-semibold tracking-tight text-cantiere-ink">
                 Grazie, la tua richiesta è quasi pronta
               </h2>
 
-              <p className="mx-auto max-w-xl text-sm leading-6 text-text-secondary">
+              <p className="mx-auto max-w-xl text-sm leading-6 text-cantiere-ink-secondary">
                 Ti abbiamo inviato un link via email per confermare la
                 richiesta e completare l&apos;invio. Dopo la conferma, la richiesta
                 passerà in revisione: controlleremo le informazioni e ti
@@ -287,15 +287,15 @@ export function RequestStepUI({
           <div className="grid gap-3">
             <div
               className={cn(
-                "border border-border-primary bg-surface-primary p-4",
-                tokens.radius.lg,
+                "border border-cantiere-hairline bg-cantiere-paper p-4",
+                "rounded-[8px]",
               )}
             >
-              <h3 className="text-sm font-semibold text-text-primary">
+              <h3 className="text-sm font-semibold text-cantiere-ink">
                 Conferma via email
               </h3>
 
-              <p className="mt-1 text-sm leading-6 text-text-secondary">
+              <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
                 Apri il link che ti abbiamo inviato per far arrivare
                 correttamente la richiesta.
               </p>
@@ -303,15 +303,15 @@ export function RequestStepUI({
 
             <div
               className={cn(
-                "border border-border-primary bg-surface-primary p-4",
-                tokens.radius.lg,
+                "border border-cantiere-hairline bg-cantiere-paper p-4",
+                "rounded-[8px]",
               )}
             >
-              <h3 className="text-sm font-semibold text-text-primary">
+              <h3 className="text-sm font-semibold text-cantiere-ink">
                 Revisione della richiesta
               </h3>
 
-              <p className="mt-1 text-sm leading-6 text-text-secondary">
+              <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
                 Dopo la conferma, verificheremo i dati principali. Se qualcosa
                 non è chiaro, potremo contattarti per completare le informazioni.
               </p>
@@ -319,15 +319,15 @@ export function RequestStepUI({
 
             <div
               className={cn(
-                "border border-border-primary bg-surface-primary p-4",
-                tokens.radius.lg,
+                "border border-cantiere-hairline bg-cantiere-paper p-4",
+                "rounded-[8px]",
               )}
             >
-              <h3 className="text-sm font-semibold text-text-primary">
+              <h3 className="text-sm font-semibold text-cantiere-ink">
                 Controlla lo stato da &quot;Le mie richieste&quot;
               </h3>
 
-              <p className="mt-1 text-sm leading-6 text-text-secondary">
+              <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
                 Da &quot;Le mie richieste&quot; puoi accedere allo storico e seguire lo
                 stato delle richieste inviate usando il link ricevuto via email.
               </p>
@@ -353,22 +353,22 @@ export function RequestStepUI({
   }
 
   return (
-    <div className={tokens.funnel.step}>
+    <div className={"mt-7 flex flex-col gap-7 md:mt-8"}>
       <p className="sr-only">
         {selectedInterventionName}. Passaggio {stepIndex + 1} di {totalSteps}.
         {filledAnswers} risposte raccolte.
       </p>
 
-      <div className={tokens.funnel.stepHeader}>
-        <div className={tokens.funnel.accent} aria-hidden="true" />
+      <div className="space-y-5">
+        <div className={"h-1 w-16 bg-cantiere-accent"} aria-hidden="true" />
 
         <div className="space-y-4">
-          <h2 className={tokens.funnel.stepTitle}>
+          <h2 className="font-medium leading-[1.02] tracking-[-0.02em] text-cantiere-ink text-[clamp(2.5rem,1.6rem+5vw,5.75rem)]">
             {currentCapability.question}
           </h2>
 
           {currentCapability.description ? (
-            <p className={tokens.funnel.stepDescription}>
+            <p className="max-w-2xl text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] leading-[1.2] tracking-[-0.01em] text-cantiere-ink-secondary">
               {currentCapability.description}
             </p>
           ) : null}
@@ -384,7 +384,7 @@ export function RequestStepUI({
 
       {isLastStep ? (
         <div className="space-y-2">
-          <label className="text-sm font-medium text-text-primary">
+          <label className="text-sm font-medium text-cantiere-ink">
             Aggiungi qualche dettaglio utile
           </label>
 
@@ -399,30 +399,30 @@ export function RequestStepUI({
         </div>
       ) : null}
 
-      {error ? <p className="text-sm text-brand-primary">{error}</p> : null}
+      {error ? <p className="text-sm text-cantiere-accent">{error}</p> : null}
 
       {isLastStep ? (
-        <p className="text-xs leading-5 text-text-muted">
+        <p className="text-xs leading-5 text-cantiere-ink-secondary">
           Inviando la richiesta confermi di aver letto l&apos;
-          <Link href="/privacy" className="font-medium text-brand-primary" prefetch={false}>
+          <Link href="/privacy" className="font-medium text-cantiere-accent" prefetch={false}>
             informativa privacy
           </Link>{" "}
           e accetti i{" "}
-          <Link href="/termini" className="font-medium text-brand-primary" prefetch={false}>
+          <Link href="/termini" className="font-medium text-cantiere-accent" prefetch={false}>
             termini del servizio
           </Link>
           .
         </p>
       ) : null}
 
-      <div className={tokens.funnel.actions}>
+      <div className={"flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between"}>
         <Button
           type="button"
           variant="secondary"
           size="lg"
           onClick={onBack}
           disabled={isPhotoUploading}
-          className={tokens.funnel.actionButton}
+          className={"min-w-40"}
         >
           Indietro
         </Button>
@@ -433,7 +433,7 @@ export function RequestStepUI({
           size="lg"
           onClick={onNext}
           disabled={isSubmitting || isPhotoUploading}
-          className={tokens.funnel.actionButton}
+          className={"min-w-40"}
         >
           {isLastStep
             ? isSubmitting

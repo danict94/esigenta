@@ -93,7 +93,7 @@ export function ImpresaLoginForm() {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="email"
-          className="text-sm font-medium text-text-primary"
+          className="text-sm font-medium text-cantiere-ink"
         >
           Email
         </label>
@@ -101,7 +101,7 @@ export function ImpresaLoginForm() {
         <div className="relative">
           <Mail
             aria-hidden="true"
-            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
           />
 
           <Input
@@ -125,7 +125,7 @@ export function ImpresaLoginForm() {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="password"
-          className="text-sm font-medium text-text-primary"
+          className="text-sm font-medium text-cantiere-ink"
         >
           Password
         </label>
@@ -133,7 +133,7 @@ export function ImpresaLoginForm() {
         <div className="relative">
           <Lock
             aria-hidden="true"
-            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+            className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
           />
 
           <Input
@@ -156,7 +156,7 @@ export function ImpresaLoginForm() {
 
           <Eye
             aria-hidden="true"
-            className="absolute right-4 top-1/2 z-10 size-5 -translate-y-1/2 text-text-muted"
+            className="absolute right-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
           />
         </div>
       </div>
@@ -164,14 +164,14 @@ export function ImpresaLoginForm() {
       <div className="flex justify-end">
         <Link
           href="/area-impresa/recupera-password"
-          className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+          className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
         >
           Recupera password
         </Link>
       </div>
 
       {error ? (
-        <div className="border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+        <div className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
           {error}
         </div>
       ) : null}
@@ -187,13 +187,13 @@ export function ImpresaLoginForm() {
           : "Accedi"}
       </Button>
 
-      <p className="text-center text-xs leading-5 text-text-muted">
+      <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
         Usando l&apos;area impresa confermi di aver letto l&apos;
-        <Link href="/privacy" className="font-medium text-brand-primary">
+        <Link href="/privacy" className="font-medium text-cantiere-accent">
           informativa privacy
         </Link>{" "}
         e i{" "}
-        <Link href="/termini" className="font-medium text-brand-primary">
+        <Link href="/termini" className="font-medium text-cantiere-accent">
           termini del servizio
         </Link>
         .

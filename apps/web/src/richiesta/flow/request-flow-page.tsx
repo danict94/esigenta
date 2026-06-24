@@ -1,4 +1,4 @@
-import { Container, tokens } from "@esigenta/ui";
+import { Container } from "@esigenta/ui";
 
 import { PublicShell } from "../../site/shell/public-shell";
 import { RequestFlowShell } from "./components/request-flow-shell";
@@ -14,11 +14,11 @@ export function RequestFlowPage({
 }: RequestFlowPageProps) {
   return (
     <PublicShell navbarVariant="funnel" showFooter={false}>
-      <section className={tokens.funnel.page}>
+      <section className={"pb-20 pt-16 md:pb-28 md:pt-20 lg:pb-32 lg:pt-24"}>
         <Container size="lg">
-          <div className={tokens.funnel.rail}>
-            <header className={tokens.funnel.intro}>
-              <p className={tokens.funnel.introDescription}>
+          <div className={"mx-auto w-full max-w-[1120px]"}>
+            <header className={"space-y-5"}>
+              <p className="text-[17px] leading-[1.5] text-cantiere-ink-secondary">
                 Pochi passaggi per preparare una richiesta chiara e utile.
               </p>
             </header>

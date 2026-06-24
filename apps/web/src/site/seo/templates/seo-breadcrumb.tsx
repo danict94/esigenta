@@ -14,7 +14,7 @@ export type SeoBreadcrumbProps = {
 export function SeoBreadcrumb({ items }: SeoBreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
+      <ol className="flex flex-wrap items-center gap-2 text-sm text-cantiere-ink-secondary">
         {items.map((item, index) => {
           const isCurrent = index === items.length - 1;
 
@@ -24,7 +24,7 @@ export function SeoBreadcrumb({ items }: SeoBreadcrumbProps) {
               className="flex items-center gap-2"
             >
               {index > 0 ? (
-                <span aria-hidden={true} className="text-text-muted">
+                <span aria-hidden={true} className="text-cantiere-ink-secondary">
                   /
                 </span>
               ) : null}
@@ -33,7 +33,7 @@ export function SeoBreadcrumb({ items }: SeoBreadcrumbProps) {
                 <Link
                   href={item.href}
                   className={cn(
-                    "font-medium text-action-primary underline-offset-4 hover:text-action-primary-hover hover:underline",
+                    "font-medium text-cantiere-accent underline-offset-4 hover:text-cantiere-accent-hover hover:underline",
                   )}
                 >
                   {item.label}
@@ -41,7 +41,7 @@ export function SeoBreadcrumb({ items }: SeoBreadcrumbProps) {
               ) : (
                 <span
                   aria-current={isCurrent ? "page" : undefined}
-                  className="font-medium text-text-primary"
+                  className="font-medium text-cantiere-ink"
                 >
                   {item.label}
                 </span>

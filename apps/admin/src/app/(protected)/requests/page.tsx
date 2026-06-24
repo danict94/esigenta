@@ -98,18 +98,18 @@ export default async function RequestsModerationPage() {
 
   return (
     <PageShell size="lg">
-      <header className="border-b border-border-primary pb-7">
+      <header className="border-b border-cantiere-hairline pb-7">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-text-muted">
+            <p className="text-sm font-medium text-cantiere-ink-secondary">
               Control room
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
               Richieste
             </h1>
 
-            <p className="mt-3 max-w-xl text-sm leading-6 text-text-secondary">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-cantiere-ink-secondary">
               Gestisci le richieste ricevute e controlla lo stato editoriale
               nel marketplace.
             </p>
@@ -117,7 +117,7 @@ export default async function RequestsModerationPage() {
 
           <Link
             href="/"
-            className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+            className="text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
           >
             Torna alla home
           </Link>
@@ -126,13 +126,13 @@ export default async function RequestsModerationPage() {
 
       {unverifiedRequests.length > 0 ? (
         <Link href="/requests/non-verificate" className="mt-8 block">
-          <Card className="border-2 border-border-focus bg-surface-secondary p-5 transition-colors hover:border-brand-primary">
+          <Card className="border-2 border-cantiere-accent bg-cantiere-linen p-5 transition-colors hover:border-cantiere-accent">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-sm font-semibold text-text-primary">
+                <p className="text-sm font-semibold text-cantiere-ink">
                   Richieste in attesa di verifica email
                 </p>
-                <p className="mt-1 text-sm text-text-secondary">
+                <p className="mt-1 text-sm text-cantiere-ink-secondary">
                   Non sono nella coda di revisione e non possono entrare nel
                   marketplace finché il cliente non conferma l&apos;email (o
                   un admin la verifica manualmente).
@@ -147,13 +147,13 @@ export default async function RequestsModerationPage() {
         </Link>
       ) : null}
 
-      <section className="mt-8 border border-border-primary bg-surface-secondary p-5">
+      <section className="mt-8 border border-cantiere-hairline bg-cantiere-linen p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-semibold text-text-primary">
+            <p className="text-sm font-semibold text-cantiere-ink">
               Gestione richieste
             </p>
-            <p className="mt-1 text-sm text-text-secondary">
+            <p className="mt-1 text-sm text-cantiere-ink-secondary">
               Elenco delle richieste ricevute con stato e dettagli operativi.
             </p>
           </div>
@@ -168,10 +168,10 @@ export default async function RequestsModerationPage() {
         {requests.length === 0 ? (
           <Card className="p-8">
             <div className="max-w-xl">
-              <p className="text-lg font-semibold text-text-primary">
+              <p className="text-lg font-semibold text-cantiere-ink">
                 Nessuna richiesta
               </p>
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Non ci sono richieste da mostrare in questo momento.
               </p>
             </div>
@@ -180,7 +180,7 @@ export default async function RequestsModerationPage() {
           <ul className="grid gap-4">
             {requests.map((request) => (
               <li key={request.id}>
-                <Card className="p-5 transition-colors hover:border-brand-primary">
+                <Card className="p-5 transition-colors hover:border-cantiere-accent">
                   <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -188,33 +188,33 @@ export default async function RequestsModerationPage() {
                           {getStatusLabel(request.status)}
                         </Badge>
 
-                        <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                        <span className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                           {formatFreshness(request.createdAt)}
                         </span>
                       </div>
 
-                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-text-primary">
+                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-cantiere-ink">
                         {formatInterventionLabel(request.interventionSlug)}
                       </h2>
 
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-text-secondary">
+                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cantiere-ink-secondary">
                         <span>
-                          <span className="text-text-muted">Città:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Città:</span>{" "}
                           {request.city ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-text-muted">Cliente:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Cliente:</span>{" "}
                           {request.customerName ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-text-muted">Creata:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Creata:</span>{" "}
                           {formatDate(request.createdAt)}
                         </span>
                       </div>
 
-                      <p className="mt-4 text-sm leading-6 text-text-secondary">
+                      <p className="mt-4 text-sm leading-6 text-cantiere-ink-secondary">
                         Controlla contenuto, località e qualità del contatto
                         per gestire questa opportunità nel marketplace.
                       </p>
@@ -227,7 +227,7 @@ export default async function RequestsModerationPage() {
                           actions already there. */}
                       <Link
                         href={`/requests/${request.id}`}
-                        className="inline-flex h-11 items-center justify-center border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+                        className="inline-flex h-11 items-center justify-center border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
                       >
                         Apri richiesta
                       </Link>

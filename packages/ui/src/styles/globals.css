@@ -1,113 +1,4 @@
-﻿:root {
-  /* Physical visual values; TypeScript tokens select their semantic usage. */
-  --fp-font-nav: var(--font-inter, var(--font-plus-jakarta-sans, Arial));
-  --fp-letter-spacing-canvas: -0.04em;
-
-  --fp-color-neutral-white: #ffffff;
-  --fp-color-neutral-black: #000000;
-  --fp-color-neutral-anthracite: #333333;
-
-  --fp-color-surface-base: #ffffff;
-  --fp-color-surface-primary: #fcfcfc;
-  --fp-color-surface-muted: #fafafa;
-  --fp-color-surface-subtle: var(--fp-color-surface-muted);
-  --fp-color-surface-secondary: #f4f8f4;
-  --fp-color-surface-tertiary: #f7fce8;
-  --fp-color-surface-footer: var(--fp-color-neutral-anthracite);
-  --fp-color-surface-elevated: var(--fp-color-neutral-white);
-  --fp-color-surface-hero: var(--fp-color-neutral-anthracite);
-  --fp-color-surface-marketing-soft: var(--fp-color-neutral-white);
-  --fp-color-surface-soft: var(--fp-color-surface-marketing-soft);
-  --fp-color-surface-dark: var(--fp-color-neutral-anthracite);
-  --fp-color-primary-purple: var(--fp-color-decorative-purple);
-
-  --fp-color-text-primary: #141510;
-  --fp-color-text-secondary: #627881;
-  --fp-color-text-muted: #8a9aa3;
-  --fp-color-text-inverse: var(--fp-color-neutral-white);
-  --fp-color-text-on-hero-primary: var(--fp-color-text-inverse);
-  --fp-color-text-on-hero-secondary:
-    color-mix(in srgb, var(--fp-color-text-inverse) 76%, transparent);
-  --fp-color-border-on-hero:
-    color-mix(in srgb, var(--fp-color-text-inverse) 20%, transparent);
-
-  --fp-color-border-primary: #e5e7eb;
-  --fp-color-border-secondary: #d7dce0;
-  --fp-color-border-soft: #bdbdbd;
-  --fp-color-border-focus: var(--fp-color-neutral-black);
-
-  --fp-color-brand-primary: var(--fp-color-accent-warm);
-  --fp-color-brand-primary-hover:
-    color-mix(in srgb, var(--fp-color-brand-primary) 82%, black);
-  --fp-color-brand-on-primary: var(--fp-color-neutral-white);
-
-  /*
-   * Action colors.
-   * These are intentionally separated from brand colors:
-   * brand = logo/accent identity
-   * action = primary CTA buttons
-   */
-  --fp-color-action-primary: var(--fp-color-accent-warm);
-  --fp-color-action-primary-hover:
-    color-mix(in srgb, var(--fp-color-action-primary) 88%, white);
-  --fp-color-action-on-primary: var(--fp-color-neutral-white);
-
-  --fp-color-accent-warm: #de7356;
-  --fp-color-accent-warm-hover:
-    color-mix(in srgb, var(--fp-color-accent-warm) 84%, black);
-  --fp-color-accent-on-warm: var(--fp-color-neutral-white);
-  --fp-color-decorative-purple: #6258a8;
-
-  /*
-   * Editorial accent colors.
-   * Used for small visual accents such as the three "Come funziona?"
-   * dividers. Keep HEX values here, never inside apps/web pages.
-   */
-  --fp-color-accent-step-one: #2b415e;
-  --fp-color-accent-step-two: #356fbe;
-  --fp-color-accent-step-three: #922b66;
-  --fp-color-accent-warning: #f59e0b;
-  --fp-color-warning-primary: var(--fp-color-accent-warning);
-
-  --fp-shadow-surface:
-    0 0 1px rgba(0, 0, 0, 0.08),
-    0 0 14px rgba(0, 0, 0, 0.16);
-  --fp-shadow-card:
-    0 1px 2px rgba(38, 18, 48, 0.04),
-    0 8px 22px rgba(38, 18, 48, 0.07);
-  --fp-shadow-home-hero-card:
-    0 12px 32px rgba(0, 0, 0, 0.08);
-
-  /*
-   * Global content rail.
-   * Container is the only source of truth for application content width.
-   */
-  --fp-container-max-width: 1024px;
-  --fp-container-padding-inline: 24px;
-  --fp-container-padding-inline-mobile: 16px;
-
-  /* Shared marketing surface frame: hero and editorial panels align to it. */
-  --fp-radius-marketing-surface: 0.75rem;
-  --fp-radius-hero-surface: var(--fp-radius-marketing-surface);
-  --fp-hero-surface-background: var(--fp-color-surface-hero);
-
-  /*
-   * Public home tuning variables.
-   * These are intentionally editable from DevTools for visual calibration.
-   */
-  --fp-home-content-inset-x: 8.5%;
-  --fp-home-section-y: 3rem;
-  --fp-home-section-y-compact: 2.5rem;
-  --fp-home-section-gap: 1.25rem;
-  --fp-home-search-inner-height: 72px;
-  --fp-home-search-button-size: 72px;
-
-  /*
-   * Cantiere Calmo — Homepage-derived primitives (Sprint 2: Primitive
-   * Convergence). Source of truth: apps/web/src/site/shell/palette.ts.
-   * Additive only — promoted for future availability. No existing
-   * component or token consumes these yet.
-   */
+:root {
   --fp-color-cantiere-ink: #171511;
   --fp-color-cantiere-ink-secondary: #5b5648;
   --fp-color-cantiere-paper: #faf8f4;
@@ -120,82 +11,21 @@
   --fp-color-cantiere-accent-tint: #f5e8df;
 
   --fp-shadow-cantiere-elevation:
-    0 1px 2px rgba(23, 21, 17, 0.04),
-    0 12px 32px rgba(23, 21, 17, 0.07);
+    0 1px 2px rgba(23, 21, 17, 0.04), 0 12px 32px rgba(23, 21, 17, 0.07);
   --fp-shadow-cantiere-slab:
     0 18px 40px -16px rgba(23, 21, 17, 0.28),
     0 6px 14px -8px rgba(23, 21, 17, 0.18);
 }
 
 @theme inline {
-  --font-sans: var(--font-plus-jakarta-sans);
+  --font-sans: var(--font-geist-sans);
 
-  --color-neutral-white: var(--fp-color-neutral-white);
-  --color-neutral-black: var(--fp-color-neutral-black);
-  --color-neutral-anthracite: var(--fp-color-neutral-anthracite);
-
-  --color-surface-base: var(--fp-color-surface-base);
-  --color-surface-primary: var(--fp-color-surface-primary);
-  --color-surface-muted: var(--fp-color-surface-muted);
-  --color-surface-subtle: var(--fp-color-surface-subtle);
-  --color-surface-secondary: var(--fp-color-surface-secondary);
-  --color-surface-tertiary: var(--fp-color-surface-tertiary);
-  --color-surface-footer: var(--fp-color-surface-footer);
-  --color-surface-elevated: var(--fp-color-surface-elevated);
-  --color-surface-hero: var(--fp-color-surface-hero);
-  --color-surface-marketing-soft: var(--fp-color-surface-marketing-soft);
-  --color-surface-soft: var(--fp-color-surface-soft);
-  --color-surface-dark: var(--fp-color-surface-dark);
-  --color-primary-purple: var(--fp-color-primary-purple);
-
-  --color-text-primary: var(--fp-color-text-primary);
-  --color-text-secondary: var(--fp-color-text-secondary);
-  --color-text-muted: var(--fp-color-text-muted);
-  --color-text-inverse: var(--fp-color-text-inverse);
-  --color-text-on-hero-primary: var(--fp-color-text-on-hero-primary);
-  --color-text-on-hero-secondary: var(--fp-color-text-on-hero-secondary);
-  --color-border-on-hero: var(--fp-color-border-on-hero);
-
-  --color-border-primary: var(--fp-color-border-primary);
-  --color-border-secondary: var(--fp-color-border-secondary);
-  --color-border-soft: var(--fp-color-border-soft);
-  --color-border-focus: var(--fp-color-border-focus);
-
-  --color-brand-primary: var(--fp-color-brand-primary);
-  --color-brand-primary-hover: var(--fp-color-brand-primary-hover);
-  --color-brand-on-primary: var(--fp-color-brand-on-primary);
-
-  --color-action-primary: var(--fp-color-action-primary);
-  --color-action-primary-hover: var(--fp-color-action-primary-hover);
-  --color-action-on-primary: var(--fp-color-action-on-primary);
-
-  --color-accent-warm: var(--fp-color-accent-warm);
-  --color-accent-warm-hover: var(--fp-color-accent-warm-hover);
-  --color-accent-on-warm: var(--fp-color-accent-on-warm);
-  --color-decorative-purple: var(--fp-color-decorative-purple);
-
-  --tracking-tighter: var(--fp-letter-spacing-canvas);
-  --tracking-tight: var(--fp-letter-spacing-canvas);
-  --tracking-normal: var(--fp-letter-spacing-canvas);
-  --tracking-wide: var(--fp-letter-spacing-canvas);
-  --tracking-wider: var(--fp-letter-spacing-canvas);
-  --tracking-widest: var(--fp-letter-spacing-canvas);
-
-  --color-accent-step-one: var(--fp-color-accent-step-one);
-  --color-accent-step-two: var(--fp-color-accent-step-two);
-  --color-accent-step-three: var(--fp-color-accent-step-three);
-  --color-accent-warning: var(--fp-color-accent-warning);
-  --color-warning-primary: var(--fp-color-warning-primary);
-
-  --shadow-surface: var(--fp-shadow-surface);
-  --shadow-card: var(--fp-shadow-card);
-  --shadow-home-hero-card: var(--fp-shadow-home-hero-card);
-
-  /* Cantiere Calmo — homepage-derived primitives. See :root block above. */
   --color-cantiere-ink: var(--fp-color-cantiere-ink);
   --color-cantiere-ink-secondary: var(--fp-color-cantiere-ink-secondary);
   --color-cantiere-paper: var(--fp-color-cantiere-paper);
-  --color-cantiere-paper-translucent: var(--fp-color-cantiere-paper-translucent);
+  --color-cantiere-paper-translucent: var(
+    --fp-color-cantiere-paper-translucent
+  );
   --color-cantiere-surface: var(--fp-color-cantiere-surface);
   --color-cantiere-linen: var(--fp-color-cantiere-linen);
   --color-cantiere-hairline: var(--fp-color-cantiere-hairline);
@@ -208,22 +38,7 @@
 }
 
 body {
-  background: var(--fp-color-surface-primary);
-  color: var(--fp-color-text-primary);
-  font-family: var(--font-plus-jakarta-sans, Arial), Helvetica, sans-serif;
-  letter-spacing: var(--fp-letter-spacing-canvas);
-}
-
-body [class] {
-  letter-spacing: var(--fp-letter-spacing-canvas);
-}
-
-/*
- * Legacy CSS-driven hero surface. Kept for tokens.surfaces.hero consumers;
- * HeroSurface now emits mergeable utilities from tokens.structuralSurfaces.
- */
-.fp-hero-surface {
-  background: var(--fp-hero-surface-background);
-  border-radius: var(--fp-radius-hero-surface);
-  box-shadow: none;
+  background: var(--fp-color-cantiere-paper);
+  color: var(--fp-color-cantiere-ink);
+  font-family: var(--font-geist-sans, Arial), Helvetica, sans-serif;
 }

@@ -105,11 +105,11 @@ export function CompanyLeadForm({
         className="space-y-5"
       >
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-text-primary">
+          <p className="text-sm font-semibold uppercase tracking-wide text-cantiere-ink">
             Inizia da qui
           </p>
 
-          <p className="mt-2 text-sm leading-6 text-text-secondary">
+          <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
             Seleziona la tua attività e la zona da cui vuoi iniziare a
             ricevere richieste.
           </p>
@@ -118,7 +118,7 @@ export function CompanyLeadForm({
         <div className="space-y-2">
           <label
             htmlFor="company-category"
-            className="text-sm font-medium text-text-primary"
+            className="text-sm font-medium text-cantiere-ink"
           >
             Di cosa ti occupi?
           </label>
@@ -131,7 +131,7 @@ export function CompanyLeadForm({
               setCategorySlug(event.target.value)
               setError(null)
             }}
-            className={!categorySlug ? "text-text-muted" : undefined}
+            className={!categorySlug ? "text-cantiere-ink-secondary" : undefined}
           >
             <option value="">
               Seleziona la tua categoria
@@ -151,7 +151,7 @@ export function CompanyLeadForm({
         <div className="space-y-2">
           <label
             htmlFor="company-city"
-            className="text-sm font-medium text-text-primary"
+            className="text-sm font-medium text-cantiere-ink"
           >
             In quale città lavori?
           </label>
@@ -168,7 +168,7 @@ export function CompanyLeadForm({
         </div>
 
         {error ? (
-          <p className="border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+          <p className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
             {error}
           </p>
         ) : null}
@@ -180,15 +180,15 @@ export function CompanyLeadForm({
           Continua gratuitamente
         </Button>
 
-        <p className="text-xs leading-5 text-text-muted">
+        <p className="text-xs leading-5 text-cantiere-ink-secondary">
           Nel passaggio successivo completerai i dati aziendali e creerai
           l&apos;accesso impresa.
         </p>
 
-        <p className="text-xs leading-5 text-text-muted">
+        <p className="text-xs leading-5 text-cantiere-ink-secondary">
           I dati saranno usati per ricontattarti e gestire la richiesta. Leggi
           l&apos;
-          <Link href="/privacy" className="font-medium text-brand-primary">
+          <Link href="/privacy" className="font-medium text-cantiere-accent">
             informativa privacy
           </Link>
           .

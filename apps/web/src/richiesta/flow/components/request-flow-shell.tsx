@@ -1,19 +1,12 @@
 'use client'
 
-import {
-  useEffect,
-  useState,
-} from 'react'
+import { useEffect, useState, } from 'react'
 
 import {
-  useRouter,
-} from 'next/navigation'
+  useRouter, } from 'next/navigation'
 
 import {
-  Button,
-  cn,
-  tokens,
-} from '@esigenta/ui'
+  Button, cn } from '@esigenta/ui';
 
 import {
   RequestStepper,
@@ -105,9 +98,9 @@ export function RequestFlowShell({
     return (
       <div
         className={cn(
-          'border border-border-primary bg-surface-elevated p-5 text-sm text-text-secondary md:p-6',
-          tokens.radius.lg,
-          tokens.shadows.surface,
+          'border border-cantiere-hairline bg-cantiere-paper p-5 text-sm text-cantiere-ink-secondary md:p-6',
+          "rounded-[8px]",
+          "shadow-cantiere-elevation",
         )}
       >
         Prepariamo il percorso guidato...
@@ -119,13 +112,13 @@ export function RequestFlowShell({
     return (
       <div
         className={cn(
-          'border border-border-primary bg-surface-elevated p-5 md:p-6',
-          tokens.radius.lg,
-          tokens.shadows.surface,
+          'border border-cantiere-hairline bg-cantiere-paper p-5 md:p-6',
+          "rounded-[8px]",
+          "shadow-cantiere-elevation",
         )}
       >
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-brand-primary">
+          <p className="text-sm text-cantiere-accent">
             {error ??
               'Percorso guidato non disponibile.'}
           </p>

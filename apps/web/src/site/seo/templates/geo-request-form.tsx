@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 
-import { Button, Input, cn, tokens } from "@esigenta/ui";
+import { Button, Input, cn } from "@esigenta/ui";
 
 export type GeoRequestFormProps = {
   funnelSlug: string;
@@ -16,16 +16,16 @@ export function GeoRequestForm({ funnelSlug }: GeoRequestFormProps) {
       action={requestHref}
       method="get"
       className={cn(
-        tokens.radius.lg,
-        "space-y-4 border border-border-primary bg-surface-elevated p-5",
+        "rounded-[8px]",
+        "space-y-4 border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >
       <div className="space-y-2">
-        <h3 className="text-xl font-semibold leading-7 text-text-primary">
+        <h3 className="text-xl font-semibold leading-7 text-cantiere-ink">
           Trova professionisti nella tua zona
         </h3>
 
-        <p className="text-sm leading-6 text-text-secondary">
+        <p className="text-sm leading-6 text-cantiere-ink-secondary">
           Inserisci il comune e continua con la richiesta.
         </p>
       </div>
@@ -33,7 +33,7 @@ export function GeoRequestForm({ funnelSlug }: GeoRequestFormProps) {
       <div className="space-y-2">
         <label
           htmlFor="seo-geo-city"
-          className="text-sm font-medium text-text-primary"
+          className="text-sm font-medium text-cantiere-ink"
         >
           Comune o città
         </label>
@@ -53,7 +53,7 @@ export function GeoRequestForm({ funnelSlug }: GeoRequestFormProps) {
         <ArrowRight className="size-4" aria-hidden={true} />
       </Button>
 
-      <p id="seo-geo-city-help" className="text-sm leading-6 text-text-muted">
+      <p id="seo-geo-city-help" className="text-sm leading-6 text-cantiere-ink-secondary">
         Potrai confermare il comune nel passaggio successivo.
       </p>
     </form>

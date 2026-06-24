@@ -3,16 +3,9 @@ import type {
 } from "react"
 import Link from "next/link"
 
+import { type AdminDashboardMetrics, getAdminDashboardMetrics, } from "@esigenta/domain"
 import {
-  type AdminDashboardMetrics,
-  getAdminDashboardMetrics,
-} from "@esigenta/domain"
-import {
-  Badge,
-  PageShell,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+  Badge, PageShell, cn } from "@esigenta/ui";
 
 import { requireAdmin } from "../../auth/server"
 
@@ -63,35 +56,35 @@ function getToneClasses(tone: VisualTone) {
   if (tone === "warm") {
     return {
       frame:
-        "border-accent-warm bg-surface-tertiary text-accent-warm",
-      fill: "bg-accent-warm",
-      soft: "bg-surface-tertiary",
+        "border-cantiere-accent bg-cantiere-linen text-cantiere-accent",
+      fill: "bg-cantiere-accent",
+      soft: "bg-cantiere-linen",
     }
   }
 
   if (tone === "danger") {
     return {
       frame:
-        "border-border-focus bg-surface-primary text-text-primary",
+        "border-cantiere-accent bg-cantiere-paper text-cantiere-ink",
       fill: "bg-text-primary",
-      soft: "bg-surface-secondary",
+      soft: "bg-cantiere-linen",
     }
   }
 
   if (tone === "primary") {
     return {
       frame:
-        "border-brand-primary bg-surface-secondary text-brand-primary",
-      fill: "bg-brand-primary",
-      soft: "bg-surface-secondary",
+        "border-cantiere-accent bg-cantiere-linen text-cantiere-accent",
+      fill: "bg-cantiere-accent",
+      soft: "bg-cantiere-linen",
     }
   }
 
   return {
     frame:
-      "border-border-secondary bg-surface-primary text-text-secondary",
+      "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary",
     fill: "bg-text-muted",
-    soft: "bg-surface-muted",
+    soft: "bg-cantiere-surface",
   }
 }
 
@@ -105,9 +98,9 @@ function Panel({
   return (
     <section
       className={cn(
-        tokens.radius.lg,
-        tokens.shadows.sm,
-        "border border-border-primary bg-surface-elevated p-5 md:p-6",
+        "rounded-[8px]",
+        "shadow-cantiere-elevation",
+        "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-6",
         className,
       )}
     >
@@ -126,12 +119,12 @@ function SectionHeader({
   return (
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0">
-        <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+        <h2 className="text-lg font-semibold tracking-tight text-cantiere-ink">
           {title}
         </h2>
 
         {description ? (
-          <p className="mt-1 text-sm leading-6 text-text-secondary">
+          <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
             {description}
           </p>
         ) : null}
@@ -158,7 +151,7 @@ function IconMark({
     <span
       aria-hidden="true"
       className={cn(
-        tokens.radius.md,
+        "rounded-[6px]",
         "grid size-9 shrink-0 place-items-center border",
         toneClasses.frame,
       )}
@@ -228,7 +221,7 @@ function InlineCta({
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
     >
       <span>{children}</span>
       <span aria-hidden="true">-&gt;</span>
@@ -242,8 +235,8 @@ function QueueRow({ item }: { item: QueueItem }) {
   return (
     <div
       className={cn(
-        "grid gap-4 border-b border-border-primary px-1 py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_5.5rem_auto] sm:items-center sm:gap-5",
-        hasWork && "bg-surface-secondary/60",
+        "grid gap-4 border-b border-cantiere-hairline px-1 py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_5.5rem_auto] sm:items-center sm:gap-5",
+        hasWork && "bg-cantiere-linen/60",
       )}
     >
       <div className="flex min-w-0 items-start gap-3">
@@ -253,10 +246,10 @@ function QueueRow({ item }: { item: QueueItem }) {
         />
 
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-text-primary">
+          <p className="text-sm font-semibold text-cantiere-ink">
             {item.label}
           </p>
-          <p className="mt-1 text-sm leading-5 text-text-secondary">
+          <p className="mt-1 text-sm leading-5 text-cantiere-ink-secondary">
             {item.description}
           </p>
         </div>
@@ -265,7 +258,7 @@ function QueueRow({ item }: { item: QueueItem }) {
       <p
         className={cn(
           "text-3xl font-semibold leading-none tracking-tight sm:text-right",
-          hasWork ? "text-text-primary" : "text-text-muted",
+          hasWork ? "text-cantiere-ink" : "text-cantiere-ink-secondary",
         )}
       >
         {formatCount(item.value)}
@@ -284,22 +277,22 @@ function MarketplaceMetricItem({
   metric: MarketplaceMetric
 }) {
   return (
-    <div className="min-w-0 border-b border-border-primary pb-4 last:border-b-0 sm:border-b-0 sm:pb-0">
+    <div className="min-w-0 border-b border-cantiere-hairline pb-4 last:border-b-0 sm:border-b-0 sm:pb-0">
       <div className="flex items-center gap-3">
         <IconMark
           icon={metric.icon}
           tone={metric.tone}
         />
 
-        <p className="text-3xl font-semibold leading-none tracking-tight text-text-primary">
+        <p className="text-3xl font-semibold leading-none tracking-tight text-cantiere-ink">
           {formatCount(metric.value)}
         </p>
       </div>
 
-      <p className="mt-3 text-sm font-semibold text-text-primary">
+      <p className="mt-3 text-sm font-semibold text-cantiere-ink">
         {metric.label}
       </p>
-      <p className="mt-1 text-xs leading-5 text-text-secondary">
+      <p className="mt-1 text-xs leading-5 text-cantiere-ink-secondary">
         {metric.description}
       </p>
     </div>
@@ -321,14 +314,14 @@ function MicroBar({
   return (
     <div>
       <div className="flex items-center justify-between gap-4 text-xs">
-        <span className="font-medium text-text-secondary">
+        <span className="font-medium text-cantiere-ink-secondary">
           {item.label}
         </span>
-        <span className="font-semibold text-text-primary">
+        <span className="font-semibold text-cantiere-ink">
           {formatCount(item.value)}
         </span>
       </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-secondary">
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-cantiere-linen">
         <div
           className={cn(
             "h-full rounded-full",
@@ -355,9 +348,9 @@ function DistributionPanel({
   items: DistributionItem[]
 }) {
   return (
-    <div className="border-t border-border-primary pt-5">
+    <div className="border-t border-cantiere-hairline pt-5">
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-sm font-semibold text-text-primary">
+        <h3 className="text-sm font-semibold text-cantiere-ink">
           {title}
         </h3>
         <Badge variant="neutral" size="sm">
@@ -376,7 +369,7 @@ function DistributionPanel({
           ))}
         </div>
       ) : (
-        <p className="mt-4 text-sm leading-6 text-text-secondary">
+        <p className="mt-4 text-sm leading-6 text-cantiere-ink-secondary">
           Nessun dato disponibile per questa distribuzione.
         </p>
       )}
@@ -386,20 +379,20 @@ function DistributionPanel({
 
 function AttentionRow({ item }: { item: AttentionItem }) {
   return (
-    <div className="flex gap-3 border-b border-border-primary py-4 last:border-b-0">
+    <div className="flex gap-3 border-b border-cantiere-hairline py-4 last:border-b-0">
       <IconMark icon="attention" tone="warm" />
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-text-primary">
+          <p className="text-sm font-semibold text-cantiere-ink">
             {item.label}
           </p>
-          <span className="text-xl font-semibold leading-none text-text-primary">
+          <span className="text-xl font-semibold leading-none text-cantiere-ink">
             {formatCount(item.value)}
           </span>
         </div>
 
-        <p className="mt-1 text-sm leading-5 text-text-secondary">
+        <p className="mt-1 text-sm leading-5 text-cantiere-ink-secondary">
           {item.description}
         </p>
 
@@ -417,13 +410,13 @@ function AttentionRow({ item }: { item: AttentionItem }) {
 
 function EmptyAttentionState() {
   return (
-    <div className="mt-4 flex gap-3 border-y border-border-primary py-5">
+    <div className="mt-4 flex gap-3 border-y border-cantiere-hairline py-5">
       <IconMark icon="ok" tone="primary" />
       <div>
-        <p className="text-sm font-semibold text-text-primary">
+        <p className="text-sm font-semibold text-cantiere-ink">
           Nessuna criticità operativa.
         </p>
-        <p className="mt-1 text-sm leading-6 text-text-secondary">
+        <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
           Non risultano blocchi da gestire ora.
         </p>
       </div>
@@ -619,15 +612,15 @@ export default async function AdminHomePage() {
   return (
     <PageShell size="lg" className="py-7 md:py-9">
       <header className="max-w-3xl">
-        <p className={tokens.home.sectionLabel}>
+        <p className={"text-sm font-medium text-cantiere-accent"}>
           Control room
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink md:text-4xl">
           Dashboard
         </h1>
 
-        <p className="mt-3 text-sm leading-6 text-text-secondary">
+        <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
           Controllo operativo di richieste, imprese, crediti e assistenza.
         </p>
       </header>

@@ -48,7 +48,7 @@ export function CompanyLocationFields({
   return (
     <div className="grid gap-5">
       <label className="grid gap-2">
-        <span className="text-sm font-medium text-text-primary">
+        <span className="text-sm font-medium text-cantiere-ink">
           Sede operativa
         </span>
 
@@ -58,7 +58,7 @@ export function CompanyLocationFields({
           placeholder="Cerca città o indirizzo operativo"
         />
 
-        <span className="text-xs leading-5 text-text-secondary">
+        <span className="text-xs leading-5 text-cantiere-ink-secondary">
           Seleziona un suggerimento per aggiornare la sede. La sede operativa
           e il raggio determinano quali richieste vengono mostrate di base.
         </span>
@@ -75,17 +75,17 @@ export function CompanyLocationFields({
         readOnly
       />
 
-      <div className="rounded-lg border border-border-primary bg-surface-secondary px-4 py-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+      <div className="rounded-lg border border-cantiere-hairline bg-cantiere-linen px-4 py-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
           Sede selezionata
         </p>
 
-        <p className="mt-1 text-sm font-semibold text-text-primary">
+        <p className="mt-1 text-sm font-semibold text-cantiere-ink">
           {getLocationSummary(geoPlace)}
         </p>
 
         {!geoPlace ? (
-          <p className="mt-2 text-xs leading-5 text-text-secondary">
+          <p className="mt-2 text-xs leading-5 text-cantiere-ink-secondary">
             Scegli un suggerimento per impostare la sede salvata.
           </p>
         ) : null}

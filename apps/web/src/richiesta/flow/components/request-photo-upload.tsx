@@ -3,19 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState, } from "react";
 
 import {
-  Badge,
-  Button,
-  Card,
-  cn,
-  tokens,
-} from "@esigenta/ui";
+  Badge, Button, Card, cn } from "@esigenta/ui";
 
 import {
   REQUEST_PHOTO_ACCEPT,
@@ -411,21 +402,21 @@ export function RequestPhotoUpload({
     <div className="grid gap-4">
       <label
         className={cn(
-          "flex min-h-36 cursor-pointer flex-col items-center justify-center gap-3 border border-dashed border-border-primary bg-surface-primary px-5 py-8 text-center transition-colors hover:border-border-focus hover:bg-surface-secondary",
+          "flex min-h-36 cursor-pointer flex-col items-center justify-center gap-3 border border-dashed border-cantiere-hairline bg-cantiere-paper px-5 py-8 text-center transition-colors hover:border-cantiere-accent hover:bg-cantiere-linen",
           isUploading &&
             "pointer-events-none opacity-60",
-          tokens.radius.lg,
+          "rounded-[8px]",
         )}
       >
-        <span className="flex size-11 items-center justify-center rounded-full bg-surface-elevated text-brand-primary">
+        <span className="flex size-11 items-center justify-center rounded-full bg-cantiere-paper text-cantiere-accent">
           +
         </span>
 
-        <span className="text-sm font-semibold text-text-primary">
+        <span className="text-sm font-semibold text-cantiere-ink">
           Aggiungi foto, se le hai
         </span>
 
-        <span className="max-w-sm text-xs leading-5 text-text-muted">
+        <span className="max-w-sm text-xs leading-5 text-cantiere-ink-secondary">
           JPEG, PNG o WebP. Massimo {REQUEST_PHOTO_MAX_FILES} foto da{" "}
           {REQUEST_PHOTO_MAX_SIZE_LABEL} ciascuna.
         </span>
@@ -454,10 +445,10 @@ export function RequestPhotoUpload({
         />
       </label>
 
-      <p className="text-xs leading-5 text-text-muted">
+      <p className="text-xs leading-5 text-cantiere-ink-secondary">
         Le foto caricate saranno usate per descrivere la richiesta e possono
         essere gestite tramite provider di upload indicato nella{" "}
-        <Link href="/privacy" className="font-medium text-brand-primary" prefetch={false}>
+        <Link href="/privacy" className="font-medium text-cantiere-accent" prefetch={false}>
           privacy policy
         </Link>
         .
@@ -471,7 +462,7 @@ export function RequestPhotoUpload({
               className="overflow-hidden"
             >
               {item.previewUrl ? (
-                <div className="relative aspect-video bg-surface-secondary">
+                <div className="relative aspect-video bg-cantiere-linen">
                   <Image
                     src={item.previewUrl}
                     alt=""
@@ -485,7 +476,7 @@ export function RequestPhotoUpload({
 
               <div className="flex items-center gap-3 p-3">
                 <div className="min-w-0 flex-1 space-y-2">
-                  <p className="truncate text-sm font-medium text-text-primary">
+                  <p className="truncate text-sm font-medium text-cantiere-ink">
                     {item.fileName}
                   </p>
 
@@ -519,7 +510,7 @@ export function RequestPhotoUpload({
       ) : null}
 
       {error ? (
-        <p className="text-sm text-brand-primary">
+        <p className="text-sm text-cantiere-accent">
           {error}
         </p>
       ) : null}

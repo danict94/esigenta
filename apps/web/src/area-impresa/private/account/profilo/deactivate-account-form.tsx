@@ -38,7 +38,7 @@ export function DeactivateAccountForm({
       className="mt-6 grid gap-5"
     >
       <div className="space-y-2">
-        <label className="text-sm font-medium text-text-primary">
+        <label className="text-sm font-medium text-cantiere-ink">
           Scrivi ELIMINA per confermare
         </label>
 

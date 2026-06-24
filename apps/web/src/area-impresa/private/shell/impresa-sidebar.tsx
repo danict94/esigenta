@@ -5,7 +5,7 @@ import { ChevronDown, Menu, UserRound, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Badge, Button, Card, Container, cn, tokens } from "@esigenta/ui";
+import { Badge, Button, Card, Container, cn } from "@esigenta/ui";
 
 import { authClient } from "../../../auth/client";
 
@@ -92,14 +92,14 @@ function Brand() {
   return (
     <span className="inline-flex flex-col leading-none">
       <span className="text-2xl font-bold tracking-tight md:text-3xl">
-        <span className="text-text-primary">esi</span>
-        <span className="text-brand-primary">genta</span>
+        <span className="text-cantiere-ink">esi</span>
+        <span className="text-cantiere-accent">genta</span>
       </span>
 
       <span
         className={cn(
-          "mt-0.5 font-semibold text-brand-primary",
-          tokens.typography.microLabel,
+          "mt-0.5 font-semibold text-cantiere-accent",
+          "text-[10px] uppercase tracking-[0.18em]",
         )}
       >
         Imprese
@@ -115,7 +115,7 @@ function NavBadge({ value }: { value: string }) {
       size="sm"
       className={cn(
         "ml-1 min-w-5 justify-center px-1.5",
-        tokens.typography.micro,
+        "text-[10px] leading-none",
       )}
     >
       {value}
@@ -133,9 +133,9 @@ function DesktopNavLink({
   const className = cn(
     "relative inline-flex items-center gap-1.5 py-7 text-sm font-medium transition-colors",
     active
-      ? "text-brand-primary"
-      : "text-text-secondary hover:text-text-primary",
-    !item.enabled ? "cursor-not-allowed text-text-muted" : "",
+      ? "text-cantiere-accent"
+      : "text-cantiere-ink-secondary hover:text-cantiere-ink",
+    !item.enabled ? "cursor-not-allowed text-cantiere-ink-secondary" : "",
   );
 
   const content = (
@@ -147,7 +147,7 @@ function DesktopNavLink({
       {active ? (
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-0.5 bg-brand-primary"
+          className="absolute inset-x-0 bottom-0 h-0.5 bg-cantiere-accent"
         />
       ) : null}
     </>
@@ -184,9 +184,9 @@ function MobileNavLink({
   const className = cn(
     "flex items-center justify-between gap-3 px-2 py-3 text-sm font-medium transition-colors",
     active
-      ? "text-brand-primary"
-      : "text-text-secondary hover:text-text-primary",
-    !item.enabled ? "cursor-not-allowed text-text-muted" : "",
+      ? "text-cantiere-accent"
+      : "text-cantiere-ink-secondary hover:text-cantiere-ink",
+    !item.enabled ? "cursor-not-allowed text-cantiere-ink-secondary" : "",
   );
 
   const content = (
@@ -228,12 +228,12 @@ function AccountMenuItem({
   const className = cn(
     "block px-5 py-3 text-sm font-medium transition-colors",
     item.enabled &&
-      "hover:bg-surface-secondary",
+      "hover:bg-cantiere-linen",
     item.enabled && active
-      ? "text-brand-primary"
+      ? "text-cantiere-accent"
       : item.enabled
-        ? "text-text-primary"
-        : "cursor-not-allowed text-text-muted",
+        ? "text-cantiere-ink"
+        : "cursor-not-allowed text-cantiere-ink-secondary",
   );
 
   if (!item.enabled) {
@@ -387,7 +387,7 @@ export function ImpresaSidebar({
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-primary bg-surface-primary">
+    <header className="sticky top-0 z-50 border-b border-cantiere-hairline bg-cantiere-paper">
       <Container
         size="xl"
         className="flex h-16 items-center justify-between md:h-20"
@@ -431,7 +431,7 @@ export function ImpresaSidebar({
 
               <ChevronDown
                 className={cn(
-                  "size-4 text-text-muted transition-transform",
+                  "size-4 text-cantiere-ink-secondary transition-transform",
                   accountOpen ? "rotate-180" : "",
                 )}
                 aria-hidden="true"
@@ -443,12 +443,12 @@ export function ImpresaSidebar({
                 className="absolute right-0 top-12 w-72 py-3 shadow-lg"
                 role="menu"
               >
-                <div className="border-b border-border-primary px-5 pb-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                <div className="border-b border-cantiere-hairline px-5 pb-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                     Account impresa
                   </p>
 
-                  <p className="mt-1 truncate text-sm font-semibold text-text-primary">
+                  <p className="mt-1 truncate text-sm font-semibold text-cantiere-ink">
                     {accountLabel}
                   </p>
                 </div>
@@ -467,7 +467,7 @@ export function ImpresaSidebar({
                   ))}
                 </nav>
 
-                <div className="border-t border-border-primary px-3 pt-3">
+                <div className="border-t border-cantiere-hairline px-3 pt-3">
                   <Button
                     type="button"
                     variant="ghost"
@@ -504,7 +504,7 @@ export function ImpresaSidebar({
       </Container>
 
       {isMenuOpen ? (
-        <div className="border-t border-border-primary bg-surface-primary md:hidden">
+        <div className="border-t border-cantiere-hairline bg-cantiere-paper md:hidden">
           <Container size="xl">
             <nav
               className="flex flex-col gap-1 py-4"
@@ -519,9 +519,9 @@ export function ImpresaSidebar({
                 />
               ))}
 
-              <div className="my-2 border-t border-border-primary" />
+              <div className="my-2 border-t border-cantiere-hairline" />
 
-              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                 Il mio account
               </p>
 

@@ -1,8 +1,4 @@
-import {
-  Container,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+import { Container, cn } from "@esigenta/ui";
 
 import {
   RequestFlowError,
@@ -366,24 +362,24 @@ export async function CustomerRequestDetailPage({
   const historyHref = buildHistoryHref(token ?? "")
 
   const primaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-semibold text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
 
   return (
     <PublicShell>
-      <section className={tokens.spacing.sectionLg}>
+      <section className={"py-20 md:py-28 lg:py-32"}>
         <Container size="md">
           <div className="space-y-6">
             <div className="space-y-4">
               <a
                 href={historyHref}
-                className="text-sm font-medium text-brand-primary"
+                className="text-sm font-medium text-cantiere-accent"
               >
                 Torna allo storico richieste
               </a>
               <h1
                 className={cn(
-                  "text-text-primary",
-                  tokens.typography.title,
+                  "text-cantiere-ink",
+                  "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
                 )}
               >
                 Dettaglio richiesta
@@ -392,57 +388,57 @@ export async function CustomerRequestDetailPage({
             </div>
 
             {!result.ok ? (
-              <div className="border border-border-primary bg-surface-elevated p-6">
-                <p className="text-sm text-text-secondary">
+              <div className="border border-cantiere-hairline bg-cantiere-paper p-6">
+                <p className="text-sm text-cantiere-ink-secondary">
                   {result.message}
                 </p>
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="border border-border-primary bg-surface-elevated p-6">
+                <div className="border border-cantiere-hairline bg-cantiere-paper p-6">
                   <dl className="grid gap-3 text-sm sm:grid-cols-2">
-                    <div className="border border-border-primary bg-surface-primary p-3">
-                      <dt className="text-xs text-text-muted">
+                    <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                      <dt className="text-xs text-cantiere-ink-secondary">
                         Codice
                       </dt>
-                      <dd className="mt-1 font-medium text-text-primary">
+                      <dd className="mt-1 font-medium text-cantiere-ink">
                         {result.request.requestCode ??
                           result.request.requestId}
                       </dd>
                     </div>
 
-                    <div className="border border-border-primary bg-surface-primary p-3">
-                      <dt className="text-xs text-text-muted">
+                    <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                      <dt className="text-xs text-cantiere-ink-secondary">
                         Stato
                       </dt>
-                      <dd className="mt-1 text-text-primary">
+                      <dd className="mt-1 text-cantiere-ink">
                         {formatStatus(result.request.status)}
                       </dd>
                     </div>
 
-                    <div className="border border-border-primary bg-surface-primary p-3">
-                      <dt className="text-xs text-text-muted">
+                    <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                      <dt className="text-xs text-cantiere-ink-secondary">
                         Intervento
                       </dt>
-                      <dd className="mt-1 text-text-primary">
+                      <dd className="mt-1 text-cantiere-ink">
                         {formatIntervention(result.request.interventionSlug)}
                       </dd>
                     </div>
 
-                    <div className="border border-border-primary bg-surface-primary p-3">
-                      <dt className="text-xs text-text-muted">
+                    <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                      <dt className="text-xs text-cantiere-ink-secondary">
                         Città
                       </dt>
-                      <dd className="mt-1 text-text-primary">
+                      <dd className="mt-1 text-cantiere-ink">
                         {result.request.city ?? "Non specificata"}
                       </dd>
                     </div>
 
-                    <div className="border border-border-primary bg-surface-primary p-3 sm:col-span-2">
-                      <dt className="text-xs text-text-muted">
+                    <div className="border border-cantiere-hairline bg-cantiere-paper p-3 sm:col-span-2">
+                      <dt className="text-xs text-cantiere-ink-secondary">
                         Data
                       </dt>
-                      <dd className="mt-1 text-text-primary">
+                      <dd className="mt-1 text-cantiere-ink">
                         {formatDate(result.request.createdAt)}
                       </dd>
                     </div>
@@ -450,31 +446,31 @@ export async function CustomerRequestDetailPage({
                 </div>
 
                 {description ? (
-                  <div className="border border-border-primary bg-surface-elevated p-6">
-                    <h2 className="text-sm font-semibold text-text-primary">
+                  <div className="border border-cantiere-hairline bg-cantiere-paper p-6">
+                    <h2 className="text-sm font-semibold text-cantiere-ink">
                       Descrizione
                     </h2>
-                    <p className="mt-3 text-sm leading-6 text-text-secondary">
+                    <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                       {description}
                     </p>
                   </div>
                 ) : null}
 
                 {details.length > 0 ? (
-                  <div className="border border-border-primary bg-surface-elevated p-6">
-                    <h2 className="text-sm font-semibold text-text-primary">
+                  <div className="border border-cantiere-hairline bg-cantiere-paper p-6">
+                    <h2 className="text-sm font-semibold text-cantiere-ink">
                       Dettagli
                     </h2>
                     <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                       {details.map((detail) => (
                         <div
                           key={detail.label}
-                          className="border border-border-primary bg-surface-primary p-3"
+                          className="border border-cantiere-hairline bg-cantiere-paper p-3"
                         >
-                          <dt className="text-xs text-text-muted">
+                          <dt className="text-xs text-cantiere-ink-secondary">
                             {detail.label}
                           </dt>
-                          <dd className="mt-1 text-text-primary">
+                          <dd className="mt-1 text-cantiere-ink">
                             {detail.value}
                           </dd>
                         </div>

@@ -66,18 +66,18 @@ export async function AreaImpresaSignupPage({
     <PublicShell>
       <main className="pb-8 md:pb-10">
         <HeroSurface size="md" className="py-6 md:py-8 xl:py-10">
-          <Card className="mx-auto w-full max-w-2xl bg-surface-elevated shadow-surface">
+          <Card className="mx-auto w-full max-w-2xl bg-cantiere-paper shadow-cantiere-elevation">
             <CardContent className="flex flex-col gap-5 p-6 md:p-7 xl:p-8">
               <div className="flex flex-col gap-2">
-                <p className="text-sm font-semibold text-brand-primary">
+                <p className="text-sm font-semibold text-cantiere-accent">
                   Crea accesso
                 </p>
 
-                <h1 className="text-2xl font-semibold tracking-tight text-text-primary md:text-3xl">
+                <h1 className="text-2xl font-semibold tracking-tight text-cantiere-ink md:text-3xl">
                   Raccontaci di più sulla tua azienda
                 </h1>
 
-                <p className="text-sm leading-6 text-text-secondary">
+                <p className="text-sm leading-6 text-cantiere-ink-secondary">
                   Inserisci i dati aziendali e crea l’accesso. Dopo la
                   registrazione ti chiederemo di accedere per continuare.
                 </p>
@@ -91,10 +91,10 @@ export async function AreaImpresaSignupPage({
                 hasValidLeadLocation={hasValidLeadLocation}
               />
 
-              <div className="border-t border-border-primary pt-5 text-sm text-text-secondary">
+              <div className="border-t border-cantiere-hairline pt-5 text-sm text-cantiere-ink-secondary">
                 <Link
                   href="/area-impresa"
-                  className="font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+                  className="font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
                 >
                   Torna alla pagina professionisti
                 </Link>

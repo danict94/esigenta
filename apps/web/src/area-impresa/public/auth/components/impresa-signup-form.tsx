@@ -1,22 +1,12 @@
 "use client"
 
-import {
-  type FormEvent,
-  useState,
-} from "react"
+import { type FormEvent, useState, } from "react"
 import Link from "next/link"
 import {
-  useRouter,
-} from "next/navigation"
+  useRouter, } from "next/navigation"
 
 import {
-  Badge,
-  Button,
-  Input,
-  Select,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+  Badge, Button, Input, Select, cn } from "@esigenta/ui";
 
 import {
   type GeoPlace,
@@ -246,8 +236,8 @@ export function ImpresaSignupForm({
           className={cn(
             "text-sm font-semibold",
             step === "company"
-              ? "text-text-primary"
-              : "text-text-secondary",
+              ? "text-cantiere-ink"
+              : "text-cantiere-ink-secondary",
           )}
         >
           Dati azienda
@@ -265,8 +255,8 @@ export function ImpresaSignupForm({
           className={cn(
             "text-sm font-semibold",
             step === "account"
-              ? "text-text-primary"
-              : "text-text-secondary",
+              ? "text-cantiere-ink"
+              : "text-cantiere-ink-secondary",
           )}
         >
           Accesso
@@ -276,11 +266,11 @@ export function ImpresaSignupForm({
       {step === "company" ? (
         <div className="space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-text-primary">
+            <h2 className="text-base font-semibold text-cantiere-ink">
               Dati azienda
             </h2>
 
-            <p className="mt-1 text-sm leading-5 text-text-secondary">
+            <p className="mt-1 text-sm leading-5 text-cantiere-ink-secondary">
               Inserisci le informazioni principali della tua impresa.
             </p>
           </div>
@@ -288,7 +278,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="companyName"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Nome azienda
             </label>
@@ -310,7 +300,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="vatNumber"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Partita IVA
             </label>
@@ -332,7 +322,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="phone"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Numero di telefono
             </label>
@@ -354,7 +344,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="operatingRadiusKm"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Raggio d’azione
             </label>
@@ -381,7 +371,7 @@ export function ImpresaSignupForm({
               )}
             </Select>
 
-            <p className={tokens.typography.caption}>
+            <p className={"text-sm text-cantiere-ink-secondary"}>
               Il raggio sarà calcolato dalla città selezionata nel passaggio
               precedente. Potrai modificarlo più avanti.
             </p>
@@ -390,11 +380,11 @@ export function ImpresaSignupForm({
       ) : (
         <div className="space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-text-primary">
+            <h2 className="text-base font-semibold text-cantiere-ink">
               Referente e accesso
             </h2>
 
-            <p className="mt-1 text-sm leading-5 text-text-secondary">
+            <p className="mt-1 text-sm leading-5 text-cantiere-ink-secondary">
               Inserisci i dati della persona che gestirà l’area impresa.
             </p>
           </div>
@@ -402,7 +392,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="name"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Nome referente
             </label>
@@ -422,7 +412,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="email"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Email
             </label>
@@ -442,7 +432,7 @@ export function ImpresaSignupForm({
           <div className="space-y-1.5">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-text-primary"
+              className="text-sm font-medium text-cantiere-ink"
             >
               Password
             </label>
@@ -462,7 +452,7 @@ export function ImpresaSignupForm({
             />
           </div>
 
-          <label className="flex items-start gap-3 text-sm leading-6 text-text-secondary">
+          <label className="flex items-start gap-3 text-sm leading-6 text-cantiere-ink-secondary">
             <input
               type="checkbox"
               required
@@ -478,14 +468,14 @@ export function ImpresaSignupForm({
               Ho letto l&apos;
               <Link
                 href="/privacy"
-                className="font-medium text-brand-primary"
+                className="font-medium text-cantiere-accent"
               >
                 informativa privacy
               </Link>{" "}
               e accetto i{" "}
               <Link
                 href="/termini"
-                className="font-medium text-brand-primary"
+                className="font-medium text-cantiere-accent"
               >
                 termini del servizio
               </Link>
@@ -498,8 +488,8 @@ export function ImpresaSignupForm({
       {error ? (
         <p
           className={cn(
-            "border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary",
-            tokens.radius.md,
+            "border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink",
+            "rounded-[6px]",
           )}
         >
           {error}

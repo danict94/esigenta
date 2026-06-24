@@ -81,7 +81,7 @@ export type RequestDetailCardProps = {
 function Icon({ children }: { children: ReactNode }) {
   return (
     <span
-      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-surface-secondary text-text-muted ring-1 ring-border-primary"
+      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-cantiere-linen text-cantiere-ink-secondary ring-1 ring-cantiere-hairline"
       aria-hidden="true"
     >
       {children}
@@ -325,12 +325,12 @@ function DetailRow({
 }) {
   return (
     <div className="grid gap-2 py-2.5 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-8">
-      <dt className="flex items-center gap-3 text-sm leading-6 text-text-muted">
+      <dt className="flex items-center gap-3 text-sm leading-6 text-cantiere-ink-secondary">
         {icon ?? getDetailIcon(label)}
         <span>{label}</span>
       </dt>
 
-      <dd className="text-sm font-medium leading-6 text-text-primary">
+      <dd className="text-sm font-medium leading-6 text-cantiere-ink">
         {formatDetailValue(label, value)}
       </dd>
     </div>
@@ -352,8 +352,8 @@ function ContactRow({
 }) {
   return (
     <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 py-1.5">
-      <dt className="text-sm text-text-muted">{label}</dt>
-      <dd className="truncate text-right text-sm font-medium text-text-primary">
+      <dt className="text-sm text-cantiere-ink-secondary">{label}</dt>
+      <dd className="truncate text-right text-sm font-medium text-cantiere-ink">
         {formatContactValue(value)}
       </dd>
     </div>
@@ -500,14 +500,14 @@ export function RequestDetailCard({
       <main className="min-w-0">
         <section>
           <div className="flex gap-4">
-            <span className="mt-2 h-20 w-1 shrink-0 rounded-full bg-brand-primary" />
+            <span className="mt-2 h-20 w-1 shrink-0 rounded-full bg-cantiere-accent" />
 
             <div>
-              <h1 className="max-w-4xl text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+              <h1 className="max-w-4xl text-3xl font-semibold tracking-tight text-cantiere-ink md:text-4xl">
                 {title}
               </h1>
 
-              <p className="mt-3 text-sm text-text-secondary">
+              <p className="mt-3 text-sm text-cantiere-ink-secondary">
                 Pubblicata il {createdAt}
               </p>
             </div>
@@ -515,13 +515,13 @@ export function RequestDetailCard({
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+          <h2 className="text-lg font-semibold tracking-tight text-cantiere-ink">
             {"Attivit\u00e0 su questa richiesta"}
           </h2>
 
           <div className="mt-3 flex items-center gap-3">
             <UsersIcon />
-            <p className="text-sm font-semibold text-text-primary">
+            <p className="text-sm font-semibold text-cantiere-ink">
               {unlockCount}
               {maxUnlocks === null ? "" : `/${maxUnlocks}`} professionisti interessati
             </p>
@@ -529,16 +529,16 @@ export function RequestDetailCard({
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+          <h2 className="text-lg font-semibold tracking-tight text-cantiere-ink">
             Descrizione
           </h2>
 
           {description ? (
-            <p className="mt-4 max-w-3xl whitespace-pre-line text-base leading-7 text-text-primary">
+            <p className="mt-4 max-w-3xl whitespace-pre-line text-base leading-7 text-cantiere-ink">
               {description}
             </p>
           ) : (
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-text-secondary">
+            <p className="mt-4 max-w-3xl text-sm leading-6 text-cantiere-ink-secondary">
               Il cliente non ha aggiunto una descrizione libera. I dettagli del
               form sono disponibili qui sotto.
             </p>
@@ -547,7 +547,7 @@ export function RequestDetailCard({
 
         {photos.length > 0 ? (
           <section className="mt-10">
-            <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+            <h2 className="text-lg font-semibold tracking-tight text-cantiere-ink">
               Foto allegate
             </h2>
 
@@ -555,9 +555,9 @@ export function RequestDetailCard({
               {photos.map((photo) => (
                 <figure
                   key={photo.src}
-                  className="overflow-hidden rounded-md border border-border-primary bg-surface-primary"
+                  className="overflow-hidden rounded-md border border-cantiere-hairline bg-cantiere-paper"
                 >
-                  <div className="relative aspect-video bg-surface-secondary">
+                  <div className="relative aspect-video bg-cantiere-linen">
                     <Image
                       src={photo.src}
                       alt={photo.fileName}
@@ -569,7 +569,7 @@ export function RequestDetailCard({
                     />
                   </div>
 
-                  <figcaption className="truncate px-3 py-2 text-xs text-text-muted">
+                  <figcaption className="truncate px-3 py-2 text-xs text-cantiere-ink-secondary">
                     {photo.fileName}
                   </figcaption>
                 </figure>
@@ -579,7 +579,7 @@ export function RequestDetailCard({
         ) : null}
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+          <h2 className="text-lg font-semibold tracking-tight text-cantiere-ink">
             Dettagli richiesta
           </h2>
 
@@ -612,11 +612,11 @@ export function RequestDetailCard({
 
       <aside className="lg:sticky lg:top-24">
         <Card className="p-6 shadow-sm">
-          <p className="text-sm font-medium text-text-muted">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">
             Crediti
           </p>
 
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
             Sblocco richiesta
           </h2>
 
@@ -627,7 +627,7 @@ export function RequestDetailCard({
             })}
           </Badge>
 
-          <p className="mt-3 text-sm leading-6 text-text-secondary">
+          <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
             {getUnlockStatusMessage({
               ...commercialState,
               hasUnlocked,
@@ -635,17 +635,17 @@ export function RequestDetailCard({
           </p>
 
           {showInsufficientCreditsRecovery ? (
-            <div className="mt-5 rounded-md border border-border-primary bg-surface-secondary p-4">
-              <p className="text-sm font-semibold text-text-primary">
+            <div className="mt-5 rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
+              <p className="text-sm font-semibold text-cantiere-ink">
                 Crediti insufficienti per sbloccare questa richiesta.
               </p>
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Acquista un pacchetto crediti per continuare e contattare il
                 cliente.
               </p>
               <Link
                 href="/area-impresa/crediti"
-                className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-4 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+                className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
                 prefetch={false}
               >
                 Acquista crediti
@@ -668,45 +668,45 @@ export function RequestDetailCard({
             </PendingSubmitButton>
           </form>
 
-          <dl className="mt-5 grid gap-3 border-t border-border-primary pt-5">
+          <dl className="mt-5 grid gap-3 border-t border-cantiere-hairline pt-5">
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-text-muted">Costo in crediti</dt>
-              <dd className="text-sm font-semibold text-text-primary">
+              <dt className="text-sm text-cantiere-ink-secondary">Costo in crediti</dt>
+              <dd className="text-sm font-semibold text-cantiere-ink">
                 {formatCreditCost(creditCost)}
               </dd>
             </div>
 
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-text-muted">Limite imprese</dt>
-              <dd className="text-sm font-semibold text-text-primary">
+              <dt className="text-sm text-cantiere-ink-secondary">Limite imprese</dt>
+              <dd className="text-sm font-semibold text-cantiere-ink">
                 {formatMaxUnlocks(maxUnlocks)}
               </dd>
             </div>
 
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-text-muted">Sblocchi attuali</dt>
-              <dd className="text-sm font-semibold text-text-primary">
+              <dt className="text-sm text-cantiere-ink-secondary">Sblocchi attuali</dt>
+              <dd className="text-sm font-semibold text-cantiere-ink">
                 {unlockCount}
               </dd>
             </div>
 
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-sm text-text-muted">Posti disponibili</dt>
-              <dd className="text-sm font-semibold text-text-primary">
+              <dt className="text-sm text-cantiere-ink-secondary">Posti disponibili</dt>
+              <dd className="text-sm font-semibold text-cantiere-ink">
                 {formatUnlockAvailability(commercialState.availableUnlockSlots)}
               </dd>
             </div>
           </dl>
 
           <div className="mt-8">
-            <h2 className="text-sm font-semibold text-text-primary">
+            <h2 className="text-sm font-semibold text-cantiere-ink">
               {hasUnlocked ? "Contatti cliente" : "Contatti protetti"}
             </h2>
 
             {hasUnlocked ? (
               <>
                 {unlockedAt ? (
-                  <p className="mt-2 text-xs font-medium text-text-muted">
+                  <p className="mt-2 text-xs font-medium text-cantiere-ink-secondary">
                     Sbloccata il {unlockedAt}
                   </p>
                 ) : null}
@@ -732,8 +732,8 @@ export function RequestDetailCard({
                 ) : null}
               </>
             ) : (
-              <div className="mt-4 rounded-md border border-border-primary bg-surface-secondary p-4">
-                <p className="text-sm leading-6 text-text-secondary">
+              <div className="mt-4 rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
+                <p className="text-sm leading-6 text-cantiere-ink-secondary">
                   Sblocca la richiesta con i crediti per visualizzare i
                   contatti del cliente.
                 </p>
@@ -742,24 +742,24 @@ export function RequestDetailCard({
           </div>
 
           {hasUnlocked ? (
-            <div className="mt-6 border-t border-border-primary pt-6">
+            <div className="mt-6 border-t border-cantiere-hairline pt-6">
               {hasRefundedUnlock ? (
-                <div className="rounded-md border border-border-primary bg-surface-secondary p-4">
-                  <p className="text-sm font-semibold text-text-primary">
+                <div className="rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
+                  <p className="text-sm font-semibold text-cantiere-ink">
                     Crediti rimborsati
                   </p>
                   {requestUnlockRefundedAt ? (
-                    <p className="mt-1 text-xs text-text-muted">
+                    <p className="mt-1 text-xs text-cantiere-ink-secondary">
                       Rimborso registrato il {requestUnlockRefundedAt}
                     </p>
                   ) : null}
                 </div>
               ) : refundRequest ? (
-                <div className="rounded-md border border-border-primary bg-surface-secondary p-4">
-                  <p className="text-sm font-semibold text-text-primary">
+                <div className="rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
+                  <p className="text-sm font-semibold text-cantiere-ink">
                     Richiesta rimborso in revisione
                   </p>
-                  <p className="mt-1 text-xs text-text-muted">
+                  <p className="mt-1 text-xs text-cantiere-ink-secondary">
                     Inviata il {refundRequest.createdAt}
                   </p>
                 </div>
@@ -773,17 +773,17 @@ export function RequestDetailCard({
                   />
 
                   <div>
-                    <h2 className="text-sm font-semibold text-text-primary">
+                    <h2 className="text-sm font-semibold text-cantiere-ink">
                       Richiedi rimborso
                     </h2>
-                    <p className="mt-2 text-xs leading-5 text-text-muted">
+                    <p className="mt-2 text-xs leading-5 text-cantiere-ink-secondary">
                       La richiesta sar\u00e0 verificata dal team Esigenta. Il
                       rimborso non \u00e8 automatico.
                     </p>
                   </div>
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Motivo
                     </span>
                     <Select
@@ -798,13 +798,13 @@ export function RequestDetailCard({
                     </Select>
                   </label>
 
-                  <p className="text-xs leading-5 text-text-muted">
+                  <p className="text-xs leading-5 text-cantiere-ink-secondary">
                     Puoi richiedere il rimborso se hai provato a contattare il
                     cliente e non hai ricevuto risposta.
                   </p>
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Descrizione
                     </span>
                     <Textarea
@@ -816,7 +816,7 @@ export function RequestDetailCard({
                     />
                   </label>
 
-                  <label className="flex items-start gap-3 text-sm leading-6 text-text-secondary">
+                  <label className="flex items-start gap-3 text-sm leading-6 text-cantiere-ink-secondary">
                     <Checkbox
                       name="companyContactAttempted"
                       className="mt-1"
@@ -827,7 +827,7 @@ export function RequestDetailCard({
                   </label>
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Ultimo tentativo contatto
                     </span>
                     <Input
@@ -849,7 +849,7 @@ export function RequestDetailCard({
           ) : null}
 
           <div className="mt-6">
-            <p className="mb-3 text-xs font-medium text-text-muted">
+            <p className="mb-3 text-xs font-medium text-cantiere-ink-secondary">
               Costo: {formatCreditCost(creditCost)}
             </p>
 
@@ -879,7 +879,7 @@ export function RequestDetailCard({
             )}
           </div>
 
-          <p className="mt-3 text-xs leading-5 text-text-muted">
+          <p className="mt-3 text-xs leading-5 text-cantiere-ink-secondary">
             {hasUnlocked
               ? "I dati sono visibili solo per questa impresa dopo lo sblocco."
               : "Email e telefono restano protetti fino allo sblocco."}

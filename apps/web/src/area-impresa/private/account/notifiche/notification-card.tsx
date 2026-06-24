@@ -83,11 +83,11 @@ export function NotificationCard({
       className={cn(
         "overflow-hidden transition-colors",
         unread
-          ? "border-brand-primary bg-surface-elevated"
-          : "bg-surface-primary",
+          ? "border-cantiere-accent bg-cantiere-paper"
+          : "bg-cantiere-paper",
       )}
     >
-      <CardHeader className="border-b border-border-primary">
+      <CardHeader className="border-b border-cantiere-hairline">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -135,22 +135,22 @@ export function NotificationCard({
       </CardHeader>
 
       <CardContent className="space-y-4 pt-6">
-        <p className="text-sm leading-6 text-text-secondary">
+        <p className="text-sm leading-6 text-cantiere-ink-secondary">
           {notification.body}
         </p>
 
         {request ? (
           <dl className="grid gap-3 text-sm sm:grid-cols-3">
-            <div className="border border-border-primary bg-surface-secondary p-3">
-              <dt className="text-xs text-text-muted">Codice</dt>
-              <dd className="mt-1 font-medium text-text-primary">
+            <div className="border border-cantiere-hairline bg-cantiere-linen p-3">
+              <dt className="text-xs text-cantiere-ink-secondary">Codice</dt>
+              <dd className="mt-1 font-medium text-cantiere-ink">
                 {request.requestCode ?? request.id}
               </dd>
             </div>
 
-            <div className="border border-border-primary bg-surface-secondary p-3">
-              <dt className="text-xs text-text-muted">Località</dt>
-              <dd className="mt-1 font-medium text-text-primary">
+            <div className="border border-cantiere-hairline bg-cantiere-linen p-3">
+              <dt className="text-xs text-cantiere-ink-secondary">Località</dt>
+              <dd className="mt-1 font-medium text-cantiere-ink">
                 {formatLocation({
                   city: request.city,
                   postalCode: request.postalCode,
@@ -158,11 +158,11 @@ export function NotificationCard({
               </dd>
             </div>
 
-            <div className="border border-border-primary bg-surface-secondary p-3">
-              <dt className="text-xs text-text-muted">
+            <div className="border border-cantiere-hairline bg-cantiere-linen p-3">
+              <dt className="text-xs text-cantiere-ink-secondary">
                 Pubblicata
               </dt>
-              <dd className="mt-1 font-medium text-text-primary">
+              <dd className="mt-1 font-medium text-cantiere-ink">
                 {formatDate(request.createdAt)}
               </dd>
             </div>
@@ -172,7 +172,7 @@ export function NotificationCard({
         {primaryHref ? (
           <Link
             href={primaryHref}
-            className="inline-flex text-sm font-medium text-brand-primary transition-colors hover:text-brand-primary-hover"
+            className="inline-flex text-sm font-medium text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
             prefetch={false}
           >
             {primaryActionLabel}

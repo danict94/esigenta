@@ -19,7 +19,7 @@ export function NotificationsList({
   if (notifications.length === 0) {
     return (
       <Card className="p-8">
-        <p className="text-sm text-text-secondary">
+        <p className="text-sm text-cantiere-ink-secondary">
           Non hai ancora notifiche.
         </p>
       </Card>

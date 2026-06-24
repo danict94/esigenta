@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Card, CardContent, PageShell, cn, tokens } from "@esigenta/ui";
+import { Card, CardContent, PageShell, cn } from "@esigenta/ui";
 
 export default function InterventionSeoNotFound() {
   return (
@@ -8,11 +8,11 @@ export default function InterventionSeoNotFound() {
       <Card>
         <CardContent className="space-y-5 pt-8 text-center">
           <div className="space-y-3">
-            <h1 className="text-3xl font-semibold leading-tight text-text-primary">
+            <h1 className="text-3xl font-semibold leading-tight text-cantiere-ink">
               Intervento non trovato
             </h1>
 
-            <p className="text-base leading-7 text-text-secondary">
+            <p className="text-base leading-7 text-cantiere-ink-secondary">
               La landing richiesta non è disponibile.
             </p>
           </div>
@@ -20,10 +20,10 @@ export default function InterventionSeoNotFound() {
           <Link
             href="/"
             className={cn(
-              tokens.interactive.base,
-              tokens.interactive.radius,
-              tokens.interactive.sizes.lg,
-              tokens.interactive.variants.brand,
+              "inline-flex items-center justify-center font-medium transition-colors",
+              "rounded-[8px]",
+              "h-12 px-6 text-[15px]",
+              "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
             )}
           >
             Torna alla homepage

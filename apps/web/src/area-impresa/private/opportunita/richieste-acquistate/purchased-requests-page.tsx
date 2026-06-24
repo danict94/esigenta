@@ -99,15 +99,15 @@ export async function PurchasedRequestsPage({
     <PageShell size="xl" className="py-8 md:py-10">
       <section className="space-y-7">
         <div>
-          <p className="text-sm font-medium text-text-secondary">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">
             Dashboard impresa
           </p>
 
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+          <h1 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
             Richieste acquistate
           </h1>
 
-          <p className="mt-1 text-sm text-text-secondary">
+          <p className="mt-1 text-sm text-cantiere-ink-secondary">
             {result.requests.length} richieste
           </p>
         </div>
@@ -125,7 +125,7 @@ export async function PurchasedRequestsPage({
               {result.page > 1 ? (
                 <Link
                   href={buildPageHref(result.page - 1)}
-                  className="text-sm font-medium text-brand-primary"
+                  className="text-sm font-medium text-cantiere-accent"
                   prefetch={false}
                 >
                   &larr; Pagina precedente
@@ -136,7 +136,7 @@ export async function PurchasedRequestsPage({
               {result.hasNextPage ? (
                 <Link
                   href={buildPageHref(result.page + 1)}
-                  className="text-sm font-medium text-brand-primary"
+                  className="text-sm font-medium text-cantiere-accent"
                   prefetch={false}
                 >
                   Pagina successiva &rarr;

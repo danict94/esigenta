@@ -1,9 +1,5 @@
 import Link from "next/link"
-import {
-  Container,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+import { Container, cn } from "@esigenta/ui";
 
 import {
   RequestFlowError,
@@ -96,26 +92,26 @@ export async function CustomerRequestsPage({
   const result = await loadRequests(token)
 
   const primaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-semibold text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
   const secondaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-border-primary bg-surface-primary px-5 text-sm font-semibold text-text-primary transition-colors hover:border-border-focus"
+    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-hairline bg-cantiere-paper px-5 text-sm font-semibold text-cantiere-ink transition-colors hover:border-cantiere-accent"
 
   return (
     <PublicShell>
-      <section className={tokens.spacing.sectionLg}>
+      <section className={"py-20 md:py-28 lg:py-32"}>
         <Container size="md">
           <div className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-3">
                 <h1
                   className={cn(
-                    "text-text-primary",
-                    tokens.typography.title,
+                    "text-cantiere-ink",
+                    "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
                   )}
                 >
                   Storico richieste
                 </h1>
-                <p className="text-sm leading-6 text-text-secondary">
+                <p className="text-sm leading-6 text-cantiere-ink-secondary">
                   Qui trovi le richieste inviate con questa email.
                 </p>
               </div>
@@ -124,18 +120,18 @@ export async function CustomerRequestsPage({
             </div>
 
             {!result.ok ? (
-              <div className="border border-border-primary bg-surface-elevated p-6">
-                <p className="text-sm text-text-secondary">
+              <div className="border border-cantiere-hairline bg-cantiere-paper p-6">
+                <p className="text-sm text-cantiere-ink-secondary">
                   {result.message}
                 </p>
               </div>
             ) : result.requests.length === 0 ? (
-              <div className="space-y-4 border border-border-primary bg-surface-elevated p-6">
+              <div className="space-y-4 border border-cantiere-hairline bg-cantiere-paper p-6">
                 <div className="space-y-2">
-                  <h2 className="text-sm font-semibold text-text-primary">
+                  <h2 className="text-sm font-semibold text-cantiere-ink">
                     Nessuna richiesta trovata
                   </h2>
-                  <p className="text-sm leading-6 text-text-secondary">
+                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
                     Non ci sono richieste associate a questa email oppure il
                     link non contiene ancora uno storico aggiornato.
                   </p>
@@ -164,29 +160,29 @@ export async function CustomerRequestsPage({
                       requestId: request.requestId,
                       token: token ?? "",
                     })}
-                    className="block border border-border-primary bg-surface-elevated p-4 transition-colors hover:bg-surface-secondary"
+                    className="block border border-cantiere-hairline bg-cantiere-paper p-4 transition-colors hover:bg-cantiere-linen"
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="space-y-2">
-                        <p className="text-sm font-semibold text-text-primary">
+                        <p className="text-sm font-semibold text-cantiere-ink">
                           {formatIntervention(request.interventionSlug)}
                         </p>
-                        <p className="text-sm text-text-secondary">
+                        <p className="text-sm text-cantiere-ink-secondary">
                           {request.city ?? "Città non specificata"}
                           {" - "}
                           {formatDate(request.createdAt)}
                         </p>
-                        <p className="text-xs text-text-muted">
+                        <p className="text-xs text-cantiere-ink-secondary">
                           Codice richiesta:{" "}
                           {request.requestCode ?? request.requestId}
                         </p>
                       </div>
 
-                      <div className="text-sm text-text-secondary sm:text-right">
-                        <p className="font-medium text-text-primary">
+                      <div className="text-sm text-cantiere-ink-secondary sm:text-right">
+                        <p className="font-medium text-cantiere-ink">
                           {formatStatus(request.status)}
                         </p>
-                        <p className="mt-3 font-semibold text-brand-primary">
+                        <p className="mt-3 font-semibold text-cantiere-accent">
                           Vedi dettagli
                         </p>
                       </div>

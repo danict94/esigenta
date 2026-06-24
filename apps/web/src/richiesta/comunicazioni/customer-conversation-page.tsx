@@ -141,15 +141,15 @@ export async function CustomerConversationPage({
         <Container size="lg">
           <div className="space-y-6">
             <div>
-              <p className="text-sm font-medium text-text-secondary">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Messaggi
               </p>
 
-              <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+              <h1 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
                 Messaggi richiesta
               </h1>
 
-              <p className="mt-1 text-sm text-text-secondary">
+              <p className="mt-1 text-sm text-cantiere-ink-secondary">
                 Rispondi senza creare un account.
               </p>
             </div>
@@ -157,7 +157,7 @@ export async function CustomerConversationPage({
             {statusMessage ? (
               <Card>
                 <CardContent className="pt-6">
-                  <p className="text-sm text-text-secondary">
+                  <p className="text-sm text-cantiere-ink-secondary">
                     {statusMessage}
                   </p>
                 </CardContent>
@@ -177,7 +177,7 @@ export async function CustomerConversationPage({
             ) : (
               <Card>
                 <CardContent className="pt-6">
-                  <p className="text-sm text-text-secondary">
+                  <p className="text-sm text-cantiere-ink-secondary">
                     {result.message}
                   </p>
                 </CardContent>

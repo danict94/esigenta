@@ -160,11 +160,11 @@ export async function ConversationPage({
     <PageShell size="xl" className="py-8 md:py-10">
       <section className="space-y-6">
         <div className="pt-4">
-          <p className="text-sm font-medium text-text-secondary">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">
             {eyebrow}
           </p>
 
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
+          <h1 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
             {title}
           </h1>
         </div>
@@ -172,7 +172,7 @@ export async function ConversationPage({
         {statusMessage ? (
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-cantiere-ink-secondary">
                 {statusMessage}
               </p>
             </CardContent>
@@ -196,7 +196,7 @@ export async function ConversationPage({
         ) : (
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-cantiere-ink-secondary">
                 {result.message}
               </p>
             </CardContent>

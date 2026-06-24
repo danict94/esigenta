@@ -72,10 +72,10 @@ export default async function AdminForgotPasswordPage({
     getErrorMessage(params.error);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-primary px-6">
+    <main className="flex min-h-screen items-center justify-center bg-cantiere-paper px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <p className="text-sm font-medium text-text-muted">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">
             esigenta Admin
           </p>
           <CardTitle>
@@ -89,7 +89,7 @@ export default async function AdminForgotPasswordPage({
 
         <CardContent>
           {sent ? (
-            <div className="border border-border-primary bg-surface-secondary px-4 py-3 text-sm leading-6 text-text-primary">
+            <div className="border border-cantiere-hairline bg-cantiere-linen px-4 py-3 text-sm leading-6 text-cantiere-ink">
               Se l'email è associata a un account admin, riceverai a breve il
               link per reimpostare la password.
             </div>
@@ -99,7 +99,7 @@ export default async function AdminForgotPasswordPage({
               className="grid gap-5"
             >
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-text-primary">
+                <span className="text-sm font-medium text-cantiere-ink">
                   Email
                 </span>
                 <Input
@@ -111,7 +111,7 @@ export default async function AdminForgotPasswordPage({
               </label>
 
               {errorMessage ? (
-                <p className="border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+                <p className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
                   {errorMessage}
                 </p>
               ) : null}
@@ -122,11 +122,11 @@ export default async function AdminForgotPasswordPage({
             </form>
           )}
 
-          <p className="mt-6 text-center text-sm text-text-secondary">
+          <p className="mt-6 text-center text-sm text-cantiere-ink-secondary">
             Hai ricordato la password?{" "}
             <Link
               href="/accedi"
-              className="font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+              className="font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
             >
               Torna all'accesso
             </Link>

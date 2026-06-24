@@ -87,11 +87,11 @@ export async function ServicesConfigurationPage({
         <Card className="p-8">
           <Badge variant="warning">Profilo non disponibile</Badge>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-text-primary">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-cantiere-ink">
             Non troviamo il tuo profilo impresa
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
             L&apos;account risulta autenticato, ma non è collegato a un profilo
             impresa valido.
           </p>
@@ -106,18 +106,18 @@ export async function ServicesConfigurationPage({
         <Card className="p-8">
           <Badge variant="warning">Categorie non disponibili</Badge>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-text-primary">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-cantiere-ink">
             Configurazione servizi non disponibile
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
             Non ci sono categorie operative configurabili. Puoi comunque
             entrare nell&apos;area impresa.
           </p>
 
           <Link
             href="/area-impresa/richieste"
-            className="mt-6 inline-flex text-sm font-medium text-brand-primary"
+            className="mt-6 inline-flex text-sm font-medium text-cantiere-accent"
             prefetch={false}
           >
             Vai alle richieste
@@ -157,23 +157,23 @@ export async function ServicesConfigurationPage({
   return (
     <PageShell size="lg">
       <div className="max-w-4xl">
-        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-text-primary">
+        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-cantiere-ink">
           Configura categorie e interventi
         </h1>
 
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
           Le categorie determinano la tua identità professionale. Gli
           interventi determinano quali richieste puoi vedere.
         </p>
 
         <Card className="mt-8 p-6">
-          <div className="flex flex-col gap-3 border-b border-border-primary pb-5 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-3 border-b border-cantiere-hairline pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-sm font-medium text-text-muted">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Profilo impresa
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-text-primary">
+              <h2 className="mt-1 text-xl font-semibold text-cantiere-ink">
                 {company.name}
               </h2>
             </div>
@@ -184,9 +184,9 @@ export async function ServicesConfigurationPage({
           </div>
 
           {!company.isConfigured && onboardingCategory ? (
-            <p className="mt-5 text-sm leading-6 text-text-secondary">
+            <p className="mt-5 text-sm leading-6 text-cantiere-ink-secondary">
               Suggerimento dalla registrazione:{" "}
-              <span className="font-medium text-text-primary">
+              <span className="font-medium text-cantiere-ink">
                 {onboardingCategory.name}
               </span>
               . Non è ancora salvato — selezionalo qui sotto e premi
@@ -195,7 +195,7 @@ export async function ServicesConfigurationPage({
           ) : null}
 
           {errorMessage ? (
-            <div className="mt-5 border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+            <div className="mt-5 border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
               {errorMessage}
             </div>
           ) : null}

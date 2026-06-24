@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-import { Badge, cn, tokens } from "@esigenta/ui";
+import { Badge, cn } from "@esigenta/ui";
 
 import type { SeoInterventionLanding } from "../pages/interventi";
 import { GeoRequestForm } from "./geo-request-form";
@@ -26,8 +26,8 @@ export function GeoCostModule({
       <section
         aria-labelledby="geo-module-title"
         className={cn(
-          tokens.radius.lg,
-          "bg-surface-soft px-5 py-7 md:px-8 md:py-9 lg:px-10",
+          "rounded-[8px]",
+          "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
         )}
       >
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.34fr)] lg:items-center">
@@ -39,12 +39,12 @@ export function GeoCostModule({
             <div className="space-y-3">
               <h2
                 id="geo-module-title"
-                className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+                className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
               >
                 {geoSection.title}
               </h2>
 
-              <p className="text-base leading-7 text-text-secondary">
+              <p className="text-base leading-7 text-cantiere-ink-secondary">
                 {geoSection.summary}
               </p>
             </div>
@@ -65,13 +65,13 @@ export function GeoCostModule({
           <div className="space-y-4">
             <h2
               id="quanto-costa-title"
-              className="text-3xl font-semibold leading-tight text-text-primary md:text-4xl"
+              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
             >
               {costSection?.title ?? "Quanto costa questo intervento?"}
             </h2>
 
             {costSection?.summary ? (
-              <p className="text-base leading-7 text-text-secondary">
+              <p className="text-base leading-7 text-cantiere-ink-secondary">
                 {costSection.summary}
               </p>
             ) : null}
@@ -80,15 +80,15 @@ export function GeoCostModule({
           {costSection?.priceRange ? (
             <div
               className={cn(
-                tokens.radius.lg,
-                "border border-border-primary bg-surface-elevated p-5",
+                "rounded-[8px]",
+                "border border-cantiere-hairline bg-cantiere-paper p-5",
               )}
             >
-              <p className="text-sm font-medium text-text-muted">
+              <p className="text-sm font-medium text-cantiere-ink-secondary">
                 Range indicativo
               </p>
 
-              <p className="mt-2 text-xl font-semibold leading-7 text-text-primary">
+              <p className="mt-2 text-xl font-semibold leading-7 text-cantiere-ink">
                 {costSection.priceRange}
               </p>
             </div>
@@ -98,10 +98,10 @@ export function GeoCostModule({
             <Link
               href={requestHref}
               className={cn(
-                tokens.interactive.base,
-                tokens.interactive.radius,
-                tokens.interactive.sizes.lg,
-                tokens.interactive.variants.brand,
+                "inline-flex items-center justify-center font-medium transition-colors",
+                "rounded-[8px]",
+                "h-12 px-6 text-[15px]",
+                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
               )}
             >
@@ -113,10 +113,10 @@ export function GeoCostModule({
               <Link
                 href={costGuideHref}
                 className={cn(
-                  tokens.interactive.base,
-                  tokens.interactive.radius,
-                  tokens.interactive.sizes.lg,
-                  tokens.interactive.variants.brandOutline,
+                  "inline-flex items-center justify-center font-medium transition-colors",
+                  "rounded-[8px]",
+                  "h-12 px-6 text-[15px]",
+                  "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                   "w-full gap-2 sm:w-auto",
                 )}
               >
@@ -131,11 +131,11 @@ export function GeoCostModule({
           {costSection?.priceRows?.length ? (
             <div
               className={cn(
-                tokens.radius.lg,
-                "overflow-hidden border border-border-primary bg-surface-elevated",
+                "rounded-[8px]",
+                "overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
               )}
             >
-              <div className="hidden border-b border-border-primary px-4 py-3 text-sm font-semibold text-text-primary md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)] md:px-5">
+              <div className="hidden border-b border-cantiere-hairline px-4 py-3 text-sm font-semibold text-cantiere-ink md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)] md:px-5">
                 <span>Voce</span>
                 <span>Fascia indicativa</span>
                 <span>Note</span>
@@ -148,28 +148,28 @@ export function GeoCostModule({
                     className="grid gap-3 px-4 py-4 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)] md:px-5"
                   >
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-text-muted md:hidden">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary md:hidden">
                         Voce
                       </p>
-                      <p className="font-medium text-text-primary">
+                      <p className="font-medium text-cantiere-ink">
                         {row.label}
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-text-muted md:hidden">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary md:hidden">
                         Fascia indicativa
                       </p>
-                      <p className="font-semibold text-text-primary">
+                      <p className="font-semibold text-cantiere-ink">
                         {row.range}
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-text-muted md:hidden">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary md:hidden">
                         Note
                       </p>
-                      <p className="text-text-secondary">{row.note}</p>
+                      <p className="text-cantiere-ink-secondary">{row.note}</p>
                     </div>
                   </div>
                 ))}
@@ -180,19 +180,19 @@ export function GeoCostModule({
           {costSection?.factors?.length ? (
             <div
               className={cn(
-                tokens.radius.lg,
-                "border border-border-primary bg-surface-primary p-5 md:p-6",
+                "rounded-[8px]",
+                "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-6",
               )}
             >
-              <h3 className="text-lg font-semibold leading-7 text-text-primary">
+              <h3 className="text-lg font-semibold leading-7 text-cantiere-ink">
                 Fattori che influenzano il prezzo
               </h3>
 
-              <ul className="mt-4 grid gap-3 text-sm leading-6 text-text-secondary sm:grid-cols-2">
+              <ul className="mt-4 grid gap-3 text-sm leading-6 text-cantiere-ink-secondary sm:grid-cols-2">
                 {costSection.factors.map((factor) => (
                   <li key={factor} className="flex gap-3">
                     <CheckCircle2
-                      className="mt-0.5 size-4 shrink-0 text-brand-primary"
+                      className="mt-0.5 size-4 shrink-0 text-cantiere-accent"
                       aria-hidden={true}
                       strokeWidth={1.8}
                     />
@@ -205,7 +205,7 @@ export function GeoCostModule({
 
           {costSection?.examples?.length ? (
             <div className="space-y-3">
-              <h3 className="text-lg font-semibold leading-7 text-text-primary">
+              <h3 className="text-lg font-semibold leading-7 text-cantiere-ink">
                 Esempi di richieste
               </h3>
 
@@ -214,8 +214,8 @@ export function GeoCostModule({
                   <span
                     key={example}
                     className={cn(
-                      tokens.radius.full,
-                      "inline-flex min-h-9 items-center border border-border-primary bg-surface-primary px-3 text-sm font-medium leading-5 text-text-secondary",
+                      "rounded-full",
+                      "inline-flex min-h-9 items-center border border-cantiere-hairline bg-cantiere-paper px-3 text-sm font-medium leading-5 text-cantiere-ink-secondary",
                     )}
                   >
                     {example}

@@ -23,13 +23,13 @@ export function CustomerRequestsNav({
   className,
 }: CustomerRequestsNavProps) {
   const linkClass =
-    "text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+    "text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
 
   return (
     <nav
       aria-label="Navigazione richieste cliente"
       className={cn(
-        "flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-border-primary pb-4",
+        "flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-cantiere-hairline pb-4",
         className,
       )}
     >

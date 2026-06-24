@@ -1,15 +1,36 @@
 import type { ReactNode } from "react"
 
 import { cn } from "../lib/cn"
-import {
-  tokens,
-  type ContainerToken,
-  type LayoutGutterToken,
-} from "../styles/tokens"
 
-export type ContainerSize = ContainerToken
+export type ContainerSize =
+  | "xs"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "xxl"
+  | "full"
 
-export type ContainerGutter = LayoutGutterToken
+export type ContainerGutter =
+  | "none"
+  | "sm"
+  | "md"
+
+const containerWidths = {
+  xs: "max-w-[1120px]",
+  sm: "max-w-[1120px]",
+  md: "max-w-[1120px]",
+  lg: "max-w-[1120px]",
+  xl: "max-w-[1280px]",
+  xxl: "max-w-[1280px]",
+  full: "max-w-none",
+} as const
+
+const containerGutters = {
+  none: "",
+  sm: "px-5 sm:px-10 lg:px-16",
+  md: "px-5 sm:px-10 lg:px-16",
+} as const
 
 export type ContainerProps = {
   size?: ContainerSize
@@ -19,8 +40,8 @@ export type ContainerProps = {
 }
 
 export function Container({
-  size = tokens.layout.container.defaultSize,
-  gutter = tokens.layout.container.defaultGutter,
+  size = "lg",
+  gutter = "md",
   className,
   children,
 }: ContainerProps) {
@@ -29,9 +50,9 @@ export function Container({
       data-ui="container"
       className={cn(
         className,
-        tokens.layout.container.base,
-        tokens.layout.container.widths[size],
-        tokens.layout.container.gutters[gutter],
+        "mx-auto w-full",
+        containerWidths[size],
+        containerGutters[gutter],
       )}
     >
       {children}

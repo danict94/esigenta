@@ -4,9 +4,6 @@ import type {
 
 import { cn } from "../lib/cn"
 import {
-  tokens,
-} from "../styles/tokens"
-import {
   Container,
   type ContainerSize,
 } from "./container"
@@ -18,7 +15,7 @@ export type PageShellProps = {
 }
 
 export function PageShell({
-  size = tokens.layout.pageShell.contentContainer.defaultSize,
+  size = "lg",
   className,
   children,
 }: PageShellProps) {
@@ -26,14 +23,13 @@ export function PageShell({
     <main
       data-ui="page-shell"
       className={cn(
-        tokens.layout.pageShell.base,
-        tokens.layout.pageShell.padding,
+        "min-h-screen py-20 md:py-28 lg:py-32",
         className,
       )}
     >
       <Container
         size={size}
-        gutter={tokens.layout.pageShell.contentContainer.gutter}
+        gutter="md"
       >
         {children}
       </Container>

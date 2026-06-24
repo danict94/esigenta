@@ -140,10 +140,10 @@ export default async function AdminResetPasswordPage({
     tokenState.ok;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-primary px-6">
+    <main className="flex min-h-screen items-center justify-center bg-cantiere-paper px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <p className="text-sm font-medium text-text-muted">
+          <p className="text-sm font-medium text-cantiere-ink-secondary">
             esigenta Admin
           </p>
           <CardTitle>
@@ -156,7 +156,7 @@ export default async function AdminResetPasswordPage({
 
         <CardContent>
           {errorMessage ? (
-            <p className="mb-5 border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+            <p className="mb-5 border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
               {errorMessage}
             </p>
           ) : null}
@@ -173,7 +173,7 @@ export default async function AdminResetPasswordPage({
               />
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-text-primary">
+                <span className="text-sm font-medium text-cantiere-ink">
                   Nuova password
                 </span>
                 <Input
@@ -186,7 +186,7 @@ export default async function AdminResetPasswordPage({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-text-primary">
+                <span className="text-sm font-medium text-cantiere-ink">
                   Conferma password
                 </span>
                 <Input
@@ -204,12 +204,12 @@ export default async function AdminResetPasswordPage({
             </form>
           ) : (
             <div className="grid gap-4">
-              <p className="text-sm leading-6 text-text-secondary">
+              <p className="text-sm leading-6 text-cantiere-ink-secondary">
                 Richiedi un nuovo link per continuare.
               </p>
               <Link
                 href="/admin/recupera-password"
-                className="text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+                className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
               >
                 Richiedi nuovo link
               </Link>

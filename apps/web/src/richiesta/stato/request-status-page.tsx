@@ -1,9 +1,5 @@
 import Link from "next/link"
-import {
-  Container,
-  cn,
-  tokens,
-} from "@esigenta/ui"
+import { Container, cn } from "@esigenta/ui";
 
 import {
   RequestFlowError,
@@ -168,17 +164,17 @@ export async function RequestStatusPage({
   const result = await loadStatus(token)
 
   const actionLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-brand-primary bg-brand-primary px-5 text-sm font-semibold text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
 
   return (
     <PublicShell>
-      <section className={tokens.spacing.sectionLg}>
+      <section className={"py-20 md:py-28 lg:py-32"}>
         <Container size="sm">
           <div
             className={cn(
-              "border border-border-primary bg-surface-elevated p-6",
-              tokens.radius.lg,
-              tokens.shadows.surface,
+              "border border-cantiere-hairline bg-cantiere-paper p-6",
+              "rounded-[8px]",
+              "shadow-cantiere-elevation",
             )}
           >
             {result.ok ? (
@@ -191,67 +187,67 @@ export async function RequestStatusPage({
                 />
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-brand-primary">
+                  <p className="text-sm font-medium text-cantiere-accent">
                     Stato richiesta
                   </p>
 
                   <h1
                     className={cn(
-                      "text-text-primary",
-                      tokens.typography.title,
+                      "text-cantiere-ink",
+                      "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
                     )}
                   >
                     {formatStatus(result.request.status)}
                   </h1>
 
-                  <p className="text-sm leading-6 text-text-secondary">
+                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
                     {getStatusMessage(result.request.status)}
                   </p>
                 </div>
 
                 <dl className="grid gap-3 text-sm">
-                  <div className="border border-border-primary bg-surface-primary p-3">
-                    <dt className="text-xs text-text-muted">
+                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                    <dt className="text-xs text-cantiere-ink-secondary">
                       Codice richiesta
                     </dt>
-                    <dd className="mt-1 font-medium text-text-primary">
+                    <dd className="mt-1 font-medium text-cantiere-ink">
                       {result.request.requestCode ??
                         result.request.requestId}
                     </dd>
                   </div>
 
-                  <div className="border border-border-primary bg-surface-primary p-3">
-                    <dt className="text-xs text-text-muted">
+                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                    <dt className="text-xs text-cantiere-ink-secondary">
                       Intervento
                     </dt>
-                    <dd className="mt-1 text-text-primary">
+                    <dd className="mt-1 text-cantiere-ink">
                       {formatIntervention(
                         result.request.interventionSlug,
                       )}
                     </dd>
                   </div>
 
-                  <div className="border border-border-primary bg-surface-primary p-3">
-                    <dt className="text-xs text-text-muted">
+                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                    <dt className="text-xs text-cantiere-ink-secondary">
                       Città
                     </dt>
-                    <dd className="mt-1 text-text-primary">
+                    <dd className="mt-1 text-cantiere-ink">
                       {result.request.city ?? "Non specificata"}
                     </dd>
                   </div>
 
-                  <div className="border border-border-primary bg-surface-primary p-3">
-                    <dt className="text-xs text-text-muted">
+                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
+                    <dt className="text-xs text-cantiere-ink-secondary">
                       Data invio
                     </dt>
-                    <dd className="mt-1 text-text-primary">
+                    <dd className="mt-1 text-cantiere-ink">
                       {formatDate(result.request.createdAt)}
                     </dd>
                   </div>
                 </dl>
 
-                <div className="border border-border-primary bg-surface-primary p-4">
-                  <h2 className="text-sm font-semibold text-text-primary">
+                <div className="border border-cantiere-hairline bg-cantiere-paper p-4">
+                  <h2 className="text-sm font-semibold text-cantiere-ink">
                     Avanzamento
                   </h2>
                   <ol className="mt-4 space-y-3">
@@ -267,15 +263,15 @@ export async function RequestStatusPage({
                           className={cn(
                             "h-2.5 w-2.5 rounded-full border",
                             item.active
-                              ? "border-brand-primary bg-brand-primary"
-                              : "border-border-secondary bg-surface-elevated",
+                              ? "border-cantiere-accent bg-cantiere-accent"
+                              : "border-cantiere-hairline bg-cantiere-paper",
                           )}
                         />
                         <span
                           className={cn(
                             item.active
-                              ? "text-text-primary"
-                              : "text-text-muted",
+                              ? "text-cantiere-ink"
+                              : "text-cantiere-ink-secondary",
                           )}
                         >
                           {item.label}
@@ -296,18 +292,18 @@ export async function RequestStatusPage({
               </div>
             ) : (
               <div className="space-y-3">
-                <p className="text-sm font-medium text-text-muted">
+                <p className="text-sm font-medium text-cantiere-ink-secondary">
                   Stato richiesta
                 </p>
                 <h1
                   className={cn(
-                    "text-text-primary",
-                    tokens.typography.title,
+                    "text-cantiere-ink",
+                    "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
                   )}
                 >
                   {result.title}
                 </h1>
-                <p className="text-sm leading-6 text-text-secondary">
+                <p className="text-sm leading-6 text-cantiere-ink-secondary">
                   {result.message}
                 </p>
               </div>

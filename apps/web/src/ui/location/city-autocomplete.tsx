@@ -1,21 +1,12 @@
 'use client'
 
-import {
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useRef, useState, } from 'react'
 
 import {
-  MapPin,
-} from 'lucide-react'
+  MapPin, } from 'lucide-react'
 
 import {
-  Button,
-  cn,
-  Input,
-  tokens,
-} from '@esigenta/ui'
+  Button, cn, Input } from '@esigenta/ui';
 
 import {
   type GeoPlace,
@@ -458,14 +449,14 @@ export function CityAutocomplete({
           }}
           placeholder={placeholder}
           className={cn(
-            tokens.radius.lg,
+            "rounded-[8px]",
             "h-16 pr-14 text-lg",
             className,
           )}
         />
 
         <MapPin
-          className="pointer-events-none absolute right-6 top-1/2 size-7 -translate-y-1/2 text-text-secondary"
+          className="pointer-events-none absolute right-6 top-1/2 size-7 -translate-y-1/2 text-cantiere-ink-secondary"
           aria-hidden="true"
           strokeWidth={1.5}
         />
@@ -473,7 +464,7 @@ export function CityAutocomplete({
 
       {message ? (
         <div className="grid gap-2">
-          <p className="text-xs text-text-muted">
+          <p className="text-xs text-cantiere-ink-secondary">
             {message}
           </p>
 

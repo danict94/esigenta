@@ -65,10 +65,10 @@ export function PrivacyPage() {
         <article className="py-12 md:py-16">
           <header className="max-w-3xl">
             <Badge variant="success">Privacy</Badge>
-            <h1 className="mt-5 text-4xl font-semibold tracking-tight text-text-primary">
+            <h1 className="mt-5 text-4xl font-semibold tracking-tight text-cantiere-ink">
               Informativa privacy
             </h1>
-            <p className="mt-4 text-sm leading-6 text-text-secondary">
+            <p className="mt-4 text-sm leading-6 text-cantiere-ink-secondary">
               Questa bozza descrive come {legalProfile.projectName} tratta i
               dati personali raccolti tramite sito pubblico, richieste cliente,
               area impresa, pagamenti, upload foto ed email transazionali.
@@ -77,22 +77,22 @@ export function PrivacyPage() {
 
           <div className="mt-8 grid gap-5">
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-text-primary">
+              <h2 className="text-xl font-semibold text-cantiere-ink">
                 Titolare del trattamento
               </h2>
-              <dl className="mt-4 grid gap-3 text-sm leading-6 text-text-secondary">
+              <dl className="mt-4 grid gap-3 text-sm leading-6 text-cantiere-ink-secondary">
                 <div>
-                  <dt className="font-medium text-text-primary">Progetto</dt>
+                  <dt className="font-medium text-cantiere-ink">Progetto</dt>
                   <dd>{legalProfile.projectName}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-text-primary">Titolare</dt>
+                  <dt className="font-medium text-cantiere-ink">Titolare</dt>
                   <dd>{getLegalControllerLabel()}</dd>
                 </div>
                 {legalProfile.legalMode === "business_registered" &&
                 legalProfile.businessName ? (
                   <div>
-                    <dt className="font-medium text-text-primary">
+                    <dt className="font-medium text-cantiere-ink">
                       Ragione sociale
                     </dt>
                     <dd>{legalProfile.businessName}</dd>
@@ -100,34 +100,34 @@ export function PrivacyPage() {
                 ) : null}
                 {legalProfile.hasVatNumber && legalProfile.vatNumber ? (
                   <div>
-                    <dt className="font-medium text-text-primary">P.IVA</dt>
+                    <dt className="font-medium text-cantiere-ink">P.IVA</dt>
                     <dd>{legalProfile.vatNumber}</dd>
                   </div>
                 ) : null}
                 {legalProfile.registeredOffice ? (
                   <div>
-                    <dt className="font-medium text-text-primary">
+                    <dt className="font-medium text-cantiere-ink">
                       Sede legale
                     </dt>
                     <dd>{legalProfile.registeredOffice}</dd>
                   </div>
                 ) : null}
                 <div>
-                  <dt className="font-medium text-text-primary">
+                  <dt className="font-medium text-cantiere-ink">
                     Contatto privacy
                   </dt>
                   <dd>{legalProfile.privacyEmail}</dd>
                 </div>
                 {legalProfile.pecEmail ? (
                   <div>
-                    <dt className="font-medium text-text-primary">PEC</dt>
+                    <dt className="font-medium text-cantiere-ink">PEC</dt>
                     <dd>{legalProfile.pecEmail}</dd>
                   </div>
                 ) : null}
               </dl>
 
               {initialNotice || fiscalNotice ? (
-                <p className="mt-5 border-t border-border-primary pt-4 text-sm leading-6 text-text-secondary">
+                <p className="mt-5 border-t border-cantiere-hairline pt-4 text-sm leading-6 text-cantiere-ink-secondary">
                   {initialNotice ?? fiscalNotice}
                 </p>
               ) : null}
@@ -137,10 +137,10 @@ export function PrivacyPage() {
             <LegalSection title="Dati trattati delle imprese" items={companyData} />
 
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-text-primary">
+              <h2 className="text-xl font-semibold text-cantiere-ink">
                 Pagamenti e dati tecnici
               </h2>
-              <p className="mt-3 text-sm leading-6 text-text-secondary">
+              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                 Per gli acquisti di crediti, il pagamento viene gestito tramite
                 Stripe. Esigenta conserva informazioni operative collegate
                 all&apos;ordine, allo stato del pagamento e ai crediti, ma non salva
@@ -154,10 +154,10 @@ export function PrivacyPage() {
             <LegalSection title="Servizi terzi utilizzati" items={services} />
 
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-text-primary">
+              <h2 className="text-xl font-semibold text-cantiere-ink">
                 Conservazione dei dati
               </h2>
-              <p className="mt-3 text-sm leading-6 text-text-secondary">
+              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                 I tempi di conservazione devono essere definiti e revisionati in
                 base agli obblighi applicabili, alle esigenze di sicurezza,
                 verifica delle richieste, gestione contrattuale e tutela dei
@@ -167,10 +167,10 @@ export function PrivacyPage() {
             </Card>
 
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-text-primary">
+              <h2 className="text-xl font-semibold text-cantiere-ink">
                 Diritti degli interessati
               </h2>
-              <p className="mt-3 text-sm leading-6 text-text-secondary">
+              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                 Gli interessati possono chiedere accesso, rettifica,
                 cancellazione, limitazione, opposizione e portabilita dei dati,
                 nei casi previsti dalla normativa applicabile. Le richieste
@@ -178,17 +178,17 @@ export function PrivacyPage() {
               </p>
             </Card>
 
-            <Card className="bg-surface-secondary p-6">
-              <h2 className="text-xl font-semibold text-text-primary">
+            <Card className="bg-cantiere-linen p-6">
+              <h2 className="text-xl font-semibold text-cantiere-ink">
                 Nota di revisione
               </h2>
-              <p className="mt-3 text-sm leading-6 text-text-secondary">
+              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
                 Documento operativo in bozza. Deve essere revisionato da un
                 professionista prima del lancio commerciale pieno e aggiornato
                 quando saranno disponibili dati fiscali, societari, tempi di
                 conservazione definitivi e ruoli privacy dei fornitori.
               </p>
-              <p className="mt-3 text-xs text-text-muted">
+              <p className="mt-3 text-xs text-cantiere-ink-secondary">
                 Ultimo aggiornamento: {legalProfile.lastUpdated}
               </p>
             </Card>

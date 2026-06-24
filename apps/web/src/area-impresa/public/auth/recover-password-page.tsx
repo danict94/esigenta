@@ -47,12 +47,12 @@ export async function CompanyForgotPasswordPage({
     getErrorMessage(params.error)
 
   return (
-    <main className="min-h-screen bg-surface-primary text-text-primary">
+    <main className="min-h-screen bg-cantiere-paper text-cantiere-ink">
       <Container size="sm">
         <div className="flex min-h-screen items-center py-12">
           <Card className="w-full">
             <CardHeader>
-              <p className="text-sm font-medium text-brand-primary">
+              <p className="text-sm font-medium text-cantiere-accent">
                 Area impresa
               </p>
               <CardTitle>
@@ -66,7 +66,7 @@ export async function CompanyForgotPasswordPage({
 
             <CardContent>
               {sent ? (
-                <div className="border border-border-primary bg-surface-secondary px-4 py-3 text-sm leading-6 text-text-primary">
+                <div className="border border-cantiere-hairline bg-cantiere-linen px-4 py-3 text-sm leading-6 text-cantiere-ink">
                   Se l&apos;email è associata a un account impresa, riceverai a
                   breve il link per reimpostare la password.
                 </div>
@@ -76,7 +76,7 @@ export async function CompanyForgotPasswordPage({
                   className="grid gap-5"
                 >
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-text-primary">
+                    <span className="text-sm font-medium text-cantiere-ink">
                       Email
                     </span>
                     <Input
@@ -89,7 +89,7 @@ export async function CompanyForgotPasswordPage({
                   </label>
 
                   {errorMessage ? (
-                    <p className="border border-border-focus bg-surface-secondary px-4 py-3 text-sm text-text-primary">
+                    <p className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
                       {errorMessage}
                     </p>
                   ) : null}
@@ -98,18 +98,18 @@ export async function CompanyForgotPasswordPage({
                     Invia link di reset
                   </Button>
 
-                  <p className="text-center text-xs leading-5 text-text-muted">
+                  <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
                     Per maggiori informazioni leggi l&apos;
                     <Link
                       href="/privacy"
-                      className="font-medium text-brand-primary"
+                      className="font-medium text-cantiere-accent"
                     >
                       informativa privacy
                     </Link>{" "}
                     e i{" "}
                     <Link
                       href="/termini"
-                      className="font-medium text-brand-primary"
+                      className="font-medium text-cantiere-accent"
                     >
                       termini del servizio
                     </Link>
@@ -118,11 +118,11 @@ export async function CompanyForgotPasswordPage({
                 </form>
               )}
 
-              <p className="mt-6 text-center text-sm text-text-secondary">
+              <p className="mt-6 text-center text-sm text-cantiere-ink-secondary">
                 Hai ricordato la password?{" "}
                 <Link
                   href="/area-impresa/accedi"
-                  className="font-semibold text-brand-primary transition-colors hover:text-brand-primary-hover"
+                  className="font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
                 >
                   Torna all&apos;accesso
                 </Link>

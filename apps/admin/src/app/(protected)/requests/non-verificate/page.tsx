@@ -33,25 +33,25 @@ export default async function UnverifiedRequestsPage() {
 
   return (
     <PageShell size="lg">
-      <header className="border-b border-border-primary pb-7">
+      <header className="border-b border-cantiere-hairline pb-7">
         <Link
           href="/requests"
-          className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+          className="text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
         >
           ← Coda richieste
         </Link>
 
         <div className="mt-5 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-text-muted">
+            <p className="text-sm font-medium text-cantiere-ink-secondary">
               Recupero richieste
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text-primary">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
               Richieste non verificate
             </h1>
 
-            <p className="mt-3 max-w-xl text-sm leading-6 text-text-secondary">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-cantiere-ink-secondary">
               Richieste in attesa che il cliente confermi l&apos;email.
               Finché restano in questo stato non entrano nella coda di
               revisione, non sono mai visibili alle imprese e non generano
@@ -68,10 +68,10 @@ export default async function UnverifiedRequestsPage() {
         {requests.length === 0 ? (
           <Card className="p-8">
             <div className="max-w-xl">
-              <p className="text-lg font-semibold text-text-primary">
+              <p className="text-lg font-semibold text-cantiere-ink">
                 Nessuna richiesta da recuperare
               </p>
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
+              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
                 Tutte le richieste ricevute sono state verificate o sono
                 ancora nella finestra di attesa dell&apos;email del cliente.
               </p>
@@ -81,38 +81,38 @@ export default async function UnverifiedRequestsPage() {
           <ul className="grid gap-4">
             {requests.map((request) => (
               <li key={request.id}>
-                <Card className="p-5 transition-colors hover:border-brand-primary">
+                <Card className="p-5 transition-colors hover:border-cantiere-accent">
                   <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="danger">Email non verificata</Badge>
-                        <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                        <span className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
                           In attesa da {formatAge(request.createdAt)}
                         </span>
                       </div>
 
-                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-text-primary">
+                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-cantiere-ink">
                         {request.requestCode ?? "Codice non disponibile"}
                       </h2>
 
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-text-secondary">
+                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cantiere-ink-secondary">
                         <span>
-                          <span className="text-text-muted">Cliente:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Cliente:</span>{" "}
                           {request.customerName ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-text-muted">Email:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Email:</span>{" "}
                           {request.customerEmail ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-text-muted">Telefono:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Telefono:</span>{" "}
                           {request.customerPhone ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-text-muted">Creata:</span>{" "}
+                          <span className="text-cantiere-ink-secondary">Creata:</span>{" "}
                           {formatDate(request.createdAt)}
                         </span>
                       </div>
@@ -121,7 +121,7 @@ export default async function UnverifiedRequestsPage() {
                     <div className="flex shrink-0 md:justify-end">
                       <Link
                         href={`/requests/${request.id}`}
-                        className="inline-flex h-11 items-center justify-center border border-brand-primary bg-brand-primary px-5 text-sm font-medium text-brand-on-primary transition-colors hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+                        className="inline-flex h-11 items-center justify-center border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
                       >
                         Apri richiesta
                       </Link>
