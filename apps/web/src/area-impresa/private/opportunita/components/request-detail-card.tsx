@@ -80,7 +80,7 @@ export type RequestDetailCardProps = {
 function Icon({ children }: { children: ReactNode }) {
   return (
     <span
-      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-cantiere-linen text-cantiere-ink-secondary ring-1 ring-cantiere-hairline"
+      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-cantiere-linen text-cantiere-ink-secondary"
       aria-hidden="true"
     >
       {children}
