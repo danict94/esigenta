@@ -234,7 +234,7 @@ function getSingleSearchParam(value?: string | string[]) {
   return value ?? null
 }
 
-export function getUnlockError(
+function getUnlockError(
   value?: string | string[],
 ): RequestUnlockError | null {
   const rawValue = getSingleSearchParam(value)

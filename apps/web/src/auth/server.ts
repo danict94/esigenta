@@ -15,8 +15,6 @@ import {
   AuthenticationRequiredError,
   CompanyAuthorizationError,
   getCurrentUserFromHeaders,
-  requireCompanyMemberFromUser,
-  requireCompanyOwnerFromUser,
   resolveCompanyActorFromUser,
 } from "@esigenta/auth"
 
@@ -41,30 +39,6 @@ export const requireUser = cache(
     return user
   },
 )
-
-export async function requireCompanyMember(
-  companyId: string,
-) {
-  const user =
-    await requireUser()
-
-  return requireCompanyMemberFromUser(
-    user,
-    companyId,
-  )
-}
-
-export async function requireCompanyOwner(
-  companyId: string,
-) {
-  const user =
-    await requireUser()
-
-  return requireCompanyOwnerFromUser(
-    user,
-    companyId,
-  )
-}
 
 export async function requireAreaImpresaAccess() {
   try {

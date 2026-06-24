@@ -24,7 +24,7 @@ import {
  * suspended company cannot see a request it unlocked before suspension.
  */
 
-export type RequestVisibilityGrants = {
+type RequestVisibilityGrants = {
   hasUnlock: boolean
   hasSaved: boolean
   hasDispatch: boolean

@@ -34,63 +34,6 @@ export function areaLog(event: string, payload: AreaPayload): void {
   )
 }
 
-/**
- * Measures an async phase and emits eventBase.start / eventBase.end.
- * Handles Next.js redirect/notFound (result: "redirect") vs real errors
- * (result: "error") separately. When monitoring is disabled the fn is called
- * directly with zero overhead.
- */
-export async function measureAreaPhase<T>(
-  eventBase: string,
-  payload: AreaPayload,
-  fn: () => Promise<T>,
-): Promise<T> {
-  if (!isAreaMonitoringEnabled()) return fn()
-
-  areaLog(`${eventBase}.start`, payload)
-  const startedAt = performance.now()
-
-  try {
-    const result = await fn()
-    areaLog(`${eventBase}.end`, {
-      ...payload,
-      result: "ok",
-      durationMs: Math.round(performance.now() - startedAt),
-    })
-    return result
-  } catch (error) {
-    const durationMs = Math.round(performance.now() - startedAt)
-    if (isNextFrameworkError(error)) {
-      areaLog(`${eventBase}.end`, {
-        ...payload,
-        result: "redirect",
-        durationMs,
-      })
-    } else {
-      areaLog(`${eventBase}.end`, {
-        ...payload,
-        result: "error",
-        durationMs,
-        errorType: error instanceof Error ? error.name : "unknown",
-      })
-    }
-    throw error
-  }
-}
-
-/**
- * Extracts a stable trace ID from incoming request headers.
- * Prefers x-esigenta-trace-id (set by our middleware), then x-vercel-id.
- */
-export function getAreaTraceId(requestHeaders: Headers): string {
-  return (
-    requestHeaders.get("x-esigenta-trace-id") ??
-    requestHeaders.get("x-vercel-id") ??
-    requestHeaders.get("x-request-id") ??
-    ""
-  )
-}
-
 export type AreaRequestKind =
   | "document"
   | "rsc"
@@ -170,18 +113,4 @@ export function shortId(id: string | null | undefined): string {
  */
 export function areaTimestamp(): number {
   return performance.now()
-}
-
-// ── internal helpers ────────────────────────────────────────────────────────
-
-/**
- * Detects Next.js framework errors (redirect, notFound) which carry a
- * "digest" property. These are normal control flow, not real errors.
- */
-function isNextFrameworkError(error: unknown): boolean {
-  return (
-    error !== null &&
-    typeof error === "object" &&
-    "digest" in (error as Record<string, unknown>)
-  )
 }

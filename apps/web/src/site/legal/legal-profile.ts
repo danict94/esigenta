@@ -1,4 +1,4 @@
-export type LegalMode =
+type LegalMode =
   | "initial_personal"
   | "business_registered"
 

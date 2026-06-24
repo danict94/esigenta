@@ -7,5 +7,3 @@ export type {
   FrozenAlias,
   FrozenTaxonomySource,
 } from "./source"
-
-export { validateFrozenTaxonomySource } from "./shared/validators"

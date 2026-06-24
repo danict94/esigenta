@@ -36,14 +36,3 @@ export function formatUnlockAvailability(value: number | null) {
   return value === null ? "Disponibilità non impostata" : `${value} posti disponibili`;
 }
 
-export function getCommercialStatusLabel(state: RequestCommercialState) {
-  if (!state.isCommerciallyConfigured) {
-    return "Non ancora acquistabile";
-  }
-
-  if (state.isSoldOut) {
-    return "Posti terminati";
-  }
-
-  return "Disponibile";
-}

@@ -20,8 +20,6 @@ import type { AttachedRequestPhoto } from "../../internal/request/request-photos
 
 // ─── Public types ─────────────────────────────────────────────────────────────
 
-export type { AttachedRequestPhoto }
-
 export type AvailableCompanyRequestDetail = {
   id: string
   requestCode: string | null

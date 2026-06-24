@@ -1,4 +1,4 @@
-export const COOKIE_CONSENT_STORAGE_KEY =
+const COOKIE_CONSENT_STORAGE_KEY =
   "esigenta_cookie_consent"
 
 export const COOKIE_CONSENT_OPEN_EVENT =

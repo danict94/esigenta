@@ -1,4 +1,4 @@
-export type FrozenAliasOwnerType = "intervention" | "category" | "projectGroup"
+type FrozenAliasOwnerType = "intervention" | "category" | "projectGroup"
 
 export type FrozenAlias = {
   value: string
