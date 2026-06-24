@@ -97,7 +97,7 @@ export async function getCompanyConversationThreadPage(
         r."requestCode"      AS req_request_code,
         r."status"           AS req_status,
         r."interventionSlug" AS req_intervention_slug,
-        r."city"             AS req_city,
+        rgl."city"           AS req_city,
         r."createdAt"        AS req_created_at,
         ru."refundedAt"      AS ru_refunded_at,
         rbu."id"             AS rbu_id,
@@ -126,7 +126,8 @@ export async function getCompanyConversationThreadPage(
           '[]'::json
         ) AS participants
       FROM "Conversation" c
-      LEFT JOIN "Request"       r   ON r."id"  = c."requestId"
+      LEFT JOIN "Request"     r   ON r."id"  = c."requestId"
+      LEFT JOIN "GeoLocation" rgl ON rgl."id" = r."geoLocationId"
       LEFT JOIN "RequestUnlock" ru  ON ru."id" = c."requestUnlockId"
       LEFT JOIN "User"          rbu ON rbu."id" = c."resolvedById"
       WHERE c."id" = ${conversationId}
