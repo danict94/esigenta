@@ -431,7 +431,7 @@ export function ImpresaSidebar({
           <div ref={accountMenuRef} className="relative">
             <Button
               type="button"
-              variant="secondary"
+              variant="nav"
               size="sm"
               className="gap-2"
               aria-expanded={accountOpen}

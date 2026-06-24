@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { buttonVariants, cn } from "@esigenta/ui";
+
 import { cc, ccElevation, ccFont } from "./palette";
 import { CloseIcon, MenuIcon } from "./icons";
 
@@ -72,8 +74,10 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                 key={item.href}
                 href={item.href}
                 prefetch={false}
-                className="rounded-[6px] border px-3 py-1.5 text-[14px] font-medium transition-colors duration-300 hover:bg-[#CC785C]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#CC785C]"
-                style={{ borderColor: cc.accent, color: cc.accent }}
+                className={cn(
+                  buttonVariants.nav,
+                  "rounded-[6px] px-3 py-1.5 text-[14px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#CC785C]",
+                )}
               >
                 {item.label}
               </Link>
@@ -116,8 +120,10 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                 href={item.href}
                 prefetch={false}
                 onClick={() => setMenuOpen(false)}
-                className="mt-2 inline-flex w-fit items-center rounded-[8px] border px-4 py-2.5 text-[15px] font-medium"
-                style={{ borderColor: cc.accent, color: cc.accent }}
+                className={cn(
+                  buttonVariants.nav,
+                  "mt-2 inline-flex w-fit items-center rounded-[8px] px-4 py-2.5 text-[15px]",
+                )}
               >
                 {item.label}
               </Link>

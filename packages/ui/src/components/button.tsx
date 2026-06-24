@@ -10,6 +10,7 @@ type ButtonVariant =
   | "secondary"
   | "brand"
   | "ghost"
+  | "nav"
 
 type ButtonSize =
   | "sm"
@@ -17,12 +18,12 @@ type ButtonSize =
   | "lg"
   | "xl"
 
-const buttonBase =
+export const buttonBase =
   "inline-flex items-center justify-center font-medium transition-colors disabled:pointer-events-none disabled:opacity-60"
 
-const buttonRadius = "rounded-[8px]"
+export const buttonRadius = "rounded-[8px]"
 
-const buttonVariants = {
+export const buttonVariants = {
   primary:
     "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
   secondary:
@@ -31,14 +32,44 @@ const buttonVariants = {
     "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
   ghost:
     "border border-transparent bg-transparent text-cantiere-ink-secondary hover:bg-cantiere-surface hover:text-cantiere-ink",
+  /**
+   * Branded nav CTA: no border, no hover background/color shift — only a
+   * scale affordance. For nav items that must read as a link, not a filled
+   * control (e.g. account menu trigger, "Sei un professionista?" CTA).
+   */
+  nav: "border border-transparent bg-transparent font-semibold text-cantiere-accent transition-transform hover:scale-105",
 } as const
 
-const buttonSizes = {
+export const buttonSizes = {
   sm: "h-10 px-4 text-[14px]",
   md: "h-12 px-5 text-[15px]",
   lg: "h-12 px-6 text-[15px]",
   xl: "h-12 px-6 text-[15px]",
 } as const
+
+export type { ButtonVariant, ButtonSize }
+
+/**
+ * Same recipe as <Button>, exposed for non-button elements that must share
+ * a variant's look (e.g. a next/link anchor acting as a nav CTA).
+ */
+export function buttonClassName({
+  variant = "primary",
+  size = "md",
+  className,
+}: {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string | undefined
+} = {}): string {
+  return cn(
+    buttonBase,
+    buttonRadius,
+    buttonSizes[size],
+    buttonVariants[variant],
+    className,
+  )
+}
 
 export type ButtonProps = {
   variant?: ButtonVariant
@@ -56,13 +87,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={cn(
-        buttonBase,
-        buttonRadius,
-        buttonSizes[size],
-        buttonVariants[variant],
-        className,
-      )}
+      className={buttonClassName({ variant, size, className })}
       {...props}
     >
       {children}
