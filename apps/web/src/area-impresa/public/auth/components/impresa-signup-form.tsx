@@ -6,7 +6,7 @@ import {
   useRouter, } from "next/navigation"
 
 import {
-  Badge, Button, Input, Select, cn } from "@esigenta/ui";
+  Button, Input, Select, cn } from "@esigenta/ui";
 
 import {
   type GeoPlace,
@@ -225,41 +225,55 @@ export function ImpresaSignupForm({
       onSubmit={handleSubmit}
       className="flex flex-col gap-5"
     >
-      <div className="flex items-center gap-2 pb-1">
-        <Badge
-          variant={step === "company" ? "success" : "neutral"}
-        >
-          1
-        </Badge>
+      <div className="flex items-center gap-3 pb-1">
+        <span className="flex items-center gap-2">
+          <span
+            className={cn(
+              "flex size-6 items-center justify-center rounded-full text-[12px] font-medium transition-colors",
+              step === "company"
+                ? "bg-cantiere-accent text-cantiere-paper"
+                : "border border-cantiere-hairline text-cantiere-ink-secondary",
+            )}
+          >
+            1
+          </span>
 
-        <span
-          className={cn(
-            "text-sm font-semibold",
-            step === "company"
-              ? "text-cantiere-ink"
-              : "text-cantiere-ink-secondary",
-          )}
-        >
-          Dati azienda
+          <span
+            className={cn(
+              "text-[14px] font-medium",
+              step === "company"
+                ? "text-cantiere-ink"
+                : "text-cantiere-ink-secondary",
+            )}
+          >
+            Dati azienda
+          </span>
         </span>
 
-        <span className="h-px flex-1 bg-border-primary" />
+        <span className="h-px flex-1 bg-cantiere-hairline" />
 
-        <Badge
-          variant={step === "account" ? "success" : "neutral"}
-        >
-          2
-        </Badge>
+        <span className="flex items-center gap-2">
+          <span
+            className={cn(
+              "flex size-6 items-center justify-center rounded-full text-[12px] font-medium transition-colors",
+              step === "account"
+                ? "bg-cantiere-accent text-cantiere-paper"
+                : "border border-cantiere-hairline text-cantiere-ink-secondary",
+            )}
+          >
+            2
+          </span>
 
-        <span
-          className={cn(
-            "text-sm font-semibold",
-            step === "account"
-              ? "text-cantiere-ink"
-              : "text-cantiere-ink-secondary",
-          )}
-        >
-          Accesso
+          <span
+            className={cn(
+              "text-[14px] font-medium",
+              step === "account"
+                ? "text-cantiere-ink"
+                : "text-cantiere-ink-secondary",
+            )}
+          >
+            Accesso
+          </span>
         </span>
       </div>
 

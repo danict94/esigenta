@@ -11,6 +11,9 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
+    "dependency-cruiser": "^17.4.3",
+    "knip": "^6.19.0",
+    "madge": "^8.0.0",
     "playwright": "^1.60.0",
     "turbo": "^2.9.10",
     "typescript": "^5.9.3",
