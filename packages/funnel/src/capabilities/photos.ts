@@ -45,7 +45,7 @@ export const photosCapability: RuntimeCapability = {
    * Lightweight helper copy.
    */
   description:
-    "Le foto aiutano i professionisti a capire meglio il lavoro da eseguire.",
+    "Le foto aiutano il professionista a capire meglio la situazione, ma puoi continuare anche senza.",
 
   /**
    * Photos should be strongly encouraged,

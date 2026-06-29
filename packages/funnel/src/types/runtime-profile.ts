@@ -40,8 +40,23 @@ export type RuntimeCapabilityId =
   | "rooms"
   | "contact"
 
-import type { RuntimePresetSlug } from "@esigenta/taxonomy"
-export type { RuntimePresetSlug }
+/**
+ * Generalized funnel step identifier.
+ *
+ * Common reusable steps use the well-known RuntimeCapabilityId values; the
+ * intervention-specific steps (declared in intervention models) carry their own
+ * namespaced string id (e.g. "cartongesso:parete:needs"). The `& {}` keeps
+ * editor autocomplete for the known ids while still accepting any string.
+ */
+export type RuntimeStepId = RuntimeCapabilityId | (string & {})
+
+/**
+ * Minimal taxonomy resolution contract consumed by the funnel runtime.
+ * The funnel never re-defines semantic meaning; the slug comes from taxonomy.
+ */
+export type ResolvedIntervention = {
+  interventionSlug: string
+}
 
 /**
  * Main runtime acquisition contract.
@@ -73,22 +88,12 @@ export type RuntimeProfile = {
   interventionSlug: string
 
   /**
-   * Runtime acquisition presets inferred
-   * from taxonomy semantics.
+   * Final resolved, ordered funnel step ids used by the adaptive wizard.
    *
-   * Example:
-   * ["PAINTING"]
+   * Common steps use RuntimeCapabilityId values; intervention-model steps use
+   * their own namespaced ids (see RuntimeStepId).
    */
-  presetSlugs: RuntimePresetSlug[]
-
-  /**
-   * Final resolved runtime capabilities
-   * used by the adaptive wizard.
-   *
-   * IMPORTANT:
-   * These are acquisition primitives only.
-   */
-  capabilities: RuntimeCapabilityId[]
+  capabilities: RuntimeStepId[]
 
   /**
    * Lightweight UX estimation.

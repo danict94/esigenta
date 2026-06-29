@@ -9,6 +9,7 @@
 import { cartongessoModels } from "./cartongesso"
 import { climatizzazioneModels } from "./climatizzazione"
 import { facciateEBalconiModels } from "./facciate-e-balconi"
+import { finitureModels } from "./finiture"
 import { getDefaultFunnelModel } from "./common"
 import type { InterventionFunnelModel } from "./types"
 
@@ -17,6 +18,7 @@ const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
     ...cartongessoModels,
     ...climatizzazioneModels,
     ...facciateEBalconiModels,
+    ...finitureModels,
   ].map((model) => [model.interventionSlug, model]),
 )
 

@@ -17,7 +17,7 @@
  */
 
 import type {
-  RuntimeCapabilityId,
+  RuntimeStepId,
 } from "./runtime-profile"
 
 export type RuntimeStepType =
@@ -42,13 +42,14 @@ export type RuntimeConditionOperator =
 
 export type RuntimeCondition = {
   /**
-   * Capability identifier to inspect.
+   * Step identifier to inspect.
    *
    * Example:
    * "property"
    * "surface-area"
+   * "cartongesso:controsoffitto:needs"
    */
-  field: RuntimeCapabilityId
+  field: RuntimeStepId
 
   /**
    * Runtime comparison operator.
@@ -78,16 +79,12 @@ export type RuntimeOption = {
 
 export type RuntimeCapability = {
   /**
-   * Stable capability identifier.
+   * Stable funnel step identifier.
    *
-   * IMPORTANT:
-   * This is an acquisition primitive.
-   *
-   * NOT:
-   * semantic meaning
-   * intervention logic
+   * Common reusable steps use a RuntimeCapabilityId; intervention-model steps
+   * use their own namespaced id (see RuntimeStepId).
    */
-  id: RuntimeCapabilityId
+  id: RuntimeStepId
 
   /**
    * Runtime rendering type.
@@ -103,6 +100,11 @@ export type RuntimeCapability = {
    * Optional helper text.
    */
   description?: string
+
+  /**
+   * Optional input placeholder for free-form capabilities.
+   */
+  placeholder?: string
 
   /**
    * Runtime options for select-based capabilities.

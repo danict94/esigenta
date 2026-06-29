@@ -11,77 +11,21 @@ import type {
 } from "../types/request-draft"
 
 import type {
-  RuntimeCapabilityId,
+  ResolvedIntervention,
   RuntimeProfile,
-  RuntimePresetSlug,
 } from "../types/runtime-profile"
-
-import {
-  budgetCapability,
-} from "../capabilities/budget"
-
-import {
-  contactCapability,
-} from "../capabilities/contact"
-
-import {
-  locationCapability,
-} from "../capabilities/location"
-
-import {
-  photosCapability,
-} from "../capabilities/photos"
-
-import {
-  propertyCapability,
-} from "../capabilities/property"
-
-import {
-  roomsCapability,
-} from "../capabilities/rooms"
-
-import {
-  surfaceAreaCapability,
-} from "../capabilities/surface-area"
-
-import {
-  timingCapability,
-} from "../capabilities/timing"
 
 import {
   buildRequestDraft,
 } from "../compiler/build-request-draft"
 
 import {
-  resolveCapabilities,
-} from "../compiler/resolve-capabilities"
-
-import {
-  type ResolvedIntervention,
-  resolveRuntimeProfile,
-} from "../compiler/resolve-runtime-profile"
-
-import {
-  resolveStepOrder,
-} from "../runtime/resolve-step-order"
+  resolveFunnelModel,
+} from "../intervention-models"
 
 import type {
   RuntimeAnswers,
 } from "../runtime/resolve-step-visibility"
-
-const CAPABILITY_REGISTRY: Record<
-  RuntimeCapabilityId,
-  RuntimeCapability
-> = {
-  location: locationCapability,
-  property: propertyCapability,
-  photos: photosCapability,
-  timing: timingCapability,
-  budget: budgetCapability,
-  "surface-area": surfaceAreaCapability,
-  rooms: roomsCapability,
-  contact: contactCapability,
-}
 
 export type FunnelSelectedIntervention = {
   id: string
@@ -115,37 +59,6 @@ type FunnelResolution = {
   resolvedIntervention: ResolvedIntervention
 }
 
-const VALID_RUNTIME_PRESET_SLUGS = new Set<RuntimePresetSlug>([
-  "INTERIOR_WORK",
-  "EXTERIOR_WORK",
-  "EMERGENCY_REPAIR",
-  "RENOVATION",
-  "QUICK_SERVICE",
-  "PAINTING",
-  "PLUMBING_EMERGENCY",
-  "HOME_RENOVATION",
-  "BATHROOM_RENOVATION",
-  "ELECTRICAL_WORK",
-  "GENERIC",
-])
-
-function isRuntimePresetSlug(value: string): value is RuntimePresetSlug {
-  return VALID_RUNTIME_PRESET_SLUGS.has(value as RuntimePresetSlug)
-}
-
-// Canonical source (Phase 14.5): Intervention.runtimePresetSlugs, read
-// directly off the DB row via findInterventionForFunnel. Replaces the
-// legacy cross-reference through taxonomySource.services/.categories —
-// taxonomy now carries this as one opaque, pre-merged field per
-// Intervention, nothing to merge here anymore. Validated at this boundary
-// since the DB column has no compile-time guarantee of matching the
-// RuntimePresetSlug union.
-function sortedValidRuntimePresetSlugs(
-  values: string[],
-): RuntimePresetSlug[] {
-  return Array.from(new Set(values.filter(isRuntimePresetSlug))).sort()
-}
-
 function normalizeOptionalText(
   value: string | undefined,
 ): string | undefined {
@@ -170,45 +83,42 @@ async function resolveInterventionForFunnel(
     },
     resolvedIntervention: {
       interventionSlug: data.slug,
-      runtimePresetSlugs: sortedValidRuntimePresetSlugs(
-        data.runtimePresetSlugs,
-      ),
     },
   }
 }
 
-function buildProfile(
-  resolvedIntervention: ResolvedIntervention,
-): RuntimeProfile {
-  const baseProfile =
-    resolveRuntimeProfile(
-      resolvedIntervention,
-    )
-
-  const capabilities =
-    resolveCapabilities(
-      baseProfile.presetSlugs,
-    )
-
-  const orderedCapabilityIds =
-    resolveStepOrder(capabilities)
-
-  return {
-    ...baseProfile,
-    capabilities:
-      orderedCapabilityIds,
-    estimatedStepCount:
-      orderedCapabilityIds.length,
-  }
+type ResolvedProfile = {
+  profile: RuntimeProfile
+  /** Ordered step definitions consumed by the wizard (UI). */
+  orderedSteps: RuntimeCapability[]
 }
 
-function resolveCapabilityDefinitions(
-  capabilities: RuntimeCapabilityId[],
-): RuntimeCapability[] {
-  return capabilities.map(
-    (capability) =>
-      CAPABILITY_REGISTRY[capability],
-  )
+/**
+ * Resolve the funnel profile + ordered step definitions for an intervention.
+ *
+ * Single system: the funnel model (bespoke if defined, otherwise the generic
+ * default) is the only source of steps. There is no preset path.
+ */
+function buildProfile(
+  resolvedIntervention: ResolvedIntervention,
+): ResolvedProfile {
+  const orderedSteps = resolveFunnelModel(
+    resolvedIntervention.interventionSlug,
+  ).steps
+
+  return {
+    profile: {
+      interventionSlug:
+        resolvedIntervention.interventionSlug,
+      capabilities: orderedSteps.map(
+        (step) => step.id,
+      ),
+      estimatedStepCount: orderedSteps.length,
+      complexity: "medium",
+      leadType: "standard",
+    },
+    orderedSteps,
+  }
 }
 
 export async function createRuntimeFunnel({
@@ -227,7 +137,7 @@ export async function createRuntimeFunnel({
     return null
   }
 
-  const runtimeProfile =
+  const { profile: runtimeProfile, orderedSteps } =
     buildProfile(
       resolution.resolvedIntervention,
     )
@@ -237,6 +147,7 @@ export async function createRuntimeFunnel({
       resolution.resolvedIntervention,
     runtimeProfile,
     answers: {},
+    stepDefinitions: orderedSteps,
   }
 
   const requestDraft =
@@ -253,9 +164,7 @@ export async function createRuntimeFunnel({
       resolution.selectedIntervention,
     runtimeProfile,
     orderedCapabilities:
-      resolveCapabilityDefinitions(
-        runtimeProfile.capabilities,
-      ),
+      orderedSteps,
     requestDraft,
   }
 
@@ -290,7 +199,7 @@ export async function buildRuntimeRequestDraft({
     return null
   }
 
-  const runtimeProfile =
+  const { profile: runtimeProfile, orderedSteps } =
     buildProfile(
       resolution.resolvedIntervention,
     )
@@ -300,6 +209,7 @@ export async function buildRuntimeRequestDraft({
       resolution.resolvedIntervention,
     runtimeProfile,
     answers,
+    stepDefinitions: orderedSteps,
     ...(normalizedQuery
       ? {
           originalQuery:

@@ -30,22 +30,13 @@ import type {
   RuntimeCondition,
 } from "../types/capability"
 
-import type {
-  RuntimeCapabilityId,
-} from "../types/runtime-profile"
-
 /**
  * Lightweight runtime answers map.
  *
- * IMPORTANT:
- * Keys correspond to capability ids.
+ * Keys correspond to funnel step ids (common capability ids or
+ * intervention-model step ids).
  */
-export type RuntimeAnswers = Partial<
-  Record<
-    RuntimeCapabilityId,
-    unknown
-  >
->
+export type RuntimeAnswers = Record<string, unknown>
 
 /**
  * Evaluate lightweight runtime condition.

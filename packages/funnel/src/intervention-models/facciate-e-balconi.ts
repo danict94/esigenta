@@ -7,45 +7,51 @@
  * few intervention-specific steps that make the funnel speak the language of
  * facade / balcony work, without forcing the customer to be technical.
  *
- * Two cross-cutting helpers:
- * - `scaleStep`: superficie buckets with stable values (small/medium/large/
- *   unknown) under the well-known `scale` id, so enrich-request derives
- *   projectScale uniformly — same contract as Cartongesso/Climatizzazione.
- *   Non-scale "Non lo so" answers keep their own `not_sure` value, as they do
- *   not feed projectScale.
- * - `accessInQuotaStep`: the reusable "Serve un accesso in quota?" question —
- *   ponteggio is never a separate intervention, it is an access detail that
- *   drives quote, time, safety and feasibility. Required on facade/coat/balcony
- *   /frontalino work, optional (still recommended) on floor/waterproofing work.
+ * Surface convention (product decision): the facade domain uses an optional
+ * numeric `surface-area` (m²) — more useful to the quote than a coarse bucket.
+ * `surfaceAreaStep` reuses the stable `surface-area` id so the impresa view
+ * renders "Superficie" and enrich-request still derives projectScale from the
+ * number. `scaleStep` (qualitative buckets) is kept only for the balcony
+ * waterproofing funnel, which is out of this convention's scope.
+ *
+ * `accessInQuotaStep` is the shared helper from common.ts (single option set);
+ * here it is bound to this group's already-shipped namespaced id. Ponteggio is
+ * never a separate intervention — it is an access detail driving quote, time,
+ * safety and feasibility.
  */
 
 import type { RuntimeCapability, RuntimeOption } from "../types/capability"
 
 import { locationCapability } from "../capabilities/location"
+import { surfaceAreaCapability } from "../capabilities/surface-area"
 import { photosCapability } from "../capabilities/photos"
 import { timingCapability } from "../capabilities/timing"
 import { contactCapability } from "../capabilities/contact"
 
-import { noteStep } from "./common"
+import {
+  accessInQuotaStep as sharedAccessInQuotaStep,
+  noteStep,
+} from "./common"
 import type { InterventionFunnelModel } from "./types"
 
+// This group keeps its already-shipped namespaced access id; the option set
+// itself lives in the shared helper (common.ts), so it is never duplicated.
 const ACCESS_IN_QUOTA_STEP_ID = "facciate-e-balconi:access-in-quota"
 
 function accessInQuotaStep(optional: boolean): RuntimeCapability {
+  return sharedAccessInQuotaStep(optional, ACCESS_IN_QUOTA_STEP_ID)
+}
+
+// Facade-specific surface question. Same stable `surface-area` id as the
+// generic capability, so the impresa view renders it as "Superficie" and
+// enrich-request can still derive projectScale from the numeric m².
+function surfaceAreaStep(question: string): RuntimeCapability {
   return {
-    id: ACCESS_IN_QUOTA_STEP_ID,
-    type: "single_select",
-    question: "Serve un accesso in quota?",
-    description:
-      "Serve solo a stimare tempi, sicurezza e fattibilità. Se non lo sai, scegli pure “Non lo so / da verificare”.",
-    options: [
-      { value: "easy_access", label: "No, è facilmente accessibile" },
-      { value: "ladder_or_tower", label: "Scala o trabattello" },
-      { value: "scaffolding", label: "Ponteggio" },
-      { value: "platform", label: "Piattaforma elevatrice" },
-      { value: "not_sure", label: "Non lo so / da verificare" },
-    ],
-    optional,
+    id: "surface-area",
+    type: "number",
+    question,
+    description: "Una stima approssimativa è sufficiente.",
+    optional: true,
   }
 }
 
@@ -102,6 +108,7 @@ const rifareFacciata: InterventionFunnelModel = {
       ],
       optional: true,
     },
+    surfaceAreaCapability,
     accessInQuotaStep(false),
     photosCapability,
     noteStep(),
@@ -127,12 +134,7 @@ const realizzareCappottoTermicoFacciata: InterventionFunnelModel = {
       ],
       optional: false,
     },
-    scaleStep(
-      "Quanto è grande circa la facciata?",
-      "Piccola",
-      "Media",
-      "Grande",
-    ),
+    surfaceAreaStep("Quanti metri quadri circa di facciata sono coinvolti?"),
     {
       id: "facciate-e-balconi:cappotto:ambito",
       type: "single_select",

@@ -65,34 +65,36 @@ function toNumber(
 function resolveProjectScale(
   draft: RequestDraft,
 ): RequestDerivedSignals["projectScale"] {
+  // Intervention-model scale step uses stable bucket values
+  // (small/medium/large/unknown) with intervention-specific labels.
+  const scaleBucket = draft.rawAnswers.scale
+
+  if (scaleBucket === "large") {
+    return "large"
+  }
+
+  if (scaleBucket === "medium") {
+    return "medium"
+  }
+
+  if (scaleBucket === "small") {
+    return "small"
+  }
+
   const surfaceArea =
     toNumber(
       draft.rawAnswers["surface-area"],
     )
 
-  const rooms =
-    toNumber(
-      draft.rawAnswers.rooms,
-    )
-
-  if (
-    (surfaceArea !== undefined && surfaceArea >= 80) ||
-    (rooms !== undefined && rooms >= 4)
-  ) {
+  if (surfaceArea !== undefined && surfaceArea >= 80) {
     return "large"
   }
 
-  if (
-    (surfaceArea !== undefined && surfaceArea >= 25) ||
-    (rooms !== undefined && rooms >= 2)
-  ) {
+  if (surfaceArea !== undefined && surfaceArea >= 25) {
     return "medium"
   }
 
-  if (
-    (surfaceArea !== undefined && surfaceArea > 0) ||
-    (rooms !== undefined && rooms > 0)
-  ) {
+  if (surfaceArea !== undefined && surfaceArea > 0) {
     return "small"
   }
 
@@ -218,8 +220,7 @@ function resolveRoutingSignals(
 
   const inspectionSuggested =
     derivedSignals.projectScale === "large" ||
-    derivedSignals.estimatedComplexity === "high" ||
-    draft.rawAnswers.budget === "over_15000"
+    derivedSignals.estimatedComplexity === "high"
 
   return {
     emergency,

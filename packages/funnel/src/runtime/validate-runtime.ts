@@ -15,8 +15,6 @@
  */
 
 import type {
-  RuntimeCapabilityId,
-  RuntimePresetSlug,
   RuntimeProfile,
 } from "../types/runtime-profile"
 
@@ -34,31 +32,6 @@ export type RuntimeValidationResult = {
   valid: boolean
   issues: RuntimeValidationIssue[]
 }
-
-const KNOWN_CAPABILITIES: RuntimeCapabilityId[] = [
-  "location",
-  "property",
-  "photos",
-  "timing",
-  "budget",
-  "surface-area",
-  "rooms",
-  "contact",
-]
-
-const KNOWN_PRESETS: RuntimePresetSlug[] = [
-  "INTERIOR_WORK",
-  "EXTERIOR_WORK",
-  "EMERGENCY_REPAIR",
-  "RENOVATION",
-  "QUICK_SERVICE",
-  "PAINTING",
-  "PLUMBING_EMERGENCY",
-  "HOME_RENOVATION",
-  "BATHROOM_RENOVATION",
-  "ELECTRICAL_WORK",
-  "GENERIC",
-]
 
 function createIssue(
   code: string,
@@ -85,22 +58,6 @@ function hasDuplicates<T extends string>(
   return new Set(values).size !== values.length
 }
 
-function isKnownCapability(
-  value: string,
-): value is RuntimeCapabilityId {
-  return KNOWN_CAPABILITIES.includes(
-    value as RuntimeCapabilityId,
-  )
-}
-
-function isKnownPreset(
-  value: string,
-): value is RuntimePresetSlug {
-  return KNOWN_PRESETS.includes(
-    value as RuntimePresetSlug,
-  )
-}
-
 /**
  * Validate a compiled runtime profile.
  *
@@ -123,38 +80,6 @@ export function validateRuntimeProfile(
     )
   }
 
-  if (profile.presetSlugs.length === 0) {
-    issues.push(
-      createIssue(
-        "missing_presets",
-        "Runtime profile requires at least one acquisition preset.",
-        "presetSlugs",
-      ),
-    )
-  }
-
-  if (hasDuplicates(profile.presetSlugs)) {
-    issues.push(
-      createIssue(
-        "duplicate_presets",
-        "Runtime profile contains duplicate preset slugs.",
-        "presetSlugs",
-      ),
-    )
-  }
-
-  for (const presetSlug of profile.presetSlugs) {
-    if (!isKnownPreset(presetSlug)) {
-      issues.push(
-        createIssue(
-          "unknown_preset",
-          `Unknown runtime preset: ${presetSlug}.`,
-          "presetSlugs",
-        ),
-      )
-    }
-  }
-
   if (profile.capabilities.length === 0) {
     issues.push(
       createIssue(
@@ -173,18 +98,6 @@ export function validateRuntimeProfile(
         "capabilities",
       ),
     )
-  }
-
-  for (const capability of profile.capabilities) {
-    if (!isKnownCapability(capability)) {
-      issues.push(
-        createIssue(
-          "unknown_capability",
-          `Unknown runtime capability: ${capability}.`,
-          "capabilities",
-        ),
-      )
-    }
   }
 
   if (
@@ -227,18 +140,6 @@ export function validateRuntimeAnswers(
     new Set(profile.capabilities)
 
   for (const key of Object.keys(answers)) {
-    if (!isKnownCapability(key)) {
-      issues.push(
-        createIssue(
-          "unknown_answer_key",
-          `Unknown runtime answer key: ${key}.`,
-          "rawAnswers",
-        ),
-      )
-
-      continue
-    }
-
     if (!activeCapabilities.has(key)) {
       issues.push(
         createIssue(

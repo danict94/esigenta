@@ -2,6 +2,7 @@ export type RuntimeCapabilityRenderer =
   | "contact"
   | "location"
   | "single-select"
+  | "multi-select"
   | "number"
   | "photo-upload"
   | "textarea"
@@ -18,6 +19,9 @@ export function resolveCapabilityRenderer(
 
     case "single_select":
       return "single-select"
+
+    case "multi_select":
+      return "multi-select"
 
     case "number":
       return "number"

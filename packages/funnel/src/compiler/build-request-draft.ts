@@ -20,6 +20,10 @@ import type {
 } from "../types/request-draft"
 
 import type {
+  RuntimeCapability,
+} from "../types/capability"
+
+import type {
   RuntimeAnswers,
 } from "../runtime/resolve-step-visibility"
 
@@ -29,7 +33,7 @@ import type {
 
 import type {
   ResolvedIntervention,
-} from "./resolve-runtime-profile"
+} from "../types/runtime-profile"
 
 import {
   enrichRequestDraft,
@@ -75,9 +79,74 @@ export type BuildRequestDraftInput = {
   customerDescription?: string
 
   /**
+   * Ordered step definitions for this funnel run. Used to build a
+   * human-readable answerDisplay for select-based answers (the funnel owns the
+   * chip labels), so consumers don't need to know each intervention's options.
+   */
+  stepDefinitions?: RuntimeCapability[]
+
+  /**
    * Test-friendly timestamp override.
    */
   createdAt?: Date
+}
+
+function buildAnswerDisplay(
+  stepDefinitions: RuntimeCapability[] | undefined,
+  rawAnswers: RequestDraft["rawAnswers"],
+): RequestDraft["answerDisplay"] {
+  if (!stepDefinitions) {
+    return undefined
+  }
+
+  const display: NonNullable<
+    RequestDraft["answerDisplay"]
+  > = {}
+
+  for (const step of stepDefinitions) {
+    const options = step.options
+
+    if (!options || options.length === 0) {
+      continue
+    }
+
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        rawAnswers,
+        step.id,
+      )
+    ) {
+      continue
+    }
+
+    const value = rawAnswers[step.id]
+
+    if (value === undefined || value === null) {
+      continue
+    }
+
+    const labelFor = (raw: unknown): string =>
+      options.find(
+        (option) => option.value === raw,
+      )?.label ?? String(raw)
+
+    const valueText = Array.isArray(value)
+      ? value.map(labelFor).filter(Boolean).join(", ")
+      : labelFor(value)
+
+    if (!valueText) {
+      continue
+    }
+
+    display[step.id] = {
+      label: step.question,
+      value: valueText,
+    }
+  }
+
+  return Object.keys(display).length > 0
+    ? display
+    : undefined
 }
 
 function pickActiveAnswers(
@@ -114,6 +183,7 @@ export function buildRequestDraft({
   answers = {},
   originalQuery,
   customerDescription,
+  stepDefinitions,
   createdAt,
 }: BuildRequestDraftInput): RequestDraft {
   assertValidRuntimeProfile(
@@ -188,6 +258,16 @@ export function buildRequestDraft({
   if (description) {
     draft.customerDescription =
       description
+  }
+
+  const answerDisplay =
+    buildAnswerDisplay(
+      stepDefinitions,
+      rawAnswers,
+    )
+
+  if (answerDisplay) {
+    draft.answerDisplay = answerDisplay
   }
 
   return enrichRequestDraft(

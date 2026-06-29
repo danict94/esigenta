@@ -25,12 +25,8 @@ import type {
   GeoPlace,
 } from "@esigenta/shared"
 
-import type {
-  RuntimeCapabilityId,
-} from "./runtime-profile"
-
 /**
- * GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md): the funnel's
+ * GEO REFOUNDATION (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md): the funnel's
  * "location" answer is a complete GeoPlace or nothing — there is no
  * partial geo draft anymore. See @esigenta/shared's resolvePlaceFromGooglePlace,
  * the only constructor.
@@ -148,20 +144,31 @@ export type RequestDraft = {
   /**
    * Runtime-collected acquisition answers.
    *
-   * IMPORTANT:
-   * Keys MUST correspond to runtime capability ids.
+   * Keys correspond to funnel step ids (common capability ids or
+   * intervention-model step ids).
    *
    * Example:
    * {
    *   "surface-area": 40,
-   *   "property": "appartamento"
+   *   "scale": "large",
+   *   "cartongesso:parete:needs": ["isolamento", "porta"]
    * }
    */
-  rawAnswers: Partial<
-    Record<
-      RuntimeCapabilityId,
-      unknown
-    >
+  rawAnswers: Record<string, unknown>
+
+  /**
+   * Human-readable rendering for select-based answers, keyed by step id.
+   *
+   * Built at draft time from the step definitions (the funnel owns the chip
+   * labels), so consumers (e.g. the company-facing request detail) can show
+   * readable labels/values without knowing every intervention's options.
+   */
+  answerDisplay?: Record<
+    string,
+    {
+      label: string
+      value: string
+    }
   >
 
   /**
