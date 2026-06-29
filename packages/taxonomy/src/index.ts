@@ -1,5 +1,4 @@
 export type {
-  RuntimePresetSlug,
   TaxonomySearchEntityType,
   TaxonomySearchResult,
 } from "./shared/types"

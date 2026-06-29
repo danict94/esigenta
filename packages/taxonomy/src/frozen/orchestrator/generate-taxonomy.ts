@@ -52,7 +52,6 @@ type GeneratedIntervention = {
   name: string
   description?: string
   projectGroupSlug: string
-  runtimePresetSlugs?: string[]
   aliases?: string[]
 }
 
@@ -111,13 +110,6 @@ function cleanIntervention(
 
   if (intervention.description) {
     result.description = intervention.description
-  }
-
-  if (
-    intervention.runtimePresetSlugs &&
-    intervention.runtimePresetSlugs.length > 0
-  ) {
-    result.runtimePresetSlugs = sortedUnique(intervention.runtimePresetSlugs)
   }
 
   if (intervention.aliases && intervention.aliases.length > 0) {

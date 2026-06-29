@@ -5,10 +5,6 @@ export type InterventionForFunnel = {
   slug: string
   name: string
   description: string | null
-  // Canonical source (Phase 14.5): read straight from Intervention, no
-  // Service/Category cross-reference. Opaque to taxonomy — interpreted
-  // only by packages/funnel.
-  runtimePresetSlugs: string[]
 }
 
 export async function resolveInterventionForFunnel(
@@ -21,7 +17,6 @@ export async function resolveInterventionForFunnel(
       slug: true,
       name: true,
       description: true,
-      runtimePresetSlugs: true,
     },
   })
 
@@ -32,6 +27,5 @@ export async function resolveInterventionForFunnel(
     slug: intervention.slug,
     name: intervention.name,
     description: intervention.description,
-    runtimePresetSlugs: intervention.runtimePresetSlugs,
   }
 }

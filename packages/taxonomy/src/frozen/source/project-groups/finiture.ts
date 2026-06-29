@@ -1,9 +1,14 @@
 import type { FrozenProjectGroup } from "../types/project-group"
 
+// Perimetro semantico (rifinitura di naming, nessun nuovo gruppo, nessuna
+// frammentazione del dominio): questo gruppo include tutte le lavorazioni
+// superficiali su pareti interne ed esterne — tinteggiatura, intonaco, rasatura,
+// ripristino, stucco decorativo. Le varianti "intonaco esterno" e simili restano
+// incluse qui per coerenza di funnel, non per distinzione tecnica.
 export const finiture: FrozenProjectGroup = {
   id: "finiture",
   slug: "finiture",
-  name: "Finiture",
+  name: "Imbianchini e finiture",
 
   aliases: [
     "finiture interne",
@@ -16,8 +21,6 @@ export const finiture: FrozenProjectGroup = {
       id: "tinteggiare-interni",
       slug: "tinteggiare-interni",
       name: "Tinteggiare interni",
-
-      runtimePresetSlugs: ["PAINTING"],
 
       aliases: [
         "imbiancare casa",
@@ -32,8 +35,6 @@ export const finiture: FrozenProjectGroup = {
       slug: "tinteggiare-esterni",
       name: "Tinteggiare esterni",
 
-      runtimePresetSlugs: ["EXTERIOR_WORK", "PAINTING"],
-
       aliases: [
         "imbiancare facciata",
         "tinteggiatura esterna",
@@ -47,8 +48,6 @@ export const finiture: FrozenProjectGroup = {
       slug: "intonacare-pareti",
       name: "Intonacare pareti",
 
-      runtimePresetSlugs: ["INTERIOR_WORK"],
-
       aliases: [
         "intonaco interno",
         "intonaco esterno",
@@ -61,8 +60,6 @@ export const finiture: FrozenProjectGroup = {
       slug: "ripristinare-intonaco",
       name: "Ripristinare intonaco",
 
-      runtimePresetSlugs: ["INTERIOR_WORK"],
-
       aliases: [
         "riparazione intonaco",
         "rifacimento intonaco"
@@ -74,12 +71,23 @@ export const finiture: FrozenProjectGroup = {
       slug: "applicare-stucco-decorativo",
       name: "Applicare stucco decorativo",
 
-      runtimePresetSlugs: ["INTERIOR_WORK"],
-
       aliases: [
         "stucco veneziano",
         "stucco decorativo",
         "finitura decorativa"
+      ]
+    },
+
+    {
+      id: "rasare-pareti",
+      slug: "rasare-pareti",
+      name: "Rasare pareti",
+
+      aliases: [
+        "rasatura pareti",
+        "rasare muro",
+        "rasatura muro",
+        "stuccatura e rasatura"
       ]
     }
   ]

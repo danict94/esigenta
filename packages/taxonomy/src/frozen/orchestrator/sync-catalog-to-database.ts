@@ -107,13 +107,11 @@ async function syncCatalogToDatabase(
   }
 
   // Frozen taxonomy is the canonical creator of Intervention rows
-  // (Phase 15B — see docs/taxonomy-refoundation/15B_FINAL_CONSUMERS_REPORT.md
+  // (Phase 15B — see docs/archive-legacy/refoundation/taxonomy-refoundation/15B_FINAL_CONSUMERS_REPORT.md
   // §D). name/description on an EXISTING row stay owned by whichever
   // pipeline first created it (legacy seed-taxonomy.ts, for every row
-  // seeded before this phase) — update only ever touches the fields
-  // frozen taxonomy has always owned (projectGroupId, runtimePresetSlugs),
-  // exactly as before. create supplies name/description because a brand
-  // new row has no other owner.
+  // seeded before this phase) — update only ever touches projectGroupId.
+  // create supplies name/description because a brand new row has no other owner.
   let interventionsUpserted = 0
   const interventionsCreated: string[] = []
 
@@ -134,13 +132,9 @@ async function syncCatalogToDatabase(
           name: intervention.name,
           description: intervention.description ?? null,
           projectGroupId,
-          runtimePresetSlugs: intervention.runtimePresetSlugs ?? [],
         },
         update: {
           projectGroupId,
-          // Canonical source for funnel preset resolution (Phase 14.5) —
-          // see docs/taxonomy-refoundation/14_5_CONSISTENCY_REPORT.md.
-          runtimePresetSlugs: intervention.runtimePresetSlugs ?? [],
         },
       })
 

@@ -2,7 +2,6 @@ import {
   MAX_ALIAS_PER_ENTITY,
   MAX_PROJECT_GROUPS_PER_CATEGORY,
   MAX_INTERVENTIONS_PER_PROJECT_GROUP,
-  MAX_RUNTIME_PRESETS_PER_INTERVENTION,
 } from "./constants"
 import { invariant } from "./guards"
 
@@ -93,29 +92,6 @@ function validateIntervention(intervention: FrozenIntervention) {
     intervention.name,
     `[intervention:${intervention.slug}] name`,
   )
-
-  invariant(
-    (intervention.runtimePresetSlugs ?? []).length <=
-      MAX_RUNTIME_PRESETS_PER_INTERVENTION,
-    `[intervention:${intervention.slug}] Too many runtimePresetSlugs.`,
-  )
-
-  const runtimePresetSlugs = intervention.runtimePresetSlugs ?? []
-  const seenRuntimePresetSlugs = new Set<string>()
-
-  for (const runtimePresetSlug of runtimePresetSlugs) {
-    assertNonEmptyString(
-      runtimePresetSlug,
-      `[intervention:${intervention.slug}] runtimePresetSlug`,
-    )
-
-    invariant(
-      !seenRuntimePresetSlugs.has(runtimePresetSlug),
-      `[intervention:${intervention.slug}] Duplicate runtimePresetSlug: ${runtimePresetSlug}`,
-    )
-
-    seenRuntimePresetSlugs.add(runtimePresetSlug)
-  }
 
   validateEntityAliases(intervention, `intervention:${intervention.slug}`)
 }

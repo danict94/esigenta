@@ -12,7 +12,7 @@
     "slug": "elettricista",
     "name": "Elettricista",
     "projectGroups": [
-      "impianti-elettrici"
+      "impianti-e-manutenzioni-elettriche"
     ],
     "aliases": [
       "impresa elettrica"
@@ -23,7 +23,7 @@
     "slug": "idraulico",
     "name": "Idraulico",
     "projectGroups": [
-      "impianti-idraulici"
+      "idraulica"
     ],
     "aliases": [
       "impresa idraulica"
@@ -46,7 +46,8 @@
     "slug": "impresa-edile",
     "name": "Impresa edile",
     "projectGroups": [
-      "opere-murarie",
+      "facciate-e-balconi",
+      "pavimentazioni",
       "ristrutturazioni",
       "tetti"
     ],

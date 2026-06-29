@@ -10,13 +10,13 @@ export const cartongesso: FrozenProjectGroup = {
     "cartongesso e pareti"
   ],
 
+  // TODO backlog Cartongesso: isolamento acustico autonomo solo se emerge domanda frequente;
+  // isolamento termico/muffa con copy prudente; antincendio con percorso tecnico dedicato.
   interventions: [
     {
       id: "realizzare-parete-cartongesso",
       slug: "realizzare-parete-cartongesso",
       name: "Realizzare parete in cartongesso",
-
-      runtimePresetSlugs: ["INTERIOR_WORK"],
 
       aliases: [
         "parete in cartongesso",
@@ -30,8 +30,6 @@ export const cartongesso: FrozenProjectGroup = {
       slug: "realizzare-controsoffitto",
       name: "Realizzare controsoffitto",
 
-      runtimePresetSlugs: ["INTERIOR_WORK"],
-
       aliases: [
         "controsoffitto in cartongesso",
         "abbassamento soffitto",
@@ -44,11 +42,39 @@ export const cartongesso: FrozenProjectGroup = {
       slug: "realizzare-controparete",
       name: "Realizzare controparete",
 
-      runtimePresetSlugs: ["INTERIOR_WORK"],
-
       aliases: [
         "controparete in cartongesso",
         "isolamento parete interna"
+      ]
+    },
+
+    {
+      id: "realizzare-struttura-in-cartongesso-su-misura",
+      slug: "realizzare-struttura-in-cartongesso-su-misura",
+      name: "Realizzare una struttura in cartongesso su misura",
+
+      aliases: [
+        "parete tv in cartongesso",
+        "cabina armadio in cartongesso",
+        "libreria in cartongesso",
+        "nicchie in cartongesso",
+        "mensole in cartongesso",
+        "veletta decorativa in cartongesso",
+        "copertura tubi in cartongesso"
+      ]
+    },
+
+    {
+      id: "riparare-o-modificare-cartongesso",
+      slug: "riparare-o-modificare-cartongesso",
+      name: "Riparare o modificare cartongesso",
+
+      aliases: [
+        "riparazione cartongesso",
+        "modificare struttura in cartongesso",
+        "rimuovere cartongesso",
+        "buchi nel cartongesso",
+        "crepe nel cartongesso"
       ]
     }
   ]

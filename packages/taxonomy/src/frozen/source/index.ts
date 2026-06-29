@@ -9,11 +9,12 @@ import { tecnicoClimatizzazione } from "./categories/tecnico-climatizzazione"
 import { ristrutturazioni } from "./project-groups/ristrutturazioni"
 import { tetti } from "./project-groups/tetti"
 import { fotovoltaico } from "./project-groups/fotovoltaico"
-import { opereMurarie } from "./project-groups/opere-murarie"
+import { facciateEBalconi } from "./project-groups/facciate-e-balconi"
+import { pavimentazioni } from "./project-groups/pavimentazioni"
 import { finiture } from "./project-groups/finiture"
 import { cartongesso } from "./project-groups/cartongesso"
-import { impiantiElettrici } from "./project-groups/impianti-elettrici"
-import { impiantiIdraulici } from "./project-groups/impianti-idraulici"
+import { impiantiEManutenzioniElettriche } from "./project-groups/impianti-e-manutenzioni-elettriche"
+import { idraulica } from "./project-groups/idraulica"
 import { climatizzazione } from "./project-groups/climatizzazione"
 
 import type { FrozenTaxonomySource } from "./types/source"
@@ -33,11 +34,12 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     ristrutturazioni,
     tetti,
     fotovoltaico,
-    opereMurarie,
+    facciateEBalconi,
+    pavimentazioni,
     finiture,
     cartongesso,
-    impiantiElettrici,
-    impiantiIdraulici,
+    impiantiEManutenzioniElettriche,
+    idraulica,
     climatizzazione,
   ],
 }
