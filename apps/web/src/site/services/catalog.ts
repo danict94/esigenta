@@ -1,12 +1,10 @@
 import { getSeoInterventionLandingBySlug } from "../seo/pages/interventi";
-import { getServiceCategoryBySlug } from "./categories";
 import type { ServiceCatalogItem } from "./types";
 
 const catalogItems: readonly ServiceCatalogItem[] = [
   {
     slug: "ristrutturare-bagno",
     title: "Ristrutturare bagno",
-    categorySlug: "ristrutturazioni",
     status: "SEO_PAGE",
     seoInterventionSlug: "ristrutturare-bagno",
     funnelSlug: "ristrutturare-bagno",
@@ -21,7 +19,6 @@ const catalogItems: readonly ServiceCatalogItem[] = [
   {
     slug: "rifare-impianto-elettrico",
     title: "Rifare impianto elettrico",
-    categorySlug: "impianti",
     status: "SEO_PAGE",
     seoInterventionSlug: "rifare-impianto-elettrico",
     funnelSlug: "rifare-impianto-elettrico",
@@ -36,7 +33,6 @@ const catalogItems: readonly ServiceCatalogItem[] = [
   {
     slug: "installare-fotovoltaico",
     title: "Installare fotovoltaico",
-    categorySlug: "energia",
     status: "SEO_PAGE",
     seoInterventionSlug: "installare-fotovoltaico",
     funnelSlug: "installare-fotovoltaico",
@@ -51,7 +47,6 @@ const catalogItems: readonly ServiceCatalogItem[] = [
   {
     slug: "rifare-tetto",
     title: "Rifare tetto",
-    categorySlug: "ristrutturazioni",
     status: "SEO_PAGE",
     seoInterventionSlug: "rifare-tetto",
     funnelSlug: "rifare-tetto",
@@ -66,7 +61,6 @@ const catalogItems: readonly ServiceCatalogItem[] = [
   {
     slug: "installare-climatizzatore",
     title: "Installare climatizzatore",
-    categorySlug: "impianti",
     status: "SEO_PAGE",
     seoInterventionSlug: "installare-climatizzatore",
     funnelSlug: "installare-climatizzatore",
@@ -78,61 +72,9 @@ const catalogItems: readonly ServiceCatalogItem[] = [
       order: 5,
     },
   },
-  // Audit Phase 19.6B: nessuna corrispondenza per CILA/SCIA/APE/geometra/architetto/
-  // direzione lavori in packages/taxonomy o packages/funnel (solo il preset GENERIC,
-  // un fallback generico non legato a questi servizi specifici). Restano PLANNED finché
-  // non esiste una destinazione reale (taxonomy intervention o funnel preset dedicato).
-  {
-    slug: "pratica-cila",
-    title: "Pratica CILA",
-    categorySlug: "pratiche-edilizie",
-    status: "PLANNED",
-    order: 1,
-  },
-  {
-    slug: "pratica-scia",
-    title: "SCIA",
-    categorySlug: "pratiche-edilizie",
-    status: "PLANNED",
-    order: 2,
-  },
-  {
-    slug: "pratica-ape",
-    title: "APE",
-    categorySlug: "pratiche-edilizie",
-    status: "PLANNED",
-    order: 3,
-  },
-  {
-    slug: "geometra",
-    title: "Geometra",
-    categorySlug: "tecnici-e-progettazione",
-    status: "PLANNED",
-    order: 1,
-  },
-  {
-    slug: "architetto",
-    title: "Architetto",
-    categorySlug: "tecnici-e-progettazione",
-    status: "PLANNED",
-    order: 2,
-  },
-  {
-    slug: "direzione-lavori",
-    title: "Direzione lavori",
-    categorySlug: "tecnici-e-progettazione",
-    status: "PLANNED",
-    order: 3,
-  },
 ];
 
 for (const item of catalogItems) {
-  if (!getServiceCategoryBySlug(item.categorySlug)) {
-    throw new Error(
-      `Service catalog item "${item.slug}" references unknown category "${item.categorySlug}"`,
-    );
-  }
-
   if (item.status === "SEO_PAGE") {
     if (!item.seoInterventionSlug) {
       throw new Error(
@@ -183,12 +125,6 @@ export function getServiceCatalogItemBySlug(
   return catalogBySlug.get(slug) ?? null;
 }
 
-export function listServiceCatalogItemsByCategory(
-  categorySlug: string,
-): readonly ServiceCatalogItem[] {
-  return catalogItems.filter((item) => item.categorySlug === categorySlug);
-}
-
 /** SEO_PAGE e FUNNEL_ONLY hanno una destinazione reale; PLANNED e HIDDEN non vanno mai linkate pubblicamente. */
 export function isPubliclyLinkable(item: ServiceCatalogItem): boolean {
   return item.status === "SEO_PAGE" || item.status === "FUNNEL_ONLY";
@@ -196,14 +132,6 @@ export function isPubliclyLinkable(item: ServiceCatalogItem): boolean {
 
 export function listPubliclyLinkableServiceCatalogItems(): readonly ServiceCatalogItem[] {
   return catalogItems.filter(isPubliclyLinkable);
-}
-
-export function listVisibleServiceCatalogItemsByCategory(
-  categorySlug: string,
-): readonly ServiceCatalogItem[] {
-  return listServiceCatalogItemsByCategory(categorySlug).filter(
-    isPubliclyLinkable,
-  );
 }
 
 /** Destinazione reale di una voce pubblicamente linkabile, null per PLANNED/HIDDEN o dati incompleti. */

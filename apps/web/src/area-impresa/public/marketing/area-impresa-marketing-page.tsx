@@ -135,7 +135,7 @@ export async function AreaImpresaMarketingPage() {
               Per i professionisti
             </p>
 
-            <h1 className="mt-5 max-w-[18ch] font-medium leading-[1.04] tracking-[-0.02em] text-cantiere-ink text-[clamp(2.25rem,1.5rem+3.2vw,4rem)]">
+            <h1 className="mt-5 max-w-[18ch] text-cantiere-ink text-cantiere-display">
               Trova nuovi lavori nella tua zona, senza perdere tempo con
               richieste inutili.
             </h1>
@@ -152,7 +152,7 @@ export async function AreaImpresaMarketingPage() {
             <Reveal className="flex flex-col gap-8">
               <div className="relative pr-6 pt-10 sm:pr-10">
                 <div className="absolute right-0 top-0 hidden w-[52%] max-w-[260px] sm:block">
-                  <div className="relative aspect-[4/5] rotate-3 overflow-hidden rounded-[4px] border-[6px] border-white shadow-cantiere-slab">
+                  <div className="relative aspect-[4/5] rotate-3 overflow-hidden rounded-[4px] shadow-cantiere-slab">
                     <HomeImage
                       src="/assets/images/professionisti-hero.webp"
                       decorative
@@ -233,7 +233,7 @@ export async function AreaImpresaMarketingPage() {
               Come lavori con esigenta
             </p>
 
-            <h2 className="mt-4 max-w-[20ch] font-medium tracking-[-0.01em] text-cantiere-ink text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)]">
+            <h2 className="mt-4 max-w-[20ch] font-medium text-cantiere-ink text-cantiere-heading">
               Un flusso di lavoro ordinato, non un mercato di contatti.
             </h2>
           </div>
@@ -270,7 +270,7 @@ export async function AreaImpresaMarketingPage() {
                 Tu mantieni il controllo
               </p>
 
-              <h2 className="mt-4 max-w-[18ch] font-medium tracking-[-0.01em] text-cantiere-paper text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)]">
+              <h2 className="mt-4 max-w-[18ch] font-medium text-cantiere-paper text-cantiere-heading">
                 Lead di qualità, e nessun rischio comprato alla cieca.
               </h2>
 
@@ -294,7 +294,7 @@ export async function AreaImpresaMarketingPage() {
             </div>
 
             <Reveal className="mx-auto w-full max-w-[340px]">
-              <div className="relative aspect-[4/5] rotate-2 overflow-hidden rounded-[4px] border-[6px] border-white shadow-cantiere-slab">
+              <div className="relative aspect-[4/5] rotate-2 overflow-hidden rounded-[4px] shadow-cantiere-slab">
                 <HomeImage
                   src="/assets/images/area-professionista.webp"
                   decorative
@@ -342,7 +342,7 @@ export async function AreaImpresaMarketingPage() {
           </div>
 
           <div className="hidden lg:block">
-            <div className="relative aspect-[4/5] -rotate-2 overflow-hidden rounded-[4px] border-[6px] border-white shadow-cantiere-slab">
+            <div className="relative aspect-[4/5] -rotate-2 overflow-hidden rounded-[4px] shadow-cantiere-slab">
               <HomeImage
                 src="/assets/images/professionisti.webp"
                 decorative

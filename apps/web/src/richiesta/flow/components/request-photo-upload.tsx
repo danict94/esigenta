@@ -413,7 +413,7 @@ export function RequestPhotoUpload({
         </span>
 
         <span className="text-sm font-semibold text-cantiere-ink">
-          Aggiungi foto, se le hai
+          Aggiungi foto
         </span>
 
         <span className="max-w-sm text-xs leading-5 text-cantiere-ink-secondary">

@@ -26,7 +26,7 @@ export function GeoCostModule({
       <section
         aria-labelledby="geo-module-title"
         className={cn(
-          "rounded-[8px]",
+          "rounded-lg",
           "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
         )}
       >
@@ -80,7 +80,7 @@ export function GeoCostModule({
           {costSection?.priceRange ? (
             <div
               className={cn(
-                "rounded-[8px]",
+                "rounded-lg",
                 "border border-cantiere-hairline bg-cantiere-paper p-5",
               )}
             >
@@ -99,7 +99,7 @@ export function GeoCostModule({
               href={requestHref}
               className={cn(
                 "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-[8px]",
+                "rounded-lg",
                 "h-12 px-6 text-[15px]",
                 "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
@@ -114,7 +114,7 @@ export function GeoCostModule({
                 href={costGuideHref}
                 className={cn(
                   "inline-flex items-center justify-center font-medium transition-colors",
-                  "rounded-[8px]",
+                  "rounded-lg",
                   "h-12 px-6 text-[15px]",
                   "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                   "w-full gap-2 sm:w-auto",
@@ -131,7 +131,7 @@ export function GeoCostModule({
           {costSection?.priceRows?.length ? (
             <div
               className={cn(
-                "rounded-[8px]",
+                "rounded-lg",
                 "overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
               )}
             >
@@ -180,7 +180,7 @@ export function GeoCostModule({
           {costSection?.factors?.length ? (
             <div
               className={cn(
-                "rounded-[8px]",
+                "rounded-lg",
                 "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-6",
               )}
             >

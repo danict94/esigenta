@@ -465,7 +465,7 @@ function StatusRow({
   return (
     <div className="flex items-baseline gap-2 py-1 text-sm">
       <span
-        className="h-1.5 w-1.5 shrink-0 translate-y-[2px] rounded-full bg-cantiere-accent"
+        className="h-1.5 w-1.5 shrink-0 translate-y-0.5 rounded-full bg-cantiere-accent"
         aria-hidden="true"
       />
       <span>
@@ -751,7 +751,7 @@ export function RequestDetailCard({
                 </div>
               </div>
 
-              <div className="mt-5 rounded-[6px] border border-cantiere-hairline bg-cantiere-linen p-4">
+              <div className="mt-5 rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
                 <p className="text-base font-semibold leading-6 text-cantiere-ink">
                   {formatContactValue(customerContact?.name)}
                 </p>
@@ -809,7 +809,7 @@ export function RequestDetailCard({
               </div>
 
               {commercialState.isCommerciallyConfigured ? (
-                <div className="mt-5 rounded-[6px] border border-cantiere-hairline bg-cantiere-linen p-4">
+                <div className="mt-5 rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
                   <div className="flex items-baseline justify-between">
                     <span className="text-sm text-cantiere-ink-secondary">
                       Costo sblocco
@@ -846,7 +846,7 @@ export function RequestDetailCard({
                       </p>
                       <Link
                         href="/area-impresa/crediti"
-                        className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-[6px] border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
+                        className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
                         prefetch={false}
                       >
                         Acquista crediti
@@ -987,7 +987,7 @@ export function RequestDetailCard({
         ) : showInsufficientCreditsRecovery ? (
           <Link
             href="/area-impresa/crediti"
-            className="flex h-10 w-full items-center justify-center rounded-[6px] border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
+            className="flex h-10 w-full items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-4 text-sm font-medium text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
             prefetch={false}
           >
             Acquista crediti

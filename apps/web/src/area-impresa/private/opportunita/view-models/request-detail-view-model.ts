@@ -365,6 +365,40 @@ function getRawAnswers(structuredData: unknown): JsonRecord {
   return structuredData
 }
 
+/**
+ * Human-readable labels/values for select-based intervention answers, built by
+ * the funnel at draft time (it owns the chip labels). Keeps this view generic:
+ * no per-intervention label tables to maintain here.
+ */
+function getAnswerDisplay(
+  structuredData: unknown,
+): Record<string, { label: string; value: string }> {
+  const source =
+    isRecord(structuredData) && isRecord(structuredData.draft)
+      ? structuredData.draft.answerDisplay
+      : isRecord(structuredData)
+        ? structuredData.answerDisplay
+        : undefined
+
+  if (!isRecord(source)) {
+    return {}
+  }
+
+  const result: Record<string, { label: string; value: string }> = {}
+
+  for (const [key, entry] of Object.entries(source)) {
+    if (
+      isRecord(entry) &&
+      typeof entry.label === "string" &&
+      typeof entry.value === "string"
+    ) {
+      result[key] = { label: entry.label, value: entry.value }
+    }
+  }
+
+  return result
+}
+
 function getProvinceCode(value: unknown): string | null {
   if (typeof value === "string") {
     const code = value.trim().toUpperCase()
@@ -523,6 +557,7 @@ function buildFormDetails(
   structuredData: unknown,
 ): RequestFormDetail[] {
   const rawAnswers = getRawAnswers(structuredData)
+  const answerDisplay = getAnswerDisplay(structuredData)
   const seenLabels = new Set<string>()
 
   return Object.entries(rawAnswers)
@@ -534,9 +569,14 @@ function buildFormDetails(
         getDetailSortValue(right.key, right.index),
     )
     .flatMap(({ key, value }) => {
-      const label = getDetailLabel(key)
+      // Intervention-specific steps carry their own readable label/value from
+      // the funnel (answerDisplay); common keys use the generic formatting.
+      const display = answerDisplay[key]
+      const label = display ? display.label : getDetailLabel(key)
       const normalizedLabel = label.toLowerCase()
-      const formattedValue = formatStructuredValue(value)
+      const formattedValue = display
+        ? display.value
+        : formatStructuredValue(value)
 
       if (!formattedValue || seenLabels.has(normalizedLabel)) {
         return []

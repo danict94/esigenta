@@ -18,7 +18,7 @@ export function PublicShell({
 }: PublicShellProps) {
   if (hero) {
     return (
-      <div className="min-h-screen bg-cantiere-paper text-cantiere-ink">
+      <div className="min-h-screen bg-white text-cantiere-ink">
         {hero}
 
         <main>{children}</main>
@@ -29,7 +29,7 @@ export function PublicShell({
   }
 
   return (
-    <div className="min-h-screen bg-cantiere-paper text-cantiere-ink">
+    <div className="min-h-screen bg-white text-cantiere-ink">
       <Navbar variant={navbarVariant} />
 
       <main>{children}</main>

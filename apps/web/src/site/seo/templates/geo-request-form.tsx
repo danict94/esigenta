@@ -16,7 +16,7 @@ export function GeoRequestForm({ funnelSlug }: GeoRequestFormProps) {
       action={requestHref}
       method="get"
       className={cn(
-        "rounded-[8px]",
+        "rounded-lg",
         "space-y-4 border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >

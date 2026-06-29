@@ -4,13 +4,6 @@ export type ServiceCatalogStatus =
   | "PLANNED"
   | "HIDDEN";
 
-export type ServiceCategory = {
-  slug: string;
-  title: string;
-  description?: string;
-  order: number;
-};
-
 /**
  * Copy/marketing per la vetrina home — solo dati di presentazione, mai usata per
  * decidere indicizzabilità o destinazione (quella resta su status/seoInterventionSlug/
@@ -27,7 +20,6 @@ export type ServiceCatalogItem = {
   slug: string;
   title: string;
   description?: string;
-  categorySlug: string;
   status: ServiceCatalogStatus;
   /** Slug della landing SEO in site/seo/pages/interventi, solo per status SEO_PAGE. */
   seoInterventionSlug?: string;

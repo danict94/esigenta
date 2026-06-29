@@ -61,7 +61,7 @@ export function RelatedFunnelWork({
 
       <ul
         className={cn(
-          "rounded-[8px]",
+          "rounded-lg",
           "divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
         )}
       >

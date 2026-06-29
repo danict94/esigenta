@@ -91,7 +91,7 @@ export function BusinessHowItWorks() {
             Come funziona
           </p>
 
-          <h2 className="mt-4 max-w-[20ch] font-medium tracking-[-0.01em] text-cantiere-ink text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)]">
+          <h2 className="mt-4 max-w-[20ch] font-medium text-cantiere-ink text-cantiere-heading">
             Dalla richiesta al contatto, in tre passaggi.
           </h2>
         </div>

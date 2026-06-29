@@ -377,7 +377,7 @@ export async function CustomerRequestDetailPage({
               <h1
                 className={cn(
                   "text-cantiere-ink",
-                  "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] font-medium tracking-[-0.01em]",
+                  "font-medium text-cantiere-heading",
                 )}
               >
                 Dettaglio richiesta

@@ -12,7 +12,7 @@ export function CustomerRequestsAccessPage({
 }: CustomerRequestsAccessPageProps) {
   return (
     <PublicShell>
-      <div className="py-10 md:py-14 lg:py-20">
+      <div className="pt-(--fp-nav-clear) pb-10 md:pb-14 lg:pb-20">
         <Container size="lg">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,29rem)] lg:items-center lg:gap-16">
             <div className="mx-auto flex w-full max-w-xl flex-col gap-5 text-center lg:mx-0 lg:text-left">

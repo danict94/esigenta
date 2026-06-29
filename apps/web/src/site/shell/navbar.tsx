@@ -51,7 +51,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
       className="fixed left-0 right-0 top-0 z-50 backdrop-blur-md transition-shadow duration-300"
     >
       <div
-        className="flex h-[72px] items-center justify-between border-b px-5 transition-colors duration-300 sm:px-10 lg:px-16"
+        className="flex h-(--fp-nav-height) items-center justify-between border-b px-5 transition-colors duration-300 sm:px-10 lg:px-16"
         style={{
           backgroundColor: solid ? cc.paperTranslucent : "transparent",
           borderColor: scrolled ? cc.hairline : "transparent",

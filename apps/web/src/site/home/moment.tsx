@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { HomeImage } from "./home-image";
 
-import { cc, ccFont, ccPhotoGrade, ccType } from "../shell/palette";
+import { cc, ccFont, ccPhotoGrade } from "../shell/palette";
 import { ArrowRightIcon } from "../shell/icons";
 
 const professionalPhoto = {
@@ -39,7 +39,7 @@ export function Moment() {
             Per i professionisti
           </p>
 
-          <h2 className={`mt-3 max-w-xl font-medium tracking-[-0.01em] ${ccType.heading}`} style={{ color: cc.paper }}>
+          <h2 className="mt-3 max-w-xl font-medium text-cantiere-heading" style={{ color: cc.paper }}>
             Richieste reali, nella tua zona
           </h2>
 

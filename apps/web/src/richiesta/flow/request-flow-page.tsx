@@ -14,7 +14,7 @@ export function RequestFlowPage({
 }: RequestFlowPageProps) {
   return (
     <PublicShell navbarVariant="funnel" showFooter={false}>
-      <section className={"pb-20 pt-16 md:pb-28 md:pt-20 lg:pb-32 lg:pt-24"}>
+      <section className={"pb-20 pt-(--fp-nav-clear) md:pb-28 lg:pb-32"}>
         <Container size="lg">
           <div className={"mx-auto w-full max-w-[1120px]"}>
             <header className={"space-y-5"}>

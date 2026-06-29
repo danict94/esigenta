@@ -2,17 +2,16 @@
 // Canonical palette for the site shell (navbar, footer) and homepage sections.
 
 export const cc = {
-  ink: "#171511",
-  inkSecondary: "#5B5648",
-  paper: "#FAF8F4",
-  paperTranslucent: "rgba(250, 248, 244, 0.72)",
-  surface: "#F1EEE7",
-  // Warm linen — deeper and warmer than `surface`. Now the hero ground.
-  linen: "#ECE4D4",
-  hairline: "#E4E0D6",
-  // The accent: Claude's terracotta/clay. Warm Paper/Ink neutrals stay the
-  // foundation; the accent is the one warm signal, used sparingly —
-  // CTA fill, search affordance, focus states, links.
+  ink: "#18181B",
+  inkSecondary: "#57575F",
+  paper: "#F1F1F3",
+  paperTranslucent: "rgba(241, 241, 243, 0.72)",
+  surface: "#E7E7EB",
+  // Subtle neutral fill for hover/selected states — between `paper` and `surface`.
+  linen: "#ECECEF",
+  hairline: "#E0E0E5",
+  // Modern light-gray neutrals are the foundation; terracotta is the single
+  // warm accent, used sparingly — CTA fill, search affordance, focus, links.
   accent: "#CC785C",
   accentHover: "#B05E3F",
   accentTint: "#F5E8DF",
@@ -25,11 +24,10 @@ export const ccFont = { fontFamily: "var(--font-geist-sans)" } as const;
 export const ccPhotoGrade =
   "[filter:saturate(0.94)_contrast(1.04)_brightness(1.01)]";
 
-// Fluid type — replaces the old two-step (mobile value / lg value) jump
-// with a continuous clamp so nothing "snaps" at exactly 1024px.
-export const ccType = {
-  heading: "text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)]",
-} as const;
+// Fluid display type now lives in the design system as theme tokens —
+// `text-cantiere-display` (hero/step) and `text-cantiere-heading` (section
+// headings). See `packages/ui/src/styles/globals.css`. The old `ccType`
+// className object was removed so there is one source of truth for type size.
 
 // Soft, low-opacity elevation — the one place this system allows shadow.
 // Used for the search affordance, the nav once scrolled, and the rare

@@ -58,7 +58,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 href={requestHref}
                 className={cn(
                   "inline-flex items-center justify-center font-medium transition-colors",
-                  "rounded-[8px]",
+                  "rounded-lg",
                   "h-12 px-6 text-[15px]",
                   "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                   "w-full gap-2 sm:w-auto",
@@ -73,7 +73,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                   href={interventionHref}
                   className={cn(
                     "inline-flex items-center justify-center font-medium transition-colors",
-                    "rounded-[8px]",
+                    "rounded-lg",
                     "h-12 px-6 text-[15px]",
                     "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                     "w-full gap-2 sm:w-auto",
@@ -88,8 +88,8 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
           <div
             className={cn(
-              "rounded-[8px]",
-              "aspect-[4/3] overflow-hidden bg-cantiere-surface md:aspect-[720/520]",
+              "rounded-lg",
+              "aspect-4/3 overflow-hidden bg-cantiere-surface md:aspect-720/520",
             )}
           >
             <Image
@@ -107,7 +107,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         <section
           aria-labelledby="sintesi-costo-title"
           className={cn(
-            "rounded-[8px]",
+            "rounded-lg",
             "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
           )}
         >
@@ -177,7 +177,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               <div
                 key={example.label}
                 className={cn(
-                  "rounded-[8px]",
+                  "rounded-lg",
                   "border border-cantiere-hairline bg-cantiere-paper p-5",
                 )}
               >
@@ -214,7 +214,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
           <ul
             className={cn(
-              "rounded-[8px]",
+              "rounded-lg",
               "grid gap-4 border border-cantiere-hairline bg-cantiere-paper p-5 md:grid-cols-2 md:p-6",
             )}
           >
@@ -279,7 +279,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 <article
                   key={section.city}
                   className={cn(
-                    "rounded-[8px]",
+                    "rounded-lg",
                     "border border-cantiere-hairline bg-cantiere-paper p-5",
                   )}
                 >
@@ -342,7 +342,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                       href={cityPage.canonicalPath}
                       className={cn(
                         "inline-flex items-center justify-center font-medium transition-colors",
-                        "rounded-[8px]",
+                        "rounded-lg",
                         "h-12 px-6 text-[15px]",
                         "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                         "mt-5 w-full gap-2 sm:w-auto",
@@ -362,7 +362,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         <section
           aria-labelledby="risparmiare-title"
           className={cn(
-            "rounded-[8px]",
+            "rounded-lg",
             "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-7",
           )}
         >
@@ -398,7 +398,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
         <section
           className={cn(
-            "rounded-[8px]",
+            "rounded-lg",
             "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
           )}
         >
@@ -416,7 +416,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               href={requestHref}
               className={cn(
                 "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-[8px]",
+                "rounded-lg",
                 "h-12 px-6 text-[15px]",
                 "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
@@ -436,7 +436,7 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div
       className={cn(
-        "rounded-[8px]",
+        "rounded-lg",
         "border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >
@@ -452,7 +452,7 @@ function PriceTable({ rows }: { rows: CostGuide["priceRows"] }) {
   return (
     <div
       className={cn(
-        "rounded-[8px]",
+        "rounded-lg",
         "overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
       )}
     >

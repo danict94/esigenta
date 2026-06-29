@@ -51,7 +51,7 @@ export function CityCostGuidePage({
                   href={requestHref}
                   className={cn(
                     "inline-flex items-center justify-center font-medium transition-colors",
-                    "rounded-[8px]",
+                    "rounded-lg",
                     "h-12 px-6 text-[15px]",
                     "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                     "w-full gap-2 sm:w-auto",
@@ -65,7 +65,7 @@ export function CityCostGuidePage({
                   href={guide.canonicalPath}
                   className={cn(
                     "inline-flex items-center justify-center font-medium transition-colors",
-                    "rounded-[8px]",
+                    "rounded-lg",
                     "h-12 px-6 text-[15px]",
                     "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
                     "w-full gap-2 sm:w-auto",
@@ -84,8 +84,8 @@ export function CityCostGuidePage({
 
           <div
             className={cn(
-              "rounded-[8px]",
-              "aspect-[4/3] overflow-hidden bg-cantiere-surface md:aspect-[720/520]",
+              "rounded-lg",
+              "aspect-4/3 overflow-hidden bg-cantiere-surface md:aspect-720/520",
             )}
           >
             <Image
@@ -103,7 +103,7 @@ export function CityCostGuidePage({
         <section
           aria-labelledby="range-citta-title"
           className={cn(
-            "rounded-[8px]",
+            "rounded-lg",
             "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
           )}
         >
@@ -176,7 +176,7 @@ export function CityCostGuidePage({
 
           <div
             className={cn(
-              "rounded-[8px]",
+              "rounded-lg",
               "divide-y divide-border-primary border-y border-cantiere-hairline",
             )}
           >
@@ -199,7 +199,7 @@ export function CityCostGuidePage({
 
         <section
           className={cn(
-            "rounded-[8px]",
+            "rounded-lg",
             "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
           )}
         >
@@ -217,7 +217,7 @@ export function CityCostGuidePage({
               href={requestHref}
               className={cn(
                 "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-[8px]",
+                "rounded-lg",
                 "h-12 px-6 text-[15px]",
                 "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
                 "w-full gap-2 sm:w-auto",
@@ -237,7 +237,7 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div
       className={cn(
-        "rounded-[8px]",
+        "rounded-lg",
         "border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >
@@ -259,7 +259,7 @@ function ChecklistSection({
   return (
     <section
       className={cn(
-        "rounded-[8px]",
+        "rounded-lg",
         "border border-cantiere-hairline bg-cantiere-paper p-5",
       )}
     >

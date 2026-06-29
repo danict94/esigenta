@@ -1,11 +1,11 @@
 const cantiereColorTokens = {
-  ink: "#171511",
-  inkSecondary: "#5B5648",
-  paper: "#FAF8F4",
-  paperTranslucent: "rgba(250, 248, 244, 0.72)",
-  surface: "#F1EEE7",
-  linen: "#ECE4D4",
-  hairline: "#E4E0D6",
+  ink: "#18181B",
+  inkSecondary: "#57575F",
+  paper: "#F1F1F3",
+  paperTranslucent: "rgba(241, 241, 243, 0.72)",
+  surface: "#E7E7EB",
+  linen: "#ECECEF",
+  hairline: "#E0E0E5",
   accent: "#CC785C",
   accentHover: "#B05E3F",
   accentTint: "#F5E8DF",
@@ -33,11 +33,20 @@ const cantiereRadiusTokens = {
   lg: "rounded-[8px]",
 } as const;
 
+// Fluid display type. The utilities are generated from `--text-cantiere-*` in
+// globals.css (size + bundled leading/tracking/weight); these className tokens
+// are the JS handle so call sites never re-type a raw clamp.
+const cantiereTextTokens = {
+  display: "text-cantiere-display",
+  heading: "text-cantiere-heading",
+} as const;
+
 export const tokens = {
   cantiere: {
     color: cantiereColorTokens,
     shadow: cantiereShadowTokens,
     radius: cantiereRadiusTokens,
+    text: cantiereTextTokens,
   },
 } as const;
 
@@ -47,3 +56,4 @@ export type CantiereToken = keyof typeof tokens.cantiere;
 export type CantiereColorToken = keyof typeof tokens.cantiere.color;
 export type CantiereShadowToken = keyof typeof tokens.cantiere.shadow;
 export type CantiereRadiusToken = keyof typeof tokens.cantiere.radius;
+export type CantiereTextToken = keyof typeof tokens.cantiere.text;

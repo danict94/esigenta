@@ -1,11 +1,11 @@
 :root {
-  --fp-color-cantiere-ink: #171511;
-  --fp-color-cantiere-ink-secondary: #5b5648;
-  --fp-color-cantiere-paper: #faf8f4;
-  --fp-color-cantiere-paper-translucent: rgba(250, 248, 244, 0.72);
-  --fp-color-cantiere-surface: #f1eee7;
-  --fp-color-cantiere-linen: #ffffff;
-  --fp-color-cantiere-hairline: #e4e0d6;
+  --fp-color-cantiere-ink: #18181b;
+  --fp-color-cantiere-ink-secondary: #57575f;
+  --fp-color-cantiere-paper: #f1f1f3;
+  --fp-color-cantiere-paper-translucent: rgba(241, 241, 243, 0.72);
+  --fp-color-cantiere-surface: #e7e7eb;
+  --fp-color-cantiere-linen: #ececef;
+  --fp-color-cantiere-hairline: #e0e0e5;
   --fp-color-cantiere-accent: #cc785c;
   --fp-color-cantiere-accent-hover: #b05e3f;
   --fp-color-cantiere-accent-tint: #f5e8df;
@@ -30,6 +30,21 @@
      language (still warm/soft, just a deeper spread than `elevation`). */
   --fp-shadow-cantiere-elevation-lg:
     0 2px 4px rgba(23, 21, 17, 0.06), 0 24px 48px rgba(23, 21, 17, 0.12);
+
+  /* Fluid display type — one continuous clamp per step so nothing "snaps"
+     at a breakpoint (Design Principle 6). These two `--fp-*` values are the
+     single knob design tunes: every hero/section headline derives from them.
+       display — hero <h1> + funnel step question.
+       heading — section <h2> + funnel step description. */
+  --fp-text-cantiere-display: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+  --fp-text-cantiere-heading: clamp(1.625rem, 1.1rem + 2.2vw, 2.375rem);
+
+  /* Height of the fixed, transparent navbar, and the top offset content uses
+     to clear it. The bar floats over the page, so every first content block
+     sits at `pt-[var(--fp-nav-clear)]` (bar height + a breathing gap). One
+     source of truth: the navbar derives its height from `--fp-nav-height`. */
+  --fp-nav-height: 72px;
+  --fp-nav-clear: calc(var(--fp-nav-height) + 1.5rem);
 }
 
 @theme inline {
@@ -54,10 +69,26 @@
   --shadow-cantiere-elevation: var(--fp-shadow-cantiere-elevation);
   --shadow-cantiere-slab: var(--fp-shadow-cantiere-slab);
   --shadow-cantiere-elevation-lg: var(--fp-shadow-cantiere-elevation-lg);
+
+  /* `text-cantiere-display` carries size + leading + tracking + weight, since
+     every consumer shares all four — the whole headline style is one class. */
+  --text-cantiere-display: var(--fp-text-cantiere-display);
+  --text-cantiere-display--line-height: 1.02;
+  --text-cantiere-display--letter-spacing: -0.02em;
+  --text-cantiere-display--font-weight: 500;
+
+  /* `text-cantiere-heading` carries size + tracking only. Weight and leading
+     are left to the call site: section headings are `font-medium`, the funnel
+     step description is regular weight — same size, different role. */
+  --text-cantiere-heading: var(--fp-text-cantiere-heading);
+  --text-cantiere-heading--letter-spacing: -0.01em;
 }
 
 body {
-  background: var(--fp-color-cantiere-paper);
+  /* The page canvas is plain white. The warm `cantiere-*` tones are surface
+     tokens for containers (cards, panels, hero sections) that opt into them —
+     they are never the page background. */
+  background: #ffffff;
   color: var(--fp-color-cantiere-ink);
   font-family: var(--font-geist-sans, Arial), Helvetica, sans-serif;
 }

@@ -1,4 +1,3 @@
-import { cc } from "../shell/palette";
 import { Navbar } from "../shell/navbar";
 import { Footer } from "../shell/footer";
 import { Explosion } from "./explosion";
@@ -8,7 +7,7 @@ import { Grain } from "./grain";
 
 export function HomePage() {
   return (
-    <div style={{ backgroundColor: cc.paper }}>
+    <div className="bg-white">
       <Grain />
       <Navbar />
 

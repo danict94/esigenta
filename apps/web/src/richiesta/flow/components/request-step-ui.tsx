@@ -7,6 +7,7 @@ import { Button, Input, Textarea, cn } from "@esigenta/ui";
 import type { RuntimeCapability } from "@esigenta/funnel";
 
 import {
+  NOTE_STEP_ID,
   readRuntimeContactAnswer,
   updateRuntimeContactAnswerField,
 } from "@esigenta/funnel";
@@ -32,11 +33,14 @@ type RequestStepUIProps = {
   isLastStep: boolean;
   isPhotoUploading: boolean;
   isSubmitting: boolean;
+  leadQualityHintVisible: boolean;
   stepIndex: number;
   submittedRequest: FunnelSubmittedRequest | null;
   totalSteps: number;
+  onAddLeadQualityDetails: () => void;
   onBack: () => void;
   onCapabilityChange: (value: unknown) => void;
+  onContinueAfterLeadQualityHint: () => void;
   onCustomerDescriptionChange: (value: string) => void;
   onPhotoUploadingChange: (isUploading: boolean) => void;
   onEditSubmittedRequest: () => void;
@@ -179,6 +183,58 @@ function renderCapabilityInput({
         </div>
       );
 
+    case "multi_select": {
+      const selectedValues = Array.isArray(value)
+        ? (value as string[])
+        : [];
+
+      return (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {capability.options?.map((option) => {
+            const selected = selectedValues.includes(option.value);
+
+            return (
+              <Button
+                key={option.value}
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  const next = selected
+                    ? selectedValues.filter((item) => item !== option.value)
+                    : [...selectedValues, option.value];
+
+                  onChange(next);
+                }}
+                className={cn(
+                  "h-auto min-h-12 w-full justify-start whitespace-normal border px-4 py-3 text-left text-sm font-medium transition-colors",
+                  "rounded-[8px]",
+                  selected
+                    ? "border-cantiere-accent bg-cantiere-linen text-cantiere-ink"
+                    : "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary hover:border-cantiere-accent hover:bg-cantiere-linen",
+                )}
+              >
+                <span className="flex w-full items-center gap-3">
+                  <span
+                    className={cn(
+                      "flex size-5 shrink-0 items-center justify-center rounded-[4px] border text-[11px] text-cantiere-paper",
+                      selected
+                        ? "border-cantiere-accent bg-cantiere-accent"
+                        : "border-cantiere-hairline bg-cantiere-paper",
+                    )}
+                    aria-hidden="true"
+                  >
+                    {selected ? "✓" : null}
+                  </span>
+
+                  <span>{option.label}</span>
+                </span>
+              </Button>
+            );
+          })}
+        </div>
+      );
+    }
+
     case "number":
       return (
         <Input
@@ -227,6 +283,10 @@ function renderCapabilityInput({
   }
 }
 
+function hasPhotoAnswer(value: unknown) {
+  return Array.isArray(value) && value.length > 0;
+}
+
 export function RequestStepUI({
   selectedInterventionName,
   currentCapability,
@@ -237,11 +297,14 @@ export function RequestStepUI({
   isLastStep,
   isPhotoUploading,
   isSubmitting,
+  leadQualityHintVisible,
   stepIndex,
   submittedRequest,
   totalSteps,
+  onAddLeadQualityDetails,
   onBack,
   onCapabilityChange,
+  onContinueAfterLeadQualityHint,
   onCustomerDescriptionChange,
   onPhotoUploadingChange,
   onEditSubmittedRequest,
@@ -352,6 +415,9 @@ export function RequestStepUI({
     );
   }
 
+  const isEmptyPhotoStep =
+    currentCapability.type === "photo_upload" && !hasPhotoAnswer(currentValue);
+
   return (
     <div className={"mt-7 flex flex-col gap-7 md:mt-8"}>
       <p className="sr-only">
@@ -363,41 +429,69 @@ export function RequestStepUI({
         <div className={"h-1 w-16 bg-cantiere-accent"} aria-hidden="true" />
 
         <div className="space-y-4">
-          <h2 className="font-medium leading-[1.02] tracking-[-0.02em] text-cantiere-ink text-[clamp(2.5rem,1.6rem+5vw,5.75rem)]">
+          <h2 className="text-cantiere-ink text-cantiere-display">
             {currentCapability.question}
           </h2>
 
           {currentCapability.description ? (
-            <p className="max-w-2xl text-[clamp(1.625rem,1.1rem+2.2vw,2.375rem)] leading-[1.2] tracking-[-0.01em] text-cantiere-ink-secondary">
+            <p className="max-w-2xl leading-[1.2] text-cantiere-heading text-cantiere-ink-secondary">
               {currentCapability.description}
             </p>
           ) : null}
         </div>
       </div>
 
-      {renderCapabilityInput({
-        capability: currentCapability,
-        value: currentValue,
-        onChange: onCapabilityChange,
-        onPhotoUploadingChange,
-      })}
-
-      {isLastStep ? (
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-cantiere-ink">
-            Aggiungi qualche dettaglio utile
-          </label>
-
+      {currentCapability.id === NOTE_STEP_ID ? (
+        <div className="grid gap-4">
           <Textarea
             value={customerDescription}
             onChange={(event) => {
               onCustomerDescriptionChange(event.target.value);
             }}
             rows={4}
-            placeholder="Descrivi brevemente il lavoro, se vuoi."
+            placeholder={currentCapability.placeholder ?? "Scrivi qui, se vuoi."}
           />
+
+          {leadQualityHintVisible ? (
+            <div
+              className={cn(
+                "border border-cantiere-hairline bg-cantiere-linen p-4",
+                "rounded-[8px]",
+              )}
+            >
+              <p className="text-sm leading-6 text-cantiere-ink">
+                Le richieste con foto o qualche dettaglio ricevono preventivi
+                più precisi.
+              </p>
+
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onAddLeadQualityDetails}
+                >
+                  Aggiungi dettagli
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={onContinueAfterLeadQualityHint}
+                >
+                  Continua comunque
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </div>
-      ) : null}
+      ) : (
+        renderCapabilityInput({
+          capability: currentCapability,
+          value: currentValue,
+          onChange: onCapabilityChange,
+          onPhotoUploadingChange,
+        })
+      )}
 
       {error ? <p className="text-sm text-cantiere-accent">{error}</p> : null}
 
@@ -441,6 +535,8 @@ export function RequestStepUI({
               : "Prepara richiesta"
             : isPhotoUploading
               ? "Caricamento foto..."
+              : isEmptyPhotoStep
+                ? "Continua senza foto"
               : "Avanti"}
         </Button>
       </div>

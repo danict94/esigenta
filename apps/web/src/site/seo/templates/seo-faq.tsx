@@ -29,7 +29,7 @@ export function SeoFaq({ faq }: SeoFaqProps) {
 
       <div
         className={cn(
-          "rounded-[8px]",
+          "rounded-lg",
           "divide-y divide-border-primary border-y border-cantiere-hairline",
         )}
       >

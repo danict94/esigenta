@@ -12,6 +12,7 @@ export type {
   CantiereColorToken,
   CantiereShadowToken,
   CantiereRadiusToken,
+  CantiereTextToken,
 } from "./styles/tokens";
 export * from "./components/button";
 export * from "./components/input";

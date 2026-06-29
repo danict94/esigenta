@@ -135,7 +135,7 @@ export async function CustomerConversationPage({
 
   return (
     <PublicShell>
-      <section className="py-10 md:py-12">
+      <section className="pt-(--fp-nav-clear) pb-10 md:pb-12">
         <Container size="lg">
           <div className="space-y-6">
             <div>

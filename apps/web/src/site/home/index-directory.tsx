@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { listCostGuides } from "../seo/pages/costi";
 
-import { cc, ccFont, ccType } from "../shell/palette";
+import { cc, ccFont } from "../shell/palette";
 import { ArrowRightIcon } from "../shell/icons";
 
 function capitalize(text: string): string {
@@ -31,7 +31,7 @@ export function IndexDirectory() {
               Guide ai costi
             </p>
 
-            <h2 className={`mt-4 font-medium tracking-[-0.01em] ${ccType.heading}`} style={{ color: cc.ink }}>
+            <h2 className="mt-4 font-medium text-cantiere-heading" style={{ color: cc.ink }}>
               Quanto costa, prima di chiederlo.
             </h2>
 

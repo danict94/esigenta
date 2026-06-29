@@ -41,9 +41,8 @@ export type CostGuide = {
   canonicalPath: string;
   /**
    * Categoria pubblica per il raggruppamento in /costi (Phase 20.2). Concetto
-   * editoriale indipendente da TaxonomyDomain/PublicServiceMacroArea — vive solo
-   * qui, non importare da site/services per non creare un accoppiamento tra i
-   * due layer.
+   * editoriale che vive solo qui: non importare da site/services né dalla taxonomy,
+   * per non accoppiare il raggruppamento delle guide costo al dominio dei servizi.
    */
   hubCategory: CostGuideHubCategory;
   /** Immagine hero/OG della guida — mai un'immagine fissa condivisa tra guide diverse. */

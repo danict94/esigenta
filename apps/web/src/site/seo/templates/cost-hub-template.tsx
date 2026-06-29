@@ -45,7 +45,7 @@ export function CostHubPage({ categories }: CostHubPageProps) {
 
                 <ul
                   className={cn(
-                    "rounded-[8px]",
+                    "rounded-lg",
                     "mt-4 divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
                   )}
                 >

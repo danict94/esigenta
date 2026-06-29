@@ -46,7 +46,7 @@ export function CookiePolicyPage() {
   return (
     <PublicShell>
       <Container size="lg" gutter="md">
-        <article className="py-12 md:py-16">
+        <article className="pt-(--fp-nav-clear) pb-12 md:pb-16">
           <header className="max-w-3xl">
             <Badge variant="success">Cookie</Badge>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-cantiere-ink">

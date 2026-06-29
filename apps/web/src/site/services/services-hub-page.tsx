@@ -1,20 +1,18 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { frozenTaxonomySource } from "@esigenta/taxonomy";
 import { PageShell, cn } from "@esigenta/ui";
 
-import { listFeaturedServiceCatalogItems, getServiceCatalogItemHref } from "./catalog";
-// Side-effect (Phase 19.6H/19.6I): esegue il guard di coverage del catalogo
-// pubblico taxonomy-derived (validators.selftest + assertValidPublicCatalog). Deve
-// restare in un Server Component: il barrel pubblico di @esigenta/taxonomy trascina
-// query Prisma/pg non bundlabili per il browser — mai importare public-navigation/**
-// da un Client Component o dal barrel site/services/index.ts usato dalla home.
-import { buildPublicServiceMacroAreasWithItems } from "./public-navigation";
-import type { PublicServiceCard } from "./public-navigation";
-
 export function ServicesHubPage() {
-  const featuredItems = listFeaturedServiceCatalogItems();
-  const macroAreas = buildPublicServiceMacroAreasWithItems();
+  // "Esplora tutti i servizi" mostra esclusivamente i Group Service (vedi
+  // docs/seo-navigation/05_SEO_DOMAIN_VISION.md): gli interventi vivono solo dentro la
+  // futura pagina Hub del relativo Group Service, non qui. Fonte di verità unica del
+  // Group Service è il ProjectGroup della taxonomy (convergenza del dominio): nessun
+  // layer editoriale parallelo. frozenTaxonomySource è importato direttamente come già
+  // fa related-funnel-work.tsx; questo resta un Server Component perché il barrel
+  // @esigenta/taxonomy trascina codice Prisma/pg non bundlabile per il browser.
+  const groupServices = frozenTaxonomySource.projectGroups;
 
   return (
     <PageShell size="lg">
@@ -43,75 +41,15 @@ export function ServicesHubPage() {
           </p>
         </div>
 
-        {macroAreas.length > 0 ? (
-          <nav aria-label="Macro aree" className="flex flex-wrap gap-2">
-            {macroAreas.map((area) => (
-              <a
-                key={area.slug}
-                href={`#area-${area.slug}`}
-                className={cn(
-                  "rounded-full",
-                  "inline-flex min-h-9 items-center border border-cantiere-hairline bg-cantiere-paper px-3 text-sm font-medium leading-5 text-cantiere-ink-secondary transition-colors hover:border-cantiere-accent hover:text-cantiere-ink",
-                )}
-              >
-                {area.name}
-              </a>
+        {groupServices.length > 0 ? (
+          <ul
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label="Group Service"
+          >
+            {groupServices.map((group) => (
+              <GroupServiceCard key={group.slug} name={group.name} />
             ))}
-          </nav>
-        ) : null}
-
-        {featuredItems.length > 0 ? (
-          <section aria-labelledby="servizi-richiesti-title" className="space-y-6">
-            <h2
-              id="servizi-richiesti-title"
-              className="text-2xl font-semibold leading-8 text-cantiere-ink"
-            >
-              Servizi più richiesti
-            </h2>
-
-            <ul
-              className={cn(
-                "rounded-[8px]",
-                "divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
-              )}
-            >
-              {featuredItems.map((item) => {
-                const href = getServiceCatalogItemHref(item);
-
-                if (!href) {
-                  return null;
-                }
-
-                return (
-                  <li key={item.slug}>
-                    <Link
-                      href={href}
-                      className="flex items-center justify-between gap-4 px-5 py-4 text-base font-medium text-cantiere-ink transition-colors hover:bg-cantiere-surface md:px-6"
-                    >
-                      <span>{item.title}</span>
-                      <ArrowRight
-                        className="size-4 shrink-0 text-cantiere-ink-secondary"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ) : null}
-
-        {macroAreas.length > 0 ? (
-          <div className="space-y-10">
-            {macroAreas.map((area) => (
-              <MacroAreaSection
-                key={area.slug}
-                slug={area.slug}
-                name={area.name}
-                items={area.items}
-              />
-            ))}
-          </div>
+          </ul>
         ) : (
           <p className="text-base leading-7 text-cantiere-ink-secondary">
             Il catalogo servizi è in preparazione. Torna a trovarci presto.
@@ -154,76 +92,20 @@ export function ServicesHubPage() {
   );
 }
 
-function MacroAreaSection({
-  slug,
-  name,
-  items,
-}: {
-  slug: string;
-  name: string;
-  items: readonly PublicServiceCard[];
-}) {
-  // items è già ordinato per priority. I primi 3 vanno in evidenza; il resto (sia
-  // quarto+ VISIBLE che gli effettivi COLLAPSED) finisce nella lista secondaria —
-  // nessun item viene mai scartato dal rendering, solo riposizionato.
-  const visibleItems = items.slice(0, 3);
-  const collapsedItems = items.slice(3);
-
+// La pagina Hub del Group Service non esiste ancora (vedi
+// docs/seo-navigation/05_SEO_DOMAIN_VISION.md, Step 2): la card resta non
+// cliccabile finché quella route non viene creata, per non linkare a una
+// destinazione inesistente.
+function GroupServiceCard({ name }: { name: string }) {
   return (
-    <section id={`area-${slug}`} aria-labelledby={`area-${slug}-title`}>
-      <h2
-        id={`area-${slug}-title`}
-        className="text-2xl font-semibold leading-8 text-cantiere-ink"
-      >
-        {name}
-      </h2>
-
-      <ul
-        className={cn(
-          "rounded-[8px]",
-          "mt-4 divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
-        )}
-      >
-        {visibleItems.map((item) => (
-          <ServiceListItem key={item.slug} item={item} />
-        ))}
-      </ul>
-
-      {collapsedItems.length > 0 ? (
-        <details className="mt-3 group">
-          <summary className="cursor-pointer text-sm font-medium text-cantiere-accent underline-offset-4 hover:underline">
-            Vedi altri {collapsedItems.length} servizi
-          </summary>
-
-          <ul
-            className={cn(
-              "rounded-[8px]",
-              "mt-3 divide-y divide-border-primary overflow-hidden border border-cantiere-hairline bg-cantiere-paper",
-            )}
-          >
-            {collapsedItems.map((item) => (
-              <ServiceListItem key={item.slug} item={item} />
-            ))}
-          </ul>
-        </details>
-      ) : null}
-    </section>
-  );
-}
-
-function ServiceListItem({ item }: { item: PublicServiceCard }) {
-  return (
-    <li>
-      <Link
-        href={item.href}
-        className="flex items-center justify-between gap-4 px-5 py-3 text-sm font-medium text-cantiere-ink transition-colors hover:bg-cantiere-surface md:px-6"
-      >
-        <span>{item.label}</span>
-        <ArrowRight
-          className="size-4 shrink-0 text-cantiere-ink-secondary"
-          aria-hidden="true"
-        />
-      </Link>
+    <li
+      className={cn(
+        "rounded-[8px]",
+        "flex items-center justify-between gap-4 border border-cantiere-hairline bg-cantiere-paper px-5 py-4",
+      )}
+    >
+      <span className="text-base font-medium text-cantiere-ink">{name}</span>
+      <span className="text-sm text-cantiere-ink-secondary">In arrivo</span>
     </li>
   );
 }

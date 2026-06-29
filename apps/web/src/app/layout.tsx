@@ -21,7 +21,7 @@ export default function RootLayout({
       lang="it"
       className={`${GeistSans.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-cantiere-paper font-sans text-cantiere-ink">
+      <body className="flex min-h-full flex-col bg-white font-sans text-cantiere-ink">
         {children}
         <CookieConsent />
       </body>

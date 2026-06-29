@@ -5,13 +5,14 @@ import { useState } from "react";
 import type {
   RequestDraft,
   RuntimeAnswers,
-  RuntimeCapabilityId,
+  RuntimeStepId,
   RuntimeFunnelPayload,
 } from "@esigenta/funnel";
 
 import {
   countCompleteRuntimeAnswers,
   isRuntimeCapabilityAnswerComplete,
+  NOTE_STEP_ID,
 } from "@esigenta/funnel";
 
 import { RequestStepUI } from "./request-step-ui";
@@ -62,6 +63,14 @@ function readRequestApiError(value: unknown): RequestApiErrorPayload {
     error: typeof value.error === "string" ? value.error : undefined,
     code: typeof value.code === "string" ? value.code : undefined,
   };
+}
+
+function hasPhotoAnswer(value: unknown) {
+  return Array.isArray(value) && value.length > 0;
+}
+
+function hasCustomerDescription(value: string) {
+  return value.trim().length > 0;
 }
 
 function getRequestSubmitErrorMessage({
@@ -121,6 +130,9 @@ export function RequestStepper({
     useState<SubmittedRequestPayload | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPhotoUploading, setIsPhotoUploading] = useState(false);
+  const [showLeadQualityHint, setShowLeadQualityHint] = useState(false);
+  const [leadQualityHintDismissed, setLeadQualityHintDismissed] =
+    useState(false);
 
   const capabilities = payload.orderedCapabilities;
   const currentCapability = capabilities[stepIndex];
@@ -128,12 +140,25 @@ export function RequestStepper({
   const isLastStep = stepIndex === totalSteps - 1;
   const filledAnswers = countCompleteRuntimeAnswers(answers);
 
-  function updateAnswer(capabilityId: RuntimeCapabilityId, value: unknown) {
+  function updateAnswer(capabilityId: RuntimeStepId, value: unknown) {
     setAnswers((current) => ({
       ...current,
       [capabilityId]: value,
     }));
     setError(null);
+
+    if (capabilityId === "photos" && hasPhotoAnswer(value)) {
+      setShowLeadQualityHint(false);
+    }
+  }
+
+  function updateCustomerDescription(value: string) {
+    setCustomerDescription(value);
+    setError(null);
+
+    if (hasCustomerDescription(value)) {
+      setShowLeadQualityHint(false);
+    }
   }
 
   function goBack() {
@@ -147,6 +172,7 @@ export function RequestStepper({
       return;
     }
 
+    setShowLeadQualityHint(false);
     setStepIndex((current) => current - 1);
   }
 
@@ -240,6 +266,16 @@ export function RequestStepper({
       return;
     }
 
+    if (
+      currentCapability.id === NOTE_STEP_ID &&
+      !leadQualityHintDismissed &&
+      !hasPhotoAnswer(answers.photos) &&
+      !hasCustomerDescription(customerDescription)
+    ) {
+      setShowLeadQualityHint(true);
+      return;
+    }
+
     if (isLastStep) {
       await submitDraft();
       return;
@@ -270,8 +306,19 @@ export function RequestStepper({
       onCapabilityChange={(value) => {
         updateAnswer(currentCapability.id, value);
       }}
-      onCustomerDescriptionChange={setCustomerDescription}
+      onCustomerDescriptionChange={updateCustomerDescription}
       onPhotoUploadingChange={setIsPhotoUploading}
+      leadQualityHintVisible={
+        currentCapability.id === NOTE_STEP_ID && showLeadQualityHint
+      }
+      onAddLeadQualityDetails={() => {
+        setShowLeadQualityHint(false);
+      }}
+      onContinueAfterLeadQualityHint={() => {
+        setLeadQualityHintDismissed(true);
+        setShowLeadQualityHint(false);
+        setStepIndex((current) => Math.min(current + 1, totalSteps - 1));
+      }}
       onEditSubmittedRequest={editSubmittedRequest}
       onNext={() => {
         void goNext();
