@@ -4,9 +4,6 @@
     "slug": "applicare-stucco-decorativo",
     "name": "Applicare stucco decorativo",
     "projectGroupSlug": "finiture",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
     "aliases": [
       "finitura decorativa",
       "stucco decorativo",
@@ -17,11 +14,7 @@
     "id": "disostruire-scarichi",
     "slug": "disostruire-scarichi",
     "name": "Disostruire scarichi",
-    "projectGroupSlug": "impianti-idraulici",
-    "runtimePresetSlugs": [
-      "PLUMBING_EMERGENCY",
-      "QUICK_SERVICE"
-    ],
+    "projectGroupSlug": "idraulica",
     "aliases": [
       "disostruzione scarichi",
       "scarico otturato",
@@ -32,11 +25,7 @@
     "id": "fare-impianto-elettrico-nuovo",
     "slug": "fare-impianto-elettrico-nuovo",
     "name": "Fare impianto elettrico nuovo",
-    "projectGroupSlug": "impianti-elettrici",
-    "runtimePresetSlugs": [
-      "ELECTRICAL_WORK",
-      "RENOVATION"
-    ],
+    "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "impianto elettrico da zero",
       "impianto elettrico nuovo",
@@ -48,9 +37,6 @@
     "slug": "fare-manutenzione-climatizzatore",
     "name": "Fare manutenzione climatizzatore",
     "projectGroupSlug": "climatizzazione",
-    "runtimePresetSlugs": [
-      "QUICK_SERVICE"
-    ],
     "aliases": [
       "manutenzione climatizzatore",
       "pulizia climatizzatore",
@@ -61,10 +47,7 @@
     "id": "fare-massetto",
     "slug": "fare-massetto",
     "name": "Fare massetto",
-    "projectGroupSlug": "opere-murarie",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
+    "projectGroupSlug": "pavimentazioni",
     "aliases": [
       "gettare massetto",
       "massetti",
@@ -72,18 +55,21 @@
     ]
   },
   {
-    "id": "fare-opere-murarie",
-    "slug": "fare-opere-murarie",
-    "name": "Fare opere murarie",
-    "projectGroupSlug": "opere-murarie",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
+    "id": "impermeabilizzare-balcone-ballatoio",
+    "slug": "impermeabilizzare-balcone-ballatoio",
+    "name": "Impermeabilizzare balcone o ballatoio",
+    "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
-      "costruire parete divisoria",
-      "demolire muro",
-      "demolizioni",
-      "tramezzi"
+      "acqua sotto balcone",
+      "balcone con infiltrazioni",
+      "guaina balcone",
+      "impermeabilizzare balcone",
+      "impermeabilizzare ballatoio",
+      "impermeabilizzazione balcone",
+      "impermeabilizzazione ballatoio",
+      "infiltrazioni balcone",
+      "perdita acqua balcone",
+      "rifare guaina balcone"
     ]
   },
   {
@@ -91,9 +77,6 @@
     "slug": "installare-climatizzatore",
     "name": "Installare climatizzatore",
     "projectGroupSlug": "climatizzazione",
-    "runtimePresetSlugs": [
-      "QUICK_SERVICE"
-    ],
     "aliases": [
       "installare aria condizionata",
       "installazione climatizzatore",
@@ -105,9 +88,6 @@
     "slug": "installare-fotovoltaico",
     "name": "Installare fotovoltaico",
     "projectGroupSlug": "fotovoltaico",
-    "runtimePresetSlugs": [
-      "RENOVATION"
-    ],
     "aliases": [
       "impianto fotovoltaico",
       "installazione fotovoltaico",
@@ -119,9 +99,6 @@
     "slug": "installare-fotovoltaico-con-accumulo",
     "name": "Installare fotovoltaico con accumulo",
     "projectGroupSlug": "fotovoltaico",
-    "runtimePresetSlugs": [
-      "RENOVATION"
-    ],
     "aliases": [
       "fotovoltaico con accumulo",
       "fotovoltaico con batteria",
@@ -132,11 +109,7 @@
     "id": "installare-illuminazione",
     "slug": "installare-illuminazione",
     "name": "Installare illuminazione",
-    "projectGroupSlug": "impianti-elettrici",
-    "runtimePresetSlugs": [
-      "ELECTRICAL_WORK",
-      "QUICK_SERVICE"
-    ],
+    "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "faretti led",
       "installare faretti led",
@@ -149,11 +122,7 @@
     "id": "installare-sanitari",
     "slug": "installare-sanitari",
     "name": "Installare sanitari",
-    "projectGroupSlug": "impianti-idraulici",
-    "runtimePresetSlugs": [
-      "BATHROOM_RENOVATION",
-      "PLUMBING_EMERGENCY"
-    ],
+    "projectGroupSlug": "idraulica",
     "aliases": [
       "installazione sanitari",
       "montare sanitari bagno",
@@ -165,9 +134,6 @@
     "slug": "intonacare-pareti",
     "name": "Intonacare pareti",
     "projectGroupSlug": "finiture",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
     "aliases": [
       "intonacatura pareti",
       "intonaco esterno",
@@ -175,13 +141,39 @@
     ]
   },
   {
+    "id": "rasare-pareti",
+    "slug": "rasare-pareti",
+    "name": "Rasare pareti",
+    "projectGroupSlug": "finiture",
+    "aliases": [
+      "rasare muro",
+      "rasatura muro",
+      "rasatura pareti",
+      "stuccatura e rasatura"
+    ]
+  },
+  {
+    "id": "realizzare-cappotto-termico-facciata",
+    "slug": "realizzare-cappotto-termico-facciata",
+    "name": "Realizzare cappotto termico facciata",
+    "projectGroupSlug": "facciate-e-balconi",
+    "aliases": [
+      "cappotto condominio",
+      "cappotto esterno",
+      "cappotto termico",
+      "coibentazione facciata",
+      "fare cappotto casa",
+      "isolamento esterno edificio",
+      "isolamento termico facciata",
+      "realizzare cappotto termico",
+      "rifare facciata con cappotto"
+    ]
+  },
+  {
     "id": "realizzare-controparete",
     "slug": "realizzare-controparete",
     "name": "Realizzare controparete",
     "projectGroupSlug": "cartongesso",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
     "aliases": [
       "controparete in cartongesso",
       "isolamento parete interna"
@@ -192,9 +184,6 @@
     "slug": "realizzare-controsoffitto",
     "name": "Realizzare controsoffitto",
     "projectGroupSlug": "cartongesso",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
     "aliases": [
       "abbassamento soffitto",
       "controsoffitto in cartongesso",
@@ -206,9 +195,6 @@
     "slug": "realizzare-parete-cartongesso",
     "name": "Realizzare parete in cartongesso",
     "projectGroupSlug": "cartongesso",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
     "aliases": [
       "divisorio in cartongesso",
       "parete in cartongesso",
@@ -216,14 +202,47 @@
     ]
   },
   {
+    "id": "realizzare-struttura-in-cartongesso-su-misura",
+    "slug": "realizzare-struttura-in-cartongesso-su-misura",
+    "name": "Realizzare una struttura in cartongesso su misura",
+    "projectGroupSlug": "cartongesso",
+    "aliases": [
+      "cabina armadio in cartongesso",
+      "copertura tubi in cartongesso",
+      "libreria in cartongesso",
+      "mensole in cartongesso",
+      "nicchie in cartongesso",
+      "parete tv in cartongesso",
+      "veletta decorativa in cartongesso"
+    ]
+  },
+  {
+    "id": "rifare-facciata",
+    "slug": "rifare-facciata",
+    "name": "Rifare facciata",
+    "projectGroupSlug": "facciate-e-balconi",
+    "aliases": [
+      "finitura ai silicati facciata",
+      "finitura silossanica facciata",
+      "intonaco facciata",
+      "pittura ai silicati facciata",
+      "pittura esterna",
+      "pittura facciata",
+      "pittura silossanica facciata",
+      "rasatura facciata",
+      "rifacimento facciata",
+      "ripristino facciata",
+      "ristrutturare facciata",
+      "rivestimento facciata",
+      "tinteggiare facciata",
+      "tinteggiatura facciata"
+    ]
+  },
+  {
     "id": "rifare-impianto-elettrico",
     "slug": "rifare-impianto-elettrico",
     "name": "Rifare impianto elettrico",
-    "projectGroupSlug": "impianti-elettrici",
-    "runtimePresetSlugs": [
-      "ELECTRICAL_WORK",
-      "RENOVATION"
-    ],
+    "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "adeguare impianto elettrico",
       "ammodernare impianto elettrico",
@@ -234,14 +253,27 @@
     "id": "rifare-impianto-idraulico-bagno",
     "slug": "rifare-impianto-idraulico-bagno",
     "name": "Rifare impianto idraulico bagno",
-    "projectGroupSlug": "impianti-idraulici",
-    "runtimePresetSlugs": [
-      "BATHROOM_RENOVATION",
-      "RENOVATION"
-    ],
+    "projectGroupSlug": "idraulica",
     "aliases": [
       "rifacimento impianto idraulico bagno",
       "rifacimento tubazioni bagno"
+    ]
+  },
+  {
+    "id": "rifare-pavimentazione-balcone-ballatoio",
+    "slug": "rifare-pavimentazione-balcone-ballatoio",
+    "name": "Rifare pavimentazione balcone o ballatoio",
+    "projectGroupSlug": "facciate-e-balconi",
+    "aliases": [
+      "pavimentazione balcone",
+      "pavimentazione ballatoio",
+      "piastrelle balcone",
+      "piastrelle ballatoio",
+      "posare piastrelle balcone",
+      "posare piastrelle ballatoio",
+      "rifare pavimento balcone",
+      "rifare pavimento ballatoio",
+      "rifare piastrelle balcone"
     ]
   },
   {
@@ -249,10 +281,6 @@
     "slug": "rifare-tetto",
     "name": "Rifare tetto",
     "projectGroupSlug": "tetti",
-    "runtimePresetSlugs": [
-      "EXTERIOR_WORK",
-      "RENOVATION"
-    ],
     "aliases": [
       "rifacimento tetto",
       "sostituire il tetto"
@@ -262,11 +290,7 @@
     "id": "riparare-guasto-elettrico",
     "slug": "riparare-guasto-elettrico",
     "name": "Riparare guasto elettrico",
-    "projectGroupSlug": "impianti-elettrici",
-    "runtimePresetSlugs": [
-      "ELECTRICAL_WORK",
-      "EMERGENCY_REPAIR"
-    ],
+    "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "guasto elettrico",
       "riparazione guasti elettrici",
@@ -276,14 +300,23 @@
     ]
   },
   {
+    "id": "riparare-o-modificare-cartongesso",
+    "slug": "riparare-o-modificare-cartongesso",
+    "name": "Riparare o modificare cartongesso",
+    "projectGroupSlug": "cartongesso",
+    "aliases": [
+      "buchi nel cartongesso",
+      "crepe nel cartongesso",
+      "modificare struttura in cartongesso",
+      "rimuovere cartongesso",
+      "riparazione cartongesso"
+    ]
+  },
+  {
     "id": "riparare-perdita-acqua",
     "slug": "riparare-perdita-acqua",
     "name": "Riparare perdita acqua",
-    "projectGroupSlug": "impianti-idraulici",
-    "runtimePresetSlugs": [
-      "EMERGENCY_REPAIR",
-      "PLUMBING_EMERGENCY"
-    ],
+    "projectGroupSlug": "idraulica",
     "aliases": [
       "perdita acqua",
       "riparazione perdita acqua",
@@ -294,10 +327,7 @@
     "id": "riparare-quadro-elettrico",
     "slug": "riparare-quadro-elettrico",
     "name": "Riparare quadro elettrico",
-    "projectGroupSlug": "impianti-elettrici",
-    "runtimePresetSlugs": [
-      "ELECTRICAL_WORK"
-    ],
+    "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "quadro elettrico",
       "sostituire quadro elettrico"
@@ -308,10 +338,6 @@
     "slug": "riparare-tetto",
     "name": "Riparare tetto",
     "projectGroupSlug": "tetti",
-    "runtimePresetSlugs": [
-      "EMERGENCY_REPAIR",
-      "EXTERIOR_WORK"
-    ],
     "aliases": [
       "infiltrazioni tetto",
       "perdita dal tetto",
@@ -319,13 +345,29 @@
     ]
   },
   {
+    "id": "ripristinare-balconi-e-ballatoi",
+    "slug": "ripristinare-balconi-e-ballatoi",
+    "name": "Ripristinare balconi e ballatoi",
+    "projectGroupSlug": "facciate-e-balconi",
+    "aliases": [
+      "balcone ammalorato",
+      "ballatoio ammalorato",
+      "calcestruzzo balcone rovinato",
+      "cemento balcone che cade",
+      "ferri scoperti balcone",
+      "rifacimento balcone",
+      "rifacimento ballatoio",
+      "ripristino balcone",
+      "ripristino ballatoio",
+      "ripristino sottobalcone",
+      "sottobalcone rovinato"
+    ]
+  },
+  {
     "id": "ripristinare-intonaco",
     "slug": "ripristinare-intonaco",
     "name": "Ripristinare intonaco",
     "projectGroupSlug": "finiture",
-    "runtimePresetSlugs": [
-      "INTERIOR_WORK"
-    ],
     "aliases": [
       "rifacimento intonaco",
       "riparazione intonaco"
@@ -334,13 +376,15 @@
   {
     "id": "ripristino-frontalino",
     "slug": "ripristino-frontalino",
-    "name": "Ripristino frontalino",
-    "projectGroupSlug": "opere-murarie",
-    "runtimePresetSlugs": [
-      "EXTERIOR_WORK"
-    ],
+    "name": "Ripristinare frontalino balcone",
+    "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
+      "cemento frontalino balcone",
+      "frontalino balcone ammalorato",
+      "frontalino balcone che cade",
+      "frontalino balcone rovinato",
       "rifacimento frontalino",
+      "rifacimento frontalino balcone",
       "ripristinare frontalino"
     ]
   },
@@ -349,10 +393,6 @@
     "slug": "ristrutturare-appartamento",
     "name": "Ristrutturare appartamento",
     "projectGroupSlug": "ristrutturazioni",
-    "runtimePresetSlugs": [
-      "HOME_RENOVATION",
-      "RENOVATION"
-    ],
     "aliases": [
       "ristrutturare casa intera",
       "ristrutturazione appartamento"
@@ -363,10 +403,6 @@
     "slug": "ristrutturare-bagno",
     "name": "Ristrutturare bagno",
     "projectGroupSlug": "ristrutturazioni",
-    "runtimePresetSlugs": [
-      "BATHROOM_RENOVATION",
-      "HOME_RENOVATION"
-    ],
     "aliases": [
       "rifare il bagno",
       "ristrutturare il bagno",
@@ -378,10 +414,6 @@
     "slug": "ristrutturare-casa",
     "name": "Ristrutturare casa",
     "projectGroupSlug": "ristrutturazioni",
-    "runtimePresetSlugs": [
-      "HOME_RENOVATION",
-      "RENOVATION"
-    ],
     "aliases": [
       "ristrutturare villa",
       "ristrutturazione casa",
@@ -393,9 +425,6 @@
     "slug": "ristrutturare-cucina",
     "name": "Ristrutturare cucina",
     "projectGroupSlug": "ristrutturazioni",
-    "runtimePresetSlugs": [
-      "HOME_RENOVATION"
-    ],
     "aliases": [
       "rifare la cucina",
       "ristrutturazione cucina"
@@ -406,9 +435,6 @@
     "slug": "sistemare-grondaie",
     "name": "Sistemare grondaie",
     "projectGroupSlug": "tetti",
-    "runtimePresetSlugs": [
-      "EXTERIOR_WORK"
-    ],
     "aliases": [
       "grondaie",
       "grondaie rotte",
@@ -421,10 +447,7 @@
     "id": "sostituire-box-doccia",
     "slug": "sostituire-box-doccia",
     "name": "Sostituire box doccia",
-    "projectGroupSlug": "impianti-idraulici",
-    "runtimePresetSlugs": [
-      "BATHROOM_RENOVATION"
-    ],
+    "projectGroupSlug": "idraulica",
     "aliases": [
       "cambiare box doccia",
       "nuova doccia",
@@ -436,10 +459,6 @@
     "slug": "tinteggiare-esterni",
     "name": "Tinteggiare esterni",
     "projectGroupSlug": "finiture",
-    "runtimePresetSlugs": [
-      "EXTERIOR_WORK",
-      "PAINTING"
-    ],
     "aliases": [
       "imbiancare facciata",
       "tinteggiatura esterna",
@@ -452,9 +471,6 @@
     "slug": "tinteggiare-interni",
     "name": "Tinteggiare interni",
     "projectGroupSlug": "finiture",
-    "runtimePresetSlugs": [
-      "PAINTING"
-    ],
     "aliases": [
       "imbiancare appartamento",
       "imbiancare casa",

@@ -1630,13 +1630,13 @@ SOURCE_PHASE: Monorepo cleanup audit 2026-06-24
 OWNER: multi-owner (web/site/richiesta/packages/config/auth/domain/funnel/taxonomy/ui)
 TARGET_PHASE: sprint dedicato monorepo cleanup controllato
 FILES_INVOLVED:
-  docs/audit/MONOREPO_CLEANUP_REPORT.md
+  docs/archive-legacy/structure-snapshots/MONOREPO_CLEANUP_REPORT.md
   apps/web/src/site/home/explosion.tsx
   packages/funnel/src/compiler/infer-presets.ts
   packages/funnel/src/types/request-answer.ts
   packages/funnel/src/types/runtime-step.ts
   packages/config/eslint/base.mjs
-  reports/perf-patches/**
+  docs/archive-legacy/performance/perf-patches/**
   packages/database/prisma.config.ts
   packages/auth/src/identity/admin/bootstrap-super-admin.ts
   apps/web/src/richiesta/**
@@ -1647,7 +1647,7 @@ Audit tecnico controllato eseguito con pnpm lint/typecheck/build, Knip, Dependen
 Madge. Il fix sicuro `server-only` e' stato applicato in apps/web/package.json. Lo sprint
 cleanup 1 ha risolto il lint fail in explosion.tsx e gli errori Dependency Cruiser su
 Prisma/dotenv in file config/bootstrap. Restano aperti: unused files/dependencies/exports/types
-da Knip, backup storici in reports/perf-patches, export `dynamic` in feature modules richiesta,
+da Knip, backup storici in docs/archive-legacy/performance/perf-patches, export `dynamic` in feature modules richiesta,
 vari type/barrel da verificare e warning audit residui.
 
 UPDATE_SPRINT_CLEANUP_1_2026_06_24:
@@ -1660,13 +1660,13 @@ devDependencies. pnpm lint/typecheck/build/audit:deps/audit:madge passano. D-023
 per il cleanup Knip e per i warning audit residui.
 
 UPDATE_SPRINT_CLEANUP_3_2026_06_24:
-Batch A `reports/perf-patches/**` completato. Eliminati solo gli 11 file classificati da Knip
+Batch A `docs/archive-legacy/performance/perf-patches/**` completato. Eliminati solo gli 11 file classificati da Knip
 come unused e da Sprint cleanup 2 come BACKUP_OR_PATCH_ARTIFACT: 10 backup sorgente sotto
 `backup/apps/web/src/components/**` e lo script storico `patch-6i1-shared-prefetch.cjs`.
 Mantenuti i report storici non segnalati da Knip (`git-diff`, `git-status`, `patch-summary`,
 `typecheck`, `verify-links`). Nessun codice applicativo, export/type o dipendenza toccati.
 `pnpm audit:knip` passa da 15 unused files a 4; non segnala piu' file sotto
-`reports/perf-patches/**`. D-023 resta OPEN per gli altri item Knip e warning audit residui.
+`docs/archive-legacy/performance/perf-patches/**`. D-023 resta OPEN per gli altri item Knip e warning audit residui.
 
 UPDATE_SPRINT_CLEANUP_4_2026_06_24:
 Batch B dependency review completato. Rimosse solo dipendenze classificate `REMOVE_SAFE` e
@@ -1693,7 +1693,7 @@ RESOLUTION_RULE:
 Chiudere in batch piccoli, con owner review:
 1. fix lint in explosion.tsx senza cambio UX;
 2. decidere eccezioni o riclassificazione Dependency Cruiser per config/bootstrap;
-3. rimuovere o archiviare fuori grafo i backup reports/perf-patches;
+3. rimuovere o archiviare fuori grafo i backup docs/archive-legacy/performance/perf-patches;
 4. verificare e rimuovere solo i file Knip confermati morti;
 5. normalizzare export/types e config Next `dynamic` dove realmente inutili.
 

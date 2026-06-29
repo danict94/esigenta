@@ -21,7 +21,7 @@ the check inline instead.
 | | |
 | --- | --- |
 | **Source of truth** | `CompanyCategory` + `CompanyIntervention` tables (the only tables `update-services-configuration.ts` writes) |
-| **Implementations** | **3, disagreeing** — already fully documented in [docs/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md](../company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md). Summary: (1) matching/dispatch — strict, `CompanyIntervention` only, no fallback (`resolve-request-dispatch-candidates.ts`); (2) dashboard visibility — falls back to `Company.onboardingCategorySlug` when `CompanyCategory` is empty (`get-requests-list-page.ts:582-593`); (3) Configura Servizi preselection — same fallback, rendered indistinguishably from a saved state (`services-configuration-page.tsx:143-174`). |
+| **Implementations** | **3, disagreeing** — already fully documented in [docs/archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md](../archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md). Summary: (1) matching/dispatch — strict, `CompanyIntervention` only, no fallback (`resolve-request-dispatch-candidates.ts`); (2) dashboard visibility — falls back to `Company.onboardingCategorySlug` when `CompanyCategory` is empty (`get-requests-list-page.ts:582-593`); (3) Configura Servizi preselection — same fallback, rendered indistinguishably from a saved state (`services-configuration-page.tsx:143-174`). |
 | **Readers** | `resolve-request-dispatch-candidates.ts`, `get-requests-list-page.ts` (`buildCompanyQuery`, fallback-category branch), `services-configuration-page.tsx`, `get-services-configuration-page.ts` |
 | **Writers** | `update-services-configuration.ts` only (confirmed sole writer) |
 | **Fallbacks** | `Company.onboardingCategorySlug` → `Category` → `Category.projectGroupIds` → `ProjectGroup.interventions`, used independently by readers (2) and (3) above, never by (1) |
@@ -82,7 +82,7 @@ the check inline instead.
 | | |
 | --- | --- |
 | **Source of truth** | `CompanyIntervention` (exact match on `Request.interventionId`) + `Company.{isActive, deletedAt, status, operatingRadiusKm}` + geo distance |
-| **Implementations** | **1** — `resolve-request-dispatch-candidates.ts`'s `resolveCandidates`, called exclusively from `create-request-dispatches-for-request.ts`, called exclusively from `publishReviewedRequest`. Already fully audited in the geo refoundation (`docs/geo-refoundation/`). |
+| **Implementations** | **1** — `resolve-request-dispatch-candidates.ts`'s `resolveCandidates`, called exclusively from `create-request-dispatches-for-request.ts`, called exclusively from `publishReviewedRequest`. Already fully audited in the geo refoundation (`docs/archive-legacy/refoundation/geo-refoundation/`). |
 | **Readers/Writers** | Same chain; `RequestDispatch`/`CompanyNotification`/`NotificationDelivery` rows are the only output |
 | **Fallbacks** | None — strictest of all the invariants in this inventory, by design, and the one that exposed `CompanyConfigured`'s divergence in the first place (matching's strictness is correct; the other readers' looseness is the actual problem) |
 | **Verdict** | **SINGLE_SOURCE** — the second clean invariant. Worth highlighting as the template the others should converge toward, not something to change itself. |

@@ -32,7 +32,7 @@ product.**
 
 **B2 — That verification email rides on the same Resend
 configuration already documented as not production-ready.**
-`docs/bugs/EMAIL_SYSTEM_RELIABILITY_AUDIT.md` (this repo, prior session)
+`docs/archive-legacy/bugs/EMAIL_SYSTEM_RELIABILITY_AUDIT.md` (this repo, prior session)
 found: sandbox/testing mode, `domainsCount = 0` (no verified sending
 domain), sender `Esigenta <onboarding@resend.dev>` / `FixPro <onboarding@resend.dev>`
 — Resend will reject delivery to any recipient outside the

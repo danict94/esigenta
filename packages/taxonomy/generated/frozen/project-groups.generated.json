@@ -6,7 +6,9 @@
     "interventionSlugs": [
       "realizzare-controparete",
       "realizzare-controsoffitto",
-      "realizzare-parete-cartongesso"
+      "realizzare-parete-cartongesso",
+      "realizzare-struttura-in-cartongesso-su-misura",
+      "riparare-o-modificare-cartongesso"
     ],
     "aliases": [
       "cartongesso e pareti",
@@ -23,12 +25,26 @@
     ]
   },
   {
+    "id": "facciate-e-balconi",
+    "slug": "facciate-e-balconi",
+    "name": "Facciate e balconi",
+    "interventionSlugs": [
+      "impermeabilizzare-balcone-ballatoio",
+      "realizzare-cappotto-termico-facciata",
+      "rifare-facciata",
+      "rifare-pavimentazione-balcone-ballatoio",
+      "ripristinare-balconi-e-ballatoi",
+      "ripristino-frontalino"
+    ]
+  },
+  {
     "id": "finiture",
     "slug": "finiture",
-    "name": "Finiture",
+    "name": "Imbianchini e finiture",
     "interventionSlugs": [
       "applicare-stucco-decorativo",
       "intonacare-pareti",
+      "rasare-pareti",
       "ripristinare-intonaco",
       "tinteggiare-esterni",
       "tinteggiare-interni"
@@ -49,21 +65,9 @@
     ]
   },
   {
-    "id": "impianti-elettrici",
-    "slug": "impianti-elettrici",
-    "name": "Impianti elettrici",
-    "interventionSlugs": [
-      "fare-impianto-elettrico-nuovo",
-      "installare-illuminazione",
-      "rifare-impianto-elettrico",
-      "riparare-guasto-elettrico",
-      "riparare-quadro-elettrico"
-    ]
-  },
-  {
-    "id": "impianti-idraulici",
-    "slug": "impianti-idraulici",
-    "name": "Impianti idraulici",
+    "id": "idraulica",
+    "slug": "idraulica",
+    "name": "Idraulica",
     "interventionSlugs": [
       "disostruire-scarichi",
       "installare-sanitari",
@@ -73,13 +77,23 @@
     ]
   },
   {
-    "id": "opere-murarie",
-    "slug": "opere-murarie",
-    "name": "Opere murarie",
+    "id": "impianti-e-manutenzioni-elettriche",
+    "slug": "impianti-e-manutenzioni-elettriche",
+    "name": "Impianti e manutenzioni elettriche",
     "interventionSlugs": [
-      "fare-massetto",
-      "fare-opere-murarie",
-      "ripristino-frontalino"
+      "fare-impianto-elettrico-nuovo",
+      "installare-illuminazione",
+      "rifare-impianto-elettrico",
+      "riparare-guasto-elettrico",
+      "riparare-quadro-elettrico"
+    ]
+  },
+  {
+    "id": "pavimentazioni",
+    "slug": "pavimentazioni",
+    "name": "Pavimentazioni",
+    "interventionSlugs": [
+      "fare-massetto"
     ]
   },
   {

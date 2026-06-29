@@ -6,6 +6,7 @@ Ambito: Home, servizi, interventi, guide ai costi, funnel, release readiness
 Documento collegato: `docs/seo-navigation/01_SCHEMA.md`
 Documento collegato: `docs/seo-navigation/02_ROADMAP.md`
 Documento collegato: `docs/seo-navigation/03_RELEASE_GUARDS.md`
+Documento sovraordinato: `docs/seo-navigation/05_SEO_DOMAIN_VISION.md` (prevale sul modello di dominio)
 Ultimo aggiornamento: 2026-06-18
 
 ---
@@ -643,6 +644,35 @@ DESCRIPTION:
 NEXT_ACTION: nessuna azione automatica. Da rivalutare quando emergeranno dati reali
   di utilizzo (quali macro aree/voci vengono effettivamente cliccate) o quando il
   gruppo "sicurezza" verrà assegnato a una macro area in una fase dedicata.
+```
+
+```txt id="oi-product-05"
+ID: OI-036
+TITLE: Convergenza Group Service su un'unica fonte di verità (ritiro di
+  PublicServiceMacroArea come sistema parallelo)
+STATUS: OPEN — DECISIONE DI MODELLO APPROVATA, esecuzione non ancora pianificata
+SOURCE_PHASE: SEO Domain Vision (audit Step 1.5 → 1.8)
+DESCRIPTION:
+  Gli audit Step 1.5 → 1.8 hanno stabilito che PublicServiceMacroArea
+  (site/services/public-navigation/macro-areas.ts + coverage.ts) e ProjectGroup
+  (taxonomy) rappresentano sostanzialmente lo stesso concetto. La decisione approvata
+  (vedi 05_SEO_DOMAIN_VISION.md, "Fonte di verità del Group Service") è convergere su
+  ProjectGroup come unica fonte di verità del Group Service e ritirare
+  PublicServiceMacroArea come sistema editoriale parallelo. L'unico caso di reale
+  divergenza editoriale oggi (presentazione unificata fotovoltaico + climatizzazione)
+  va modellato come attributo dell'entità di dominio, non come secondo sistema.
+  Questo item supera/assorbe i dubbi residui tracciati in OI-031 (gruppo "sicurezza"
+  senza macro area, accorpamenti di nicchia) e la DECISIONE_CORRELATA di OI-001
+  ("TaxonomyDomain non trasformato in macro-area pubblica"), entrambi nati dentro il
+  modello a doppio sistema ora superato.
+RULE: nessun doppio sistema, nessun codice legacy inutilizzato, nessun doppio flusso.
+  La convergenza è una decisione di modello, non un refactor da eseguire in blocco:
+  va eseguita con il metodo "un mercato alla volta" (05_SEO_DOMAIN_VISION.md principio
+  8), e ogni parte sostituita va eliminata nello stesso passaggio che la sostituisce.
+NEXT_ACTION: nessuna esecuzione automatica. Una fase dedicata dovrà pianificare la
+  convergenza dopo che il modello del primo Group Service è stato approvato secondo il
+  metodo "un mercato alla volta". 01_SCHEMA.md sezione 20.3 è già marcata come superata
+  in attesa di quella fase.
 ```
 
 ---

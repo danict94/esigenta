@@ -18,7 +18,7 @@ docs/architetture/PACKAGES_MIGRATION_ROADMAP.md           ← questo file
 | Documento | Tipo | Motivo |
 |-----------|------|--------|
 | `docs/audit/phase_7.md` | **archivio** | Audit CTO completo di PHASE_7 (auth duplication, orchestratore unico, send message, side effects). PHASE_7 è chiusa. Leggere solo se si ha bisogno di contesto storico sulle decisioni di phase_7. |
-| `docs/ARCHITECTURE_GUARD.md` | **DEPRECATED** | Descriveva un'architettura precedente dove packages/db conteneva tutta la business logic. Ora superato da PACKAGES_REWRITE_REFACTOR_CONTRACT.md. Non leggere — il contratto è la fonte di verità. |
+| `docs/archive-legacy/old-architecture/ARCHITECTURE_GUARD.md` | **DEPRECATED** | Descriveva un'architettura precedente dove packages/db conteneva tutta la business logic. Ora superato da PACKAGES_REWRITE_REFACTOR_CONTRACT.md. Non leggere — il contratto è la fonte di verità. |
 
 **Nota:** `docs/REWRITE_PROCESS.md` non esiste più — il contenuto è stato consolidato in `PACKAGES_REWRITE_REFACTOR_CONTRACT.md`.
 

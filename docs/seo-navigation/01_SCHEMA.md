@@ -7,6 +7,9 @@ Ultimo aggiornamento: 2026-06-18
 Aggiornamento Phase 19.6F: vedi sezione 20 — Modello /servizi: Conversion Hub
 Taxonomy-Backed. Sostituisce/estende il modello a 4 stati della sezione 8 (mantenuta
 per storico, vedi nota lì).
+Documento sovraordinato: `05_SEO_DOMAIN_VISION.md`. In caso di conflitto sul modello di
+dominio (Group Service, fonte di verità) prevale la Vision; la sezione 20 di questo
+documento è superata su quel punto (vedi nota in testa alla sezione 20).
 
 ---
 
@@ -1259,6 +1262,15 @@ Tutto ciò che si mostra deve avere uno scopo reale: informare, linkare, convert
 
 ## 20. Modello `/servizi`: Conversion Hub Taxonomy-Backed (Phase 19.6F)
 
+> **NOTA (SEO Domain Vision):** questa sezione descrive il modello a **layer editoriale
+> parallelo** (`PublicServiceMacroArea` sopra la taxonomy) implementato nelle fasi
+> 19.6x. Resta storicamente corretta per descrivere cosa esiste oggi nel codice, ma è
+> **superata come modello target** dalla decisione di dominio recepita in
+> `05_SEO_DOMAIN_VISION.md` ("Fonte di verità del Group Service"): un solo concetto =
+> una sola fonte di verità (l'entità di dominio ProjectGroup), niente sistema
+> editoriale parallelo. Non costruire nuovo lavoro sul modello a doppio sistema di
+> questa sezione: usare il documento Vision.
+
 Questa sezione recepisce gli audit Phase 19.6D (Taxonomy Source Structure Audit) e
 Phase 19.6E (Services Hub Conversion Page Model Audit) e ridefinisce ufficialmente il
 modello target di `/servizi`. È vincolante per qualunque fase futura che tocchi
@@ -1329,6 +1341,14 @@ FunnelDestination = `/richiesta/${taxonomyInterventionSlug}`
 ```
 
 ### 20.3 Decisione architetturale: TaxonomyDomain ≠ macro-area pubblica
+
+> **SUPERATA da `05_SEO_DOMAIN_VISION.md`:** questa decisione fu presa contro il
+> TaxonomyDomain, un'entità rimossa dalla refoundation della taxonomy (Phase 17). Con
+> il modello attuale (ProjectGroup) non esiste più un divario reale che giustifichi un
+> layer pubblico separato: la decisione approvata è convergere su un'unica fonte di
+> verità (ProjectGroup) e ritirare `PublicServiceMacroArea` come sistema parallelo. Il
+> testo sottostante resta solo come registrazione storica del modello implementato
+> nelle fasi 19.6x.
 
 ```txt id="s20-decisione"
 TaxonomyDomain NON deve essere trasformato direttamente in macro-area pubblica.

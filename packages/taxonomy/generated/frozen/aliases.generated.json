@@ -105,24 +105,54 @@
     "ownerSlug": "fare-massetto"
   },
   {
-    "value": "costruire parete divisoria",
+    "value": "acqua sotto balcone",
     "ownerType": "intervention",
-    "ownerSlug": "fare-opere-murarie"
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
   },
   {
-    "value": "demolire muro",
+    "value": "balcone con infiltrazioni",
     "ownerType": "intervention",
-    "ownerSlug": "fare-opere-murarie"
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
   },
   {
-    "value": "demolizioni",
+    "value": "guaina balcone",
     "ownerType": "intervention",
-    "ownerSlug": "fare-opere-murarie"
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
   },
   {
-    "value": "tramezzi",
+    "value": "impermeabilizzare balcone",
     "ownerType": "intervention",
-    "ownerSlug": "fare-opere-murarie"
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "impermeabilizzare ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "impermeabilizzazione balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "impermeabilizzazione ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "infiltrazioni balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "perdita acqua balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "rifare guaina balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-balcone-ballatoio"
   },
   {
     "value": "installare aria condizionata",
@@ -225,6 +255,71 @@
     "ownerSlug": "intonacare-pareti"
   },
   {
+    "value": "rasare muro",
+    "ownerType": "intervention",
+    "ownerSlug": "rasare-pareti"
+  },
+  {
+    "value": "rasatura muro",
+    "ownerType": "intervention",
+    "ownerSlug": "rasare-pareti"
+  },
+  {
+    "value": "rasatura pareti",
+    "ownerType": "intervention",
+    "ownerSlug": "rasare-pareti"
+  },
+  {
+    "value": "stuccatura e rasatura",
+    "ownerType": "intervention",
+    "ownerSlug": "rasare-pareti"
+  },
+  {
+    "value": "cappotto condominio",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "cappotto esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "cappotto termico",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "coibentazione facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "fare cappotto casa",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "isolamento esterno edificio",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "isolamento termico facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "realizzare cappotto termico",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
+    "value": "rifare facciata con cappotto",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-cappotto-termico-facciata"
+  },
+  {
     "value": "controparete in cartongesso",
     "ownerType": "intervention",
     "ownerSlug": "realizzare-controparete"
@@ -265,6 +360,111 @@
     "ownerSlug": "realizzare-parete-cartongesso"
   },
   {
+    "value": "cabina armadio in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "copertura tubi in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "libreria in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "mensole in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "nicchie in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "parete tv in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "veletta decorativa in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-struttura-in-cartongesso-su-misura"
+  },
+  {
+    "value": "finitura ai silicati facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "finitura silossanica facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "intonaco facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "pittura ai silicati facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "pittura esterna",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "pittura facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "pittura silossanica facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "rasatura facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "rifacimento facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "ripristino facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "ristrutturare facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "rivestimento facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "tinteggiare facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
+    "value": "tinteggiatura facciata",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-facciata"
+  },
+  {
     "value": "adeguare impianto elettrico",
     "ownerType": "intervention",
     "ownerSlug": "rifare-impianto-elettrico"
@@ -288,6 +488,51 @@
     "value": "rifacimento tubazioni bagno",
     "ownerType": "intervention",
     "ownerSlug": "rifare-impianto-idraulico-bagno"
+  },
+  {
+    "value": "pavimentazione balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "pavimentazione ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "piastrelle balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "piastrelle ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "posare piastrelle balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "posare piastrelle ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "rifare pavimento balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "rifare pavimento ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
+  },
+  {
+    "value": "rifare piastrelle balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
   },
   {
     "value": "rifacimento tetto",
@@ -323,6 +568,31 @@
     "value": "salvavita che scatta",
     "ownerType": "intervention",
     "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "buchi nel cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-modificare-cartongesso"
+  },
+  {
+    "value": "crepe nel cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-modificare-cartongesso"
+  },
+  {
+    "value": "modificare struttura in cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-modificare-cartongesso"
+  },
+  {
+    "value": "rimuovere cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-modificare-cartongesso"
+  },
+  {
+    "value": "riparazione cartongesso",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-modificare-cartongesso"
   },
   {
     "value": "perdita acqua",
@@ -365,6 +635,61 @@
     "ownerSlug": "riparare-tetto"
   },
   {
+    "value": "balcone ammalorato",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "ballatoio ammalorato",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "calcestruzzo balcone rovinato",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "cemento balcone che cade",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "ferri scoperti balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "rifacimento balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "rifacimento ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "ripristino balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "ripristino ballatoio",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "ripristino sottobalcone",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
+    "value": "sottobalcone rovinato",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristinare-balconi-e-ballatoi"
+  },
+  {
     "value": "rifacimento intonaco",
     "ownerType": "intervention",
     "ownerSlug": "ripristinare-intonaco"
@@ -375,7 +700,32 @@
     "ownerSlug": "ripristinare-intonaco"
   },
   {
+    "value": "cemento frontalino balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
+    "value": "frontalino balcone ammalorato",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
+    "value": "frontalino balcone che cade",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
+    "value": "frontalino balcone rovinato",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
     "value": "rifacimento frontalino",
+    "ownerType": "intervention",
+    "ownerSlug": "ripristino-frontalino"
+  },
+  {
+    "value": "rifacimento frontalino balcone",
     "ownerType": "intervention",
     "ownerSlug": "ripristino-frontalino"
   },

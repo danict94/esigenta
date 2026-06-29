@@ -6,6 +6,7 @@ Ambito: Home, servizi, interventi, guide ai costi, funnel, release readiness
 Documento collegato: `docs/seo-navigation/01_SCHEMA.md`
 Documento collegato: `docs/seo-navigation/03_RELEASE_GUARDS.md`
 Documento collegato: `docs/seo-navigation/04_OPEN_ITEMS.md`
+Documento sovraordinato: `docs/seo-navigation/05_SEO_DOMAIN_VISION.md` (prevale sul modello di dominio)
 Ultimo aggiornamento: 2026-06-18
 Protocollo di esecuzione AI: vedi sezione 26 — AI EXECUTION PROTOCOL (leggere prima di eseguire qualsiasi fase)
 
@@ -44,7 +45,10 @@ docs/seo-navigation/01_SCHEMA.md
 docs/seo-navigation/02_ROADMAP.md
 docs/seo-navigation/03_RELEASE_GUARDS.md
 docs/seo-navigation/04_OPEN_ITEMS.md
+docs/seo-navigation/05_SEO_DOMAIN_VISION.md
 ```
+
+`05_SEO_DOMAIN_VISION.md` è sovraordinato: in caso di conflitto sul modello di dominio (Group Service, fonte di verità, evoluzione del catalogo) prevale sulla Vision rispetto agli altri documenti di questa cartella.
 
 Se `03_RELEASE_GUARDS.md` non esiste ancora, la fase deve limitarsi alla documentazione o chiedere esplicitamente di crearlo.
 

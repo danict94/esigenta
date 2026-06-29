@@ -88,7 +88,7 @@ company/requests deleted earlier in this session. No cascade exists from
 `Company`/`Request` deletion to their `GeoLocation` row (the FK points
 the other direction), so these three rows simply stopped being
 referenced. Confirmed, not re-derived: identical to the finding in
-`docs/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md`.
+`docs/archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md`.
 
 Every other table audited — including all six minimum-list tables this
 task named — has **zero** orphans.
@@ -140,7 +140,7 @@ written by `create-request-dispatches-for-request.ts` and
 One pre-existing, already-documented gap (not new to this audit): the
 retry metadata (`nextAttemptAt`) is written but **no worker reads it to
 actually retry** — already flagged in
-`docs/bugs/EMAIL_SYSTEM_RELIABILITY_AUDIT.md` §C/§G, not re-litigated
+`docs/archive-legacy/bugs/EMAIL_SYSTEM_RELIABILITY_AUDIT.md` §C/§G, not re-litigated
 here, since it is a missing *process*, not a dead *column* (the column is
 correctly written and would be correctly read by a retry worker if one
 existed).
@@ -171,7 +171,7 @@ correct; only the code paths reading them needed unification).
 
 | Fact | Stored where | Classification |
 | --- | --- | --- |
-| "What intervention is this request about" | `Request.interventionSlug` (text) **and** `Request.interventionId` (FK) | **CANONICAL (interventionId) + intentional duplicate (interventionSlug)** — explicitly documented in the schema as a frozen-taxonomy pattern: `interventionId` is live-joinable and can in principle be reorganized; `interventionSlug` is the permanent, immutable snapshot for historical stability even if the `Intervention` row's catalog position changes. This is a deliberate, documented design decision (`docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §6`), not an accidental duplication to clean up. |
+| "What intervention is this request about" | `Request.interventionSlug` (text) **and** `Request.interventionId` (FK) | **CANONICAL (interventionId) + intentional duplicate (interventionSlug)** — explicitly documented in the schema as a frozen-taxonomy pattern: `interventionId` is live-joinable and can in principle be reorganized; `interventionSlug` is the permanent, immutable snapshot for historical stability even if the `Intervention` row's catalog position changes. This is a deliberate, documented design decision (`docs/archive-legacy/refoundation/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §6`), not an accidental duplication to clean up. |
 | "Is this company configured" | Computed live from `CompanyCategory`/`CompanyIntervention` (Phase 1's `deriveCompanyConfigurationStatus`) | **Not duplicated** — never persisted as a separate boolean column anywhere; confirmed by schema inspection (`Company` has no `isConfigured` column) |
 | "What place is this" | `GeoLocation` only (geo refoundation) | **Not duplicated** — confirmed zero scalar geo columns remain on `Company`/`Request` |
 | Company's operating radius | `Company.operatingRadiusKm` only | **Not duplicated** — confirmed single column, single reader (matching), in Phase 0 |
@@ -229,7 +229,7 @@ informative). Structural review instead:
 | Index | Status |
 | --- | --- |
 | Legacy geo indexes (`Company_city_idx`, `Company_latitude_longitude_idx`, `Company_postalCode_idx`, `Request_city_idx`, `Request_latitude_longitude_idx`) | **Already removed** — dropped in the geo refoundation's additive migration (`20260622000001_geo_refoundation_additive`), confirmed via that migration's `DROP INDEX` statements. Nothing left to clean up here. |
-| Legacy taxonomy indexes | **Already removed** — per `docs/taxonomy-refoundation/16_PHYSICAL_CLEANUP_REPORT.md`/`17_LEGACY_TAXONOMY_SOURCE_REMOVAL_REPORT.md` (prior, separate refoundation, already completed before this series began) |
+| Legacy taxonomy indexes | **Already removed** — per `docs/archive-legacy/refoundation/taxonomy-refoundation/16_PHYSICAL_CLEANUP_REPORT.md`/`17_LEGACY_TAXONOMY_SOURCE_REMOVAL_REPORT.md` (prior, separate refoundation, already completed before this series began) |
 | `GeoLocation_earth_point_gist_idx` (GiST, `ll_to_earth`) | **ACTIVE** — backs the `earthdistance`/`cube` matching and dashboard queries (geo refoundation Phase 6) |
 | Duplicate/superseded indexes elsewhere | None found — every `@@index`/`@@unique` in the current schema corresponds to a confirmed query pattern from this audit's tracing (status filters, foreign-key lookups, the three `_s6b`-suffixed indexes which read as deliberately added performance indexes for specific hot-path lookups, not accidental duplicates of an existing index) |
 

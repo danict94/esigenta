@@ -5,6 +5,7 @@ Stato: VINCOLANTE
 Ambito: Home, servizi, interventi, costi, funnel, SEO navigation
 Documento collegato: `docs/seo-navigation/01_SCHEMA.md`
 Documento collegato: `docs/seo-navigation/02_ROADMAP.md`
+Documento sovraordinato: `docs/seo-navigation/05_SEO_DOMAIN_VISION.md` (prevale sul modello di dominio)
 Ultimo aggiornamento: 2026-06-18
 
 ---

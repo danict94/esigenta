@@ -235,7 +235,7 @@ build passa
 
 ```txt
 COMPLETED — audit read-only completato, nessun file spostato/riscritto/eliminato.
-Report: docs/audit_area-impresa.md (sostituisce la versione precedente che certificava
+Report: docs/archive-legacy/old-architecture/audit_area-impresa.md (sostituisce la versione precedente che certificava
 erroneamente come "OK" una struttura che viola la regola sui route group).
 Violazione trovata: route group vietati (opportunita)/(comunicazioni)/(account)/(billing)/(shell)
 sotto app, parzialmente già committati (d0d2b02). Per decisione esplicita dell'operatore, la
@@ -3599,7 +3599,7 @@ NEXT_PHASE: 3 — Area Impresa Public
 PHASE: 2 — AREA IMPRESA AUDIT MAPPING
 STATUS: COMPLETED (read-only)
 DATE: 2026-06-16
-FILES_CHANGED: docs/audit_area-impresa.md (rewrite), docs/architetture/03_ROADMAP.md (stato fase)
+FILES_CHANGED: docs/archive-legacy/old-architecture/audit_area-impresa.md (rewrite), docs/architetture/03_ROADMAP.md (stato fase)
 FILES_CREATED: nessuno
 FILES_DELETED: nessuno
 OLD_CODE_REMOVED: nessuno (fase read-only)
@@ -3646,7 +3646,7 @@ query duplicate
 ```txt
 PHASE 0  — PENDING
 PHASE 1  — COMPLETED (struttura target vuota creata, vedi sezione Fase 1)
-PHASE 2  — COMPLETED (audit read-only, vedi docs/audit_area-impresa.md; violazione route group trovata e NON corretta su richiesta esplicita)
+PHASE 2  — COMPLETED (audit read-only, vedi docs/archive-legacy/old-architecture/audit_area-impresa.md; violazione route group trovata e NON corretta su richiesta esplicita)
 PHASE 3  — COMPLETED (public spostato in area-impresa/public/{marketing,auth}; route consolidation deferita, vedi sezione fase)
 PHASE 4  — COMPLETED (shell ricostruita in area-impresa/private/shell; monitoring lib deferito, vedi sezione fase)
 PHASE 5  — COMPLETED (opportunità ricostruita, P0 richieste riscritto DB-side, paginazione salvate/acquistate; vedi sezione fase)

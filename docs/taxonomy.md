@@ -72,10 +72,9 @@ Intervention
 
 Lavoro specifico.
 
-Intervention è l'unico punto di integrazione tra taxonomy e funnel: porta
-con sé `runtimePresetSlugs`, un elenco di identificatori opachi di preset
-funnel. La taxonomy non conosce la logica delle capability del funnel,
-porta solo il riferimento.
+Intervention è l'unico punto di integrazione tra taxonomy e funnel: il
+funnel risolve il proprio modello a partire dallo slug dell'intervento. La
+taxonomy non conosce la logica delle capability del funnel.
 
 Esempi:
 
@@ -279,10 +278,6 @@ export const ristrutturazioni = {
 
       name: "Ristrutturare bagno",
 
-      runtimePresetSlugs: [
-        "bathroom-renovation"
-      ],
-
       aliases: [
         "rifare bagno",
         "rifacimento bagno"
@@ -453,7 +448,7 @@ reporting — persistito, non operativo
 Intervention
 
 Unità centrale del sistema. Unica unità di matching. Unico punto di
-integrazione con il funnel (runtimePresetSlugs)
+integrazione con il funnel tramite slug intervento.
 
 Alias
 

@@ -40,9 +40,9 @@ Two additional literal values appear outside the `cc` object and are **not curre
 
 Font family: `var(--font-geist-sans)` (`ccFont` in `palette.ts`), applied via inline `style` on every section root.
 
-**Display/heading scale** — two distinct, independently-defined steps, not unified into one scale:
-- Hero `<h1>` (`explosion.tsx`): `clamp(2.5rem, 1.6rem + 5vw, 5.75rem)`, `leading-[1.02]`, `tracking-[-0.02em]`, `font-medium` — a one-off, used once.
-- Section heading (`ccType.heading` in `palette.ts`): `clamp(1.625rem, 1.1rem + 2.2vw, 2.375rem)` — reused in `index-directory.tsx` and `moment.tsx`, both with `font-medium tracking-[-0.01em]`.
+**Display/heading scale** — two fluid steps, defined once as theme tokens in `packages/ui/src/styles/globals.css` and consumed as Tailwind utilities (the `--fp-text-cantiere-*` variables are the single design knob):
+- `text-cantiere-display`: `clamp(2.25rem, 1.5rem + 3.2vw, 4rem)`, with `line-height 1.02`, `letter-spacing -0.02em`, `font-weight 500` bundled into the token. Used by the hero `<h1>` (`explosion.tsx`) and the funnel step question `<h2>` (`request-step-ui.tsx`).
+- `text-cantiere-heading`: `clamp(1.625rem, 1.1rem + 2.2vw, 2.375rem)`, with `letter-spacing -0.01em` bundled in; weight and leading stay at the call site (section headings are `font-medium`, the funnel step description is regular). Used by `index-directory.tsx`, `moment.tsx`, the area-impresa marketing headings, and the richiesta page `<h1>`s.
 
 **Micro/body scale** — implicit, consistent pixel steps observed across `explosion.tsx`, `index-directory.tsx`, `moment.tsx`, `navbar.tsx`, `footer.tsx`:
 | Size | Observed usage |
@@ -242,10 +242,10 @@ These are derived directly from intent comments left in the source files, not in
 
 5. **Full-bleed is an earned exception, not a default.** `moment.tsx` is explicitly called out in-source as the page's "one full-bleed moment — no card, no container, no rounded corners." It is also the page's single audience handoff (homeowner-facing content above it, tradesperson-facing content from this point down). Full-bleed treatment is tied to that narrative role, not used as a generic layout choice elsewhere on the page.
 
-6. **Fluid typography over breakpoint jumps.** `ccType`'s comment states it "replaces the old two-step (mobile value / lg value) jump with a continuous clamp so nothing 'snaps' at exactly 1024px." Headings in this system are expected to scale continuously with viewport width, not jump at fixed breakpoints.
+6. **Fluid typography over breakpoint jumps.** The display/heading scale (`text-cantiere-display`, `text-cantiere-heading` in `packages/ui`) is a single continuous `clamp()` per step rather than a two-step (mobile value / lg value) jump, so nothing "snaps" at exactly 1024px. Headings in this system are expected to scale continuously with viewport width, not jump at fixed breakpoints.
 
 7. **Content structure can carry as much intent as visual structure.** `index-directory.tsx`'s comment frames its layout as "a navigable index, not a magazine spread," and notes that prices are deliberately omitted so each guide can present its own figure "as indicative." Visual decisions in this system are tied to specific information-architecture reasoning, not decoration for its own sake.
 
 8. **Motion respects reduced-motion preference by default.** `Reveal`'s entrance animation is wrapped in `motion-reduce:` variants that disable the transition and show content at rest. This is treated as a baseline requirement of the motion language, not an optional add-on.
 
-**What this identity is not** (by contrast with the legacy system documented separately in `docs/LEGACY_UI_DEPENDENCY_MAP.md`): it does not use the legacy system's font stack (Inter/Plus Jakarta Sans), its cooler accent hue, its breakpoint-stepped typography, or its broader, more varied shadow/radius vocabulary. None of those legacy values appear anywhere in the files audited for this document.
+**What this identity is not** (by contrast with the legacy system documented separately in `docs/archive-legacy/ui/LEGACY_UI_DEPENDENCY_MAP.md`): it does not use the legacy system's font stack (Inter/Plus Jakarta Sans), its cooler accent hue, its breakpoint-stepped typography, or its broader, more varied shadow/radius vocabulary. None of those legacy values appear anywhere in the files audited for this document.
