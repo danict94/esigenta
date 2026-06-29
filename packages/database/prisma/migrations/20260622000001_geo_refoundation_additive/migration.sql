@@ -1,7 +1,7 @@
--- GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md)
+-- GEO REFOUNDATION (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md)
 -- Step 1/2: additive only. Adds GeoLocation + nullable geoLocationId FKs.
 -- The legacy scalar geo columns on Company/Request are intentionally left
--- in place here so the backfill (docs/geo-refoundation/02_BACKFILL_AUDIT.md)
+-- in place here so the backfill (docs/archive-legacy/refoundation/geo-refoundation/02_BACKFILL_AUDIT.md)
 -- has a source to read from; they are dropped in the next migration in
 -- this same refoundation (20260622000002_geo_refoundation_drop_legacy).
 
@@ -68,7 +68,7 @@ ALTER TABLE "Company" ADD CONSTRAINT "Company_geoLocationId_fkey" FOREIGN KEY ("
 -- AddForeignKey
 ALTER TABLE "Request" ADD CONSTRAINT "Request_geoLocationId_fkey" FOREIGN KEY ("geoLocationId") REFERENCES "GeoLocation"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- Matching performance (docs/geo-refoundation/01_DESIGN.md §5/§6): PostgreSQL
+-- Matching performance (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md §5/§6): PostgreSQL
 -- native earthdistance/cube, not PostGIS — sufficient for circle/radius
 -- queries at this domain's scale, no superuser-only extension required.
 CREATE EXTENSION IF NOT EXISTS cube;

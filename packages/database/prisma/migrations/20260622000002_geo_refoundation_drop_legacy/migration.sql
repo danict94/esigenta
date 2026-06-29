@@ -1,6 +1,6 @@
--- GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md)
+-- GEO REFOUNDATION (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md)
 -- Step 2/2: physical cleanup. The backfill
--- (docs/geo-refoundation/02_BACKFILL_AUDIT.md) has already migrated every
+-- (docs/archive-legacy/refoundation/geo-refoundation/02_BACKFILL_AUDIT.md) has already migrated every
 -- existing Company/Request row onto GeoLocation via geoLocationId, and
 -- every write/read path in the codebase has been cut over to it. There is
 -- no remaining reader of these columns — dropping them removes the dual

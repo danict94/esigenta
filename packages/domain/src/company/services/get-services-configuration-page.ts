@@ -80,7 +80,7 @@ export async function getCompanyServicesConfigurationPage(
   // 3 SQL queries in parallel -> 1 round-trip wall time. Frozen-model read
   // path only: Category, ProjectGroup, Intervention. No Service,
   // ServiceGroup, or Sector is read here — see
-  // docs/taxonomy-refoundation/09_COMPANY_CONFIGURATION_CUTOVER.md §C.
+  // docs/archive-legacy/refoundation/taxonomy-refoundation/09_COMPANY_CONFIGURATION_CUTOVER.md §C.
   const [companyRows, categoryRows, projectGroupRows] = await Promise.all([
     prisma.$queryRaw<Array<CompanyConfigRow>>`
       SELECT

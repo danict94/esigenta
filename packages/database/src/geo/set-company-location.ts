@@ -9,7 +9,7 @@ export type SetCompanyLocationResult =
   | { ok: false; code: "invalid_location" }
 
 /**
- * THE ONLY WRITE PATH for a company's location (docs/geo-refoundation/01_DESIGN.md
+ * THE ONLY WRITE PATH for a company's location (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md
  * §2.3/§8). Creation (onboarding.ts) and replacement (profile edit) both
  * call this — there is no other code in the repository allowed to set
  * Company.geoLocationId or insert a Company-attached GeoLocation row.

@@ -58,7 +58,7 @@ model Category {
    * marketplace dashboard visibility. NEVER used for: matching, dispatch,
    * notifications, or authorization — Category still never participates
    * in matching. See docs/taxonomy.md and
-   * docs/taxonomy-refoundation/14_DISCOVERY_AND_VISIBILITY_CUTOVER_REPORT.md.
+   * docs/archive-legacy/refoundation/taxonomy-refoundation/14_DISCOVERY_AND_VISIBILITY_CUTOVER_REPORT.md.
    */
   projectGroupIds String[] @default([])
 
@@ -138,11 +138,9 @@ model Intervention {
   projectGroup   ProjectGroup? @relation(fields: [projectGroupId], references: [id], onDelete: SetNull)
 
   /**
-   * FROZEN TAXONOMY (Phase 14.5) — the canonical source for funnel preset
-   * resolution. Replaces the legacy per-Service/per-Category
-   * runtimePresetSlugs cross-reference in
-   * packages/funnel/src/orchestration/create-runtime-funnel.ts. Opaque to
-   * taxonomy itself — see docs/taxonomy-refoundation/14_5_CONSISTENCY_REPORT.md.
+   * LEGACY DB COLUMN. Kept pending a dedicated migration because production
+   * data shape changes must be explicit. The current funnel does not read this
+   * field; taxonomy sync does not write it.
    */
   runtimePresetSlugs String[] @default([])
 
@@ -184,7 +182,7 @@ model CategoryAlias {
 }
 
 ///////////////////////////////////////////////////////////
-// GEO DOMAIN (docs/geo-refoundation/01_DESIGN.md)
+// GEO DOMAIN (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md)
 ///////////////////////////////////////////////////////////
 
 /**
@@ -209,7 +207,7 @@ enum GeoSource {
  *
  * placeId is nullable at the schema level only to allow LEGACY_BACKFILL
  * rows whose original Google Place was never captured (see
- * docs/geo-refoundation/02_BACKFILL_AUDIT.md) — every row written through
+ * docs/archive-legacy/refoundation/geo-refoundation/02_BACKFILL_AUDIT.md) — every row written through
  * the write boundary (packages/domain/src/company/geo,
  * packages/domain/src/request/geo) always has one.
  */
@@ -258,7 +256,7 @@ model Company {
   operatingRadiusKm Int     @default(30)
 
   /**
-   * GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md)
+   * GEO REFOUNDATION (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md)
    * The company's operating address/coordinates are not scalar columns
    * here anymore — they live in exactly one place, GeoLocation, reached
    * through this relation. There is no parallel address/city/lat/lng on
@@ -334,7 +332,7 @@ model CompanyCategory {
 /**
  * FROZEN TAXONOMY (Phase 8). Intervention is the only matching unit, so
  * this is the sole signal matching/dispatch needs — see
- * docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md.
+ * docs/archive-legacy/refoundation/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md.
  */
 model CompanyIntervention {
   companyId      String
@@ -622,7 +620,7 @@ model Request {
    * re-resolved. onDelete: Restrict because historical requests must
    * remain stable. interventionSlug remains the permanent, immutable
    * snapshot regardless of this column's lifecycle. See
-   * docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §6.
+   * docs/archive-legacy/refoundation/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §6.
    */
   interventionId String?
   intervention   Intervention? @relation(fields: [interventionId], references: [id], onDelete: Restrict)
@@ -636,7 +634,7 @@ model Request {
   customerPhone String?
 
   ///////////////////////////////////////////////////////////
-  // GEO (docs/geo-refoundation/01_DESIGN.md)
+  // GEO (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md)
   ///////////////////////////////////////////////////////////
 
   /**

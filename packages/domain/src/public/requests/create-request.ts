@@ -43,7 +43,7 @@ function isValidPhone(value: string): boolean {
  * (resolveInterventionForFunnel) already validates this slug resolves to a
  * live Intervention before a draft can ever be built, so this should never
  * realistically throw — guarded anyway, mirroring resolveRequiredServiceIds
- * above. See docs/taxonomy-refoundation/10_REQUEST_PERSISTENCE_AUDIT.md.
+ * above. See docs/archive-legacy/refoundation/taxonomy-refoundation/10_REQUEST_PERSISTENCE_AUDIT.md.
  */
 async function resolveInterventionId(
   interventionSlug: string,
@@ -266,7 +266,7 @@ export async function createRequestFromDraft({
   // real reader, the company browse dashboard
   // (get-requests-list-page.ts), was rewritten onto
   // Request.interventionId + CompanyIntervention — see
-  // docs/taxonomy-refoundation/14_DISCOVERY_AND_VISIBILITY_CUTOVER_REPORT.md.
+  // docs/archive-legacy/refoundation/taxonomy-refoundation/14_DISCOVERY_AND_VISIBILITY_CUTOVER_REPORT.md.
   // The admin moderation detail view's requiredServices display already
   // falls back to the live Intervention->Service derivation when empty.
   const data: Omit<Prisma.RequestCreateInput, "customer"> = {

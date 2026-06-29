@@ -9,7 +9,7 @@ export type SetRequestLocationResult =
 
 /**
  * THE ONLY WRITE PATH for a request's job-site location
- * (docs/geo-refoundation/01_DESIGN.md §2.3/§8). A request's location is set
+ * (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md §2.3/§8). A request's location is set
  * exactly once, at creation (create-request.ts) — a job site does not move
  * afterward, so unlike setCompanyLocationWithClient there is no replace
  * case here. If that ever changes, it must still go through this file and

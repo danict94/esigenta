@@ -1,11 +1,11 @@
 -- Phase 16 — Physical Cleanup of the legacy Service-based taxonomy.
 --
 -- Every table/column dropped here was verified to have zero runtime
--- consumers as of docs/taxonomy-refoundation/15B_FINAL_CONSUMERS_REPORT.md
+-- consumers as of docs/archive-legacy/refoundation/taxonomy-refoundation/15B_FINAL_CONSUMERS_REPORT.md
 -- and re-verified immediately before this migration. Full data backup
--- taken before this migration: docs/taxonomy-refoundation/16_pre_drop_backup.json
+-- taken before this migration: docs/archive-legacy/refoundation/taxonomy-refoundation/16_pre_drop_backup.json
 --
--- Rollback: see docs/taxonomy-refoundation/16_PHYSICAL_CLEANUP_REPORT.md §H.
+-- Rollback: see docs/archive-legacy/refoundation/taxonomy-refoundation/16_PHYSICAL_CLEANUP_REPORT.md §H.
 -- Restoring requires re-running `prisma migrate dev` against a schema with
 -- these models re-added, then replaying 16_pre_drop_backup.json's "data"
 -- object as INSERT statements (or via Prisma's createMany per model).

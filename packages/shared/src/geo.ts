@@ -9,7 +9,7 @@ function toRadians(value: number) {
  * always true here. `placeId` is the one exception: it is nullable only
  * because pre-refoundation records were backfilled (source
  * LEGACY_BACKFILL) without ever having captured one — see
- * docs/geo-refoundation/02_BACKFILL_AUDIT.md. Every NEW place produced by
+ * docs/archive-legacy/refoundation/geo-refoundation/02_BACKFILL_AUDIT.md. Every NEW place produced by
  * resolvePlaceFromGooglePlace (the only live constructor) always has one;
  * nothing in application code can construct a LEGACY_BACKFILL GeoPlace.
  */

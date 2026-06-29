@@ -88,7 +88,7 @@ export async function updateCompanyServicesConfiguration(
   // CompanyService is no longer written here (Phase 15A): verified via
   // repo-wide search that nothing reads it anymore — not matching, not
   // the dashboard, not the profile page. See
-  // docs/taxonomy-refoundation/15A_IMMEDIATE_REMOVALS_REPORT.md.
+  // docs/archive-legacy/refoundation/taxonomy-refoundation/15A_IMMEDIATE_REMOVALS_REPORT.md.
   const t1 = performance.now()
   await prisma.$executeRaw`
     WITH

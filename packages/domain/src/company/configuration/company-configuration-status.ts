@@ -8,7 +8,7 @@ import { prisma } from "@esigenta/database"
  *
  * Company.onboardingCategorySlug is never read here and must never be —
  * it is onboarding memory only, not configuration (see
- * docs/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md).
+ * docs/archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md).
  */
 export type CompanyConfigurationStatus = {
   categoryIds: string[]

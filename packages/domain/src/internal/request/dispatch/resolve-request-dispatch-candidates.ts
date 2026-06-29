@@ -48,10 +48,10 @@ function normalizeEmail(
  * Intervention is the only matching unit (docs/taxonomy.md). A single
  * indexed semi-join against CompanyIntervention, no Category/Service
  * traversal — see
- * docs/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §1-2 and
- * docs/taxonomy-refoundation/07_QUERY_AND_INDEX_PLAN.md §B.
+ * docs/archive-legacy/refoundation/taxonomy-refoundation/06_MATCHING_CUTOVER_DESIGN.md §1-2 and
+ * docs/archive-legacy/refoundation/taxonomy-refoundation/07_QUERY_AND_INDEX_PLAN.md §B.
  *
- * GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md §5/§6): the radius
+ * GEO REFOUNDATION (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md §5/§6): the radius
  * check runs in SQL via the GiST-indexed earthdistance/cube extension, not
  * as a JS-side full-table haversine scan. Each company has its own
  * operatingRadiusKm, so the index pre-filter uses the shared upper bound

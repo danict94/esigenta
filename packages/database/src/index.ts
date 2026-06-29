@@ -2,7 +2,7 @@
 export { prisma } from "./client"
 export type { Prisma } from "@prisma/client"
 
-// GEO REFOUNDATION (docs/geo-refoundation/01_DESIGN.md) — the only write
+// GEO REFOUNDATION (docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md) — the only write
 // boundary for Company/Request location. Lives here (not @esigenta/domain)
 // because @esigenta/auth must also call it and cannot depend on
 // @esigenta/domain (which itself depends on @esigenta/auth).

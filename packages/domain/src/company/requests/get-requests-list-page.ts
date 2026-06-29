@@ -266,7 +266,7 @@ function buildTaxonomyCategoriesQuery() {
 // Single SQL statement: status filter, intervention visibility filter
 // (direct Request.interventionId comparison — no junction table), radius
 // filter via the GiST-indexed earthdistance extension (cube/earthdistance —
-// see docs/geo-refoundation/01_DESIGN.md §5/§6; not a JS-side haversine scan
+// see docs/archive-legacy/refoundation/geo-refoundation/01_DESIGN.md §5/§6; not a JS-side haversine scan
 // and not a manually-computed bounding box — earth_box() is itself the
 // index-accelerated pre-filter, earth_distance() the exact circle check),
 // keyword search (request fields, structuredData, intervention name/slug,
