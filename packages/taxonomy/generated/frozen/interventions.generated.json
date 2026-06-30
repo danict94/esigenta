@@ -89,20 +89,14 @@
     "name": "Installare fotovoltaico",
     "projectGroupSlug": "fotovoltaico",
     "aliases": [
-      "impianto fotovoltaico",
-      "installazione fotovoltaico",
-      "pannelli solari"
-    ]
-  },
-  {
-    "id": "installare-fotovoltaico-con-accumulo",
-    "slug": "installare-fotovoltaico-con-accumulo",
-    "name": "Installare fotovoltaico con accumulo",
-    "projectGroupSlug": "fotovoltaico",
-    "aliases": [
       "fotovoltaico con accumulo",
       "fotovoltaico con batteria",
-      "impianto con accumulo"
+      "impianto con accumulo",
+      "impianto fotovoltaico",
+      "installazione fotovoltaico",
+      "mettere pannelli solari",
+      "pannelli solari",
+      "preventivo fotovoltaico"
     ]
   },
   {
@@ -138,6 +132,25 @@
       "intonacatura pareti",
       "intonaco esterno",
       "intonaco interno"
+    ]
+  },
+  {
+    "id": "modificare-o-potenziare-impianto-fotovoltaico",
+    "slug": "modificare-o-potenziare-impianto-fotovoltaico",
+    "name": "Ampliare o modificare impianto fotovoltaico",
+    "projectGroupSlug": "fotovoltaico",
+    "aliases": [
+      "aggiungere accumulo a impianto esistente",
+      "aggiungere batteria fotovoltaico",
+      "aggiungere pannelli fotovoltaici",
+      "aggiungere pannelli solari",
+      "ampliare fotovoltaico",
+      "ampliare impianto fotovoltaico",
+      "modificare impianto fotovoltaico",
+      "monitoraggio fotovoltaico",
+      "potenziare fotovoltaico",
+      "potenziare impianto fotovoltaico",
+      "sostituire inverter fotovoltaico"
     ]
   },
   {
@@ -297,6 +310,26 @@
       "saltata la corrente",
       "salvavita",
       "salvavita che scatta"
+    ]
+  },
+  {
+    "id": "riparare-o-fare-manutenzione-fotovoltaico",
+    "slug": "riparare-o-fare-manutenzione-fotovoltaico",
+    "name": "Riparare o fare manutenzione al fotovoltaico",
+    "projectGroupSlug": "fotovoltaico",
+    "aliases": [
+      "assistenza fotovoltaico",
+      "controllo impianto fotovoltaico",
+      "errore inverter",
+      "fotovoltaico non produce",
+      "impianto fotovoltaico fermo",
+      "impianto fotovoltaico non funziona",
+      "inverter fotovoltaico guasto",
+      "manutenzione fotovoltaico",
+      "pulire pannelli fotovoltaici",
+      "pulizia pannelli solari",
+      "riparare impianto fotovoltaico",
+      "riparazione fotovoltaico"
     ]
   },
   {

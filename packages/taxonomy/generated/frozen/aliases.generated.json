@@ -170,6 +170,21 @@
     "ownerSlug": "installare-climatizzatore"
   },
   {
+    "value": "fotovoltaico con accumulo",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
+    "value": "fotovoltaico con batteria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
+    "value": "impianto con accumulo",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
     "value": "impianto fotovoltaico",
     "ownerType": "intervention",
     "ownerSlug": "installare-fotovoltaico"
@@ -180,24 +195,19 @@
     "ownerSlug": "installare-fotovoltaico"
   },
   {
+    "value": "mettere pannelli solari",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-fotovoltaico"
+  },
+  {
     "value": "pannelli solari",
     "ownerType": "intervention",
     "ownerSlug": "installare-fotovoltaico"
   },
   {
-    "value": "fotovoltaico con accumulo",
+    "value": "preventivo fotovoltaico",
     "ownerType": "intervention",
-    "ownerSlug": "installare-fotovoltaico-con-accumulo"
-  },
-  {
-    "value": "fotovoltaico con batteria",
-    "ownerType": "intervention",
-    "ownerSlug": "installare-fotovoltaico-con-accumulo"
-  },
-  {
-    "value": "impianto con accumulo",
-    "ownerType": "intervention",
-    "ownerSlug": "installare-fotovoltaico-con-accumulo"
+    "ownerSlug": "installare-fotovoltaico"
   },
   {
     "value": "faretti led",
@@ -253,6 +263,61 @@
     "value": "intonaco interno",
     "ownerType": "intervention",
     "ownerSlug": "intonacare-pareti"
+  },
+  {
+    "value": "aggiungere accumulo a impianto esistente",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "aggiungere batteria fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "aggiungere pannelli fotovoltaici",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "aggiungere pannelli solari",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "ampliare fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "ampliare impianto fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "modificare impianto fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "monitoraggio fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "potenziare fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "potenziare impianto fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "sostituire inverter fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
   },
   {
     "value": "rasare muro",
@@ -568,6 +633,66 @@
     "value": "salvavita che scatta",
     "ownerType": "intervention",
     "ownerSlug": "riparare-guasto-elettrico"
+  },
+  {
+    "value": "assistenza fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "controllo impianto fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "errore inverter",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "fotovoltaico non produce",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "impianto fotovoltaico fermo",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "impianto fotovoltaico non funziona",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "inverter fotovoltaico guasto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "manutenzione fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "pulire pannelli fotovoltaici",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "pulizia pannelli solari",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "riparare impianto fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
+  },
+  {
+    "value": "riparazione fotovoltaico",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-fare-manutenzione-fotovoltaico"
   },
   {
     "value": "buchi nel cartongesso",
