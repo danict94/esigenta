@@ -182,6 +182,18 @@ function tokenizeSearchText(value: string): string[] {
   )
 }
 
+/**
+ * Stopword-stripped normalization of a stored value, using the SAME pipeline as
+ * the query's normalizedText (tokenize -> drop stopwords -> join). Lets a stored
+ * alias like "fotovoltaico con accumulo" be recognised as a phrase-exact hit for
+ * the query "fotovoltaico con accumulo" (both reduce to "fotovoltaico accumulo"),
+ * instead of silently dropping to a token-coincidence tier because the stopword
+ * "con" is removed from the query but kept in the stored value.
+ */
+function stripStopwordsPhrase(value: string): string {
+  return tokenizeSearchText(value).join(" ")
+}
+
 function buildSearchQuery(value: string): SearchQuery {
   const tokens = tokenizeSearchText(value)
   const normalizedText = tokens.join(" ")
@@ -303,6 +315,13 @@ function scoreSearchTexts(
     return NO_MATCH
   }
 
+  // Stopword-stripped forms of the stored values, compared the same way the
+  // query's normalizedText is built, so phrase-exactness survives stopwords.
+  const strippedValues = values.map(stripStopwordsPhrase).filter(Boolean)
+
+  const matchesPhrase = (predicate: (value: string) => boolean) =>
+    normalizedValues.some(predicate) || strippedValues.some(predicate)
+
   const fieldTokens = unique(
     normalizedValues.flatMap((value) => value.split(" ")),
   )
@@ -348,20 +367,20 @@ function scoreSearchTexts(
     return NO_MATCH
   }
 
-  const hasExactPhrase = normalizedValues.some(
+  const hasExactPhrase = matchesPhrase(
     (value) => value === searchQuery.normalizedText,
   )
 
   const hasStartingPhrase =
     !hasExactPhrase &&
-    normalizedValues.some((value) =>
+    matchesPhrase((value) =>
       value.startsWith(searchQuery.normalizedText),
     )
 
   const hasContainedPhrase =
     !hasExactPhrase &&
     !hasStartingPhrase &&
-    normalizedValues.some((value) =>
+    matchesPhrase((value) =>
       value.includes(searchQuery.normalizedText),
     )
 
@@ -749,12 +768,11 @@ export async function searchTaxonomy({
     // but should still rank below an exact match against the primary
     // name/slug - detected by checking whether the exact phrase exists in
     // name/slug specifically, separate from the alias-inclusive score above.
-    const primaryNormalized = [intervention.name, intervention.slug].map(
-      normalizeSearchText,
-    )
-    const hasExactPhraseInPrimary = primaryNormalized.some(
-      (value) => value === searchQuery.normalizedText,
-    )
+    const primaryValues = [intervention.name, intervention.slug]
+    const hasExactPhraseInPrimary = [
+      ...primaryValues.map(normalizeSearchText),
+      ...primaryValues.map(stripStopwordsPhrase),
+    ].some((value) => value === searchQuery.normalizedText)
 
     const matchedOnlyGenericContent = isMatchedOnlyGeneric(
       searchQuery,
