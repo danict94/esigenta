@@ -940,7 +940,22 @@
     "ownerSlug": "sostituire-box-doccia"
   },
   {
-    "value": "nuova doccia",
+    "value": "cambiare cabina doccia",
+    "ownerType": "intervention",
+    "ownerSlug": "sostituire-box-doccia"
+  },
+  {
+    "value": "installare box doccia",
+    "ownerType": "intervention",
+    "ownerSlug": "sostituire-box-doccia"
+  },
+  {
+    "value": "montare box doccia",
+    "ownerType": "intervention",
+    "ownerSlug": "sostituire-box-doccia"
+  },
+  {
+    "value": "sostituire cabina doccia",
     "ownerType": "intervention",
     "ownerSlug": "sostituire-box-doccia"
   },

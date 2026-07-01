@@ -27,7 +27,17 @@ export const idraulica: FrozenProjectGroup = {
       id: "sostituire-box-doccia",
       slug: "sostituire-box-doccia",
       name: "Sostituire box doccia",
-      aliases: ["cambiare box doccia", "nuova doccia", "sostituzione box doccia"],
+      // Alias mirati solo su box/cabina doccia. Rimosso "nuova doccia": troppo
+      // largo (poteva significare rifare doccia completa, piatto doccia,
+      // trasformazione vasca→doccia o ristrutturazione bagno).
+      aliases: [
+        "cambiare box doccia",
+        "sostituzione box doccia",
+        "installare box doccia",
+        "montare box doccia",
+        "cambiare cabina doccia",
+        "sostituire cabina doccia",
+      ],
     },
     {
       id: "installare-sanitari",
