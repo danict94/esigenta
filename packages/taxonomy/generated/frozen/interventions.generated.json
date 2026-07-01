@@ -105,11 +105,32 @@
     "name": "Installare illuminazione",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
+      "applique",
       "faretti led",
       "installare faretti led",
       "installazione illuminazione",
       "montare lampadario",
-      "punti luce"
+      "strisce led"
+    ]
+  },
+  {
+    "id": "installare-prese-interruttori-punti-luce",
+    "slug": "installare-prese-interruttori-punti-luce",
+    "name": "Installare prese, interruttori o punti luce",
+    "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
+    "aliases": [
+      "aggiungere presa elettrica",
+      "aggiungere punto luce",
+      "installare interruttore",
+      "installare presa elettrica",
+      "presa dati",
+      "presa tv",
+      "punti luce",
+      "punto luce",
+      "sostituire interruttore",
+      "sostituire presa elettrica",
+      "spostare presa elettrica",
+      "spostare punto luce"
     ]
   },
   {
@@ -359,7 +380,7 @@
   {
     "id": "riparare-quadro-elettrico",
     "slug": "riparare-quadro-elettrico",
-    "name": "Riparare quadro elettrico",
+    "name": "Sistemare o sostituire quadro elettrico",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "quadro elettrico",

@@ -210,6 +210,11 @@
     "ownerSlug": "installare-fotovoltaico"
   },
   {
+    "value": "applique",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-illuminazione"
+  },
+  {
     "value": "faretti led",
     "ownerType": "intervention",
     "ownerSlug": "installare-illuminazione"
@@ -230,9 +235,69 @@
     "ownerSlug": "installare-illuminazione"
   },
   {
-    "value": "punti luce",
+    "value": "strisce led",
     "ownerType": "intervention",
     "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "aggiungere presa elettrica",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "aggiungere punto luce",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "installare interruttore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "installare presa elettrica",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "presa dati",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "presa tv",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "punti luce",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "punto luce",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "sostituire interruttore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "sostituire presa elettrica",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "spostare presa elettrica",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "spostare punto luce",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-prese-interruttori-punti-luce"
   },
   {
     "value": "installazione sanitari",
