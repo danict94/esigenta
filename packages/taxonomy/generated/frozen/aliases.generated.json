@@ -1570,7 +1570,17 @@
     "ownerSlug": "ripristino-frontalino"
   },
   {
-    "value": "ristrutturare casa intera",
+    "value": "rifare appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-appartamento"
+  },
+  {
+    "value": "ristrutturare appartamento completo",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-appartamento"
+  },
+  {
+    "value": "ristrutturare casa in condominio",
     "ownerType": "intervention",
     "ownerSlug": "ristrutturare-appartamento"
   },
@@ -1580,7 +1590,32 @@
     "ownerSlug": "ristrutturare-appartamento"
   },
   {
+    "value": "ristrutturazione completa appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-appartamento"
+  },
+  {
+    "value": "rifacimento bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
+    "value": "rifare bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
+    "value": "rifare bagno completo",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
     "value": "rifare il bagno",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-bagno"
+  },
+  {
+    "value": "ristrutturare bagno completo",
     "ownerType": "intervention",
     "ownerSlug": "ristrutturare-bagno"
   },
@@ -1595,7 +1630,22 @@
     "ownerSlug": "ristrutturare-bagno"
   },
   {
+    "value": "ristrutturare casa indipendente",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "ristrutturare casa intera",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
     "value": "ristrutturare villa",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "ristrutturare villetta",
     "ownerType": "intervention",
     "ownerSlug": "ristrutturare-casa"
   },
@@ -1610,7 +1660,42 @@
     "ownerSlug": "ristrutturare-casa"
   },
   {
+    "value": "ristrutturazione completa casa",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "ristrutturazione villa",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "ristrutturazione villetta",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-casa"
+  },
+  {
+    "value": "rifacimento cucina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-cucina"
+  },
+  {
+    "value": "rifare cucina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-cucina"
+  },
+  {
+    "value": "rifare cucina completa",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-cucina"
+  },
+  {
     "value": "rifare la cucina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-cucina"
+  },
+  {
+    "value": "ristrutturare cucina completa",
     "ownerType": "intervention",
     "ownerSlug": "ristrutturare-cucina"
   },

@@ -14,6 +14,7 @@ import { fotovoltaicoModels } from "./fotovoltaico"
 import { idraulicaModels } from "./idraulica"
 import { impiantiElettriciModels } from "./impianti-e-manutenzioni-elettriche"
 import { pavimentazioniModels } from "./pavimentazioni"
+import { ristrutturazioniModels } from "./ristrutturazioni"
 import { tettiModels } from "./tetti"
 import { getDefaultFunnelModel } from "./common"
 import type { InterventionFunnelModel } from "./types"
@@ -28,6 +29,7 @@ const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
     ...idraulicaModels,
     ...impiantiElettriciModels,
     ...pavimentazioniModels,
+    ...ristrutturazioniModels,
     ...tettiModels,
   ].map((model) => [model.interventionSlug, model]),
 )

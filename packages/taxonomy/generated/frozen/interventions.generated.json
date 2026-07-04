@@ -641,8 +641,11 @@
     "name": "Ristrutturare appartamento",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
-      "ristrutturare casa intera",
-      "ristrutturazione appartamento"
+      "rifare appartamento",
+      "ristrutturare appartamento completo",
+      "ristrutturare casa in condominio",
+      "ristrutturazione appartamento",
+      "ristrutturazione completa appartamento"
     ]
   },
   {
@@ -651,7 +654,11 @@
     "name": "Ristrutturare bagno",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
+      "rifacimento bagno",
+      "rifare bagno",
+      "rifare bagno completo",
       "rifare il bagno",
+      "ristrutturare bagno completo",
       "ristrutturare il bagno",
       "ristrutturazione bagno"
     ]
@@ -662,9 +669,15 @@
     "name": "Ristrutturare casa",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
+      "ristrutturare casa indipendente",
+      "ristrutturare casa intera",
       "ristrutturare villa",
+      "ristrutturare villetta",
       "ristrutturazione casa",
-      "ristrutturazione casa indipendente"
+      "ristrutturazione casa indipendente",
+      "ristrutturazione completa casa",
+      "ristrutturazione villa",
+      "ristrutturazione villetta"
     ]
   },
   {
@@ -673,7 +686,11 @@
     "name": "Ristrutturare cucina",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
+      "rifacimento cucina",
+      "rifare cucina",
+      "rifare cucina completa",
       "rifare la cucina",
+      "ristrutturare cucina completa",
       "ristrutturazione cucina"
     ]
   },
