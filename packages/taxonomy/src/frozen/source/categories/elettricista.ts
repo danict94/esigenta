@@ -5,5 +5,5 @@ export const elettricista: FrozenCategory = {
   slug: "elettricista",
   name: "Elettricista",
   aliases: ["impresa elettrica"],
-  projectGroups: ["impianti-e-manutenzioni-elettriche"],
+  projectGroups: ["impianti-e-manutenzioni-elettriche", "citofoni-sicurezza-e-smart-home"],
 }

@@ -1,0 +1,101 @@
+import type { FrozenProjectGroup } from "../types/project-group"
+
+// Hub impianti speciali / low-voltage: citofonia, sicurezza (allarme, TVCC),
+// automazioni cancelli, domotica. Sotto la categoria `elettricista`.
+// Fuori scope / backlog (NON aggiungere come alias qui): antenna tv, parabola,
+// wifi, rete dati, porta blindata, serratura, fabbro, inferriate, serrande,
+// rilevatore fumo/gas, controllo accessi aziendale.
+export const citofoniSicurezzaESmartHome: FrozenProjectGroup = {
+  id: "citofoni-sicurezza-e-smart-home",
+  slug: "citofoni-sicurezza-e-smart-home",
+  name: "Citofoni, sicurezza e smart home",
+  interventions: [
+    {
+      id: "installare-o-sostituire-citofono-videocitofono",
+      slug: "installare-o-sostituire-citofono-videocitofono",
+      name: "Installare o sostituire citofono/videocitofono",
+      aliases: [
+        "installare citofono",
+        "sostituire citofono",
+        "riparare citofono",
+        "citofono rotto",
+        "installare videocitofono",
+        "sostituire videocitofono",
+        "riparare videocitofono",
+        "videocitofono",
+        "citofono",
+        "campanello smart",
+        "installare campanello smart",
+      ],
+    },
+    {
+      id: "installare-impianto-allarme",
+      slug: "installare-impianto-allarme",
+      name: "Installare impianto allarme",
+      aliases: [
+        "installare allarme",
+        "impianto allarme",
+        "allarme casa",
+        "antifurto casa",
+        "installare antifurto",
+        "sistema antifurto",
+        "allarme wireless",
+        "allarme perimetrale",
+        "allarme volumetrico",
+        "sirena allarme",
+      ],
+    },
+    {
+      id: "installare-videosorveglianza",
+      slug: "installare-videosorveglianza",
+      name: "Installare videosorveglianza",
+      aliases: [
+        "installare telecamere",
+        "installare telecamere sicurezza",
+        "videosorveglianza",
+        "impianto videosorveglianza",
+        "telecamere casa",
+        "telecamere esterne",
+        "telecamere wi fi",
+        "telecamere ip",
+        "sistema videosorveglianza",
+        "telecamere di sicurezza",
+      ],
+    },
+    {
+      id: "automatizzare-cancello",
+      slug: "automatizzare-cancello",
+      name: "Automatizzare cancello",
+      // "automatizzare cancello" NON è alias: normalizzato coincide con slug e
+      // name (vietato dal validator), già coperto dalla ricerca via slug.
+      aliases: [
+        "automazione cancello",
+        "cancello automatico",
+        "motore cancello",
+        "installare motore cancello",
+        "motorizzare cancello",
+        "riparare cancello automatico",
+        "telecomando cancello",
+        "automazione cancello scorrevole",
+        "automazione cancello battente",
+      ],
+    },
+    {
+      id: "installare-domotica-smart-home",
+      slug: "installare-domotica-smart-home",
+      name: "Installare domotica e smart home",
+      aliases: [
+        "installare domotica",
+        "domotica casa",
+        "smart home",
+        "impianto domotico",
+        "casa intelligente",
+        "automazione casa",
+        "luci smart",
+        "termostato smart",
+        "tapparelle smart",
+        "controllo luci smart",
+      ],
+    },
+  ],
+}

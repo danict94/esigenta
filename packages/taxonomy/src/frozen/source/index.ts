@@ -8,6 +8,7 @@ import { tecnicoClimatizzazione } from "./categories/tecnico-climatizzazione"
 
 import { ristrutturazioni } from "./project-groups/ristrutturazioni"
 import { tetti } from "./project-groups/tetti"
+import { citofoniSicurezzaESmartHome } from "./project-groups/citofoni-sicurezza-e-smart-home"
 import { fotovoltaico } from "./project-groups/fotovoltaico"
 import { facciateEBalconi } from "./project-groups/facciate-e-balconi"
 import { pavimentazioni } from "./project-groups/pavimentazioni"
@@ -41,6 +42,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     impiantiEManutenzioniElettriche,
     idraulica,
     climatizzazione,
+    citofoniSicurezzaESmartHome,
   ],
 }
 
