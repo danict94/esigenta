@@ -9,6 +9,7 @@
 import { cartongessoModels } from "./cartongesso"
 import { citofoniSicurezzaESmartHomeModels } from "./citofoni-sicurezza-e-smart-home"
 import { climatizzazioneModels } from "./climatizzazione"
+import { fabbroSerrandeECancelliModels } from "./fabbro-serrande-e-cancelli"
 import { facciateEBalconiModels } from "./facciate-e-balconi"
 import { finitureModels } from "./finiture"
 import { fotovoltaicoModels } from "./fotovoltaico"
@@ -28,6 +29,7 @@ const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
     ...cartongessoModels,
     ...citofoniSicurezzaESmartHomeModels,
     ...climatizzazioneModels,
+    ...fabbroSerrandeECancelliModels,
     ...facciateEBalconiModels,
     ...finitureModels,
     ...fotovoltaicoModels,

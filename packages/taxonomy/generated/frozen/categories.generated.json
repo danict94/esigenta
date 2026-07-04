@@ -20,6 +20,20 @@
     ]
   },
   {
+    "id": "fabbro",
+    "slug": "fabbro",
+    "name": "Fabbro",
+    "projectGroups": [
+      "fabbro-serrande-e-cancelli"
+    ],
+    "aliases": [
+      "carpenteria metallica",
+      "fabbri",
+      "fabbro casa",
+      "pronto intervento fabbro"
+    ]
+  },
+  {
     "id": "idraulico",
     "slug": "idraulico",
     "name": "Idraulico",

@@ -6,6 +6,7 @@ import { imbianchino } from "./categories/imbianchino"
 import { installatoreFotovoltaico } from "./categories/installatore-fotovoltaico"
 import { tecnicoClimatizzazione } from "./categories/tecnico-climatizzazione"
 import { serramentista } from "./categories/serramentista"
+import { fabbro } from "./categories/fabbro"
 
 import { ristrutturazioni } from "./project-groups/ristrutturazioni"
 import { tetti } from "./project-groups/tetti"
@@ -21,6 +22,7 @@ import { climatizzazione } from "./project-groups/climatizzazione"
 import { opereMurarieEDemolizioni } from "./project-groups/opere-murarie-e-demolizioni"
 import { serramentiEInfissi } from "./project-groups/serramenti-e-infissi"
 import { riscaldamento } from "./project-groups/riscaldamento"
+import { fabbroSerrandeECancelli } from "./project-groups/fabbro-serrande-e-cancelli"
 
 import type { FrozenTaxonomySource } from "./types/source"
 
@@ -34,6 +36,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     installatoreFotovoltaico,
     tecnicoClimatizzazione,
     serramentista,
+    fabbro,
   ],
 
   projectGroups: [
@@ -51,6 +54,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     opereMurarieEDemolizioni,
     serramentiEInfissi,
     riscaldamento,
+    fabbroSerrandeECancelli,
   ],
 }
 

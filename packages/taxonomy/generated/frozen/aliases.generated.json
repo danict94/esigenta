@@ -5,6 +5,26 @@
     "ownerSlug": "elettricista"
   },
   {
+    "value": "carpenteria metallica",
+    "ownerType": "category",
+    "ownerSlug": "fabbro"
+  },
+  {
+    "value": "fabbri",
+    "ownerType": "category",
+    "ownerSlug": "fabbro"
+  },
+  {
+    "value": "fabbro casa",
+    "ownerType": "category",
+    "ownerSlug": "fabbro"
+  },
+  {
+    "value": "pronto intervento fabbro",
+    "ownerType": "category",
+    "ownerSlug": "fabbro"
+  },
+  {
     "value": "impresa idraulica",
     "ownerType": "category",
     "ownerSlug": "idraulico"
@@ -103,6 +123,51 @@
     "value": "spostare una porta",
     "ownerType": "intervention",
     "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "apertura porta",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "aprire porta senza chiavi",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "chiavi dentro casa",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "chiavi perse casa",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "fabbro apertura porta",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "porta bloccata",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "porta chiusa fuori",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "porta non si apre",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
+  },
+  {
+    "value": "serratura bloccata porta",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-porta-bloccata"
   },
   {
     "value": "automazione cancello",
@@ -208,6 +273,66 @@
     "value": "togliere eternit dal tetto",
     "ownerType": "intervention",
     "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "cambiare cilindro",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "cambiare cilindro europeo",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "cambiare serratura",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "cambiare serratura porta blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "cilindro europeo",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "riparare serratura",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "serratura bloccata",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "serratura porta blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "serratura rotta",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "sostituire cilindro",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "sostituire cilindro europeo",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "sostituire serratura",
+    "ownerType": "intervention",
+    "ownerSlug": "cambiare-o-riparare-serratura"
   },
   {
     "value": "alzare un muro",
@@ -750,6 +875,66 @@
     "ownerSlug": "installare-impianto-allarme"
   },
   {
+    "value": "grate antintrusione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "grate di sicurezza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "grate finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "inferriate",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "inferriate apribili",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "inferriate di sicurezza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "inferriate finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "inferriate su misura",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "installare grate",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "installare inferriate",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "protezione finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
+    "value": "sostituire inferriate",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-inferriate-o-grate"
+  },
+  {
     "value": "ancoraggi tetto",
     "ownerType": "intervention",
     "ownerSlug": "installare-linea-vita"
@@ -793,6 +978,66 @@
     "value": "sistema anticaduta tetto",
     "ownerType": "intervention",
     "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "cancello a battente",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "cancello carrabile",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "cancello di ferro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "cancello ferro battuto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "cancello in ferro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "cancello pedonale",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "cancello scorrevole",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "installare cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "riparare cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "riparare cancello in ferro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "saldare cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
+  },
+  {
+    "value": "sostituire cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-riparare-cancello"
   },
   {
     "value": "caldaia a condensazione",
@@ -1428,6 +1673,61 @@
     "value": "spostare punto luce",
     "ownerType": "intervention",
     "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "carpenteria metallica ringhiere",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "installare ringhiera",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "parapetti metallici",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "parapetto in ferro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "ringhiera balcone",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "ringhiera ferro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "ringhiera scala",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "ringhiere esterne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "ringhiere in ferro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "sostituire ringhiera",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
+  },
+  {
+    "value": "sostituire ringhiere",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-ringhiere"
   },
   {
     "value": "impianto a pavimento",
@@ -2363,6 +2663,66 @@
     "value": "riparazione cartongesso",
     "ownerType": "intervention",
     "ownerSlug": "riparare-o-modificare-cartongesso"
+  },
+  {
+    "value": "motore serranda",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "riparare serranda",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "riparare serranda garage",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "riparare serranda negozio",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "serranda bloccata",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "serranda elettrica",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "serranda garage",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "serranda metallica",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "serranda negozio",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "serranda rotta",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "sostituire motore serranda",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
+  },
+  {
+    "value": "sostituire serranda",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-serranda"
   },
   {
     "value": "avvolgibili",

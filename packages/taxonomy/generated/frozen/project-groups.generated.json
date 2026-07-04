@@ -37,6 +37,19 @@
     ]
   },
   {
+    "id": "fabbro-serrande-e-cancelli",
+    "slug": "fabbro-serrande-e-cancelli",
+    "name": "Fabbro, serrande e cancelli",
+    "interventionSlugs": [
+      "aprire-porta-bloccata",
+      "cambiare-o-riparare-serratura",
+      "installare-inferriate-o-grate",
+      "installare-o-riparare-cancello",
+      "installare-ringhiere",
+      "riparare-o-sostituire-serranda"
+    ]
+  },
+  {
     "id": "facciate-e-balconi",
     "slug": "facciate-e-balconi",
     "name": "Facciate e balconi",

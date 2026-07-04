@@ -29,6 +29,23 @@
     ]
   },
   {
+    "id": "aprire-porta-bloccata",
+    "slug": "aprire-porta-bloccata",
+    "name": "Aprire porta bloccata",
+    "projectGroupSlug": "fabbro-serrande-e-cancelli",
+    "aliases": [
+      "apertura porta",
+      "aprire porta senza chiavi",
+      "chiavi dentro casa",
+      "chiavi perse casa",
+      "fabbro apertura porta",
+      "porta bloccata",
+      "porta chiusa fuori",
+      "porta non si apre",
+      "serratura bloccata porta"
+    ]
+  },
+  {
     "id": "automatizzare-cancello",
     "slug": "automatizzare-cancello",
     "name": "Automatizzare cancello",
@@ -63,6 +80,26 @@
       "tetto in amianto",
       "tetto in eternit",
       "togliere eternit dal tetto"
+    ]
+  },
+  {
+    "id": "cambiare-o-riparare-serratura",
+    "slug": "cambiare-o-riparare-serratura",
+    "name": "Cambiare o riparare serratura",
+    "projectGroupSlug": "fabbro-serrande-e-cancelli",
+    "aliases": [
+      "cambiare cilindro",
+      "cambiare cilindro europeo",
+      "cambiare serratura",
+      "cambiare serratura porta blindata",
+      "cilindro europeo",
+      "riparare serratura",
+      "serratura bloccata",
+      "serratura porta blindata",
+      "serratura rotta",
+      "sostituire cilindro",
+      "sostituire cilindro europeo",
+      "sostituire serratura"
     ]
   },
   {
@@ -294,6 +331,26 @@
     ]
   },
   {
+    "id": "installare-inferriate-o-grate",
+    "slug": "installare-inferriate-o-grate",
+    "name": "Installare inferriate o grate di sicurezza",
+    "projectGroupSlug": "fabbro-serrande-e-cancelli",
+    "aliases": [
+      "grate antintrusione",
+      "grate di sicurezza",
+      "grate finestre",
+      "inferriate",
+      "inferriate apribili",
+      "inferriate di sicurezza",
+      "inferriate finestre",
+      "inferriate su misura",
+      "installare grate",
+      "installare inferriate",
+      "protezione finestre",
+      "sostituire inferriate"
+    ]
+  },
+  {
     "id": "installare-linea-vita",
     "slug": "installare-linea-vita",
     "name": "Installare linea vita sul tetto",
@@ -308,6 +365,26 @@
       "manutenzione linea vita",
       "revisione linea vita",
       "sistema anticaduta tetto"
+    ]
+  },
+  {
+    "id": "installare-o-riparare-cancello",
+    "slug": "installare-o-riparare-cancello",
+    "name": "Installare o riparare cancello",
+    "projectGroupSlug": "fabbro-serrande-e-cancelli",
+    "aliases": [
+      "cancello a battente",
+      "cancello carrabile",
+      "cancello di ferro",
+      "cancello ferro battuto",
+      "cancello in ferro",
+      "cancello pedonale",
+      "cancello scorrevole",
+      "installare cancello",
+      "riparare cancello",
+      "riparare cancello in ferro",
+      "saldare cancello",
+      "sostituire cancello"
     ]
   },
   {
@@ -523,6 +600,25 @@
       "sostituire presa elettrica",
       "spostare presa elettrica",
       "spostare punto luce"
+    ]
+  },
+  {
+    "id": "installare-ringhiere",
+    "slug": "installare-ringhiere",
+    "name": "Installare ringhiere",
+    "projectGroupSlug": "fabbro-serrande-e-cancelli",
+    "aliases": [
+      "carpenteria metallica ringhiere",
+      "installare ringhiera",
+      "parapetti metallici",
+      "parapetto in ferro",
+      "ringhiera balcone",
+      "ringhiera ferro",
+      "ringhiera scala",
+      "ringhiere esterne",
+      "ringhiere in ferro",
+      "sostituire ringhiera",
+      "sostituire ringhiere"
     ]
   },
   {
@@ -902,6 +998,26 @@
       "modificare struttura in cartongesso",
       "rimuovere cartongesso",
       "riparazione cartongesso"
+    ]
+  },
+  {
+    "id": "riparare-o-sostituire-serranda",
+    "slug": "riparare-o-sostituire-serranda",
+    "name": "Riparare o sostituire serranda",
+    "projectGroupSlug": "fabbro-serrande-e-cancelli",
+    "aliases": [
+      "motore serranda",
+      "riparare serranda",
+      "riparare serranda garage",
+      "riparare serranda negozio",
+      "serranda bloccata",
+      "serranda elettrica",
+      "serranda garage",
+      "serranda metallica",
+      "serranda negozio",
+      "serranda rotta",
+      "sostituire motore serranda",
+      "sostituire serranda"
     ]
   },
   {
