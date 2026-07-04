@@ -5,6 +5,7 @@ import { cartongessista } from "./categories/cartongessista"
 import { imbianchino } from "./categories/imbianchino"
 import { installatoreFotovoltaico } from "./categories/installatore-fotovoltaico"
 import { tecnicoClimatizzazione } from "./categories/tecnico-climatizzazione"
+import { serramentista } from "./categories/serramentista"
 
 import { ristrutturazioni } from "./project-groups/ristrutturazioni"
 import { tetti } from "./project-groups/tetti"
@@ -18,6 +19,8 @@ import { impiantiEManutenzioniElettriche } from "./project-groups/impianti-e-man
 import { idraulica } from "./project-groups/idraulica"
 import { climatizzazione } from "./project-groups/climatizzazione"
 import { opereMurarieEDemolizioni } from "./project-groups/opere-murarie-e-demolizioni"
+import { serramentiEInfissi } from "./project-groups/serramenti-e-infissi"
+import { riscaldamento } from "./project-groups/riscaldamento"
 
 import type { FrozenTaxonomySource } from "./types/source"
 
@@ -30,6 +33,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     imbianchino,
     installatoreFotovoltaico,
     tecnicoClimatizzazione,
+    serramentista,
   ],
 
   projectGroups: [
@@ -45,6 +49,8 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     climatizzazione,
     citofoniSicurezzaESmartHome,
     opereMurarieEDemolizioni,
+    serramentiEInfissi,
+    riscaldamento,
   ],
 }
 

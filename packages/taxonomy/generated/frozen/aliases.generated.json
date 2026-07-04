@@ -30,6 +30,16 @@
     "ownerSlug": "impresa-edile"
   },
   {
+    "value": "infissista",
+    "ownerType": "category",
+    "ownerSlug": "serramentista"
+  },
+  {
+    "value": "posatore serramenti",
+    "ownerType": "category",
+    "ownerSlug": "serramentista"
+  },
+  {
     "value": "finitura decorativa",
     "ownerType": "intervention",
     "ownerSlug": "applicare-stucco-decorativo"
@@ -358,6 +368,51 @@
     "value": "nuovo impianto elettrico",
     "ownerType": "intervention",
     "ownerSlug": "fare-impianto-elettrico-nuovo"
+  },
+  {
+    "value": "assistenza caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "bollino blu caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "controllo caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "controllo fumi caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "manutenzione caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "manutenzione caldaia a gas",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "pulizia caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "revisione caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
+  },
+  {
+    "value": "tagliando caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-caldaia"
   },
   {
     "value": "manutenzione climatizzatore",
@@ -740,6 +795,66 @@
     "ownerSlug": "installare-linea-vita"
   },
   {
+    "value": "caldaia a condensazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "caldaia a gas",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "caldaia murale",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "cambiare caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "installare caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "installare caldaia a condensazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "installare impianto di riscaldamento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "nuova caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "nuovo impianto di riscaldamento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "rifare impianto di riscaldamento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "sostituire caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
+    "value": "sostituzione caldaia",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-caldaia"
+  },
+  {
     "value": "campanello smart",
     "ownerType": "intervention",
     "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
@@ -793,6 +908,81 @@
     "value": "videocitofono",
     "ownerType": "intervention",
     "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "cambiare finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "cambiare infissi",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "finestre pvc",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "infissi alluminio",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "infissi legno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "infissi pvc",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "installare finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "installare infissi",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "nuovi infissi",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "serramenti",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "serramenti alluminio",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "serramenti pvc",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "sostituire finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "sostituire infissi",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
+  },
+  {
+    "value": "sostituzione serramenti",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-finestre-infissi"
   },
   {
     "value": "cambiare lucernario",
@@ -855,6 +1045,331 @@
     "ownerSlug": "installare-o-sostituire-lucernario"
   },
   {
+    "value": "boiler",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "boiler elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "cambiare scaldabagno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "installare boiler",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "installare scaldabagno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "scaldabagno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "scaldabagno a gas",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "scaldabagno elettrico",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "scaldacqua",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "scaldino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "sostituire boiler",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "sostituire scaldabagno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "aggiungere termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "cambiare termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "installare radiatori",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "installare termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "installare valvole termostatiche",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "nuovi termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "radiatori",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "sostituire radiatori",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "sostituire termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "spostare termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "termosifoni",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "valvole termostatiche",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-termosifoni"
+  },
+  {
+    "value": "ante oscuranti",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "cambiare persiane",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "installare persiane",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "installare scuri",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "oscuranti finestre",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "persiane",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "persiane in alluminio",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "persiane in legno",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "riparare persiane",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "scuri",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "sostituire persiane",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "sostituire scuri",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-persiane-o-scuri"
+  },
+  {
+    "value": "impianto a pompa di calore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "installare pompa di calore aria acqua",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "pompa di calore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "pompa di calore aria acqua",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "pompa di calore casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "pompa di calore ibrida",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "pompa di calore per riscaldamento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "pompa di calore riscaldamento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "sistema ibrido caldaia pompa di calore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "sostituire pompa di calore",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-pompa-di-calore"
+  },
+  {
+    "value": "cambiare porta blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "montare porta blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "porta blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "porta blindata antieffrazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "porta blindata appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "porta blindata casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "porta ingresso blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "portoncino blindato",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "sostituire porta blindata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porta-blindata"
+  },
+  {
+    "value": "cambiare porte interne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "montare porte interne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porta a libro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porta interna",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porta scorrevole interno muro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porte a scomparsa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porte filo muro",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porte interne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "porte scorrevoli interne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
+    "value": "sostituire porte interne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-porte-interne"
+  },
+  {
     "value": "aggiungere presa elettrica",
     "ownerType": "intervention",
     "ownerSlug": "installare-prese-interruttori-punti-luce"
@@ -913,6 +1428,46 @@
     "value": "spostare punto luce",
     "ownerType": "intervention",
     "ownerSlug": "installare-prese-interruttori-punti-luce"
+  },
+  {
+    "value": "impianto a pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "installare pavimento radiante",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "massetto radiante",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "pavimento radiante",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "riscaldamento a pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "riscaldamento a pavimento radiante",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "riscaldamento pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
+  },
+  {
+    "value": "sistema radiante",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-riscaldamento-a-pavimento"
   },
   {
     "value": "installazione sanitari",
@@ -978,6 +1533,56 @@
     "value": "videosorveglianza",
     "ownerType": "intervention",
     "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "cambiare rete zanzariera",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "montare zanzariere",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "riparare zanzariera",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "sostituire zanzariere",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "zanzariera finestra",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "zanzariera porta finestra",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "zanzariere",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "zanzariere plissettate",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "zanzariere scorrevoli",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
+  },
+  {
+    "value": "zanzariere su misura",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-zanzariere"
   },
   {
     "value": "intonacatura pareti",
@@ -1758,6 +2363,76 @@
     "value": "riparazione cartongesso",
     "ownerType": "intervention",
     "ownerSlug": "riparare-o-modificare-cartongesso"
+  },
+  {
+    "value": "avvolgibili",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "cambiare tapparelle",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "cinghia tapparella",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "installare tapparelle",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "motorizzare tapparelle",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "riparare avvolgibili",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "riparare tapparelle",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "sostituire avvolgibili",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "sostituire cinghia tapparella",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "sostituire tapparelle",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "tapparella bloccata",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "tapparella rotta",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "tapparelle elettriche",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
+  },
+  {
+    "value": "tapparelle rotte",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-o-sostituire-tapparelle"
   },
   {
     "value": "fughe rovinate",

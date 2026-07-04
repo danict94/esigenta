@@ -5,5 +5,5 @@ export const idraulico: FrozenCategory = {
   slug: "idraulico",
   name: "Idraulico",
   aliases: ["impresa idraulica"],
-  projectGroups: ["idraulica"],
+  projectGroups: ["idraulica", "riscaldamento"],
 }

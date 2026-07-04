@@ -138,6 +138,23 @@
     ]
   },
   {
+    "id": "fare-manutenzione-caldaia",
+    "slug": "fare-manutenzione-caldaia",
+    "name": "Fare manutenzione caldaia",
+    "projectGroupSlug": "riscaldamento",
+    "aliases": [
+      "assistenza caldaia",
+      "bollino blu caldaia",
+      "controllo caldaia",
+      "controllo fumi caldaia",
+      "manutenzione caldaia",
+      "manutenzione caldaia a gas",
+      "pulizia caldaia",
+      "revisione caldaia",
+      "tagliando caldaia"
+    ]
+  },
+  {
     "id": "fare-manutenzione-climatizzatore",
     "slug": "fare-manutenzione-climatizzatore",
     "name": "Fare manutenzione climatizzatore",
@@ -294,6 +311,26 @@
     ]
   },
   {
+    "id": "installare-o-sostituire-caldaia",
+    "slug": "installare-o-sostituire-caldaia",
+    "name": "Installare o sostituire caldaia",
+    "projectGroupSlug": "riscaldamento",
+    "aliases": [
+      "caldaia a condensazione",
+      "caldaia a gas",
+      "caldaia murale",
+      "cambiare caldaia",
+      "installare caldaia",
+      "installare caldaia a condensazione",
+      "installare impianto di riscaldamento",
+      "nuova caldaia",
+      "nuovo impianto di riscaldamento",
+      "rifare impianto di riscaldamento",
+      "sostituire caldaia",
+      "sostituzione caldaia"
+    ]
+  },
+  {
     "id": "installare-o-sostituire-citofono-videocitofono",
     "slug": "installare-o-sostituire-citofono-videocitofono",
     "name": "Installare o sostituire citofono/videocitofono",
@@ -310,6 +347,29 @@
       "sostituire citofono",
       "sostituire videocitofono",
       "videocitofono"
+    ]
+  },
+  {
+    "id": "installare-o-sostituire-finestre-infissi",
+    "slug": "installare-o-sostituire-finestre-infissi",
+    "name": "Installare o sostituire finestre e infissi",
+    "projectGroupSlug": "serramenti-e-infissi",
+    "aliases": [
+      "cambiare finestre",
+      "cambiare infissi",
+      "finestre pvc",
+      "infissi alluminio",
+      "infissi legno",
+      "infissi pvc",
+      "installare finestre",
+      "installare infissi",
+      "nuovi infissi",
+      "serramenti",
+      "serramenti alluminio",
+      "serramenti pvc",
+      "sostituire finestre",
+      "sostituire infissi",
+      "sostituzione serramenti"
     ]
   },
   {
@@ -333,6 +393,119 @@
     ]
   },
   {
+    "id": "installare-o-sostituire-scaldabagno",
+    "slug": "installare-o-sostituire-scaldabagno",
+    "name": "Installare o sostituire scaldabagno",
+    "projectGroupSlug": "riscaldamento",
+    "aliases": [
+      "boiler",
+      "boiler elettrico",
+      "cambiare scaldabagno",
+      "installare boiler",
+      "installare scaldabagno",
+      "scaldabagno",
+      "scaldabagno a gas",
+      "scaldabagno elettrico",
+      "scaldacqua",
+      "scaldino",
+      "sostituire boiler",
+      "sostituire scaldabagno"
+    ]
+  },
+  {
+    "id": "installare-o-sostituire-termosifoni",
+    "slug": "installare-o-sostituire-termosifoni",
+    "name": "Installare o sostituire termosifoni",
+    "projectGroupSlug": "riscaldamento",
+    "aliases": [
+      "aggiungere termosifoni",
+      "cambiare termosifoni",
+      "installare radiatori",
+      "installare termosifoni",
+      "installare valvole termostatiche",
+      "nuovi termosifoni",
+      "radiatori",
+      "sostituire radiatori",
+      "sostituire termosifoni",
+      "spostare termosifoni",
+      "termosifoni",
+      "valvole termostatiche"
+    ]
+  },
+  {
+    "id": "installare-persiane-o-scuri",
+    "slug": "installare-persiane-o-scuri",
+    "name": "Installare persiane o scuri",
+    "projectGroupSlug": "serramenti-e-infissi",
+    "aliases": [
+      "ante oscuranti",
+      "cambiare persiane",
+      "installare persiane",
+      "installare scuri",
+      "oscuranti finestre",
+      "persiane",
+      "persiane in alluminio",
+      "persiane in legno",
+      "riparare persiane",
+      "scuri",
+      "sostituire persiane",
+      "sostituire scuri"
+    ]
+  },
+  {
+    "id": "installare-pompa-di-calore",
+    "slug": "installare-pompa-di-calore",
+    "name": "Installare pompa di calore",
+    "projectGroupSlug": "riscaldamento",
+    "aliases": [
+      "impianto a pompa di calore",
+      "installare pompa di calore aria acqua",
+      "pompa di calore",
+      "pompa di calore aria acqua",
+      "pompa di calore casa",
+      "pompa di calore ibrida",
+      "pompa di calore per riscaldamento",
+      "pompa di calore riscaldamento",
+      "sistema ibrido caldaia pompa di calore",
+      "sostituire pompa di calore"
+    ]
+  },
+  {
+    "id": "installare-porta-blindata",
+    "slug": "installare-porta-blindata",
+    "name": "Installare porta blindata",
+    "projectGroupSlug": "serramenti-e-infissi",
+    "aliases": [
+      "cambiare porta blindata",
+      "montare porta blindata",
+      "porta blindata",
+      "porta blindata antieffrazione",
+      "porta blindata appartamento",
+      "porta blindata casa",
+      "porta ingresso blindata",
+      "portoncino blindato",
+      "sostituire porta blindata"
+    ]
+  },
+  {
+    "id": "installare-porte-interne",
+    "slug": "installare-porte-interne",
+    "name": "Installare porte interne",
+    "projectGroupSlug": "serramenti-e-infissi",
+    "aliases": [
+      "cambiare porte interne",
+      "montare porte interne",
+      "porta a libro",
+      "porta interna",
+      "porta scorrevole interno muro",
+      "porte a scomparsa",
+      "porte filo muro",
+      "porte interne",
+      "porte scorrevoli interne",
+      "sostituire porte interne"
+    ]
+  },
+  {
     "id": "installare-prese-interruttori-punti-luce",
     "slug": "installare-prese-interruttori-punti-luce",
     "name": "Installare prese, interruttori o punti luce",
@@ -350,6 +523,22 @@
       "sostituire presa elettrica",
       "spostare presa elettrica",
       "spostare punto luce"
+    ]
+  },
+  {
+    "id": "installare-riscaldamento-a-pavimento",
+    "slug": "installare-riscaldamento-a-pavimento",
+    "name": "Installare riscaldamento a pavimento",
+    "projectGroupSlug": "riscaldamento",
+    "aliases": [
+      "impianto a pavimento",
+      "installare pavimento radiante",
+      "massetto radiante",
+      "pavimento radiante",
+      "riscaldamento a pavimento",
+      "riscaldamento a pavimento radiante",
+      "riscaldamento pavimento",
+      "sistema radiante"
     ]
   },
   {
@@ -379,6 +568,24 @@
       "telecamere ip",
       "telecamere wi fi",
       "videosorveglianza"
+    ]
+  },
+  {
+    "id": "installare-zanzariere",
+    "slug": "installare-zanzariere",
+    "name": "Installare zanzariere",
+    "projectGroupSlug": "serramenti-e-infissi",
+    "aliases": [
+      "cambiare rete zanzariera",
+      "montare zanzariere",
+      "riparare zanzariera",
+      "sostituire zanzariere",
+      "zanzariera finestra",
+      "zanzariera porta finestra",
+      "zanzariere",
+      "zanzariere plissettate",
+      "zanzariere scorrevoli",
+      "zanzariere su misura"
     ]
   },
   {
@@ -695,6 +902,28 @@
       "modificare struttura in cartongesso",
       "rimuovere cartongesso",
       "riparazione cartongesso"
+    ]
+  },
+  {
+    "id": "riparare-o-sostituire-tapparelle",
+    "slug": "riparare-o-sostituire-tapparelle",
+    "name": "Riparare o sostituire tapparelle",
+    "projectGroupSlug": "serramenti-e-infissi",
+    "aliases": [
+      "avvolgibili",
+      "cambiare tapparelle",
+      "cinghia tapparella",
+      "installare tapparelle",
+      "motorizzare tapparelle",
+      "riparare avvolgibili",
+      "riparare tapparelle",
+      "sostituire avvolgibili",
+      "sostituire cinghia tapparella",
+      "sostituire tapparelle",
+      "tapparella bloccata",
+      "tapparella rotta",
+      "tapparelle elettriche",
+      "tapparelle rotte"
     ]
   },
   {

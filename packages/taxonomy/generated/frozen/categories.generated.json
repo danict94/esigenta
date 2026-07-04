@@ -24,7 +24,8 @@
     "slug": "idraulico",
     "name": "Idraulico",
     "projectGroups": [
-      "idraulica"
+      "idraulica",
+      "riscaldamento"
     ],
     "aliases": [
       "impresa idraulica"
@@ -64,6 +65,18 @@
     "name": "Installatore fotovoltaico",
     "projectGroups": [
       "fotovoltaico"
+    ]
+  },
+  {
+    "id": "serramentista",
+    "slug": "serramentista",
+    "name": "Serramentista",
+    "projectGroups": [
+      "serramenti-e-infissi"
+    ],
+    "aliases": [
+      "infissista",
+      "posatore serramenti"
     ]
   },
   {

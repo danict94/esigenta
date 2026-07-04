@@ -126,6 +126,19 @@
     ]
   },
   {
+    "id": "riscaldamento",
+    "slug": "riscaldamento",
+    "name": "Riscaldamento",
+    "interventionSlugs": [
+      "fare-manutenzione-caldaia",
+      "installare-o-sostituire-caldaia",
+      "installare-o-sostituire-scaldabagno",
+      "installare-o-sostituire-termosifoni",
+      "installare-pompa-di-calore",
+      "installare-riscaldamento-a-pavimento"
+    ]
+  },
+  {
     "id": "ristrutturazioni",
     "slug": "ristrutturazioni",
     "name": "Ristrutturazioni",
@@ -134,6 +147,19 @@
       "ristrutturare-bagno",
       "ristrutturare-casa",
       "ristrutturare-cucina"
+    ]
+  },
+  {
+    "id": "serramenti-e-infissi",
+    "slug": "serramenti-e-infissi",
+    "name": "Serramenti e infissi",
+    "interventionSlugs": [
+      "installare-o-sostituire-finestre-infissi",
+      "installare-persiane-o-scuri",
+      "installare-porta-blindata",
+      "installare-porte-interne",
+      "installare-zanzariere",
+      "riparare-o-sostituire-tapparelle"
     ]
   },
   {

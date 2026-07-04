@@ -16,6 +16,7 @@ import { idraulicaModels } from "./idraulica"
 import { impiantiElettriciModels } from "./impianti-e-manutenzioni-elettriche"
 import { opereMurarieEDemolizioniModels } from "./opere-murarie-e-demolizioni"
 import { pavimentazioniModels } from "./pavimentazioni"
+import { riscaldamentoModels } from "./riscaldamento"
 import { ristrutturazioniModels } from "./ristrutturazioni"
 import { serramentiEInfissiModels } from "./serramenti-e-infissi"
 import { tettiModels } from "./tetti"
@@ -34,6 +35,7 @@ const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
     ...impiantiElettriciModels,
     ...opereMurarieEDemolizioniModels,
     ...pavimentazioniModels,
+    ...riscaldamentoModels,
     ...ristrutturazioniModels,
     ...serramentiEInfissiModels,
     ...tettiModels,
