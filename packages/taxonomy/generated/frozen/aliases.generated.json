@@ -45,6 +45,56 @@
     "ownerSlug": "applicare-stucco-decorativo"
   },
   {
+    "value": "apertura vano",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "aprire finestra nel muro",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "aprire muro portante",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "aprire un muro",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "aprire un varco nel muro",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "aprire una porta nel muro",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "aprire vano porta",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "cerchiatura muro portante",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "chiudere una porta nel muro",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
+    "value": "spostare una porta",
+    "ownerType": "intervention",
+    "ownerSlug": "aprire-o-chiudere-vano"
+  },
+  {
     "value": "automazione cancello",
     "ownerType": "intervention",
     "ownerSlug": "automatizzare-cancello"
@@ -148,6 +198,136 @@
     "value": "togliere eternit dal tetto",
     "ownerType": "intervention",
     "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "alzare un muro",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "alzare una parete",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "costruire muro interno",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "costruire parete",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "costruire tramezzo",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "fare una parete in muratura",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "muro in forati",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "muro in mattoni",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "tramezzatura",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "tramezzo in muratura",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "abbattere un muro",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "abbattere una parete",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "buttare giù un muro",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolire muro non portante",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolire tramezzo",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolire una parete",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolizione muri interni",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolizione pareti",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolizione tramezzi",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "togliere una parete",
+    "ownerType": "intervention",
+    "ownerSlug": "demolire-parete-o-tramezzo"
+  },
+  {
+    "value": "demolire per ristrutturare",
+    "ownerType": "intervention",
+    "ownerSlug": "demolizioni-interne"
+  },
+  {
+    "value": "demolizione interna",
+    "ownerType": "intervention",
+    "ownerSlug": "demolizioni-interne"
+  },
+  {
+    "value": "demolizione pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "demolizioni-interne"
+  },
+  {
+    "value": "demolizioni per ristrutturazione",
+    "ownerType": "intervention",
+    "ownerSlug": "demolizioni-interne"
+  },
+  {
+    "value": "rimozione pareti e pavimenti",
+    "ownerType": "intervention",
+    "ownerSlug": "demolizioni-interne"
+  },
+  {
+    "value": "svuotare appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "demolizioni-interne"
   },
   {
     "value": "disostruzione scarichi",
@@ -918,6 +1098,56 @@
     "value": "sostituire inverter fotovoltaico",
     "ownerType": "intervention",
     "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "assistenza muraria",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "assistenze murarie",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "chiusura tracce",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "fare tracce",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "murare",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "nicchia nel muro",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "opere murarie",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "rappezzi murari",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "rifare soglia",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
+  },
+  {
+    "value": "tracce muri",
+    "ownerType": "intervention",
+    "ownerSlug": "piccole-opere-murarie"
   },
   {
     "value": "installare parquet",

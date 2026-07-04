@@ -11,6 +11,24 @@
     ]
   },
   {
+    "id": "aprire-o-chiudere-vano",
+    "slug": "aprire-o-chiudere-vano",
+    "name": "Aprire o chiudere un vano",
+    "projectGroupSlug": "opere-murarie-e-demolizioni",
+    "aliases": [
+      "apertura vano",
+      "aprire finestra nel muro",
+      "aprire muro portante",
+      "aprire un muro",
+      "aprire un varco nel muro",
+      "aprire una porta nel muro",
+      "aprire vano porta",
+      "cerchiatura muro portante",
+      "chiudere una porta nel muro",
+      "spostare una porta"
+    ]
+  },
+  {
     "id": "automatizzare-cancello",
     "slug": "automatizzare-cancello",
     "name": "Automatizzare cancello",
@@ -45,6 +63,56 @@
       "tetto in amianto",
       "tetto in eternit",
       "togliere eternit dal tetto"
+    ]
+  },
+  {
+    "id": "costruire-parete-o-tramezzo",
+    "slug": "costruire-parete-o-tramezzo",
+    "name": "Costruire parete o tramezzo in muratura",
+    "projectGroupSlug": "opere-murarie-e-demolizioni",
+    "aliases": [
+      "alzare un muro",
+      "alzare una parete",
+      "costruire muro interno",
+      "costruire parete",
+      "costruire tramezzo",
+      "fare una parete in muratura",
+      "muro in forati",
+      "muro in mattoni",
+      "tramezzatura",
+      "tramezzo in muratura"
+    ]
+  },
+  {
+    "id": "demolire-parete-o-tramezzo",
+    "slug": "demolire-parete-o-tramezzo",
+    "name": "Demolire parete o tramezzo",
+    "projectGroupSlug": "opere-murarie-e-demolizioni",
+    "aliases": [
+      "abbattere un muro",
+      "abbattere una parete",
+      "buttare giù un muro",
+      "demolire muro non portante",
+      "demolire tramezzo",
+      "demolire una parete",
+      "demolizione muri interni",
+      "demolizione pareti",
+      "demolizione tramezzi",
+      "togliere una parete"
+    ]
+  },
+  {
+    "id": "demolizioni-interne",
+    "slug": "demolizioni-interne",
+    "name": "Demolizioni interne",
+    "projectGroupSlug": "opere-murarie-e-demolizioni",
+    "aliases": [
+      "demolire per ristrutturare",
+      "demolizione interna",
+      "demolizione pavimento",
+      "demolizioni per ristrutturazione",
+      "rimozione pareti e pavimenti",
+      "svuotare appartamento"
     ]
   },
   {
@@ -359,6 +427,24 @@
       "potenziare fotovoltaico",
       "potenziare impianto fotovoltaico",
       "sostituire inverter fotovoltaico"
+    ]
+  },
+  {
+    "id": "piccole-opere-murarie",
+    "slug": "piccole-opere-murarie",
+    "name": "Piccole opere murarie e assistenze",
+    "projectGroupSlug": "opere-murarie-e-demolizioni",
+    "aliases": [
+      "assistenza muraria",
+      "assistenze murarie",
+      "chiusura tracce",
+      "fare tracce",
+      "murare",
+      "nicchia nel muro",
+      "opere murarie",
+      "rappezzi murari",
+      "rifare soglia",
+      "tracce muri"
     ]
   },
   {

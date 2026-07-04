@@ -17,6 +17,7 @@ import { cartongesso } from "./project-groups/cartongesso"
 import { impiantiEManutenzioniElettriche } from "./project-groups/impianti-e-manutenzioni-elettriche"
 import { idraulica } from "./project-groups/idraulica"
 import { climatizzazione } from "./project-groups/climatizzazione"
+import { opereMurarieEDemolizioni } from "./project-groups/opere-murarie-e-demolizioni"
 
 import type { FrozenTaxonomySource } from "./types/source"
 
@@ -43,6 +44,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     idraulica,
     climatizzazione,
     citofoniSicurezzaESmartHome,
+    opereMurarieEDemolizioni,
   ],
 }
 

@@ -103,6 +103,18 @@
     ]
   },
   {
+    "id": "opere-murarie-e-demolizioni",
+    "slug": "opere-murarie-e-demolizioni",
+    "name": "Opere murarie e demolizioni",
+    "interventionSlugs": [
+      "aprire-o-chiudere-vano",
+      "costruire-parete-o-tramezzo",
+      "demolire-parete-o-tramezzo",
+      "demolizioni-interne",
+      "piccole-opere-murarie"
+    ]
+  },
+  {
     "id": "pavimentazioni",
     "slug": "pavimentazioni",
     "name": "Pavimentazioni",

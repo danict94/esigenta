@@ -5,5 +5,5 @@ export const impresaEdile: FrozenCategory = {
   slug: "impresa-edile",
   name: "Impresa edile",
   aliases: ["impresa di costruzioni", "ditta edile"],
-  projectGroups: ["ristrutturazioni", "facciate-e-balconi", "pavimentazioni", "tetti"],
+  projectGroups: ["ristrutturazioni", "facciate-e-balconi", "pavimentazioni", "tetti", "opere-murarie-e-demolizioni"],
 }
