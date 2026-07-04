@@ -95,7 +95,10 @@
     "slug": "pavimentazioni",
     "name": "Pavimentazioni",
     "interventionSlugs": [
-      "fare-massetto"
+      "fare-massetto",
+      "posare-levigare-o-ripristinare-parquet",
+      "posare-o-rifare-pavimento-interno",
+      "riparare-pavimento"
     ]
   },
   {
@@ -114,6 +117,11 @@
     "slug": "tetti",
     "name": "Tetti",
     "interventionSlugs": [
+      "bonificare-amianto-eternit-tetto",
+      "impermeabilizzare-tetto",
+      "installare-linea-vita",
+      "installare-o-sostituire-lucernario",
+      "isolare-o-coibentare-tetto",
       "rifare-tetto",
       "riparare-tetto",
       "sistemare-grondaie"

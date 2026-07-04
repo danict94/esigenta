@@ -8,7 +8,7 @@ export const ristrutturazioni: FrozenProjectGroup = {
     {
       id: "ristrutturare-bagno",
       slug: "ristrutturare-bagno",
-      name: "Ristrutturare bagno",
+      name: "1",
       aliases: ["rifare il bagno", "ristrutturare il bagno", "ristrutturazione bagno"],
     },
     {

@@ -11,6 +11,26 @@
     ]
   },
   {
+    "id": "bonificare-amianto-eternit-tetto",
+    "slug": "bonificare-amianto-eternit-tetto",
+    "name": "Bonificare tetto in amianto o eternit",
+    "projectGroupSlug": "tetti",
+    "aliases": [
+      "bonifica amianto tetto",
+      "bonifica eternit",
+      "incapsulamento amianto tetto",
+      "rifacimento tetto in amianto",
+      "rimozione amianto tetto",
+      "rimozione eternit tetto",
+      "smaltimento amianto tetto",
+      "smaltimento eternit",
+      "sovracopertura amianto",
+      "tetto in amianto",
+      "tetto in eternit",
+      "togliere eternit dal tetto"
+    ]
+  },
+  {
     "id": "disostruire-scarichi",
     "slug": "disostruire-scarichi",
     "name": "Disostruire scarichi",
@@ -46,12 +66,17 @@
   {
     "id": "fare-massetto",
     "slug": "fare-massetto",
-    "name": "Fare massetto",
+    "name": "Realizzare o rifare massetto",
     "projectGroupSlug": "pavimentazioni",
     "aliases": [
       "gettare massetto",
       "massetti",
-      "rifare il sottofondo"
+      "massetto per pavimento",
+      "realizzare massetto",
+      "rifare il sottofondo",
+      "rifare massetto",
+      "rifare sottofondo pavimento",
+      "sottofondo pavimento"
     ]
   },
   {
@@ -70,6 +95,23 @@
       "infiltrazioni balcone",
       "perdita acqua balcone",
       "rifare guaina balcone"
+    ]
+  },
+  {
+    "id": "impermeabilizzare-tetto",
+    "slug": "impermeabilizzare-tetto",
+    "name": "Impermeabilizzare tetto",
+    "projectGroupSlug": "tetti",
+    "aliases": [
+      "guaina bituminosa tetto",
+      "guaina tetto",
+      "impermeabilizzare copertura",
+      "impermeabilizzare il tetto",
+      "impermeabilizzazione tetto",
+      "manto di copertura",
+      "rifare guaina tetto",
+      "rifare manto di copertura",
+      "tetto da impermeabilizzare"
     ]
   },
   {
@@ -111,6 +153,43 @@
       "installazione illuminazione",
       "montare lampadario",
       "strisce led"
+    ]
+  },
+  {
+    "id": "installare-linea-vita",
+    "slug": "installare-linea-vita",
+    "name": "Installare linea vita sul tetto",
+    "projectGroupSlug": "tetti",
+    "aliases": [
+      "ancoraggi tetto",
+      "certificazione linea vita",
+      "dispositivo anticaduta tetto",
+      "linea vita",
+      "linea vita obbligatoria",
+      "linea vita tetto",
+      "manutenzione linea vita",
+      "revisione linea vita",
+      "sistema anticaduta tetto"
+    ]
+  },
+  {
+    "id": "installare-o-sostituire-lucernario",
+    "slug": "installare-o-sostituire-lucernario",
+    "name": "Installare o sostituire lucernario",
+    "projectGroupSlug": "tetti",
+    "aliases": [
+      "cambiare lucernario",
+      "finestra da tetto",
+      "installare finestra da tetto",
+      "installare lucernario",
+      "installare velux",
+      "lucernario",
+      "lucernario tetto",
+      "nuovo lucernario",
+      "sostituire finestra da tetto",
+      "sostituire lucernario",
+      "sostituire velux",
+      "velux"
     ]
   },
   {
@@ -156,6 +235,24 @@
     ]
   },
   {
+    "id": "isolare-o-coibentare-tetto",
+    "slug": "isolare-o-coibentare-tetto",
+    "name": "Isolare o coibentare tetto",
+    "projectGroupSlug": "tetti",
+    "aliases": [
+      "coibentare sottotetto",
+      "coibentare tetto",
+      "coibentazione copertura",
+      "coibentazione tetto",
+      "isolamento copertura",
+      "isolamento sottotetto",
+      "isolamento termico tetto",
+      "isolamento tetto",
+      "isolare tetto",
+      "tetto ventilato"
+    ]
+  },
+  {
     "id": "modificare-o-potenziare-impianto-fotovoltaico",
     "slug": "modificare-o-potenziare-impianto-fotovoltaico",
     "name": "Ampliare o modificare impianto fotovoltaico",
@@ -172,6 +269,58 @@
       "potenziare fotovoltaico",
       "potenziare impianto fotovoltaico",
       "sostituire inverter fotovoltaico"
+    ]
+  },
+  {
+    "id": "posare-levigare-o-ripristinare-parquet",
+    "slug": "posare-levigare-o-ripristinare-parquet",
+    "name": "Posare, levigare o ripristinare parquet",
+    "projectGroupSlug": "pavimentazioni",
+    "aliases": [
+      "installare parquet",
+      "lamare parquet",
+      "levigare parquet",
+      "lucidare parquet",
+      "mettere parquet",
+      "parquet da sistemare",
+      "parquet flottante",
+      "parquet graffiato",
+      "parquet prefinito",
+      "parquet rovinato",
+      "posa parquet",
+      "posare parquet",
+      "rifare parquet",
+      "ripristinare parquet",
+      "sostituire parquet",
+      "trattamento parquet"
+    ]
+  },
+  {
+    "id": "posare-o-rifare-pavimento-interno",
+    "slug": "posare-o-rifare-pavimento-interno",
+    "name": "Posare o rifare pavimento interno",
+    "projectGroupSlug": "pavimentazioni",
+    "aliases": [
+      "cambiare pavimento",
+      "nuovo pavimento",
+      "pavimento a click",
+      "pavimento interno",
+      "pavimento laminato",
+      "pavimento lvt",
+      "pavimento pvc",
+      "pavimento spc",
+      "pavimento vinilico",
+      "posa gres",
+      "posa pavimento",
+      "posa piastrelle",
+      "posare gres",
+      "posare laminato",
+      "posare lvt",
+      "posare pavimento",
+      "posare piastrelle",
+      "posare spc",
+      "rifare pavimento",
+      "sostituire pavimento"
     ]
   },
   {
@@ -316,7 +465,13 @@
     "name": "Rifare tetto",
     "projectGroupSlug": "tetti",
     "aliases": [
+      "nuovo tetto",
+      "rifacimento copertura",
       "rifacimento tetto",
+      "rifare copertura",
+      "rifare copertura tetto",
+      "ristrutturazione tetto",
+      "sostituire copertura",
       "sostituire il tetto"
     ]
   },
@@ -367,6 +522,29 @@
     ]
   },
   {
+    "id": "riparare-pavimento",
+    "slug": "riparare-pavimento",
+    "name": "Riparare piastrelle o pavimento rotto",
+    "projectGroupSlug": "pavimentazioni",
+    "aliases": [
+      "fughe rovinate",
+      "pavimento che si muove",
+      "pavimento danneggiato",
+      "pavimento rotto",
+      "pavimento sollevato",
+      "pavimento staccato",
+      "piastrella rotta",
+      "piastrelle rotte",
+      "piastrelle sollevate",
+      "piastrelle staccate",
+      "rifare fughe pavimento",
+      "riparare piastrelle",
+      "riparazione pavimento",
+      "sistemare pavimento",
+      "sostituire piastrelle rotte"
+    ]
+  },
+  {
     "id": "riparare-perdita-acqua",
     "slug": "riparare-perdita-acqua",
     "name": "Riparare perdita acqua",
@@ -393,9 +571,24 @@
     "name": "Riparare tetto",
     "projectGroupSlug": "tetti",
     "aliases": [
+      "comignolo che perde",
+      "coppi rotti",
+      "infiltrazione canna fumaria",
+      "infiltrazione da comignolo",
+      "infiltrazioni acqua dal tetto",
       "infiltrazioni tetto",
       "perdita dal tetto",
-      "riparazione tetto"
+      "riparare tegole",
+      "riparazione tetto",
+      "ripassare tetto",
+      "ripasso tegole",
+      "ripasso tetto",
+      "scossalina camino",
+      "sistemare tegole",
+      "sostituire tegole rotte",
+      "tegole rotte",
+      "tegole spostate",
+      "tetto che perde"
     ]
   },
   {
@@ -491,10 +684,18 @@
     "projectGroupSlug": "tetti",
     "aliases": [
       "grondaie",
+      "grondaie che perdono",
       "grondaie rotte",
       "lattoneria",
       "lattoniere",
-      "riparare grondaie"
+      "pluviali",
+      "pulire grondaie",
+      "pulizia grondaie",
+      "riparare grondaie",
+      "riparare pluviali",
+      "scossaline",
+      "sostituire grondaie",
+      "sostituire pluviali"
     ]
   },
   {

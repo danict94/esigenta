@@ -45,6 +45,66 @@
     "ownerSlug": "applicare-stucco-decorativo"
   },
   {
+    "value": "bonifica amianto tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "bonifica eternit",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "incapsulamento amianto tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "rifacimento tetto in amianto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "rimozione amianto tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "rimozione eternit tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "smaltimento amianto tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "smaltimento eternit",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "sovracopertura amianto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "tetto in amianto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "tetto in eternit",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
+    "value": "togliere eternit dal tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "bonificare-amianto-eternit-tetto"
+  },
+  {
     "value": "disostruzione scarichi",
     "ownerType": "intervention",
     "ownerSlug": "disostruire-scarichi"
@@ -100,7 +160,32 @@
     "ownerSlug": "fare-massetto"
   },
   {
+    "value": "massetto per pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "realizzare massetto",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
     "value": "rifare il sottofondo",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "rifare massetto",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "rifare sottofondo pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-massetto"
+  },
+  {
+    "value": "sottofondo pavimento",
     "ownerType": "intervention",
     "ownerSlug": "fare-massetto"
   },
@@ -153,6 +238,51 @@
     "value": "rifare guaina balcone",
     "ownerType": "intervention",
     "ownerSlug": "impermeabilizzare-balcone-ballatoio"
+  },
+  {
+    "value": "guaina bituminosa tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "guaina tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "impermeabilizzare copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "impermeabilizzare il tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "impermeabilizzazione tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "manto di copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "rifare guaina tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "rifare manto di copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
+  },
+  {
+    "value": "tetto da impermeabilizzare",
+    "ownerType": "intervention",
+    "ownerSlug": "impermeabilizzare-tetto"
   },
   {
     "value": "installare aria condizionata",
@@ -238,6 +368,111 @@
     "value": "strisce led",
     "ownerType": "intervention",
     "ownerSlug": "installare-illuminazione"
+  },
+  {
+    "value": "ancoraggi tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "certificazione linea vita",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "dispositivo anticaduta tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "linea vita",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "linea vita obbligatoria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "linea vita tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "manutenzione linea vita",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "revisione linea vita",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "sistema anticaduta tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "cambiare lucernario",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "finestra da tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "installare finestra da tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "installare lucernario",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "installare velux",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "lucernario",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "lucernario tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "nuovo lucernario",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "sostituire finestra da tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "sostituire lucernario",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "sostituire velux",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
+  },
+  {
+    "value": "velux",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-lucernario"
   },
   {
     "value": "aggiungere presa elettrica",
@@ -330,6 +565,56 @@
     "ownerSlug": "intonacare-pareti"
   },
   {
+    "value": "coibentare sottotetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "coibentare tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "coibentazione copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "coibentazione tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "isolamento copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "isolamento sottotetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "isolamento termico tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "isolamento tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "isolare tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
+    "value": "tetto ventilato",
+    "ownerType": "intervention",
+    "ownerSlug": "isolare-o-coibentare-tetto"
+  },
+  {
     "value": "aggiungere accumulo a impianto esistente",
     "ownerType": "intervention",
     "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
@@ -383,6 +668,186 @@
     "value": "sostituire inverter fotovoltaico",
     "ownerType": "intervention",
     "ownerSlug": "modificare-o-potenziare-impianto-fotovoltaico"
+  },
+  {
+    "value": "installare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "lamare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "levigare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "lucidare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "mettere parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "parquet da sistemare",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "parquet flottante",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "parquet graffiato",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "parquet prefinito",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "parquet rovinato",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "posa parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "posare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "rifare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "ripristinare parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "sostituire parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "trattamento parquet",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-levigare-o-ripristinare-parquet"
+  },
+  {
+    "value": "cambiare pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "nuovo pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento a click",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento interno",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento laminato",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento lvt",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento pvc",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento spc",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "pavimento vinilico",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posa gres",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posa pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posa piastrelle",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posare gres",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posare laminato",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posare lvt",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posare pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posare piastrelle",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "posare spc",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "rifare pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "sostituire pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-o-rifare-pavimento-interno"
   },
   {
     "value": "rasare muro",
@@ -665,7 +1130,37 @@
     "ownerSlug": "rifare-pavimentazione-balcone-ballatoio"
   },
   {
+    "value": "nuovo tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "rifacimento copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
     "value": "rifacimento tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "rifare copertura",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "rifare copertura tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "ristrutturazione tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "rifare-tetto"
+  },
+  {
+    "value": "sostituire copertura",
     "ownerType": "intervention",
     "ownerSlug": "rifare-tetto"
   },
@@ -785,6 +1280,81 @@
     "ownerSlug": "riparare-o-modificare-cartongesso"
   },
   {
+    "value": "fughe rovinate",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "pavimento che si muove",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "pavimento danneggiato",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "pavimento rotto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "pavimento sollevato",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "pavimento staccato",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "piastrella rotta",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "piastrelle rotte",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "piastrelle sollevate",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "piastrelle staccate",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "rifare fughe pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "riparare piastrelle",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "riparazione pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "sistemare pavimento",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
+    "value": "sostituire piastrelle rotte",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-pavimento"
+  },
+  {
     "value": "perdita acqua",
     "ownerType": "intervention",
     "ownerSlug": "riparare-perdita-acqua"
@@ -810,6 +1380,31 @@
     "ownerSlug": "riparare-quadro-elettrico"
   },
   {
+    "value": "comignolo che perde",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "coppi rotti",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "infiltrazione canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "infiltrazione da comignolo",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "infiltrazioni acqua dal tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
     "value": "infiltrazioni tetto",
     "ownerType": "intervention",
     "ownerSlug": "riparare-tetto"
@@ -820,7 +1415,57 @@
     "ownerSlug": "riparare-tetto"
   },
   {
+    "value": "riparare tegole",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
     "value": "riparazione tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "ripassare tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "ripasso tegole",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "ripasso tetto",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "scossalina camino",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "sistemare tegole",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "sostituire tegole rotte",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "tegole rotte",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "tegole spostate",
+    "ownerType": "intervention",
+    "ownerSlug": "riparare-tetto"
+  },
+  {
+    "value": "tetto che perde",
     "ownerType": "intervention",
     "ownerSlug": "riparare-tetto"
   },
@@ -980,6 +1625,11 @@
     "ownerSlug": "sistemare-grondaie"
   },
   {
+    "value": "grondaie che perdono",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
     "value": "grondaie rotte",
     "ownerType": "intervention",
     "ownerSlug": "sistemare-grondaie"
@@ -995,7 +1645,42 @@
     "ownerSlug": "sistemare-grondaie"
   },
   {
+    "value": "pluviali",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "pulire grondaie",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "pulizia grondaie",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
     "value": "riparare grondaie",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "riparare pluviali",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "scossaline",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "sostituire grondaie",
+    "ownerType": "intervention",
+    "ownerSlug": "sistemare-grondaie"
+  },
+  {
+    "value": "sostituire pluviali",
     "ownerType": "intervention",
     "ownerSlug": "sistemare-grondaie"
   },
