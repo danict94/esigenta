@@ -7,6 +7,7 @@
  */
 
 import { cartongessoModels } from "./cartongesso"
+import { citofoniSicurezzaESmartHomeModels } from "./citofoni-sicurezza-e-smart-home"
 import { climatizzazioneModels } from "./climatizzazione"
 import { facciateEBalconiModels } from "./facciate-e-balconi"
 import { finitureModels } from "./finiture"
@@ -22,6 +23,7 @@ import type { InterventionFunnelModel } from "./types"
 const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
   [
     ...cartongessoModels,
+    ...citofoniSicurezzaESmartHomeModels,
     ...climatizzazioneModels,
     ...facciateEBalconiModels,
     ...finitureModels,

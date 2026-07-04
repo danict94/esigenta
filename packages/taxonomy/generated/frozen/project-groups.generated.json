@@ -16,6 +16,18 @@
     ]
   },
   {
+    "id": "citofoni-sicurezza-e-smart-home",
+    "slug": "citofoni-sicurezza-e-smart-home",
+    "name": "Citofoni, sicurezza e smart home",
+    "interventionSlugs": [
+      "automatizzare-cancello",
+      "installare-domotica-smart-home",
+      "installare-impianto-allarme",
+      "installare-o-sostituire-citofono-videocitofono",
+      "installare-videosorveglianza"
+    ]
+  },
+  {
     "id": "climatizzazione",
     "slug": "climatizzazione",
     "name": "Climatizzazione",

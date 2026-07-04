@@ -45,6 +45,51 @@
     "ownerSlug": "applicare-stucco-decorativo"
   },
   {
+    "value": "automazione cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "automazione cancello battente",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "automazione cancello scorrevole",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "cancello automatico",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "installare motore cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "motore cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "motorizzare cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "riparare cancello automatico",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
+    "value": "telecomando cancello",
+    "ownerType": "intervention",
+    "ownerSlug": "automatizzare-cancello"
+  },
+  {
     "value": "bonifica amianto tetto",
     "ownerType": "intervention",
     "ownerSlug": "bonificare-amianto-eternit-tetto"
@@ -300,6 +345,56 @@
     "ownerSlug": "installare-climatizzatore"
   },
   {
+    "value": "automazione casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "casa intelligente",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "controllo luci smart",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "domotica casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "impianto domotico",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "installare domotica",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "luci smart",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "smart home",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "tapparelle smart",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
+    "value": "termostato smart",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-domotica-smart-home"
+  },
+  {
     "value": "fotovoltaico con accumulo",
     "ownerType": "intervention",
     "ownerSlug": "installare-fotovoltaico"
@@ -370,6 +465,56 @@
     "ownerSlug": "installare-illuminazione"
   },
   {
+    "value": "allarme casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "allarme perimetrale",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "allarme volumetrico",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "allarme wireless",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "antifurto casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "impianto allarme",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "installare allarme",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "installare antifurto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "sirena allarme",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "sistema antifurto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-allarme"
+  },
+  {
     "value": "ancoraggi tetto",
     "ownerType": "intervention",
     "ownerSlug": "installare-linea-vita"
@@ -413,6 +558,61 @@
     "value": "sistema anticaduta tetto",
     "ownerType": "intervention",
     "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "campanello smart",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "citofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "citofono rotto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "installare campanello smart",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "installare citofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "installare videocitofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "riparare citofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "riparare videocitofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "sostituire citofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "sostituire videocitofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
+  },
+  {
+    "value": "videocitofono",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-citofono-videocitofono"
   },
   {
     "value": "cambiare lucernario",
@@ -548,6 +748,56 @@
     "value": "sostituire sanitari",
     "ownerType": "intervention",
     "ownerSlug": "installare-sanitari"
+  },
+  {
+    "value": "impianto videosorveglianza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "installare telecamere",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "installare telecamere sicurezza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "sistema videosorveglianza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "telecamere casa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "telecamere di sicurezza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "telecamere esterne",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "telecamere ip",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "telecamere wi fi",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
+  },
+  {
+    "value": "videosorveglianza",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-videosorveglianza"
   },
   {
     "value": "intonacatura pareti",

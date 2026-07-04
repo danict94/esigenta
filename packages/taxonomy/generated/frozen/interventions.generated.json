@@ -11,6 +11,23 @@
     ]
   },
   {
+    "id": "automatizzare-cancello",
+    "slug": "automatizzare-cancello",
+    "name": "Automatizzare cancello",
+    "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
+    "aliases": [
+      "automazione cancello",
+      "automazione cancello battente",
+      "automazione cancello scorrevole",
+      "cancello automatico",
+      "installare motore cancello",
+      "motore cancello",
+      "motorizzare cancello",
+      "riparare cancello automatico",
+      "telecomando cancello"
+    ]
+  },
+  {
     "id": "bonificare-amianto-eternit-tetto",
     "slug": "bonificare-amianto-eternit-tetto",
     "name": "Bonificare tetto in amianto o eternit",
@@ -126,6 +143,24 @@
     ]
   },
   {
+    "id": "installare-domotica-smart-home",
+    "slug": "installare-domotica-smart-home",
+    "name": "Installare domotica e smart home",
+    "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
+    "aliases": [
+      "automazione casa",
+      "casa intelligente",
+      "controllo luci smart",
+      "domotica casa",
+      "impianto domotico",
+      "installare domotica",
+      "luci smart",
+      "smart home",
+      "tapparelle smart",
+      "termostato smart"
+    ]
+  },
+  {
     "id": "installare-fotovoltaico",
     "slug": "installare-fotovoltaico",
     "name": "Installare fotovoltaico",
@@ -156,6 +191,24 @@
     ]
   },
   {
+    "id": "installare-impianto-allarme",
+    "slug": "installare-impianto-allarme",
+    "name": "Installare impianto allarme",
+    "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
+    "aliases": [
+      "allarme casa",
+      "allarme perimetrale",
+      "allarme volumetrico",
+      "allarme wireless",
+      "antifurto casa",
+      "impianto allarme",
+      "installare allarme",
+      "installare antifurto",
+      "sirena allarme",
+      "sistema antifurto"
+    ]
+  },
+  {
     "id": "installare-linea-vita",
     "slug": "installare-linea-vita",
     "name": "Installare linea vita sul tetto",
@@ -170,6 +223,25 @@
       "manutenzione linea vita",
       "revisione linea vita",
       "sistema anticaduta tetto"
+    ]
+  },
+  {
+    "id": "installare-o-sostituire-citofono-videocitofono",
+    "slug": "installare-o-sostituire-citofono-videocitofono",
+    "name": "Installare o sostituire citofono/videocitofono",
+    "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
+    "aliases": [
+      "campanello smart",
+      "citofono",
+      "citofono rotto",
+      "installare campanello smart",
+      "installare citofono",
+      "installare videocitofono",
+      "riparare citofono",
+      "riparare videocitofono",
+      "sostituire citofono",
+      "sostituire videocitofono",
+      "videocitofono"
     ]
   },
   {
@@ -221,6 +293,24 @@
       "installazione sanitari",
       "montare sanitari bagno",
       "sostituire sanitari"
+    ]
+  },
+  {
+    "id": "installare-videosorveglianza",
+    "slug": "installare-videosorveglianza",
+    "name": "Installare videosorveglianza",
+    "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
+    "aliases": [
+      "impianto videosorveglianza",
+      "installare telecamere",
+      "installare telecamere sicurezza",
+      "sistema videosorveglianza",
+      "telecamere casa",
+      "telecamere di sicurezza",
+      "telecamere esterne",
+      "telecamere ip",
+      "telecamere wi fi",
+      "videosorveglianza"
     ]
   },
   {
