@@ -10,6 +10,7 @@ import type { RequestDraft } from "@esigenta/funnel"
 import { buildRuntimeContactName, normalizeRuntimeText } from "@esigenta/funnel"
 
 import { deriveLeadValue } from "../../lead-value"
+import { createCommercialSnapshotFromLeadValue } from "../../commercial"
 import { RequestFlowError } from "../../internal/request/request-errors"
 import { createRequestVerificationToken } from "../../internal/request/verification-token"
 import { sendRequestVerificationEmail } from "../../internal/request/send-verification-email"
@@ -289,8 +290,13 @@ export async function createRequestFromDraft({
     intervention: { connect: { id: intervention.id } },
     customerEmail: customer.customerEmail,
     structuredData: toRequestStructuredData({ draft: persistedDraft }),
+    // Effective commercial values (read by unlock/listings). At creation
+    // effective = auto, so they equal the snapshot's creditCost/maxUnlocks.
     creditCost: leadValue.creditCost,
     maxUnlocks: leadValue.maxUnlocks,
+    // Automatic monetization snapshot (frozen at creation; preserved across
+    // any later admin override). Kept separate from structuredData.
+    commercialSnapshot: createCommercialSnapshotFromLeadValue(leadValue),
   }
 
   if (customer.customerName) data.customerName = customer.customerName

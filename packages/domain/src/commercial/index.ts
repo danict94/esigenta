@@ -15,3 +15,12 @@ export type {
   CommercialOverride,
   EffectiveLeadCommercials,
 } from "./resolve-effective-commercials"
+
+export {
+  COMMERCIAL_POLICY_VERSION,
+  createCommercialSnapshotFromLeadValue,
+} from "./commercial-snapshot"
+
+export type {
+  CommercialSnapshot,
+} from "./commercial-snapshot"
