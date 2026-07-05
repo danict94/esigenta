@@ -220,7 +220,7 @@ export function HomeHero() {
 
           {showDropdown ? (
             <ul
-              className="absolute inset-x-0 top-[calc(100%+10px)] z-20 overflow-hidden rounded-eg-lg border border-eg-hairline bg-eg-calce text-left shadow-eg-slab"
+              className="absolute inset-x-0 top-[calc(100%+10px)] z-20 max-h-[min(20rem,40vh)] overflow-y-auto rounded-eg-sm border border-eg-hairline bg-eg-calce text-left shadow-eg-slab"
               aria-label="Risultati suggeriti"
             >
               <SearchMenuContent
