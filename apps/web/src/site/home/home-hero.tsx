@@ -145,10 +145,10 @@ export function HomeHero() {
 
   return (
     <section
-      className="relative flex h-screen min-h-[680px] items-center justify-center overflow-hidden bg-eg-calce"
+      className="relative z-10 flex h-screen min-h-[680px] items-center justify-center bg-eg-calce"
       aria-labelledby="home-title"
     >
-      <div className="pointer-events-none absolute inset-0 z-[1] opacity-70 min-[861px]:opacity-100" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden opacity-70 min-[861px]:opacity-100" aria-hidden="true">
         {scatterTags.map((tag) => (
           <span
             key={tag.label}
