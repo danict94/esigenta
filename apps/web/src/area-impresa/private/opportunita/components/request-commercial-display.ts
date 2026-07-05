@@ -1,32 +1,17 @@
-export type RequestCommercialFields = {
-  creditCost: number | null;
-  maxUnlocks: number | null;
-  unlockCount: number;
-};
+/**
+ * Commercial SEMANTICS now live in @esigenta/domain (single definition).
+ * This module re-exports them and keeps only the presentation-layer
+ * formatting (Italian UI copy), which is app-specific.
+ */
 
-export type RequestCommercialState = RequestCommercialFields & {
-  availableUnlockSlots: number | null;
-  isCommerciallyConfigured: boolean;
-  isSoldOut: boolean;
-};
+export {
+  getRequestCommercialState,
+} from "@esigenta/domain";
 
-export function getRequestCommercialState({
-  creditCost,
-  maxUnlocks,
-  unlockCount,
-}: RequestCommercialFields): RequestCommercialState {
-  const availableUnlockSlots =
-    maxUnlocks === null ? null : Math.max(maxUnlocks - unlockCount, 0);
-
-  return {
-    creditCost,
-    maxUnlocks,
-    unlockCount,
-    availableUnlockSlots,
-    isCommerciallyConfigured: creditCost !== null && maxUnlocks !== null,
-    isSoldOut: maxUnlocks !== null && maxUnlocks - unlockCount <= 0,
-  };
-}
+export type {
+  RequestCommercialFields,
+  RequestCommercialState,
+} from "@esigenta/domain";
 
 export function formatCreditCost(value: number | null) {
   return value === null ? "Costo non impostato" : `${value} crediti`;
@@ -35,4 +20,3 @@ export function formatCreditCost(value: number | null) {
 export function formatUnlockAvailability(value: number | null) {
   return value === null ? "Disponibilità non impostata" : `${value} posti disponibili`;
 }
-
