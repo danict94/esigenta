@@ -251,7 +251,7 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                         </div>
                       </form>
                     ) : (
-                      <div className="w-full rounded-md border border-eg-hairline bg-eg-calce-2 p-4 lg:w-80">
+                      <div className="w-full rounded-eg-md border border-eg-hairline bg-eg-calce-2 p-4 lg:w-80">
                         <p className="text-sm font-semibold text-eg-terra">
                           Revisione completata
                         </p>

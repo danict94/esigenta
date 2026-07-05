@@ -7,6 +7,7 @@ import {
 } from "@esigenta/ui";
 
 import { AdminLoginForm } from "./admin-login-form";
+import { AdminBrand } from "../../../components/admin-brand";
 
 type AdminLoginPageProps = {
   searchParams?: Promise<{
@@ -26,7 +27,7 @@ export default async function AdminLoginPage({
     <main className="flex min-h-screen items-center justify-center bg-eg-calce px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <p className="text-sm font-medium text-eg-ardesia">esigenta Admin</p>
+          <AdminBrand className="mb-2" />
 
           <CardTitle>Accedi</CardTitle>
 

@@ -6,14 +6,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  buttonClassName,
 } from "@esigenta/ui";
+
+import { AdminBrand } from "../../../components/admin-brand";
 
 export default function AdminUnauthorizedPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-eg-calce px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <p className="text-sm font-medium text-eg-ardesia">esigenta Admin</p>
+          <AdminBrand className="mb-2" />
 
           <CardTitle>Accesso non autorizzato</CardTitle>
 
@@ -25,7 +28,7 @@ export default function AdminUnauthorizedPage() {
         <CardContent>
           <Link
             href="/accedi"
-            className="inline-flex h-12 items-center justify-center border border-eg-cotto bg-eg-cotto px-5 text-sm font-medium text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
+            className={buttonClassName({ size: "lg" })}
           >
             Torna al login
           </Link>

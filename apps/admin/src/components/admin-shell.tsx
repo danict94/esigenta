@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 
 import { Badge, Button, Container, cn } from "@esigenta/ui";
 
+import { AdminBrand } from "./admin-brand";
+
 type AdminShellProps = {
   children: ReactNode;
   unreadSupportCount?: number;
@@ -51,28 +53,11 @@ function formatBadgeCount(count: number) {
 
 function AdminLogo({ onClick }: { onClick: () => void }) {
   return (
-    <Link
+    <AdminBrand
       href="/"
       onClick={onClick}
-      className="inline-flex items-center gap-3 text-[1.375rem] font-semibold leading-none tracking-[-0.06em] text-eg-terra focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-4 focus-visible:ring-offset-eg-calce md:text-2xl"
-      aria-label="esigenta Admin dashboard"
-    >
-      <span
-        aria-hidden="true"
-        className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-eg-cotto text-[0.875rem] font-semibold leading-none tracking-[-0.06em] text-eg-calce"
-      >
-        E
-      </span>
-
-      <span className="grid min-w-0 gap-0.5">
-        <span className="truncate text-base font-semibold leading-none tracking-tight text-eg-terra">
-          esigenta Admin
-        </span>
-        <span className="truncate text-xs font-medium leading-none text-eg-ardesia">
-          Control room
-        </span>
-      </span>
-    </Link>
+      className="shrink-0"
+    />
   );
 }
 
@@ -119,8 +104,8 @@ function DesktopNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "relative inline-flex items-center gap-2 py-2 text-[0.9375rem] font-medium leading-none tracking-[-0.06em] text-eg-terra transition-colors hover:text-eg-cotto focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-4 focus-visible:ring-offset-eg-calce",
-        isActive && "text-eg-cotto",
+        "relative inline-flex items-center gap-2 py-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-eg-ardesia transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
+        isActive && "text-eg-terra",
       )}
     >
       <span>{item.label}</span>
@@ -134,7 +119,7 @@ function DesktopNavLink({
       {isActive ? (
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 -bottom-0.5 h-px bg-eg-cotto"
+          className="absolute inset-x-0 -bottom-0.5 h-px bg-eg-cotto-dark"
         />
       ) : null}
     </Link>
@@ -156,8 +141,8 @@ function MobileNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "flex items-center justify-between gap-3 px-2 py-3 text-base font-medium tracking-[-0.06em] text-eg-terra transition-colors hover:text-eg-cotto focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-2 focus-visible:ring-offset-eg-calce",
-        isActive && "text-eg-cotto",
+        "flex items-center justify-between gap-3 px-2 py-3 font-mono text-xs font-medium uppercase tracking-[0.08em] text-eg-ardesia transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
+        isActive && "text-eg-terra",
       )}
     >
       <span>{item.label}</span>
@@ -215,7 +200,7 @@ export function AdminShell({
             size="sm"
             aria-label={isMenuOpen ? "Chiudi menu admin" : "Apri menu admin"}
             aria-expanded={isMenuOpen}
-            className="h-10 w-10 rounded-[6px] px-0 text-eg-terra hover:bg-eg-calce-2 focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-2 focus-visible:ring-offset-eg-calce md:hidden"
+            className="h-10 w-10 px-0 text-eg-terra md:hidden"
             onClick={() => {
               setIsMenuOpen((current) => !current);
             }}

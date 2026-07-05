@@ -16,7 +16,7 @@ type ButtonSize =
   | "xl"
 
 export const buttonBase =
-  "inline-flex items-center justify-center gap-2 border font-mono text-xs font-medium uppercase tracking-[0.06em] transition-colors disabled:pointer-events-none disabled:opacity-60"
+  "inline-flex items-center justify-center gap-2 border font-mono font-medium uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra disabled:pointer-events-none disabled:opacity-60"
 
 export const buttonRadius = "rounded-eg-sm"
 
@@ -28,10 +28,10 @@ export const buttonVariants = {
 } as const
 
 export const buttonSizes = {
-  sm: "min-h-10 px-4 text-[11px]",
-  md: "min-h-11 px-5 text-xs",
-  lg: "min-h-12 px-6 text-xs",
-  xl: "min-h-[52px] px-7 text-[13px]",
+  sm: "h-10 px-4 text-xs",
+  md: "h-11 px-5 text-xs",
+  lg: "h-12 px-6 text-xs",
+  xl: "h-14 px-7 text-sm",
 } as const
 
 export type { ButtonVariant, ButtonSize }

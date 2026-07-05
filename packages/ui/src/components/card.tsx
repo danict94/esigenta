@@ -6,7 +6,7 @@ import type {
 import { cn } from "../lib/cn"
 
 const cardBase =
-  "rounded-[8px] border border-eg-hairline bg-eg-calce shadow-eg-elevation"
+  "rounded-eg-lg border border-eg-hairline bg-eg-calce shadow-eg-elevation"
 
 const cardHeader = "space-y-1.5 p-6"
 const cardContent = "p-6 pt-0"

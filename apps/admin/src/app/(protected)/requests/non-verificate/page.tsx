@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { listUnverifiedRequests } from "@esigenta/domain";
-import { Badge, Card, PageShell } from "@esigenta/ui";
+import { Badge, Card, PageShell, buttonClassName } from "@esigenta/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -121,7 +121,7 @@ export default async function UnverifiedRequestsPage() {
                     <div className="flex shrink-0 md:justify-end">
                       <Link
                         href={`/requests/${request.id}`}
-                        className="inline-flex h-11 items-center justify-center border border-eg-cotto bg-eg-cotto px-5 text-sm font-medium text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
+                        className={buttonClassName()}
                       >
                         Apri richiesta
                       </Link>

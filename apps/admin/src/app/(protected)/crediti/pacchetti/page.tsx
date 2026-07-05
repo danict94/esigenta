@@ -471,7 +471,7 @@ export default async function CreditPackagesPage() {
                   </div>
 
                   <div>
-                    <Button type="submit" variant="secondary">
+                    <Button type="submit" variant="ghost">
                       Salva modifiche
                     </Button>
                   </div>
@@ -484,4 +484,3 @@ export default async function CreditPackagesPage() {
     </PageShell>
   )
 }
-

@@ -83,7 +83,7 @@ function getToneClasses(tone: VisualTone) {
   return {
     frame:
       "border-eg-hairline bg-eg-calce text-eg-ardesia",
-    fill: "bg-text-muted",
+    fill: "bg-eg-ardesia",
     soft: "bg-eg-calce-2",
   }
 }
@@ -98,7 +98,7 @@ function Panel({
   return (
     <section
       className={cn(
-        "rounded-[8px]",
+        "rounded-eg-lg",
         "shadow-eg-elevation",
         "border border-eg-hairline bg-eg-calce p-5 md:p-6",
         className,
@@ -151,7 +151,7 @@ function IconMark({
     <span
       aria-hidden="true"
       className={cn(
-        "rounded-[6px]",
+        "rounded-eg-md",
         "grid size-9 shrink-0 place-items-center border",
         toneClasses.frame,
       )}
@@ -181,7 +181,7 @@ function IconMark({
           </>
         ) : icon === "messages" ? (
           <>
-            <span className="absolute left-0 top-0 h-3 w-4 rounded-md border-2 border-current" />
+            <span className="absolute left-0 top-0 h-3 w-4 rounded-eg-sm border-2 border-current" />
             <span className="absolute bottom-0 left-2 h-1.5 w-1.5 rotate-45 bg-current" />
           </>
         ) : icon === "published" ? (

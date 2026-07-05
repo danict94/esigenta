@@ -15,7 +15,8 @@ type BadgeSize =
   | "sm"
   | "md"
 
-const badgeBase = "inline-flex items-center border font-medium"
+const badgeBase =
+  "inline-flex items-center border font-mono font-medium uppercase tracking-[0.06em]"
 
 const badgeVariants = {
   neutral:
