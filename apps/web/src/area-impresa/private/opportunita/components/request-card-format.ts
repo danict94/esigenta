@@ -160,6 +160,32 @@ export function getDescription(
   )
 }
 
+function findNumericSuperficie(rawAnswers: unknown): number | string | null {
+  if (!rawAnswers || typeof rawAnswers !== "object") {
+    return null
+  }
+
+  for (const [key, value] of Object.entries(
+    rawAnswers as Record<string, unknown>,
+  )) {
+    if (!key.endsWith(":superficie")) {
+      continue
+    }
+    if (typeof value === "number") {
+      return value
+    }
+    if (
+      typeof value === "string" &&
+      value.trim() !== "" &&
+      Number.isFinite(Number(value.replace(",", ".")))
+    ) {
+      return value
+    }
+  }
+
+  return null
+}
+
 export function getSurfaceArea(
   structuredData: Record<string, unknown> | null,
 ) {
@@ -169,7 +195,11 @@ export function getSurfaceArea(
 
   const rawAnswers =
     getRawAnswers(structuredData)
+
+  // Surface travels on a ":superficie" step id (numeric m²). Legacy keys kept
+  // as a read fallback for requests persisted before the migration.
   const value =
+    findNumericSuperficie(rawAnswers) ??
     structuredData.surfaceArea ??
     structuredData["surface-area"] ??
     rawAnswers.surfaceArea ??

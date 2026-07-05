@@ -30,7 +30,7 @@ function scaleStep(
   ]
 
   return {
-    id: "scale",
+    id: "climatizzazione:superficie",
     type: "single_select",
     question,
     options,

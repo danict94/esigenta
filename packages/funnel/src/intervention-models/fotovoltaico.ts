@@ -98,7 +98,7 @@ const installareFotovoltaico: InterventionFunnelModel = {
       optional: true,
     },
     {
-      id: "surface-area",
+      id: "fotovoltaico:superficie",
       type: "number",
       question: "Quanti metri quadri circa sono disponibili per i pannelli?",
       description: "Una stima approssimativa è sufficiente.",
@@ -157,7 +157,7 @@ const modificareOPotenziare: InterventionFunnelModel = {
       optional: true,
     },
     {
-      id: "surface-area",
+      id: "fotovoltaico:superficie",
       type: "number",
       question: "Quanti metri quadri circa sono disponibili se vuoi aggiungere pannelli?",
       description: "Una stima approssimativa è sufficiente.",

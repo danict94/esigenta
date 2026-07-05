@@ -50,10 +50,6 @@ export {
 } from "./capabilities/timing"
 
 export {
-  surfaceAreaCapability,
-} from "./capabilities/surface-area"
-
-export {
   contactCapability,
 } from "./capabilities/contact"
 

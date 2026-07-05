@@ -23,7 +23,6 @@
 import type { RuntimeCapability, RuntimeOption } from "../types/capability"
 
 import { locationCapability } from "../capabilities/location"
-import { surfaceAreaCapability } from "../capabilities/surface-area"
 import { photosCapability } from "../capabilities/photos"
 import { timingCapability } from "../capabilities/timing"
 import { contactCapability } from "../capabilities/contact"
@@ -42,12 +41,11 @@ function accessInQuotaStep(optional: boolean): RuntimeCapability {
   return sharedAccessInQuotaStep(optional, ACCESS_IN_QUOTA_STEP_ID)
 }
 
-// Facade-specific surface question. Same stable `surface-area` id as the
-// generic capability, so the impresa view renders it as "Superficie" and
-// enrich-request can still derive projectScale from the numeric m².
+// Facade surface question: numeric m² on the unified `:superficie` id, which
+// enrich-request/resolveRequestSignals reads (numeric or bucket) as scale.
 function surfaceAreaStep(question: string): RuntimeCapability {
   return {
-    id: "surface-area",
+    id: "facciate-e-balconi:superficie",
     type: "number",
     question,
     description: "Una stima approssimativa è sufficiente.",
@@ -69,7 +67,7 @@ function scaleStep(
   ]
 
   return {
-    id: "scale",
+    id: "facciate-e-balconi:superficie",
     type: "single_select",
     question,
     options,
@@ -108,7 +106,7 @@ const rifareFacciata: InterventionFunnelModel = {
       ],
       optional: true,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("Quanti metri quadri circa sono coinvolti?"),
     accessInQuotaStep(false),
     photosCapability,
     noteStep(),

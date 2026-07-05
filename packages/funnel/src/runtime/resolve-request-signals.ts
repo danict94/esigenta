@@ -7,8 +7,9 @@
  * (`@esigenta/domain` `extractRequestSignals`, which imports this) go through
  * here — there must be no second parser of funnel answers anywhere.
  *
- * Legacy step ids (`scale`, `surface-area`) are handled here as internal
- * backward compatibility, NOT as a parallel model.
+ * Scale travels only on `:superficie|quante|quanti|quanto|lunghezza` steps,
+ * carrying either a qualitative bucket token or a numeric m² value — both
+ * resolved here. No special/legacy step ids (`scale`, `surface-area`).
  *
  * PURE. rawAnswers-only. No DB, no draft-wide fields (geo/contact/photos/
  * leadQuality live in enrich-request, which needs the whole draft).
@@ -75,30 +76,29 @@ function resolveScale(
 ): { scale: RuntimeRequestScale | undefined; wholeHome: boolean } {
   let wholeHome = false
 
-  // Legacy: explicit "scale" bucket step.
-  const legacyScale = rawAnswers["scale"]
-  if (legacyScale === "large" || legacyScale === "medium" || legacyScale === "small") {
-    return { scale: legacyScale, wholeHome }
-  }
-
-  // New funnels: namespaced qualifier steps.
+  // Every scale signal travels on a `:superficie|quante|quanti|quanto|lunghezza`
+  // step — either a qualitative bucket token or a numeric m² value.
   for (const [key, value] of Object.entries(rawAnswers)) {
-    if (!SCALE_STEP_SUFFIX.test(key) || typeof value !== "string") {
+    if (!SCALE_STEP_SUFFIX.test(key)) {
       continue
     }
-    if (WHOLE_HOME_TOKENS.has(value)) {
-      wholeHome = true
-    }
-    if (LARGE_TOKENS.has(value)) return { scale: "large", wholeHome }
-    if (MEDIUM_TOKENS.has(value)) return { scale: "medium", wholeHome }
-    if (SMALL_TOKENS.has(value)) return { scale: "small", wholeHome }
-  }
 
-  // Legacy: numeric surface-area (m²).
-  const surfaceArea = toNumber(rawAnswers["surface-area"])
-  if (surfaceArea !== undefined && surfaceArea >= 80) return { scale: "large", wholeHome }
-  if (surfaceArea !== undefined && surfaceArea >= 25) return { scale: "medium", wholeHome }
-  if (surfaceArea !== undefined && surfaceArea > 0) return { scale: "small", wholeHome }
+    if (typeof value === "string") {
+      if (WHOLE_HOME_TOKENS.has(value)) {
+        wholeHome = true
+      }
+      if (LARGE_TOKENS.has(value)) return { scale: "large", wholeHome }
+      if (MEDIUM_TOKENS.has(value)) return { scale: "medium", wholeHome }
+      if (SMALL_TOKENS.has(value)) return { scale: "small", wholeHome }
+    }
+
+    const surface = toNumber(value)
+    if (surface !== undefined) {
+      if (surface >= 80) return { scale: "large", wholeHome }
+      if (surface >= 25) return { scale: "medium", wholeHome }
+      if (surface > 0) return { scale: "small", wholeHome }
+    }
+  }
 
   return { scale: undefined, wholeHome }
 }

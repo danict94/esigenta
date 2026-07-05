@@ -32,7 +32,7 @@ function scaleStep(
   ]
 
   return {
-    id: "scale",
+    id: "cartongesso:superficie",
     type: "single_select",
     question,
     options,

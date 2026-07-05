@@ -820,7 +820,10 @@ export default async function RequestDetailPage({
                     className="border border-eg-hairline bg-eg-calce p-4"
                   >
                     <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
-                      {answerLabels[key] ?? formatKey(key)}
+                      {answerLabels[key] ??
+                        (key.endsWith(":superficie")
+                          ? "Superficie"
+                          : formatKey(key))}
                     </dt>
                     <dd className="mt-3 text-sm leading-6 text-eg-terra">
                       {renderStructuredValue(value)}

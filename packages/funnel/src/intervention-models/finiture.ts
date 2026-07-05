@@ -43,12 +43,11 @@
  */
 
 import { locationCapability } from "../capabilities/location"
-import { surfaceAreaCapability } from "../capabilities/surface-area"
 import { photosCapability } from "../capabilities/photos"
 import { timingCapability } from "../capabilities/timing"
 import { contactCapability } from "../capabilities/contact"
 
-import { accessInQuotaStep, noteStep } from "./common"
+import { accessInQuotaStep, noteStep, surfaceAreaStep } from "./common"
 import type { InterventionFunnelModel } from "./types"
 
 const tinteggiareEsterni: InterventionFunnelModel = {
@@ -69,7 +68,7 @@ const tinteggiareEsterni: InterventionFunnelModel = {
       ],
       optional: false,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("finiture:superficie"),
     {
       id: "finiture:tinteggiare-esterni:stato-supporto",
       type: "single_select",
@@ -132,7 +131,7 @@ const tinteggiareInterni: InterventionFunnelModel = {
       ],
       optional: false,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("finiture:superficie"),
     {
       id: "finiture:tinteggiare-interni:stato-pareti",
       type: "single_select",
@@ -208,7 +207,7 @@ const rasarePareti: InterventionFunnelModel = {
       ],
       optional: false,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("finiture:superficie"),
     {
       id: "finiture:rasare-pareti:stato-pareti",
       type: "single_select",
@@ -302,7 +301,7 @@ const ripristinareIntonaco: InterventionFunnelModel = {
       ],
       optional: true,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("finiture:superficie"),
     {
       id: "finiture:ripristinare-intonaco:finitura-dopo",
       type: "single_select",
@@ -368,7 +367,7 @@ const intonacarePareti: InterventionFunnelModel = {
       ],
       optional: true,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("finiture:superficie"),
     {
       id: "finiture:intonacare-pareti:finitura-dopo",
       type: "single_select",
@@ -419,7 +418,7 @@ const applicareStuccoDecorativo: InterventionFunnelModel = {
       ],
       optional: false,
     },
-    surfaceAreaCapability,
+    surfaceAreaStep("finiture:superficie"),
     {
       id: "finiture:stucco-decorativo:effetto",
       type: "single_select",

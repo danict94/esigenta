@@ -36,7 +36,6 @@ export type RuntimeCapabilityId =
   | "photos"
   | "timing"
   | "budget"
-  | "surface-area"
   | "rooms"
   | "contact"
 

@@ -11,7 +11,6 @@ import type { RuntimeStepId } from "../types/runtime-profile"
 
 import { locationCapability } from "../capabilities/location"
 import { propertyCapability } from "../capabilities/property"
-import { surfaceAreaCapability } from "../capabilities/surface-area"
 import { photosCapability } from "../capabilities/photos"
 import { timingCapability } from "../capabilities/timing"
 import { contactCapability } from "../capabilities/contact"
@@ -71,6 +70,24 @@ export function accessInQuotaStep(
 }
 
 /**
+ * Numeric surface (m²) step on the unified `:superficie` id. The single
+ * request-signal interpreter reads `:superficie` steps as scale — numeric m²
+ * or a qualitative bucket — so a rough surface still drives projectScale.
+ */
+export function surfaceAreaStep(
+  id: RuntimeStepId,
+  question = "Quanti metri quadri circa sono coinvolti?",
+): RuntimeCapability {
+  return {
+    id,
+    type: "number",
+    question,
+    description: "Una stima approssimativa è sufficiente.",
+    optional: true,
+  }
+}
+
+/**
  * Generic default model for interventions without a bespoke model yet — the
  * fallback within the single model mechanism.
  */
@@ -82,7 +99,7 @@ export function getDefaultFunnelModel(
     steps: [
       locationCapability,
       propertyCapability,
-      surfaceAreaCapability,
+      surfaceAreaStep("default:superficie"),
       photosCapability,
       noteStep(),
       timingCapability,
