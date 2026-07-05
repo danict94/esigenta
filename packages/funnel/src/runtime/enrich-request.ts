@@ -12,6 +12,11 @@
  * - query providers
  * - persist requests
  * - route emergencies
+ *
+ * Signal interpretation (scale/action/urgency) lives in the single
+ * `resolveRequestSignals` interpreter — this file only maps those primitives
+ * onto the draft's derived/routing signals and computes lead quality (which
+ * needs whole-draft context: geo/contact/photos/description).
  */
 
 import type {
@@ -28,6 +33,10 @@ import {
   hasValidRequestPhotos,
 } from "@esigenta/uploads"
 
+import {
+  resolveRequestSignals,
+} from "./resolve-request-signals"
+
 export type EnrichRequestOptions = {
   /**
    * Compiler-provided runtime complexity.
@@ -37,68 +46,6 @@ export type EnrichRequestOptions = {
    * not frontend inference.
    */
   complexity?: RuntimeComplexity
-}
-
-function toNumber(
-  value: unknown,
-): number | undefined {
-  if (
-    typeof value === "number" &&
-    Number.isFinite(value)
-  ) {
-    return value
-  }
-
-  if (typeof value !== "string") {
-    return undefined
-  }
-
-  const parsed = Number(
-    value.replace(",", "."),
-  )
-
-  return Number.isFinite(parsed)
-    ? parsed
-    : undefined
-}
-
-function resolveProjectScale(
-  draft: RequestDraft,
-): RequestDerivedSignals["projectScale"] {
-  // Intervention-model scale step uses stable bucket values
-  // (small/medium/large/unknown) with intervention-specific labels.
-  const scaleBucket = draft.rawAnswers.scale
-
-  if (scaleBucket === "large") {
-    return "large"
-  }
-
-  if (scaleBucket === "medium") {
-    return "medium"
-  }
-
-  if (scaleBucket === "small") {
-    return "small"
-  }
-
-  const surfaceArea =
-    toNumber(
-      draft.rawAnswers["surface-area"],
-    )
-
-  if (surfaceArea !== undefined && surfaceArea >= 80) {
-    return "large"
-  }
-
-  if (surfaceArea !== undefined && surfaceArea >= 25) {
-    return "medium"
-  }
-
-  if (surfaceArea !== undefined && surfaceArea > 0) {
-    return "small"
-  }
-
-  return undefined
 }
 
 function resolveComplexity(
@@ -182,41 +129,12 @@ function resolveLeadQuality(
   return "low"
 }
 
-function resolveUrgency(
-  draft: RequestDraft,
-): RequestDerivedSignals["urgency"] {
-  const timing =
-    draft.rawAnswers.timing
-
-  switch (timing) {
-    case "as_soon_as_possible":
-      return "high"
-
-    case "within_7_days":
-      return "medium"
-
-    case "within_30_days":
-      return "low"
-
-    case "flexible":
-    case "evaluating":
-      return "low"
-
-    default:
-      return undefined
-  }
-}
-
 function resolveRoutingSignals(
   draft: RequestDraft,
   derivedSignals: RequestDerivedSignals,
 ): RequestRoutingSignals {
-  const timing =
-    draft.rawAnswers.timing
-
   const emergency =
-    derivedSignals.urgency === "high" ||
-    timing === "as_soon_as_possible"
+    derivedSignals.urgency === "high"
 
   const inspectionSuggested =
     derivedSignals.projectScale === "large" ||
@@ -237,8 +155,10 @@ export function enrichRequestDraft(
   draft: RequestDraft,
   options: EnrichRequestOptions = {},
 ): RequestDraft {
-  const projectScale =
-    resolveProjectScale(draft)
+  const signals =
+    resolveRequestSignals(draft.rawAnswers)
+
+  const projectScale = signals.scale
 
   const estimatedComplexity =
     resolveComplexity(
@@ -246,16 +166,13 @@ export function enrichRequestDraft(
       options.complexity,
     )
 
-  const urgency =
-    resolveUrgency(draft)
-
   const derivedSignals: RequestDerivedSignals = {
     ...draft.derivedSignals,
   }
 
-  if (urgency) {
+  if (signals.urgency) {
     derivedSignals.urgency =
-      urgency
+      signals.urgency
   }
 
   if (projectScale) {

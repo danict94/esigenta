@@ -92,6 +92,17 @@ export type {
   EnrichRequestOptions,
 } from "./runtime/enrich-request"
 
+export {
+  resolveRequestSignals,
+} from "./runtime/resolve-request-signals"
+
+export type {
+  RuntimeRequestSignals,
+  RuntimeRequestScale,
+  RuntimeRequestAction,
+  RuntimeRequestUrgency,
+} from "./runtime/resolve-request-signals"
+
 export * from "./normalization"
 
 export type {
