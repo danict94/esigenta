@@ -907,7 +907,7 @@ export default async function RequestDetailPage({
                 />
               </label>
 
-              <Button type="submit" variant="secondary">
+              <Button type="submit" variant="ghost">
                 Salva impostazioni commerciali
               </Button>
             </form>
@@ -959,7 +959,7 @@ export default async function RequestDetailPage({
 
                 <form action={resendVerificationEmailAction}>
                   <input type="hidden" name="requestId" value={request.id} />
-                  <Button type="submit" variant="secondary">
+                  <Button type="submit" variant="ghost">
                     Invia di nuovo l&apos;email di verifica
                   </Button>
                 </form>
@@ -1036,7 +1036,7 @@ export default async function RequestDetailPage({
                     />
                   </div>
 
-                  <Button type="submit" variant="secondary">
+                  <Button type="submit" variant="ghost">
                     Rifiuta richiesta
                   </Button>
                 </form>
@@ -1104,7 +1104,7 @@ export default async function RequestDetailPage({
 
                 <form action={restoreRequestAction}>
                   <input type="hidden" name="requestId" value={request.id} />
-                  <Button type="submit" variant="secondary">
+                  <Button type="submit" variant="ghost">
                     Ripristina richiesta
                   </Button>
                 </form>
@@ -1132,7 +1132,7 @@ export default async function RequestDetailPage({
 
                     <form action={unarchiveRequestAction}>
                       <input type="hidden" name="requestId" value={request.id} />
-                      <Button type="submit" variant="secondary">
+                      <Button type="submit" variant="ghost">
                         Ripristina da archivio
                       </Button>
                     </form>
@@ -1152,7 +1152,7 @@ export default async function RequestDetailPage({
                       />
                     </label>
 
-                    <Button type="submit" variant="secondary">
+                    <Button type="submit" variant="ghost">
                       Archivia richiesta
                     </Button>
                   </form>
@@ -1175,7 +1175,7 @@ export default async function RequestDetailPage({
                     />
                   </label>
 
-                  <Button type="submit" variant="secondary">
+                  <Button type="submit" variant="ghost">
                     Elimina richiesta (soft-delete)
                   </Button>
                 </form>

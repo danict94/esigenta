@@ -483,7 +483,7 @@ export function CategoryInterventionsSelector({
                         {hasMoreInterventions(projectGroup) ? (
                           <Button
                             type="button"
-                            variant="secondary"
+                            variant="ghost"
                             onClick={() => {
                               setVisibleInterventionCounts((current) => ({
                                 ...current,

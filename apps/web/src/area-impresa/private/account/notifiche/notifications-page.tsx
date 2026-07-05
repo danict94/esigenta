@@ -65,7 +65,7 @@ export async function NotificationsPage() {
 
           {unreadCount > 0 ? (
             <form action={markAllNotificationsReadAction}>
-              <Button type="submit" variant="secondary" size="sm">
+              <Button type="submit" variant="ghost" size="sm">
                 Segna tutte come lette
               </Button>
             </form>

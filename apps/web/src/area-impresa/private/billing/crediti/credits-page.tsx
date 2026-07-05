@@ -387,7 +387,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                       <input type="hidden" name="packageId" value={creditPackage.id} />
                       <Button
                         type="submit"
-                        variant={isPremium ? "primary" : "secondary"}
+                        variant={isPremium ? "primary" : "ghost"}
                         className="w-full"
                       >
                         Acquista pacchetto

@@ -194,7 +194,7 @@ export function NotificationCard({
                 value={notification.id}
               />
 
-              <Button type="submit" variant="secondary" size="sm">
+              <Button type="submit" variant="ghost" size="sm">
                 Segna come letta
               </Button>
             </form>

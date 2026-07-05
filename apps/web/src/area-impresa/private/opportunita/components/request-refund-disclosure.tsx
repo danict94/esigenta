@@ -129,7 +129,7 @@ export function RequestRefundDisclosure({
         <div className="flex items-center gap-4">
           <PendingSubmitButton
             type="submit"
-            variant="secondary"
+            variant="ghost"
             pendingChildren="Invio in corso..."
           >
             Invia segnalazione

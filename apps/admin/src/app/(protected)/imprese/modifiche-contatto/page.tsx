@@ -241,7 +241,7 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                           </Button>
                           <Button
                             type="submit"
-                            variant="secondary"
+                            variant="ghost"
                             formAction={
                               rejectContactChangeRequestAction
                             }

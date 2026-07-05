@@ -37,7 +37,7 @@ type CompanyAction =
   | {
       label: string
       action: typeof approveCompanyAction
-      variant?: "primary" | "secondary" | "ghost"
+      variant?: "primary" | "ghost"
     }
 
 function readSearchParam(
@@ -188,7 +188,7 @@ function getCompanyActions(
       {
         label: "Sospendi",
         action: suspendCompanyAction,
-        variant: "secondary",
+        variant: "ghost",
       },
       {
         label: "Blocca",

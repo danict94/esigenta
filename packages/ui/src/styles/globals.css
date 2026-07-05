@@ -25,7 +25,7 @@
   --eg-shadow-elevation-lg:
     0 2px 4px rgba(23, 21, 17, 0.06), 0 24px 48px rgba(23, 21, 17, 0.12);
 
-  --eg-radius-sm: 4px;
+  --eg-radius-sm: 2px;
   --eg-radius-md: 6px;
   --eg-radius-lg: 8px;
 
@@ -208,41 +208,40 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    border-radius: 999px;
-    padding: 0 20px;
+    border-radius: var(--eg-radius-sm);
+    padding: 0 22px;
     font-family: var(--eg-font-mono);
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     transition:
       color 220ms ease,
       background-color 220ms ease,
-      border-color 220ms ease,
-      transform 220ms ease;
+      border-color 220ms ease;
   }
 
   .eg-button-primary {
-    border: 1px solid var(--eg-cotto);
-    background: var(--eg-cotto);
+    border: 1px solid var(--eg-terra);
+    background: var(--eg-terra);
     color: var(--eg-calce);
   }
 
   .eg-button-primary:hover {
     border-color: var(--eg-cotto-dark);
     background: var(--eg-cotto-dark);
-    transform: translateY(-1px);
   }
 
   .eg-button-ghost {
-    border: 1px solid var(--eg-hairline);
+    border: 1px solid var(--eg-terra);
     background: transparent;
     color: var(--eg-terra);
   }
 
   .eg-button-ghost:hover {
-    border-color: var(--eg-cotto);
-    color: var(--eg-cotto-dark);
+    border-color: var(--eg-terra);
+    background: var(--eg-terra);
+    color: var(--eg-calce);
   }
 
   .eg-link-mono {

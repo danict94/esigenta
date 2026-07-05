@@ -240,7 +240,7 @@ export default async function AdminSupportThreadPage({
                 <form action={resolveSupportAction}>
                   <Button
                     type="submit"
-                    variant="secondary"
+                    variant="ghost"
                     size="sm"
                   >
                     Chiudi assistenza

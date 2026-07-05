@@ -948,7 +948,7 @@ export function RequestDetailCard({
                 type="submit"
                 name="requestId"
                 value={requestId}
-                variant="secondary"
+                variant="ghost"
                 className="w-full"
                 pendingChildren="Aggiornamento..."
               >

@@ -257,7 +257,7 @@ export default async function AdminCreditRefundRequestsPage() {
                           </Button>
                           <Button
                             type="submit"
-                            variant="secondary"
+                            variant="ghost"
                             formAction={
                               rejectRefundRequestAction
                             }
@@ -386,4 +386,3 @@ export default async function AdminCreditRefundRequestsPage() {
     </PageShell>
   )
 }
-
