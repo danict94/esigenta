@@ -1,22 +1,14 @@
-import { Navbar } from "../shell/navbar";
 import { Footer } from "../shell/footer";
-import { Explosion } from "./explosion";
-import { IndexDirectory } from "./index-directory";
-import { Moment } from "./moment";
+import { Navbar } from "../shell/navbar";
 import { Grain } from "./grain";
+import { HomeExperience } from "./home-experience";
 
 export function HomePage() {
   return (
-    <div className="bg-white">
+    <div className="eg-page-bg">
       <Grain />
       <Navbar />
-
-      <main>
-        <Explosion />
-        <IndexDirectory />
-        <Moment />
-      </main>
-
+      <HomeExperience />
       <Footer />
     </div>
   );

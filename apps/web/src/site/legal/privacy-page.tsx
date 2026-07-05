@@ -1,25 +1,19 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 
-import {
-  Badge,
-  Card,
-  Container,
-} from "@esigenta/ui"
-
-import { PublicShell } from "../shell/public-shell"
+import { PublicShell } from "../shell/public-shell";
 import {
   getFiscalUpdateNotice,
   getInitialPhaseNotice,
   getLegalControllerLabel,
   legalProfile,
-} from "./legal-profile"
-import { LegalSection } from "./legal-section"
+} from "./legal-profile";
+import { LegalSection } from "./legal-section";
 
 export const metadata: Metadata = {
   title: "Privacy | Esigenta",
   description:
     "Informativa privacy Esigenta per clienti, imprese e utenti della piattaforma.",
-}
+};
 
 const customerData = [
   "nome e cognome",
@@ -27,7 +21,7 @@ const customerData = [
   "citta, indirizzo e coordinate normalizzate della richiesta",
   "descrizione del lavoro e risposte inserite nel percorso guidato",
   "foto caricate per descrivere la richiesta",
-]
+];
 
 const companyData = [
   "dati account del referente",
@@ -36,7 +30,7 @@ const companyData = [
   "telefono, email, sito web e dati di contatto",
   "sede, citta, indirizzo e raggio operativo",
   "categorie e servizi configurati nell'area impresa",
-]
+];
 
 const purposes = [
   "gestire e verificare le richieste inviate dai clienti",
@@ -45,7 +39,7 @@ const purposes = [
   "gestire acquisto crediti e operazioni collegate ai pagamenti",
   "inviare email transazionali, link di verifica e reset password",
   "prevenire abusi, errori tecnici e utilizzi non autorizzati",
-]
+];
 
 const services = [
   "Better Auth: autenticazione, sessioni e gestione accessi.",
@@ -53,148 +47,122 @@ const services = [
   "UploadThing: caricamento e gestione tecnica delle foto allegate alle richieste.",
   "Resend: invio di email transazionali e comunicazioni di servizio.",
   "Google Maps Places: suggerimenti automatici per indirizzi e citta, solo previo consenso funzionale o attivazione dell'utente.",
-]
+];
 
 export function PrivacyPage() {
-  const initialNotice = getInitialPhaseNotice()
-  const fiscalNotice = getFiscalUpdateNotice()
+  const initialNotice = getInitialPhaseNotice();
+  const fiscalNotice = getFiscalUpdateNotice();
 
   return (
     <PublicShell>
-      <Container size="lg" gutter="md">
-        <article className="pt-(--fp-nav-clear) pb-12 md:pb-16">
-          <header className="max-w-3xl">
-            <Badge variant="success">Privacy</Badge>
-            <h1 className="mt-5 text-4xl font-semibold tracking-tight text-cantiere-ink">
-              Informativa privacy
-            </h1>
-            <p className="mt-4 text-sm leading-6 text-cantiere-ink-secondary">
-              Questa bozza descrive come {legalProfile.projectName} tratta i
-              dati personali raccolti tramite sito pubblico, richieste cliente,
-              area impresa, pagamenti, upload foto ed email transazionali.
-            </p>
-          </header>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-          <div className="mt-8 grid gap-5">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Titolare del trattamento
-              </h2>
-              <dl className="mt-4 grid gap-3 text-sm leading-6 text-cantiere-ink-secondary">
-                <div>
-                  <dt className="font-medium text-cantiere-ink">Progetto</dt>
-                  <dd>{legalProfile.projectName}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-cantiere-ink">Titolare</dt>
-                  <dd>{getLegalControllerLabel()}</dd>
-                </div>
-                {legalProfile.legalMode === "business_registered" &&
-                legalProfile.businessName ? (
-                  <div>
-                    <dt className="font-medium text-cantiere-ink">
-                      Ragione sociale
-                    </dt>
-                    <dd>{legalProfile.businessName}</dd>
-                  </div>
-                ) : null}
-                {legalProfile.hasVatNumber && legalProfile.vatNumber ? (
-                  <div>
-                    <dt className="font-medium text-cantiere-ink">P.IVA</dt>
-                    <dd>{legalProfile.vatNumber}</dd>
-                  </div>
-                ) : null}
-                {legalProfile.registeredOffice ? (
-                  <div>
-                    <dt className="font-medium text-cantiere-ink">
-                      Sede legale
-                    </dt>
-                    <dd>{legalProfile.registeredOffice}</dd>
-                  </div>
-                ) : null}
-                <div>
-                  <dt className="font-medium text-cantiere-ink">
-                    Contatto privacy
-                  </dt>
-                  <dd>{legalProfile.privacyEmail}</dd>
-                </div>
-                {legalProfile.pecEmail ? (
-                  <div>
-                    <dt className="font-medium text-cantiere-ink">PEC</dt>
-                    <dd>{legalProfile.pecEmail}</dd>
-                  </div>
-                ) : null}
-              </dl>
+        <article className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <header className="mx-auto max-w-[760px] text-center">
+              <p className="eg-eyebrow">Privacy</p>
+              <h1 className="eg-h1 mt-5">Informativa privacy.</h1>
+              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+                Come {legalProfile.projectName} tratta i dati personali raccolti
+                tramite sito pubblico, richieste cliente, area impresa,
+                pagamenti, upload foto ed email transazionali.
+              </p>
+            </header>
 
-              {initialNotice || fiscalNotice ? (
-                <p className="mt-5 border-t border-cantiere-hairline pt-4 text-sm leading-6 text-cantiere-ink-secondary">
-                  {initialNotice ?? fiscalNotice}
+            <div className="mx-auto mt-12 grid max-w-[860px] gap-5">
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Titolare del trattamento</h2>
+                <dl className="eg-body-muted mt-4 grid gap-3">
+                  <LegalDefinition label="Progetto" value={legalProfile.projectName} />
+                  <LegalDefinition label="Titolare" value={getLegalControllerLabel()} />
+                  {legalProfile.legalMode === "business_registered" &&
+                  legalProfile.businessName ? (
+                    <LegalDefinition label="Ragione sociale" value={legalProfile.businessName} />
+                  ) : null}
+                  {legalProfile.hasVatNumber && legalProfile.vatNumber ? (
+                    <LegalDefinition label="P.IVA" value={legalProfile.vatNumber} />
+                  ) : null}
+                  {legalProfile.registeredOffice ? (
+                    <LegalDefinition label="Sede legale" value={legalProfile.registeredOffice} />
+                  ) : null}
+                  <LegalDefinition label="Contatto privacy" value={legalProfile.privacyEmail} />
+                  {legalProfile.pecEmail ? (
+                    <LegalDefinition label="PEC" value={legalProfile.pecEmail} />
+                  ) : null}
+                </dl>
+
+                {initialNotice || fiscalNotice ? (
+                  <p className="eg-body-muted mt-5 border-t border-eg-hairline pt-4">
+                    {initialNotice ?? fiscalNotice}
+                  </p>
+                ) : null}
+              </section>
+
+              <LegalSection title="Dati trattati dei clienti" items={customerData} />
+              <LegalSection title="Dati trattati delle imprese" items={companyData} />
+
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Pagamenti e dati tecnici</h2>
+                <p className="eg-body-muted mt-3">
+                  Per gli acquisti di crediti, il pagamento viene gestito
+                  tramite Stripe. Esigenta conserva informazioni operative
+                  collegate all&apos;ordine, allo stato del pagamento e ai
+                  crediti, ma non salva direttamente i dati completi della carta.
+                  Il sito tratta anche dati tecnici necessari a sicurezza,
+                  sessioni, log applicativi e funzionamento delle API.
                 </p>
-              ) : null}
-            </Card>
+              </section>
 
-            <LegalSection title="Dati trattati dei clienti" items={customerData} />
-            <LegalSection title="Dati trattati delle imprese" items={companyData} />
+              <LegalSection title="Finalita del trattamento" items={purposes} />
+              <LegalSection title="Servizi terzi utilizzati" items={services} />
 
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Pagamenti e dati tecnici
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Per gli acquisti di crediti, il pagamento viene gestito tramite
-                Stripe. Esigenta conserva informazioni operative collegate
-                all&apos;ordine, allo stato del pagamento e ai crediti, ma non salva
-                direttamente i dati completi della carta. Il sito tratta anche
-                dati tecnici necessari a sicurezza, sessioni, log applicativi e
-                funzionamento delle API.
-              </p>
-            </Card>
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Conservazione dei dati</h2>
+                <p className="eg-body-muted mt-3">
+                  I tempi di conservazione devono essere definiti e revisionati
+                  in base agli obblighi applicabili, alle esigenze di sicurezza,
+                  verifica delle richieste, gestione contrattuale e tutela dei
+                  diritti. Questa sezione va completata prima del lancio
+                  commerciale pieno.
+                </p>
+              </section>
 
-            <LegalSection title="Finalita del trattamento" items={purposes} />
-            <LegalSection title="Servizi terzi utilizzati" items={services} />
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Diritti degli interessati</h2>
+                <p className="eg-body-muted mt-3">
+                  Gli interessati possono chiedere accesso, rettifica,
+                  cancellazione, limitazione, opposizione e portabilita dei dati,
+                  nei casi previsti dalla normativa applicabile. Le richieste
+                  possono essere inviate a {legalProfile.privacyEmail}.
+                </p>
+              </section>
 
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Conservazione dei dati
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                I tempi di conservazione devono essere definiti e revisionati in
-                base agli obblighi applicabili, alle esigenze di sicurezza,
-                verifica delle richieste, gestione contrattuale e tutela dei
-                diritti. Questa sezione va completata prima del lancio
-                commerciale pieno.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Diritti degli interessati
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Gli interessati possono chiedere accesso, rettifica,
-                cancellazione, limitazione, opposizione e portabilita dei dati,
-                nei casi previsti dalla normativa applicabile. Le richieste
-                possono essere inviate a {legalProfile.privacyEmail}.
-              </p>
-            </Card>
-
-            <Card className="bg-cantiere-linen p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Nota di revisione
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Documento operativo in bozza. Deve essere revisionato da un
-                professionista prima del lancio commerciale pieno e aggiornato
-                quando saranno disponibili dati fiscali, societari, tempi di
-                conservazione definitivi e ruoli privacy dei fornitori.
-              </p>
-              <p className="mt-3 text-xs text-cantiere-ink-secondary">
-                Ultimo aggiornamento: {legalProfile.lastUpdated}
-              </p>
-            </Card>
+              <section className="eg-panel bg-eg-calce-2 p-6">
+                <h2 className="eg-h3">Nota di revisione</h2>
+                <p className="eg-body-muted mt-3">
+                  Documento operativo in bozza. Deve essere revisionato da un
+                  professionista prima del lancio commerciale pieno e aggiornato
+                  quando saranno disponibili dati fiscali, societari, tempi di
+                  conservazione definitivi e ruoli privacy dei fornitori.
+                </p>
+                <p className="eg-mono-label mt-4">
+                  Ultimo aggiornamento: {legalProfile.lastUpdated}
+                </p>
+              </section>
+            </div>
           </div>
         </article>
-      </Container>
+      </div>
     </PublicShell>
-  )
+  );
+}
+
+function LegalDefinition({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="font-medium text-eg-terra">{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
 }

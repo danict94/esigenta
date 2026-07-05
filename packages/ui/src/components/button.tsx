@@ -25,19 +25,19 @@ export const buttonRadius = "rounded-[8px]"
 
 export const buttonVariants = {
   primary:
-    "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
+    "border border-eg-cotto bg-eg-cotto text-eg-calce hover:border-eg-cotto-dark hover:bg-eg-cotto-dark",
   secondary:
-    "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
+    "border border-eg-cotto bg-transparent text-eg-cotto hover:bg-eg-cotto hover:text-eg-calce",
   brand:
-    "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
+    "border border-eg-cotto bg-eg-cotto text-eg-calce hover:border-eg-cotto-dark hover:bg-eg-cotto-dark",
   ghost:
-    "border border-transparent bg-transparent text-cantiere-ink-secondary hover:bg-cantiere-surface hover:text-cantiere-ink",
+    "border border-transparent bg-transparent text-eg-ardesia hover:bg-eg-calce-2 hover:text-eg-terra",
   /**
    * Branded nav CTA: no border, no hover background/color shift — only a
    * scale affordance. For nav items that must read as a link, not a filled
    * control (e.g. account menu trigger, "Sei un professionista?" CTA).
    */
-  nav: "border border-transparent bg-transparent font-semibold text-cantiere-accent transition-transform hover:scale-105",
+  nav: "border border-transparent bg-transparent font-semibold text-eg-cotto transition-transform hover:scale-105",
 } as const
 
 export const buttonSizes = {

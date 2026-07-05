@@ -1,9 +1,5 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-
-import { Button, Input, cn } from "@esigenta/ui";
-
 export type GeoRequestFormProps = {
   funnelSlug: string;
 };
@@ -12,48 +8,36 @@ export function GeoRequestForm({ funnelSlug }: GeoRequestFormProps) {
   const requestHref = `/richiesta/${funnelSlug}`;
 
   return (
-    <form
-      action={requestHref}
-      method="get"
-      className={cn(
-        "rounded-lg",
-        "space-y-4 border border-cantiere-hairline bg-cantiere-paper p-5",
-      )}
-    >
-      <div className="space-y-2">
-        <h3 className="text-xl font-semibold leading-7 text-cantiere-ink">
-          Trova professionisti nella tua zona
-        </h3>
+    <form action={requestHref} method="get" className="eg-panel space-y-5 p-5">
+      <div>
+        <h3 className="eg-h3 text-[22px]">Trova professionisti nella tua zona</h3>
 
-        <p className="text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="eg-body-muted mt-2">
           Inserisci il comune e continua con la richiesta.
         </p>
       </div>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="seo-geo-city"
-          className="text-sm font-medium text-cantiere-ink"
-        >
-          Comune o città
+      <div className="eg-form-field">
+        <label htmlFor="seo-geo-city" className="eg-form-label">
+          Comune o citt&agrave;
         </label>
 
-        <Input
+        <input
           id="seo-geo-city"
+          name="city"
           type="text"
-          size="lg"
           autoComplete="address-level2"
           placeholder="Inserisci il comune"
           aria-describedby="seo-geo-city-help"
+          className="w-full border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark"
         />
       </div>
 
-      <Button type="submit" variant="brand" size="lg" className="w-full gap-2">
-        Richiedi preventivi nella tua zona
-        <ArrowRight className="size-4" aria-hidden={true} />
-      </Button>
+      <button type="submit" className="eg-button-primary w-full">
+        Richiedi preventivi
+      </button>
 
-      <p id="seo-geo-city-help" className="text-sm leading-6 text-cantiere-ink-secondary">
+      <p id="seo-geo-city-help" className="eg-form-help">
         Potrai confermare il comune nel passaggio successivo.
       </p>
     </form>

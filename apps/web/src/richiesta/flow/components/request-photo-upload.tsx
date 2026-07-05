@@ -6,9 +6,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState, } from "react";
 
 import {
-  Badge, Button, Card, cn } from "@esigenta/ui";
-
-import {
   REQUEST_PHOTO_ACCEPT,
   REQUEST_PHOTO_MAX_FILES,
   REQUEST_PHOTO_MAX_SIZE_LABEL,
@@ -110,19 +107,23 @@ function getStatusLabel(
   }
 }
 
-function getStatusVariant(
+function getStatusClass(
   status: PhotoUploadStatus,
-): "neutral" | "success" | "danger" {
+) {
   switch (status) {
     case "uploaded":
-      return "success";
+      return "border-eg-salvia text-eg-salvia";
 
     case "error":
-      return "danger";
+      return "border-eg-cotto text-eg-cotto-dark";
 
     default:
-      return "neutral";
+      return "border-eg-hairline text-eg-ardesia";
   }
+}
+
+function joinClasses(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
 }
 
 export function RequestPhotoUpload({
@@ -401,22 +402,21 @@ export function RequestPhotoUpload({
   return (
     <div className="grid gap-4">
       <label
-        className={cn(
-          "flex min-h-36 cursor-pointer flex-col items-center justify-center gap-3 border border-dashed border-cantiere-hairline bg-cantiere-paper px-5 py-8 text-center transition-colors hover:border-cantiere-accent hover:bg-cantiere-linen",
+        className={joinClasses(
+          "flex min-h-36 cursor-pointer flex-col items-center justify-center gap-3 border border-dashed border-eg-hairline bg-eg-calce px-5 py-8 text-center transition-colors hover:border-eg-cotto hover:bg-eg-calce-2",
           isUploading &&
             "pointer-events-none opacity-60",
-          "rounded-[8px]",
         )}
       >
-        <span className="flex size-11 items-center justify-center rounded-full bg-cantiere-paper text-cantiere-accent">
+        <span className="flex size-11 items-center justify-center rounded-full bg-eg-calce-2 text-eg-cotto-dark">
           +
         </span>
 
-        <span className="text-sm font-semibold text-cantiere-ink">
+        <span className="text-sm font-medium text-eg-terra">
           Aggiungi foto
         </span>
 
-        <span className="max-w-sm text-xs leading-5 text-cantiere-ink-secondary">
+        <span className="max-w-sm text-xs leading-5 text-eg-ardesia">
           JPEG, PNG o WebP. Massimo {REQUEST_PHOTO_MAX_FILES} foto da{" "}
           {REQUEST_PHOTO_MAX_SIZE_LABEL} ciascuna.
         </span>
@@ -445,10 +445,10 @@ export function RequestPhotoUpload({
         />
       </label>
 
-      <p className="text-xs leading-5 text-cantiere-ink-secondary">
+      <p className="eg-form-help">
         Le foto caricate saranno usate per descrivere la richiesta e possono
         essere gestite tramite provider di upload indicato nella{" "}
-        <Link href="/privacy" className="font-medium text-cantiere-accent" prefetch={false}>
+        <Link href="/privacy" className="font-medium text-eg-cotto-dark" prefetch={false}>
           privacy policy
         </Link>
         .
@@ -457,12 +457,12 @@ export function RequestPhotoUpload({
       {items.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2">
           {items.map((item) => (
-            <Card
+            <div
               key={item.id}
-              className="overflow-hidden"
+              className="overflow-hidden border border-eg-hairline bg-eg-calce"
             >
               {item.previewUrl ? (
-                <div className="relative aspect-video bg-cantiere-linen">
+                <div className="relative aspect-video bg-eg-calce-2">
                   <Image
                     src={item.previewUrl}
                     alt=""
@@ -476,41 +476,40 @@ export function RequestPhotoUpload({
 
               <div className="flex items-center gap-3 p-3">
                 <div className="min-w-0 flex-1 space-y-2">
-                  <p className="truncate text-sm font-medium text-cantiere-ink">
+                  <p className="truncate text-sm font-medium text-eg-terra">
                     {item.fileName}
                   </p>
 
-                  <Badge
-                    size="sm"
-                    variant={getStatusVariant(
-                      item.status,
+                  <span
+                    className={joinClasses(
+                      "inline-flex min-h-7 items-center rounded-full border px-2 text-[11px] font-medium uppercase tracking-[0.12em]",
+                      getStatusClass(item.status),
                     )}
                   >
                     {getStatusLabel(
                       item.status,
                     )}
-                  </Badge>
+                  </span>
                 </div>
 
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
+                  className="eg-button-ghost min-h-9 px-3 disabled:pointer-events-none disabled:opacity-50"
                   disabled={isUploading}
                   onClick={() => {
                     removeItem(item);
                   }}
                 >
                   Rimuovi
-                </Button>
+                </button>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       ) : null}
 
       {error ? (
-        <p className="text-sm text-cantiere-accent">
+        <p className="text-sm text-eg-cotto-dark">
           {error}
         </p>
       ) : null}

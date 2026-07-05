@@ -183,7 +183,7 @@ export function CreditCheckoutStatusBanner({
 
   return (
     <Card className="p-5">
-      <p className="text-sm font-semibold text-cantiere-ink">
+      <p className="text-sm font-semibold text-eg-terra">
         {getStatusMessage(status)}
       </p>
     </Card>

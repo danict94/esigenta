@@ -1,50 +1,49 @@
-import Link from "next/link"
-import { Container, cn } from "@esigenta/ui";
+import Link from "next/link";
 
 import {
   RequestFlowError,
   getCustomerRequestsByHistoryToken,
-} from "@esigenta/domain"
+} from "@esigenta/domain";
 
-import { PublicShell } from "../../site/shell/public-shell"
-import { CustomerRequestsNav } from "./components/customer-requests-nav"
+import { PublicShell } from "../../site/shell/public-shell";
+import { CustomerRequestsNav } from "./components/customer-requests-nav";
 
 type CustomerRequestsPageProps = {
-  token?: string
-}
+  token?: string;
+};
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("it-IT", {
     dateStyle: "medium",
-  }).format(date)
+  }).format(date);
 }
 
 function formatIntervention(slug: string | null) {
   if (!slug) {
-    return "Richiesta"
+    return "Richiesta";
   }
 
   return slug
     .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function formatStatus(status: string) {
   switch (status) {
     case "PENDING_VERIFICATION":
-      return "In attesa di conferma"
+      return "In attesa di conferma";
     case "PENDING_REVIEW":
-      return "In revisione"
+      return "In revisione";
     case "APPROVED":
-      return "Approvata"
+      return "Approvata";
     case "PUBLISHED":
-      return "Pubblicata"
+      return "Pubblicata";
     case "CLOSED":
-      return "Chiusa"
+      return "Chiusa";
     case "REJECTED":
-      return "Non approvata"
+      return "Non approvata";
     default:
-      return status
+      return status;
   }
 }
 
@@ -52,12 +51,12 @@ function buildDetailHref({
   requestId,
   token,
 }: {
-  requestId: string
-  token: string
+  requestId: string;
+  token: string;
 }) {
-  const params = new URLSearchParams({ token })
+  const params = new URLSearchParams({ token });
 
-  return `/richieste/cliente/richiesta/${encodeURIComponent(requestId)}?${params.toString()}`
+  return `/richieste/cliente/richiesta/${encodeURIComponent(requestId)}?${params.toString()}`;
 }
 
 async function loadRequests(token?: string) {
@@ -65,14 +64,14 @@ async function loadRequests(token?: string) {
     return {
       ok: false as const,
       message: "Il link non contiene il token necessario.",
-    }
+    };
   }
 
   try {
     return {
       ok: true as const,
       requests: await getCustomerRequestsByHistoryToken(token),
-    }
+    };
   } catch (error) {
     return {
       ok: false as const,
@@ -80,118 +79,97 @@ async function loadRequests(token?: string) {
         error instanceof RequestFlowError
           ? error.message
           : "Non siamo riusciti a recuperare le richieste.",
-    }
+    };
   }
 }
 
-export async function CustomerRequestsPage({
-  token,
-}: CustomerRequestsPageProps) {
-  const result = await loadRequests(token)
-
-  const primaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
-  const secondaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-hairline bg-cantiere-paper px-5 text-sm font-semibold text-cantiere-ink transition-colors hover:border-cantiere-accent"
+export async function CustomerRequestsPage({ token }: CustomerRequestsPageProps) {
+  const result = await loadRequests(token);
 
   return (
     <PublicShell>
-      <section className={"py-20 md:py-28 lg:py-32"}>
-        <Container size="md">
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-3">
-                <h1
-                  className={cn(
-                    "text-cantiere-ink",
-                    "font-medium text-cantiere-heading",
-                  )}
-                >
-                  Storico richieste
-                </h1>
-                <p className="text-sm leading-6 text-cantiere-ink-secondary">
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
+
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[820px]">
+              <div>
+                <p className="eg-eyebrow">Le mie richieste</p>
+
+                <h1 className="eg-h1 mt-5">Storico richieste</h1>
+
+                <p className="eg-body-muted mt-5 max-w-[48ch]">
                   Qui trovi le richieste inviate con questa email.
                 </p>
               </div>
 
-              <CustomerRequestsNav token={token} />
-            </div>
+              <CustomerRequestsNav token={token} className="mt-8" />
 
-            {!result.ok ? (
-              <div className="border border-cantiere-hairline bg-cantiere-paper p-6">
-                <p className="text-sm text-cantiere-ink-secondary">
-                  {result.message}
-                </p>
-              </div>
-            ) : result.requests.length === 0 ? (
-              <div className="space-y-4 border border-cantiere-hairline bg-cantiere-paper p-6">
-                <div className="space-y-2">
-                  <h2 className="text-sm font-semibold text-cantiere-ink">
-                    Nessuna richiesta trovata
-                  </h2>
-                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
+              {!result.ok ? (
+                <div className="eg-panel mt-8 p-6">
+                  <p className="eg-body-muted">{result.message}</p>
+                </div>
+              ) : result.requests.length === 0 ? (
+                <div className="eg-panel mt-8 p-6">
+                  <h2 className="eg-h3 text-[24px]">Nessuna richiesta trovata</h2>
+                  <p className="eg-body-muted mt-3">
                     Non ci sono richieste associate a questa email oppure il
                     link non contiene ancora uno storico aggiornato.
                   </p>
-                </div>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <Link
-                    href="/"
-                    className={primaryLinkClass}
-                  >
-                    Richiedi un intervento
-                  </Link>
-                  <Link
-                    href="/richieste/accesso"
-                    className={secondaryLinkClass}
-                  >
-                    Ricevi un nuovo link
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {result.requests.map((request) => (
-                  <Link
-                    key={request.requestId}
-                    href={buildDetailHref({
-                      requestId: request.requestId,
-                      token: token ?? "",
-                    })}
-                    className="block border border-cantiere-hairline bg-cantiere-paper p-4 transition-colors hover:bg-cantiere-linen"
-                  >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-cantiere-ink">
-                          {formatIntervention(request.interventionSlug)}
-                        </p>
-                        <p className="text-sm text-cantiere-ink-secondary">
-                          {request.city ?? "Città non specificata"}
-                          {" - "}
-                          {formatDate(request.createdAt)}
-                        </p>
-                        <p className="text-xs text-cantiere-ink-secondary">
-                          Codice richiesta:{" "}
-                          {request.requestCode ?? request.requestId}
-                        </p>
-                      </div>
 
-                      <div className="text-sm text-cantiere-ink-secondary sm:text-right">
-                        <p className="font-medium text-cantiere-ink">
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                    <Link href="/" className="eg-button-primary w-full sm:w-auto">
+                      Richiedi un intervento
+                    </Link>
+                    <Link
+                      href="/richieste/accesso"
+                      className="eg-button-ghost w-full sm:w-auto"
+                    >
+                      Ricevi un nuovo link
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+                  {result.requests.map((request, index) => (
+                    <li key={request.requestId}>
+                      <Link
+                        href={buildDetailHref({
+                          requestId: request.requestId,
+                          token: token ?? "",
+                        })}
+                        className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-cotto-dark"
+                      >
+                        <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        <span>
+                          <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">
+                            {formatIntervention(request.interventionSlug)}
+                          </span>
+                          <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia block">
+                            {request.city ?? "Citta non specificata"}
+                            {" - "}
+                            {formatDate(request.createdAt)}
+                            {" - Codice "}
+                            {request.requestCode ?? request.requestId}
+                          </span>
+                        </span>
+
+                        <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
                           {formatStatus(request.status)}
-                        </p>
-                        <p className="mt-3 font-semibold text-cantiere-accent">
-                          Vedi dettagli
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-        </Container>
-      </section>
+        </section>
+      </div>
     </PublicShell>
-  )
+  );
 }

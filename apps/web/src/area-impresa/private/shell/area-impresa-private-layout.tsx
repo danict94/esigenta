@@ -74,7 +74,7 @@ export async function AreaImpresaPrivateLayout({
   const statusNotice = getCompanyStatusNotice(companyStatus);
 
   return (
-    <div className="min-h-screen bg-white text-cantiere-ink">
+    <div className="min-h-screen bg-white text-eg-terra">
       <ImpresaSidebar
         accountLabel={accountLabel}
         unreadNotificationCount={counts.unreadNotificationCount}
@@ -85,7 +85,7 @@ export async function AreaImpresaPrivateLayout({
       />
       {statusNotice ? (
         <Container size="xl" className="pt-4">
-          <div className="border border-cantiere-hairline bg-cantiere-linen px-4 py-3 text-sm font-medium leading-6 text-cantiere-ink">
+          <div className="border border-eg-hairline bg-eg-calce-2 px-4 py-3 text-sm font-medium leading-6 text-eg-terra">
             {statusNotice}
           </div>
         </Container>

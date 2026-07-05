@@ -1,4 +1,4 @@
-// Cantiere Calmo icon set — single 1.5px stroke, round joins/caps, currentColor.
+// Esigenta icon set: single 1.5px stroke, round joins/caps, currentColor.
 
 type IconProps = {
   className?: string;

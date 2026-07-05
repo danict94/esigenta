@@ -170,7 +170,7 @@ function Field({
 }) {
   return (
     <label className="grid gap-2">
-      <span className="text-sm font-medium text-cantiere-ink">
+      <span className="text-sm font-medium text-eg-terra">
         {label}
       </span>
       {children}
@@ -179,7 +179,7 @@ function Field({
 }
 
 const selectClass =
-  "h-12 w-full border border-cantiere-hairline bg-cantiere-paper px-4 text-sm text-cantiere-ink outline-none transition-colors focus:border-cantiere-accent disabled:cursor-not-allowed disabled:opacity-60"
+  "h-12 w-full border border-eg-hairline bg-eg-calce px-4 text-sm text-eg-terra outline-none transition-colors focus:border-eg-cotto disabled:cursor-not-allowed disabled:opacity-60"
 
 export default async function CreditPackagesPage() {
   const packages =
@@ -187,16 +187,16 @@ export default async function CreditPackagesPage() {
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
-      <header className="border-b border-cantiere-hairline pb-7">
-        <p className="text-sm font-medium text-cantiere-ink-secondary">
+      <header className="border-b border-eg-hairline pb-7">
+        <p className="text-sm font-medium text-eg-ardesia">
           Crediti
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
           Pacchetti crediti
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
           Crea e gestisci i pacchetti che le imprese potranno acquistare.
           Questo step non attiva ancora pagamenti o sblocchi richiesta.
         </p>
@@ -204,11 +204,11 @@ export default async function CreditPackagesPage() {
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[24rem_minmax(0,1fr)]">
         <Card className="p-6">
-          <h2 className="text-lg font-semibold text-cantiere-ink">
+          <h2 className="text-lg font-semibold text-eg-terra">
             Nuovo pacchetto
           </h2>
 
-          <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="mt-2 text-sm leading-6 text-eg-ardesia">
             Definisci crediti, prezzo e stato del pacchetto.
           </p>
 
@@ -307,10 +307,10 @@ export default async function CreditPackagesPage() {
         <section className="grid gap-4">
           {packages.length === 0 ? (
             <Card className="p-8">
-              <p className="text-lg font-semibold text-cantiere-ink">
+              <p className="text-lg font-semibold text-eg-terra">
                 Nessun pacchetto creato
               </p>
-              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
                 Crea il primo pacchetto crediti per preparare la vendita
                 alle imprese.
               </p>
@@ -348,7 +348,7 @@ export default async function CreditPackagesPage() {
                             : "Non attivo"}
                         </Badge>
 
-                        <span className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
+                        <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
                           {creditPackage.credits} crediti ·{" "}
                           {formatCentsAsCurrency(
                             creditPackage.priceCents,
@@ -358,12 +358,12 @@ export default async function CreditPackagesPage() {
                         </span>
                       </div>
 
-                      <h2 className="mt-3 text-xl font-semibold tracking-tight text-cantiere-ink">
+                      <h2 className="mt-3 text-xl font-semibold tracking-tight text-eg-terra">
                         {creditPackage.name}
                       </h2>
 
                       {creditPackage.description ? (
-                        <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+                        <p className="mt-2 text-sm leading-6 text-eg-ardesia">
                           {creditPackage.description}
                         </p>
                       ) : null}

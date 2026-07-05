@@ -149,10 +149,10 @@ function Field({
 }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
+      <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
         {label}
       </dt>
-      <dd className="mt-1 text-sm font-medium text-cantiere-ink">
+      <dd className="mt-1 text-sm font-medium text-eg-terra">
         {value}
       </dd>
     </div>
@@ -167,16 +167,16 @@ export default async function AdminCreditRefundRequestsPage() {
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
-      <header className="border-b border-cantiere-hairline pb-7">
-        <p className="text-sm font-medium text-cantiere-ink-secondary">
+      <header className="border-b border-eg-hairline pb-7">
+        <p className="text-sm font-medium text-eg-ardesia">
           Crediti
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
           Richieste rimborso crediti
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
           Pratiche aperte dalle imprese dopo lo sblocco di una richiesta.
           Approva per ricaricare i crediti tramite ledger, oppure rifiuta
           salvando una nota di revisione.
@@ -186,10 +186,10 @@ export default async function AdminCreditRefundRequestsPage() {
       <section className="mt-8">
         {refundRequests.length === 0 ? (
           <Card className="p-8">
-            <p className="text-lg font-semibold text-cantiere-ink">
+            <p className="text-lg font-semibold text-eg-terra">
               Nessuna richiesta rimborso
             </p>
-            <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
               Quando un'impresa richieder\u00e0 una revisione, la pratica
               comparir\u00e0 qui.
             </p>
@@ -211,17 +211,17 @@ export default async function AdminCreditRefundRequestsPage() {
                             refundRequest.status}
                         </Badge>
 
-                        <span className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
+                        <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
                           {reasonLabels[refundRequest.reason] ??
                             refundRequest.reason}
                         </span>
                       </div>
 
-                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-cantiere-ink">
+                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-terra">
                         {refundRequest.company.name}
                       </h2>
 
-                      <p className="mt-3 max-w-3xl text-sm leading-6 text-cantiere-ink-secondary">
+                      <p className="mt-3 max-w-3xl text-sm leading-6 text-eg-ardesia">
                         {refundRequest.description}
                       </p>
                     </div>
@@ -236,7 +236,7 @@ export default async function AdminCreditRefundRequestsPage() {
                         />
 
                         <label className="grid gap-2">
-                          <span className="text-sm font-medium text-cantiere-ink">
+                          <span className="text-sm font-medium text-eg-terra">
                             Note admin
                           </span>
                           <Textarea
@@ -267,24 +267,24 @@ export default async function AdminCreditRefundRequestsPage() {
                         </div>
                       </form>
                     ) : (
-                      <div className="w-full rounded-md border border-cantiere-hairline bg-cantiere-linen p-4 lg:w-80">
-                        <p className="text-sm font-semibold text-cantiere-ink">
+                      <div className="w-full rounded-md border border-eg-hairline bg-eg-calce-2 p-4 lg:w-80">
+                        <p className="text-sm font-semibold text-eg-terra">
                           Revisione completata
                         </p>
-                        <p className="mt-1 text-xs leading-5 text-cantiere-ink-secondary">
+                        <p className="mt-1 text-xs leading-5 text-eg-ardesia">
                           {formatDate(
                             refundRequest.reviewedAt,
                           )}
                         </p>
                         {refundRequest.reviewedByAdminUser ? (
-                          <p className="mt-1 text-xs leading-5 text-cantiere-ink-secondary">
+                          <p className="mt-1 text-xs leading-5 text-eg-ardesia">
                             Admin:{" "}
                             {refundRequest.reviewedByAdminUser.name ??
                               refundRequest.reviewedByAdminUser.email}
                           </p>
                         ) : null}
                         {refundRequest.adminNotes ? (
-                          <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
+                          <p className="mt-3 text-sm leading-6 text-eg-ardesia">
                             {refundRequest.adminNotes}
                           </p>
                         ) : null}
@@ -292,7 +292,7 @@ export default async function AdminCreditRefundRequestsPage() {
                     )}
                   </div>
 
-                  <dl className="mt-6 grid gap-5 border-t border-cantiere-hairline pt-5 md:grid-cols-2 xl:grid-cols-4">
+                  <dl className="mt-6 grid gap-5 border-t border-eg-hairline pt-5 md:grid-cols-2 xl:grid-cols-4">
                     <Field
                       label="Richieste rimborso 30 giorni"
                       value={

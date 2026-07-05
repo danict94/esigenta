@@ -145,7 +145,7 @@ export async function RequestDetailPage({
         <PendingRequestLink
           href="/area-impresa/richieste"
           pendingChildren="Ritorno alle richieste..."
-          className="text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
+          className="text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
         >
           &larr; Nuove richieste
         </PendingRequestLink>

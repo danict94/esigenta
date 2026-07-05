@@ -49,7 +49,7 @@ export function SupportThread({
             </CardDescription>
 
             {thread.resolvedAt ? (
-              <p className="text-xs text-cantiere-ink-secondary">
+              <p className="text-xs text-eg-ardesia">
                 Risolta il {formatDateTime(thread.resolvedAt)}
                 {thread.resolvedBy
                   ? ` da ${
@@ -72,8 +72,8 @@ export function SupportThread({
       <CardContent className="space-y-6">
         <div className="space-y-4">
           {thread.messages.length === 0 ? (
-            <div className="border border-cantiere-hairline bg-cantiere-linen p-4">
-              <p className="text-sm text-cantiere-ink-secondary">
+            <div className="border border-eg-hairline bg-eg-calce-2 p-4">
+              <p className="text-sm text-eg-ardesia">
                 Nessun messaggio ancora inviato.
               </p>
             </div>
@@ -90,8 +90,8 @@ export function SupportThread({
                   <div
                     className={`${"max-w-[min(34rem,85%)]"} border px-4 py-3 ${
                       isAdmin
-                        ? "border-cantiere-accent bg-cantiere-accent text-cantiere-paper"
-                        : "border-cantiere-hairline bg-cantiere-linen text-cantiere-ink"
+                        ? "border-eg-cotto bg-eg-cotto text-eg-calce"
+                        : "border-eg-hairline bg-eg-calce-2 text-eg-terra"
                     }`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -102,8 +102,8 @@ export function SupportThread({
                       <time
                         className={`text-xs ${
                           isAdmin
-                            ? "text-cantiere-paper"
-                            : "text-cantiere-ink-secondary"
+                            ? "text-eg-calce"
+                            : "text-eg-ardesia"
                         }`}
                       >
                         {formatDateTime(message.createdAt)}
@@ -121,7 +121,7 @@ export function SupportThread({
         </div>
 
         {children ? (
-          <div className="sticky bottom-0 -mx-6 border-t border-cantiere-hairline bg-cantiere-paper px-6 pb-6 pt-4">
+          <div className="sticky bottom-0 -mx-6 border-t border-eg-hairline bg-eg-calce px-6 pb-6 pt-4">
             {children}
           </div>
         ) : null}

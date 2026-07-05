@@ -1,17 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
-
-import { PageShell, cn } from "@esigenta/ui";
 
 import {
   listSeoInterventionLandings,
   type SeoInterventionLanding,
 } from "../pages/interventi";
 import { resolveCostGuideHrefForIntervention } from "../engine/resolve-seo-page";
+import { PublicShell } from "../../shell/public-shell";
 import { GeoCostModule } from "./geo-cost-module";
 import { RelatedFunnelWork } from "./related-funnel-work";
-import { SeoBreadcrumb } from "./seo-breadcrumb";
 import { SeoFaq } from "./seo-faq";
 
 export type InterventionLandingPageProps = {
@@ -29,205 +26,180 @@ export function InterventionLandingPage({
   const costGuideHref = resolveCostGuideHrefForIntervention(landing.costSlug);
 
   return (
-    <PageShell size="xl">
-      <div className="space-y-12 md:space-y-16 lg:space-y-20">
-        <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
-          <div className="max-w-3xl space-y-7">
-            <SeoBreadcrumb
-              items={[
-                { label: "Home", href: "/" },
-                { label: "Interventi" },
-                { label: landing.title },
-              ]}
-            />
+    <PublicShell>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-            <div className="space-y-5">
-              <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink md:text-5xl">
-                {landing.h1}
-              </h1>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
+              <div className="max-w-[720px] max-lg:max-w-none">
+                <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+                  <Link href="/" prefetch={false}>
+                    Home
+                  </Link>
+                  <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                    /
+                  </span>
+                  <span className="text-eg-terra">Interventi</span>
+                </nav>
 
-              <p className="text-lg leading-8 text-cantiere-ink-secondary">
-                {landing.description}
-              </p>
-            </div>
+                <p className="eg-eyebrow">Intervento</p>
 
-            <div className="space-y-4">
-              <Link
-                href={requestHref}
-                className={cn(
-                  "inline-flex items-center justify-center font-medium transition-colors",
-                  "rounded-lg",
-                  "h-12 px-6 text-[15px]",
-                  "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-                  "w-full gap-2 sm:w-auto",
-                )}
-              >
-                Richiedi preventivi
-                <ArrowRight className="size-4" aria-hidden={true} />
-              </Link>
+                <h1 className="eg-h1 mt-5">{landing.h1}</h1>
 
-              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm leading-6 text-cantiere-ink-secondary">
-                <span>Gratis, senza impegno.</span>
-                <span>
-                  Preventivi gratuiti da professionisti qualificati nella tua
-                  zona.
-                </span>
+                <p className="eg-body-muted mt-6 max-w-[54ch] text-[17px] leading-8">
+                  {landing.description}
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Link href={requestHref} className="eg-button-primary w-full sm:w-auto">
+                    Richiedi preventivi
+                  </Link>
+
+                  <Link href="#quanto-costa" className="eg-button-ghost w-full sm:w-auto">
+                    Vedi i costi
+                  </Link>
+                </div>
+
+                <p className="eg-form-help mt-4 max-w-[54ch]">
+                  Gratis, senza impegno. Preventivi da professionisti
+                  qualificati nella tua zona.
+                </p>
+              </div>
+
+              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-terra after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
+                <Image
+                  src={landing.image.src}
+                  alt={landing.image.alt}
+                  fill
+                  priority
+                  sizes="(min-width: 1280px) 420px, (min-width: 1024px) 36vw, calc(100vw - 44px)"
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>
-
-          <div
-            className={cn(
-              "rounded-lg",
-              "aspect-4/3 overflow-hidden bg-cantiere-surface md:aspect-720/520",
-            )}
-          >
-            <Image
-              src={landing.image.src}
-              alt={landing.image.alt}
-              width={720}
-              height={520}
-              priority
-              sizes="(min-width: 1280px) 40rem, (min-width: 1024px) 42vw, calc(100vw - 32px)"
-              className="h-full w-full object-cover"
-            />
-          </div>
         </section>
 
-        <section
-          aria-labelledby="cosa-puoi-richiedere-title"
-          className="grid gap-6 lg:grid-cols-[0.38fr_0.62fr] lg:items-start"
-        >
-          <div className="max-w-2xl space-y-3">
-            <p className={"text-sm font-medium text-cantiere-accent"}>Cosa puoi richiedere</p>
+        <section aria-labelledby="cosa-puoi-richiedere-title" className="eg-section bg-eg-calce-2">
+          <div className="eg-container">
+            <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
+              <div className="max-w-2xl">
+                <p className="eg-eyebrow">Cosa puoi richiedere</p>
 
-            <h2
-              id="cosa-puoi-richiedere-title"
-              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
-            >
-              Dalle prime valutazioni al lavoro finito
-            </h2>
+                <h2 id="cosa-puoi-richiedere-title" className="eg-h2 mt-4">
+                  Dalle prime valutazioni al lavoro finito
+                </h2>
 
-            <p className="text-base leading-7 text-cantiere-ink-secondary">
-              Ogni richiesta può includere lavorazioni diverse. Seleziona il
-              tipo di intervento e descrivi cosa vuoi ottenere.
-            </p>
-          </div>
+                <p className="eg-body-muted mt-5">
+                  Ogni richiesta pu&ograve; includere lavorazioni diverse.
+                  Seleziona il tipo di intervento e descrivi cosa vuoi ottenere.
+                </p>
+              </div>
 
-          <div
-            className={cn(
-              "rounded-lg",
-              "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-7",
-            )}
-          >
-            <ul className="grid gap-4 sm:grid-cols-2">
-              {landing.requestItems.map((item) => (
-                <li
-                  key={item}
-                  className="flex gap-3 text-base leading-7 text-cantiere-ink-secondary"
-                >
-                  <CheckCircle2
-                    className="mt-1 size-5 shrink-0 text-cantiere-accent"
-                    aria-hidden={true}
-                    strokeWidth={1.8}
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="professionisti-collegati-title"
-          className="grid gap-8 border-y border-cantiere-hairline py-8 md:grid-cols-2 md:py-10"
-        >
-          <div className="space-y-4">
-            <h2
-              id="professionisti-collegati-title"
-              className="text-2xl font-semibold leading-8 text-cantiere-ink"
-            >
-              Professionisti collegati
-            </h2>
-
-            <p className="max-w-xl text-base leading-7 text-cantiere-ink-secondary">
-              In base al lavoro, potresti aver bisogno di una o più figure
-              specializzate.
-            </p>
-
-            <div className="flex flex-wrap gap-2">
-              {landing.professionalCategorySlugs.map((slug) => (
-                <SeoChip key={slug} label={formatSlugLabel(slug)} />
-              ))}
+              <div className="eg-panel p-5 md:p-7">
+                <ul className="grid gap-4 sm:grid-cols-2">
+                  {landing.requestItems.map((item) => (
+                    <li key={item} className="flex gap-3 text-sm leading-6 text-eg-ardesia">
+                      <span
+                        aria-hidden="true"
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold leading-8 text-cantiere-ink">
-              Interventi correlati
-            </h2>
+        <section aria-labelledby="professionisti-collegati-title" className="eg-section">
+          <div className="eg-container">
+            <div className="grid gap-12 border-y border-eg-hairline py-10 md:grid-cols-2">
+              <div>
+                <p className="eg-eyebrow">Professionisti</p>
 
-            <p className="max-w-xl text-base leading-7 text-cantiere-ink-secondary">
-              Collegamenti utili se stai pianificando lavori simili o
-              complementari.
-            </p>
+                <h2 id="professionisti-collegati-title" className="eg-h3 mt-4">
+                  Professionisti collegati
+                </h2>
 
-            <div className="flex flex-wrap gap-2">
-              {landing.relatedInterventionSlugs.map((slug) => (
-                <RelatedInterventionChip key={slug} slug={slug} />
-              ))}
+                <p className="eg-body-muted mt-4 max-w-[44ch]">
+                  In base al lavoro, potresti aver bisogno di una o pi&ugrave;
+                  figure specializzate.
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {landing.professionalCategorySlugs.map((slug) => (
+                    <SeoChip key={slug} label={formatSlugLabel(slug)} />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="eg-eyebrow">Collegamenti</p>
+
+                <h2 className="eg-h3 mt-4">Interventi correlati</h2>
+
+                <p className="eg-body-muted mt-4 max-w-[44ch]">
+                  Percorsi utili se stai pianificando lavori simili o
+                  complementari.
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {landing.relatedInterventionSlugs.map((slug) => (
+                    <RelatedInterventionChip key={slug} slug={slug} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {landing.relatedFunnelWork && landing.relatedFunnelWork.length > 0 ? (
-          <RelatedFunnelWork
-            taxonomyInterventionSlugs={landing.relatedFunnelWork}
-          />
+          <section className="eg-section bg-eg-calce-2">
+            <div className="eg-container">
+              <RelatedFunnelWork taxonomyInterventionSlugs={landing.relatedFunnelWork} />
+            </div>
+          </section>
         ) : null}
 
-        <GeoCostModule
-          geoSection={landing.geoSection}
-          costSection={landing.costSection}
-          funnelSlug={landing.funnelSlug}
-          costGuideHref={costGuideHref}
-        />
+        <section className="eg-section-large">
+          <div className="eg-container">
+            <GeoCostModule
+              geoSection={landing.geoSection}
+              costSection={landing.costSection}
+              funnelSlug={landing.funnelSlug}
+              costGuideHref={costGuideHref}
+            />
+          </div>
+        </section>
 
-        <SeoFaq faq={landing.faq} />
+        <section className="eg-section bg-eg-calce-2">
+          <div className="eg-container">
+            <SeoFaq faq={landing.faq} />
+          </div>
+        </section>
 
-        <section
-          className={cn(
-            "rounded-lg",
-            "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
-          )}
-        >
-          <div className="mx-auto max-w-3xl space-y-5">
-            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-              Racconta il lavoro e confronta i preventivi
-            </h2>
+        <section className="eg-section-large bg-eg-terra text-eg-calce">
+          <div className="eg-container-narrow text-center">
+            <p className="eg-eyebrow text-eg-calce/60">Prossimo passo</p>
 
-            <p className="text-base leading-7 text-cantiere-paper/75">
+            <h2 className="eg-h2 mt-4">Racconta il lavoro e confronta i preventivi</h2>
+
+            <p className="mt-5 text-[15px] leading-7 text-eg-calce/70">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
 
-            <Link
-              href={requestHref}
-              className={cn(
-                "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-lg",
-                "h-12 px-6 text-[15px]",
-                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-                "w-full gap-2 sm:w-auto",
-              )}
-            >
-              Va alla richiesta
-              <ArrowRight className="size-4" aria-hidden={true} />
+            <Link href={requestHref} className="eg-button-primary mt-8 w-full sm:w-auto">
+              Vai alla richiesta
             </Link>
           </div>
         </section>
       </div>
-    </PageShell>
+    </PublicShell>
   );
 }
 
@@ -244,24 +216,17 @@ function RelatedInterventionChip({ slug }: { slug: string }) {
   return <SeoChip label={label} />;
 }
 
-function SeoChip({
-  href,
-  label,
-}: {
-  href?: string;
-  label: string;
-}) {
-  const className = cn(
-    "rounded-full",
-    "inline-flex min-h-9 items-center border border-cantiere-hairline bg-cantiere-paper px-3 text-sm font-medium leading-5 text-cantiere-ink-secondary",
-    href
-      ? "transition-colors hover:border-cantiere-accent hover:text-cantiere-ink"
-      : "",
-  );
+function SeoChip({ href, label }: { href?: string; label: string }) {
+  const className = [
+    "inline-flex min-h-9 items-center rounded-full border border-eg-hairline bg-eg-calce px-3 text-sm font-medium leading-5 text-eg-ardesia",
+    href ? "transition-colors hover:border-eg-cotto hover:text-eg-cotto-dark" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   if (href) {
     return (
-      <Link href={href} className={className}>
+      <Link href={href} className={className} prefetch={false}>
         {label}
       </Link>
     );

@@ -1,111 +1,151 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { frozenTaxonomySource } from "@esigenta/taxonomy";
-import { PageShell, cn } from "@esigenta/ui";
+
+import { PublicShell } from "../shell/public-shell";
 
 export function ServicesHubPage() {
-  // "Esplora tutti i servizi" mostra esclusivamente i Group Service (vedi
-  // docs/seo-navigation/05_SEO_DOMAIN_VISION.md): gli interventi vivono solo dentro la
-  // futura pagina Hub del relativo Group Service, non qui. Fonte di verità unica del
-  // Group Service è il ProjectGroup della taxonomy (convergenza del dominio): nessun
-  // layer editoriale parallelo. frozenTaxonomySource è importato direttamente come già
-  // fa related-funnel-work.tsx; questo resta un Server Component perché il barrel
-  // @esigenta/taxonomy trascina codice Prisma/pg non bundlabile per il browser.
+  // /servizi espone i Group Service della taxonomy. Le pagine dei singoli
+  // group service arriveranno dopo: per ora le righe restano non cliccabili,
+  // cosi non promettiamo destinazioni che non esistono ancora.
   const groupServices = frozenTaxonomySource.projectGroups;
+  const interventionCount = groupServices.reduce(
+    (total, group) => total + group.interventions.length,
+    0,
+  );
 
   return (
-    <PageShell size="lg">
-      <div className="space-y-12 md:space-y-16">
-        <div className="max-w-3xl space-y-5">
-          <nav aria-label="Breadcrumb" className="text-sm text-cantiere-ink-secondary">
-            <Link
-              href="/"
-              className="font-medium text-cantiere-accent underline-offset-4 hover:underline"
-            >
-              Home
-            </Link>
-            <span aria-hidden="true" className="mx-2 text-cantiere-ink-secondary">
-              /
-            </span>
-            <span className="font-medium text-cantiere-ink">Servizi</span>
-          </nav>
+    <PublicShell>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-          <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink md:text-5xl">
-            Servizi
-          </h1>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]" aria-labelledby="services-title">
+          <div className="eg-container-narrow text-center">
+            <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+              <Link href="/" prefetch={false}>
+                Home
+              </Link>
+              <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                /
+              </span>
+              <span className="text-eg-terra">Servizi</span>
+            </nav>
 
-          <p className="text-lg leading-8 text-cantiere-ink-secondary">
-            Trova il professionista giusto per il tuo lavoro, dalla
-            ristrutturazione completa alla singola riparazione.
-          </p>
-        </div>
-
-        {groupServices.length > 0 ? (
-          <ul
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            aria-label="Group Service"
-          >
-            {groupServices.map((group) => (
-              <GroupServiceCard key={group.slug} name={group.name} />
-            ))}
-          </ul>
-        ) : (
-          <p className="text-base leading-7 text-cantiere-ink-secondary">
-            Il catalogo servizi è in preparazione. Torna a trovarci presto.
-          </p>
-        )}
-
-        <section
-          className={cn(
-            "rounded-[8px]",
-            "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
-          )}
-        >
-          <div className="mx-auto max-w-3xl space-y-5">
-            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-              Non hai trovato quello che cercavi?
-            </h2>
-
-            <p className="text-base leading-7 text-cantiere-paper/75">
-              Raccontaci il lavoro: ti aiutiamo a trovare il professionista
-              giusto anche se non vedi il tuo servizio qui sopra.
+            <p className="eg-eyebrow">Esplora per ambito</p>
+            <h1 id="services-title" className="eg-h1 mt-5">
+              Tutti i servizi, <strong>un solo metodo</strong>.
+            </h1>
+            <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+              Parti dall&apos;ambito della casa e arriva a una richiesta leggibile:
+              pochi passaggi, dati ordinati, professionisti piu adatti al lavoro.
             </p>
 
-            <Link
-              href="/"
-              className={cn(
-                "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-[8px]",
-                "h-12 px-6 text-[15px]",
-                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-                "w-full gap-2 sm:w-auto",
-              )}
-            >
-              Racconta il lavoro
-              <ArrowRight className="size-4" aria-hidden={true} />
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href="/" prefetch={false} className="eg-button-primary">
+                Racconta il lavoro <span aria-hidden="true">&rarr;</span>
+              </Link>
+              <Link href="#catalogo-servizi" className="eg-button-ghost">
+                Vedi gli ambiti <span aria-hidden="true">&darr;</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section id="catalogo-servizi" className="eg-section" aria-labelledby="catalog-title">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[760px] text-center">
+              <p className="eg-eyebrow">Catalogo operativo</p>
+              <h2 id="catalog-title" className="eg-h2 mt-4">
+                Ambiti chiari prima del preventivo.
+              </h2>
+              <p className="eg-body-muted mx-auto mt-5 max-w-[46ch]">
+                Ogni ambito raccoglie interventi affini: scegli il punto di
+                partenza, poi il funnel entra nel dettaglio del lavoro.
+              </p>
+            </div>
+
+            {groupServices.length > 0 ? (
+              <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]" aria-label="Ambiti servizio">
+                {groupServices.map((group, index) => (
+                  <GroupServiceRow
+                    key={group.slug}
+                    index={index + 1}
+                    name={group.name}
+                    interventionCount={group.interventions.length}
+                  />
+                ))}
+              </ul>
+            ) : (
+              <p className="eg-body-muted mx-auto mt-12 max-w-[46ch] text-center">
+                Il catalogo servizi e in preparazione. Torna a trovarci presto.
+              </p>
+            )}
+          </div>
+        </section>
+
+        <section className="eg-section-large bg-eg-calce-2" aria-labelledby="services-cta-title">
+          <div className="eg-container-narrow text-center">
+            <p className="eg-eyebrow">Non trovi il tuo lavoro?</p>
+            <h2 id="services-cta-title" className="eg-h2 mt-4">
+              Raccontalo comunque: lo traduciamo in una richiesta chiara.
+            </h2>
+            <p className="eg-body-muted mx-auto mt-5 max-w-[44ch]">
+              Anche se il servizio non compare ancora in catalogo, puoi partire
+              dal problema: Esigenta ti aiuta a portarlo verso il professionista
+              giusto.
+            </p>
+            <Link href="/" prefetch={false} className="eg-button-primary mt-9">
+              Inizia dalla home <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </section>
+
+        <section className="border-y border-eg-hairline bg-eg-calce" aria-label="Sintesi catalogo servizi">
+          <div className="eg-container grid grid-cols-2 md:grid-cols-4">
+            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">{groupServices.length}</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Ambiti di lavoro raccolti dalla taxonomy</p>
+            </div>
+            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">{interventionCount}</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Interventi disponibili dentro i funnel</p>
+            </div>
+            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">1</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Metodo unico, dalla richiesta alla scelta</p>
+            </div>
+            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">0</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Percorsi finti o link verso pagine non pronte</p>
+            </div>
+          </div>
+        </section>
       </div>
-    </PageShell>
+    </PublicShell>
   );
 }
 
-// La pagina Hub del Group Service non esiste ancora (vedi
-// docs/seo-navigation/05_SEO_DOMAIN_VISION.md, Step 2): la card resta non
-// cliccabile finché quella route non viene creata, per non linkare a una
-// destinazione inesistente.
-function GroupServiceCard({ name }: { name: string }) {
+function GroupServiceRow({
+  index,
+  name,
+  interventionCount,
+}: {
+  index: number;
+  name: string;
+  interventionCount: number;
+}) {
   return (
-    <li
-      className={cn(
-        "rounded-[8px]",
-        "flex items-center justify-between gap-4 border border-cantiere-hairline bg-cantiere-paper px-5 py-4",
-      )}
-    >
-      <span className="text-base font-medium text-cantiere-ink">{name}</span>
-      <span className="text-sm text-cantiere-ink-secondary">In arrivo</span>
+    <li className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
+      <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">{String(index).padStart(2, "0")}</span>
+      <div>
+        <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em]">{name}</h3>
+        <p className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia">
+          Ambito pronto per raccogliere richieste e dettagli del lavoro.
+        </p>
+      </div>
+      <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
+        {interventionCount} {interventionCount === 1 ? "intervento" : "interventi"}
+      </span>
     </li>
   );
 }

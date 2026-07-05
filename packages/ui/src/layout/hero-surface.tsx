@@ -51,7 +51,7 @@ export function HeroSurface(props: HeroSurfaceProps) {
       data-ui="marketing-surface"
       data-variant="hero"
       className={cn(
-        "relative overflow-visible bg-cantiere-ink px-5 py-6 text-cantiere-paper md:px-8 md:py-8 xl:px-10 xl:py-10",
+        "relative overflow-visible bg-eg-terra px-5 py-6 text-eg-calce md:px-8 md:py-8 xl:px-10 xl:py-10",
         className,
       )}
     >

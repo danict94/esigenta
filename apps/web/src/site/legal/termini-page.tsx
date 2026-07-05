@@ -1,160 +1,144 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 
-import {
-  Badge,
-  Card,
-  Container,
-} from "@esigenta/ui"
-
-import { PublicShell } from "../shell/public-shell"
+import { PublicShell } from "../shell/public-shell";
 import {
   getFiscalUpdateNotice,
   getInitialPhaseNotice,
   getLegalControllerLabel,
   legalProfile,
-} from "./legal-profile"
-import { LegalSection } from "./legal-section"
+} from "./legal-profile";
+import { LegalSection } from "./legal-section";
 
 export const metadata: Metadata = {
   title: "Termini di servizio | Esigenta",
   description:
     "Termini di servizio Esigenta per clienti, imprese e professionisti.",
-}
+};
 
 const userRules = [
   "clienti e imprese devono fornire dati corretti, aggiornati e non ingannevoli",
   "le richieste devono descrivere interventi reali e non contenere contenuti illeciti o offensivi",
   "le imprese devono usare l'area riservata nel rispetto delle regole della piattaforma",
   "le credenziali di accesso devono essere custodite con attenzione",
-]
+];
 
 const platformLimits = [
   "Esigenta non esegue direttamente i lavori richiesti",
   "imprese e professionisti sono soggetti terzi e autonomi",
   "Esigenta non garantisce disponibilita, numero di preventivi o conclusione del lavoro",
   "preventivi, sopralluoghi, contratti e lavori restano sotto responsabilita delle parti coinvolte",
-]
+];
 
 export function TerminiPage() {
-  const initialNotice = getInitialPhaseNotice()
-  const fiscalNotice = getFiscalUpdateNotice()
+  const initialNotice = getInitialPhaseNotice();
+  const fiscalNotice = getFiscalUpdateNotice();
 
   return (
     <PublicShell>
-      <Container size="lg" gutter="md">
-        <article className="pt-(--fp-nav-clear) pb-12 md:pb-16">
-          <header className="max-w-3xl">
-            <Badge variant="success">Termini</Badge>
-            <h1 className="mt-5 text-4xl font-semibold tracking-tight text-cantiere-ink">
-              Termini di servizio
-            </h1>
-            <p className="mt-4 text-sm leading-6 text-cantiere-ink-secondary">
-              Questi termini regolano l&apos;uso di {legalProfile.projectName}, una
-              piattaforma di raccolta richieste e contatto tra clienti e
-              imprese/professionisti.
-            </p>
-          </header>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-          <div className="mt-8 grid gap-5">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Gestore del servizio
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Il servizio e gestito da {getLegalControllerLabel()} per il
-                progetto {legalProfile.projectName}.
+        <article className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <header className="mx-auto max-w-[760px] text-center">
+              <p className="eg-eyebrow">Termini</p>
+              <h1 className="eg-h1 mt-5">Termini di servizio.</h1>
+              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+                Le regole d'uso di {legalProfile.projectName}, piattaforma di
+                raccolta richieste e contatto tra clienti e
+                imprese/professionisti.
               </p>
-              {legalProfile.legalMode === "business_registered" &&
-              legalProfile.businessName ? (
-                <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                  Ragione sociale: {legalProfile.businessName}.
+            </header>
+
+            <div className="mx-auto mt-12 grid max-w-[860px] gap-5">
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Gestore del servizio</h2>
+                <p className="eg-body-muted mt-3">
+                  Il servizio e gestito da {getLegalControllerLabel()} per il
+                  progetto {legalProfile.projectName}.
                 </p>
-              ) : null}
-              {legalProfile.hasVatNumber && legalProfile.vatNumber ? (
-                <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                  P.IVA: {legalProfile.vatNumber}.
+                {legalProfile.legalMode === "business_registered" &&
+                legalProfile.businessName ? (
+                  <p className="eg-body-muted mt-3">
+                    Ragione sociale: {legalProfile.businessName}.
+                  </p>
+                ) : null}
+                {legalProfile.hasVatNumber && legalProfile.vatNumber ? (
+                  <p className="eg-body-muted mt-3">
+                    P.IVA: {legalProfile.vatNumber}.
+                  </p>
+                ) : null}
+                {legalProfile.registeredOffice ? (
+                  <p className="eg-body-muted mt-3">
+                    Sede legale: {legalProfile.registeredOffice}.
+                  </p>
+                ) : null}
+                {initialNotice || fiscalNotice ? (
+                  <p className="eg-body-muted mt-4 border-t border-eg-hairline pt-4">
+                    {initialNotice ?? fiscalNotice}
+                  </p>
+                ) : null}
+              </section>
+
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Ruolo di Esigenta</h2>
+                <p className="eg-body-muted mt-3">
+                  Esigenta raccoglie richieste, le organizza e puo metterle a
+                  disposizione di imprese o professionisti registrati. Esigenta
+                  non e l&apos;impresa che svolge il lavoro e non sostituisce
+                  accordi, preventivi o contratti tra cliente e professionista.
                 </p>
-              ) : null}
-              {legalProfile.registeredOffice ? (
-                <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                  Sede legale: {legalProfile.registeredOffice}.
+              </section>
+
+              <LegalSection title="Regole per utenti e imprese" items={userRules} />
+              <LegalSection title="Limiti del servizio" items={platformLimits} />
+
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Crediti e pagamenti</h2>
+                <p className="eg-body-muted mt-3">
+                  Se i pacchetti crediti sono attivi, prezzo, quantita, durata e
+                  condizioni operative sono quelli mostrati prima
+                  dell&apos;acquisto. Il pagamento viene gestito tramite Stripe.
+                  I crediti possono essere usati secondo le regole della
+                  piattaforma e non garantiscono automaticamente aggiudicazione
+                  di lavori, preventivi o contatti conclusivi.
                 </p>
-              ) : null}
-              {initialNotice || fiscalNotice ? (
-                <p className="mt-4 border-t border-cantiere-hairline pt-4 text-sm leading-6 text-cantiere-ink-secondary">
-                  {initialNotice ?? fiscalNotice}
+              </section>
+
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Account impresa</h2>
+                <p className="eg-body-muted mt-3">
+                  L&apos;impresa deve inserire dati corretti e aggiornati.
+                  Esigenta puo verificare il profilo, limitarne le funzioni,
+                  sospenderlo o bloccarlo in caso di dati non coerenti, uso
+                  improprio o esigenze di sicurezza.
                 </p>
-              ) : null}
-            </Card>
+              </section>
 
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Ruolo di Esigenta
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Esigenta raccoglie richieste, le organizza e puo metterle a
-                disposizione di imprese o professionisti registrati. Esigenta
-                non e l&apos;impresa che svolge il lavoro e non sostituisce accordi,
-                preventivi o contratti tra cliente e professionista.
-              </p>
-            </Card>
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Contatti</h2>
+                <p className="eg-body-muted mt-3">
+                  Per richieste di supporto o chiarimenti sui termini e
+                  possibile scrivere a {legalProfile.supportEmail}.
+                </p>
+              </section>
 
-            <LegalSection title="Regole per utenti e imprese" items={userRules} />
-            <LegalSection title="Limiti del servizio" items={platformLimits} />
-
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Crediti e pagamenti
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Se i pacchetti crediti sono attivi, prezzo, quantita, durata e
-                condizioni operative sono quelli mostrati prima dell&apos;acquisto.
-                Il pagamento viene gestito tramite Stripe. I crediti possono
-                essere usati secondo le regole della piattaforma e non
-                garantiscono automaticamente aggiudicazione di lavori,
-                preventivi o contatti conclusivi.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Account impresa
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                L&apos;impresa deve inserire dati corretti e aggiornati. Esigenta puo
-                verificare il profilo, limitarne le funzioni, sospenderlo o
-                bloccarlo in caso di dati non coerenti, uso improprio o esigenze
-                di sicurezza.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Contatti
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Per richieste di supporto o chiarimenti sui termini e possibile
-                scrivere a {legalProfile.supportEmail}.
-              </p>
-            </Card>
-
-            <Card className="bg-cantiere-linen p-6">
-              <h2 className="text-xl font-semibold text-cantiere-ink">
-                Nota di revisione
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
-                Documento operativo in bozza. Deve essere revisionato prima del
-                lancio commerciale pieno e aggiornato quando saranno disponibili
-                dati fiscali, ragione sociale, sede e condizioni definitive dei
-                pacchetti.
-              </p>
-              <p className="mt-3 text-xs text-cantiere-ink-secondary">
-                Ultimo aggiornamento: {legalProfile.lastUpdated}
-              </p>
-            </Card>
+              <section className="eg-panel bg-eg-calce-2 p-6">
+                <h2 className="eg-h3">Nota di revisione</h2>
+                <p className="eg-body-muted mt-3">
+                  Documento operativo in bozza. Deve essere revisionato prima del
+                  lancio commerciale pieno e aggiornato quando saranno
+                  disponibili dati fiscali, ragione sociale, sede e condizioni
+                  definitive dei pacchetti.
+                </p>
+                <p className="eg-mono-label mt-4">
+                  Ultimo aggiornamento: {legalProfile.lastUpdated}
+                </p>
+              </section>
+            </div>
           </div>
         </article>
-      </Container>
+      </div>
     </PublicShell>
-  )
+  );
 }

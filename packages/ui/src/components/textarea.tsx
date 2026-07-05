@@ -1,4 +1,4 @@
-﻿import type { TextareaHTMLAttributes } from "react"
+import type { TextareaHTMLAttributes } from "react"
 
 import { cn } from "../lib/cn"
 
@@ -12,7 +12,7 @@ export function Textarea({
   return (
     <textarea
       className={cn(
-        "min-h-24 w-full resize-none border border-cantiere-hairline bg-cantiere-paper px-4 py-3 text-sm text-cantiere-ink outline-none transition-colors placeholder:text-cantiere-ink-secondary focus:border-cantiere-accent disabled:cursor-not-allowed disabled:opacity-60",
+        "min-h-24 w-full resize-none border border-eg-hairline bg-eg-calce px-4 py-3 text-sm text-eg-terra outline-none transition-colors placeholder:text-eg-ardesia focus:border-eg-cotto disabled:cursor-not-allowed disabled:opacity-60",
         className,
       )}
       {...props}

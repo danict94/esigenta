@@ -50,15 +50,15 @@ export async function NotificationsPage() {
       <section className="space-y-7">
         <div className="flex items-end justify-between pt-4">
           <div>
-            <p className="text-sm font-medium text-cantiere-ink-secondary">
+            <p className="text-sm font-medium text-eg-ardesia">
               Dashboard impresa
             </p>
 
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-eg-terra">
               Notifiche
             </h1>
 
-            <p className="mt-1 text-sm text-cantiere-ink-secondary">
+            <p className="mt-1 text-sm text-eg-ardesia">
               {unreadCount} non lette
             </p>
           </div>

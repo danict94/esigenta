@@ -1,74 +1,69 @@
-import { Container, cn } from "@esigenta/ui";
-
 import {
   RequestFlowError,
   verifyRequestEmail,
   verifyRequestEmailByToken,
-} from "@esigenta/domain"
+} from "@esigenta/domain";
 
-import { PublicShell } from "../../site/shell/public-shell"
-import { CustomerRequestsNav } from "../comunicazioni/components/customer-requests-nav"
+import { PublicShell } from "../../site/shell/public-shell";
+import { CustomerRequestsNav } from "../comunicazioni/components/customer-requests-nav";
 
 type RequestVerificationPageProps = {
-  requestId?: string
-  token?: string
-}
+  requestId?: string;
+  token?: string;
+};
 
 function buildStatusUrl(statusToken: string) {
-  return `/stato-richiesta/${encodeURIComponent(statusToken)}`
+  return `/stato-richiesta/${encodeURIComponent(statusToken)}`;
 }
 
 async function verifyFromParams({
   requestId,
   token,
 }: {
-  requestId?: string
-  token?: string
+  requestId?: string;
+  token?: string;
 }) {
   if (!token) {
     return {
       ok: false as const,
       title: "Link non valido",
-      message:
-        "Il link di conferma non contiene tutti i dati necessari.",
-    }
+      message: "Il link di conferma non contiene tutti i dati necessari.",
+    };
   }
 
   try {
-    // D-014: requestId present -> legacy query-param link (already emitted,
-    // kept working as-is). Absent -> new single-token link
-    // (/verifica-richiesta/[token]), resolved purely from the token.
+    // D-014: requestId presente = link legacy query-param gia emesso.
+    // Senza requestId = nuovo link single-token (/verifica-richiesta/[token]).
     const result = requestId
       ? await verifyRequestEmail({ requestId, token })
-      : await verifyRequestEmailByToken({ token })
+      : await verifyRequestEmailByToken({ token });
 
     if (result.status === "ALREADY_VERIFIED") {
       return {
         ok: true as const,
-        title: "Richiesta già confermata",
-        message: "Ora è in attesa di revisione.",
+        title: "Richiesta gia confermata",
+        message: "Ora e in attesa di revisione.",
         historyAccessToken: null,
         statusUrl: undefined,
-      }
+      };
     }
 
     return {
       ok: true as const,
       title: "Richiesta confermata",
-      message: "Ora è in attesa di revisione.",
-      statusUrl:
-        result.statusAccessToken
-          ? buildStatusUrl(result.statusAccessToken)
-          : undefined,
+      message: "Ora e in attesa di revisione.",
+      statusUrl: result.statusAccessToken
+        ? buildStatusUrl(result.statusAccessToken)
+        : undefined,
       historyAccessToken: result.historyAccessToken ?? null,
-    }
+    };
   } catch (error) {
     if (error instanceof RequestFlowError) {
       return {
         ok: false as const,
         title: "Conferma non riuscita",
         message: error.message,
-      }
+      };
     }
 
     return {
@@ -76,7 +71,7 @@ async function verifyFromParams({
       title: "Conferma non riuscita",
       message:
         "Non siamo riusciti a confermare la richiesta. Riprova tra poco.",
-    }
+    };
   }
 }
 
@@ -84,79 +79,50 @@ export async function RequestVerificationPage({
   requestId,
   token,
 }: RequestVerificationPageProps) {
-  const result = await verifyFromParams({ requestId, token })
-
-  const primaryLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
+  const result = await verifyFromParams({ requestId, token });
 
   return (
     <PublicShell>
-      <section className={"py-20 md:py-28 lg:py-32"}>
-        <Container size="sm">
-          <div
-            className={cn(
-              "border border-cantiere-hairline bg-cantiere-paper p-6",
-              "rounded-[8px]",
-              "shadow-cantiere-elevation",
-            )}
-          >
-            <div className="flex flex-col gap-5">
-              {result.ok ? (
-                <CustomerRequestsNav
-                  token={result.historyAccessToken ?? undefined}
-                />
-              ) : null}
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-              <p
-                className={cn(
-                  "text-sm font-medium",
-                  result.ok ? "text-cantiere-accent" : "text-cantiere-ink-secondary",
-                )}
-              >
-                Conferma richiesta
-              </p>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container-narrow">
+            <div className="eg-panel p-6 md:p-8">
+              <div className="flex flex-col gap-6">
+                {result.ok ? (
+                  <CustomerRequestsNav
+                    token={result.historyAccessToken ?? undefined}
+                  />
+                ) : null}
 
-              <div className="space-y-3">
-                <h1
-                  className={cn(
-                    "text-cantiere-ink",
-                    "font-medium text-cantiere-heading",
-                  )}
-                >
-                  {result.title}
-                </h1>
+                <div>
+                  <p className="eg-eyebrow">Conferma richiesta</p>
 
-                <p
-                  className={cn(
-                    "text-base leading-7",
-                    "text-cantiere-ink-secondary",
-                  )}
-                >
-                  {result.message}
-                </p>
+                  <h1 className="eg-h2 mt-4">{result.title}</h1>
+
+                  <p className="eg-body-muted mt-4">{result.message}</p>
+                </div>
+
+                {result.ok ? (
+                  <>
+                    <p className="eg-body-muted">
+                      In futuro puoi tornare dalla voce Storico richieste e
+                      vedere le richieste inviate con questa email.
+                    </p>
+
+                    {result.statusUrl ? (
+                      <a href={result.statusUrl} className="eg-button-primary w-full sm:w-fit">
+                        Vedi stato richiesta
+                      </a>
+                    ) : null}
+                  </>
+                ) : null}
               </div>
-
-              {result.ok ? (
-                <>
-                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                    In futuro puoi tornare dalla voce Storico richieste e vedere
-                    le richieste inviate con questa email.
-                  </p>
-
-                  {result.statusUrl ? (
-                    <a
-                      href={result.statusUrl}
-                      className={primaryLinkClass}
-                    >
-                      Vedi stato richiesta
-                    </a>
-                  ) : null}
-                </>
-              ) : null}
             </div>
           </div>
-        </Container>
-      </section>
+        </section>
+      </div>
     </PublicShell>
-  )
+  );
 }

@@ -1,59 +1,52 @@
-const cantiereColorTokens = {
-  ink: "#18181B",
-  inkSecondary: "#57575F",
-  paper: "#F1F1F3",
-  paperTranslucent: "rgba(241, 241, 243, 0.72)",
-  surface: "#E7E7EB",
-  linen: "#ECECEF",
-  hairline: "#E0E0E5",
-  accent: "#CC785C",
-  accentHover: "#B05E3F",
-  accentTint: "#F5E8DF",
-  // Lighter step of the accent hue, for a "middle tier" detail (e.g. the
-  // standard-tier medal star) that should read as toned-down, not full accent.
-  accentSoft: "#DDA88E",
-  // Distinct warm gold/bronze hue reserved for top-tier details, so
-  // "premium" has its own material instead of "bigger accent". See
-  // globals.css for the underlying CSS variables.
-  bronze: "#9C7233",
-  bronzeTint: "#DECFBA",
+const egColorTokens = {
+  calce: "#F8F4ED",
+  calce2: "#F1EBDF",
+  calceTranslucent: "rgba(248, 244, 237, 0.72)",
+  terra: "#2B2520",
+  cotto: "#BF6F4A",
+  cottoDark: "#A35A39",
+  cottoTint: "rgba(191, 111, 74, 0.12)",
+  salvia: "#7E8C6F",
+  verdeConferma: "#36B26B",
+  miele: "#D9A441",
+  mieleTint: "rgba(217, 164, 65, 0.24)",
+  ardesia: "rgba(43, 37, 32, 0.62)",
+  ardesia2: "rgba(43, 37, 32, 0.38)",
+  hairline: "rgba(43, 37, 32, 0.14)",
 } as const;
 
-const cantiereShadowTokens = {
-  elevation: "shadow-cantiere-elevation",
-  slab: "shadow-cantiere-slab",
-  // Deeper lift for a single featured card among same-size siblings
-  // (e.g. recommended pricing tier). See globals.css for the values.
-  elevationLg: "shadow-cantiere-elevation-lg",
+const egShadowTokens = {
+  elevation: "shadow-eg-elevation",
+  slab: "shadow-eg-slab",
+  elevationLg: "shadow-eg-elevation-lg",
 } as const;
 
-const cantiereRadiusTokens = {
-  sm: "rounded-[4px]",
-  md: "rounded-[6px]",
-  lg: "rounded-[8px]",
+const egRadiusTokens = {
+  sm: "rounded-eg-sm",
+  md: "rounded-eg-md",
+  lg: "rounded-eg-lg",
 } as const;
 
-// Fluid display type. The utilities are generated from `--text-cantiere-*` in
-// globals.css (size + bundled leading/tracking/weight); these className tokens
-// are the JS handle so call sites never re-type a raw clamp.
-const cantiereTextTokens = {
-  display: "text-cantiere-display",
-  heading: "text-cantiere-heading",
+const egTextTokens = {
+  display: "text-eg-display",
+  heading: "text-eg-heading",
+  lede: "text-eg-lede",
 } as const;
 
 export const tokens = {
-  cantiere: {
-    color: cantiereColorTokens,
-    shadow: cantiereShadowTokens,
-    radius: cantiereRadiusTokens,
-    text: cantiereTextTokens,
+  eg: {
+    color: egColorTokens,
+    shadow: egShadowTokens,
+    radius: egRadiusTokens,
+    text: egTextTokens,
   },
 } as const;
 
 export type Tokens = typeof tokens;
 
-export type CantiereToken = keyof typeof tokens.cantiere;
-export type CantiereColorToken = keyof typeof tokens.cantiere.color;
-export type CantiereShadowToken = keyof typeof tokens.cantiere.shadow;
-export type CantiereRadiusToken = keyof typeof tokens.cantiere.radius;
-export type CantiereTextToken = keyof typeof tokens.cantiere.text;
+export type EgToken = keyof typeof tokens.eg;
+export type EgColorToken = keyof typeof tokens.eg.color;
+export type EgShadowToken = keyof typeof tokens.eg.shadow;
+export type EgRadiusToken = keyof typeof tokens.eg.radius;
+export type EgTextToken = keyof typeof tokens.eg.text;
+export type EsigentaColorToken = EgColorToken;

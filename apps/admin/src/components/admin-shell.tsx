@@ -54,21 +54,21 @@ function AdminLogo({ onClick }: { onClick: () => void }) {
     <Link
       href="/"
       onClick={onClick}
-      className="inline-flex items-center gap-3 text-[1.375rem] font-semibold leading-none tracking-[-0.06em] text-cantiere-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-cantiere-accent focus-visible:ring-offset-4 focus-visible:ring-offset-cantiere-paper md:text-2xl"
+      className="inline-flex items-center gap-3 text-[1.375rem] font-semibold leading-none tracking-[-0.06em] text-eg-terra focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-4 focus-visible:ring-offset-eg-calce md:text-2xl"
       aria-label="esigenta Admin dashboard"
     >
       <span
         aria-hidden="true"
-        className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-cantiere-accent text-[0.875rem] font-semibold leading-none tracking-[-0.06em] text-cantiere-paper"
+        className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-eg-cotto text-[0.875rem] font-semibold leading-none tracking-[-0.06em] text-eg-calce"
       >
         E
       </span>
 
       <span className="grid min-w-0 gap-0.5">
-        <span className="truncate text-base font-semibold leading-none tracking-tight text-cantiere-ink">
+        <span className="truncate text-base font-semibold leading-none tracking-tight text-eg-terra">
           esigenta Admin
         </span>
-        <span className="truncate text-xs font-medium leading-none text-cantiere-ink-secondary">
+        <span className="truncate text-xs font-medium leading-none text-eg-ardesia">
           Control room
         </span>
       </span>
@@ -119,8 +119,8 @@ function DesktopNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "relative inline-flex items-center gap-2 py-2 text-[0.9375rem] font-medium leading-none tracking-[-0.06em] text-cantiere-ink transition-colors hover:text-cantiere-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-cantiere-accent focus-visible:ring-offset-4 focus-visible:ring-offset-cantiere-paper",
-        isActive && "text-cantiere-accent",
+        "relative inline-flex items-center gap-2 py-2 text-[0.9375rem] font-medium leading-none tracking-[-0.06em] text-eg-terra transition-colors hover:text-eg-cotto focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-4 focus-visible:ring-offset-eg-calce",
+        isActive && "text-eg-cotto",
       )}
     >
       <span>{item.label}</span>
@@ -134,7 +134,7 @@ function DesktopNavLink({
       {isActive ? (
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 -bottom-0.5 h-px bg-cantiere-accent"
+          className="absolute inset-x-0 -bottom-0.5 h-px bg-eg-cotto"
         />
       ) : null}
     </Link>
@@ -156,8 +156,8 @@ function MobileNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "flex items-center justify-between gap-3 px-2 py-3 text-base font-medium tracking-[-0.06em] text-cantiere-ink transition-colors hover:text-cantiere-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-cantiere-accent focus-visible:ring-offset-2 focus-visible:ring-offset-cantiere-paper",
-        isActive && "text-cantiere-accent",
+        "flex items-center justify-between gap-3 px-2 py-3 text-base font-medium tracking-[-0.06em] text-eg-terra transition-colors hover:text-eg-cotto focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-2 focus-visible:ring-offset-eg-calce",
+        isActive && "text-eg-cotto",
       )}
     >
       <span>{item.label}</span>
@@ -191,8 +191,8 @@ export function AdminShell({
   }
 
   return (
-    <div className="min-h-screen bg-cantiere-paper text-cantiere-ink">
-      <header className="sticky top-0 z-40 border-b border-cantiere-hairline bg-cantiere-paper-translucent backdrop-blur">
+    <div className="min-h-screen bg-eg-calce text-eg-terra">
+      <header className="sticky top-0 z-40 border-b border-eg-hairline bg-eg-calce-translucent backdrop-blur">
         <Container
           size="lg"
           gutter="md"
@@ -215,7 +215,7 @@ export function AdminShell({
             size="sm"
             aria-label={isMenuOpen ? "Chiudi menu admin" : "Apri menu admin"}
             aria-expanded={isMenuOpen}
-            className="h-10 w-10 rounded-[6px] px-0 text-cantiere-ink hover:bg-cantiere-surface focus-visible:ring-2 focus-visible:ring-cantiere-accent focus-visible:ring-offset-2 focus-visible:ring-offset-cantiere-paper md:hidden"
+            className="h-10 w-10 rounded-[6px] px-0 text-eg-terra hover:bg-eg-calce-2 focus-visible:ring-2 focus-visible:ring-eg-cotto focus-visible:ring-offset-2 focus-visible:ring-offset-eg-calce md:hidden"
             onClick={() => {
               setIsMenuOpen((current) => !current);
             }}
@@ -225,7 +225,7 @@ export function AdminShell({
         </Container>
 
         {isMenuOpen ? (
-          <div className="border-t border-cantiere-hairline bg-cantiere-paper md:hidden">
+          <div className="border-t border-eg-hairline bg-eg-calce md:hidden">
             <Container size="lg" gutter="md">
               <nav
                 aria-label="Navigazione admin mobile"

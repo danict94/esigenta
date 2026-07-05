@@ -70,7 +70,7 @@ export function AdminLoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="email"
-          className="text-sm font-medium text-cantiere-ink"
+          className="text-sm font-medium text-eg-terra"
         >
           Email
         </label>
@@ -91,7 +91,7 @@ export function AdminLoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="password"
-          className="text-sm font-medium text-cantiere-ink"
+          className="text-sm font-medium text-eg-terra"
         >
           Password
         </label>
@@ -110,7 +110,7 @@ export function AdminLoginForm() {
       </div>
 
       {error ? (
-        <p className="border border-cantiere-accent bg-cantiere-linen px-3 py-2 text-sm text-cantiere-ink">
+        <p className="border border-eg-cotto bg-eg-calce-2 px-3 py-2 text-sm text-eg-terra">
           {error}
         </p>
       ) : null}
@@ -118,7 +118,7 @@ export function AdminLoginForm() {
       <div className="flex justify-end">
         <Link
           href="/admin/recupera-password"
-          className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+          className="text-sm font-semibold text-eg-cotto transition-colors hover:text-eg-cotto-dark"
         >
           Recupera password
         </Link>

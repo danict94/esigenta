@@ -3,12 +3,6 @@
 import { useEffect, useRef, useState, } from 'react'
 
 import {
-  MapPin, } from 'lucide-react'
-
-import {
-  Button, cn, Input } from '@esigenta/ui';
-
-import {
   type GeoPlace,
   resolvePlaceFromGooglePlace,
 } from '@esigenta/shared'
@@ -83,6 +77,12 @@ const GOOGLE_MAPS_SCRIPT_ID =
 let googleMapsPlacesPromise:
   | Promise<void>
   | null = null
+
+function joinClasses(
+  ...classes: Array<string | false | null | undefined>
+) {
+  return classes.filter(Boolean).join(' ')
+}
 
 function getGoogleMapsWindow() {
   return window as GoogleMapsWindow
@@ -424,10 +424,9 @@ export function CityAutocomplete({
   return (
     <div className="grid gap-2">
       <div className="relative">
-        <Input
+        <input
           id={id}
           ref={inputRef}
-          size="lg"
           value={inputValue}
           onChange={(event) => {
             const address =
@@ -448,37 +447,33 @@ export function CityAutocomplete({
             )
           }}
           placeholder={placeholder}
-          className={cn(
-            "rounded-[8px]",
-            "h-16 pr-14 text-lg",
+          className={joinClasses(
+            "h-16 w-full border-0 border-b border-eg-terra bg-transparent pr-14 text-lg text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark",
             className,
           )}
         />
 
-        <MapPin
-          className="pointer-events-none absolute right-6 top-1/2 size-7 -translate-y-1/2 text-cantiere-ink-secondary"
+        <span
+          className="pointer-events-none absolute right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-eg-cotto-dark"
           aria-hidden="true"
-          strokeWidth={1.5}
         />
       </div>
 
       {message ? (
         <div className="grid gap-2">
-          <p className="text-xs text-cantiere-ink-secondary">
+          <p className="eg-form-help">
             {message}
           </p>
 
           {!hasFunctionalConsent &&
           hasGoogleMapsApiKey ? (
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="w-fit"
+              className="eg-button-ghost min-h-9 w-fit px-4"
               onClick={openCookiePreferences}
             >
               Abilita suggerimenti
-            </Button>
+            </button>
           ) : null}
         </div>
       ) : null}

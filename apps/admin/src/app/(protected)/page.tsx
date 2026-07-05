@@ -56,35 +56,35 @@ function getToneClasses(tone: VisualTone) {
   if (tone === "warm") {
     return {
       frame:
-        "border-cantiere-accent bg-cantiere-linen text-cantiere-accent",
-      fill: "bg-cantiere-accent",
-      soft: "bg-cantiere-linen",
+        "border-eg-cotto bg-eg-calce-2 text-eg-cotto",
+      fill: "bg-eg-cotto",
+      soft: "bg-eg-calce-2",
     }
   }
 
   if (tone === "danger") {
     return {
       frame:
-        "border-cantiere-accent bg-cantiere-paper text-cantiere-ink",
+        "border-eg-cotto bg-eg-calce text-eg-terra",
       fill: "bg-text-primary",
-      soft: "bg-cantiere-linen",
+      soft: "bg-eg-calce-2",
     }
   }
 
   if (tone === "primary") {
     return {
       frame:
-        "border-cantiere-accent bg-cantiere-linen text-cantiere-accent",
-      fill: "bg-cantiere-accent",
-      soft: "bg-cantiere-linen",
+        "border-eg-cotto bg-eg-calce-2 text-eg-cotto",
+      fill: "bg-eg-cotto",
+      soft: "bg-eg-calce-2",
     }
   }
 
   return {
     frame:
-      "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary",
+      "border-eg-hairline bg-eg-calce text-eg-ardesia",
     fill: "bg-text-muted",
-    soft: "bg-cantiere-surface",
+    soft: "bg-eg-calce-2",
   }
 }
 
@@ -99,8 +99,8 @@ function Panel({
     <section
       className={cn(
         "rounded-[8px]",
-        "shadow-cantiere-elevation",
-        "border border-cantiere-hairline bg-cantiere-paper p-5 md:p-6",
+        "shadow-eg-elevation",
+        "border border-eg-hairline bg-eg-calce p-5 md:p-6",
         className,
       )}
     >
@@ -119,12 +119,12 @@ function SectionHeader({
   return (
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0">
-        <h2 className="text-lg font-semibold tracking-tight text-cantiere-ink">
+        <h2 className="text-lg font-semibold tracking-tight text-eg-terra">
           {title}
         </h2>
 
         {description ? (
-          <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="mt-1 text-sm leading-6 text-eg-ardesia">
             {description}
           </p>
         ) : null}
@@ -221,7 +221,7 @@ function InlineCta({
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-eg-cotto transition-colors hover:text-eg-cotto-dark"
     >
       <span>{children}</span>
       <span aria-hidden="true">-&gt;</span>
@@ -235,8 +235,8 @@ function QueueRow({ item }: { item: QueueItem }) {
   return (
     <div
       className={cn(
-        "grid gap-4 border-b border-cantiere-hairline px-1 py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_5.5rem_auto] sm:items-center sm:gap-5",
-        hasWork && "bg-cantiere-linen/60",
+        "grid gap-4 border-b border-eg-hairline px-1 py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_5.5rem_auto] sm:items-center sm:gap-5",
+        hasWork && "bg-eg-calce-2/60",
       )}
     >
       <div className="flex min-w-0 items-start gap-3">
@@ -246,10 +246,10 @@ function QueueRow({ item }: { item: QueueItem }) {
         />
 
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-cantiere-ink">
+          <p className="text-sm font-semibold text-eg-terra">
             {item.label}
           </p>
-          <p className="mt-1 text-sm leading-5 text-cantiere-ink-secondary">
+          <p className="mt-1 text-sm leading-5 text-eg-ardesia">
             {item.description}
           </p>
         </div>
@@ -258,7 +258,7 @@ function QueueRow({ item }: { item: QueueItem }) {
       <p
         className={cn(
           "text-3xl font-semibold leading-none tracking-tight sm:text-right",
-          hasWork ? "text-cantiere-ink" : "text-cantiere-ink-secondary",
+          hasWork ? "text-eg-terra" : "text-eg-ardesia",
         )}
       >
         {formatCount(item.value)}
@@ -277,22 +277,22 @@ function MarketplaceMetricItem({
   metric: MarketplaceMetric
 }) {
   return (
-    <div className="min-w-0 border-b border-cantiere-hairline pb-4 last:border-b-0 sm:border-b-0 sm:pb-0">
+    <div className="min-w-0 border-b border-eg-hairline pb-4 last:border-b-0 sm:border-b-0 sm:pb-0">
       <div className="flex items-center gap-3">
         <IconMark
           icon={metric.icon}
           tone={metric.tone}
         />
 
-        <p className="text-3xl font-semibold leading-none tracking-tight text-cantiere-ink">
+        <p className="text-3xl font-semibold leading-none tracking-tight text-eg-terra">
           {formatCount(metric.value)}
         </p>
       </div>
 
-      <p className="mt-3 text-sm font-semibold text-cantiere-ink">
+      <p className="mt-3 text-sm font-semibold text-eg-terra">
         {metric.label}
       </p>
-      <p className="mt-1 text-xs leading-5 text-cantiere-ink-secondary">
+      <p className="mt-1 text-xs leading-5 text-eg-ardesia">
         {metric.description}
       </p>
     </div>
@@ -314,14 +314,14 @@ function MicroBar({
   return (
     <div>
       <div className="flex items-center justify-between gap-4 text-xs">
-        <span className="font-medium text-cantiere-ink-secondary">
+        <span className="font-medium text-eg-ardesia">
           {item.label}
         </span>
-        <span className="font-semibold text-cantiere-ink">
+        <span className="font-semibold text-eg-terra">
           {formatCount(item.value)}
         </span>
       </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-cantiere-linen">
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-eg-calce-2">
         <div
           className={cn(
             "h-full rounded-full",
@@ -348,9 +348,9 @@ function DistributionPanel({
   items: DistributionItem[]
 }) {
   return (
-    <div className="border-t border-cantiere-hairline pt-5">
+    <div className="border-t border-eg-hairline pt-5">
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-sm font-semibold text-cantiere-ink">
+        <h3 className="text-sm font-semibold text-eg-terra">
           {title}
         </h3>
         <Badge variant="neutral" size="sm">
@@ -369,7 +369,7 @@ function DistributionPanel({
           ))}
         </div>
       ) : (
-        <p className="mt-4 text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="mt-4 text-sm leading-6 text-eg-ardesia">
           Nessun dato disponibile per questa distribuzione.
         </p>
       )}
@@ -379,20 +379,20 @@ function DistributionPanel({
 
 function AttentionRow({ item }: { item: AttentionItem }) {
   return (
-    <div className="flex gap-3 border-b border-cantiere-hairline py-4 last:border-b-0">
+    <div className="flex gap-3 border-b border-eg-hairline py-4 last:border-b-0">
       <IconMark icon="attention" tone="warm" />
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-cantiere-ink">
+          <p className="text-sm font-semibold text-eg-terra">
             {item.label}
           </p>
-          <span className="text-xl font-semibold leading-none text-cantiere-ink">
+          <span className="text-xl font-semibold leading-none text-eg-terra">
             {formatCount(item.value)}
           </span>
         </div>
 
-        <p className="mt-1 text-sm leading-5 text-cantiere-ink-secondary">
+        <p className="mt-1 text-sm leading-5 text-eg-ardesia">
           {item.description}
         </p>
 
@@ -410,13 +410,13 @@ function AttentionRow({ item }: { item: AttentionItem }) {
 
 function EmptyAttentionState() {
   return (
-    <div className="mt-4 flex gap-3 border-y border-cantiere-hairline py-5">
+    <div className="mt-4 flex gap-3 border-y border-eg-hairline py-5">
       <IconMark icon="ok" tone="primary" />
       <div>
-        <p className="text-sm font-semibold text-cantiere-ink">
+        <p className="text-sm font-semibold text-eg-terra">
           Nessuna criticità operativa.
         </p>
-        <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="mt-1 text-sm leading-6 text-eg-ardesia">
           Non risultano blocchi da gestire ora.
         </p>
       </div>
@@ -612,15 +612,15 @@ export default async function AdminHomePage() {
   return (
     <PageShell size="lg" className="py-7 md:py-9">
       <header className="max-w-3xl">
-        <p className={"text-sm font-medium text-cantiere-accent"}>
+        <p className={"text-sm font-medium text-eg-cotto"}>
           Control room
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink md:text-4xl">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra md:text-4xl">
           Dashboard
         </h1>
 
-        <p className="mt-3 text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="mt-3 text-sm leading-6 text-eg-ardesia">
           Controllo operativo di richieste, imprese, crediti e assistenza.
         </p>
       </header>

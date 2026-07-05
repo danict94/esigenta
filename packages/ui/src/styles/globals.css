@@ -1,94 +1,324 @@
 :root {
-  --fp-color-cantiere-ink: #18181b;
-  --fp-color-cantiere-ink-secondary: #57575f;
-  --fp-color-cantiere-paper: #f1f1f3;
-  --fp-color-cantiere-paper-translucent: rgba(241, 241, 243, 0.72);
-  --fp-color-cantiere-surface: #e7e7eb;
-  --fp-color-cantiere-linen: #ececef;
-  --fp-color-cantiere-hairline: #e0e0e5;
-  --fp-color-cantiere-accent: #cc785c;
-  --fp-color-cantiere-accent-hover: #b05e3f;
-  --fp-color-cantiere-accent-tint: #f5e8df;
-  /* Lighter step of the same terracotta, for a "middle tier" detail that
-     must read as less saturated than the full accent without introducing
-     a new hue (e.g. the standard-tier medal star). */
-  --fp-color-cantiere-accent-soft: #dda88e;
-  /* Distinct warm gold/bronze hue (not just a darker accent) reserved for
-     the top-tier detail, so "premium" reads as its own material rather
-     than "bigger orange". Paired with bronze-tint for its background wash. */
-  --fp-color-cantiere-bronze: #9c7233;
-  --fp-color-cantiere-bronze-tint: #decfba;
+  --eg-calce: #f8f4ed;
+  --eg-calce-2: #f1ebdf;
+  --eg-terra: #2b2520;
+  --eg-cotto: #bf6f4a;
+  --eg-cotto-dark: #a35a39;
+  --eg-salvia: #7e8c6f;
+  --eg-verde-conferma: #36b26b;
+  --eg-miele: #d9a441;
+  --eg-ardesia: rgba(43, 37, 32, 0.62);
+  --eg-ardesia-2: rgba(43, 37, 32, 0.38);
+  --eg-hairline: rgba(43, 37, 32, 0.14);
+  --eg-calce-translucent: rgba(248, 244, 237, 0.72);
+  --eg-cotto-tint: rgba(191, 111, 74, 0.12);
+  --eg-miele-tint: rgba(217, 164, 65, 0.24);
+  --eg-panel-bg: rgba(248, 244, 237, 0.76);
+  --eg-alert-border: rgba(191, 111, 74, 0.42);
+  --eg-alert-bg: rgba(191, 111, 74, 0.08);
 
-  --fp-shadow-cantiere-elevation:
+  --eg-shadow-elevation:
     0 1px 2px rgba(23, 21, 17, 0.04), 0 12px 32px rgba(23, 21, 17, 0.07);
-  --fp-shadow-cantiere-slab:
+  --eg-shadow-slab:
     0 18px 40px -16px rgba(23, 21, 17, 0.28),
     0 6px 14px -8px rgba(23, 21, 17, 0.18);
-  /* Stronger lift for a single "featured" card inside a same-size grid
-     (e.g. the recommended tier in a pricing/package picker), so it reads
-     as raised above its siblings without leaving the Cantiere shadow
-     language (still warm/soft, just a deeper spread than `elevation`). */
-  --fp-shadow-cantiere-elevation-lg:
+  --eg-shadow-elevation-lg:
     0 2px 4px rgba(23, 21, 17, 0.06), 0 24px 48px rgba(23, 21, 17, 0.12);
 
-  /* Fluid display type — one continuous clamp per step so nothing "snaps"
-     at a breakpoint (Design Principle 6). These two `--fp-*` values are the
-     single knob design tunes: every hero/section headline derives from them.
-       display — hero <h1> + funnel step question.
-       heading — section <h2> + funnel step description. */
-  --fp-text-cantiere-display: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
-  --fp-text-cantiere-heading: clamp(1.625rem, 1.1rem + 2.2vw, 2.375rem);
+  --eg-radius-sm: 4px;
+  --eg-radius-md: 6px;
+  --eg-radius-lg: 8px;
 
-  /* Height of the fixed, transparent navbar, and the top offset content uses
-     to clear it. The bar floats over the page, so every first content block
-     sits at `pt-[var(--fp-nav-clear)]` (bar height + a breathing gap). One
-     source of truth: the navbar derives its height from `--fp-nav-height`. */
-  --fp-nav-height: 72px;
-  --fp-nav-clear: calc(var(--fp-nav-height) + 1.5rem);
+  --eg-text-display: clamp(34px, 5.2vw, 60px);
+  --eg-text-heading: clamp(28px, 3.6vw, 42px);
+  --eg-text-lede: 16px;
+
+  --eg-font-sans: var(--font-space-grotesk, "Space Grotesk"), sans-serif;
+  --eg-font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), monospace;
+
+  --eg-nav-height: 72px;
+  --eg-nav-clear: calc(var(--eg-nav-height) + 1.5rem);
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--eg-font-sans);
+  --font-mono: var(--eg-font-mono);
 
-  --color-cantiere-ink: var(--fp-color-cantiere-ink);
-  --color-cantiere-ink-secondary: var(--fp-color-cantiere-ink-secondary);
-  --color-cantiere-paper: var(--fp-color-cantiere-paper);
-  --color-cantiere-paper-translucent: var(
-    --fp-color-cantiere-paper-translucent
-  );
-  --color-cantiere-surface: var(--fp-color-cantiere-surface);
-  --color-cantiere-linen: var(--fp-color-cantiere-linen);
-  --color-cantiere-hairline: var(--fp-color-cantiere-hairline);
-  --color-cantiere-accent: var(--fp-color-cantiere-accent);
-  --color-cantiere-accent-hover: var(--fp-color-cantiere-accent-hover);
-  --color-cantiere-accent-tint: var(--fp-color-cantiere-accent-tint);
-  --color-cantiere-accent-soft: var(--fp-color-cantiere-accent-soft);
-  --color-cantiere-bronze: var(--fp-color-cantiere-bronze);
-  --color-cantiere-bronze-tint: var(--fp-color-cantiere-bronze-tint);
+  --color-eg-calce: var(--eg-calce);
+  --color-eg-calce-2: var(--eg-calce-2);
+  --color-eg-calce-translucent: var(--eg-calce-translucent);
+  --color-eg-terra: var(--eg-terra);
+  --color-eg-cotto: var(--eg-cotto);
+  --color-eg-cotto-dark: var(--eg-cotto-dark);
+  --color-eg-cotto-tint: var(--eg-cotto-tint);
+  --color-eg-salvia: var(--eg-salvia);
+  --color-eg-verde-conferma: var(--eg-verde-conferma);
+  --color-eg-miele: var(--eg-miele);
+  --color-eg-miele-tint: var(--eg-miele-tint);
+  --color-eg-ardesia: var(--eg-ardesia);
+  --color-eg-ardesia-2: var(--eg-ardesia-2);
+  --color-eg-hairline: var(--eg-hairline);
 
-  --shadow-cantiere-elevation: var(--fp-shadow-cantiere-elevation);
-  --shadow-cantiere-slab: var(--fp-shadow-cantiere-slab);
-  --shadow-cantiere-elevation-lg: var(--fp-shadow-cantiere-elevation-lg);
+  --shadow-eg-elevation: var(--eg-shadow-elevation);
+  --shadow-eg-slab: var(--eg-shadow-slab);
+  --shadow-eg-elevation-lg: var(--eg-shadow-elevation-lg);
 
-  /* `text-cantiere-display` carries size + leading + tracking + weight, since
-     every consumer shares all four — the whole headline style is one class. */
-  --text-cantiere-display: var(--fp-text-cantiere-display);
-  --text-cantiere-display--line-height: 1.02;
-  --text-cantiere-display--letter-spacing: -0.02em;
-  --text-cantiere-display--font-weight: 500;
+  --radius-eg-sm: var(--eg-radius-sm);
+  --radius-eg-md: var(--eg-radius-md);
+  --radius-eg-lg: var(--eg-radius-lg);
 
-  /* `text-cantiere-heading` carries size + tracking only. Weight and leading
-     are left to the call site: section headings are `font-medium`, the funnel
-     step description is regular weight — same size, different role. */
-  --text-cantiere-heading: var(--fp-text-cantiere-heading);
-  --text-cantiere-heading--letter-spacing: -0.01em;
+  --text-eg-display: var(--eg-text-display);
+  --text-eg-display--line-height: 1.1;
+  --text-eg-display--letter-spacing: -0.02em;
+  --text-eg-display--font-weight: 400;
+
+  --text-eg-heading: var(--eg-text-heading);
+  --text-eg-heading--line-height: 1.15;
+  --text-eg-heading--letter-spacing: -0.01em;
+  --text-eg-heading--font-weight: 400;
+
+  --text-eg-lede: var(--eg-text-lede);
+}
+
+html {
+  background: var(--eg-calce);
 }
 
 body {
-  /* The page canvas is plain white. The warm `cantiere-*` tones are surface
-     tokens for containers (cards, panels, hero sections) that opt into them —
-     they are never the page background. */
-  background: #ffffff;
-  color: var(--fp-color-cantiere-ink);
-  font-family: var(--font-geist-sans, Arial), Helvetica, sans-serif;
+  background: var(--eg-calce);
+  color: var(--eg-terra);
+  font-family: var(--eg-font-sans);
+}
+
+@layer components {
+  .eg-page {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    color: var(--eg-terra);
+    font-family: var(--eg-font-sans);
+  }
+
+  .eg-page-bg {
+    background: var(--eg-calce);
+  }
+
+  .eg-thread {
+    pointer-events: none;
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    z-index: 0;
+    width: 1px;
+    transform: translateX(-0.5px);
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--eg-hairline) 9%,
+      var(--eg-hairline) 92%,
+      transparent
+    );
+  }
+
+  .eg-section,
+  .eg-section-large {
+    position: relative;
+    z-index: 1;
+  }
+
+  .eg-section {
+    padding-block: 96px;
+  }
+
+  .eg-section-large {
+    padding-block: 128px;
+  }
+
+  .eg-container,
+  .eg-container-narrow {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 48px;
+  }
+
+  .eg-container {
+    max-width: 1180px;
+  }
+
+  .eg-container-narrow {
+    max-width: 760px;
+  }
+
+  .eg-eyebrow,
+  .eg-mono-label,
+  .eg-link-mono {
+    font-family: var(--eg-font-mono);
+    text-transform: uppercase;
+  }
+
+  .eg-eyebrow,
+  .eg-mono-label {
+    color: var(--eg-ardesia);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+
+  .eg-h1 {
+    font-size: var(--eg-text-display);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .eg-h1 strong,
+  .eg-h1-bold {
+    color: var(--eg-cotto-dark);
+    font-weight: 600;
+  }
+
+  .eg-h2 {
+    font-size: var(--eg-text-heading);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .eg-h3 {
+    font-size: 25px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .eg-body {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .eg-body-muted {
+    color: var(--eg-ardesia);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .eg-button-primary,
+  .eg-button-ghost {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 0 20px;
+    font-family: var(--eg-font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition:
+      color 220ms ease,
+      background-color 220ms ease,
+      border-color 220ms ease,
+      transform 220ms ease;
+  }
+
+  .eg-button-primary {
+    border: 1px solid var(--eg-cotto);
+    background: var(--eg-cotto);
+    color: var(--eg-calce);
+  }
+
+  .eg-button-primary:hover {
+    border-color: var(--eg-cotto-dark);
+    background: var(--eg-cotto-dark);
+    transform: translateY(-1px);
+  }
+
+  .eg-button-ghost {
+    border: 1px solid var(--eg-hairline);
+    background: transparent;
+    color: var(--eg-terra);
+  }
+
+  .eg-button-ghost:hover {
+    border-color: var(--eg-cotto);
+    color: var(--eg-cotto-dark);
+  }
+
+  .eg-link-mono {
+    color: var(--eg-ardesia);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    transition: color 220ms ease;
+  }
+
+  .eg-link-mono:hover {
+    color: var(--eg-cotto-dark);
+  }
+
+  .eg-panel {
+    border: 1px solid var(--eg-hairline);
+    border-radius: var(--eg-radius-lg);
+    background: var(--eg-panel-bg);
+    box-shadow: var(--eg-shadow-slab);
+  }
+
+  .eg-form-field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .eg-form-label {
+    color: var(--eg-terra);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .eg-form-help {
+    color: var(--eg-ardesia);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .eg-alert {
+    border: 1px solid var(--eg-alert-border);
+    border-radius: var(--eg-radius-lg);
+    background: var(--eg-alert-bg);
+    padding: 12px 14px;
+    color: var(--eg-terra);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+}
+
+@media (max-width: 860px) {
+  .eg-thread {
+    display: none;
+  }
+
+  .eg-section {
+    padding-block: 72px;
+  }
+
+  .eg-section-large {
+    padding-block: 88px;
+  }
+
+  .eg-container,
+  .eg-container-narrow {
+    padding-inline: 22px;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

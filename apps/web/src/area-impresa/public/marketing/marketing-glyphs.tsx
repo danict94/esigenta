@@ -4,7 +4,7 @@
 // trust section), with the terracotta accent reserved for the one detail that
 // carries the meaning. Not a third-party icon set — drawn for this product.
 
-const ACCENT = "#CC785C";
+const ACCENT = "var(--eg-cotto)";
 
 type GlyphProps = {
   className?: string;

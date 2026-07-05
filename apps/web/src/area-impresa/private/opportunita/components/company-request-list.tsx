@@ -157,7 +157,7 @@ export function CompanyRequestList<
   if (requests.length === 0) {
     return (
       <Card className="p-8">
-        <p className="text-sm text-cantiere-ink-secondary">
+        <p className="text-sm text-eg-ardesia">
           {emptyMessage}
         </p>
       </Card>

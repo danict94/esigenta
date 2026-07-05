@@ -8,11 +8,12 @@ export { cn } from "./lib/cn";
 export { tokens } from "./styles/tokens";
 export type {
   Tokens,
-  CantiereToken,
-  CantiereColorToken,
-  CantiereShadowToken,
-  CantiereRadiusToken,
-  CantiereTextToken,
+  EgToken,
+  EgColorToken,
+  EgShadowToken,
+  EgRadiusToken,
+  EgTextToken,
+  EsigentaColorToken,
 } from "./styles/tokens";
 export * from "./components/button";
 export * from "./components/input";

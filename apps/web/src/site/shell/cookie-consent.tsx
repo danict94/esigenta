@@ -1,10 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect, useState, } from "react"
-import Link from "next/link"
-
-import {
-  Button, cn } from "@esigenta/ui";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 import {
   COOKIE_CONSENT_OPEN_EVENT,
@@ -14,15 +11,12 @@ import {
   createDefaultCookieConsentPreferences,
   readCookieConsentPreferences,
   writeCookieConsentPreferences,
-} from "./cookie-consent-storage"
+} from "./cookie-consent-storage";
 
 const optionalCategories: Array<{
-  id: Exclude<
-    CookieConsentCategory,
-    "necessary"
-  >
-  label: string
-  description: string
+  id: Exclude<CookieConsentCategory, "necessary">;
+  label: string;
+  description: string;
 }> = [
   {
     id: "functional",
@@ -42,119 +36,95 @@ const optionalCategories: Array<{
     description:
       "Non sono attivi oggi. Nessuna profilazione pubblicitaria viene caricata.",
   },
-]
+];
 
-type StoredConsentState =
-  | "loading"
-  | CookieConsentPreferences
-  | null
+type StoredConsentState = "loading" | CookieConsentPreferences | null;
 
 export function CookieConsent() {
   const [storedConsent, setStoredConsent] =
-    useState<StoredConsentState>("loading")
-  const [draft, setDraft] =
-    useState<CookieConsentPreferences>(
-      createDefaultCookieConsentPreferences,
-    )
-  const [isPanelOpen, setIsPanelOpen] =
-    useState(false)
+    useState<StoredConsentState>("loading");
+  const [draft, setDraft] = useState<CookieConsentPreferences>(
+    createDefaultCookieConsentPreferences,
+  );
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   useEffect(() => {
-    const initTimeout =
-      window.setTimeout(() => {
-        const saved =
-          readCookieConsentPreferences()
+    const initTimeout = window.setTimeout(() => {
+      const saved = readCookieConsentPreferences();
 
-        setStoredConsent(saved)
-        setDraft(
-          saved ??
-            createDefaultCookieConsentPreferences(),
-        )
-      }, 0)
+      setStoredConsent(saved);
+      setDraft(saved ?? createDefaultCookieConsentPreferences());
+    }, 0);
 
     function handleOpenPreferences() {
-      const saved =
-        readCookieConsentPreferences()
-      const nextDraft =
-        saved ??
-        createDefaultCookieConsentPreferences()
+      const saved = readCookieConsentPreferences();
+      const nextDraft = saved ?? createDefaultCookieConsentPreferences();
 
-      setStoredConsent(saved)
-      setDraft(nextDraft)
-      setIsPanelOpen(true)
+      setStoredConsent(saved);
+      setDraft(nextDraft);
+      setIsPanelOpen(true);
     }
 
-    window.addEventListener(
-      COOKIE_CONSENT_OPEN_EVENT,
-      handleOpenPreferences,
-    )
+    window.addEventListener(COOKIE_CONSENT_OPEN_EVENT, handleOpenPreferences);
 
     return () => {
-      window.clearTimeout(initTimeout)
+      window.clearTimeout(initTimeout);
       window.removeEventListener(
         COOKIE_CONSENT_OPEN_EVENT,
         handleOpenPreferences,
-      )
-    }
-  }, [])
+      );
+    };
+  }, []);
 
-  function persistConsent(
-    preferences: CookieConsentPreferences,
-  ) {
-    writeCookieConsentPreferences(
-      preferences,
-    )
-    setStoredConsent(preferences)
-    setDraft(preferences)
-    setIsPanelOpen(false)
+  function persistConsent(preferences: CookieConsentPreferences) {
+    writeCookieConsentPreferences(preferences);
+    setStoredConsent(preferences);
+    setDraft(preferences);
+    setIsPanelOpen(false);
   }
 
   function rejectOptional() {
-    persistConsent(
-      createDefaultCookieConsentPreferences(),
-    )
+    persistConsent(createDefaultCookieConsentPreferences());
   }
 
   function acceptAll() {
-    persistConsent(
-      createAcceptedCookieConsentPreferences(),
-    )
+    persistConsent(createAcceptedCookieConsentPreferences());
   }
 
   function saveDraft() {
     persistConsent({
       ...draft,
       necessary: true,
-    })
+    });
   }
 
   if (storedConsent === "loading") {
-    return null
+    return null;
   }
 
-  const shouldShowBanner =
-    !storedConsent && !isPanelOpen
+  const shouldShowBanner = !storedConsent && !isPanelOpen;
 
   return (
     <>
       {shouldShowBanner ? (
         <aside
           aria-label="Preferenze cookie"
-          className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-5xl border border-cantiere-hairline bg-cantiere-paper p-4 shadow-xl md:bottom-5 md:p-5"
+          className="eg-panel fixed inset-x-3 bottom-3 z-50 mx-auto max-w-5xl p-4 md:bottom-5 md:p-5"
         >
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
             <div>
-              <p className="text-sm font-semibold text-cantiere-ink">
+              <p className="text-sm font-medium text-eg-terra">
                 Preferenze cookie
               </p>
-              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+              <p className="eg-body-muted mt-2 text-sm">
                 Usiamo cookie tecnici necessari. I servizi facoltativi, come i
                 suggerimenti automatici di Google Maps, partono solo se li
                 abiliti. Puoi leggere la{" "}
                 <Link
                   href="/cookie-policy"
-                  className="font-medium text-cantiere-accent"
-                 prefetch={false}>
+                  className="font-medium text-eg-cotto-dark"
+                  prefetch={false}
+                >
                   cookie policy
                 </Link>
                 .
@@ -162,77 +132,70 @@ export function CookieConsent() {
             </div>
 
             <div className="grid gap-2 sm:grid-cols-3 md:min-w-96">
-              <Button
+              <button
                 type="button"
-                variant="secondary"
-                size="sm"
+                className="eg-button-ghost min-h-10"
                 onClick={rejectOptional}
               >
                 Rifiuta
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                variant="secondary"
-                size="sm"
+                className="eg-button-ghost min-h-10"
                 onClick={() => {
-                  setIsPanelOpen(true)
+                  setIsPanelOpen(true);
                 }}
               >
                 Personalizza
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                variant="primary"
-                size="sm"
+                className="eg-button-primary min-h-10"
                 onClick={acceptAll}
               >
                 Accetta tutti
-              </Button>
+              </button>
             </div>
           </div>
         </aside>
       ) : null}
 
       {isPanelOpen ? (
-        <div className="fixed inset-0 z-50 grid place-items-end bg-cantiere-ink/70 p-3 md:place-items-center md:p-6">
+        <div className="fixed inset-0 z-50 grid place-items-end bg-eg-terra/70 p-3 md:place-items-center md:p-6">
           <section
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-preferences-title"
-            className={cn(
-              "max-h-[90vh] w-full max-w-2xl overflow-auto border border-cantiere-hairline bg-cantiere-paper p-5",
-              "rounded-[8px]",
-              "shadow-cantiere-elevation",
-            )}
+            className="eg-panel max-h-[90vh] w-full max-w-2xl overflow-auto p-5"
           >
             <div>
               <p
                 id="cookie-preferences-title"
-                className="text-lg font-semibold text-cantiere-ink"
+                className="text-lg font-medium text-eg-terra"
               >
                 Preferenze cookie
               </p>
-              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+              <p className="eg-body-muted mt-2 text-sm">
                 Le categorie facoltative non sono preselezionate. Puoi cambiare
                 scelta in qualsiasi momento dal footer.
               </p>
             </div>
 
             <div className="mt-5 grid gap-3">
-              <div className="border border-cantiere-hairline bg-cantiere-paper p-4">
+              <div className="border border-eg-hairline bg-eg-calce p-4">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     checked
                     disabled
-                    className="mt-1"
+                    className="mt-1 accent-eg-cotto"
                     aria-label="Cookie necessari sempre attivi"
                   />
                   <div>
-                    <p className="text-sm font-semibold text-cantiere-ink">
+                    <p className="text-sm font-medium text-eg-terra">
                       Necessari
                     </p>
-                    <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
+                    <p className="eg-form-help mt-1">
                       Sempre attivi per sicurezza, sessioni e funzionamento
                       della piattaforma.
                     </p>
@@ -243,25 +206,24 @@ export function CookieConsent() {
               {optionalCategories.map((category) => (
                 <label
                   key={category.id}
-                  className="flex cursor-pointer items-start gap-3 border border-cantiere-hairline bg-cantiere-paper p-4"
+                  className="flex cursor-pointer items-start gap-3 border border-eg-hairline bg-eg-calce p-4"
                 >
                   <input
                     type="checkbox"
                     checked={draft[category.id]}
-                    className="mt-1"
+                    className="mt-1 accent-eg-cotto"
                     onChange={(event) => {
                       setDraft((current) => ({
                         ...current,
-                        [category.id]:
-                          event.target.checked,
-                      }))
+                        [category.id]: event.target.checked,
+                      }));
                     }}
                   />
                   <span>
-                    <span className="block text-sm font-semibold text-cantiere-ink">
+                    <span className="block text-sm font-medium text-eg-terra">
                       {category.label}
                     </span>
-                    <span className="mt-1 block text-sm leading-6 text-cantiere-ink-secondary">
+                    <span className="eg-form-help mt-1 block">
                       {category.description}
                     </span>
                   </span>
@@ -270,31 +232,31 @@ export function CookieConsent() {
             </div>
 
             <div className="mt-6 grid gap-2 sm:grid-cols-3">
-              <Button
+              <button
                 type="button"
-                variant="secondary"
+                className="eg-button-ghost"
                 onClick={rejectOptional}
               >
                 Rifiuta
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                variant="secondary"
+                className="eg-button-ghost"
                 onClick={saveDraft}
               >
                 Salva preferenze
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                variant="primary"
+                className="eg-button-primary"
                 onClick={acceptAll}
               >
                 Accetta tutti
-              </Button>
+              </button>
             </div>
           </section>
         </div>
       ) : null}
     </>
-  )
+  );
 }

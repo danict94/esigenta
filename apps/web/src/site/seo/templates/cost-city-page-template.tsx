@@ -1,11 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
-
-import { Badge, PageShell, cn } from "@esigenta/ui";
 
 import type { CostGuide, CostGuideCityPage } from "../pages/costi";
-import { SeoBreadcrumb } from "./seo-breadcrumb";
+import { PublicShell } from "../../shell/public-shell";
 
 export type CityCostGuidePageProps = {
   guide: CostGuide;
@@ -19,232 +16,176 @@ export function CityCostGuidePage({
   const requestHref = `/richiesta/${guide.funnelSlug}`;
 
   return (
-    <PageShell size="xl">
-      <div className="space-y-12 md:space-y-16 lg:space-y-20">
-        <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
-          <div className="max-w-3xl space-y-7">
-            <SeoBreadcrumb
-              items={[
-                { label: "Home", href: "/" },
-                { label: "Costi", href: guide.canonicalPath },
-                { label: cityPage.city },
-              ]}
-            />
+    <PublicShell>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-            <Badge variant="success" className="w-fit">
-              Guida costi città
-            </Badge>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
+              <div className="max-w-[720px] max-lg:max-w-none">
+                <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+                  <Link href="/" prefetch={false}>
+                    Home
+                  </Link>
+                  <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                    /
+                  </span>
+                  <Link href={guide.canonicalPath} prefetch={false}>
+                    Costi
+                  </Link>
+                  <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                    /
+                  </span>
+                  <span className="text-eg-terra">{cityPage.city}</span>
+                </nav>
 
-            <div className="space-y-5">
-              <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink md:text-5xl">
-                {cityPage.h1}
-              </h1>
+                <p className="eg-eyebrow">Guida costi citt&agrave;</p>
 
-              <p className="text-lg leading-8 text-cantiere-ink-secondary">
-                {cityPage.summary}
-              </p>
-            </div>
+                <h1 className="eg-h1 mt-5">{cityPage.h1}</h1>
 
-            <div className="space-y-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link
-                  href={requestHref}
-                  className={cn(
-                    "inline-flex items-center justify-center font-medium transition-colors",
-                    "rounded-lg",
-                    "h-12 px-6 text-[15px]",
-                    "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-                    "w-full gap-2 sm:w-auto",
-                  )}
-                >
-                  Richiedi preventivi a {cityPage.city}
-                  <ArrowRight className="size-4" aria-hidden={true} />
-                </Link>
+                <p className="eg-body-muted mt-6 max-w-[54ch] text-[17px] leading-8">
+                  {cityPage.summary}
+                </p>
 
-                <Link
-                  href={guide.canonicalPath}
-                  className={cn(
-                    "inline-flex items-center justify-center font-medium transition-colors",
-                    "rounded-lg",
-                    "h-12 px-6 text-[15px]",
-                    "border border-cantiere-accent bg-transparent text-cantiere-accent hover:bg-cantiere-accent hover:text-cantiere-paper",
-                    "w-full gap-2 sm:w-auto",
-                  )}
-                >
-                  Torna alla guida nazionale
-                  <ArrowRight className="size-4" aria-hidden={true} />
-                </Link>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Link href={requestHref} className="eg-button-primary w-full sm:w-auto">
+                    Richiedi preventivi
+                  </Link>
+
+                  <Link href={guide.canonicalPath} className="eg-button-ghost w-full sm:w-auto">
+                    Guida nazionale
+                  </Link>
+                </div>
+
+                <p className="eg-form-help mt-4">
+                  Potrai confermare il comune nel passaggio successivo.
+                </p>
               </div>
 
-              <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                Potrai confermare il comune nel passaggio successivo.
+              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-terra after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
+                <Image
+                  src={guide.heroImage.src}
+                  alt={guide.heroImage.alt}
+                  fill
+                  priority
+                  sizes="(min-width: 1280px) 420px, (min-width: 1024px) 36vw, calc(100vw - 44px)"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="range-citta-title" className="eg-section bg-eg-calce-2">
+          <div className="eg-container">
+            <div className="grid gap-10 border-y border-eg-hairline py-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
+              <div className="grid gap-4">
+                <CostHighlight label="Range nazionale" value={guide.nationalRange} />
+                <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter} />
+              </div>
+
+              <div>
+                <p className="eg-eyebrow">Prezzo locale</p>
+
+                <h2 id="range-citta-title" className="eg-h2 mt-4">
+                  Come leggere il prezzo a {cityPage.city}
+                </h2>
+
+                <p className="eg-body-muted mt-5">{cityPage.priceInterpretation}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="lettura-locale-title" className="eg-section">
+          <div className="eg-container">
+            <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
+              <div className="max-w-2xl">
+                <p className="eg-eyebrow">Lettura locale</p>
+
+                <h2 id="lettura-locale-title" className="eg-h2 mt-4">
+                  Cosa pu&ograve; spostare il preventivo
+                </h2>
+              </div>
+
+              <p className="eg-body-muted text-[16px] leading-8">
+                {cityPage.localReading}
               </p>
             </div>
           </div>
+        </section>
 
-          <div
-            className={cn(
-              "rounded-lg",
-              "aspect-4/3 overflow-hidden bg-cantiere-surface md:aspect-720/520",
-            )}
-          >
-            <Image
-              src="/assets/images/rifacimento-bagno.webp"
-              alt="Ristrutturazione bagno con sanitari e rivestimenti moderni"
-              width={720}
-              height={520}
-              priority
-              sizes="(min-width: 1280px) 40rem, (min-width: 1024px) 42vw, calc(100vw - 32px)"
-              className="h-full w-full object-cover"
-            />
+        <section className="eg-section bg-eg-calce-2">
+          <div className="eg-container">
+            <div className="grid gap-5 md:grid-cols-2">
+              <ChecklistSection title="Casi frequenti" items={cityPage.typicalCases} />
+              <ChecklistSection title="Fattori locali" items={cityPage.localFactors} />
+              <ChecklistSection
+                title="Quando il prezzo sale"
+                items={cityPage.whenPriceGoesUp}
+              />
+              <ChecklistSection
+                title="Cosa chiedere nel preventivo"
+                items={cityPage.whatToAskInQuote}
+              />
+            </div>
           </div>
         </section>
 
-        <section
-          aria-labelledby="range-citta-title"
-          className={cn(
-            "rounded-lg",
-            "bg-cantiere-surface px-5 py-7 md:px-8 md:py-9 lg:px-10",
-          )}
-        >
-          <div className="grid gap-5 md:grid-cols-2">
-            <CostHighlight label="Range nazionale" value={guide.nationalRange} />
-            <CostHighlight
-              label="Costo al mq"
-              value={guide.pricePerSquareMeter}
-            />
-          </div>
+        <section aria-labelledby="faq-citta-title" className="eg-section">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[760px] text-center">
+              <p className="eg-eyebrow">FAQ</p>
 
-          <div className="mt-6 max-w-4xl space-y-3">
-            <h2
-              id="range-citta-title"
-              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
-            >
-              Come leggere il prezzo a {cityPage.city}
+              <h2 id="faq-citta-title" className="eg-h2 mt-4">
+                Domande frequenti su {cityPage.city}
+              </h2>
+            </div>
+
+            <div className="mt-10 border-y border-eg-hairline">
+              {cityPage.faq.map((item) => (
+                <article
+                  key={item.question}
+                  className="grid gap-4 border-b border-eg-hairline py-6 last:border-b-0 md:grid-cols-[0.42fr_1fr] md:gap-10"
+                >
+                  <h3 className="eg-h3 text-[22px]">{item.question}</h3>
+
+                  <p className="eg-body-muted">{item.answer}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="eg-section-large bg-eg-terra text-eg-calce">
+          <div className="eg-container-narrow text-center">
+            <p className="eg-eyebrow text-eg-calce/60">Prossimo passo</p>
+
+            <h2 className="eg-h2 mt-4">
+              Racconta il lavoro da fare a {cityPage.city}
             </h2>
 
-            <p className="text-base leading-7 text-cantiere-ink-secondary">
-              {cityPage.priceInterpretation}
-            </p>
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="lettura-locale-title"
-          className="grid gap-6 lg:grid-cols-[0.38fr_0.62fr] lg:items-start"
-        >
-          <div className="max-w-2xl space-y-3">
-            <p className={"text-sm font-medium text-cantiere-accent"}>Lettura locale</p>
-
-            <h2
-              id="lettura-locale-title"
-              className="text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
-            >
-              Cosa può spostare il preventivo
-            </h2>
-          </div>
-
-          <p className="text-base leading-7 text-cantiere-ink-secondary">
-            {cityPage.localReading}
-          </p>
-        </section>
-
-        <section className="grid gap-5 md:grid-cols-2">
-          <ChecklistSection title="Casi frequenti" items={cityPage.typicalCases} />
-          <ChecklistSection title="Fattori locali" items={cityPage.localFactors} />
-          <ChecklistSection
-            title="Quando il prezzo sale"
-            items={cityPage.whenPriceGoesUp}
-          />
-          <ChecklistSection
-            title="Cosa chiedere nel preventivo"
-            items={cityPage.whatToAskInQuote}
-          />
-        </section>
-
-        <section aria-labelledby="faq-citta-title" className="space-y-6">
-          <div className="max-w-3xl">
-            <p className={"text-sm font-medium text-cantiere-accent"}>FAQ</p>
-
-            <h2
-              id="faq-citta-title"
-              className="mt-2 text-3xl font-semibold leading-tight text-cantiere-ink md:text-4xl"
-            >
-              Domande frequenti su {cityPage.city}
-            </h2>
-          </div>
-
-          <div
-            className={cn(
-              "rounded-lg",
-              "divide-y divide-border-primary border-y border-cantiere-hairline",
-            )}
-          >
-            {cityPage.faq.map((item) => (
-              <article
-                key={item.question}
-                className="grid gap-3 py-5 md:grid-cols-[0.42fr_1fr] md:gap-8 md:py-6"
-              >
-                <h3 className="text-lg font-semibold leading-7 text-cantiere-ink">
-                  {item.question}
-                </h3>
-
-                <p className="text-base leading-7 text-cantiere-ink-secondary">
-                  {item.answer}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section
-          className={cn(
-            "rounded-lg",
-            "bg-cantiere-ink px-5 py-9 text-center text-cantiere-paper md:px-8 md:py-12",
-          )}
-        >
-          <div className="mx-auto max-w-3xl space-y-5">
-            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-              Racconta il bagno da ristrutturare a {cityPage.city}
-            </h2>
-
-            <p className="text-base leading-7 text-cantiere-paper/75">
+            <p className="mt-5 text-[15px] leading-7 text-eg-calce/70">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
 
-            <Link
-              href={requestHref}
-              className={cn(
-                "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-lg",
-                "h-12 px-6 text-[15px]",
-                "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-                "w-full gap-2 sm:w-auto",
-              )}
-            >
-              Richiedi preventivi a {cityPage.city}
-              <ArrowRight className="size-4" aria-hidden={true} />
+            <Link href={requestHref} className="eg-button-primary mt-8 w-full sm:w-auto">
+              Richiedi preventivi
             </Link>
           </div>
         </section>
       </div>
-    </PageShell>
+    </PublicShell>
   );
 }
 
 function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      className={cn(
-        "rounded-lg",
-        "border border-cantiere-hairline bg-cantiere-paper p-5",
-      )}
-    >
-      <p className="text-sm font-medium text-cantiere-ink-secondary">{label}</p>
-      <p className="mt-2 text-xl font-semibold leading-7 text-cantiere-ink">
-        {value}
-      </p>
+    <div className="eg-panel p-5">
+      <p className="eg-mono-label">{label}</p>
+      <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">{value}</p>
     </div>
   );
 }
@@ -257,28 +198,26 @@ function ChecklistSection({
   items: readonly string[];
 }) {
   return (
-    <section
-      className={cn(
-        "rounded-lg",
-        "border border-cantiere-hairline bg-cantiere-paper p-5",
-      )}
-    >
-      <h2 className="text-xl font-semibold leading-8 text-cantiere-ink">
-        {title}
-      </h2>
+    <section className="eg-panel p-5">
+      <h2 className="eg-h3 text-[24px]">{title}</h2>
 
-      <ul className="mt-4 space-y-3 text-sm leading-6 text-cantiere-ink-secondary">
+      <ul className="mt-4 space-y-3 text-sm leading-6 text-eg-ardesia">
         {items.map((item) => (
           <li key={item} className="flex gap-3">
-            <CheckCircle2
-              className="mt-0.5 size-4 shrink-0 text-cantiere-accent"
-              aria-hidden={true}
-              strokeWidth={1.8}
-            />
+            <Dot />
             <span>{item}</span>
           </li>
         ))}
       </ul>
     </section>
+  );
+}
+
+function Dot() {
+  return (
+    <span
+      aria-hidden="true"
+      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+    />
   );
 }

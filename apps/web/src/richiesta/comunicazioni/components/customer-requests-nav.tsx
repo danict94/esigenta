@@ -1,56 +1,43 @@
-import Link from "next/link"
-import {
-  cn,
-} from "@esigenta/ui"
+import Link from "next/link";
 
 type CustomerRequestsNavProps = {
-  token?: string
-  className?: string
-}
+  token?: string;
+  className?: string;
+};
 
 function buildHistoryHref(token?: string) {
   if (!token) {
-    return "/richieste/accesso"
+    return "/richieste/accesso";
   }
 
-  const params = new URLSearchParams({ token })
+  const params = new URLSearchParams({ token });
 
-  return `/richieste/cliente?${params.toString()}`
+  return `/richieste/cliente?${params.toString()}`;
 }
 
 export function CustomerRequestsNav({
   token,
   className,
 }: CustomerRequestsNavProps) {
-  const linkClass =
-    "text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
-
   return (
     <nav
       aria-label="Navigazione richieste cliente"
-      className={cn(
-        "flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-cantiere-hairline pb-4",
-        className,
-      )}
+      className={[
+        "eg-link-mono flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-eg-hairline pb-4",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <Link
-        href={buildHistoryHref(token)}
-        className={linkClass}
-      >
+      <Link href={buildHistoryHref(token)} prefetch={false}>
         Storico richieste
       </Link>
-      <Link
-        href="/"
-        className={linkClass}
-      >
+      <Link href="/" prefetch={false}>
         Nuova richiesta
       </Link>
-      <Link
-        href="/richieste/accesso"
-        className={linkClass}
-      >
+      <Link href="/richieste/accesso" prefetch={false}>
         Ricevi un nuovo link
       </Link>
     </nav>
-  )
+  );
 }

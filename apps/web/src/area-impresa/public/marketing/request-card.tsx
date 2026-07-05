@@ -2,11 +2,6 @@ import { cn } from "@esigenta/ui";
 
 import { VerifiedGlyph, ZoneGlyph } from "./marketing-glyphs";
 
-// Static, clearly-labelled sample of an incoming request — never wired to real
-// data. It exists to make tangible what a professional actually receives: zone,
-// category, verification, available seats and the unlock action. The "Esempio
-// di richiesta" eyebrow keeps it honest: realistic, not live.
-
 type RequestCardBadge = {
   label: string;
   tone?: "verified" | "neutral";
@@ -41,15 +36,13 @@ function SeatDots({ taken, total }: RequestCardSeats) {
             key={index}
             className={cn(
               "size-2.5 rounded-full",
-              index < taken
-                ? "bg-cantiere-accent"
-                : "border border-cantiere-hairline",
+              index < taken ? "bg-eg-cotto" : "border border-eg-hairline",
             )}
           />
         ))}
       </span>
 
-      <span className="text-[13px] text-cantiere-ink-secondary">
+      <span className="text-[13px] text-eg-ardesia">
         {taken} di {total} imprese
       </span>
     </span>
@@ -68,30 +61,20 @@ export function RequestCard({
   className,
 }: RequestCardProps) {
   return (
-    <article
-      className={cn(
-        "rounded-[8px] border border-cantiere-hairline bg-cantiere-paper shadow-cantiere-slab",
-        compact ? "p-4" : "p-5 md:p-6",
-        className,
-      )}
-    >
+    <article className={cn("eg-panel bg-eg-calce", compact ? "p-4" : "p-5 md:p-6", className)}>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[11px] uppercase tracking-[0.14em] text-cantiere-ink-secondary">
-          Esempio di richiesta
-        </span>
+        <span className="eg-mono-label text-[11px]">Esempio richiesta</span>
 
         {badge ? (
           <span
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-[6px] border px-2.5 py-1 text-[12px] font-medium",
+              "inline-flex items-center gap-1.5 border px-2.5 py-1 text-[12px] font-medium",
               badge.tone === "verified"
-                ? "border-cantiere-accent text-cantiere-accent"
-                : "border-cantiere-hairline bg-cantiere-linen text-cantiere-ink",
+                ? "border-eg-cotto text-eg-cotto-dark"
+                : "border-eg-hairline text-eg-terra",
             )}
           >
-            {badge.tone === "verified" ? (
-              <VerifiedGlyph className="size-3.5" />
-            ) : null}
+            {badge.tone === "verified" ? <VerifiedGlyph className="size-3.5" /> : null}
             {badge.label}
           </span>
         ) : null}
@@ -99,18 +82,18 @@ export function RequestCard({
 
       <p
         className={cn(
-          "mt-4 font-medium leading-[1.3] text-cantiere-ink",
-          compact ? "text-[16px]" : "text-[18px]",
+          "mt-4 font-medium leading-[1.25] tracking-[-0.01em] text-eg-terra",
+          compact ? "text-[16px]" : "text-[20px]",
         )}
       >
         {category}
       </p>
 
-      <p className="mt-2 flex items-center gap-2 text-[14px] text-cantiere-ink-secondary">
-        <ZoneGlyph className="size-4 shrink-0 text-cantiere-ink-secondary" />
+      <p className="mt-2 flex items-center gap-2 text-[14px] text-eg-ardesia">
+        <ZoneGlyph className="size-4 shrink-0 text-eg-ardesia" />
         <span>
           {city}
-          {zoneLabel ? ` · ${zoneLabel}` : ""}
+          {zoneLabel ? ` / ${zoneLabel}` : ""}
         </span>
       </p>
 
@@ -119,7 +102,7 @@ export function RequestCard({
           {chips.map((chip) => (
             <span
               key={chip}
-              className="rounded-[6px] border border-cantiere-hairline px-2.5 py-1 text-[12.5px] text-cantiere-ink-secondary"
+              className="border border-eg-hairline px-2.5 py-1 text-[12.5px] text-eg-ardesia"
             >
               {chip}
             </span>
@@ -128,21 +111,18 @@ export function RequestCard({
       ) : null}
 
       {description && !compact ? (
-        <p className="mt-4 text-[13.5px] leading-[1.5] text-cantiere-ink-secondary">
+        <p className="mt-4 text-[13.5px] leading-[1.55] text-eg-ardesia">
           {description}
         </p>
       ) : null}
 
-      <div className="mt-5 flex items-end justify-between gap-4 border-t border-cantiere-hairline pt-4">
+      <div className="mt-5 flex items-end justify-between gap-4 border-t border-eg-hairline pt-4">
         <div className="flex flex-col gap-2">
-          <span className="text-[11px] uppercase tracking-[0.14em] text-cantiere-ink-secondary">
-            Sblocco
-          </span>
-
+          <span className="eg-mono-label text-[11px]">Sblocco</span>
           {seats ? (
             <SeatDots taken={seats.taken} total={seats.total} />
           ) : (
-            <span className="text-[13px] text-cantiere-ink-secondary">
+            <span className="text-[13px] text-eg-ardesia">
               Crediti visibili prima dello sblocco
             </span>
           )}
@@ -150,7 +130,7 @@ export function RequestCard({
 
         <span
           aria-hidden="true"
-          className="inline-flex h-9 shrink-0 select-none items-center rounded-[8px] bg-cantiere-accent px-4 text-[14px] font-medium text-cantiere-paper"
+          className="inline-flex h-9 shrink-0 select-none items-center bg-eg-cotto px-4 text-[13px] font-medium text-eg-calce"
         >
           Sblocca
         </span>

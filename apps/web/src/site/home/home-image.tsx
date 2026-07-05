@@ -4,8 +4,6 @@ import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { useState } from "react";
 
-import { cn } from "@esigenta/ui";
-
 type HomeImageProps = {
   alt?: string;
   className?: string;
@@ -19,6 +17,10 @@ type HomeImageProps = {
   src: string;
   unoptimized?: boolean;
 };
+
+function joinClasses(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export function HomeImage({
   alt = "",
@@ -36,11 +38,11 @@ export function HomeImage({
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={joinClasses("relative overflow-hidden", className)}>
       {hasError && minimalFallback ? (
         <div
-          className={cn(
-            "absolute inset-0 bg-cantiere-linen text-cantiere-ink-secondary",
+          className={joinClasses(
+            "absolute inset-0 bg-eg-calce-2 text-eg-ardesia",
             fallbackClassName,
           )}
         >
@@ -50,8 +52,8 @@ export function HomeImage({
         </div>
       ) : hasError ? (
         <div
-          className={cn(
-            "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-cantiere-linen text-center text-xs leading-5 text-cantiere-ink-secondary",
+          className={joinClasses(
+            "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-eg-calce-2 text-center text-xs leading-5 text-eg-ardesia",
             fallbackClassName,
           )}
         >
@@ -67,7 +69,7 @@ export function HomeImage({
           priority={priority}
           sizes={sizes}
           unoptimized={unoptimized}
-          className={cn("object-cover", imageClassName)}
+          className={joinClasses("object-cover", imageClassName)}
           onError={() => {
             setHasError(true);
           }}

@@ -1,9 +1,23 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { GeistSans } from "geist/font/sans"
+import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google"
 
 import "./globals.css"
 import { CookieConsent } from "../site/shell/cookie-consent"
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+})
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
@@ -19,9 +33,9 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${GeistSans.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-white font-sans text-cantiere-ink">
+      <body className="flex min-h-full flex-col bg-eg-calce font-sans text-eg-terra">
         {children}
         <CookieConsent />
       </body>

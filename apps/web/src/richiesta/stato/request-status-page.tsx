@@ -1,82 +1,81 @@
-import Link from "next/link"
-import { Container, cn } from "@esigenta/ui";
+import Link from "next/link";
 
 import {
   RequestFlowError,
   getRequestStatusByToken,
-} from "@esigenta/domain"
+} from "@esigenta/domain";
 
-import { PublicShell } from "../../site/shell/public-shell"
-import { CustomerRequestsNav } from "../comunicazioni/components/customer-requests-nav"
+import { PublicShell } from "../../site/shell/public-shell";
+import { CustomerRequestsNav } from "../comunicazioni/components/customer-requests-nav";
 
 type RequestStatusPageProps = {
-  token: string
-}
+  token: string;
+};
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("it-IT", {
     dateStyle: "medium",
-  }).format(date)
+  }).format(date);
 }
 
 function formatIntervention(slug: string | null) {
   if (!slug) {
-    return "Richiesta"
+    return "Richiesta";
   }
 
   return slug
     .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function formatStatus(status: string) {
   switch (status) {
     case "PENDING_VERIFICATION":
-      return "In attesa di conferma"
+      return "In attesa di conferma";
     case "PENDING_REVIEW":
-      return "In revisione"
+      return "In revisione";
     case "APPROVED":
-      return "Approvata"
+      return "Approvata";
     case "PUBLISHED":
-      return "Pubblicata"
+      return "Pubblicata";
     case "CLOSED":
-      return "Chiusa"
+      return "Chiusa";
     case "REJECTED":
-      return "Non approvata"
+      return "Non approvata";
     default:
-      return status
+      return status;
   }
 }
 
 function getStatusMessage(status: string) {
   switch (status) {
     case "PENDING_REVIEW":
-      return "La richiesta è in revisione. Ti aggiorneremo quando sarà pronta."
+      return "La richiesta e in revisione. Ti aggiorneremo quando sara pronta.";
     case "APPROVED":
-      return "La richiesta è stata approvata ed è pronta per la pubblicazione."
+      return "La richiesta e stata approvata ed e pronta per la pubblicazione.";
     case "PUBLISHED":
-      return "La richiesta è pubblicata e visibile ai professionisti disponibili."
+      return "La richiesta e pubblicata e visibile ai professionisti disponibili.";
     case "CLOSED":
-      return "La richiesta è stata chiusa."
+      return "La richiesta e stata chiusa.";
     case "REJECTED":
-      return "La richiesta non è stata approvata dopo la revisione."
+      return "La richiesta non e stata approvata dopo la revisione.";
     default:
-      return "Stiamo elaborando lo stato della richiesta."
+      return "Stiamo elaborando lo stato della richiesta.";
   }
 }
 
 function getFinalTimelineLabel(status: string) {
   switch (status) {
     case "APPROVED":
-      return "Approvata"
+      return "Approvata";
     case "PUBLISHED":
-      return "Pubblicata"
+      return "Pubblicata";
     case "CLOSED":
-      return "Chiusa"
+      return "Chiusa";
     case "REJECTED":
-      return "Non approvata"
+      return "Non approvata";
     default:
-      return "Approvata, pubblicata o chiusa"
+      return "Approvata, pubblicata o chiusa";
   }
 }
 
@@ -87,24 +86,19 @@ function isReviewStarted(status: string) {
     "PUBLISHED",
     "CLOSED",
     "REJECTED",
-  ].includes(status)
+  ].includes(status);
 }
 
 function isFinal(status: string) {
-  return [
-    "APPROVED",
-    "PUBLISHED",
-    "CLOSED",
-    "REJECTED",
-  ].includes(status)
+  return ["APPROVED", "PUBLISHED", "CLOSED", "REJECTED"].includes(status);
 }
 
 function buildTimeline({
   status,
   verifiedAt,
 }: {
-  status: string
-  verifiedAt: Date | null
+  status: string;
+  verifiedAt: Date | null;
 }) {
   return [
     {
@@ -113,9 +107,7 @@ function buildTimeline({
     },
     {
       label: "Email confermata",
-      active:
-        Boolean(verifiedAt) ||
-        status !== "PENDING_VERIFICATION",
+      active: Boolean(verifiedAt) || status !== "PENDING_VERIFICATION",
     },
     {
       label: "In revisione",
@@ -125,7 +117,7 @@ function buildTimeline({
       label: getFinalTimelineLabel(status),
       active: isFinal(status),
     },
-  ]
+  ];
 }
 
 async function loadStatus(token: string) {
@@ -134,16 +126,16 @@ async function loadStatus(token: string) {
       ok: false as const,
       title: "Link non valido",
       message: "Il link non contiene il token necessario.",
-    }
+    };
   }
 
   try {
-    const request = await getRequestStatusByToken({ token })
+    const request = await getRequestStatusByToken({ token });
 
     return {
       ok: true as const,
       request,
-    }
+    };
   } catch (error) {
     return {
       ok: false as const,
@@ -152,163 +144,112 @@ async function loadStatus(token: string) {
         error instanceof RequestFlowError
           ? error.message
           : "Non siamo riusciti a recuperare lo stato della richiesta.",
-    }
+    };
   }
 }
 
-export async function RequestStatusPage({
-  token,
-}: RequestStatusPageProps) {
-  const result = await loadStatus(token)
-
-  const actionLinkClass =
-    "inline-flex h-11 items-center justify-center rounded-md border border-cantiere-accent bg-cantiere-accent px-5 text-sm font-semibold text-cantiere-paper transition-colors hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover"
+export async function RequestStatusPage({ token }: RequestStatusPageProps) {
+  const result = await loadStatus(token);
 
   return (
     <PublicShell>
-      <section className={"py-20 md:py-28 lg:py-32"}>
-        <Container size="sm">
-          <div
-            className={cn(
-              "border border-cantiere-hairline bg-cantiere-paper p-6",
-              "rounded-[8px]",
-              "shadow-cantiere-elevation",
-            )}
-          >
-            {result.ok ? (
-              <div className="flex flex-col gap-6">
-                <CustomerRequestsNav
-                  token={
-                    result.request.historyAccessToken ??
-                    undefined
-                  }
-                />
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-cantiere-accent">
-                    Stato richiesta
-                  </p>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container-narrow">
+            <div className="eg-panel p-6 md:p-8">
+              {result.ok ? (
+                <div className="flex flex-col gap-7">
+                  <CustomerRequestsNav
+                    token={result.request.historyAccessToken ?? undefined}
+                  />
 
-                  <h1
-                    className={cn(
-                      "text-cantiere-ink",
-                      "font-medium text-cantiere-heading",
-                    )}
-                  >
-                    {formatStatus(result.request.status)}
-                  </h1>
+                  <div>
+                    <p className="eg-eyebrow">Stato richiesta</p>
 
-                  <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                    {getStatusMessage(result.request.status)}
-                  </p>
-                </div>
+                    <h1 className="eg-h2 mt-4">
+                      {formatStatus(result.request.status)}
+                    </h1>
 
-                <dl className="grid gap-3 text-sm">
-                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
-                    <dt className="text-xs text-cantiere-ink-secondary">
-                      Codice richiesta
-                    </dt>
-                    <dd className="mt-1 font-medium text-cantiere-ink">
-                      {result.request.requestCode ??
-                        result.request.requestId}
-                    </dd>
+                    <p className="eg-body-muted mt-4">
+                      {getStatusMessage(result.request.status)}
+                    </p>
                   </div>
 
-                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
-                    <dt className="text-xs text-cantiere-ink-secondary">
-                      Intervento
-                    </dt>
-                    <dd className="mt-1 text-cantiere-ink">
-                      {formatIntervention(
-                        result.request.interventionSlug,
-                      )}
-                    </dd>
+                  <dl className="grid gap-3 text-sm sm:grid-cols-2">
+                    <DetailItem
+                      label="Codice richiesta"
+                      value={result.request.requestCode ?? result.request.requestId}
+                    />
+                    <DetailItem
+                      label="Intervento"
+                      value={formatIntervention(result.request.interventionSlug)}
+                    />
+                    <DetailItem
+                      label="Citta"
+                      value={result.request.city ?? "Non specificata"}
+                    />
+                    <DetailItem
+                      label="Data invio"
+                      value={formatDate(result.request.createdAt)}
+                    />
+                  </dl>
+
+                  <div className="border-y border-eg-hairline py-5">
+                    <h2 className="text-sm font-medium text-eg-terra">
+                      Avanzamento
+                    </h2>
+
+                    <ol className="mt-5 space-y-4">
+                      {buildTimeline({
+                        status: result.request.status,
+                        verifiedAt: result.request.verifiedAt,
+                      }).map((item) => (
+                        <li key={item.label} className="flex items-center gap-3 text-sm">
+                          <span
+                            className={[
+                              "h-2.5 w-2.5 rounded-full border",
+                              item.active
+                                ? "border-eg-cotto bg-eg-cotto"
+                                : "border-eg-hairline bg-eg-calce",
+                            ].join(" ")}
+                            aria-hidden="true"
+                          />
+                          <span
+                            className={item.active ? "text-eg-terra" : "text-eg-ardesia"}
+                          >
+                            {item.label}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
 
-                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
-                    <dt className="text-xs text-cantiere-ink-secondary">
-                      Città
-                    </dt>
-                    <dd className="mt-1 text-cantiere-ink">
-                      {result.request.city ?? "Non specificata"}
-                    </dd>
-                  </div>
-
-                  <div className="border border-cantiere-hairline bg-cantiere-paper p-3">
-                    <dt className="text-xs text-cantiere-ink-secondary">
-                      Data invio
-                    </dt>
-                    <dd className="mt-1 text-cantiere-ink">
-                      {formatDate(result.request.createdAt)}
-                    </dd>
-                  </div>
-                </dl>
-
-                <div className="border border-cantiere-hairline bg-cantiere-paper p-4">
-                  <h2 className="text-sm font-semibold text-cantiere-ink">
-                    Avanzamento
-                  </h2>
-                  <ol className="mt-4 space-y-3">
-                    {buildTimeline({
-                      status: result.request.status,
-                      verifiedAt: result.request.verifiedAt,
-                    }).map((item) => (
-                      <li
-                        key={item.label}
-                        className="flex items-center gap-3 text-sm"
-                      >
-                        <span
-                          className={cn(
-                            "h-2.5 w-2.5 rounded-full border",
-                            item.active
-                              ? "border-cantiere-accent bg-cantiere-accent"
-                              : "border-cantiere-hairline bg-cantiere-paper",
-                          )}
-                        />
-                        <span
-                          className={cn(
-                            item.active
-                              ? "text-cantiere-ink"
-                              : "text-cantiere-ink-secondary",
-                          )}
-                        >
-                          {item.label}
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <Link
-                    href="/"
-                    className={actionLinkClass}
-                  >
+                  <Link href="/" className="eg-button-primary w-full sm:w-fit">
                     Richiedi un nuovo intervento
                   </Link>
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-cantiere-ink-secondary">
-                  Stato richiesta
-                </p>
-                <h1
-                  className={cn(
-                    "text-cantiere-ink",
-                    "font-medium text-cantiere-heading",
-                  )}
-                >
-                  {result.title}
-                </h1>
-                <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                  {result.message}
-                </p>
-              </div>
-            )}
+              ) : (
+                <div>
+                  <p className="eg-eyebrow">Stato richiesta</p>
+                  <h1 className="eg-h2 mt-4">{result.title}</h1>
+                  <p className="eg-body-muted mt-4">{result.message}</p>
+                </div>
+              )}
+            </div>
           </div>
-        </Container>
-      </section>
+        </section>
+      </div>
     </PublicShell>
-  )
+  );
+}
+
+function DetailItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border border-eg-hairline bg-eg-calce p-3">
+      <dt className="eg-mono-label">{label}</dt>
+      <dd className="mt-2 font-medium text-eg-terra">{value}</dd>
+    </div>
+  );
 }

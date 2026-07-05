@@ -255,11 +255,11 @@ export function CategoryInterventionsSelector({
       <section className="space-y-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-base font-semibold text-cantiere-ink">
+            <h3 className="text-base font-semibold text-eg-terra">
               Identità: fino a 6 categorie
             </h3>
 
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-eg-ardesia">
               Determinano come la tua impresa si presenta.
             </p>
           </div>
@@ -279,9 +279,9 @@ export function CategoryInterventionsSelector({
               <label
                 key={category.id}
                 className={cn(
-                  "relative flex cursor-pointer items-center gap-3 rounded-[8px] border border-cantiere-hairline bg-cantiere-paper p-3 transition-colors hover:border-cantiere-accent",
+                  "relative flex cursor-pointer items-center gap-3 rounded-eg-lg border border-eg-hairline bg-eg-calce p-3 transition-colors hover:border-eg-cotto",
                   selected
-                    ? "border-cantiere-accent bg-cantiere-accent-tint"
+                    ? "border-eg-cotto bg-eg-cotto-tint"
                     : "",
                   disabled ? "cursor-not-allowed opacity-60" : "",
                 )}
@@ -294,12 +294,12 @@ export function CategoryInterventionsSelector({
                   onChange={() => toggleCategory(category.id)}
                 />
 
-                <span className="min-w-0 flex-1 text-sm font-semibold text-cantiere-ink">
+                <span className="min-w-0 flex-1 text-sm font-semibold text-eg-terra">
                   {category.name}
                 </span>
 
                 {selected ? (
-                  <CheckGlyph className="h-4 w-4 shrink-0 text-cantiere-accent" />
+                  <CheckGlyph className="h-4 w-4 shrink-0 text-eg-cotto" />
                 ) : null}
               </label>
             );
@@ -307,13 +307,13 @@ export function CategoryInterventionsSelector({
         </div>
       </section>
 
-      <section className="space-y-3 border-t border-cantiere-hairline pt-6">
+      <section className="space-y-3 border-t border-eg-hairline pt-6">
         <div>
-          <h3 className="text-base font-semibold text-cantiere-ink">
+          <h3 className="text-base font-semibold text-eg-terra">
             Operativo: interventi
           </h3>
 
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-eg-ardesia">
             Scegli gli interventi che vuoi ricevere, organizzati per area di
             lavoro.
           </p>
@@ -335,12 +335,12 @@ export function CategoryInterventionsSelector({
             return (
               <div
                 key={projectGroup.id}
-                className="overflow-hidden rounded-[8px] border border-cantiere-hairline bg-cantiere-paper"
+                className="overflow-hidden rounded-eg-lg border border-eg-hairline bg-eg-calce"
               >
                 <Button
                   type="button"
                   variant="ghost"
-                  className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-cantiere-surface"
+                  className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-eg-calce-2"
                   aria-expanded={open}
                   onClick={() => {
                     setActiveProjectGroupId((currentId) =>
@@ -349,10 +349,10 @@ export function CategoryInterventionsSelector({
                   }}
                 >
                   <span className="min-w-0">
-                    <span className="block text-sm font-semibold text-cantiere-ink">
+                    <span className="block text-sm font-semibold text-eg-terra">
                       {projectGroup.name}
                     </span>
-                    <span className="mt-1 block text-xs font-normal text-cantiere-ink-secondary">
+                    <span className="mt-1 block text-xs font-normal text-eg-ardesia">
                       {projectGroup.interventions.length > 0
                         ? `${selected.length}/${projectGroup.interventions.length} interventi selezionati`
                         : "Nessun intervento disponibile"}
@@ -361,16 +361,16 @@ export function CategoryInterventionsSelector({
 
                   <ChevronGlyph
                     className={cn(
-                      "h-4 w-4 shrink-0 text-cantiere-ink-secondary transition-transform",
+                      "h-4 w-4 shrink-0 text-eg-ardesia transition-transform",
                       open ? "rotate-180" : "",
                     )}
                   />
                 </Button>
 
                 {open ? (
-                  <div className="space-y-4 border-t border-cantiere-hairline bg-cantiere-surface p-4">
+                  <div className="space-y-4 border-t border-eg-hairline bg-eg-calce-2 p-4">
                     {projectGroup.interventions.length === 0 ? (
-                      <p className="text-sm text-cantiere-ink-secondary">
+                      <p className="text-sm text-eg-ardesia">
                         Nessun intervento disponibile per questa area.
                       </p>
                     ) : (
@@ -384,7 +384,7 @@ export function CategoryInterventionsSelector({
                                 onClick={() =>
                                   toggleIntervention(intervention.id)
                                 }
-                                className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-cantiere-accent px-3 py-1 text-xs font-medium text-cantiere-paper transition-colors hover:bg-cantiere-accent-hover"
+                                className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-eg-cotto px-3 py-1 text-xs font-medium text-eg-calce transition-colors hover:bg-eg-cotto-dark"
                               >
                                 <span className="truncate">
                                   {intervention.name}
@@ -394,7 +394,7 @@ export function CategoryInterventionsSelector({
                             ))}
 
                             {hiddenChipCount > 0 ? (
-                              <span className="inline-flex items-center rounded-full bg-cantiere-linen px-3 py-1 text-xs font-medium text-cantiere-ink-secondary">
+                              <span className="inline-flex items-center rounded-full bg-eg-calce-2 px-3 py-1 text-xs font-medium text-eg-ardesia">
                                 +{hiddenChipCount} altri selezionati
                               </span>
                             ) : null}
@@ -406,14 +406,14 @@ export function CategoryInterventionsSelector({
                             checked={allSelected}
                             onChange={() => toggleSelectAll(projectGroup)}
                           />
-                          <span className="text-sm font-semibold text-cantiere-ink">
+                          <span className="text-sm font-semibold text-eg-terra">
                             Seleziona tutti
                           </span>
                         </label>
 
                         {showSearch ? (
                           <label className="grid gap-2">
-                            <span className="text-sm font-medium text-cantiere-ink">
+                            <span className="text-sm font-medium text-eg-terra">
                               Cerca intervento
                             </span>
                             <Input
@@ -444,9 +444,9 @@ export function CategoryInterventionsSelector({
                               <label
                                 key={intervention.id}
                                 className={cn(
-                                  "flex cursor-pointer gap-3 rounded-[6px] border border-cantiere-hairline bg-cantiere-paper p-3 transition-colors hover:border-cantiere-accent",
+                                  "flex cursor-pointer gap-3 rounded-eg-md border border-eg-hairline bg-eg-calce p-3 transition-colors hover:border-eg-cotto",
                                   isSelected
-                                    ? "border-cantiere-accent bg-cantiere-accent-tint"
+                                    ? "border-eg-cotto bg-eg-cotto-tint"
                                     : "",
                                 )}
                               >
@@ -461,19 +461,19 @@ export function CategoryInterventionsSelector({
                                 />
 
                                 <span className="min-w-0 flex-1">
-                                  <span className="block text-sm font-semibold text-cantiere-ink">
+                                  <span className="block text-sm font-semibold text-eg-terra">
                                     {intervention.name}
                                   </span>
 
                                   {intervention.description ? (
-                                    <span className="mt-1 block text-sm leading-6 text-cantiere-ink-secondary">
+                                    <span className="mt-1 block text-sm leading-6 text-eg-ardesia">
                                       {intervention.description}
                                     </span>
                                   ) : null}
                                 </span>
 
                                 {isSelected ? (
-                                  <CheckGlyph className="h-4 w-4 shrink-0 text-cantiere-accent" />
+                                  <CheckGlyph className="h-4 w-4 shrink-0 text-eg-cotto" />
                                 ) : null}
                               </label>
                             );
@@ -506,7 +506,7 @@ export function CategoryInterventionsSelector({
         </div>
       </section>
 
-      <div className="flex justify-end border-t border-cantiere-hairline pt-6">
+      <div className="flex justify-end border-t border-eg-hairline pt-6">
         <Button type="submit">Salva configurazione</Button>
       </div>
     </form>

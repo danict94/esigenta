@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -8,33 +9,26 @@ import {
 } from "@esigenta/domain";
 
 import { getCurrentUser } from "../../../auth/server";
-
-import { Badge, Button, Card, CardContent } from "@esigenta/ui";
-
-import { PublicShell } from "../../../site/shell/public-shell";
 import { Grain } from "../../../site/home/grain";
-import { Reveal } from "../../../site/home/reveal";
 import { HomeImage } from "../../../site/home/home-image";
-import { ccPhotoGrade } from "../../../site/shell/palette";
-import { ArrowRightIcon } from "../../../site/shell/icons";
+import { Reveal } from "../../../site/home/reveal";
+import { egPhotoGrade } from "../../../site/shell/palette";
+import { PublicShell } from "../../../site/shell/public-shell";
 
-import { CompanyLeadForm } from "./company-lead-form";
 import { BusinessHowItWorks } from "./business-how-it-works";
-import { RequestCard, type RequestCardData } from "./request-card";
+import { CompanyLeadForm } from "./company-lead-form";
 import {
   LimitedSeatsGlyph,
   RefundGlyph,
-  RequestGlyph,
   SupportGlyph,
-  UnlockGlyph,
   VerifiedGlyph,
-  ZoneGlyph,
 } from "./marketing-glyphs";
+import { RequestCard, type RequestCardData } from "./request-card";
 
 export const metadata: Metadata = {
-  title: "esigenta Imprese | Nuovi lavori nella tua zona, senza richieste inutili",
+  title: "esigenta Imprese | Nuovi lavori nella tua zona",
   description:
-    "Ricevi richieste verificate dalla tua zona, scegli tu quali contatti sbloccare e gestisci conversazioni e lavori dall'area impresa. Iscrizione gratuita, crediti senza abbonamento obbligatorio.",
+    "Ricevi richieste verificate dalla tua zona, scegli quali contatti sbloccare e gestisci conversazioni e lavori dall'area impresa.",
 };
 
 const heroRequest: RequestCardData = {
@@ -42,7 +36,7 @@ const heroRequest: RequestCardData = {
   city: "Catania",
   zoneLabel: "zona indicata",
   badge: { label: "Verificata", tone: "verified" },
-  chips: ["Bagno · 6 m²", "Entro 30 giorni"],
+  chips: ["Bagno / 6 mq", "Entro 30 giorni"],
   description: "Rifacimento completo, sostituzione sanitari e posa nuovo pavimento.",
   seats: { taken: 1, total: 3 },
 };
@@ -53,45 +47,55 @@ const heroTrustChips = [
   { glyph: RefundGlyph, label: "Rimborso crediti" },
 ] as const;
 
-const valueBlocks = [
+const valueRows = [
   {
-    glyph: ZoneGlyph,
-    title: "Richieste locali",
-    body: "Ricevi richieste reali dalla tua zona operativa, coerenti con i servizi che hai configurato. Niente bacheca caotica: solo lavoro pertinente.",
+    index: "01",
+    title: "Richieste locali, non una bacheca generica",
+    body: "Vedi lavori compatibili con la tua zona operativa e con i servizi che hai scelto di coprire.",
+    meta: "zona",
   },
   {
-    glyph: UnlockGlyph,
-    title: "Scegli tu quali contatti sbloccare",
-    body: "Vedi categoria, zona e dettagli prima di decidere. Sblocchi soltanto le richieste che ti interessano davvero.",
+    index: "02",
+    title: "Dettagli leggibili prima dello sblocco",
+    body: "Categoria, luogo, tempi e contesto arrivano ordinati: decidi con criterio prima di usare crediti.",
+    meta: "controllo",
   },
   {
-    glyph: RequestGlyph,
-    title: "Tutto in un unico spazio",
-    body: "Richieste, contatti e conversazioni restano raccolti nell'area impresa, senza disperdere nulla tra strumenti diversi.",
+    index: "03",
+    title: "Conversazioni raccolte in un unico spazio",
+    body: "Dopo lo sblocco continui dall'area impresa, senza disperdere contatti e messaggi tra strumenti diversi.",
+    meta: "ordine",
   },
 ] as const;
 
 const trustPillars = [
   {
     glyph: VerifiedGlyph,
-    title: "Richieste verificate e moderate",
-    body: "Ogni richiesta è confermata via email dal cliente e revisionata prima di arrivare a te.",
+    title: "Richieste confermate",
+    body: "Il cliente conferma la richiesta prima che arrivi alle imprese.",
   },
   {
     glyph: LimitedSeatsGlyph,
-    title: "Massimo 3 imprese per richiesta",
-    body: "Posti limitati: niente corsa di massa sullo stesso contatto.",
+    title: "Posti limitati",
+    body: "Ogni opportunita resta aperta a poche imprese, non a una folla indistinta.",
   },
   {
     glyph: RefundGlyph,
-    title: "Rimborso crediti",
-    body: "Se sblocchi e il contatto si rivela inutilizzabile, puoi richiedere il rimborso dei crediti.",
+    title: "Crediti rimborsabili",
+    body: "Se un contatto sbloccato non e utilizzabile, puoi richiedere una verifica.",
   },
   {
     glyph: SupportGlyph,
-    title: "Assistenza dedicata",
-    body: "Un canale di supporto nell'area impresa, quando ti serve una mano.",
+    title: "Supporto dentro l'area",
+    body: "Hai un canale dedicato quando serve chiarire una richiesta o un contatto.",
   },
+] as const;
+
+const proof = [
+  { number: "3", label: "imprese al massimo su una richiesta" },
+  { number: "0", label: "abbonamenti obbligatori per iniziare" },
+  { number: "1", label: "area unica per richieste, contatti e messaggi" },
+  { number: "100%", label: "scelta tua prima dello sblocco" },
 ] as const;
 
 async function reactivateAccountAction() {
@@ -110,7 +114,6 @@ async function reactivateAccountAction() {
 
 export async function AreaImpresaMarketingPage() {
   const currentUser = await getCurrentUser();
-
   const { categories, hasDeactivatedCompany } =
     await getPublicBusinessAreaPageData({
       userId: currentUser?.id ?? null,
@@ -118,243 +121,190 @@ export async function AreaImpresaMarketingPage() {
 
   return (
     <PublicShell>
-      <Grain />
+      <div className="eg-page eg-page-bg">
+        <Grain />
+        <div className="eg-thread" aria-hidden="true" />
 
-      {/* Hero — a complete system: the words, the proof (sample request over a
-          photographic slab) and the conversion form, on the warm linen ground. */}
-      <section
-        className="relative overflow-hidden bg-cantiere-linen"
-        style={{
-          backgroundImage:
-            "linear-gradient(180deg, var(--color-cantiere-paper) 0%, var(--color-cantiere-linen) 100%)",
-        }}
-      >
-        <div className="mx-auto max-w-[1280px] px-5 pb-20 pt-28 sm:px-10 sm:pt-32 md:px-12 md:pb-24 md:pt-36 lg:px-16">
-          <div className="max-w-3xl">
-            <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-cantiere-accent">
-              Per i professionisti
-            </p>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+56px)]" aria-labelledby="business-title">
+          <div className="eg-container">
+            <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
+              <div className="max-w-[720px] max-lg:max-w-none">
+                <p className="eg-eyebrow">Per i professionisti</p>
+                <h1 id="business-title" className="eg-h1 mt-5 max-w-[15ch]">
+                  Nuovi lavori nella tua zona, <strong>senza contatti a caso</strong>.
+                </h1>
+                <p className="eg-body-muted mt-6 max-w-[52ch] text-[17px]">
+                  Esigenta trasforma il caos delle richieste domestiche in
+                  opportunita leggibili: valuti dettagli, zona e crediti prima
+                  di aprire il contatto.
+                </p>
 
-            <h1 className="mt-5 max-w-[18ch] text-cantiere-ink text-cantiere-display">
-              Trova nuovi lavori nella tua zona, senza perdere tempo con
-              richieste inutili.
-            </h1>
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                  <Link href="#inizia" className="eg-button-primary">
+                    Iscriviti gratis <span aria-hidden="true">&rarr;</span>
+                  </Link>
+                  <Link href="/area-impresa/accedi" prefetch={false} className="eg-button-ghost">
+                    Accedi <span aria-hidden="true">&rarr;</span>
+                  </Link>
+                </div>
 
-            <p className="mt-5 max-w-[48ch] text-[17px] leading-[1.5] text-cantiere-ink-secondary">
-              Tu porti la competenza. esigenta ti collega a richieste reali
-              vicino a te, con il costo in crediti sempre in chiaro e poche
-              imprese per ogni opportunità.
-            </p>
-          </div>
+                <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
+                  {heroTrustChips.map(({ glyph: Glyph, label }) => (
+                    <span key={label} className="inline-flex items-center gap-2 text-[14px] text-eg-ardesia">
+                      <Glyph className="size-4 shrink-0" />
+                      {label}
+                    </span>
+                  ))}
+                </div>
 
-          <div className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start xl:gap-16">
-            {/* Proof — what you actually receive. */}
-            <Reveal className="flex flex-col gap-8">
-              <div className="relative pr-6 pt-10 sm:pr-10">
-                <div className="absolute right-0 top-0 hidden w-[52%] max-w-[260px] sm:block">
-                  <div className="relative aspect-[4/5] rotate-3 overflow-hidden rounded-[4px] shadow-cantiere-slab">
+                <Reveal className="mt-12 grid gap-5 sm:grid-cols-[minmax(0,390px)_170px] sm:items-end">
+                  <RequestCard {...heroRequest} className="relative z-10" />
+                  <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-terra after:opacity-[0.14] after:mix-blend-multiply after:content-[''] hidden aspect-[4/5] sm:block">
                     <HomeImage
                       src="/assets/images/professionisti-hero.webp"
                       decorative
                       fallbackLabel="Professionisti al lavoro"
-                      sizes="(min-width: 1024px) 260px, 40vw"
-                      imageClassName={ccPhotoGrade}
+                      sizes="170px"
+                      imageClassName={egPhotoGrade}
                       className="absolute inset-0"
                     />
                   </div>
-                </div>
-
-                <RequestCard
-                  {...heroRequest}
-                  className="relative z-10 max-w-md -rotate-1"
-                />
+                </Reveal>
               </div>
 
-              <div className="flex flex-wrap gap-x-6 gap-y-3">
-                {heroTrustChips.map(({ glyph: Glyph, label }) => (
-                  <span
-                    key={label}
-                    className="inline-flex items-center gap-2 text-[14px] text-cantiere-ink-secondary"
-                  >
-                    <Glyph className="size-4 shrink-0 text-cantiere-ink-secondary" />
-                    {label}
-                  </span>
-                ))}
-              </div>
-            </Reveal>
-
-            {/* Conversion — the real funnel stays the hero's primary action. */}
-            <div id="inizia" className="scroll-mt-24">
-              {hasDeactivatedCompany ? (
-                <Card className="w-full bg-cantiere-paper shadow-cantiere-slab">
-                  <CardContent className="flex flex-col gap-5 p-6 md:p-8">
-                    <Badge variant="warning">Account disattivato</Badge>
-
-                    <div className="space-y-3">
-                      <h2 className="text-2xl font-semibold tracking-tight text-cantiere-ink">
-                        Riattiva il tuo profilo impresa
-                      </h2>
-
-                      <p className="text-sm leading-6 text-cantiere-ink-secondary">
-                        Abbiamo trovato un account impresa associato a questa
-                        sessione. Puoi riattivarlo mantenendo storico, richieste
-                        e configurazione.
-                      </p>
-                    </div>
-
-                    <form action={reactivateAccountAction}>
-                      <Button type="submit">Riattiva account</Button>
+              <aside id="inizia" className="scroll-mt-28">
+                {hasDeactivatedCompany ? (
+                  <div className="eg-panel p-6 md:p-8">
+                    <p className="eg-mono-label text-eg-cotto-dark">Account disattivato</p>
+                    <h2 className="eg-h3 mt-4">Riattiva il tuo profilo impresa</h2>
+                    <p className="eg-body-muted mt-4">
+                      Abbiamo trovato un account impresa associato a questa
+                      sessione. Puoi riattivarlo mantenendo storico, richieste e
+                      configurazione.
+                    </p>
+                    <form action={reactivateAccountAction} className="mt-6">
+                      <button type="submit" className="eg-button-primary w-full">
+                        Riattiva account <span aria-hidden="true">&rarr;</span>
+                      </button>
                     </form>
-                  </CardContent>
-                </Card>
-              ) : (
-                <CompanyLeadForm categories={categories} />
-              )}
+                  </div>
+                ) : (
+                  <CompanyLeadForm categories={categories} />
+                )}
 
-              <p className="mt-4 text-[15px] text-cantiere-ink-secondary">
-                Hai già un profilo?{" "}
-                <Link
-                  href="/area-impresa/accedi"
-                  className="font-medium text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
-                >
-                  Accedi all&apos;area impresa
-                </Link>
-              </p>
+                <p className="eg-body-muted mt-4 text-[14px]">
+                  Hai gia un profilo?{" "}
+                  <Link href="/area-impresa/accedi" prefetch={false} className="font-medium text-eg-cotto-dark">
+                    Accedi all&apos;area impresa
+                  </Link>
+                </p>
+              </aside>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Value — white ground, each block anchored by a proprietary glyph. */}
-      <section className="relative bg-white py-20 md:py-28 lg:py-32">
-        <div className="mx-auto max-w-[1120px] px-5 sm:px-10 md:px-12 lg:px-16">
-          <div className="max-w-2xl">
-            <p className="text-[11px] uppercase tracking-[0.16em] text-cantiere-ink-secondary">
-              Come lavori con esigenta
-            </p>
+        <BusinessHowItWorks />
 
-            <h2 className="mt-4 max-w-[20ch] font-medium text-cantiere-ink text-cantiere-heading">
-              Un flusso di lavoro ordinato, non un mercato di contatti.
-            </h2>
+        <section className="eg-section-large bg-eg-calce-2" aria-labelledby="business-value-title">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[760px] text-center">
+              <p className="eg-eyebrow">Perche cambia il lavoro</p>
+              <h2 id="business-value-title" className="eg-h2 mt-4">
+                Meno rincorsa, piu richieste che puoi leggere.
+              </h2>
+              <p className="eg-body-muted mx-auto mt-5 max-w-[46ch]">
+                La pagina impresa deve sembrare la continuazione della home: un
+                percorso chiaro anche per chi il lavoro lo deve prendere.
+              </p>
+            </div>
+
+            <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+              {valueRows.map((row) => (
+                <li key={row.index} className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
+                  <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">{row.index}</span>
+                  <div>
+                    <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em]">{row.title}</h3>
+                    <p className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia">{row.body}</p>
+                  </div>
+                  <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">{row.meta}</span>
+                </li>
+              ))}
+            </ul>
           </div>
+        </section>
 
-          <div className="mt-14 grid gap-px overflow-hidden rounded-[8px] border border-cantiere-hairline bg-cantiere-hairline md:grid-cols-3">
-            {valueBlocks.map(({ glyph: Glyph, title, body }) => (
-              <div key={title} className="bg-white p-8 md:p-9">
-                <span className="flex size-12 items-center justify-center rounded-[8px] bg-cantiere-accent-tint text-cantiere-accent">
-                  <Glyph className="size-6" />
-                </span>
-
-                <h3 className="mt-6 text-[18px] font-medium leading-[1.3] text-cantiere-ink">
-                  {title}
-                </h3>
-
-                <p className="mt-3 text-[15px] leading-[1.55] text-cantiere-ink-secondary">
-                  {body}
+        <section className="eg-section-large bg-eg-terra text-eg-calce" aria-labelledby="business-trust-title">
+          <div className="eg-container">
+            <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center">
+              <div>
+                <p className="eg-eyebrow text-eg-calce/60">Tu mantieni il controllo</p>
+                <h2 id="business-trust-title" className="eg-h2 mt-4 max-w-[18ch] text-eg-calce">
+                  Qualita prima del contatto, non dopo.
+                </h2>
+                <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-eg-calce/68">
+                  Non compri una promessa alla cieca: leggi, valuti, sblocchi
+                  solo quando la richiesta ha senso per il tuo lavoro.
                 </p>
+
+                <div className="mt-12 grid gap-4 sm:grid-cols-2">
+                  {trustPillars.map(({ glyph: Glyph, title, body }) => (
+                    <div key={title} className="rounded-eg-lg border border-eg-hairline bg-eg-calce-translucent p-5 shadow-eg-slab">
+                      <Glyph className="size-6 text-eg-calce" />
+                      <h3 className="mt-5 text-[17px] font-medium leading-[1.3]">{title}</h3>
+                      <p className="mt-3 text-[14px] leading-[1.6] text-eg-calce/68">{body}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Reveal className="mx-auto w-full max-w-[340px]">
+                <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-terra after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/5]">
+                  <HomeImage
+                    src="/assets/images/area-professionista.webp"
+                    decorative
+                    fallbackLabel="Professionista al lavoro"
+                    sizes="(min-width: 1024px) 340px, 82vw"
+                    imageClassName={egPhotoGrade}
+                    className="absolute inset-0"
+                  />
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-eg-hairline bg-eg-calce" aria-label="Sintesi area impresa">
+          <div className="eg-container grid grid-cols-2 md:grid-cols-4">
+            {proof.map((item) => (
+              <div key={item.label} className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+                <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">{item.number}</p>
+                <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">{item.label}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <BusinessHowItWorks />
-
-      {/* Trust — the page's strong dark moment: light glyphs on ink, the calm
-          single-professional photograph as a framed slab beside the proof. */}
-      <section className="relative bg-cantiere-ink">
-        <div className="mx-auto max-w-[1120px] px-5 py-20 sm:px-10 md:px-12 md:py-28 lg:px-16">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center xl:gap-16">
-            <div>
-              <p className="text-[11px] uppercase tracking-[0.16em] text-cantiere-paper/55">
-                Tu mantieni il controllo
-              </p>
-
-              <h2 className="mt-4 max-w-[18ch] font-medium text-cantiere-paper text-cantiere-heading">
-                Lead di qualità, e nessun rischio comprato alla cieca.
-              </h2>
-
-              <div className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2">
-                {trustPillars.map(({ glyph: Glyph, title, body }) => (
-                  <div key={title} className="flex flex-col">
-                    <span className="flex size-11 items-center justify-center rounded-[8px] border border-cantiere-paper/15 text-cantiere-paper">
-                      <Glyph className="size-6" />
-                    </span>
-
-                    <h3 className="mt-5 text-[16px] font-medium leading-[1.35] text-cantiere-paper">
-                      {title}
-                    </h3>
-
-                    <p className="mt-2 text-[14px] leading-[1.55] text-cantiere-paper/70">
-                      {body}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Reveal className="mx-auto w-full max-w-[340px]">
-              <div className="relative aspect-[4/5] rotate-2 overflow-hidden rounded-[4px] shadow-cantiere-slab">
-                <HomeImage
-                  src="/assets/images/area-professionista.webp"
-                  decorative
-                  fallbackLabel="Professionista al lavoro"
-                  sizes="(min-width: 1024px) 340px, 80vw"
-                  imageClassName={ccPhotoGrade}
-                  className="absolute inset-0"
-                />
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA — linen close, conversion anchored back to the hero form. */}
-      <section className="relative border-t border-cantiere-hairline bg-cantiere-linen">
-        <div className="mx-auto grid max-w-[1120px] gap-12 px-5 py-20 sm:px-10 md:px-12 md:py-28 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-center lg:px-16">
-          <div className="flex flex-col items-start gap-7">
-            <h2 className="max-w-[18ch] font-medium tracking-[-0.01em] text-cantiere-ink text-[clamp(1.75rem,1.2rem+2.4vw,2.75rem)]">
-              Pronto a ricevere lavoro dalla tua zona?
+        <section className="eg-section-large bg-eg-calce" aria-labelledby="business-cta-title">
+          <div className="eg-container-narrow text-center">
+            <p className="eg-eyebrow">Pronto a partire?</p>
+            <h2 id="business-cta-title" className="eg-h2 mt-4">
+              Apri il profilo e scegli tu quali lavori seguire.
             </h2>
-
-            <p className="max-w-[42ch] text-[17px] leading-[1.5] text-cantiere-ink-secondary">
-              Crea il profilo impresa gratuitamente e inizia a vedere le
-              richieste reali vicino a te. Sblocchi solo quelle che ti
-              interessano.
+            <p className="eg-body-muted mx-auto mt-5 max-w-[44ch]">
+              Configuri attivita e zona, poi inizi a ricevere opportunita
+              coerenti con il tuo lavoro.
             </p>
-
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Link
-                href="#inizia"
-                className="group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-[8px] bg-cantiere-accent px-6 text-[15px] font-medium text-cantiere-paper transition-colors hover:bg-cantiere-accent-hover"
-              >
-                Iscriviti come professionista
-                <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href="#inizia" className="eg-button-primary">
+                Iscriviti gratis <span aria-hidden="true">&rarr;</span>
               </Link>
-
-              <Link
-                href="/area-impresa/accedi"
-                className="inline-flex h-12 w-fit items-center justify-center text-[15px] font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
-              >
-                Accedi all&apos;area impresa
+              <Link href="/area-impresa/accedi" prefetch={false} className="eg-button-ghost">
+                Accedi all&apos;area impresa <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>
           </div>
-
-          <div className="hidden lg:block">
-            <div className="relative aspect-[4/5] -rotate-2 overflow-hidden rounded-[4px] shadow-cantiere-slab">
-              <HomeImage
-                src="/assets/images/professionisti.webp"
-                decorative
-                fallbackLabel="Professionisti sui progetti"
-                sizes="300px"
-                imageClassName={ccPhotoGrade}
-                className="absolute inset-0"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </PublicShell>
   );
 }

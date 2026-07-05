@@ -10,7 +10,7 @@ type InputSize =
   | "lg"
 
 const inputBase =
-  "w-full border border-cantiere-hairline bg-cantiere-paper text-cantiere-ink outline-none transition-[border-color,box-shadow] placeholder:text-cantiere-ink-secondary focus:border-cantiere-accent focus:shadow-[0_0_0_1px_var(--fp-color-cantiere-accent),0_0_28px_-4px_rgba(204,120,92,0.67)] disabled:cursor-not-allowed disabled:opacity-60"
+  "w-full border border-eg-hairline bg-eg-calce text-eg-terra outline-none transition-[border-color,box-shadow] placeholder:text-eg-ardesia focus:border-eg-cotto focus:shadow-[0_0_0_1px_var(--eg-cotto),0_0_28px_-4px_rgba(191,111,74,0.67)] disabled:cursor-not-allowed disabled:opacity-60"
 
 const inputSizes = {
   md: "h-12 px-4 text-sm",

@@ -1,199 +1,121 @@
-"use client"
+"use client";
 
-import type {
-  FormEvent,
-} from "react"
+import type { FormEvent } from "react";
 
-import {
-  useMemo,
-  useState,
-} from "react"
-import {
-  useRouter,
-} from "next/navigation"
-import Link from "next/link"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
-import {
-  Button,
-  Card,
-  Select,
-} from "@esigenta/ui"
+import { isGeoPlace, type GeoPlace } from "@esigenta/shared";
+import { Select } from "@esigenta/ui";
 
-import {
-  isGeoPlace,
-  type GeoPlace,
-} from "@esigenta/shared"
-
-import {
-  CityAutocomplete,
-} from "../../../ui/location/city-autocomplete"
+import { CityAutocomplete } from "../../../ui/location/city-autocomplete";
 
 type CompanyLeadCategoryOption = {
-  slug: string
-  name: string
-}
+  slug: string;
+  name: string;
+};
 
 type CompanyLeadFormProps = {
-  categories: CompanyLeadCategoryOption[]
-}
+  categories: CompanyLeadCategoryOption[];
+};
 
-export function CompanyLeadForm({
-  categories,
-}: CompanyLeadFormProps) {
-  const router =
-    useRouter()
+export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
+  const router = useRouter();
+  const [categorySlug, setCategorySlug] = useState("");
+  const [location, setLocation] = useState<GeoPlace | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const [categorySlug, setCategorySlug] =
-    useState("")
+  const selectedCategory = useMemo(
+    () => categories.find((category) => category.slug === categorySlug) ?? null,
+    [categories, categorySlug],
+  );
 
-  const [location, setLocation] =
-    useState<GeoPlace | null>(null)
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-  const [error, setError] =
-    useState<string | null>(null)
-
-  const selectedCategory =
-    useMemo(
-      () =>
-        categories.find(
-          (category) =>
-            category.slug === categorySlug,
-        ) ?? null,
-      [categories, categorySlug],
-    )
-
-  function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
-    event.preventDefault()
-
-    if (
-      !selectedCategory ||
-      !isGeoPlace(location)
-    ) {
-      setError(
-        "Seleziona la tua attività e scegli la città dai suggerimenti.",
-      )
-      return
+    if (!selectedCategory || !isGeoPlace(location)) {
+      setError("Seleziona la tua attivita e scegli la citta dai suggerimenti.");
+      return;
     }
 
-    const params =
-      new URLSearchParams()
+    const params = new URLSearchParams();
 
-    params.set(
-      "categorySlug",
-      selectedCategory.slug,
-    )
-    params.set(
-      "activity",
-      selectedCategory.name,
-    )
-    params.set(
-      "geoPlace",
-      JSON.stringify(location),
-    )
+    params.set("categorySlug", selectedCategory.slug);
+    params.set("activity", selectedCategory.name);
+    params.set("geoPlace", JSON.stringify(location));
 
-    router.push(
-      `/area-impresa/iscriviti?${params.toString()}`,
-    )
+    router.push(`/area-impresa/iscriviti?${params.toString()}`);
   }
 
   return (
-    <Card className="p-5 md:p-6">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
+    <div className="eg-panel p-5 md:p-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-cantiere-ink">
-            Inizia da qui
-          </p>
-
-          <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
-            Seleziona la tua attività e la zona da cui vuoi iniziare a
-            ricevere richieste.
+          <p className="eg-mono-label text-eg-cotto-dark">Inizia da qui</p>
+          <p className="eg-body-muted mt-3">
+            Seleziona il mestiere e la zona: nel passaggio dopo completi il
+            profilo impresa.
           </p>
         </div>
 
-        <div className="space-y-2">
-          <label
-            htmlFor="company-category"
-            className="text-sm font-medium text-cantiere-ink"
-          >
+        <div className="eg-form-field">
+          <label htmlFor="company-category" className="eg-form-label">
             Di cosa ti occupi?
           </label>
-
           <Select
             id="company-category"
             required
             value={categorySlug}
             onChange={(event) => {
-              setCategorySlug(event.target.value)
-              setError(null)
+              setCategorySlug(event.target.value);
+              setError(null);
             }}
-            className={!categorySlug ? "text-cantiere-ink-secondary" : undefined}
+            className={!categorySlug ? "text-eg-ardesia" : undefined}
           >
-            <option value="">
-              Seleziona la tua categoria
-            </option>
-
+            <option value="">Seleziona la tua categoria</option>
             {categories.map((category) => (
-              <option
-                key={category.slug}
-                value={category.slug}
-              >
+              <option key={category.slug} value={category.slug}>
                 {category.name}
               </option>
             ))}
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <label
-            htmlFor="company-city"
-            className="text-sm font-medium text-cantiere-ink"
-          >
-            In quale città lavori?
+        <div className="eg-form-field">
+          <label htmlFor="company-city" className="eg-form-label">
+            In quale citta lavori?
           </label>
-
           <CityAutocomplete
             id="company-city"
             value={location}
             onChange={(nextLocation) => {
-              setLocation(nextLocation)
-              setError(null)
+              setLocation(nextLocation);
+              setError(null);
             }}
-            placeholder="Cerca città o comune"
+            placeholder="Cerca citta o comune"
           />
         </div>
 
-        {error ? (
-          <p className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
-            {error}
-          </p>
-        ) : null}
+        {error ? <p className="eg-alert">{error}</p> : null}
 
-        <Button
-          type="submit"
-          className="w-full"
-        >
-          Continua gratuitamente
-        </Button>
+        <button type="submit" className="eg-button-primary w-full">
+          Continua gratuitamente <span aria-hidden="true">&rarr;</span>
+        </button>
 
-        <p className="text-xs leading-5 text-cantiere-ink-secondary">
-          Nel passaggio successivo completerai i dati aziendali e creerai
-          l&apos;accesso impresa.
+        <p className="eg-form-help">
+          Nessun abbonamento obbligatorio: scegli tu quali richieste aprire.
         </p>
 
-        <p className="text-xs leading-5 text-cantiere-ink-secondary">
+        <p className="eg-form-help">
           I dati saranno usati per ricontattarti e gestire la richiesta. Leggi
           l&apos;
-          <Link href="/privacy" className="font-medium text-cantiere-accent">
+          <Link href="/privacy" className="font-medium text-eg-cotto-dark">
             informativa privacy
           </Link>
           .
         </p>
       </form>
-    </Card>
-  )
+    </div>
+  );
 }

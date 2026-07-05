@@ -46,14 +46,14 @@ export function RequestRefundDisclosure({
 
   if (!open) {
     return (
-      <div className="mt-4 border-t border-cantiere-hairline pt-4">
-        <p className="text-xs leading-5 text-cantiere-ink-secondary">
+      <div className="mt-4 border-t border-eg-hairline pt-4">
+        <p className="text-xs leading-5 text-eg-ardesia">
           Il contatto non risponde o è sbagliato?
         </p>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-1 text-xs font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+          className="mt-1 text-xs font-semibold text-eg-cotto transition-colors hover:text-eg-cotto-dark"
         >
           Segnala un problema
         </button>
@@ -62,7 +62,7 @@ export function RequestRefundDisclosure({
   }
 
   return (
-    <div className="mt-4 border-t border-cantiere-hairline pt-4">
+    <div className="mt-4 border-t border-eg-hairline pt-4">
       <form action={refundRequestAction} className="grid gap-5">
         <input type="hidden" name="requestId" value={requestId} />
         <input
@@ -72,10 +72,10 @@ export function RequestRefundDisclosure({
         />
 
         <div>
-          <h3 className="text-sm font-semibold text-cantiere-ink">
+          <h3 className="text-sm font-semibold text-eg-terra">
             Segnala un problema con il contatto
           </h3>
-          <p className="mt-1.5 text-xs leading-5 text-cantiere-ink-secondary">
+          <p className="mt-1.5 text-xs leading-5 text-eg-ardesia">
             Esigenta verifica ogni segnalazione. Se il contatto risulta
             inutilizzabile, puoi richiedere il rimborso dei crediti secondo le
             condizioni previste.
@@ -83,7 +83,7 @@ export function RequestRefundDisclosure({
         </div>
 
         <label className="grid gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary">
+          <span className="text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
             Motivo
           </span>
           <Select name="reason" required>
@@ -96,7 +96,7 @@ export function RequestRefundDisclosure({
         </label>
 
         <label className="grid gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary">
+          <span className="text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
             Cosa è successo
           </span>
           <Textarea
@@ -109,17 +109,17 @@ export function RequestRefundDisclosure({
         </label>
 
         <div className="grid gap-3">
-          <span className="text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary">
+          <span className="text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
             Tentativo di contatto
           </span>
 
-          <label className="flex items-start gap-3 text-sm leading-6 text-cantiere-ink-secondary">
+          <label className="flex items-start gap-3 text-sm leading-6 text-eg-ardesia">
             <Checkbox name="companyContactAttempted" className="mt-0.5" />
             <span>Ho provato a contattare il cliente</span>
           </label>
 
           <label className="grid gap-1.5">
-            <span className="text-xs text-cantiere-ink-secondary">
+            <span className="text-xs text-eg-ardesia">
               Data ultimo tentativo
             </span>
             <Input type="date" name="lastContactAttemptAt" />
@@ -138,7 +138,7 @@ export function RequestRefundDisclosure({
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
+            className="text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
           >
             Annulla
           </button>

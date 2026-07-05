@@ -1,32 +1,29 @@
 import Link from "next/link";
 
-import { PageShell, cn } from "@esigenta/ui";
+import { PublicShell } from "../../../site/shell/public-shell";
 
 export default function CostGuideNotFound() {
   return (
-    <PageShell size="lg">
-      <section className="mx-auto max-w-2xl space-y-5 py-12 text-center">
-        <h1 className="text-4xl font-semibold leading-tight text-cantiere-ink">
-          Guida costi non trovata
-        </h1>
+    <PublicShell>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-        <p className="text-base leading-7 text-cantiere-ink-secondary">
-          La guida richiesta non è disponibile.
-        </p>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container-narrow text-center">
+            <p className="eg-eyebrow">Guide ai costi</p>
 
-        <Link
-          href="/"
-          className={cn(
-            "inline-flex items-center justify-center font-medium transition-colors",
-            "rounded-[8px]",
-            "h-12 px-6 text-[15px]",
-            "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-            "w-full sm:w-auto",
-          )}
-        >
-          Torna alla home
-        </Link>
-      </section>
-    </PageShell>
+            <h1 className="eg-h1 mt-5">Guida costi non trovata</h1>
+
+            <p className="eg-body-muted mx-auto mt-6 max-w-[42ch]">
+              La guida richiesta non &egrave; disponibile.
+            </p>
+
+            <Link href="/costi" className="eg-button-primary mt-8 w-full sm:w-auto">
+              Torna alle guide
+            </Link>
+          </div>
+        </section>
+      </div>
+    </PublicShell>
   );
 }

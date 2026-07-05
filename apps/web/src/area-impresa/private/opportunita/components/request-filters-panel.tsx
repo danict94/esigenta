@@ -307,13 +307,13 @@ export function RequestFiltersPanel({
           />
 
           <label className="grid flex-1 gap-2">
-            <span className="text-sm font-medium text-cantiere-ink">
+            <span className="text-sm font-medium text-eg-terra">
               cerca richiesta con parole chiave.
             </span>
 
             <span className="relative">
               <Search
-                className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-cantiere-ink-secondary"
+                className="absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-eg-ardesia"
                 aria-hidden="true"
               />
 
@@ -333,7 +333,7 @@ export function RequestFiltersPanel({
           <Button
             type="button"
             variant="ghost"
-            className="gap-2 text-cantiere-accent"
+            className="gap-2 text-eg-cotto"
             aria-expanded={filtersOpen}
             onClick={() => {
               setFiltersOpen((value) => !value)
@@ -350,7 +350,7 @@ export function RequestFiltersPanel({
             <PendingRequestLink
               href="/area-impresa/richieste"
               pendingChildren="Reset in corso..."
-              className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+              className="text-sm font-semibold text-eg-cotto transition-colors hover:text-eg-cotto-dark"
             >
               Reset filtri
             </PendingRequestLink>
@@ -362,7 +362,7 @@ export function RequestFiltersPanel({
                 q: null,
               })}
               pendingChildren="Cancellazione..."
-              className="text-sm font-semibold text-cantiere-ink-secondary transition-colors hover:text-cantiere-accent"
+              className="text-sm font-semibold text-eg-ardesia transition-colors hover:text-eg-cotto"
             >
               Cancella ricerca
             </PendingRequestLink>
@@ -374,7 +374,7 @@ export function RequestFiltersPanel({
         <p
           role="status"
           aria-live="polite"
-          className="text-sm font-medium text-cantiere-ink-secondary"
+          className="text-sm font-medium text-eg-ardesia"
         >
           Aggiornamento risultati...
         </p>
@@ -383,7 +383,7 @@ export function RequestFiltersPanel({
       {filtersOpen ? (
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-cantiere-ink">
+            <span className="text-sm font-medium text-eg-terra">
               Categoria
             </span>
 
@@ -417,7 +417,7 @@ export function RequestFiltersPanel({
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-cantiere-ink">
+            <span className="text-sm font-medium text-eg-terra">
               Intervento
             </span>
 
@@ -454,7 +454,7 @@ export function RequestFiltersPanel({
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-cantiere-ink">
+            <span className="text-sm font-medium text-eg-terra">
               Raggio
             </span>
 
@@ -490,7 +490,7 @@ export function RequestFiltersPanel({
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-cantiere-ink">
+            <span className="text-sm font-medium text-eg-terra">
               Ordina
             </span>
 
@@ -521,16 +521,16 @@ export function RequestFiltersPanel({
 
       {filtersOpen ? (
         !active.categoryId ? (
-          <p className="text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="text-sm leading-6 text-eg-ardesia">
             Seleziona una categoria per filtrare gli interventi collegati.
           </p>
         ) : activeCategoryIsConfigured === false ? (
-          <p className="max-w-3xl text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="max-w-3xl text-sm leading-6 text-eg-ardesia">
             Questa categoria non è ancora nel tuo profilo. Puoi configurarla
             per ricevere richieste più pertinenti.
           </p>
         ) : visibleInterventions.length === 0 ? (
-          <p className="text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="text-sm leading-6 text-eg-ardesia">
             Nessun intervento collegato a {selectedCategory?.name ?? "questa categoria"}.
           </p>
         ) : null

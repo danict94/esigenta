@@ -96,11 +96,11 @@ function formatUnreadCount(count: number) {
 function Brand() {
   return (
     <span className="inline-flex items-baseline gap-2">
-      <span className="text-[17px] font-semibold tracking-[-0.01em] text-cantiere-ink">
+      <span className="text-[17px] font-semibold tracking-[-0.01em] text-eg-terra">
         esigenta
       </span>
 
-      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cantiere-accent">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-eg-cotto">
         Imprese
       </span>
     </span>
@@ -109,7 +109,7 @@ function Brand() {
 
 function NavBadge({ value }: { value: string }) {
   return (
-    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cantiere-accent px-1 text-[11px] font-semibold leading-none text-cantiere-paper">
+    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-eg-cotto px-1 text-[11px] font-semibold leading-none text-eg-calce">
       {value}
     </span>
   );
@@ -126,10 +126,10 @@ function CreditBalanceChip({
     <Link
       href="/area-impresa/crediti"
       onClick={onClick}
-      className="inline-flex items-center gap-1.5 rounded-full border border-cantiere-hairline bg-cantiere-surface px-3 py-1.5 text-xs font-semibold text-cantiere-ink transition-colors hover:border-cantiere-accent"
+      className="inline-flex items-center gap-1.5 rounded-full border border-eg-hairline bg-eg-calce-2 px-3 py-1.5 text-xs font-semibold text-eg-terra transition-colors hover:border-eg-cotto"
       prefetch={false}
     >
-      <CreditCoinIcon className="size-3.5 text-cantiere-ink-secondary" />
+      <CreditCoinIcon className="size-3.5 text-eg-ardesia" />
       {balance} {balance === 1 ? "credito" : "crediti"}
     </Link>
   );
@@ -145,9 +145,9 @@ function DesktopNavLink({
   const className = cn(
     "relative inline-flex h-[72px] items-center gap-1.5 text-sm font-medium transition-colors",
     active
-      ? "text-cantiere-accent"
-      : "text-cantiere-ink-secondary hover:text-cantiere-ink",
-    !item.enabled ? "cursor-not-allowed text-cantiere-ink-secondary" : "",
+      ? "text-eg-cotto"
+      : "text-eg-ardesia hover:text-eg-terra",
+    !item.enabled ? "cursor-not-allowed text-eg-ardesia" : "",
   );
 
   const content = (
@@ -159,7 +159,7 @@ function DesktopNavLink({
       {active ? (
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-0.5 bg-cantiere-accent"
+          className="absolute inset-x-0 bottom-0 h-0.5 bg-eg-cotto"
         />
       ) : null}
     </>
@@ -196,9 +196,9 @@ function MobileNavLink({
   const className = cn(
     "flex items-center justify-between gap-3 px-2 py-3 text-sm font-medium transition-colors",
     active
-      ? "text-cantiere-accent"
-      : "text-cantiere-ink-secondary hover:text-cantiere-ink",
-    !item.enabled ? "cursor-not-allowed text-cantiere-ink-secondary" : "",
+      ? "text-eg-cotto"
+      : "text-eg-ardesia hover:text-eg-terra",
+    !item.enabled ? "cursor-not-allowed text-eg-ardesia" : "",
   );
 
   const content = (
@@ -240,12 +240,12 @@ function AccountMenuItem({
   const className = cn(
     "block px-5 py-3 text-sm font-medium transition-colors",
     item.enabled &&
-      "hover:bg-cantiere-linen",
+      "hover:bg-eg-calce-2",
     item.enabled && active
-      ? "text-cantiere-accent"
+      ? "text-eg-cotto"
       : item.enabled
-        ? "text-cantiere-ink"
-        : "cursor-not-allowed text-cantiere-ink-secondary",
+        ? "text-eg-terra"
+        : "cursor-not-allowed text-eg-ardesia",
   );
 
   if (!item.enabled) {
@@ -401,7 +401,7 @@ export function ImpresaSidebar({
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cantiere-hairline bg-cantiere-paper">
+    <header className="sticky top-0 z-50 border-b border-eg-hairline bg-eg-calce">
       <div className="mx-auto flex h-[72px] items-center justify-between px-5 sm:px-10 lg:px-16">
         <Link
           href="/area-impresa/richieste"
@@ -442,7 +442,7 @@ export function ImpresaSidebar({
 
               <ChevronDownIcon
                 className={cn(
-                  "size-4 text-cantiere-ink-secondary transition-transform",
+                  "size-4 text-eg-ardesia transition-transform",
                   accountOpen ? "rotate-180" : "",
                 )}
               />
@@ -453,12 +453,12 @@ export function ImpresaSidebar({
                 className="absolute right-0 top-12 w-72 py-3 shadow-lg"
                 role="menu"
               >
-                <div className="border-b border-cantiere-hairline px-5 pb-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
+                <div className="border-b border-eg-hairline px-5 pb-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
                     Account impresa
                   </p>
 
-                  <p className="mt-1 truncate text-sm font-semibold text-cantiere-ink">
+                  <p className="mt-1 truncate text-sm font-semibold text-eg-terra">
                     {accountLabel}
                   </p>
                 </div>
@@ -477,7 +477,7 @@ export function ImpresaSidebar({
                   ))}
                 </nav>
 
-                <div className="border-t border-cantiere-hairline px-3 pt-3">
+                <div className="border-t border-eg-hairline px-3 pt-3">
                   <Button
                     type="button"
                     variant="ghost"
@@ -514,7 +514,7 @@ export function ImpresaSidebar({
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t border-cantiere-hairline bg-cantiere-paper md:hidden">
+        <div className="border-t border-eg-hairline bg-eg-calce md:hidden">
           <div className="px-5 sm:px-10">
             <nav
               className="flex flex-col gap-1 py-4"
@@ -536,9 +536,9 @@ export function ImpresaSidebar({
                 />
               ))}
 
-              <div className="my-2 border-t border-cantiere-hairline" />
+              <div className="my-2 border-t border-eg-hairline" />
 
-              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-cantiere-ink-secondary">
+              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-eg-ardesia">
                 Il mio account
               </p>
 

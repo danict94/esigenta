@@ -234,7 +234,7 @@ function CompanyActionForms({
 
   if (actions.length === 0) {
     return (
-      <span className="text-sm text-cantiere-ink-secondary">
+      <span className="text-sm text-eg-ardesia">
         Nessuna azione
       </span>
     )
@@ -272,10 +272,10 @@ function CompanyNameCell({
 }) {
   return (
     <div className="min-w-0">
-      <p className="truncate text-sm font-semibold text-cantiere-ink">
+      <p className="truncate text-sm font-semibold text-eg-terra">
         {company.name}
       </p>
-      <p className="mt-1 truncate text-xs text-cantiere-ink-secondary">
+      <p className="mt-1 truncate text-xs text-eg-ardesia">
         {company.owner
           ? company.owner.name ??
             company.owner.email
@@ -342,8 +342,8 @@ function StatusTabs({
             className={cn(
               "inline-flex items-center gap-2 border px-3 py-2 text-sm font-medium transition-colors",
               isActive
-                ? "border-cantiere-accent bg-cantiere-accent text-cantiere-paper"
-                : "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary hover:text-cantiere-ink",
+                ? "border-eg-cotto bg-eg-cotto text-eg-calce"
+                : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:text-eg-terra",
             )}
           >
             <span>{tab.label}</span>
@@ -351,8 +351,8 @@ function StatusTabs({
               className={cn(
                 "text-xs",
                 isActive
-                  ? "text-cantiere-paper"
-                  : "text-cantiere-ink-secondary",
+                  ? "text-eg-calce"
+                  : "text-eg-ardesia",
               )}
             >
               {tab.count}
@@ -363,7 +363,7 @@ function StatusTabs({
 
       <Link
         href="/imprese/modifiche-contatto"
-        className="inline-flex items-center gap-2 border border-cantiere-hairline bg-cantiere-paper px-3 py-2 text-sm font-medium text-cantiere-ink-secondary transition-colors hover:text-cantiere-ink"
+        className="inline-flex items-center gap-2 border border-eg-hairline bg-eg-calce px-3 py-2 text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
       >
         <span>Aggiornamenti contatto</span>
         {counts.pendingContactChangeRequests > 0 ? (
@@ -382,9 +382,9 @@ function CompaniesDesktopTable({
   companies: AdminCompanyListItem[]
 }) {
   return (
-    <div className="hidden overflow-x-auto border-y border-cantiere-hairline md:block">
+    <div className="hidden overflow-x-auto border-y border-eg-hairline md:block">
       <div className="min-w-[64rem]">
-        <div className="grid grid-cols-[minmax(14rem,1.4fr)_9rem_9rem_10rem_10rem_9rem_minmax(14rem,auto)] gap-4 border-b border-cantiere-hairline bg-cantiere-linen px-4 py-3 text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary">
+        <div className="grid grid-cols-[minmax(14rem,1.4fr)_9rem_9rem_10rem_10rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline bg-eg-calce-2 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
           <span>Impresa</span>
           <span>Stato</span>
           <span>P.IVA</span>
@@ -397,7 +397,7 @@ function CompaniesDesktopTable({
         {companies.map((company) => (
           <div
             key={company.id}
-            className="grid grid-cols-[minmax(14rem,1.4fr)_9rem_9rem_10rem_10rem_9rem_minmax(14rem,auto)] gap-4 border-b border-cantiere-hairline px-4 py-4 text-sm last:border-b-0"
+            className="grid grid-cols-[minmax(14rem,1.4fr)_9rem_9rem_10rem_10rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline px-4 py-4 text-sm last:border-b-0"
           >
             <CompanyNameCell company={company} />
             <div>
@@ -405,16 +405,16 @@ function CompaniesDesktopTable({
                 {getStatusLabel(company.status)}
               </Badge>
             </div>
-            <span className="break-words text-cantiere-ink-secondary">
+            <span className="break-words text-eg-ardesia">
               {company.vatNumber}
             </span>
-            <span className="text-cantiere-ink-secondary">
+            <span className="text-eg-ardesia">
               {formatValue(company.city)}
             </span>
-            <span className="break-words text-cantiere-ink-secondary">
+            <span className="break-words text-eg-ardesia">
               {company.phone}
             </span>
-            <span className="text-cantiere-ink-secondary">
+            <span className="text-eg-ardesia">
               {formatDate(company.createdAt)}
             </span>
             <CompanyActionForms company={company} />
@@ -435,7 +435,7 @@ function CompaniesMobileList({
       {companies.map((company) => (
         <li
           key={company.id}
-          className="border border-cantiere-hairline bg-cantiere-paper p-4"
+          className="border border-eg-hairline bg-eg-calce p-4"
         >
           <div className="flex items-start justify-between gap-3">
             <CompanyNameCell company={company} />
@@ -444,15 +444,15 @@ function CompaniesMobileList({
             </Badge>
           </div>
 
-          <dl className="mt-4 grid gap-2 text-sm text-cantiere-ink-secondary">
+          <dl className="mt-4 grid gap-2 text-sm text-eg-ardesia">
             <div className="flex justify-between gap-4">
-              <dt className="text-cantiere-ink-secondary">
+              <dt className="text-eg-ardesia">
                 Città
               </dt>
               <dd>{formatValue(company.city)}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-cantiere-ink-secondary">
+              <dt className="text-eg-ardesia">
                 Telefono
               </dt>
               <dd className="break-words text-right">
@@ -460,7 +460,7 @@ function CompaniesMobileList({
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-cantiere-ink-secondary">
+              <dt className="text-eg-ardesia">
                 P.IVA
               </dt>
               <dd className="break-words text-right">
@@ -468,14 +468,14 @@ function CompaniesMobileList({
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-cantiere-ink-secondary">
+              <dt className="text-eg-ardesia">
                 Registrata
               </dt>
               <dd>{formatDate(company.createdAt)}</dd>
             </div>
           </dl>
 
-          <div className="mt-4 border-t border-cantiere-hairline pt-4">
+          <div className="mt-4 border-t border-eg-hairline pt-4">
             <CompanyActionForms company={company} />
           </div>
         </li>
@@ -510,16 +510,16 @@ export default async function AdminCompaniesPage({
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
-      <header className="border-b border-cantiere-hairline pb-7">
-        <p className="text-sm font-medium text-cantiere-ink-secondary">
+      <header className="border-b border-eg-hairline pb-7">
+        <p className="text-sm font-medium text-eg-ardesia">
           Control room
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
           Imprese
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
           Gestisci verifiche, autorizzazioni e stato operativo delle imprese.
         </p>
       </header>
@@ -533,11 +533,11 @@ export default async function AdminCompaniesPage({
 
       <section className="mt-6">
         {companies.length === 0 ? (
-          <div className="border-y border-cantiere-hairline py-8">
-            <p className="text-base font-semibold text-cantiere-ink">
+          <div className="border-y border-eg-hairline py-8">
+            <p className="text-base font-semibold text-eg-terra">
               Nessuna impresa da mostrare
             </p>
-            <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
               Cambia filtro oppure attendi nuove registrazioni.
             </p>
           </div>

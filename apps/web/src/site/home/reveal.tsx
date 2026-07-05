@@ -9,16 +9,14 @@ type RevealProps = {
   delayMs?: number;
 };
 
-// Scroll-triggered entrance, staggered via delayMs. Fires once; respects
-// prefers-reduced-motion through the motion-reduce: variants below.
 export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
+    const element = ref.current;
 
-    if (!el) {
+    if (!element) {
       return;
     }
 
@@ -32,7 +30,7 @@ export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
       { threshold: 0.2 },
     );
 
-    observer.observe(el);
+    observer.observe(element);
 
     return () => observer.disconnect();
   }, []);
@@ -41,7 +39,7 @@ export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
     <div
       ref={ref}
       style={{ transitionDelay: `${delayMs}ms` }}
-      className={`transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none motion-reduce:translate-y-0 motion-reduce:opacity-100 ${
+      className={`transition-[opacity,transform] duration-700 ease-out motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none ${
         visible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
       } ${className ?? ""}`}
     >

@@ -1,66 +1,53 @@
-import {
-  revalidatePath,
-} from "next/cache"
-import {
-  redirect,
-} from "next/navigation"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import {
   getCustomerConversationThreadByToken,
   markConversationRead,
   sendConversationMessage,
-} from "@esigenta/domain"
-import {
-  Card,
-  CardContent,
-  Container,
-} from "@esigenta/ui"
+} from "@esigenta/domain";
 
-import { PublicShell } from "../../site/shell/public-shell"
-import {
-  MessageThread,
-} from "../../ui/messaging/message-thread"
-import {
-  SendMessageForm,
-} from "../../ui/messaging/send-message-form"
+import { PublicShell } from "../../site/shell/public-shell";
+import { MessageThread } from "../../ui/messaging/message-thread";
+import { SendMessageForm } from "../../ui/messaging/send-message-form";
 
 type CustomerConversationPageProps = {
-  token: string
-  sent?: string
-  error?: string
-}
+  token: string;
+  sent?: string;
+  error?: string;
+};
 
 function readParam(value?: string | string[]) {
-  return Array.isArray(value) ? value[0] : value
+  return Array.isArray(value) ? value[0] : value;
 }
 
 function buildCustomerThreadHref({
   token,
   params,
 }: {
-  token: string
-  params?: Record<string, string>
+  token: string;
+  params?: Record<string, string>;
 }) {
-  const query = new URLSearchParams({ token, ...(params ?? {}) })
-  return `/messaggi/accesso?${query.toString()}`
+  const query = new URLSearchParams({ token, ...(params ?? {}) });
+  return `/messaggi/accesso?${query.toString()}`;
 }
 
 function getStatusMessage({
   sent,
   error,
 }: {
-  sent?: string
-  error?: string
+  sent?: string;
+  error?: string;
 }) {
   if (sent === "1") {
-    return "Messaggio inviato."
+    return "Messaggio inviato.";
   }
 
   if (error) {
-    return "Non siamo riusciti a inviare il messaggio."
+    return "Non siamo riusciti a inviare il messaggio.";
   }
 
-  return null
+  return null;
 }
 
 export async function CustomerConversationPage({
@@ -74,12 +61,12 @@ export async function CustomerConversationPage({
         ok: false as const,
         code: "invalid_token" as const,
         message: "Il link non contiene un token valido.",
-      }
+      };
 
   const statusMessage = getStatusMessage({
     sent: readParam(sent),
     error: readParam(error),
-  })
+  });
 
   if (result.ok) {
     await markConversationRead({
@@ -88,13 +75,13 @@ export async function CustomerConversationPage({
         actorType: "CUSTOMER",
         token,
       },
-    })
+    });
   }
 
   async function sendCustomerMessageAction(formData: FormData) {
-    "use server"
+    "use server";
 
-    const accessResult = await getCustomerConversationThreadByToken({ token })
+    const accessResult = await getCustomerConversationThreadByToken({ token });
 
     if (!accessResult.ok) {
       redirect(
@@ -102,10 +89,10 @@ export async function CustomerConversationPage({
           token,
           params: { error: accessResult.code },
         }),
-      )
+      );
     }
 
-    const body = String(formData.get("body") ?? "")
+    const body = String(formData.get("body") ?? "");
     const sendResult = await sendConversationMessage({
       conversationId: accessResult.thread.id,
       body,
@@ -113,7 +100,7 @@ export async function CustomerConversationPage({
         actorType: "CUSTOMER",
         token,
       },
-    })
+    });
 
     if (!sendResult.ok) {
       redirect(
@@ -121,69 +108,61 @@ export async function CustomerConversationPage({
           token,
           params: { error: sendResult.code },
         }),
-      )
+      );
     }
 
-    // D-010 RESOLVED: revalidate only the specific company conversation, not the entire /area-impresa layout
-    revalidatePath(`/area-impresa/contatti/${accessResult.thread.id}`)
-    revalidatePath("/area-impresa/contatti")
+    // D-010 RESOLVED: revalidate only the specific company conversation.
+    revalidatePath(`/area-impresa/contatti/${accessResult.thread.id}`);
+    revalidatePath("/area-impresa/contatti");
 
-    redirect(
-      buildCustomerThreadHref({ token, params: { sent: "1" } }),
-    )
+    redirect(buildCustomerThreadHref({ token, params: { sent: "1" } }));
   }
 
   return (
     <PublicShell>
-      <section className="pt-(--fp-nav-clear) pb-10 md:pb-12">
-        <Container size="lg">
-          <div className="space-y-6">
-            <div>
-              <p className="text-sm font-medium text-cantiere-ink-secondary">
-                Messaggi
-              </p>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-              <h1 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
-                Messaggi richiesta
-              </h1>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[920px]">
+              <div>
+                <p className="eg-eyebrow">Messaggi</p>
 
-              <p className="mt-1 text-sm text-cantiere-ink-secondary">
-                Rispondi senza creare un account.
-              </p>
+                <h1 className="eg-h1 mt-5">Messaggi richiesta</h1>
+
+                <p className="eg-body-muted mt-5 max-w-[44ch]">
+                  Rispondi senza creare un account.
+                </p>
+              </div>
+
+              {statusMessage ? (
+                <div className="eg-panel mt-8 p-5">
+                  <p className="eg-body-muted">{statusMessage}</p>
+                </div>
+              ) : null}
+
+              <div className="mt-8">
+                {result.ok ? (
+                  <MessageThread
+                    thread={result.thread}
+                    currentActorType="CUSTOMER"
+                  >
+                    <SendMessageForm
+                      action={sendCustomerMessageAction}
+                      submitLabel="Rispondi"
+                    />
+                  </MessageThread>
+                ) : (
+                  <div className="eg-panel p-5">
+                    <p className="eg-body-muted">{result.message}</p>
+                  </div>
+                )}
+              </div>
             </div>
-
-            {statusMessage ? (
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-cantiere-ink-secondary">
-                    {statusMessage}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : null}
-
-            {result.ok ? (
-              <MessageThread
-                thread={result.thread}
-                currentActorType="CUSTOMER"
-              >
-                <SendMessageForm
-                  action={sendCustomerMessageAction}
-                  submitLabel="Rispondi"
-                />
-              </MessageThread>
-            ) : (
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-cantiere-ink-secondary">
-                    {result.message}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
           </div>
-        </Container>
-      </section>
+        </section>
+      </div>
     </PublicShell>
-  )
+  );
 }

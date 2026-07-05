@@ -19,11 +19,11 @@ const badgeBase = "inline-flex items-center border font-medium"
 
 const badgeVariants = {
   neutral:
-    "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary",
+    "border-eg-hairline bg-eg-calce text-eg-ardesia",
   success:
-    "border-cantiere-accent bg-cantiere-paper text-cantiere-accent",
-  warning: "border-cantiere-hairline bg-cantiere-linen text-cantiere-ink",
-  danger: "border-cantiere-accent bg-cantiere-paper text-cantiere-ink",
+    "border-eg-cotto bg-eg-calce text-eg-cotto",
+  warning: "border-eg-hairline bg-eg-calce-2 text-eg-terra",
+  danger: "border-eg-cotto bg-eg-calce text-eg-terra",
 } as const
 
 const badgeSizes = {

@@ -71,14 +71,14 @@ const packageTierCopy: Record<PackageTier, { label: string }> = {
 function PackageTierGlyph({ tier }: { tier: PackageTier }) {
   const starFill =
     tier === "premium"
-      ? "var(--color-cantiere-bronze)"
+      ? "var(--color-eg-miele)"
       : tier === "standard"
-        ? "var(--color-cantiere-accent-soft)"
+        ? "var(--color-eg-salvia)"
         : null
 
   return (
     <span
-      className="inline-flex h-9 w-9 shrink-0 items-center justify-center text-cantiere-ink-secondary"
+      className="inline-flex h-9 w-9 shrink-0 items-center justify-center text-eg-ardesia"
       aria-hidden="true"
     >
       <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -135,10 +135,10 @@ function getBestValuePackageId(packages: PurchasableCreditPackage[]) {
 
 function PackageBenefit({ children }: { children: ReactNode }) {
   return (
-    <li className="flex items-start gap-2.5 text-sm leading-6 text-cantiere-ink">
+    <li className="flex items-start gap-2.5 text-sm leading-6 text-eg-terra">
       <svg
         viewBox="0 0 24 24"
-        className="mt-0.5 h-4 w-4 shrink-0 text-cantiere-accent"
+        className="mt-0.5 h-4 w-4 shrink-0 text-eg-cotto"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
@@ -223,14 +223,14 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
   return (
     <PageShell size="lg" className="py-8 md:py-10">
       <section className="grid gap-6">
-        <header className="border-b border-cantiere-hairline pb-7">
-          <p className="text-sm font-medium text-cantiere-ink-secondary">Crediti impresa</p>
+        <header className="border-b border-eg-hairline pb-7">
+          <p className="text-sm font-medium text-eg-ardesia">Crediti impresa</p>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
             Acquista pacchetti crediti
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
             Scegli un pacchetto e completa il pagamento su Stripe. I crediti saranno accreditati
             solo dopo la conferma sicura del pagamento.
           </p>
@@ -238,7 +238,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
 
         {checkoutMessage ? (
           <Card className="p-5">
-            <p className="text-sm font-semibold text-cantiere-ink">{checkoutMessage}</p>
+            <p className="text-sm font-semibold text-eg-terra">{checkoutMessage}</p>
           </Card>
         ) : null}
 
@@ -247,8 +247,8 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         ) : null}
 
         {!canBuyCredits ? (
-          <Card className="bg-cantiere-linen p-5">
-            <p className="text-sm font-semibold text-cantiere-ink">
+          <Card className="bg-eg-calce-2 p-5">
+            <p className="text-sm font-semibold text-eg-terra">
               Il tuo profilo impresa deve essere approvato prima di acquistare crediti.
             </p>
           </Card>
@@ -257,18 +257,18 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         <Card className="p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-medium text-cantiere-ink-secondary">Saldo attuale</p>
+              <p className="text-sm font-medium text-eg-ardesia">Saldo attuale</p>
 
-              <p className="mt-2 text-4xl font-semibold tracking-tight text-cantiere-ink">
+              <p className="mt-2 text-4xl font-semibold tracking-tight text-eg-terra">
                 {result.account.balance} crediti
               </p>
             </div>
 
-            <div className="text-sm text-cantiere-ink-secondary">
+            <div className="text-sm text-eg-ardesia">
               {result.nearestLotExpiresAt ? (
                 <p>
                   Prossima scadenza:{" "}
-                  <span className="font-medium text-cantiere-ink">
+                  <span className="font-medium text-eg-terra">
                     {formatDate(result.nearestLotExpiresAt)}
                   </span>
                 </p>
@@ -279,8 +279,8 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
           </div>
 
           {result.lots.length > 0 ? (
-            <div className="mt-6 border-t border-cantiere-hairline pt-5">
-              <p className="text-sm font-medium text-cantiere-ink-secondary">
+            <div className="mt-6 border-t border-eg-hairline pt-5">
+              <p className="text-sm font-medium text-eg-ardesia">
                 Scadenza per lotto
               </p>
 
@@ -288,10 +288,10 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                 {result.lots.map((lot) => (
                   <li
                     key={lot.id}
-                    className="flex items-center justify-between gap-4 text-sm text-cantiere-ink-secondary"
+                    className="flex items-center justify-between gap-4 text-sm text-eg-ardesia"
                   >
                     <span>{lot.creditsRemaining} crediti</span>
-                    <span className="font-medium text-cantiere-ink">
+                    <span className="font-medium text-eg-terra">
                       {formatDate(lot.expiresAt)}
                     </span>
                   </li>
@@ -304,7 +304,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         <section className="grid gap-4 lg:grid-cols-3">
           {result.packages.length === 0 ? (
             <Card className="p-6 lg:col-span-3">
-              <p className="text-sm text-cantiere-ink-secondary">
+              <p className="text-sm text-eg-ardesia">
                 Nessun pacchetto crediti disponibile al momento.
               </p>
             </Card>
@@ -332,7 +332,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                       ? // Featured tier: accent border + deeper lift instead of the
                         // default hairline + base elevation, so it visibly sits
                         // above its siblings in the same-size grid.
-                        "border-cantiere-accent shadow-cantiere-elevation-lg lg:-translate-y-1"
+                        "border-eg-cotto shadow-eg-elevation-lg lg:-translate-y-1"
                       : "",
                   )}
                 >
@@ -340,35 +340,35 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                     <PackageTierGlyph tier={tier} />
 
                     {isPremium ? (
-                      <span className="rounded-full bg-cantiere-bronze-tint px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cantiere-ink">
+                      <span className="rounded-full bg-eg-miele-tint px-3 py-1 text-xs font-semibold uppercase tracking-wide text-eg-terra">
                         Più scelto
                       </span>
                     ) : null}
                   </div>
 
-                  <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-cantiere-ink-secondary">
+                  <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
                     {packageTierCopy[tier].label}
                   </p>
 
-                  <h2 className="mt-1 text-xl font-semibold tracking-tight text-cantiere-ink">
+                  <h2 className="mt-1 text-xl font-semibold tracking-tight text-eg-terra">
                     {creditPackage.name}
                   </h2>
 
                   {creditPackage.description ? (
-                    <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+                    <p className="mt-2 text-sm leading-6 text-eg-ardesia">
                       {creditPackage.description}
                     </p>
                   ) : null}
 
-                  <div className="mt-6 border-t border-cantiere-hairline pt-5">
-                    <p className="text-3xl font-semibold tracking-tight text-cantiere-ink">
+                  <div className="mt-6 border-t border-eg-hairline pt-5">
+                    <p className="text-3xl font-semibold tracking-tight text-eg-terra">
                       {creditPackage.credits}
-                      <span className="ml-1.5 text-base font-medium text-cantiere-ink-secondary">
+                      <span className="ml-1.5 text-base font-medium text-eg-ardesia">
                         crediti
                       </span>
                     </p>
 
-                    <p className="mt-1 text-lg font-semibold text-cantiere-ink">
+                    <p className="mt-1 text-lg font-semibold text-eg-terra">
                       {formatCentsAsCurrency(
                         creditPackage.priceCents,
                         creditPackage.currency,

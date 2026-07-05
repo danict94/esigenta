@@ -72,12 +72,12 @@ function ReadOnlyRow({
   note?: string
 }) {
   return (
-    <div className="grid gap-1 border-b border-cantiere-hairline py-4 last:border-b-0 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
-      <dt className="text-sm font-medium text-cantiere-ink-secondary">{label}</dt>
+    <div className="grid gap-1 border-b border-eg-hairline py-4 last:border-b-0 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
+      <dt className="text-sm font-medium text-eg-ardesia">{label}</dt>
       <dd>
-        <p className="text-sm font-semibold text-cantiere-ink">{formatValue(value)}</p>
+        <p className="text-sm font-semibold text-eg-terra">{formatValue(value)}</p>
         {note ? (
-          <p className="mt-1 text-xs leading-5 text-cantiere-ink-secondary">{note}</p>
+          <p className="mt-1 text-xs leading-5 text-eg-ardesia">{note}</p>
         ) : null}
       </dd>
     </div>
@@ -111,10 +111,10 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
       <PageShell size="lg">
         <Card className="p-8">
           <Badge variant="warning">Profilo non disponibile</Badge>
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-cantiere-ink">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-terra">
             Non troviamo il tuo profilo impresa
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
             L&apos;account risulta autenticato, ma non e collegato a un profilo
             impresa valido.
           </p>
@@ -133,12 +133,12 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
   return (
     <PageShell size="lg" className="py-8 md:py-10">
       <section className="space-y-6">
-        <header className="border-b border-cantiere-hairline pb-7">
+        <header className="border-b border-eg-hairline pb-7">
           <Badge>Profilo impresa</Badge>
-          <h1 className="mt-5 text-3xl font-semibold tracking-tight text-cantiere-ink">
+          <h1 className="mt-5 text-3xl font-semibold tracking-tight text-eg-terra">
             Profilo impresa
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
             Gestisci le informazioni operative del profilo. I dati sensibili
             restano protetti e richiedono una verifica manuale.
           </p>
@@ -146,28 +146,28 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
         {savedMessage ? (
           <Card className="p-5">
-            <p className="text-sm font-semibold text-cantiere-ink">{savedMessage}</p>
+            <p className="text-sm font-semibold text-eg-terra">{savedMessage}</p>
           </Card>
         ) : null}
 
         {contactRequestedMessage ? (
           <Card className="p-5">
-            <p className="text-sm font-semibold text-cantiere-ink">{contactRequestedMessage}</p>
+            <p className="text-sm font-semibold text-eg-terra">{contactRequestedMessage}</p>
           </Card>
         ) : null}
 
         {errorMessage ? (
-          <Card className="border-cantiere-accent bg-cantiere-linen p-5">
-            <p className="text-sm font-semibold text-cantiere-ink">{errorMessage}</p>
+          <Card className="border-eg-cotto bg-eg-calce-2 p-5">
+            <p className="text-sm font-semibold text-eg-terra">{errorMessage}</p>
           </Card>
         ) : null}
 
         <Card className="p-6">
-          <div className="border-b border-cantiere-hairline pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-cantiere-ink">
+          <div className="border-b border-eg-hairline pb-5">
+            <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
               Dati aziendali
             </h2>
-            <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
               Nome, partita IVA ed email impresa restano protetti. Il telefono
               aziendale puo essere modificato inviando una richiesta al team
               Esigenta.
@@ -186,11 +186,11 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
           <form
             action={requestCompanyContactChangeAction}
-            className="mt-6 grid gap-5 border-t border-cantiere-hairline pt-6"
+            className="mt-6 grid gap-5 border-t border-eg-hairline pt-6"
           >
             <div className="grid gap-5 md:grid-cols-2">
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-cantiere-ink-secondary">
+                <span className="text-sm font-medium text-eg-ardesia">
                   Telefono aziendale
                 </span>
                 <Input
@@ -198,19 +198,19 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                   defaultValue={company.phone}
                   placeholder="Telefono aziendale"
                 />
-                <span className="text-xs leading-5 text-cantiere-ink-secondary">
+                <span className="text-xs leading-5 text-eg-ardesia">
                   La modifica viene applicata solo dopo approvazione admin.
                 </span>
               </label>
             </div>
 
             {contactChangeRequests.length > 0 ? (
-              <div className="rounded-md border border-cantiere-hairline bg-cantiere-linen p-4">
-                <p className="text-sm font-semibold text-cantiere-ink">Richieste in revisione</p>
+              <div className="rounded-md border border-eg-hairline bg-eg-calce-2 p-4">
+                <p className="text-sm font-semibold text-eg-terra">Richieste in revisione</p>
                 <ul className="mt-3 grid gap-2">
                   {contactChangeRequests.map((request) => (
-                    <li key={request.id} className="text-sm leading-6 text-cantiere-ink-secondary">
-                      <span className="font-medium text-cantiere-ink">
+                    <li key={request.id} className="text-sm leading-6 text-eg-ardesia">
+                      <span className="font-medium text-eg-terra">
                         {formatContactChangeField(request.field)}
                       </span>
                       {": "}
@@ -232,18 +232,18 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
         </Card>
 
         <Card className="p-6">
-          <div className="border-b border-cantiere-hairline pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-cantiere-ink">
+          <div className="border-b border-eg-hairline pb-5">
+            <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
               Sede operativa
             </h2>
-            <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
               Aggiorna sito web, sede operativa e raggio usati per la dashboard richieste.
             </p>
           </div>
 
           <form action={updateCompanyProfileAction} className="mt-6 grid gap-5">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-cantiere-ink">Sito web</span>
+              <span className="text-sm font-medium text-eg-terra">Sito web</span>
               <Input
                 type="url"
                 name="website"
@@ -256,7 +256,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
             />
 
             <label className="grid gap-2 md:max-w-xs">
-              <span className="text-sm font-medium text-cantiere-ink">Raggio operativo</span>
+              <span className="text-sm font-medium text-eg-terra">Raggio operativo</span>
               <Select name="operatingRadiusKm" defaultValue={String(company.operatingRadiusKm)}>
                 {allowedRadiusKm.map((radiusKm) => (
                   <option key={radiusKm} value={radiusKm}>
@@ -264,31 +264,31 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                   </option>
                 ))}
               </Select>
-              <span className="text-xs leading-5 text-cantiere-ink-secondary">
+              <span className="text-xs leading-5 text-eg-ardesia">
                 Questo raggio modifica la copertura operativa permanente del profilo impresa.
               </span>
             </label>
 
-            <div className="flex justify-end border-t border-cantiere-hairline pt-5">
+            <div className="flex justify-end border-t border-eg-hairline pt-5">
               <Button type="submit">Salva profilo</Button>
             </div>
           </form>
         </Card>
 
         <Card className="p-6">
-          <div className="flex flex-col gap-4 border-b border-cantiere-hairline pb-5 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-4 border-b border-eg-hairline pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <h2 className="text-xl font-semibold tracking-tight text-cantiere-ink">
+              <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
                 Categorie e interventi
               </h2>
-              <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
                 Le categorie definiscono la visibilita ampia; gli interventi
                 aiutano Esigenta a dare priorita alle richieste piu pertinenti.
               </p>
             </div>
             <Link
               href="/area-impresa/configura-servizi"
-              className="text-sm font-medium text-cantiere-accent"
+              className="text-sm font-medium text-eg-cotto"
               prefetch={false}
             >
               Modifica categorie e servizi
@@ -297,7 +297,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
           <div className="mt-5 grid gap-5">
             <div>
-              <p className="text-sm font-semibold text-cantiere-ink">Categorie operative</p>
+              <p className="text-sm font-semibold text-eg-terra">Categorie operative</p>
               {categories.length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {categories.map((category) => (
@@ -307,14 +307,14 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                   ))}
                 </div>
               ) : (
-                <p className="mt-2 text-sm text-cantiere-ink-secondary">
+                <p className="mt-2 text-sm text-eg-ardesia">
                   Nessuna categoria operativa configurata.
                 </p>
               )}
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-cantiere-ink">Interventi selezionati</p>
+              <p className="text-sm font-semibold text-eg-terra">Interventi selezionati</p>
               {interventions.length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {interventions.map((intervention) => (
@@ -324,7 +324,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                   ))}
                 </div>
               ) : (
-                <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+                <p className="mt-2 text-sm leading-6 text-eg-ardesia">
                   Hai selezionato categorie operative. Gli interventi sono
                   opzionali e aiutano Esigenta a dare priorita alle richieste
                   piu pertinenti.
@@ -337,11 +337,11 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
         <Card className="p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-medium text-cantiere-ink-secondary">Crediti</p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-cantiere-ink">
+              <p className="text-sm font-medium text-eg-ardesia">Crediti</p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
                 {credit !== null ? `${credit.balance} crediti` : "Saldo non disponibile"}
               </h2>
-              <p className="mt-2 text-sm text-cantiere-ink-secondary">
+              <p className="mt-2 text-sm text-eg-ardesia">
                 {credit !== null && credit.expiresAt
                   ? `Scadenza: ${formatDate(credit.expiresAt)}`
                   : credit !== null
@@ -351,7 +351,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
             </div>
             <Link
               href="/area-impresa/crediti"
-              className="text-sm font-medium text-cantiere-accent"
+              className="text-sm font-medium text-eg-cotto"
               prefetch={false}
             >
               Vai ai crediti
@@ -359,15 +359,15 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
           </div>
         </Card>
 
-        <Card className="border-cantiere-hairline bg-cantiere-linen p-6">
-          <div className="border-b border-cantiere-hairline pb-5">
+        <Card className="border-eg-hairline bg-eg-calce-2 p-6">
+          <div className="border-b border-eg-hairline pb-5">
             <Badge variant="danger" size="sm">
               Area critica
             </Badge>
-            <h2 className="mt-4 text-xl font-semibold tracking-tight text-cantiere-ink">
+            <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-terra">
               Elimina account
             </h2>
-            <p className="mt-2 text-sm leading-6 text-cantiere-ink-secondary">
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
               La tua impresa verra disattivata e non ricevera piu richieste. Lo
               storico verra preservato per motivi amministrativi e di sicurezza.
             </p>

@@ -1,31 +1,24 @@
-"use client"
+"use client";
 
-import { useFormStatus } from "react-dom"
-
-import {
-  Button,
-  Textarea,
-} from "@esigenta/ui"
+import { useFormStatus } from "react-dom";
 
 type SendMessageFormProps = {
-  action: (
-    formData: FormData,
-  ) => Promise<void>
-  submitLabel?: string
-}
+  action: (formData: FormData) => Promise<void>;
+  submitLabel?: string;
+};
 
-function SendMessageSubmitButton({
-  submitLabel,
-}: {
-  submitLabel: string
-}) {
-  const { pending } = useFormStatus()
+function SendMessageSubmitButton({ submitLabel }: { submitLabel: string }) {
+  const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" disabled={pending}>
+    <button
+      type="submit"
+      disabled={pending}
+      className="eg-button-primary w-full disabled:pointer-events-none disabled:opacity-50 sm:w-fit"
+    >
       {pending ? "Invio in corso..." : submitLabel}
-    </Button>
-  )
+    </button>
+  );
 }
 
 export function SendMessageForm({
@@ -33,29 +26,22 @@ export function SendMessageForm({
   submitLabel = "Invia messaggio",
 }: SendMessageFormProps) {
   return (
-    <form
-      action={action}
-      className="space-y-3"
-    >
-      <div className="space-y-2">
-        <label
-          htmlFor="message-body"
-          className="text-sm font-medium text-cantiere-ink"
-        >
-          Messaggio
-        </label>
+    <form action={action} className="space-y-4">
+      <label htmlFor="message-body" className="eg-form-field">
+        <span className="eg-form-label">Messaggio</span>
 
-        <Textarea
+        <textarea
           id="message-body"
           name="body"
           required
           minLength={1}
           maxLength={5000}
           placeholder="Scrivi una risposta..."
+          className="min-h-32 w-full resize-y border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base leading-7 text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark"
         />
-      </div>
+      </label>
 
       <SendMessageSubmitButton submitLabel={submitLabel} />
     </form>
-  )
+  );
 }

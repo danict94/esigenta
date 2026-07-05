@@ -1,5 +1,3 @@
-import { Container } from "@esigenta/ui";
-
 import { PublicShell } from "../../site/shell/public-shell";
 import { RequestFlowShell } from "./components/request-flow-shell";
 
@@ -14,19 +12,24 @@ export function RequestFlowPage({
 }: RequestFlowPageProps) {
   return (
     <PublicShell navbarVariant="funnel" showFooter={false}>
-      <section className={"pb-20 pt-(--fp-nav-clear) md:pb-28 lg:pb-32"}>
-        <Container size="lg">
-          <div className={"mx-auto w-full max-w-[1120px]"}>
-            <header className={"space-y-5"}>
-              <p className="text-[17px] leading-[1.5] text-cantiere-ink-secondary">
-                Pochi passaggi per preparare una richiesta chiara e utile.
-              </p>
-            </header>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-            <RequestFlowShell interventionSlug={interventionSlug} query={query} />
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+44px)]">
+          <div className="eg-container">
+            <div className="mx-auto w-full max-w-[980px]">
+              <header className="max-w-[620px]">
+                <p className="eg-eyebrow">Richiesta guidata</p>
+                <p className="eg-body-muted mt-4 text-[17px] leading-8">
+                  Pochi passaggi per preparare una richiesta chiara e utile.
+                </p>
+              </header>
+
+              <RequestFlowShell interventionSlug={interventionSlug} query={query} />
+            </div>
           </div>
-        </Container>
-      </section>
+        </section>
+      </div>
     </PublicShell>
   );
 }

@@ -1,98 +1,59 @@
-"use client"
+"use client";
 
-import type {
-  FormEvent,
-} from "react"
-import {
-  useState,
-} from "react"
-import Link from "next/link"
-import {
-  Button,
-  Input,
-} from "@esigenta/ui"
+import type { FormEvent } from "react";
 
-import {
-  authClient,
-} from "../../../../auth/client"
+import Link from "next/link";
+import { useState } from "react";
+
+import { Input } from "@esigenta/ui";
+
+import { authClient } from "../../../../auth/client";
 
 export function ImpresaLoginForm() {
-  const [email, setEmail] =
-    useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordEditable, setIsPasswordEditable] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [password, setPassword] =
-    useState("")
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-  const [isPasswordEditable, setIsPasswordEditable] =
-    useState(false)
+    const submittedEmail = email.trim();
+    const submittedPassword = password;
 
-  const [error, setError] =
-    useState<string | null>(null)
-
-  const [isSubmitting, setIsSubmitting] =
-    useState(false)
-
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
-    event.preventDefault()
-
-    const submittedEmail =
-      email.trim()
-    const submittedPassword =
-      password
-
-    setError(null)
+    setError(null);
 
     if (!submittedEmail || !submittedPassword) {
-      setError("Inserisci email e password.")
-      return
+      setError("Inserisci email e password.");
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      const result =
-        await authClient.signIn.email({
-          email:
-            submittedEmail,
-          password:
-            submittedPassword,
-        })
+      const result = await authClient.signIn.email({
+        email: submittedEmail,
+        password: submittedPassword,
+      });
 
       if (result.error) {
-        setError(
-          result.error.message ||
-            "Credenziali non valide.",
-        )
-
-        return
+        setError(result.error.message || "Credenziali non valide.");
+        return;
       }
 
-      window.location.href = "/area-impresa/richieste"
+      window.location.href = "/area-impresa/richieste";
     } catch {
-      setError(
-        "Impossibile accedere. Riprova tra poco.",
-      )
+      setError("Impossibile accedere. Riprova tra poco.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <form
-      autoComplete="off"
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-5"
-    >
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor="email"
-          className="text-sm font-medium text-cantiere-ink"
-        >
-          Email
-        </label>
-
+    <form autoComplete="off" onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <label className="eg-form-field" htmlFor="email">
+        <span className="eg-form-label">Email</span>
         <Input
           id="email"
           name="email"
@@ -102,21 +63,13 @@ export function ImpresaLoginForm() {
           spellCheck={false}
           required
           value={email}
-          onChange={(event) =>
-            setEmail(event.target.value)
-          }
-          placeholder="es.azienda@esempio.it"
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="azienda@esempio.it"
         />
-      </div>
+      </label>
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor="password"
-          className="text-sm font-medium text-cantiere-ink"
-        >
-          Password
-        </label>
-
+      <label className="eg-form-field" htmlFor="password">
+        <span className="eg-form-label">Password</span>
         <Input
           id="password"
           name="company-login-password"
@@ -125,53 +78,38 @@ export function ImpresaLoginForm() {
           required
           readOnly={!isPasswordEditable}
           value={password}
-          onFocus={() =>
-            setIsPasswordEditable(true)
-          }
-          onChange={(event) =>
-            setPassword(event.target.value)
-          }
+          onFocus={() => setIsPasswordEditable(true)}
+          onChange={(event) => setPassword(event.target.value)}
           placeholder="Inserisci la password"
         />
-      </div>
+      </label>
 
       <div className="flex justify-end">
         <Link
           href="/area-impresa/recupera-password"
-          className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+          className="text-sm font-medium text-eg-cotto-dark"
         >
           Recupera password
         </Link>
       </div>
 
-      {error ? (
-        <div className="border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
-          {error}
-        </div>
-      ) : null}
+      {error ? <div className="eg-alert">{error}</div> : null}
 
-      <Button
-        type="submit"
-        size="lg"
-        disabled={isSubmitting}
-        className="mt-2 w-full"
-      >
-        {isSubmitting
-          ? "Accesso in corso..."
-          : "Accedi"}
-      </Button>
+      <button type="submit" disabled={isSubmitting} className="eg-button-primary w-full">
+        {isSubmitting ? "Accesso in corso..." : "Accedi"}
+      </button>
 
-      <p className="text-center text-xs leading-5 text-cantiere-ink-secondary">
+      <p className="eg-form-help text-center">
         Usando l&apos;area impresa confermi di aver letto l&apos;
-        <Link href="/privacy" className="font-medium text-cantiere-accent">
+        <Link href="/privacy" className="font-medium text-eg-cotto-dark">
           informativa privacy
         </Link>{" "}
         e i{" "}
-        <Link href="/termini" className="font-medium text-cantiere-accent">
+        <Link href="/termini" className="font-medium text-eg-cotto-dark">
           termini del servizio
         </Link>
         .
       </p>
     </form>
-  )
+  );
 }

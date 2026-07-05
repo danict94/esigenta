@@ -140,10 +140,10 @@ export default async function AdminResetPasswordPage({
     tokenState.ok;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-cantiere-paper px-6">
+    <main className="flex min-h-screen items-center justify-center bg-eg-calce px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <p className="text-sm font-medium text-cantiere-ink-secondary">
+          <p className="text-sm font-medium text-eg-ardesia">
             esigenta Admin
           </p>
           <CardTitle>
@@ -156,7 +156,7 @@ export default async function AdminResetPasswordPage({
 
         <CardContent>
           {errorMessage ? (
-            <p className="mb-5 border border-cantiere-accent bg-cantiere-linen px-4 py-3 text-sm text-cantiere-ink">
+            <p className="mb-5 border border-eg-cotto bg-eg-calce-2 px-4 py-3 text-sm text-eg-terra">
               {errorMessage}
             </p>
           ) : null}
@@ -173,7 +173,7 @@ export default async function AdminResetPasswordPage({
               />
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-cantiere-ink">
+                <span className="text-sm font-medium text-eg-terra">
                   Nuova password
                 </span>
                 <Input
@@ -186,7 +186,7 @@ export default async function AdminResetPasswordPage({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-cantiere-ink">
+                <span className="text-sm font-medium text-eg-terra">
                   Conferma password
                 </span>
                 <Input
@@ -204,12 +204,12 @@ export default async function AdminResetPasswordPage({
             </form>
           ) : (
             <div className="grid gap-4">
-              <p className="text-sm leading-6 text-cantiere-ink-secondary">
+              <p className="text-sm leading-6 text-eg-ardesia">
                 Richiedi un nuovo link per continuare.
               </p>
               <Link
                 href="/admin/recupera-password"
-                className="text-sm font-semibold text-cantiere-accent transition-colors hover:text-cantiere-accent-hover"
+                className="text-sm font-semibold text-eg-cotto transition-colors hover:text-eg-cotto-dark"
               >
                 Richiedi nuovo link
               </Link>

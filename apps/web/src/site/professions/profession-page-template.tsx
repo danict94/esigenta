@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { Badge, Card, PageShell } from "@esigenta/ui";
 import type { ProfessionPage } from "@esigenta/taxonomy";
 
 import { getSeoInterventionLandingBySlug } from "../seo/pages/interventi";
+import { PublicShell } from "../shell/public-shell";
 
 export type ProfessionPageTemplateProps = {
   page: ProfessionPage;
@@ -19,65 +19,83 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
   const { category, projectGroups } = page;
 
   return (
-    <PageShell size="lg">
-      <header className="border-b border-cantiere-hairline pb-7">
-        <Badge variant="neutral">Professione</Badge>
+    <PublicShell>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-cantiere-ink">
-          {category.name}
-        </h1>
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[760px] text-center">
+              <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+                <Link href="/" prefetch={false}>
+                  Home
+                </Link>
+                <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                  /
+                </span>
+                <span className="text-eg-terra">Professionisti</span>
+              </nav>
 
-        {category.description ? (
-          <p className="mt-3 max-w-2xl text-base leading-7 text-cantiere-ink-secondary">
-            {category.description}
-          </p>
-        ) : null}
-      </header>
+              <p className="eg-eyebrow">Professione</p>
+              <h1 className="eg-h1 mt-5">{category.name}</h1>
+              {category.description ? (
+                <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">{category.description}</p>
+              ) : null}
+            </div>
 
-      <div className="mt-8 space-y-8">
-        {projectGroups.length === 0 ? (
-          <Card className="p-8 text-center text-cantiere-ink-secondary">
-            Nessuna area di lavoro disponibile per questa professione.
-          </Card>
-        ) : (
-          projectGroups.map((projectGroup) => (
-            <section key={projectGroup.id} className="space-y-4">
-              <div>
-                <h2 className="text-xl font-semibold text-cantiere-ink">
-                  {projectGroup.name}
-                </h2>
+            {projectGroups.length === 0 ? (
+              <p className="eg-body-muted mx-auto mt-12 max-w-[46ch] text-center">
+                Nessuna area di lavoro disponibile per questa professione.
+              </p>
+            ) : (
+              <div className="mt-16 grid gap-14">
+                {projectGroups.map((projectGroup) => (
+                  <section key={projectGroup.id} aria-labelledby={`profession-group-${projectGroup.id}`}>
+                    <div className="mx-auto max-w-[760px] text-center">
+                      <p className="eg-eyebrow">Ambito</p>
+                      <h2 id={`profession-group-${projectGroup.id}`} className="eg-h2 mt-4">
+                        {projectGroup.name}
+                      </h2>
+                      {projectGroup.description ? (
+                        <p className="eg-body-muted mx-auto mt-5 max-w-[46ch]">
+                          {projectGroup.description}
+                        </p>
+                      ) : null}
+                    </div>
 
-                {projectGroup.description ? (
-                  <p className="mt-1 max-w-2xl text-sm leading-6 text-cantiere-ink-secondary">
-                    {projectGroup.description}
-                  </p>
-                ) : null}
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                {projectGroup.interventions.map((intervention) => (
-                  <Link
-                    key={intervention.id}
-                    href={getInterventionHref(intervention.slug)}
-                    className="rounded-2xl border border-cantiere-hairline bg-cantiere-paper p-4 transition-colors hover:border-cantiere-accent"
-                    prefetch={false}
-                  >
-                    <span className="block text-sm font-semibold text-cantiere-ink">
-                      {intervention.name}
-                    </span>
-
-                    {intervention.description ? (
-                      <span className="mt-1 block text-sm leading-6 text-cantiere-ink-secondary">
-                        {intervention.description}
-                      </span>
-                    ) : null}
-                  </Link>
+                    <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+                      {projectGroup.interventions.map((intervention, index) => (
+                        <li key={intervention.id}>
+                          <Link
+                            href={getInterventionHref(intervention.slug)}
+                            className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-cotto-dark"
+                            prefetch={false}
+                          >
+                            <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                            <span>
+                              <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">
+                                {intervention.name}
+                              </span>
+                              {intervention.description ? (
+                                <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia block">
+                                  {intervention.description}
+                                </span>
+                              ) : null}
+                            </span>
+                            <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
                 ))}
               </div>
-            </section>
-          ))
-        )}
+            )}
+          </div>
+        </section>
       </div>
-    </PageShell>
+    </PublicShell>
   );
 }

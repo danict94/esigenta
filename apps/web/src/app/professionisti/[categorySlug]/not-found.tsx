@@ -1,35 +1,29 @@
 import Link from "next/link";
 
-import { Card, CardContent, PageShell, cn } from "@esigenta/ui";
+import { PublicShell } from "../../../site/shell/public-shell";
 
 export default function ProfessionNotFound() {
   return (
-    <PageShell size="md">
-      <Card>
-        <CardContent className="space-y-5 pt-8 text-center">
-          <div className="space-y-3">
-            <h1 className="text-3xl font-semibold leading-tight text-cantiere-ink">
-              Professione non trovata
-            </h1>
+    <PublicShell>
+      <div className="eg-page eg-page-bg">
+        <div className="eg-thread" aria-hidden="true" />
 
-            <p className="text-base leading-7 text-cantiere-ink-secondary">
-              La pagina richiesta non è disponibile.
+        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+          <div className="eg-container-narrow text-center">
+            <p className="eg-eyebrow">Professionisti</p>
+
+            <h1 className="eg-h1 mt-5">Professione non trovata</h1>
+
+            <p className="eg-body-muted mx-auto mt-6 max-w-[42ch]">
+              La pagina richiesta non e disponibile.
             </p>
-          </div>
 
-          <Link
-            href="/"
-            className={cn(
-              "inline-flex items-center justify-center font-medium transition-colors",
-              "rounded-[8px]",
-              "h-12 px-6 text-[15px]",
-              "border border-cantiere-accent bg-cantiere-accent text-cantiere-paper hover:border-cantiere-accent-hover hover:bg-cantiere-accent-hover",
-            )}
-          >
-            Torna alla homepage
-          </Link>
-        </CardContent>
-      </Card>
-    </PageShell>
+            <Link href="/" className="eg-button-primary mt-8 w-full sm:w-auto">
+              Torna alla homepage
+            </Link>
+          </div>
+        </section>
+      </div>
+    </PublicShell>
   );
 }

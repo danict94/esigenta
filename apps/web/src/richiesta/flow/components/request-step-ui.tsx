@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 
-import { Button, Input, Textarea, cn } from "@esigenta/ui";
-
 import type { RuntimeCapability } from "@esigenta/funnel";
 
 import {
@@ -47,6 +45,16 @@ type RequestStepUIProps = {
   onNext: () => void;
   onReset: () => void;
 };
+
+const inputClass =
+  "w-full border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark";
+
+const textareaClass =
+  "min-h-36 w-full resize-y border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base leading-7 text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark";
+
+function joinClasses(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function renderCapabilityInput({
   capability,
@@ -101,15 +109,12 @@ function renderCapabilityInput({
       ];
 
       return (
-        <div className="grid gap-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {fields.map((field) => (
-            <label
-              key={field.id}
-              className="grid gap-2 text-sm font-medium text-cantiere-ink"
-            >
-              <span>{field.label}</span>
+            <label key={field.id} className="eg-form-field">
+              <span className="eg-form-label">{field.label}</span>
 
-              <Input
+              <input
                 type={field.type}
                 autoComplete={field.autoComplete}
                 value={contact[field.id] ?? ""}
@@ -123,6 +128,7 @@ function renderCapabilityInput({
                   onChange(nextContact);
                 }}
                 placeholder={field.placeholder}
+                className={inputClass}
               />
             </label>
           ))}
@@ -145,48 +151,44 @@ function renderCapabilityInput({
             const selected = value === option.value;
 
             return (
-              <Button
+              <button
                 key={option.value}
                 type="button"
-                variant="ghost"
                 onClick={() => {
                   onChange(option.value);
                 }}
-                className={cn(
-                  "h-auto min-h-12 w-full justify-start whitespace-normal border px-4 py-3 text-left text-sm font-medium transition-colors",
-                  "rounded-[8px]",
+                className={joinClasses(
+                  "flex min-h-12 w-full items-center justify-start border px-4 py-3 text-left text-sm font-medium leading-6 transition-colors",
                   selected
-                    ? "border-cantiere-accent bg-cantiere-linen text-cantiere-ink"
-                    : "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary hover:border-cantiere-accent hover:bg-cantiere-linen",
+                    ? "border-eg-cotto bg-eg-calce-2 text-eg-terra"
+                    : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:border-eg-cotto hover:text-eg-terra",
                 )}
               >
                 <span className="flex w-full items-center gap-3">
                   <span
-                    className={cn(
-                      "flex size-5 shrink-0 items-center justify-center rounded-full border",
+                    className={joinClasses(
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
                       selected
-                        ? "border-cantiere-accent bg-cantiere-accent"
-                        : "border-cantiere-hairline bg-cantiere-paper",
+                        ? "border-eg-cotto bg-eg-cotto"
+                        : "border-eg-hairline bg-eg-calce",
                     )}
                     aria-hidden="true"
                   >
                     {selected ? (
-                      <span className="size-2 rounded-full bg-cantiere-paper" />
+                      <span className="h-2 w-2 rounded-full bg-eg-calce" />
                     ) : null}
                   </span>
 
                   <span>{option.label}</span>
                 </span>
-              </Button>
+              </button>
             );
           })}
         </div>
       );
 
     case "multi_select": {
-      const selectedValues = Array.isArray(value)
-        ? (value as string[])
-        : [];
+      const selectedValues = Array.isArray(value) ? (value as string[]) : [];
 
       return (
         <div className="grid gap-3 sm:grid-cols-2">
@@ -194,10 +196,9 @@ function renderCapabilityInput({
             const selected = selectedValues.includes(option.value);
 
             return (
-              <Button
+              <button
                 key={option.value}
                 type="button"
-                variant="ghost"
                 onClick={() => {
                   const next = selected
                     ? selectedValues.filter((item) => item !== option.value)
@@ -205,30 +206,29 @@ function renderCapabilityInput({
 
                   onChange(next);
                 }}
-                className={cn(
-                  "h-auto min-h-12 w-full justify-start whitespace-normal border px-4 py-3 text-left text-sm font-medium transition-colors",
-                  "rounded-[8px]",
+                className={joinClasses(
+                  "flex min-h-12 w-full items-center justify-start border px-4 py-3 text-left text-sm font-medium leading-6 transition-colors",
                   selected
-                    ? "border-cantiere-accent bg-cantiere-linen text-cantiere-ink"
-                    : "border-cantiere-hairline bg-cantiere-paper text-cantiere-ink-secondary hover:border-cantiere-accent hover:bg-cantiere-linen",
+                    ? "border-eg-cotto bg-eg-calce-2 text-eg-terra"
+                    : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:border-eg-cotto hover:text-eg-terra",
                 )}
               >
                 <span className="flex w-full items-center gap-3">
                   <span
-                    className={cn(
-                      "flex size-5 shrink-0 items-center justify-center rounded-[4px] border text-[11px] text-cantiere-paper",
+                    className={joinClasses(
+                      "flex h-5 w-5 shrink-0 items-center justify-center border text-[11px]",
                       selected
-                        ? "border-cantiere-accent bg-cantiere-accent"
-                        : "border-cantiere-hairline bg-cantiere-paper",
+                        ? "border-eg-cotto bg-eg-cotto text-eg-calce"
+                        : "border-eg-hairline bg-eg-calce text-transparent",
                     )}
                     aria-hidden="true"
                   >
-                    {selected ? "✓" : null}
+                    {selected ? <span>&#10003;</span> : null}
                   </span>
 
                   <span>{option.label}</span>
                 </span>
-              </Button>
+              </button>
             );
           })}
         </div>
@@ -237,7 +237,7 @@ function renderCapabilityInput({
 
     case "number":
       return (
-        <Input
+        <input
           type="number"
           min="0"
           value={
@@ -247,6 +247,7 @@ function renderCapabilityInput({
             onChange(event.target.value);
           }}
           placeholder="Inserisci una stima"
+          className={inputClass}
         />
       );
 
@@ -261,23 +262,25 @@ function renderCapabilityInput({
 
     case "text":
       return (
-        <Input
+        <input
           value={typeof value === "string" ? value : ""}
           onChange={(event) => {
             onChange(event.target.value);
           }}
           placeholder="Scrivi qui"
+          className={inputClass}
         />
       );
 
     default:
       return (
-        <Input
+        <input
           value={typeof value === "string" ? value : ""}
           onChange={(event) => {
             onChange(event.target.value);
           }}
           placeholder="Scrivi qui"
+          className={inputClass}
         />
       );
   }
@@ -313,102 +316,58 @@ export function RequestStepUI({
 }: RequestStepUIProps) {
   if (submittedRequest) {
     return (
-      <div
-        className={cn(
-          "border border-cantiere-hairline bg-cantiere-paper p-6 md:p-8",
-          "rounded-[8px]",
-          "shadow-cantiere-elevation",
-        )}
-      >
-        <div className="flex flex-col gap-7">
+      <div className="eg-panel mt-8 p-6 md:p-8">
+        <div className="flex flex-col gap-8">
           <div className="flex flex-col items-center gap-4 text-center">
             <span
-              className="flex size-14 items-center justify-center rounded-full bg-cantiere-linen text-cantiere-accent"
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-eg-calce-2 text-eg-cotto-dark"
               aria-hidden="true"
             >
-              ✓
+              &#10003;
             </span>
 
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-cantiere-accent">
-                Richiesta preparata
-              </p>
+            <div>
+              <p className="eg-eyebrow">Richiesta preparata</p>
 
-              <h2 className="text-2xl font-semibold tracking-tight text-cantiere-ink">
-                Grazie, la tua richiesta è quasi pronta
+              <h2 className="eg-h2 mt-3">
+                Grazie, la tua richiesta &egrave; quasi pronta
               </h2>
 
-              <p className="mx-auto max-w-xl text-sm leading-6 text-cantiere-ink-secondary">
-                Ti abbiamo inviato un link via email per confermare la
-                richiesta e completare l&apos;invio. Dopo la conferma, la richiesta
-                passerà in revisione: controlleremo le informazioni e ti
-                contatteremo se serviranno altri dettagli per aiutarti.
+              <p className="eg-body-muted mx-auto mt-4 max-w-xl">
+                Ti abbiamo inviato un link via email per confermare la richiesta
+                e completare l&apos;invio. Dopo la conferma, la richiesta
+                passer&agrave; in revisione.
               </p>
             </div>
           </div>
 
-          <div className="grid gap-3">
-            <div
-              className={cn(
-                "border border-cantiere-hairline bg-cantiere-paper p-4",
-                "rounded-[8px]",
-              )}
-            >
-              <h3 className="text-sm font-semibold text-cantiere-ink">
-                Conferma via email
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
-                Apri il link che ti abbiamo inviato per far arrivare
-                correttamente la richiesta.
-              </p>
-            </div>
-
-            <div
-              className={cn(
-                "border border-cantiere-hairline bg-cantiere-paper p-4",
-                "rounded-[8px]",
-              )}
-            >
-              <h3 className="text-sm font-semibold text-cantiere-ink">
-                Revisione della richiesta
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
-                Dopo la conferma, verificheremo i dati principali. Se qualcosa
-                non è chiaro, potremo contattarti per completare le informazioni.
-              </p>
-            </div>
-
-            <div
-              className={cn(
-                "border border-cantiere-hairline bg-cantiere-paper p-4",
-                "rounded-[8px]",
-              )}
-            >
-              <h3 className="text-sm font-semibold text-cantiere-ink">
-                Controlla lo stato da &quot;Le mie richieste&quot;
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-cantiere-ink-secondary">
-                Da &quot;Le mie richieste&quot; puoi accedere allo storico e seguire lo
-                stato delle richieste inviate usando il link ricevuto via email.
-              </p>
-            </div>
+          <div className="border-y border-eg-hairline">
+            <InfoRow
+              title="Conferma via email"
+              description="Apri il link che ti abbiamo inviato per far arrivare correttamente la richiesta."
+            />
+            <InfoRow
+              title="Revisione della richiesta"
+              description="Dopo la conferma, verificheremo i dati principali e ti contatteremo se servono altri dettagli."
+            />
+            <InfoRow
+              title="Le mie richieste"
+              description="Puoi accedere allo storico e seguire lo stato delle richieste inviate usando il link ricevuto via email."
+            />
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button type="button" onClick={onReset}>
+            <button type="button" className="eg-button-primary" onClick={onReset}>
               Nuova richiesta
-            </Button>
+            </button>
 
-            <Button
+            <button
               type="button"
-              variant="secondary"
+              className="eg-button-ghost"
               onClick={onEditSubmittedRequest}
             >
               Modifica risposte
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -419,22 +378,26 @@ export function RequestStepUI({
     currentCapability.type === "photo_upload" && !hasPhotoAnswer(currentValue);
 
   return (
-    <div className={"mt-7 flex flex-col gap-7 md:mt-8"}>
+    <div className="mt-8 flex flex-col gap-8">
       <p className="sr-only">
         {selectedInterventionName}. Passaggio {stepIndex + 1} di {totalSteps}.
         {filledAnswers} risposte raccolte.
       </p>
 
-      <div className="space-y-5">
-        <div className={"h-1 w-16 bg-cantiere-accent"} aria-hidden="true" />
+      <div>
+        <div className="h-px w-20 bg-eg-cotto-dark" aria-hidden="true" />
 
-        <div className="space-y-4">
-          <h2 className="text-cantiere-ink text-cantiere-display">
+        <div className="mt-6">
+          <p className="eg-eyebrow">
+            Passaggio {stepIndex + 1} di {totalSteps}
+          </p>
+
+          <h2 className="eg-h1 mt-4 max-w-[16ch]">
             {currentCapability.question}
           </h2>
 
           {currentCapability.description ? (
-            <p className="max-w-2xl leading-[1.2] text-cantiere-heading text-cantiere-ink-secondary">
+            <p className="eg-body-muted mt-5 max-w-[46ch] text-[17px] leading-8">
               {currentCapability.description}
             </p>
           ) : null}
@@ -443,43 +406,39 @@ export function RequestStepUI({
 
       {currentCapability.id === NOTE_STEP_ID ? (
         <div className="grid gap-4">
-          <Textarea
+          <textarea
             value={customerDescription}
             onChange={(event) => {
               onCustomerDescriptionChange(event.target.value);
             }}
             rows={4}
             placeholder={currentCapability.placeholder ?? "Scrivi qui, se vuoi."}
+            className={textareaClass}
           />
 
           {leadQualityHintVisible ? (
-            <div
-              className={cn(
-                "border border-cantiere-hairline bg-cantiere-linen p-4",
-                "rounded-[8px]",
-              )}
-            >
-              <p className="text-sm leading-6 text-cantiere-ink">
+            <div className="eg-panel p-4">
+              <p className="eg-body-muted">
                 Le richieste con foto o qualche dettaglio ricevono preventivi
-                più precisi.
+                pi&ugrave; precisi.
               </p>
 
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-                <Button
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <button
                   type="button"
-                  variant="secondary"
+                  className="eg-button-primary"
                   onClick={onAddLeadQualityDetails}
                 >
                   Aggiungi dettagli
-                </Button>
+                </button>
 
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
+                  className="eg-button-ghost"
                   onClick={onContinueAfterLeadQualityHint}
                 >
                   Continua comunque
-                </Button>
+                </button>
               </div>
             </div>
           ) : null}
@@ -493,41 +452,37 @@ export function RequestStepUI({
         })
       )}
 
-      {error ? <p className="text-sm text-cantiere-accent">{error}</p> : null}
+      {error ? <p className="text-sm text-eg-cotto-dark">{error}</p> : null}
 
       {isLastStep ? (
-        <p className="text-xs leading-5 text-cantiere-ink-secondary">
+        <p className="eg-form-help">
           Inviando la richiesta confermi di aver letto l&apos;
-          <Link href="/privacy" className="font-medium text-cantiere-accent" prefetch={false}>
+          <Link href="/privacy" className="font-medium text-eg-cotto-dark" prefetch={false}>
             informativa privacy
           </Link>{" "}
           e accetti i{" "}
-          <Link href="/termini" className="font-medium text-cantiere-accent" prefetch={false}>
+          <Link href="/termini" className="font-medium text-eg-cotto-dark" prefetch={false}>
             termini del servizio
           </Link>
           .
         </p>
       ) : null}
 
-      <div className={"flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between"}>
-        <Button
+      <div className="flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
+        <button
           type="button"
-          variant="secondary"
-          size="lg"
           onClick={onBack}
           disabled={isPhotoUploading}
-          className={"min-w-40"}
+          className="eg-button-ghost min-w-40 disabled:pointer-events-none disabled:opacity-50"
         >
           Indietro
-        </Button>
+        </button>
 
-        <Button
+        <button
           type="button"
-          variant="primary"
-          size="lg"
           onClick={onNext}
           disabled={isSubmitting || isPhotoUploading}
-          className={"min-w-40"}
+          className="eg-button-primary min-w-40 disabled:pointer-events-none disabled:opacity-50"
         >
           {isLastStep
             ? isSubmitting
@@ -537,9 +492,24 @@ export function RequestStepUI({
               ? "Caricamento foto..."
               : isEmptyPhotoStep
                 ? "Continua senza foto"
-              : "Avanti"}
-        </Button>
+                : "Avanti"}
+        </button>
       </div>
+    </div>
+  );
+}
+
+function InfoRow({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="grid gap-1 border-b border-eg-hairline py-4 last:border-b-0">
+      <h3 className="text-sm font-medium text-eg-terra">{title}</h3>
+      <p className="eg-form-help">{description}</p>
     </div>
   );
 }
