@@ -680,12 +680,14 @@ model Request {
   customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
   ///////////////////////////////////////////////////////////
-  // FUTURE COMMERCIAL
+  // COMMERCIAL (pay-per-lead)
   ///////////////////////////////////////////////////////////
 
   /**
-   * NOT active yet.
-   * Only preparation.
+   * Populated at request creation by deriveLeadValue (packages/domain
+   * lead-value) from the normalized request signals; admin can override via
+   * request-commercial-settings. `unlock-request` charges `creditCost` and
+   * enforces `maxUnlocks`.
    */
 
   creditCost  Int?

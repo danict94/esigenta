@@ -9,6 +9,7 @@ import { isFreshGeoPlace, type GeoPlace } from "@esigenta/shared"
 import type { RequestDraft } from "@esigenta/funnel"
 import { buildRuntimeContactName, normalizeRuntimeText } from "@esigenta/funnel"
 
+import { deriveLeadValue } from "../../lead-value"
 import { RequestFlowError } from "../../internal/request/request-errors"
 import { createRequestVerificationToken } from "../../internal/request/verification-token"
 import { sendRequestVerificationEmail } from "../../internal/request/send-verification-email"
@@ -45,12 +46,12 @@ function isValidPhone(value: string): boolean {
  * realistically throw — guarded anyway, mirroring resolveRequiredServiceIds
  * above. See docs/archive-legacy/refoundation/taxonomy-refoundation/10_REQUEST_PERSISTENCE_AUDIT.md.
  */
-async function resolveInterventionId(
+async function resolveIntervention(
   interventionSlug: string,
-): Promise<string> {
+): Promise<{ id: string; groupSlug: string | null }> {
   const intervention = await prisma.intervention.findUnique({
     where: { slug: interventionSlug },
-    select: { id: true },
+    select: { id: true, projectGroup: { select: { slug: true } } },
   })
 
   if (!intervention) {
@@ -61,7 +62,10 @@ async function resolveInterventionId(
     })
   }
 
-  return intervention.id
+  return {
+    id: intervention.id,
+    groupSlug: intervention.projectGroup?.slug ?? null,
+  }
 }
 
 function validateDraftForCreation(draft: RequestDraft): {
@@ -255,12 +259,21 @@ export async function createRequestFromDraft({
   const customer = validateDraftForCreation(persistedDraft)
   const geo = validateGeoForCreation(persistedDraft)
 
-  const [interventionId, requestCode] = await Promise.all([
-    resolveInterventionId(persistedDraft.interventionSlug),
+  const [intervention, requestCode] = await Promise.all([
+    resolveIntervention(persistedDraft.interventionSlug),
     generateUniqueRequestCode(),
   ])
 
   const verification = createRequestVerificationToken()
+
+  // Commercial lead value derived at creation from the normalized request
+  // signals (single extractor → deriveLeadValue). Populates creditCost /
+  // maxUnlocks; the admin can still override via request-commercial-settings.
+  const leadValue = deriveLeadValue({
+    interventionSlug: persistedDraft.interventionSlug,
+    groupSlug: intervention.groupSlug ?? "",
+    structuredData: { draft: persistedDraft },
+  })
 
   // RequestRequiredService is no longer written here (Phase 14): its last
   // real reader, the company browse dashboard
@@ -273,9 +286,11 @@ export async function createRequestFromDraft({
     status: "PENDING_VERIFICATION",
     requestCode,
     interventionSlug: persistedDraft.interventionSlug,
-    intervention: { connect: { id: interventionId } },
+    intervention: { connect: { id: intervention.id } },
     customerEmail: customer.customerEmail,
     structuredData: toRequestStructuredData({ draft: persistedDraft }),
+    creditCost: leadValue.creditCost,
+    maxUnlocks: leadValue.maxUnlocks,
   }
 
   if (customer.customerName) data.customerName = customer.customerName
