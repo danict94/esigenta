@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { isGeoPlace, type GeoPlace } from "@esigenta/shared";
 
@@ -19,7 +19,7 @@ type CompanyLeadFormProps = {
   categories: CompanyLeadCategoryOption[];
 };
 
-const exampleCities = ["Milano", "Roma", "Torino", "Napoli", "Bologna", "Firenze"] as const;
+const popularCityQueries = ["Milano", "Roma", "Torino", "Napoli", "Bologna", "Firenze"] as const;
 
 function getLocationLabel(location: GeoPlace | null) {
   if (!location) {
@@ -31,7 +31,9 @@ function getLocationLabel(location: GeoPlace | null) {
 
 export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   const router = useRouter();
+  const cityInputRef = useRef<HTMLInputElement | null>(null);
   const [categorySlug, setCategorySlug] = useState("");
+  const [cityQuery, setCityQuery] = useState("");
   const [location, setLocation] = useState<GeoPlace | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +43,17 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   );
   const locationLabel = getLocationLabel(location);
   const canContinue = Boolean(selectedCategory && isGeoPlace(location));
+
+  function handleCityShortcut(city: string) {
+    setCityQuery(city);
+    setLocation(null);
+    setError(null);
+
+    window.setTimeout(() => {
+      cityInputRef.current?.focus();
+      cityInputRef.current?.select();
+    }, 0);
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -124,8 +137,14 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
             <CityAutocomplete
               id="company-city"
               value={location}
+              query={cityQuery}
+              onQueryChange={setCityQuery}
+              inputRef={cityInputRef}
               onChange={(nextLocation) => {
                 setLocation(nextLocation);
+                if (nextLocation) {
+                  setCityQuery(nextLocation.formattedAddress);
+                }
                 setError(null);
               }}
               placeholder="Citta o provincia - es. Torino"
@@ -133,14 +152,19 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
             />
           </div>
 
-          <div className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Esempi di citta">
-            {exampleCities.map((city) => (
-              <span
+          <div className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Citta popolari">
+            {popularCityQueries.map((city) => (
+              <button
                 key={city}
-                className="rounded-full border border-eg-hairline px-2.5 py-1 font-mono text-[11px] text-eg-ardesia"
+                type="button"
+                className="rounded-full border border-eg-hairline px-2.5 py-1 font-mono text-[11px] text-eg-ardesia transition-colors hover:border-eg-terra hover:text-eg-terra"
+                aria-label={`Usa ${city} come ricerca`}
+                onClick={() => {
+                  handleCityShortcut(city);
+                }}
               >
                 {city}
-              </span>
+              </button>
             ))}
           </div>
         </div>
@@ -167,7 +191,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
             </b>
             . Completa l&apos;attivazione gratuita.
             <span className="mt-1.5 block font-mono text-[13px] text-eg-salvia">
-              Zona protetta: configuri tu raggio e categorie nel profilo.
+              Configuri tu zona e categorie nel profilo.
             </span>
           </p>
 

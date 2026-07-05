@@ -1,11 +1,11 @@
-import {
-  BadgeCheck,
-  CreditCard,
-  RotateCcw,
-  UsersRound,
-  type LucideIcon,
-} from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
 
+import {
+  ProQualityIcon,
+  ProReturnIcon,
+  ProTimeIcon,
+  ProUsersIcon,
+} from "./pro-icons";
 import { ProSectionHeader } from "./pro-primitives";
 
 type Advantage = {
@@ -14,7 +14,7 @@ type Advantage = {
   body: string;
   badgeClassName: string;
   iconClassName: string;
-  glyph: LucideIcon;
+  glyph: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
 const advantages: Advantage[] = [
@@ -24,7 +24,7 @@ const advantages: Advantage[] = [
     body: "Ogni richiesta passa per identita e reale intenzione. Chi scrive vuole davvero fare il lavoro: niente perditempo, niente numeri falsi.",
     badgeClassName: "bg-eg-cotto-tint",
     iconClassName: "text-eg-cotto-dark",
-    glyph: BadgeCheck,
+    glyph: ProQualityIcon,
   },
   {
     index: "02",
@@ -32,7 +32,7 @@ const advantages: Advantage[] = [
     body: "Numero inesistente, richiesta doppia o fuori zona? Segnali il contatto e ti restituiamo il credito.",
     badgeClassName: "bg-eg-salvia/15",
     iconClassName: "text-eg-salvia",
-    glyph: RotateCcw,
+    glyph: ProReturnIcon,
   },
   {
     index: "03",
@@ -40,7 +40,7 @@ const advantages: Advantage[] = [
     body: "Nessun abbonamento obbligatorio, nessun canone fisso. Ricarichi il credito quando vuoi e lo consumi solo sui contatti che decidi di sbloccare.",
     badgeClassName: "bg-eg-miele-tint",
     iconClassName: "text-eg-miele",
-    glyph: CreditCard,
+    glyph: ProTimeIcon,
   },
   {
     index: "04",
@@ -48,7 +48,7 @@ const advantages: Advantage[] = [
     body: "Limitiamo quanti professionisti ricevono la stessa richiesta. Il cliente confronta poche proposte serie.",
     badgeClassName: "bg-eg-terra/10",
     iconClassName: "text-eg-terra",
-    glyph: UsersRound,
+    glyph: ProUsersIcon,
   },
 ];
 
@@ -77,7 +77,7 @@ export function ProAdvantages() {
               {index}
             </span>
             <div className={["mb-5 flex size-[34px] items-center justify-center rounded-full", badgeClassName].join(" ")}>
-              <Glyph className={["size-[18px]", iconClassName].join(" ")} strokeWidth={1.8} />
+              <Glyph className={["size-[18px]", iconClassName].join(" ")} />
             </div>
             <h3 className="text-xl font-medium leading-[1.2] tracking-[-0.01em]">{title}</h3>
             <p className="mt-3 max-w-[42ch] text-[14.5px] leading-[1.6] text-eg-ardesia">

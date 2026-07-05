@@ -1,5 +1,4 @@
-import { Check } from "lucide-react";
-
+import { ProCheckIcon } from "./pro-icons";
 import { ProEyebrow } from "./pro-primitives";
 
 const guarantees = [
@@ -24,7 +23,7 @@ const guarantees = [
 function CheckMark() {
   return (
     <span className="flex size-[22px] items-center justify-center rounded-full border border-eg-salvia text-eg-salvia" aria-hidden="true">
-      <Check className="size-3" strokeWidth={2.4} />
+      <ProCheckIcon className="size-3" />
     </span>
   );
 }

@@ -1,6 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState, } from 'react'
+import {
+  type MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import {
   type GeoPlace,
@@ -67,6 +72,9 @@ type CityAutocompleteProps = {
   id?: string
   value: GeoPlace | null
   onChange: (value: GeoPlace | null) => void
+  query?: string
+  onQueryChange?: (value: string) => void
+  inputRef?: MutableRefObject<HTMLInputElement | null>
   placeholder?: string
   className?: string
 }
@@ -207,10 +215,13 @@ export function CityAutocomplete({
   id,
   value,
   onChange,
+  query,
+  onQueryChange,
+  inputRef: externalInputRef,
   placeholder = 'Cerca indirizzo o comune',
   className,
 }: CityAutocompleteProps) {
-  const inputRef =
+  const autocompleteInputRef =
     useRef<HTMLInputElement | null>(
       null,
     )
@@ -224,11 +235,24 @@ export function CityAutocomplete({
     )
 
   const [
-    inputValue,
-    setInputValue,
+    internalInputValue,
+    setInternalInputValue,
   ] = useState(
     value?.formattedAddress ?? '',
   )
+
+  const inputValue =
+    query ?? internalInputValue
+
+  function setInputValue(
+    nextValue: string,
+  ) {
+    if (query === undefined) {
+      setInternalInputValue(nextValue)
+    }
+
+    onQueryChange?.(nextValue)
+  }
 
   const [message, setMessage] =
     useState<string | null>(null)
@@ -338,7 +362,7 @@ export function CityAutocomplete({
       .then(() => {
         if (
           !active ||
-          !inputRef.current
+          !autocompleteInputRef.current
         ) {
           return
         }
@@ -357,7 +381,7 @@ export function CityAutocomplete({
 
         const autocomplete =
           new Autocomplete(
-            inputRef.current,
+            autocompleteInputRef.current,
             {
               fields: [
                 'place_id',
@@ -385,7 +409,7 @@ export function CityAutocomplete({
 
               setInputValue(
                 resolved?.formattedAddress ??
-                  inputRef.current?.value ??
+                  autocompleteInputRef.current?.value ??
                   '',
               )
 
@@ -426,7 +450,13 @@ export function CityAutocomplete({
       <div className="relative">
         <input
           id={id}
-          ref={inputRef}
+          ref={(node) => {
+            autocompleteInputRef.current = node
+
+            if (externalInputRef) {
+              externalInputRef.current = node
+            }
+          }}
           value={inputValue}
           onChange={(event) => {
             const address =
