@@ -423,6 +423,7 @@ model User {
   resolvedConversations                Conversation[]                @relation("ConversationResolvedBy")
   archivedRequests                     Request[]                     @relation("RequestArchivedBy")
   deletedRequests                      Request[]                     @relation("RequestDeletedBy")
+  commercialOverriddenRequests         Request[]                     @relation("RequestCommercialOverriddenBy")
 
   sessions                 Session[]
   accounts                 Account[]
@@ -694,6 +695,27 @@ model Request {
   maxUnlocks  Int?
   unlockCount Int  @default(0)
 
+  /**
+   * Automatic lead-value snapshot produced by deriveLeadValue at creation.
+   * MONETIZATION world, kept SEPARATE from `structuredData` (funnel/draft
+   * world). Shape: { policyVersion, creditCost, maxUnlocks, tier, score,
+   * belowFloor, reasons }. Preserved across admin overrides; never selected in
+   * listings.
+   */
+  commercialSnapshot Json?
+
+  /**
+   * Admin commercial override — the admin CORRECTS, never REPLACES: the auto
+   * snapshot above stays intact. Same flat attribution pattern as the
+   * archive / soft-delete admin actions below (…At / …ByAdminUserId / …Reason,
+   * FK to User, onDelete: SetNull). `commercialOverriddenAt IS NOT NULL` marks
+   * a manually corrected effective creditCost/maxUnlocks.
+   */
+  commercialOverriddenAt            DateTime?
+  commercialOverriddenByAdminUserId String?
+  commercialOverriddenByAdminUser   User?     @relation("RequestCommercialOverriddenBy", fields: [commercialOverriddenByAdminUserId], references: [id], onDelete: SetNull)
+  commercialOverrideReason          String?
+
   ///////////////////////////////////////////////////////////
   // ADMIN LIFECYCLE (archive / soft-delete) — D-020
   ///////////////////////////////////////////////////////////
@@ -758,6 +780,7 @@ model Request {
   @@index([deletedAt])
   @@index([archivedByAdminUserId])
   @@index([deletedByAdminUserId])
+  @@index([commercialOverriddenByAdminUserId])
 }
 
 model RequestPhoto {
