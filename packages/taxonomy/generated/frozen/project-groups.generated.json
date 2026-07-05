@@ -1,5 +1,16 @@
 [
   {
+    "id": "camini-stufe-e-canne-fumarie",
+    "slug": "camini-stufe-e-canne-fumarie",
+    "name": "Camini, stufe e canne fumarie",
+    "interventionSlugs": [
+      "installare-caminetto-o-inserto",
+      "installare-o-adeguare-canna-fumaria",
+      "installare-o-sostituire-stufa",
+      "pulire-canna-fumaria"
+    ]
+  },
+  {
     "id": "cartongesso",
     "slug": "cartongesso",
     "name": "Cartongesso",

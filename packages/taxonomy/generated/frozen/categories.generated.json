@@ -34,6 +34,19 @@
     ]
   },
   {
+    "id": "fumista",
+    "slug": "fumista",
+    "name": "Fumista",
+    "projectGroups": [
+      "camini-stufe-e-canne-fumarie"
+    ],
+    "aliases": [
+      "fumisti",
+      "installatore camini",
+      "installatore stufe"
+    ]
+  },
+  {
     "id": "idraulico",
     "slug": "idraulico",
     "name": "Idraulico",

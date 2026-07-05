@@ -6,6 +6,7 @@
  * generic default. There is no preset path.
  */
 
+import { caminiStufeECanneFumarieModels } from "./camini-stufe-e-canne-fumarie"
 import { cartongessoModels } from "./cartongesso"
 import { citofoniSicurezzaESmartHomeModels } from "./citofoni-sicurezza-e-smart-home"
 import { climatizzazioneModels } from "./climatizzazione"
@@ -26,6 +27,7 @@ import type { InterventionFunnelModel } from "./types"
 
 const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
   [
+    ...caminiStufeECanneFumarieModels,
     ...cartongessoModels,
     ...citofoniSicurezzaESmartHomeModels,
     ...climatizzazioneModels,

@@ -254,6 +254,26 @@
     ]
   },
   {
+    "id": "installare-caminetto-o-inserto",
+    "slug": "installare-caminetto-o-inserto",
+    "name": "Installare caminetto o inserto",
+    "projectGroupSlug": "camini-stufe-e-canne-fumarie",
+    "aliases": [
+      "caminetto",
+      "caminetto a legna",
+      "caminetto a pellet",
+      "camino",
+      "camino a legna",
+      "inserto camino",
+      "installare caminetto",
+      "installare inserto camino",
+      "installare termocamino",
+      "monoblocco camino",
+      "sostituire caminetto",
+      "termocamino"
+    ]
+  },
+  {
     "id": "installare-climatizzatore",
     "slug": "installare-climatizzatore",
     "name": "Installare climatizzatore",
@@ -365,6 +385,26 @@
       "manutenzione linea vita",
       "revisione linea vita",
       "sistema anticaduta tetto"
+    ]
+  },
+  {
+    "id": "installare-o-adeguare-canna-fumaria",
+    "slug": "installare-o-adeguare-canna-fumaria",
+    "name": "Installare o adeguare canna fumaria",
+    "projectGroupSlug": "camini-stufe-e-canne-fumarie",
+    "aliases": [
+      "adeguamento canna fumaria",
+      "adeguare canna fumaria",
+      "canna fumaria",
+      "canna fumaria a norma",
+      "canna fumaria acciaio",
+      "canna fumaria camino",
+      "canna fumaria stufa",
+      "installare canna fumaria",
+      "installare canna fumaria stufa",
+      "rifare canna fumaria",
+      "sostituire canna fumaria",
+      "tubo canna fumaria"
     ]
   },
   {
@@ -487,6 +527,26 @@
       "scaldino",
       "sostituire boiler",
       "sostituire scaldabagno"
+    ]
+  },
+  {
+    "id": "installare-o-sostituire-stufa",
+    "slug": "installare-o-sostituire-stufa",
+    "name": "Installare o sostituire stufa",
+    "projectGroupSlug": "camini-stufe-e-canne-fumarie",
+    "aliases": [
+      "cambiare stufa",
+      "installare stufa",
+      "installare stufa a legna",
+      "installare stufa a pellet",
+      "sostituire stufa",
+      "sostituire stufa a pellet",
+      "stufa",
+      "stufa a legna",
+      "stufa a pellet",
+      "stufa a pellet ad aria",
+      "stufa a pellet canalizzata",
+      "termostufa"
     ]
   },
   {
@@ -800,6 +860,24 @@
       "posare spc",
       "rifare pavimento",
       "sostituire pavimento"
+    ]
+  },
+  {
+    "id": "pulire-canna-fumaria",
+    "slug": "pulire-canna-fumaria",
+    "name": "Pulire canna fumaria",
+    "projectGroupSlug": "camini-stufe-e-canne-fumarie",
+    "aliases": [
+      "controllo canna fumaria",
+      "manutenzione canna fumaria",
+      "manutenzione stufa",
+      "pulire camino",
+      "pulizia camino",
+      "pulizia canna fumaria",
+      "pulizia canna fumaria stufa",
+      "pulizia stufa a pellet",
+      "spazzacamino",
+      "videoispezione canna fumaria"
     ]
   },
   {

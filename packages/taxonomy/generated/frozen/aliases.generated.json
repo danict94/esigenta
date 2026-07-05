@@ -25,6 +25,21 @@
     "ownerSlug": "fabbro"
   },
   {
+    "value": "fumisti",
+    "ownerType": "category",
+    "ownerSlug": "fumista"
+  },
+  {
+    "value": "installatore camini",
+    "ownerType": "category",
+    "ownerSlug": "fumista"
+  },
+  {
+    "value": "installatore stufe",
+    "ownerType": "category",
+    "ownerSlug": "fumista"
+  },
+  {
     "value": "impresa idraulica",
     "ownerType": "category",
     "ownerSlug": "idraulico"
@@ -690,6 +705,66 @@
     "ownerSlug": "impermeabilizzare-tetto"
   },
   {
+    "value": "caminetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "caminetto a legna",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "caminetto a pellet",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "camino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "camino a legna",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "inserto camino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "installare caminetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "installare inserto camino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "installare termocamino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "monoblocco camino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "sostituire caminetto",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
+    "value": "termocamino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-caminetto-o-inserto"
+  },
+  {
     "value": "installare aria condizionata",
     "ownerType": "intervention",
     "ownerSlug": "installare-climatizzatore"
@@ -978,6 +1053,66 @@
     "value": "sistema anticaduta tetto",
     "ownerType": "intervention",
     "ownerSlug": "installare-linea-vita"
+  },
+  {
+    "value": "adeguamento canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "adeguare canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "canna fumaria a norma",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "canna fumaria acciaio",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "canna fumaria camino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "canna fumaria stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "installare canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "installare canna fumaria stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "rifare canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "sostituire canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
+  },
+  {
+    "value": "tubo canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-adeguare-canna-fumaria"
   },
   {
     "value": "cancello a battente",
@@ -1348,6 +1483,66 @@
     "value": "sostituire scaldabagno",
     "ownerType": "intervention",
     "ownerSlug": "installare-o-sostituire-scaldabagno"
+  },
+  {
+    "value": "cambiare stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "installare stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "installare stufa a legna",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "installare stufa a pellet",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "sostituire stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "sostituire stufa a pellet",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "stufa a legna",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "stufa a pellet",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "stufa a pellet ad aria",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "stufa a pellet canalizzata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
+  },
+  {
+    "value": "termostufa",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-o-sostituire-stufa"
   },
   {
     "value": "aggiungere termosifoni",
@@ -2233,6 +2428,56 @@
     "value": "sostituire pavimento",
     "ownerType": "intervention",
     "ownerSlug": "posare-o-rifare-pavimento-interno"
+  },
+  {
+    "value": "controllo canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "manutenzione canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "manutenzione stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "pulire camino",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "pulizia camino",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "pulizia canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "pulizia canna fumaria stufa",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "pulizia stufa a pellet",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "spazzacamino",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
+  },
+  {
+    "value": "videoispezione canna fumaria",
+    "ownerType": "intervention",
+    "ownerSlug": "pulire-canna-fumaria"
   },
   {
     "value": "rasare muro",
