@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { isGeoPlace, type GeoPlace } from "@esigenta/shared";
-import { Select } from "@esigenta/ui";
 
 import { CityAutocomplete } from "../../../ui/location/city-autocomplete";
 
@@ -20,6 +19,16 @@ type CompanyLeadFormProps = {
   categories: CompanyLeadCategoryOption[];
 };
 
+const exampleCities = ["Milano", "Roma", "Torino", "Napoli", "Bologna", "Firenze"] as const;
+
+function getLocationLabel(location: GeoPlace | null) {
+  if (!location) {
+    return null;
+  }
+
+  return [location.city, location.province].filter(Boolean).join(" / ");
+}
+
 export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   const router = useRouter();
   const [categorySlug, setCategorySlug] = useState("");
@@ -30,6 +39,8 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
     () => categories.find((category) => category.slug === categorySlug) ?? null,
     [categories, categorySlug],
   );
+  const locationLabel = getLocationLabel(location);
+  const canContinue = Boolean(selectedCategory && isGeoPlace(location));
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,73 +60,130 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   }
 
   return (
-    <div className="eg-panel p-5 md:p-6">
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <p className="eg-mono-label text-eg-cotto-dark">Inizia da qui</p>
-          <p className="eg-body-muted mt-3">
-            Seleziona il mestiere e la zona: nel passaggio dopo completi il
-            profilo impresa.
-          </p>
-        </div>
+    <form onSubmit={handleSubmit} className="border border-eg-hairline bg-eg-calce-2">
+      <div className="flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.1em] text-eg-ardesia">
+        <span>Configura il tuo profilo</span>
+        <span>2 passi</span>
+      </div>
 
-        <div className="eg-form-field">
-          <label htmlFor="company-category" className="eg-form-label">
-            Di cosa ti occupi?
-          </label>
-          <Select
-            id="company-category"
-            required
-            value={categorySlug}
-            onChange={(event) => {
-              setCategorySlug(event.target.value);
-              setError(null);
-            }}
-            className={!categorySlug ? "text-eg-ardesia" : undefined}
+      <div className="px-[26px] py-7 max-[860px]:px-5">
+        <fieldset>
+          <legend className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.04em] text-eg-cotto-dark">
+            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-cotto-dark text-[10px]">
+              1
+            </span>
+            Che professionista sei?
+          </legend>
+
+          {categories.length > 0 ? (
+            <div className="mt-3.5 flex flex-wrap gap-2" aria-label="Categorie professionali">
+              {categories.map((category) => {
+                const isSelected = category.slug === categorySlug;
+
+                return (
+                  <button
+                    key={category.slug}
+                    type="button"
+                    aria-pressed={isSelected}
+                    className={[
+                      "border px-[15px] py-2 text-sm transition-colors",
+                      "rounded-full",
+                      isSelected
+                        ? "border-eg-terra bg-eg-terra text-eg-calce"
+                        : "border-eg-hairline bg-eg-calce text-eg-terra hover:border-eg-terra",
+                    ].join(" ")}
+                    onClick={() => {
+                      setCategorySlug(category.slug);
+                      setError(null);
+                    }}
+                  >
+                    {category.name}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="eg-alert mt-4">
+              Le categorie professionali non sono disponibili in questo momento.
+            </p>
+          )}
+        </fieldset>
+
+        <div className="mt-7">
+          <label
+            htmlFor="company-city"
+            className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.04em] text-eg-cotto-dark"
           >
-            <option value="">Seleziona la tua categoria</option>
-            {categories.map((category) => (
-              <option key={category.slug} value={category.slug}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-
-        <div className="eg-form-field">
-          <label htmlFor="company-city" className="eg-form-label">
-            In quale citta lavori?
+            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-cotto-dark text-[10px]">
+              2
+            </span>
+            Dove operi?
           </label>
-          <CityAutocomplete
-            id="company-city"
-            value={location}
-            onChange={(nextLocation) => {
-              setLocation(nextLocation);
-              setError(null);
-            }}
-            placeholder="Cerca citta o comune"
-          />
+
+          <div className="mt-3.5">
+            <CityAutocomplete
+              id="company-city"
+              value={location}
+              onChange={(nextLocation) => {
+                setLocation(nextLocation);
+                setError(null);
+              }}
+              placeholder="Citta o provincia - es. Torino"
+              className="text-[15px]"
+            />
+          </div>
+
+          <div className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Esempi di citta">
+            {exampleCities.map((city) => (
+              <span
+                key={city}
+                className="rounded-full border border-eg-hairline px-2.5 py-1 font-mono text-[11px] text-eg-ardesia"
+              >
+                {city}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {error ? <p className="eg-alert">{error}</p> : null}
+        {error ? <p className="eg-alert mt-5">{error}</p> : null}
+      </div>
 
-        <button type="submit" className="eg-button-primary w-full">
-          Continua gratuitamente <span aria-hidden="true">&rarr;</span>
-        </button>
+      <div
+        className={[
+          "overflow-hidden border-t transition-[max-height,border-color] duration-500",
+          canContinue ? "max-h-56 border-eg-hairline" : "max-h-0 border-transparent",
+        ].join(" ")}
+        aria-live="polite"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-5 px-[26px] py-6 max-[860px]:px-5">
+          <p className="max-w-[46ch] text-base leading-[1.5] text-eg-terra">
+            Profilo per{" "}
+            <b className="font-mono text-[21px] font-medium text-eg-cotto-dark">
+              {selectedCategory?.name ?? "-"}
+            </b>{" "}
+            in{" "}
+            <b className="font-mono text-[21px] font-medium text-eg-cotto-dark">
+              {locationLabel ?? "-"}
+            </b>
+            . Completa l&apos;attivazione gratuita.
+            <span className="mt-1.5 block font-mono text-[13px] text-eg-salvia">
+              Zona protetta: configuri tu raggio e categorie nel profilo.
+            </span>
+          </p>
 
-        <p className="eg-form-help">
-          Nessun abbonamento obbligatorio: scegli tu quali richieste aprire.
-        </p>
+          <button type="submit" className="eg-button-primary whitespace-nowrap">
+            Attiva il profilo <span aria-hidden="true">&rarr;</span>
+          </button>
+        </div>
+      </div>
 
-        <p className="eg-form-help">
-          I dati saranno usati per ricontattarti e gestire la richiesta. Leggi
-          l&apos;
-          <Link href="/privacy" className="font-medium text-eg-cotto-dark">
-            informativa privacy
-          </Link>
-          .
-        </p>
-      </form>
-    </div>
+      <p className="px-[26px] pb-5 text-[13px] leading-[1.55] text-eg-ardesia max-[860px]:px-5">
+        I dati saranno usati per preparare il profilo e ricontattarti. Leggi l&apos;
+        <Link href="/privacy" className="font-medium text-eg-cotto-dark">
+          informativa privacy
+        </Link>
+        .
+      </p>
+    </form>
   );
 }
