@@ -40,6 +40,21 @@
     "ownerSlug": "fumista"
   },
   {
+    "value": "giardinieri",
+    "ownerType": "category",
+    "ownerSlug": "giardiniere"
+  },
+  {
+    "value": "impresa giardinaggio",
+    "ownerType": "category",
+    "ownerSlug": "giardiniere"
+  },
+  {
+    "value": "manutentore del verde",
+    "ownerType": "category",
+    "ownerSlug": "giardiniere"
+  },
+  {
     "value": "impresa idraulica",
     "ownerType": "category",
     "ownerSlug": "idraulico"
@@ -348,6 +363,66 @@
     "value": "sostituire serratura",
     "ownerType": "intervention",
     "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "cordoli giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "costruire muretto",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "installare recinzione",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "muretto di recinzione",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "muretto esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "muretto giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "muro di recinzione",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "realizzare recinzione",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "recinzione giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "recinzione in rete",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "recinzione legno",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
+  },
+  {
+    "value": "staccionata",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-muretto-o-recinzione"
   },
   {
     "value": "alzare un muro",
@@ -948,6 +1023,56 @@
     "value": "sistema antifurto",
     "ownerType": "intervention",
     "ownerSlug": "installare-impianto-allarme"
+  },
+  {
+    "value": "centralina irrigazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "impianto di irrigazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "impianto irrigazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "impianto irrigazione giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "installare irrigazione",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "irrigatori giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "irrigazione a goccia",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "irrigazione automatica",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "irrigazione giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
+  },
+  {
+    "value": "irrigazione interrata",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-impianto-irrigazione"
   },
   {
     "value": "grate antintrusione",
@@ -2430,6 +2555,126 @@
     "ownerSlug": "posare-o-rifare-pavimento-interno"
   },
   {
+    "value": "autobloccanti",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "masselli autobloccanti",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "pavimentare cortile",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "pavimentazione cortile",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "pavimentazione esterna",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "pavimentazione giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "pavimento da esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "pavimento esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "porfido esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "posa autobloccanti",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "posa porfido",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "vialetto giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "posare-pavimentazione-esterna"
+  },
+  {
+    "value": "abbattimento albero",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "cura giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "manutenzione giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "manutenzione verde",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "potare alberi",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "potare siepe",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "potatura",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "potatura alberi",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "potatura siepi",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "sfalcio erba",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "taglio erba",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
+    "value": "taglio siepe",
+    "ownerType": "intervention",
+    "ownerSlug": "potare-e-curare-il-verde"
+  },
+  {
     "value": "controllo canna fumaria",
     "ownerType": "intervention",
     "ownerSlug": "pulire-canna-fumaria"
@@ -2568,6 +2813,66 @@
     "value": "soffitto in cartongesso",
     "ownerType": "intervention",
     "ownerSlug": "realizzare-controsoffitto"
+  },
+  {
+    "value": "creare giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "fare un giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "giardinaggio",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "posa prato",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "prato a rotoli",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "progettare giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "realizzare giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "realizzare prato",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "rifare giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "semina prato",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "sistemare giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
+  },
+  {
+    "value": "sistemazione giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "realizzare-o-sistemare-giardino"
   },
   {
     "value": "divisorio in cartongesso",

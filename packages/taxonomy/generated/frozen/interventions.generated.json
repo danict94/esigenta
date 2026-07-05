@@ -103,6 +103,26 @@
     ]
   },
   {
+    "id": "costruire-muretto-o-recinzione",
+    "slug": "costruire-muretto-o-recinzione",
+    "name": "Costruire muretto o recinzione",
+    "projectGroupSlug": "esterni-e-giardino",
+    "aliases": [
+      "cordoli giardino",
+      "costruire muretto",
+      "installare recinzione",
+      "muretto di recinzione",
+      "muretto esterno",
+      "muretto giardino",
+      "muro di recinzione",
+      "realizzare recinzione",
+      "recinzione giardino",
+      "recinzione in rete",
+      "recinzione legno",
+      "staccionata"
+    ]
+  },
+  {
     "id": "costruire-parete-o-tramezzo",
     "slug": "costruire-parete-o-tramezzo",
     "name": "Costruire parete o tramezzo in muratura",
@@ -348,6 +368,24 @@
       "installare antifurto",
       "sirena allarme",
       "sistema antifurto"
+    ]
+  },
+  {
+    "id": "installare-impianto-irrigazione",
+    "slug": "installare-impianto-irrigazione",
+    "name": "Installare impianto di irrigazione",
+    "projectGroupSlug": "esterni-e-giardino",
+    "aliases": [
+      "centralina irrigazione",
+      "impianto di irrigazione",
+      "impianto irrigazione",
+      "impianto irrigazione giardino",
+      "installare irrigazione",
+      "irrigatori giardino",
+      "irrigazione a goccia",
+      "irrigazione automatica",
+      "irrigazione giardino",
+      "irrigazione interrata"
     ]
   },
   {
@@ -863,6 +901,46 @@
     ]
   },
   {
+    "id": "posare-pavimentazione-esterna",
+    "slug": "posare-pavimentazione-esterna",
+    "name": "Posare pavimentazione esterna",
+    "projectGroupSlug": "esterni-e-giardino",
+    "aliases": [
+      "autobloccanti",
+      "masselli autobloccanti",
+      "pavimentare cortile",
+      "pavimentazione cortile",
+      "pavimentazione esterna",
+      "pavimentazione giardino",
+      "pavimento da esterno",
+      "pavimento esterno",
+      "porfido esterno",
+      "posa autobloccanti",
+      "posa porfido",
+      "vialetto giardino"
+    ]
+  },
+  {
+    "id": "potare-e-curare-il-verde",
+    "slug": "potare-e-curare-il-verde",
+    "name": "Potare e curare il verde",
+    "projectGroupSlug": "esterni-e-giardino",
+    "aliases": [
+      "abbattimento albero",
+      "cura giardino",
+      "manutenzione giardino",
+      "manutenzione verde",
+      "potare alberi",
+      "potare siepe",
+      "potatura",
+      "potatura alberi",
+      "potatura siepi",
+      "sfalcio erba",
+      "taglio erba",
+      "taglio siepe"
+    ]
+  },
+  {
     "id": "pulire-canna-fumaria",
     "slug": "pulire-canna-fumaria",
     "name": "Pulire canna fumaria",
@@ -928,6 +1006,26 @@
       "abbassamento soffitto",
       "controsoffitto in cartongesso",
       "soffitto in cartongesso"
+    ]
+  },
+  {
+    "id": "realizzare-o-sistemare-giardino",
+    "slug": "realizzare-o-sistemare-giardino",
+    "name": "Realizzare o sistemare giardino",
+    "projectGroupSlug": "esterni-e-giardino",
+    "aliases": [
+      "creare giardino",
+      "fare un giardino",
+      "giardinaggio",
+      "posa prato",
+      "prato a rotoli",
+      "progettare giardino",
+      "realizzare giardino",
+      "realizzare prato",
+      "rifare giardino",
+      "semina prato",
+      "sistemare giardino",
+      "sistemazione giardino"
     ]
   },
   {

@@ -47,6 +47,19 @@
     ]
   },
   {
+    "id": "giardiniere",
+    "slug": "giardiniere",
+    "name": "Giardiniere",
+    "projectGroups": [
+      "esterni-e-giardino"
+    ],
+    "aliases": [
+      "giardinieri",
+      "impresa giardinaggio",
+      "manutentore del verde"
+    ]
+  },
+  {
     "id": "idraulico",
     "slug": "idraulico",
     "name": "Idraulico",
