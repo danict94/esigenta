@@ -14,7 +14,7 @@ import {
   reviewRequest,
   softDeleteRequest,
   unarchiveRequest,
-  updateRequestCommercialSettings,
+  applyRequestCommercialOverride,
   verifyRequestManually,
 } from "@esigenta/domain";
 import {
@@ -397,14 +397,16 @@ async function reviewRequestAction(formData: FormData) {
 async function updateCommercialSettingsAction(formData: FormData) {
   "use server";
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const requestId = String(formData.get("requestId") ?? "");
 
-  const result = await updateRequestCommercialSettings({
+  const result = await applyRequestCommercialOverride({
     requestId,
-    creditCost: parseOptionalInteger(formData.get("creditCost")),
-    maxUnlocks: parseOptionalInteger(formData.get("maxUnlocks")),
+    creditCost: parseOptionalInteger(formData.get("creditCost")) ?? Number.NaN,
+    maxUnlocks: parseOptionalInteger(formData.get("maxUnlocks")) ?? Number.NaN,
+    adminUserId: admin.userId,
+    reason: String(formData.get("reason") ?? ""),
   });
 
   if (!result.ok) {
@@ -891,6 +893,7 @@ export default async function RequestDetailPage({
                   type="number"
                   min={1}
                   step={1}
+                  required
                   defaultValue={request.creditCost ?? ""}
                   placeholder="Non impostato"
                 />
@@ -905,8 +908,21 @@ export default async function RequestDetailPage({
                   type="number"
                   min={1}
                   step={1}
+                  required
                   defaultValue={request.maxUnlocks ?? ""}
                   placeholder="Non impostato"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-eg-terra">
+                  Motivo override (obbligatorio)
+                </span>
+                <Textarea
+                  name="reason"
+                  rows={2}
+                  required
+                  placeholder="Perché correggi il valore automatico."
                 />
               </label>
 

@@ -82,9 +82,9 @@ export type {
 } from "./review-request"
 
 export {
-  updateRequestCommercialSettings,
-} from "./request-commercial-settings"
+  applyRequestCommercialOverride,
+} from "./apply-request-commercial-override"
 export type {
-  UpdateRequestCommercialSettingsInput,
-  UpdateRequestCommercialSettingsResult,
-} from "./request-commercial-settings"
+  ApplyRequestCommercialOverrideInput,
+  ApplyRequestCommercialOverrideResult,
+} from "./apply-request-commercial-override"
