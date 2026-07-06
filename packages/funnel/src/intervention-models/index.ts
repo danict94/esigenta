@@ -22,6 +22,7 @@ import { pavimentazioniModels } from "./pavimentazioni"
 import { riscaldamentoModels } from "./riscaldamento"
 import { ristrutturazioniModels } from "./ristrutturazioni"
 import { serramentiEInfissiModels } from "./serramenti-e-infissi"
+import { tecniciEPraticheEdilizieModels } from "./tecnici-e-pratiche-edilizie"
 import { tettiModels } from "./tetti"
 import { getDefaultFunnelModel } from "./common"
 import type { InterventionFunnelModel } from "./types"
@@ -44,6 +45,7 @@ const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
     ...riscaldamentoModels,
     ...ristrutturazioniModels,
     ...serramentiEInfissiModels,
+    ...tecniciEPraticheEdilizieModels,
     ...tettiModels,
   ].map((model) => [model.interventionSlug, model]),
 )
