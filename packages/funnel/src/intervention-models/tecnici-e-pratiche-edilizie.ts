@@ -150,7 +150,139 @@ const fareApe: InterventionFunnelModel = {
   ],
 }
 
+const fareVariazioneCatastale: InterventionFunnelModel = {
+  interventionSlug: "fare-variazione-catastale",
+  steps: [
+    locationCapability,
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-variazione-catastale:tipo-pratica",
+      type: "single_select",
+      question: "Che pratica catastale ti serve?",
+      options: [
+        { value: "variazione", label: "Variazione catastale" },
+        { value: "accatastamento", label: "Accatastamento" },
+        { value: "aggiornamento_dati", label: "Aggiornamento dati immobile" },
+        { value: "docfa", label: "Pratica DOCFA" },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-variazione-catastale:motivo",
+      type: "single_select",
+      question: "Perché ti serve?",
+      options: [
+        { value: "internal_changes_done", label: "Modifiche interne già fatte" },
+        { value: "sale_or_deed", label: "Compravendita / atto" },
+        { value: "succession_or_division", label: "Successione o divisione" },
+        { value: "data_correction", label: "Correzione dati catastali" },
+        {
+          value: "requested_by_pro",
+          label: "Mi è stato richiesto da un tecnico/notaio",
+        },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-variazione-catastale:documenti-disponibili",
+      type: "single_select",
+      question: "Hai già documenti disponibili?",
+      options: [
+        { value: "have_plan_or_visura", label: "Sì, planimetria o visura" },
+        { value: "some_docs", label: "Ho solo alcuni documenti" },
+        { value: "need_support", label: "No, mi serve supporto" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: planimetria, visura catastale, atto o documenti precedenti (anche foto se utili) aiutano il tecnico a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
+const fareSanatoriaEdilizia: InterventionFunnelModel = {
+  interventionSlug: "fare-sanatoria-edilizia",
+  steps: [
+    locationCapability,
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-sanatoria-edilizia:cosa-fare",
+      type: "single_select",
+      question: "Cosa devi fare?",
+      // Copy prudente: il tecnico verifica/valuta/prepara — nessuna promessa di
+      // esito. "se sanabile", non "ottenere sanatoria".
+      options: [
+        { value: "check_regular", label: "Verificare se l'immobile è regolare" },
+        { value: "regularize_done", label: "Regolarizzare lavori già fatti" },
+        {
+          value: "prepare_practice",
+          label: "Preparare una pratica di sanatoria",
+        },
+        {
+          value: "for_sale_deed_mortgage",
+          label: "Mi serve per vendita / atto / mutuo",
+        },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-sanatoria-edilizia:situazione",
+      type: "single_select",
+      question: "Che tipo di situazione riguarda?",
+      options: [
+        { value: "internal_changes", label: "Modifiche interne" },
+        { value: "veranda_enclosure", label: "Veranda / chiusura spazio" },
+        {
+          value: "extension_or_external",
+          label: "Ampliamento o opera esterna",
+        },
+        {
+          value: "cadastral_urban_nonconformity",
+          label: "Difformità catastale o urbanistica",
+        },
+        {
+          value: "flagged_by_authority",
+          label: "Mi è stato segnalato da tecnico/comune/notaio",
+        },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-sanatoria-edilizia:stato",
+      type: "single_select",
+      question: "A che punto sei?",
+      options: [
+        { value: "understand_first", label: "Voglio prima capire se è sanabile" },
+        { value: "have_docs", label: "Ho già documenti o rilievi" },
+        {
+          value: "received_request",
+          label: "Ho ricevuto una richiesta/contestazione",
+        },
+        { value: "must_sell_or_deed", label: "Devo vendere o fare un atto" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: planimetria, visura, foto, vecchie pratiche, comunicazioni del Comune o documenti del notaio aiutano il tecnico a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
 export const tecniciEPraticheEdilizieModels: InterventionFunnelModel[] = [
   fareCilaOScia,
   fareApe,
+  fareVariazioneCatastale,
+  fareSanatoriaEdilizia,
 ]
