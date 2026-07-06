@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-import { listAdminRequests, listUnverifiedRequests } from "@esigenta/domain";
+import {
+  listAdminRequests,
+  listUnverifiedRequests,
+  type AdminRequestListItem,
+} from "@esigenta/domain";
 import { Badge, Card, PageShell, buttonClassName } from "@esigenta/ui";
 
 export const dynamic = "force-dynamic";
@@ -90,11 +94,116 @@ function getStatusLabel(status: string) {
   return status;
 }
 
+function RequestCard({ request }: { request: AdminRequestListItem }) {
+  return (
+    <Card className="p-5 transition-colors hover:border-eg-cotto">
+      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant={getStatusBadgeVariant(request.status)}>
+              {getStatusLabel(request.status)}
+            </Badge>
+
+            <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+              {formatFreshness(request.createdAt)}
+            </span>
+          </div>
+
+          <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-terra">
+            {formatInterventionLabel(request.interventionSlug)}
+          </h2>
+
+          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-ardesia">
+            <span>
+              <span className="text-eg-ardesia">Città:</span>{" "}
+              {request.city ?? "-"}
+            </span>
+
+            <span>
+              <span className="text-eg-ardesia">Cliente:</span>{" "}
+              {request.customerName ?? "-"}
+            </span>
+
+            <span>
+              <span className="text-eg-ardesia">Creata:</span>{" "}
+              {formatDate(request.createdAt)}
+            </span>
+          </div>
+
+          <p className="mt-4 text-sm leading-6 text-eg-ardesia">
+            Controlla contenuto, località e qualità del contatto per gestire
+            questa opportunità nel marketplace.
+          </p>
+        </div>
+
+        <div className="flex shrink-0 md:justify-end">
+          {/* D-020: edit (commercial settings), archive and soft-delete
+              actions live on the request detail page, consistent with the
+              existing review/edit actions already there. */}
+          <Link
+            href={`/requests/${request.id}`}
+            className={buttonClassName()}
+          >
+            Apri richiesta
+          </Link>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function RequestListSection({
+  title,
+  description,
+  countLabel,
+  countVariant,
+  requests,
+}: {
+  title: string;
+  description: string;
+  countLabel: string;
+  countVariant: "warning" | "neutral";
+  requests: AdminRequestListItem[];
+}) {
+  return (
+    <section className="mt-8">
+      <div className="border border-eg-hairline bg-eg-calce-2 p-5">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-eg-terra">{title}</p>
+            <p className="mt-1 text-sm text-eg-ardesia">{description}</p>
+          </div>
+
+          <Badge variant={countVariant}>{countLabel}</Badge>
+        </div>
+      </div>
+
+      <ul className="mt-6 grid gap-4">
+        {requests.map((request) => (
+          <li key={request.id}>
+            <RequestCard request={request} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export default async function RequestsModerationPage() {
   const [requests, unverifiedRequests] = await Promise.all([
     listAdminRequests(),
     listUnverifiedRequests(),
   ]);
+
+  // Same lean array, partitioned in memory — no extra query. "Da approvare"
+  // (PENDING_REVIEW) needs admin action, so it surfaces first; the rest are
+  // terminal/informational states.
+  const pendingReviewRequests = requests.filter(
+    (request) => request.status === "PENDING_REVIEW",
+  );
+  const otherRequests = requests.filter(
+    (request) => request.status !== "PENDING_REVIEW",
+  );
 
   return (
     <PageShell size="lg">
@@ -147,25 +256,8 @@ export default async function RequestsModerationPage() {
         </Link>
       ) : null}
 
-      <section className="mt-8 border border-eg-hairline bg-eg-calce-2 p-5">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-eg-terra">
-              Gestione richieste
-            </p>
-            <p className="mt-1 text-sm text-eg-ardesia">
-              Elenco delle richieste ricevute con stato e dettagli operativi.
-            </p>
-          </div>
-
-          <Badge variant="neutral">
-            {requests.length} richieste
-          </Badge>
-        </div>
-      </section>
-
-      <section className="mt-6">
-        {requests.length === 0 ? (
+      {requests.length === 0 ? (
+        <section className="mt-8">
           <Card className="p-8">
             <div className="max-w-xl">
               <p className="text-lg font-semibold text-eg-terra">
@@ -176,69 +268,30 @@ export default async function RequestsModerationPage() {
               </p>
             </div>
           </Card>
-        ) : (
-          <ul className="grid gap-4">
-            {requests.map((request) => (
-              <li key={request.id}>
-                <Card className="p-5 transition-colors hover:border-eg-cotto">
-                  <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant={getStatusBadgeVariant(request.status)}>
-                          {getStatusLabel(request.status)}
-                        </Badge>
+        </section>
+      ) : (
+        <>
+          {pendingReviewRequests.length > 0 ? (
+            <RequestListSection
+              title="Da approvare"
+              description="Richieste in coda di revisione, in attesa della tua approvazione."
+              countLabel={`${pendingReviewRequests.length} da approvare`}
+              countVariant="warning"
+              requests={pendingReviewRequests}
+            />
+          ) : null}
 
-                        <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
-                          {formatFreshness(request.createdAt)}
-                        </span>
-                      </div>
-
-                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-terra">
-                        {formatInterventionLabel(request.interventionSlug)}
-                      </h2>
-
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-ardesia">
-                        <span>
-                          <span className="text-eg-ardesia">Città:</span>{" "}
-                          {request.city ?? "-"}
-                        </span>
-
-                        <span>
-                          <span className="text-eg-ardesia">Cliente:</span>{" "}
-                          {request.customerName ?? "-"}
-                        </span>
-
-                        <span>
-                          <span className="text-eg-ardesia">Creata:</span>{" "}
-                          {formatDate(request.createdAt)}
-                        </span>
-                      </div>
-
-                      <p className="mt-4 text-sm leading-6 text-eg-ardesia">
-                        Controlla contenuto, località e qualità del contatto
-                        per gestire questa opportunità nel marketplace.
-                      </p>
-                    </div>
-
-                    <div className="flex shrink-0 md:justify-end">
-                      {/* D-020: edit (commercial settings), archive and
-                          soft-delete actions live on the request detail
-                          page, consistent with the existing review/edit
-                          actions already there. */}
-                      <Link
-                        href={`/requests/${request.id}`}
-                        className={buttonClassName()}
-                      >
-                        Apri richiesta
-                      </Link>
-                    </div>
-                  </div>
-                </Card>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {otherRequests.length > 0 ? (
+            <RequestListSection
+              title="Altre richieste"
+              description="Approvate, pubblicate, rifiutate o chiuse."
+              countLabel={`${otherRequests.length} richieste`}
+              countVariant="neutral"
+              requests={otherRequests}
+            />
+          ) : null}
+        </>
+      )}
     </PageShell>
   );
 }
