@@ -15,7 +15,7 @@
  * practice/certificate), no property capability, no raw value. The optional
  * upload reuses the shared photo_upload contract (id "photos") so documents are
  * handled as usual, but with documents-oriented copy (planimetria/visura/…).
- * Step ids `pratiche-edilizie:…`.
+ * Step ids `tecnici-e-pratiche-edilizie:…`.
  */
 
 import type { RuntimeCapability } from "../types/capability"
@@ -46,7 +46,7 @@ const fareCilaOScia: InterventionFunnelModel = {
   steps: [
     locationCapability,
     {
-      id: "pratiche-edilizie:fare-cila-o-scia:scopo",
+      id: "tecnici-e-pratiche-edilizie:fare-cila-o-scia:scopo",
       type: "single_select",
       question: "Per cosa ti serve la pratica?",
       options: [
@@ -62,7 +62,7 @@ const fareCilaOScia: InterventionFunnelModel = {
       optional: false,
     },
     {
-      id: "pratiche-edilizie:fare-cila-o-scia:stato",
+      id: "tecnici-e-pratiche-edilizie:fare-cila-o-scia:stato",
       type: "single_select",
       question: "A che punto sei?",
       options: [
@@ -78,7 +78,7 @@ const fareCilaOScia: InterventionFunnelModel = {
       optional: false,
     },
     {
-      id: "pratiche-edilizie:fare-cila-o-scia:tipo-immobile",
+      id: "tecnici-e-pratiche-edilizie:fare-cila-o-scia:tipo-immobile",
       type: "single_select",
       question: "Che tipo di immobile riguarda?",
       options: [
@@ -104,7 +104,7 @@ const fareApe: InterventionFunnelModel = {
   steps: [
     locationCapability,
     {
-      id: "pratiche-edilizie:fare-ape:scopo",
+      id: "tecnici-e-pratiche-edilizie:fare-ape:scopo",
       type: "single_select",
       question: "Perché ti serve l'APE?",
       options: [
@@ -117,7 +117,7 @@ const fareApe: InterventionFunnelModel = {
       optional: false,
     },
     {
-      id: "pratiche-edilizie:fare-ape:tipo-immobile",
+      id: "tecnici-e-pratiche-edilizie:fare-ape:tipo-immobile",
       type: "single_select",
       question: "Che immobile riguarda?",
       options: [
@@ -130,7 +130,7 @@ const fareApe: InterventionFunnelModel = {
       optional: false,
     },
     {
-      id: "pratiche-edilizie:fare-ape:documenti-disponibili",
+      id: "tecnici-e-pratiche-edilizie:fare-ape:documenti-disponibili",
       type: "single_select",
       question: "Hai già i dati o documenti dell'immobile?",
       options: [
