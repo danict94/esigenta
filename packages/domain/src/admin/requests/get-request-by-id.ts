@@ -60,6 +60,12 @@ export type ModerationRequestDetail = {
   creditCost: number | null
   maxUnlocks: number | null
   unlockCount: number
+  // Commercial review (admin-only detail): automatic snapshot + override
+  // attribution. Advisory data for the review UI — never loaded in listings.
+  commercialSnapshot: Prisma.JsonValue | null
+  commercialOverriddenAt: Date | null
+  commercialOverriddenByAdminUser: ModerationRequestAdminActor | null
+  commercialOverrideReason: string | null
   createdAt: Date
   archivedAt: Date | null
   archivedByAdminUser: ModerationRequestAdminActor | null
@@ -118,6 +124,12 @@ export async function getRequestById(
       creditCost: true,
       maxUnlocks: true,
       unlockCount: true,
+      commercialSnapshot: true,
+      commercialOverriddenAt: true,
+      commercialOverrideReason: true,
+      commercialOverriddenByAdminUser: {
+        select: { id: true, name: true, email: true },
+      },
       createdAt: true,
       archivedAt: true,
       archiveReason: true,

@@ -19,8 +19,18 @@ export type {
 export {
   COMMERCIAL_POLICY_VERSION,
   createCommercialSnapshotFromLeadValue,
+  parseCommercialSnapshot,
 } from "./commercial-snapshot"
 
 export type {
   CommercialSnapshot,
 } from "./commercial-snapshot"
+
+export {
+  getCommercialReviewSignals,
+} from "./commercial-review"
+
+export type {
+  CommercialReviewInput,
+  CommercialReviewSignals,
+} from "./commercial-review"

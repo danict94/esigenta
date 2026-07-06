@@ -44,3 +44,54 @@ export function createCommercialSnapshotFromLeadValue(
     reasons: leadValue.reasons,
   }
 }
+
+const COMMERCIAL_TIERS = [
+  "micro",
+  "small",
+  "medium",
+  "large",
+  "xlarge",
+] as const
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string")
+}
+
+/**
+ * Safe reader for the persisted Request.commercialSnapshot (untyped JSON).
+ * Returns a typed snapshot only when the shape is fully valid; returns null for
+ * missing/legacy/malformed values (e.g. requests created before the snapshot
+ * existed). Pure, no IO — never throws.
+ */
+export function parseCommercialSnapshot(value: unknown): CommercialSnapshot | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return null
+  }
+
+  const raw = value as Record<string, unknown>
+
+  if (
+    typeof raw.policyVersion !== "number" ||
+    raw.source !== "auto" ||
+    typeof raw.tier !== "string" ||
+    !(COMMERCIAL_TIERS as readonly string[]).includes(raw.tier) ||
+    typeof raw.score !== "number" ||
+    typeof raw.creditCost !== "number" ||
+    typeof raw.maxUnlocks !== "number" ||
+    typeof raw.belowFloor !== "boolean" ||
+    !isStringArray(raw.reasons)
+  ) {
+    return null
+  }
+
+  return {
+    policyVersion: raw.policyVersion,
+    source: "auto",
+    tier: raw.tier as LeadValueTier,
+    score: raw.score,
+    creditCost: raw.creditCost,
+    maxUnlocks: raw.maxUnlocks,
+    belowFloor: raw.belowFloor,
+    reasons: raw.reasons,
+  }
+}
