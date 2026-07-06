@@ -204,7 +204,9 @@
     "name": "Tecnici e pratiche edilizie",
     "interventionSlugs": [
       "fare-ape",
-      "fare-cila-o-scia"
+      "fare-cila-o-scia",
+      "fare-sanatoria-edilizia",
+      "fare-variazione-catastale"
     ]
   },
   {

@@ -273,6 +273,42 @@
     ]
   },
   {
+    "id": "fare-sanatoria-edilizia",
+    "slug": "fare-sanatoria-edilizia",
+    "name": "Fare una sanatoria edilizia",
+    "projectGroupSlug": "tecnici-e-pratiche-edilizie",
+    "aliases": [
+      "accertamento di conformità",
+      "conformità urbanistica",
+      "geometra sanatoria",
+      "pratica abuso edilizio",
+      "pratica sanatoria",
+      "regolarizzare abuso edilizio",
+      "sanare abuso edilizio",
+      "sanatoria edilizia",
+      "tecnico sanatoria",
+      "verifica conformità urbanistica"
+    ]
+  },
+  {
+    "id": "fare-variazione-catastale",
+    "slug": "fare-variazione-catastale",
+    "name": "Fare una variazione catastale",
+    "projectGroupSlug": "tecnici-e-pratiche-edilizie",
+    "aliases": [
+      "accatastamento",
+      "accatastare casa",
+      "aggiornamento catastale",
+      "docfa",
+      "geometra catasto",
+      "modifica catastale",
+      "pratica catastale",
+      "pratica docfa",
+      "tecnico catastale",
+      "variazione catastale"
+    ]
+  },
+  {
     "id": "impermeabilizzare-balcone-ballatoio",
     "slug": "impermeabilizzare-balcone-ballatoio",
     "name": "Impermeabilizzare balcone o ballatoio",

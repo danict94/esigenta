@@ -810,6 +810,106 @@
     "ownerSlug": "fare-massetto"
   },
   {
+    "value": "accertamento di conformità",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "conformità urbanistica",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "geometra sanatoria",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "pratica abuso edilizio",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "pratica sanatoria",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "regolarizzare abuso edilizio",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "sanare abuso edilizio",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "sanatoria edilizia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "tecnico sanatoria",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "verifica conformità urbanistica",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sanatoria-edilizia"
+  },
+  {
+    "value": "accatastamento",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "accatastare casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "aggiornamento catastale",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "docfa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "geometra catasto",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "modifica catastale",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "pratica catastale",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "pratica docfa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "tecnico catastale",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
+    "value": "variazione catastale",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-variazione-catastale"
+  },
+  {
     "value": "acqua sotto balcone",
     "ownerType": "intervention",
     "ownerSlug": "impermeabilizzare-balcone-ballatoio"

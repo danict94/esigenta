@@ -52,5 +52,47 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
         "tecnico ape",
       ],
     },
+    {
+      id: "fare-variazione-catastale",
+      slug: "fare-variazione-catastale",
+      name: "Fare una variazione catastale",
+      // Pratica catastale (DOCFA): aggiornamento dei dati dell'immobile,
+      // accatastamento, variazione. Servizio tecnico/documentale, non un lavoro
+      // edile. Niente alias generici "casa"/"lavori casa"/"ristrutturazione".
+      aliases: [
+        "variazione catastale",
+        "pratica catastale",
+        "aggiornamento catastale",
+        "modifica catastale",
+        "docfa",
+        "pratica docfa",
+        "accatastamento",
+        "accatastare casa",
+        "geometra catasto",
+        "tecnico catastale",
+      ],
+    },
+    {
+      id: "fare-sanatoria-edilizia",
+      slug: "fare-sanatoria-edilizia",
+      name: "Fare una sanatoria edilizia",
+      // Pratica/valutazione tecnica per regolarizzare difformità (accertamento
+      // di conformità). Copy PRUDENTE, mai promessa di esito: il tecnico
+      // valuta/verifica/prepara la pratica e regolarizza SE possibile — niente
+      // "sanatoria garantita"/"condono garantito". Servizio tecnico, non un
+      // lavoro edile.
+      aliases: [
+        "sanatoria edilizia",
+        "sanare abuso edilizio",
+        "pratica sanatoria",
+        "regolarizzare abuso edilizio",
+        "conformità urbanistica",
+        "verifica conformità urbanistica",
+        "accertamento di conformità",
+        "geometra sanatoria",
+        "tecnico sanatoria",
+        "pratica abuso edilizio",
+      ],
+    },
   ],
 }
