@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import {
   archiveRequest,
   getRequestById,
+  getCommercialReviewSignals,
   listAttachedRequestPhotos,
   resendRequestVerificationEmail,
   restoreRequest,
@@ -195,6 +196,10 @@ function formatCreditCost(value: number | null) {
 
 function formatMaxUnlocks(value: number | null) {
   return value === null ? "Non impostato" : `${value} imprese`;
+}
+
+function formatTier(tier: string) {
+  return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
 function formatKey(key: string) {
@@ -601,6 +606,15 @@ export default async function RequestDetailPage({
     isPositiveInteger(request.creditCost) &&
     isPositiveInteger(request.maxUnlocks);
 
+  // View-only advisory signals for the commercial review panel. Reads the
+  // persisted automatic snapshot + effective values; changes no behavior.
+  const commercialReview = getCommercialReviewSignals({
+    commercialSnapshot: request.commercialSnapshot,
+    effectiveCreditCost: request.creditCost,
+    effectiveMaxUnlocks: request.maxUnlocks,
+    overriddenAt: request.commercialOverriddenAt,
+  });
+
   return (
     <PageShell size="lg">
       <header className="border-b border-eg-hairline pb-7">
@@ -877,6 +891,103 @@ export default async function RequestDetailPage({
                 </dd>
               </div>
             </dl>
+
+            <div className="mt-5 grid gap-3 border-t border-eg-hairline pt-5">
+              <p className="text-sm font-semibold text-eg-terra">
+                Valutazione commerciale
+              </p>
+
+              {commercialReview.auto ? (
+                <>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="neutral">
+                      Tier {formatTier(commercialReview.auto.tier)}
+                    </Badge>
+                    {commercialReview.isOverridden ? (
+                      <Badge variant="warning">Override attivo</Badge>
+                    ) : null}
+                  </div>
+
+                  {commercialReview.belowFloor ? (
+                    <div className="border border-eg-cotto bg-eg-calce-2 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-eg-cotto">
+                        Avviso, non un blocco
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-eg-terra">
+                        Richiesta sotto soglia commerciale: valuta prima di
+                        pubblicarla.
+                      </p>
+                    </div>
+                  ) : null}
+
+                  <div className="border border-eg-hairline bg-eg-calce-2 p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                      Valore automatico (sistema)
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-eg-terra">
+                      {formatCreditCost(commercialReview.auto.creditCost)} ·{" "}
+                      {formatMaxUnlocks(commercialReview.auto.maxUnlocks)}
+                    </p>
+                  </div>
+
+                  <div className="border border-eg-hairline bg-eg-calce-2 p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                      Valore effettivo (in vigore)
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-eg-terra">
+                      {formatCreditCost(commercialReview.effective.creditCost)} ·{" "}
+                      {formatMaxUnlocks(commercialReview.effective.maxUnlocks)}
+                    </p>
+                  </div>
+
+                  {commercialReview.auto.reasons.length > 0 ? (
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                        Motivi
+                      </p>
+                      <ul className="mt-2 grid gap-1">
+                        {commercialReview.auto.reasons.map((reason) => (
+                          <li
+                            key={reason}
+                            className="text-sm leading-6 text-eg-ardesia"
+                          >
+                            {reason}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <p className="text-sm leading-6 text-eg-ardesia">
+                  Valutazione automatica non disponibile per questa richiesta.
+                </p>
+              )}
+
+              {commercialReview.isOverridden ? (
+                <div className="border border-eg-hairline bg-eg-calce-2 p-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                    Override commerciale
+                  </p>
+                  {request.commercialOverrideReason ? (
+                    <p className="mt-1 text-sm leading-6 text-eg-terra">
+                      {request.commercialOverrideReason}
+                    </p>
+                  ) : null}
+                  <p className="mt-1 text-xs text-eg-ardesia">
+                    {request.commercialOverriddenAt
+                      ? formatDate(request.commercialOverriddenAt)
+                      : "-"}
+                    {request.commercialOverriddenByAdminUser
+                      ? ` · ${
+                          request.commercialOverriddenByAdminUser.name ??
+                          request.commercialOverriddenByAdminUser.email
+                        }`
+                      : ""}
+                  </p>
+                </div>
+              ) : null}
+            </div>
 
             <form
               action={updateCommercialSettingsAction}
