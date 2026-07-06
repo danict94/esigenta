@@ -94,5 +94,28 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
         "pratica abuso edilizio",
       ],
     },
+    {
+      id: "fare-progetto-ristrutturazione",
+      slug: "fare-progetto-ristrutturazione",
+      name: "Fare progetto di ristrutturazione",
+      // Servizio tecnico per PROGETTARE/organizzare una ristrutturazione prima
+      // dell'esecuzione: progetto, distribuzione spazi, supporto tecnico,
+      // direzione lavori (opzione) e computo metrico (eventuale supporto). NON
+      // include l'esecuzione delle opere: quella è il gruppo ristrutturazioni
+      // (impresa). Alias ANCORATI a "progetto/progettazione/tecnico" — vietati
+      // "ristrutturazione"/"ristrutturare casa"/"preventivo ristrutturazione"/
+      // "lavori casa"/"costruire casa"/"ampliamento casa" (→ ristrutturazioni /
+      // costruzioni / impresa edile).
+      aliases: [
+        "progetto ristrutturazione",
+        "progettazione ristrutturazione",
+        "progetto ristrutturazione casa",
+        "geometra progetto ristrutturazione",
+        "architetto progetto ristrutturazione",
+        "tecnico progetto casa",
+        "progettare ristrutturazione",
+        "progetto lavori interni",
+      ],
+    },
   ],
 }

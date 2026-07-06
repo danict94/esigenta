@@ -273,6 +273,22 @@
     ]
   },
   {
+    "id": "fare-progetto-ristrutturazione",
+    "slug": "fare-progetto-ristrutturazione",
+    "name": "Fare progetto di ristrutturazione",
+    "projectGroupSlug": "tecnici-e-pratiche-edilizie",
+    "aliases": [
+      "architetto progetto ristrutturazione",
+      "geometra progetto ristrutturazione",
+      "progettare ristrutturazione",
+      "progettazione ristrutturazione",
+      "progetto lavori interni",
+      "progetto ristrutturazione",
+      "progetto ristrutturazione casa",
+      "tecnico progetto casa"
+    ]
+  },
+  {
     "id": "fare-sanatoria-edilizia",
     "slug": "fare-sanatoria-edilizia",
     "name": "Fare una sanatoria edilizia",

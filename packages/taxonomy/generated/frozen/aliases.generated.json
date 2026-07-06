@@ -810,6 +810,46 @@
     "ownerSlug": "fare-massetto"
   },
   {
+    "value": "architetto progetto ristrutturazione",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "geometra progetto ristrutturazione",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "progettare ristrutturazione",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "progettazione ristrutturazione",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "progetto lavori interni",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "progetto ristrutturazione",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "progetto ristrutturazione casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
+    "value": "tecnico progetto casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-progetto-ristrutturazione"
+  },
+  {
     "value": "accertamento di conformità",
     "ownerType": "intervention",
     "ownerSlug": "fare-sanatoria-edilizia"
