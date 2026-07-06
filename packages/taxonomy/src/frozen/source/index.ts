@@ -9,6 +9,7 @@ import { serramentista } from "./categories/serramentista"
 import { fabbro } from "./categories/fabbro"
 import { fumista } from "./categories/fumista"
 import { giardiniere } from "./categories/giardiniere"
+import { geometra } from "./categories/geometra"
 
 import { ristrutturazioni } from "./project-groups/ristrutturazioni"
 import { tetti } from "./project-groups/tetti"
@@ -27,6 +28,7 @@ import { riscaldamento } from "./project-groups/riscaldamento"
 import { fabbroSerrandeECancelli } from "./project-groups/fabbro-serrande-e-cancelli"
 import { caminiStufeECanneFumarie } from "./project-groups/camini-stufe-e-canne-fumarie"
 import { esterniEGiardino } from "./project-groups/esterni-e-giardino"
+import { tecniciEPraticheEdilizie } from "./project-groups/tecnici-e-pratiche-edilizie"
 
 import type { FrozenTaxonomySource } from "./types/source"
 
@@ -43,6 +45,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     fabbro,
     fumista,
     giardiniere,
+    geometra,
   ],
 
   projectGroups: [
@@ -63,6 +66,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     fabbroSerrandeECancelli,
     caminiStufeECanneFumarie,
     esterniEGiardino,
+    tecniciEPraticheEdilizie,
   ],
 }
 

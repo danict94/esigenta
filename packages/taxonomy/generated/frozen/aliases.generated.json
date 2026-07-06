@@ -40,6 +40,41 @@
     "ownerSlug": "fumista"
   },
   {
+    "value": "architetto",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
+    "value": "geometri",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
+    "value": "ingegnere",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
+    "value": "pratiche edilizie",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
+    "value": "studio tecnico",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
+    "value": "tecnico abilitato",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
+    "value": "tecnico edilizio",
+    "ownerType": "category",
+    "ownerSlug": "geometra"
+  },
+  {
     "value": "giardinieri",
     "ownerType": "category",
     "ownerSlug": "giardiniere"
@@ -568,6 +603,96 @@
     "value": "tubo intasato",
     "ownerType": "intervention",
     "ownerSlug": "disostruire-scarichi"
+  },
+  {
+    "value": "ape",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "ape appartamento",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "ape casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "attestato prestazione energetica",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "certificato energetico casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "certificazione energetica",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "geometra ape",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "tecnico ape",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-ape"
+  },
+  {
+    "value": "cila",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "comunicazione inizio lavori",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "geometra cila",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "geometra scia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "permesso lavori casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "pratica cila",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "pratica edilizia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "pratica scia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "scia",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
+  },
+  {
+    "value": "segnalazione certificata inizio attività",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-cila-o-scia"
   },
   {
     "value": "impianto elettrico da zero",

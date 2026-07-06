@@ -199,6 +199,15 @@
     ]
   },
   {
+    "id": "tecnici-e-pratiche-edilizie",
+    "slug": "tecnici-e-pratiche-edilizie",
+    "name": "Tecnici e pratiche edilizie",
+    "interventionSlugs": [
+      "fare-ape",
+      "fare-cila-o-scia"
+    ]
+  },
+  {
     "id": "tetti",
     "slug": "tetti",
     "name": "Tetti",

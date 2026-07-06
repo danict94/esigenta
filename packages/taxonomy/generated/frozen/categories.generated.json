@@ -47,6 +47,23 @@
     ]
   },
   {
+    "id": "geometra",
+    "slug": "geometra",
+    "name": "Geometra",
+    "projectGroups": [
+      "tecnici-e-pratiche-edilizie"
+    ],
+    "aliases": [
+      "architetto",
+      "geometri",
+      "ingegnere",
+      "pratiche edilizie",
+      "studio tecnico",
+      "tecnico abilitato",
+      "tecnico edilizio"
+    ]
+  },
+  {
     "id": "giardiniere",
     "slug": "giardiniere",
     "name": "Giardiniere",

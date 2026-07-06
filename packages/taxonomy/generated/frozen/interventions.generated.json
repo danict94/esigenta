@@ -184,6 +184,40 @@
     ]
   },
   {
+    "id": "fare-ape",
+    "slug": "fare-ape",
+    "name": "Fare un APE (certificato energetico)",
+    "projectGroupSlug": "tecnici-e-pratiche-edilizie",
+    "aliases": [
+      "ape",
+      "ape appartamento",
+      "ape casa",
+      "attestato prestazione energetica",
+      "certificato energetico casa",
+      "certificazione energetica",
+      "geometra ape",
+      "tecnico ape"
+    ]
+  },
+  {
+    "id": "fare-cila-o-scia",
+    "slug": "fare-cila-o-scia",
+    "name": "Fare una CILA o SCIA",
+    "projectGroupSlug": "tecnici-e-pratiche-edilizie",
+    "aliases": [
+      "cila",
+      "comunicazione inizio lavori",
+      "geometra cila",
+      "geometra scia",
+      "permesso lavori casa",
+      "pratica cila",
+      "pratica edilizia",
+      "pratica scia",
+      "scia",
+      "segnalazione certificata inizio attività"
+    ]
+  },
+  {
     "id": "fare-impianto-elettrico-nuovo",
     "slug": "fare-impianto-elettrico-nuovo",
     "name": "Fare impianto elettrico nuovo",
