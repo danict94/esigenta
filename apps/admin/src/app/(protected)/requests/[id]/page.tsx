@@ -16,6 +16,7 @@ import {
   softDeleteRequest,
   unarchiveRequest,
   applyRequestCommercialOverride,
+  resetRequestCommercialOverrideToAuto,
   verifyRequestManually,
 } from "@esigenta/domain";
 import {
@@ -412,6 +413,26 @@ async function updateCommercialSettingsAction(formData: FormData) {
     maxUnlocks: parseOptionalInteger(formData.get("maxUnlocks")) ?? Number.NaN,
     adminUserId: admin.userId,
     reason: String(formData.get("reason") ?? ""),
+  });
+
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+}
+
+async function resetCommercialSettingsAction(formData: FormData) {
+  "use server";
+
+  const admin = await requireAdmin();
+
+  const requestId = String(formData.get("requestId") ?? "");
+
+  const result = await resetRequestCommercialOverrideToAuto({
+    requestId,
+    adminUserId: admin.userId,
   });
 
   if (!result.ok) {
@@ -986,6 +1007,17 @@ export default async function RequestDetailPage({
                       : ""}
                   </p>
                 </div>
+              ) : null}
+
+              {commercialReview.auto &&
+              (commercialReview.isOverridden ||
+                commercialReview.divergesFromAuto) ? (
+                <form action={resetCommercialSettingsAction}>
+                  <input type="hidden" name="requestId" value={request.id} />
+                  <Button type="submit" variant="ghost">
+                    Ripristina suggerimento sistema
+                  </Button>
+                </form>
               ) : null}
             </div>
 

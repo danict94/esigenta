@@ -88,3 +88,11 @@ export type {
   ApplyRequestCommercialOverrideInput,
   ApplyRequestCommercialOverrideResult,
 } from "./apply-request-commercial-override"
+
+export {
+  resetRequestCommercialOverrideToAuto,
+} from "./reset-request-commercial-override"
+export type {
+  ResetRequestCommercialOverrideInput,
+  ResetRequestCommercialOverrideResult,
+} from "./reset-request-commercial-override"
