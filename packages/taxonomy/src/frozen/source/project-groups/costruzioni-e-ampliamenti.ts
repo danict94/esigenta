@@ -101,5 +101,28 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
         "deposito esterno",
       ],
     },
+    {
+      id: "costruire-dependance-o-annesso",
+      slug: "costruire-dependance-o-annesso",
+      name: "Costruire dependance o annesso",
+      // Edificio accessorio ABITABILE standalone (dependance/annesso/monolocale
+      // esterno). Confini: NON abitabile utility (garage/deposito) → costruire-
+      // garage-o-deposito; estensione CONNESSA della casa → ampliare-casa;
+      // abitazione principale nuova → costruire-casa; struttura LEGGERA da
+      // giardino (casetta/pergola/tettoia) → esterni-e-giardino; pratica/CILA/
+      // SCIA → tecnici-e-pratiche-edilizie. Il più niche del gruppo.
+      aliases: [
+        "costruire dependance",
+        "costruire una dependance",
+        "dependance in giardino",
+        "realizzare dependance",
+        "costruire annesso",
+        "realizzare annesso",
+        "annesso abitativo",
+        "annesso esterno",
+        "dependance giardino",
+        "costruire monolocale esterno",
+      ],
+    },
   ],
 }

@@ -139,6 +139,24 @@
     ]
   },
   {
+    "id": "costruire-dependance-o-annesso",
+    "slug": "costruire-dependance-o-annesso",
+    "name": "Costruire dependance o annesso",
+    "projectGroupSlug": "costruzioni-e-ampliamenti",
+    "aliases": [
+      "annesso abitativo",
+      "annesso esterno",
+      "costruire annesso",
+      "costruire dependance",
+      "costruire monolocale esterno",
+      "costruire una dependance",
+      "dependance giardino",
+      "dependance in giardino",
+      "realizzare annesso",
+      "realizzare dependance"
+    ]
+  },
+  {
     "id": "costruire-garage-o-deposito",
     "slug": "costruire-garage-o-deposito",
     "name": "Costruire garage o deposito",

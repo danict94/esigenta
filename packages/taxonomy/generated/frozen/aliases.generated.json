@@ -500,6 +500,56 @@
     "ownerSlug": "costruire-casa"
   },
   {
+    "value": "annesso abitativo",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "annesso esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "costruire annesso",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "costruire dependance",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "costruire monolocale esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "costruire una dependance",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "dependance giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "dependance in giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "realizzare annesso",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
+    "value": "realizzare dependance",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-dependance-o-annesso"
+  },
+  {
     "value": "costruire autorimessa",
     "ownerType": "intervention",
     "ownerSlug": "costruire-garage-o-deposito"
