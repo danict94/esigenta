@@ -237,8 +237,75 @@ const fareSopraelevazione: InterventionFunnelModel = {
   ],
 }
 
+const costruireGarageODeposito: InterventionFunnelModel = {
+  interventionSlug: "costruire-garage-o-deposito",
+  steps: [
+    locationCapability,
+    {
+      id: "costruzioni-e-ampliamenti:costruire-garage-o-deposito:cosa-costruire",
+      type: "single_select",
+      question: "Cosa vuoi costruire?",
+      options: [
+        { value: "single_garage", label: "Garage singolo" },
+        { value: "double_garage", label: "Garage doppio" },
+        { value: "deposit_or_warehouse", label: "Deposito / magazzino" },
+        { value: "parking_structure", label: "Autorimessa" },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      id: "costruzioni-e-ampliamenti:costruire-garage-o-deposito:struttura",
+      type: "single_select",
+      question: "Che tipo di struttura immagini?",
+      options: [
+        { value: "masonry_concrete", label: "In muratura / cemento" },
+        { value: "prefab_stable", label: "Prefabbricata stabile" },
+        { value: "to_define", label: "Struttura da definire" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "costruzioni-e-ampliamenti:costruire-garage-o-deposito:stato",
+      type: "single_select",
+      question: "A che punto sei?",
+      options: [
+        { value: "only_idea", label: "Ho solo l'idea" },
+        { value: "have_space_or_land", label: "Ho già uno spazio o terreno" },
+        { value: "have_project_or_pro", label: "Ho già un progetto o tecnico" },
+        { value: "permits_started", label: "Ho già pratiche avviate" },
+        { value: "where_to_start", label: "Devo capire da dove partire" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "costruzioni-e-ampliamenti:costruire-garage-o-deposito:superficie",
+      type: "single_select",
+      question: "Quanto grande sarà?",
+      options: [
+        { value: "small", label: "Piccolo deposito" },
+        { value: "medium", label: "Garage singolo" },
+        { value: "large", label: "Garage doppio / struttura media" },
+        { value: "over_twohundred", label: "Struttura grande" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: foto dell'area, planimetria, progetto, misure indicative o documenti disponibili aiutano l'impresa a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
 export const costruzioniEAmpliamentiModels: InterventionFunnelModel[] = [
   costruireCasa,
   ampliareCasa,
   fareSopraelevazione,
+  costruireGarageODeposito,
 ]
