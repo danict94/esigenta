@@ -118,6 +118,10 @@ const INTERVENTION_BASELINE: Record<string, number> = {
   // New construction: the highest-ticket lead in the catalog — always xlarge
   // (5cr/5unlock) regardless of qualitative scale.
   "costruire-casa": 5.5,
+  // Roof-raising: a whole structural floor, heavier than a plain extension — set
+  // above the group center so medium/large scale reaches xlarge while a small
+  // one stays large. Ladder: costruire > sopraelevazione > ampliamento.
+  "fare-sopraelevazione": 4.5,
 }
 
 /** Interventions whose value is dominated by urgency (locksmith emergency). */
