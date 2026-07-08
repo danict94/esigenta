@@ -175,7 +175,143 @@ const ristrutturarePiscina: InterventionFunnelModel = {
   ],
 }
 
+const fareManutenzionePiscina: InterventionFunnelModel = {
+  interventionSlug: "fare-manutenzione-piscina",
+  steps: [
+    locationCapability,
+    {
+      id: "piscine:fare-manutenzione-piscina:tipo-manutenzione",
+      type: "single_select",
+      question: "Che manutenzione ti serve?",
+      options: [
+        { value: "seasonal_opening", label: "Apertura stagionale piscina" },
+        { value: "seasonal_closing", label: "Chiusura stagionale piscina" },
+        { value: "periodic", label: "Manutenzione periodica" },
+        { value: "extraordinary", label: "Manutenzione straordinaria" },
+        { value: "impianto_check", label: "Controllo impianto / filtrazione" },
+        { value: "water_treatment", label: "Trattamento acqua" },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      id: "piscine:fare-manutenzione-piscina:stato",
+      type: "single_select",
+      question: "Com'è la situazione attuale?",
+      options: [
+        { value: "working", label: "Piscina funzionante" },
+        { value: "water_to_treat", label: "Acqua da trattare" },
+        { value: "impianto_to_check", label: "Impianto da controllare" },
+        { value: "long_stopped", label: "Piscina ferma da tempo" },
+        { value: "problem_to_understand", label: "Problema da capire" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "piscine:fare-manutenzione-piscina:tipo-piscina",
+      type: "single_select",
+      question: "Che tipo di piscina è?",
+      options: [
+        { value: "interrata", label: "Interrata" },
+        { value: "seminterrata", label: "Seminterrata" },
+        { value: "fuori_terra_strutturata", label: "Fuori terra strutturata" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "piscine:fare-manutenzione-piscina:frequenza",
+      type: "single_select",
+      question: "Ti serve un intervento singolo o continuativo?",
+      options: [
+        { value: "seasonal", label: "Intervento stagionale" },
+        { value: "periodic", label: "Manutenzione periodica" },
+        { value: "extraordinary", label: "Intervento straordinario" },
+        { value: "to_define", label: "Da definire con il professionista" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: foto della piscina, dell'acqua o dell'impianto, dati o vecchi documenti aiutano il piscinista a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
+const installareCoperturaPiscina: InterventionFunnelModel = {
+  interventionSlug: "installare-copertura-piscina",
+  steps: [
+    locationCapability,
+    {
+      id: "piscine:installare-copertura-piscina:tipo-copertura",
+      type: "single_select",
+      question: "Che copertura vuoi installare?",
+      options: [
+        { value: "telescopica", label: "Copertura telescopica" },
+        { value: "bassa", label: "Copertura bassa" },
+        { value: "alta", label: "Copertura alta" },
+        { value: "tapparella_automatica", label: "Tapparella / copertura automatica" },
+        { value: "isotermica", label: "Copertura isotermica professionale" },
+        { value: "sicurezza", label: "Copertura di sicurezza" },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      id: "piscine:installare-copertura-piscina:stato",
+      type: "single_select",
+      question: "A che punto sei?",
+      options: [
+        { value: "evaluating", label: "Sto valutando la soluzione" },
+        { value: "have_pool", label: "Ho già una piscina esistente" },
+        { value: "have_measures_or_project", label: "Ho già misure o progetto" },
+        { value: "replace_existing", label: "Devo sostituire una copertura esistente" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "piscine:installare-copertura-piscina:tipo-piscina",
+      type: "single_select",
+      question: "Su che piscina va installata?",
+      options: [
+        { value: "interrata", label: "Piscina interrata" },
+        { value: "seminterrata", label: "Piscina seminterrata" },
+        { value: "fuori_terra_strutturata", label: "Piscina fuori terra strutturata" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "piscine:installare-copertura-piscina:superficie",
+      type: "single_select",
+      question: "Quanto è grande la piscina?",
+      options: [
+        { value: "small", label: "Piscina piccola" },
+        { value: "medium", label: "Piscina media" },
+        { value: "large", label: "Piscina grande" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: foto della piscina e del bordo, misure indicative, foto della vecchia copertura o documenti disponibili aiutano il piscinista a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
 export const piscineModels: InterventionFunnelModel[] = [
   costruirePiscina,
   ristrutturarePiscina,
+  fareManutenzionePiscina,
+  installareCoperturaPiscina,
 ]
