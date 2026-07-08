@@ -79,6 +79,10 @@ const GROUP_BASELINE: Record<string, number> = {
   // baseline lands the tier directly — decimals let it hit the small/medium/large
   // bands. Group center = a medium pratica; per-intervention overrides below.
   "tecnici-e-pratiche-edilizie": 2.2,
+  // Big-ticket structured works: high baseline so even a small qualitative scale
+  // stays large/xlarge (never a €50 job). Group center = ampliamento; costruire
+  // casa overrides higher below.
+  "costruzioni-e-ampliamenti": 4,
 }
 
 const DEFAULT_BASELINE = 2
@@ -111,6 +115,9 @@ const INTERVENTION_BASELINE: Record<string, number> = {
   "fare-cila-o-scia": 2.8,
   "fare-sanatoria-edilizia": 3.4,
   "fare-progetto-ristrutturazione": 4,
+  // New construction: the highest-ticket lead in the catalog — always xlarge
+  // (5cr/5unlock) regardless of qualitative scale.
+  "costruire-casa": 5.5,
 }
 
 /** Interventions whose value is dominated by urgency (locksmith emergency). */
