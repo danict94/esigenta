@@ -125,6 +125,56 @@
     "ownerSlug": "serramentista"
   },
   {
+    "value": "aggiungere stanza",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ampliamento abitazione",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ampliamento casa",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ampliamento volumetrico",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ampliare abitazione",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ampliare casa esistente",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ampliare la casa",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "costruire ampliamento",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "ingrandire casa",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
+    "value": "nuovo volume casa",
+    "ownerType": "intervention",
+    "ownerSlug": "ampliare-casa"
+  },
+  {
     "value": "finitura decorativa",
     "ownerType": "intervention",
     "ownerSlug": "applicare-stucco-decorativo"
@@ -398,6 +448,56 @@
     "value": "sostituire serratura",
     "ownerType": "intervention",
     "ownerSlug": "cambiare-o-riparare-serratura"
+  },
+  {
+    "value": "costruire abitazione",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruire casa da zero",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruire casa nuova",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruire una casa",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruire villa",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruire villetta",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruzione casa",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruzione nuova",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "costruzione villetta",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
+  },
+  {
+    "value": "nuova costruzione",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-casa"
   },
   {
     "value": "cordoli giardino",

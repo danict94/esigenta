@@ -29,6 +29,7 @@ import { fabbroSerrandeECancelli } from "./project-groups/fabbro-serrande-e-canc
 import { caminiStufeECanneFumarie } from "./project-groups/camini-stufe-e-canne-fumarie"
 import { esterniEGiardino } from "./project-groups/esterni-e-giardino"
 import { tecniciEPraticheEdilizie } from "./project-groups/tecnici-e-pratiche-edilizie"
+import { costruzioniEAmpliamenti } from "./project-groups/costruzioni-e-ampliamenti"
 
 import type { FrozenTaxonomySource } from "./types/source"
 
@@ -67,6 +68,7 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     caminiStufeECanneFumarie,
     esterniEGiardino,
     tecniciEPraticheEdilizie,
+    costruzioniEAmpliamenti,
   ],
 }
 

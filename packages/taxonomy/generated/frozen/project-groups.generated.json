@@ -48,6 +48,15 @@
     ]
   },
   {
+    "id": "costruzioni-e-ampliamenti",
+    "slug": "costruzioni-e-ampliamenti",
+    "name": "Costruzioni e ampliamenti",
+    "interventionSlugs": [
+      "ampliare-casa",
+      "costruire-casa"
+    ]
+  },
+  {
     "id": "esterni-e-giardino",
     "slug": "esterni-e-giardino",
     "name": "Esterni e giardino",

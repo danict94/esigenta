@@ -1,5 +1,23 @@
 [
   {
+    "id": "ampliare-casa",
+    "slug": "ampliare-casa",
+    "name": "Ampliare casa",
+    "projectGroupSlug": "costruzioni-e-ampliamenti",
+    "aliases": [
+      "aggiungere stanza",
+      "ampliamento abitazione",
+      "ampliamento casa",
+      "ampliamento volumetrico",
+      "ampliare abitazione",
+      "ampliare casa esistente",
+      "ampliare la casa",
+      "costruire ampliamento",
+      "ingrandire casa",
+      "nuovo volume casa"
+    ]
+  },
+  {
     "id": "applicare-stucco-decorativo",
     "slug": "applicare-stucco-decorativo",
     "name": "Applicare stucco decorativo",
@@ -100,6 +118,24 @@
       "sostituire cilindro",
       "sostituire cilindro europeo",
       "sostituire serratura"
+    ]
+  },
+  {
+    "id": "costruire-casa",
+    "slug": "costruire-casa",
+    "name": "Costruire casa",
+    "projectGroupSlug": "costruzioni-e-ampliamenti",
+    "aliases": [
+      "costruire abitazione",
+      "costruire casa da zero",
+      "costruire casa nuova",
+      "costruire una casa",
+      "costruire villa",
+      "costruire villetta",
+      "costruzione casa",
+      "costruzione nuova",
+      "costruzione villetta",
+      "nuova costruzione"
     ]
   },
   {
