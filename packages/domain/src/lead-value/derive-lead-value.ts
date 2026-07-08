@@ -122,6 +122,10 @@ const INTERVENTION_BASELINE: Record<string, number> = {
   // above the group center so medium/large scale reaches xlarge while a small
   // one stays large. Ladder: costruire > sopraelevazione > ampliamento.
   "fare-sopraelevazione": 4.5,
+  // Accessory build (garage/deposito): a real construction but the smallest
+  // ticket of the group — below the group center. A small storage stays medium,
+  // a single/double garage is large, never xlarge, never below floor.
+  "costruire-garage-o-deposito": 3,
 }
 
 /** Interventions whose value is dominated by urgency (locksmith emergency). */
