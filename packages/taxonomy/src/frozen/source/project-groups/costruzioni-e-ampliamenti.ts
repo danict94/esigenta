@@ -54,5 +54,28 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
         "nuovo volume casa",
       ],
     },
+    {
+      id: "fare-sopraelevazione",
+      slug: "fare-sopraelevazione",
+      name: "Fare una sopraelevazione",
+      // Aggiungere un piano a un edificio esistente: opera strutturale
+      // big-ticket. Distinta da ampliamento (nuovo volume in pianta) e da tetti
+      // (niente "rifare tetto"). Caso il più feasibility-sensitive del gruppo
+      // (carico su struttura esistente + sismica): copy prudente nel funnel —
+      // mai promettere fattibilità/permessi. NIENTE alias "rifare tetto"/"tetto"
+      // (→ tetti) né "ristrutturare" (→ ristrutturazioni).
+      aliases: [
+        "sopraelevazione",
+        "sopraelevazione casa",
+        "sopraelevare casa",
+        "sopraelevare",
+        "sopralzo",
+        "alzare un piano",
+        "aggiungere un piano",
+        "costruire un piano in più",
+        "nuovo piano casa",
+        "sopraelevazione edificio",
+      ],
+    },
   ],
 }

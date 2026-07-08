@@ -343,6 +343,24 @@
     ]
   },
   {
+    "id": "fare-sopraelevazione",
+    "slug": "fare-sopraelevazione",
+    "name": "Fare una sopraelevazione",
+    "projectGroupSlug": "costruzioni-e-ampliamenti",
+    "aliases": [
+      "aggiungere un piano",
+      "alzare un piano",
+      "costruire un piano in più",
+      "nuovo piano casa",
+      "sopraelevare",
+      "sopraelevare casa",
+      "sopraelevazione",
+      "sopraelevazione casa",
+      "sopraelevazione edificio",
+      "sopralzo"
+    ]
+  },
+  {
     "id": "fare-variazione-catastale",
     "slug": "fare-variazione-catastale",
     "name": "Fare una variazione catastale",

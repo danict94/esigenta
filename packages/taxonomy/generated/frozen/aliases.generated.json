@@ -1000,6 +1000,56 @@
     "ownerSlug": "fare-sanatoria-edilizia"
   },
   {
+    "value": "aggiungere un piano",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "alzare un piano",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "costruire un piano in più",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "nuovo piano casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "sopraelevare",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "sopraelevare casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "sopraelevazione",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "sopraelevazione casa",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "sopraelevazione edificio",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
+    "value": "sopralzo",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-sopraelevazione"
+  },
+  {
     "value": "accatastamento",
     "ownerType": "intervention",
     "ownerSlug": "fare-variazione-catastale"
