@@ -126,6 +126,9 @@ const INTERVENTION_BASELINE: Record<string, number> = {
   // ticket of the group — below the group center. A small storage stays medium,
   // a single/double garage is large, never xlarge, never below floor.
   "costruire-garage-o-deposito": 3,
+  // Standalone habitable accessory (dependance/annesso): above garage (habitable
+  // -> at least large even when small), just below a connected extension.
+  "costruire-dependance-o-annesso": 3.8,
 }
 
 /** Interventions whose value is dominated by urgency (locksmith emergency). */
