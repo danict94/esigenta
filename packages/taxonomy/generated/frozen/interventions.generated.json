@@ -516,6 +516,23 @@
     ]
   },
   {
+    "id": "installare-copertura-piscina",
+    "slug": "installare-copertura-piscina",
+    "name": "Installare copertura piscina",
+    "projectGroupSlug": "piscine",
+    "aliases": [
+      "copertura alta piscina",
+      "copertura automatica piscina",
+      "copertura bassa piscina",
+      "copertura isotermica piscina",
+      "copertura piscina",
+      "copertura sicurezza piscina",
+      "copertura telescopica piscina",
+      "coperture piscina",
+      "tapparella piscina"
+    ]
+  },
+  {
     "id": "installare-domotica-smart-home",
     "slug": "installare-domotica-smart-home",
     "name": "Installare domotica e smart home",

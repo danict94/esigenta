@@ -1495,6 +1495,51 @@
     "ownerSlug": "installare-climatizzatore"
   },
   {
+    "value": "copertura alta piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "copertura automatica piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "copertura bassa piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "copertura isotermica piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "copertura piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "copertura sicurezza piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "copertura telescopica piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "coperture piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
+    "value": "tapparella piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "installare-copertura-piscina"
+  },
+  {
     "value": "automazione casa",
     "ownerType": "intervention",
     "ownerSlug": "installare-domotica-smart-home"

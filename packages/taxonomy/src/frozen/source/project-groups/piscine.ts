@@ -76,5 +76,27 @@ export const piscine: FrozenProjectGroup = {
         "trattamento acqua piscina",
       ],
     },
+    {
+      id: "installare-copertura-piscina",
+      slug: "installare-copertura-piscina",
+      name: "Installare copertura piscina",
+      // Installazione di una copertura TECNICA o STRUTTURATA per piscina
+      // (telescopica, automatica, bassa/alta, isotermica professionale, di
+      // sicurezza/tapparella). Confine STRETTO: NON telo generico/economico, NON
+      // accessori/prodotti/robot, NON manutenzione/pulizia, NON costruire/
+      // ristrutturare piscina, NON pergola/tettoia/veranda/copertura terrazzo,
+      // NON spa/idromassaggio.
+      aliases: [
+        "copertura piscina",
+        "coperture piscina",
+        "copertura telescopica piscina",
+        "copertura alta piscina",
+        "copertura bassa piscina",
+        "tapparella piscina",
+        "copertura automatica piscina",
+        "copertura isotermica piscina",
+        "copertura sicurezza piscina",
+      ],
+    },
   ],
 }
