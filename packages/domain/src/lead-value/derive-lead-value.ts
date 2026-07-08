@@ -75,6 +75,10 @@ const GROUP_BASELINE: Record<string, number> = {
   idraulica: 2,
   "fabbro-serrande-e-cancelli": 2,
   finiture: 2,
+  // Professional/documental services (geometra): no scale signal (no m²), so the
+  // baseline lands the tier directly — decimals let it hit the small/medium/large
+  // bands. Group center = a medium pratica; per-intervention overrides below.
+  "tecnici-e-pratiche-edilizie": 2.2,
 }
 
 const DEFAULT_BASELINE = 2
@@ -101,6 +105,12 @@ const INTERVENTION_BASELINE: Record<string, number> = {
   "installare-o-sostituire-scaldabagno": 3,
   // low ticket but PREMIUM lead (urgency / high conversion)
   "aprire-porta-bloccata": 3,
+  // technical/documental services (geometra) — no scale signal, so baseline sets
+  // the tier: APE below the group center, CILA/sanatoria/progetto above it.
+  "fare-ape": 1.8,
+  "fare-cila-o-scia": 2.8,
+  "fare-sanatoria-edilizia": 3.4,
+  "fare-progetto-ristrutturazione": 4,
 }
 
 /** Interventions whose value is dominated by urgency (locksmith emergency). */
