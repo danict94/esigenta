@@ -77,5 +77,29 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
         "sopraelevazione edificio",
       ],
     },
+    {
+      id: "costruire-garage-o-deposito",
+      slug: "costruire-garage-o-deposito",
+      name: "Costruire garage o deposito",
+      // Costruzione di un volume accessorio STABILE (garage/box/autorimessa/
+      // deposito/magazzino), muratura o prefabbricato stabile. Garage e deposito
+      // insieme: stessa famiglia/professionista, il funnel distingue il tipo.
+      // Confini: la SERRANDA/porta/basculante/cancello → fabbro-serrande-e-
+      // cancelli; struttura LEGGERA da giardino (casetta/pergola/tettoia/muretto)
+      // → esterni-e-giardino; estensione abitabile della casa → ampliare-casa;
+      // pratica/CILA/SCIA → tecnici-e-pratiche-edilizie.
+      aliases: [
+        "costruire garage",
+        "costruire box auto",
+        "realizzare garage",
+        "costruire autorimessa",
+        "garage in muratura",
+        "garage prefabbricato",
+        "costruire deposito",
+        "realizzare deposito",
+        "costruire magazzino",
+        "deposito esterno",
+      ],
+    },
   ],
 }

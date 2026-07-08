@@ -139,6 +139,24 @@
     ]
   },
   {
+    "id": "costruire-garage-o-deposito",
+    "slug": "costruire-garage-o-deposito",
+    "name": "Costruire garage o deposito",
+    "projectGroupSlug": "costruzioni-e-ampliamenti",
+    "aliases": [
+      "costruire autorimessa",
+      "costruire box auto",
+      "costruire deposito",
+      "costruire garage",
+      "costruire magazzino",
+      "deposito esterno",
+      "garage in muratura",
+      "garage prefabbricato",
+      "realizzare deposito",
+      "realizzare garage"
+    ]
+  },
+  {
     "id": "costruire-muretto-o-recinzione",
     "slug": "costruire-muretto-o-recinzione",
     "name": "Costruire muretto o recinzione",

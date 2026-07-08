@@ -500,6 +500,56 @@
     "ownerSlug": "costruire-casa"
   },
   {
+    "value": "costruire autorimessa",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "costruire box auto",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "costruire deposito",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "costruire garage",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "costruire magazzino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "deposito esterno",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "garage in muratura",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "garage prefabbricato",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "realizzare deposito",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
+    "value": "realizzare garage",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-garage-o-deposito"
+  },
+  {
     "value": "cordoli giardino",
     "ownerType": "intervention",
     "ownerSlug": "costruire-muretto-o-recinzione"
