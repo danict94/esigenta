@@ -8,6 +8,7 @@
 
 import { caminiStufeECanneFumarieModels } from "./camini-stufe-e-canne-fumarie"
 import { cartongessoModels } from "./cartongesso"
+import { costruzioniEAmpliamentiModels } from "./costruzioni-e-ampliamenti"
 import { citofoniSicurezzaESmartHomeModels } from "./citofoni-sicurezza-e-smart-home"
 import { climatizzazioneModels } from "./climatizzazione"
 import { esterniEGiardinoModels } from "./esterni-e-giardino"
@@ -31,6 +32,7 @@ const MODELS_BY_SLUG: ReadonlyMap<string, InterventionFunnelModel> = new Map(
   [
     ...caminiStufeECanneFumarieModels,
     ...cartongessoModels,
+    ...costruzioniEAmpliamentiModels,
     ...citofoniSicurezzaESmartHomeModels,
     ...climatizzazioneModels,
     ...esterniEGiardinoModels,
