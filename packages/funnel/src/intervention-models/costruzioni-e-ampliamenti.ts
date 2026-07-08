@@ -169,7 +169,76 @@ const ampliareCasa: InterventionFunnelModel = {
   ],
 }
 
+const fareSopraelevazione: InterventionFunnelModel = {
+  interventionSlug: "fare-sopraelevazione",
+  steps: [
+    locationCapability,
+    {
+      id: "costruzioni-e-ampliamenti:fare-sopraelevazione:tipo-sopraelevazione",
+      type: "single_select",
+      question: "Che sopraelevazione vuoi realizzare?",
+      options: [
+        { value: "full_floor", label: "Un piano intero in più" },
+        { value: "partial_floor", label: "Un piano parziale" },
+        { value: "attic_or_mansard", label: "Mansarda / sottotetto abitabile" },
+        { value: "over_annex_or_garage", label: "Sopraelevare un annesso o garage" },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      // Feasibility-first: a sopraelevazione may not be structurally possible.
+      // Leading with "capire se è fattibile" keeps the copy non-promissory.
+      id: "costruzioni-e-ampliamenti:fare-sopraelevazione:stato",
+      type: "single_select",
+      question: "A che punto sei?",
+      options: [
+        { value: "check_feasibility", label: "Voglio prima capire se è fattibile" },
+        { value: "have_project_or_pro", label: "Ho già un tecnico o progetto" },
+        { value: "permits_started", label: "Ho già pratiche avviate" },
+        { value: "have_company", label: "Ho già un'impresa" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "costruzioni-e-ampliamenti:fare-sopraelevazione:superficie",
+      type: "single_select",
+      question: "Quanto è grande la sopraelevazione?",
+      options: [
+        { value: "small", label: "Piccola" },
+        { value: "medium", label: "Media" },
+        { value: "large", label: "Grande / piano intero" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      // Structure type genuinely drives feasibility for a sopraelevazione, but
+      // the customer often doesn't know it → optional, with a not_sure escape.
+      id: "costruzioni-e-ampliamenti:fare-sopraelevazione:struttura",
+      type: "single_select",
+      question: "Sai com'è la struttura esistente?",
+      options: [
+        { value: "masonry", label: "Muratura" },
+        { value: "reinforced_concrete", label: "Cemento armato" },
+        { value: "mixed_or_other", label: "Mista / altro" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: true,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: foto dell'edificio esistente, planimetria, progetto o documenti disponibili aiutano l'impresa a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
 export const costruzioniEAmpliamentiModels: InterventionFunnelModel[] = [
   costruireCasa,
   ampliareCasa,
+  fareSopraelevazione,
 ]
