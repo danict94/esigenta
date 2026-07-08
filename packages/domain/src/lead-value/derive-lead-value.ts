@@ -83,6 +83,10 @@ const GROUP_BASELINE: Record<string, number> = {
   // stays large/xlarge (never a €50 job). Group center = ampliamento; costruire
   // casa overrides higher below.
   "costruzioni-e-ampliamenti": 4,
+  // Specialized pool trade (piscinista): group center = a medium pool service
+  // (ristrutturare-piscina). New pool is higher, cover/maintenance lower — see
+  // the per-intervention overrides below.
+  piscine: 3,
 }
 
 const DEFAULT_BASELINE = 2
@@ -129,6 +133,12 @@ const INTERVENTION_BASELINE: Record<string, number> = {
   // Standalone habitable accessory (dependance/annesso): above garage (habitable
   // -> at least large even when small), just below a connected extension.
   "costruire-dependance-o-annesso": 3.8,
+  // Pool services (piscinista) — ristrutturare-piscina inherits the group center
+  // (3). A new pool is big-ticket (permesso di costruire); a cover is medium;
+  // seasonal/technical maintenance (no scale signal) is the lowest of the group.
+  "costruire-piscina": 4.5,
+  "installare-copertura-piscina": 2.7,
+  "fare-manutenzione-piscina": 2,
 }
 
 /** Interventions whose value is dominated by urgency (locksmith emergency). */
