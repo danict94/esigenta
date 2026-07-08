@@ -179,6 +179,7 @@
     "name": "Piscine",
     "interventionSlugs": [
       "costruire-piscina",
+      "fare-manutenzione-piscina",
       "ristrutturare-piscina"
     ]
   },

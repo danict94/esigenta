@@ -53,5 +53,28 @@ export const piscine: FrozenProjectGroup = {
         "ripristinare piscina",
       ],
     },
+    {
+      id: "fare-manutenzione-piscina",
+      slug: "fare-manutenzione-piscina",
+      name: "Fare manutenzione piscina",
+      // Servizio PROFESSIONALE di manutenzione di una piscina esistente:
+      // stagionale (apertura/chiusura), ricorrente, straordinaria o tecnica
+      // (controllo/impianto/trattamento acqua). Confine STRETTO: NON pulizia
+      // occasionale minima, NON prodotti/cloro/accessori/robot/telo, NON
+      // copertura (→ futuro installare-copertura-piscina), NON costruire/
+      // ristrutturare piscina, NON idraulica domestica/spa/idromassaggio.
+      aliases: [
+        "manutenzione piscina",
+        "manutenzione stagionale piscina",
+        "manutenzione ordinaria piscina",
+        "manutenzione straordinaria piscina",
+        "apertura piscina",
+        "chiusura piscina",
+        "assistenza piscina",
+        "controllo piscina",
+        "controllo impianto piscina",
+        "trattamento acqua piscina",
+      ],
+    },
   ],
 }

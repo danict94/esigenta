@@ -346,6 +346,24 @@
     ]
   },
   {
+    "id": "fare-manutenzione-piscina",
+    "slug": "fare-manutenzione-piscina",
+    "name": "Fare manutenzione piscina",
+    "projectGroupSlug": "piscine",
+    "aliases": [
+      "apertura piscina",
+      "assistenza piscina",
+      "chiusura piscina",
+      "controllo impianto piscina",
+      "controllo piscina",
+      "manutenzione ordinaria piscina",
+      "manutenzione piscina",
+      "manutenzione stagionale piscina",
+      "manutenzione straordinaria piscina",
+      "trattamento acqua piscina"
+    ]
+  },
+  {
     "id": "fare-massetto",
     "slug": "fare-massetto",
     "name": "Realizzare o rifare massetto",

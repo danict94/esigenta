@@ -1045,6 +1045,56 @@
     "ownerSlug": "fare-manutenzione-climatizzatore"
   },
   {
+    "value": "apertura piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "assistenza piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "chiusura piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "controllo impianto piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "controllo piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "manutenzione ordinaria piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "manutenzione piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "manutenzione stagionale piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "manutenzione straordinaria piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
+    "value": "trattamento acqua piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "fare-manutenzione-piscina"
+  },
+  {
     "value": "gettare massetto",
     "ownerType": "intervention",
     "ownerSlug": "fare-massetto"
