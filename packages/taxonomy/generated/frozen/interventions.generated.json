@@ -213,6 +213,23 @@
     ]
   },
   {
+    "id": "costruire-piscina",
+    "slug": "costruire-piscina",
+    "name": "Costruire piscina",
+    "projectGroupSlug": "piscine",
+    "aliases": [
+      "costruire piscina interrata",
+      "costruzione piscina",
+      "piscina in muratura",
+      "piscina interrata",
+      "piscina prefabbricata",
+      "piscina seminterrata",
+      "realizzare piscina",
+      "realizzare piscina in giardino",
+      "realizzare piscina interrata"
+    ]
+  },
+  {
     "id": "demolire-parete-o-tramezzo",
     "slug": "demolire-parete-o-tramezzo",
     "name": "Demolire parete o tramezzo",
@@ -1565,6 +1582,23 @@
       "rifare la cucina",
       "ristrutturare cucina completa",
       "ristrutturazione cucina"
+    ]
+  },
+  {
+    "id": "ristrutturare-piscina",
+    "slug": "ristrutturare-piscina",
+    "name": "Ristrutturare piscina",
+    "projectGroupSlug": "piscine",
+    "aliases": [
+      "cambiare rivestimento piscina",
+      "rifacimento piscina",
+      "rifare piscina",
+      "rifare rivestimento piscina",
+      "rinnovare piscina",
+      "ripristinare piscina",
+      "ristrutturazione piscina",
+      "sistemare bordo piscina",
+      "sistemare piscina"
     ]
   },
   {

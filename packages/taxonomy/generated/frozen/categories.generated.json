@@ -126,6 +126,22 @@
     ]
   },
   {
+    "id": "piscinista",
+    "slug": "piscinista",
+    "name": "Piscinista",
+    "projectGroups": [
+      "piscine"
+    ],
+    "aliases": [
+      "azienda piscine",
+      "costruttore piscine",
+      "impresa piscine",
+      "installatore piscine",
+      "manutentore piscine",
+      "piscinisti"
+    ]
+  },
+  {
     "id": "serramentista",
     "slug": "serramentista",
     "name": "Serramentista",

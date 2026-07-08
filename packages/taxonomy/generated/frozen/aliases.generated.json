@@ -115,6 +115,36 @@
     "ownerSlug": "impresa-edile"
   },
   {
+    "value": "azienda piscine",
+    "ownerType": "category",
+    "ownerSlug": "piscinista"
+  },
+  {
+    "value": "costruttore piscine",
+    "ownerType": "category",
+    "ownerSlug": "piscinista"
+  },
+  {
+    "value": "impresa piscine",
+    "ownerType": "category",
+    "ownerSlug": "piscinista"
+  },
+  {
+    "value": "installatore piscine",
+    "ownerType": "category",
+    "ownerSlug": "piscinista"
+  },
+  {
+    "value": "manutentore piscine",
+    "ownerType": "category",
+    "ownerSlug": "piscinista"
+  },
+  {
+    "value": "piscinisti",
+    "ownerType": "category",
+    "ownerSlug": "piscinista"
+  },
+  {
     "value": "infissista",
     "ownerType": "category",
     "ownerSlug": "serramentista"
@@ -708,6 +738,51 @@
     "value": "tramezzo in muratura",
     "ownerType": "intervention",
     "ownerSlug": "costruire-parete-o-tramezzo"
+  },
+  {
+    "value": "costruire piscina interrata",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "costruzione piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "piscina in muratura",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "piscina interrata",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "piscina prefabbricata",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "piscina seminterrata",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "realizzare piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "realizzare piscina in giardino",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
+  },
+  {
+    "value": "realizzare piscina interrata",
+    "ownerType": "intervention",
+    "ownerSlug": "costruire-piscina"
   },
   {
     "value": "abbattere un muro",
@@ -4283,6 +4358,51 @@
     "value": "ristrutturazione cucina",
     "ownerType": "intervention",
     "ownerSlug": "ristrutturare-cucina"
+  },
+  {
+    "value": "cambiare rivestimento piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "rifacimento piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "rifare piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "rifare rivestimento piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "rinnovare piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "ripristinare piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "ristrutturazione piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "sistemare bordo piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
+  },
+  {
+    "value": "sistemare piscina",
+    "ownerType": "intervention",
+    "ownerSlug": "ristrutturare-piscina"
   },
   {
     "value": "grondaie",
