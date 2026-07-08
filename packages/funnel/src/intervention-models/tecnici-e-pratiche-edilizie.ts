@@ -280,9 +280,79 @@ const fareSanatoriaEdilizia: InterventionFunnelModel = {
   ],
 }
 
+const fareProgettoRistrutturazione: InterventionFunnelModel = {
+  interventionSlug: "fare-progetto-ristrutturazione",
+  steps: [
+    locationCapability,
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-progetto-ristrutturazione:supporto",
+      type: "single_select",
+      question: "Che supporto ti serve?",
+      // Servizio tecnico/progettuale, NON esecuzione. Direzione lavori e
+      // computo metrico sono opzioni qui, non interventi a sé.
+      options: [
+        { value: "renovation_project", label: "Progetto per ristrutturare casa" },
+        { value: "space_layout", label: "Nuova distribuzione degli spazi" },
+        {
+          value: "technical_support",
+          label: "Supporto tecnico prima dei lavori",
+        },
+        {
+          value: "works_direction",
+          label: "Direzione lavori / controllo tecnico",
+        },
+        { value: "bill_of_quantities", label: "Computo metrico o stima tecnica" },
+        { value: "not_sure", label: "Non lo so" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-progetto-ristrutturazione:stato",
+      type: "single_select",
+      question: "A che punto sei?",
+      options: [
+        { value: "evaluating", label: "Sto valutando i lavori" },
+        {
+          value: "have_idea_need_pro",
+          label: "Ho già un'idea ma serve un tecnico",
+        },
+        { value: "have_company", label: "Ho già un'impresa" },
+        {
+          value: "need_docs_or_practices",
+          label: "Devo preparare pratiche o documenti",
+        },
+        { value: "works_started", label: "I lavori sono già iniziati" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "tecnici-e-pratiche-edilizie:fare-progetto-ristrutturazione:tipo-immobile",
+      type: "single_select",
+      question: "Che immobile riguarda?",
+      options: [
+        { value: "apartment", label: "Appartamento" },
+        { value: "house", label: "Casa indipendente" },
+        { value: "commercial", label: "Locale commerciale" },
+        { value: "condo_common", label: "Condominio / parti comuni" },
+        { value: "other_note", label: "Altro / lo spiego nella nota" },
+      ],
+      optional: false,
+    },
+    documentiOpzionali(
+      "Non è obbligatorio: planimetria, foto, idee, misure, vecchi elaborati o documenti già disponibili aiutano il tecnico a valutare.",
+    ),
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
 export const tecniciEPraticheEdilizieModels: InterventionFunnelModel[] = [
   fareCilaOScia,
   fareApe,
   fareVariazioneCatastale,
   fareSanatoriaEdilizia,
+  fareProgettoRistrutturazione,
 ]
