@@ -6,6 +6,15 @@ export type SeoInterventionLanding = {
   metaTitle: string;
   metaDescription: string;
   funnelSlug: string;
+  /**
+   * ProjectGroup taxonomy di appartenenza (Fase 5). Il breadcrumb linka
+   * /servizi/<groupSlug> solo se quel gruppo ha una landing registrata in
+   * pages/gruppi; l'appartenenza è validata fail-fast contro la taxonomy
+   * da engine/resolve-group-page.ts.
+   */
+  groupSlug?: string;
+  /** Label CTA verso il funnel: mai generica sulla pilota (es. "Richiedi preventivi per il bagno"). */
+  requestCtaLabel?: string;
   image: {
     src: string;
     alt: string;
@@ -27,6 +36,21 @@ export type SeoInterventionLanding = {
   guideSlugs?: readonly string[];
   costSlug?: string;
   requestItems: readonly string[];
+  /**
+   * Fase 5 — blocchi strutturati della landing "forte" (pilota:
+   * ristrutturare-bagno). Tutti opzionali: una landing senza questi campi
+   * renderizza come prima. Regole editoriali: linguaggio prudente ("può
+   * comprendere", "spesso quotati a parte"), MAI numeri, tempi, obblighi o
+   * permessi — i prezzi vivono solo in market-data/CostGuide.
+   */
+  scopeIncluded?: readonly string[];
+  scopeExcluded?: readonly string[];
+  /** Nota prudente sotto le due liste (es. "ogni preventivo definisce cosa è compreso"). */
+  scopeNote?: string;
+  /** Livelli/varianti dell'intervento: solo orientamento, i numeri restano nella tabella costi. */
+  variants?: readonly { title: string; summary: string }[];
+  /** Checklist di cosa preparare prima della richiesta (orientata al funnel). */
+  preparationItems?: readonly string[];
   costSection?: {
     title: string;
     summary: string;

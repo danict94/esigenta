@@ -8,8 +8,6 @@ import {
 import { getSeoGroupLandingBySlug } from "../pages/gruppi";
 import { buildCanonicalPath } from "./canonical";
 
-const ogInterventiImage = "/assets/images/professionisti-hero.webp";
-
 export function buildInterventionMetadata(slug: string): Metadata {
   const landing = getSeoInterventionLandingBySlug(slug);
 
@@ -30,10 +28,12 @@ export function buildInterventionMetadata(slug: string): Metadata {
       url: canonicalPath,
       images: [
         {
-          url: ogInterventiImage,
+          // Immagine propria della landing, mai una fissa condivisa tra
+          // interventi diversi (stessa regola delle guide costi).
+          url: landing.image.src,
           width: 1200,
           height: 630,
-          alt: landing.title,
+          alt: landing.image.alt,
         },
       ],
     },
@@ -127,6 +127,11 @@ export function buildCostGuideCityMetadata(
     title: cityPage.metaTitle,
     description: cityPage.metaDescription,
     alternates: { canonical: cityPage.canonicalPath },
+    // Fase 5.E — decisione di prodotto: le pagine città leggono la fascia
+    // nazionale, non un prezzo locale reale. Restano generate e crawlabili
+    // (niente Disallow in robots.ts, così il crawler legge questo tag), ma
+    // non spinte in indice finché non avranno dati locali propri.
+    robots: { index: false, follow: true },
     openGraph: {
       title: cityPage.metaTitle,
       description: cityPage.metaDescription,

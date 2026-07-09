@@ -7,7 +7,7 @@ export const ristrutturareBagnoFaq = [
   {
     question: "Quanto costa ristrutturare un bagno al mq?",
     answer:
-      "Il costo indicativo può andare da 600 € a 1.500 € al mq. Il dato al mq è utile come orientamento, ma il preventivo reale dipende dalle lavorazioni richieste.",
+      "Il costo indicativo può andare da 800 € a 1.500 € al mq per un rifacimento completo. Il dato al mq è utile come orientamento, ma il preventivo reale dipende dalle lavorazioni richieste.",
   },
   {
     question: "Serve sempre rifare l'impianto idraulico?",

@@ -4,9 +4,55 @@ import {
   getSeoGroupLandingBySlug,
   type SeoGroupLanding,
 } from "../pages/gruppi";
-import { getSeoInterventionLandingBySlug } from "../pages/interventi";
+import {
+  getSeoInterventionLandingBySlug,
+  type SeoInterventionLanding,
+} from "../pages/interventi";
 import { getCostGuideBySlug } from "../pages/costi";
 import { resolveCostGuideHrefForIntervention } from "./resolve-seo-page";
+import { buildCanonicalPath } from "./canonical";
+
+/**
+ * Fase 5 — breadcrumb landing intervento → landing gruppo. Link solo se il
+ * gruppo dichiarato ha una landing registrata; fail-fast se groupSlug non
+ * esiste in taxonomy o se l'intervento non appartiene a quel gruppo (un
+ * breadcrumb sbagliato è un errore di contenuto, non un fallback).
+ */
+export function resolveGroupBreadcrumbForIntervention(
+  landing: SeoInterventionLanding,
+): { name: string; href: string } | null {
+  if (!landing.groupSlug) return null;
+
+  const group = frozenTaxonomySource.projectGroups.find(
+    (projectGroup) => projectGroup.slug === landing.groupSlug,
+  );
+
+  if (!group) {
+    throw new Error(
+      `SeoInterventionLanding "${landing.slug}" declares groupSlug ` +
+        `"${landing.groupSlug}" which does not exist in the frozen taxonomy`,
+    );
+  }
+
+  if (
+    !group.interventions.some(
+      (intervention) => intervention.slug === landing.slug,
+    )
+  ) {
+    throw new Error(
+      `SeoInterventionLanding "${landing.slug}" declares groupSlug ` +
+        `"${landing.groupSlug}" but is not an intervention of that group`,
+    );
+  }
+
+  const groupLanding = getSeoGroupLandingBySlug(landing.groupSlug);
+  if (!groupLanding) return null;
+
+  return {
+    name: groupLanding.title,
+    href: buildCanonicalPath({ family: "groupHub", slug: groupLanding.slug }),
+  };
+}
 
 export type GroupInterventionItem = {
   slug: string;

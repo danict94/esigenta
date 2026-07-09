@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type { SeoInterventionLanding } from "../pages/interventi";
 import type { InterventionCostSectionPriceData } from "../engine/resolve-seo-page";
-import { GeoRequestForm } from "./geo-request-form";
+import { RequestCtaPanel } from "./request-cta-panel";
 
 export type GeoCostModuleProps = {
   geoSection: SeoInterventionLanding["geoSection"];
@@ -10,6 +10,7 @@ export type GeoCostModuleProps = {
   /** Fase 2 — numeri risolti dalla guida costi collegata, mai da costSection. */
   priceData: InterventionCostSectionPriceData;
   funnelSlug: string;
+  requestCtaLabel: string;
   costGuideHref: string | null;
 };
 
@@ -18,6 +19,7 @@ export function GeoCostModule({
   costSection,
   priceData,
   funnelSlug,
+  requestCtaLabel,
   costGuideHref,
 }: GeoCostModuleProps) {
   const requestHref = `/richiesta/${funnelSlug}`;
@@ -39,7 +41,7 @@ export function GeoCostModule({
             <p className="eg-body-muted mt-5 max-w-[56ch]">{geoSection.summary}</p>
           </div>
 
-          <GeoRequestForm funnelSlug={funnelSlug} />
+          <RequestCtaPanel requestHref={requestHref} ctaLabel={requestCtaLabel} />
         </div>
       </section>
 
@@ -157,6 +159,35 @@ export function GeoCostModule({
           ) : null}
         </div>
       </section>
+
+      {costGuideHref ? (
+        <section
+          aria-labelledby="approfondisci-costi-title"
+          className="eg-panel p-5 md:p-7"
+        >
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div>
+              <h3 id="approfondisci-costi-title" className="eg-h3 text-[22px]">
+                Vuoi approfondire i costi?
+              </h3>
+
+              <p className="eg-body-muted mt-3 max-w-[64ch]">
+                Qui vedi solo la sintesi: nella guida completa trovi la tabella
+                estesa voce per voce, cosa include ogni lavorazione, gli esempi
+                per dimensione e le letture per citt&agrave;.
+              </p>
+            </div>
+
+            <Link
+              href={costGuideHref}
+              prefetch={false}
+              className="eg-button-ghost w-full lg:w-auto"
+            >
+              Guida completa ai costi
+            </Link>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

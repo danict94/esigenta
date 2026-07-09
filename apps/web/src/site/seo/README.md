@@ -24,7 +24,12 @@ site/seo/
   engine/
     pricing-resolver.ts  — deriva il range finale (base + modificatore città)
     canonical.ts          — deriva canonical da family + slug + citySlug
-    geo-policy.ts          — decide se una pagina città è indicizzabile (owner reale)
+    geo-policy.ts          — decide se una pagina città ha qualità minima per
+                              essere generata/mostrata (owner reale). Dalla
+                              Fase 5.E NON decide più l'indice: le pagine
+                              città sono noindex per tutte le famiglie finché
+                              non avranno dati locali reali (vedi metadata.ts
+                              e sitemap.ts)
     compose-cost-guide.ts  — UNICO composer guide costi (Fase 3): base+faq+
                               local-overrides+geo+market-data+canonical, con
                               validazioni fail-fast a build-time
@@ -72,9 +77,11 @@ Regola di fondo, da non violare mai: **un dato ha un solo posto dove vivere**.
 | Nome/provincia/regione città | `geo/cities.ts` |
 | Quali città sono attive per una famiglia | `geo/supported-cities.ts` |
 | Range prezzo nazionale di una famiglia | `market-data/base-price-ranges.ts` |
+| Unità/include/escluso/confidence/fonte di una voce costo | stesso file, campi del `PriceRow` — un numero entra SOLO con confidence alta/media (≥2 fonti coerenti); le voci con fonti deboli restano qualitative con nota utile |
 | Modificatore prezzo per città (oggi neutro) | `market-data/city-price-index.ts` |
 | Canonical di una pagina | calcolato da `engine/canonical.ts`, mai scritto a mano |
-| Se una pagina città è indicizzabile | deciso da `engine/geo-policy.ts`, mai un campo sparso |
+| Se una pagina città viene generata/mostrata | deciso da `engine/geo-policy.ts`, mai un campo sparso |
+| Se una pagina città entra in indice/sitemap | oggi mai (Fase 5.E, tutte noindex) — deciso in `engine/metadata.ts` + `engine/sitemap.ts`, non da geo-policy.ts |
 | Testo nazionale di una guida (summary, factors, savingTips...) | `pages/costi/<slug>/base.ts` |
 | FAQ nazionali | `pages/costi/<slug>/faq.ts` |
 | Testo specifico di UNA città (summary locale, FAQ locali, casi tipici...) | `pages/costi/<slug>/local-overrides.ts` |
@@ -99,7 +106,9 @@ Esempio: aggiungere "Bari" alla guida `ristrutturare-bagno`.
    { citySlug: "bari", seoEnabled: true, contentStatus: "ready", uniquenessLevel: "acceptable" },
    ```
    `uniquenessLevel: "thin"` o `contentStatus: "draft"` tengono la pagina fuori
-   dall'indicizzazione (vedi `engine/geo-policy.ts`) senza doverla cancellare.
+   dalla generazione (vedi `engine/geo-policy.ts`) senza doverla cancellare.
+   Anche con i flag "pronti", oggi (Fase 5.E) la pagina resta comunque
+   noindex e fuori sitemap: vedi la riga sull'indice nella tabella sopra.
 
 3. **`market-data/city-price-index.ts`** — aggiungi un modificatore neutro
    finché non c'è una decisione di prodotto sui prezzi differenziati per città:
@@ -230,6 +239,14 @@ intervento:
    file esistente (es. `rifare-tetto/content.ts`): nessuna sezione città,
    nessun prezzo per città.
 2. Registralo in `pages/interventi/index.ts` nell'array delle landing.
+3. I blocchi "forti" della landing (Fase 5: `scopeIncluded`/`scopeExcluded`/
+   `scopeNote`, `variants`, `preparationItems`, `groupSlug`,
+   `requestCtaLabel`) sono opzionali — il modello di riferimento è
+   `ristrutturare-bagno/content.ts`. Regole: linguaggio prudente ("può
+   comprendere", "spesso resta fuori"), mai numeri/tempi/permessi nei blocchi,
+   `variants` senza prezzi (i numeri restano nella tabella da market-data),
+   `groupSlug` solo se l'intervento appartiene davvero a quel ProjectGroup
+   (validato fail-fast).
 
 **Non introdurre città dentro un intervento senza prima estendere lo schema**
 (oggi `SeoInterventionLanding` non ha un concetto di città). Se serve, è un
@@ -272,11 +289,14 @@ prezzo semplicemente non compare nella landing (pattern già esistente in
 
 - Non esiste `site/seo/matrix/` (combinazioni pubblicabili centralizzate): con
   una sola famiglia costi non è ancora necessario.
-- Non esiste `engine/schema-builder.ts` (JSON-LD): nessuna pagina SEO oggi
-  emette structured data. La sitemap invece esiste (`app/sitemap.ts` +
-  `engine/sitemap.ts`) e deriva dai registry: una nuova famiglia/città
-  registrata entra in sitemap da sola, non aggiungerla a mano; ciò che non
-  passa la policy (draft/thin) non viene generato né entra in sitemap.
+- Il JSON-LD vive SOLO in `engine/schema-builder.ts` (Fase 5): BreadcrumbList
+  dal breadcrumb reale e FAQPage dalle FAQ visibili in pagina. Mai emettere
+  rating, review, AggregateRating, offerte, disponibilità, prezzi puntuali o
+  LocalBusiness; mai uno schema scritto inline in un template. La sitemap
+  (`app/sitemap.ts` + `engine/sitemap.ts`) deriva dai registry: una nuova
+  famiglia/città registrata entra in sitemap da sola, non aggiungerla a mano;
+  ciò che non passa la policy (draft/thin) non viene generato né entra in
+  sitemap.
 - Regola funnel `/richiesta/*`: fuori dalla sitemap, meta `noindex, nofollow`
   sulla pagina, nessun canonical/OpenGraph. NON va messo in Disallow dentro
   `app/robots.ts`: la route deve restare crawlabile perché il noindex sia

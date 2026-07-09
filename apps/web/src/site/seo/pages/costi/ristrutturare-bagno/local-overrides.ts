@@ -9,7 +9,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Guida ai costi per ristrutturare un bagno a Milano: range indicativi nazionali, fattori locali, casi frequenti e cosa chiedere nel preventivo.",
     summary:
-      "A Milano il riferimento prudente resta da 3.000 € a 12.000 €, con costo al mq indicativo da 600 € a 1.500 €. La stima può salire quando il bagno è in condominio, ai piani alti o in immobili con accesso complesso.",
+      "A Milano il riferimento prudente resta da 3.000 € a 12.000 €, con costo al mq indicativo da 800 € a 1.500 €. La stima può salire quando il bagno è in condominio, ai piani alti o in immobili con accesso complesso.",
     localReading:
       "Nei lavori in appartamento incidono spesso trasporto materiali, smaltimento macerie, orari condominiali e coordinamento tra impresa, idraulico e piastrellista. Il preventivo va letto separando demolizione, impianti, posa, sanitari e finiture.",
     priceInterpretation:
@@ -56,7 +56,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Stima prudente per ristrutturare un bagno a Roma: range nazionale, lettura locale, casi frequenti, fattori e domande per il preventivo.",
     summary:
-      "A Roma la fascia indicativa resta da 3.000 € a 12.000 €, con riferimento al mq da 600 € a 1.500 €. Il costo può cambiare molto tra centro storico, palazzi datati, zone condominiali e abitazioni più recenti.",
+      "A Roma la fascia indicativa resta da 3.000 € a 12.000 €, con riferimento al mq da 800 € a 1.500 €. Il costo può cambiare molto tra centro storico, palazzi datati, zone condominiali e abitazioni più recenti.",
     localReading:
       "Accesso al cantiere, stato degli scarichi, smaltimento macerie e vincoli dell'edificio possono incidere sul preventivo. Nei bagni datati conviene verificare prima l'impianto idraulico, soprattutto se si spostano doccia, lavabo o sanitari.",
     priceInterpretation:
@@ -103,7 +103,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Range indicativi per ristrutturare un bagno a Torino, con fattori locali, casi tipici e domande utili per leggere il preventivo.",
     summary:
-      "A Torino si può usare il range nazionale da 3.000 € a 12.000 € e il costo al mq indicativo da 600 € a 1.500 €. La stima dipende da dimensione del bagno, età degli impianti e tipo di intervento.",
+      "A Torino si può usare il range nazionale da 3.000 € a 12.000 € e il costo al mq indicativo da 800 € a 1.500 €. La stima dipende da dimensione del bagno, età degli impianti e tipo di intervento.",
     localReading:
       "Nei condomini e negli appartamenti più datati può pesare la verifica degli scarichi prima di chiudere pareti e pavimenti. Se il bagno è piccolo, il costo non scende sempre in modo proporzionale perché restano fissi tempi di demolizione, posa e coordinamento.",
     priceInterpretation:
@@ -150,7 +150,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Guida ai costi bagno a Napoli: range indicativi, fattori locali, casi frequenti e cosa verificare prima del preventivo.",
     summary:
-      "A Napoli il riferimento resta da 3.000 € a 12.000 €, con costo al mq indicativo da 600 € a 1.500 €. Accessibilità, piano dell'immobile e gestione dei materiali possono incidere sulla stima finale.",
+      "A Napoli il riferimento resta da 3.000 € a 12.000 €, con costo al mq indicativo da 800 € a 1.500 €. Accessibilità, piano dell'immobile e gestione dei materiali possono incidere sulla stima finale.",
     localReading:
       "Quando il cantiere è in una zona con accesso stretto o in un edificio senza spazi comodi per carico e scarico, demolizioni e smaltimento richiedono più organizzazione. Nei bagni datati è utile verificare anche ventilazione, scarichi e compatibilità dei nuovi sanitari.",
     priceInterpretation:
@@ -197,7 +197,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Ristrutturazione bagno a Bologna: range indicativi nazionali, fattori locali, casi frequenti e lettura del preventivo.",
     summary:
-      "A Bologna la fascia da 3.000 € a 12.000 € resta un riferimento prudente, insieme al costo al mq da 600 € a 1.500 €. Il preventivo cambia in base a edificio, metratura e livello di finitura.",
+      "A Bologna la fascia da 3.000 € a 12.000 € resta un riferimento prudente, insieme al costo al mq da 800 € a 1.500 €. Il preventivo cambia in base a edificio, metratura e livello di finitura.",
     localReading:
       "In appartamenti e contesti storici conviene separare bene le lavorazioni necessarie da quelle estetiche. Un capitolato chiaro aiuta a capire se nel prezzo sono inclusi demolizione, impianti, sottofondi, posa, sanitari e tinteggiature finali.",
     priceInterpretation:
@@ -245,7 +245,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Guida alla ristrutturazione bagno a Firenze: range indicativi, fattori locali, quando il prezzo sale e domande per il preventivo.",
     summary:
-      "A Firenze il range nazionale da 3.000 € a 12.000 € e il costo al mq da 600 € a 1.500 € vanno letti considerando accessi, contesto dell'immobile e possibili complessità di cantiere.",
+      "A Firenze il range nazionale da 3.000 € a 12.000 € e il costo al mq da 800 € a 1.500 € vanno letti considerando accessi, contesto dell'immobile e possibili complessità di cantiere.",
     localReading:
       "Prima di confrontare i preventivi è utile capire se si mantengono gli scarichi nella stessa posizione o se il progetto richiede spostamenti. Nei contesti più delicati possono incidere protezioni del cantiere, trasporto materiali e tempi di lavorazione.",
     priceInterpretation:
@@ -292,7 +292,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Stima prudente per ristrutturare un bagno a Palermo: range nazionale, lettura locale, fattori e domande da fare nel preventivo.",
     summary:
-      "A Palermo si può usare la fascia nazionale da 3.000 € a 12.000 € e il costo al mq da 600 € a 1.500 € come base, adattandoli allo stato dell'impianto e alle opere richieste.",
+      "A Palermo si può usare la fascia nazionale da 3.000 € a 12.000 € e il costo al mq da 800 € a 1.500 € come base, adattandoli allo stato dell'impianto e alle opere richieste.",
     localReading:
       "Nei rifacimenti completi è importante chiarire se il preventivo include demolizione, smaltimento, impianto idraulico, posa rivestimenti e montaggio sanitari. Se gli impianti sono recenti, un rinnovo mirato può essere più adatto di una demolizione totale.",
     priceInterpretation:
@@ -339,7 +339,7 @@ export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
     metaDescription:
       "Ristrutturare un bagno a Catania: range indicativi nazionali, fattori locali, casi frequenti e cosa chiedere prima del sopralluogo.",
     summary:
-      "A Catania la fascia nazionale da 3.000 € a 12.000 € e il riferimento al mq da 600 € a 1.500 € restano la base, da confermare in base a immobile, impianti e materiali.",
+      "A Catania la fascia nazionale da 3.000 € a 12.000 € e il riferimento al mq da 800 € a 1.500 € restano la base, da confermare in base a immobile, impianti e materiali.",
     localReading:
       "La valutazione cambia se l'intervento riguarda solo finiture e sanitari oppure se serve intervenire su scarichi, punti acqua e sottofondi. Anche accesso al cantiere, trasporto dei materiali e scelta del box doccia possono spostare il costo.",
     priceInterpretation:

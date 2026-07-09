@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { frozenTaxonomySource } from "@esigenta/taxonomy";
+
 import {
   listSeoInterventionLandings,
   type SeoInterventionLanding,
@@ -9,8 +11,15 @@ import {
   resolveCostGuideHrefForIntervention,
   resolveInterventionCostSectionPriceData,
 } from "../engine/resolve-seo-page";
+import { resolveGroupBreadcrumbForIntervention } from "../engine/resolve-group-page";
+import {
+  buildBreadcrumbJsonLd,
+  buildFaqJsonLd,
+  serializeJsonLd,
+} from "../engine/schema-builder";
 import { PublicShell } from "../../shell/public-shell";
 import { GeoCostModule } from "./geo-cost-module";
+import { HowItWorks } from "./how-it-works";
 import { RelatedFunnelWork } from "./related-funnel-work";
 import { SeoFaq } from "./seo-faq";
 
@@ -22,15 +31,48 @@ const seoInterventionLandingSlugs = new Set(
   listSeoInterventionLandings().map((item) => item.slug),
 );
 
+// Server-only (vincolo @esigenta/taxonomy, vedi related-funnel-work.tsx):
+// registry per trasformare i chip in link reali — landing se esiste, funnel
+// se è un intervento taxonomy, pagina professione se è una categoria reale.
+const taxonomyInterventionSlugs = new Set(
+  frozenTaxonomySource.projectGroups.flatMap((projectGroup) =>
+    projectGroup.interventions.map((intervention) => intervention.slug),
+  ),
+);
+
+const taxonomyCategoriesBySlug = new Map(
+  frozenTaxonomySource.categories.map((category) => [category.slug, category]),
+);
+
 export function InterventionLandingPage({
   landing,
 }: InterventionLandingPageProps) {
   const requestHref = `/richiesta/${landing.funnelSlug}`;
+  const requestCtaLabel = landing.requestCtaLabel ?? "Richiedi preventivi";
   const costGuideHref = resolveCostGuideHrefForIntervention(landing.costSlug);
   const priceData = resolveInterventionCostSectionPriceData(landing);
+  const groupCrumb = resolveGroupBreadcrumbForIntervention(landing);
+
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    ...(groupCrumb ? [{ name: groupCrumb.name, path: groupCrumb.href }] : []),
+    { name: landing.title, path: `/interventi/${landing.slug}` },
+  ]);
+  const faqJsonLd = buildFaqJsonLd(landing.faq);
 
   return (
     <PublicShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
+      {faqJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
+        />
+      ) : null}
+
       <div className="eg-page eg-page-bg">
         <div className="eg-thread" aria-hidden="true" />
 
@@ -45,7 +87,19 @@ export function InterventionLandingPage({
                   <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
                     /
                   </span>
-                  <span className="text-eg-terra">Interventi</span>
+                  {groupCrumb ? (
+                    <>
+                      <Link href={groupCrumb.href} prefetch={false}>
+                        {groupCrumb.name}
+                      </Link>
+                      <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                        /
+                      </span>
+                      <span className="text-eg-terra">{landing.title}</span>
+                    </>
+                  ) : (
+                    <span className="text-eg-terra">Interventi</span>
+                  )}
                 </nav>
 
                 <p className="eg-eyebrow">Intervento</p>
@@ -58,12 +112,22 @@ export function InterventionLandingPage({
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link href={requestHref} className="eg-button-primary w-full sm:w-auto">
-                    Richiedi preventivi
+                    {requestCtaLabel}
                   </Link>
 
-                  <Link href="#quanto-costa" className="eg-button-ghost w-full sm:w-auto">
-                    Vedi i costi
-                  </Link>
+                  {costGuideHref ? (
+                    <Link
+                      href={costGuideHref}
+                      prefetch={false}
+                      className="eg-button-ghost w-full sm:w-auto"
+                    >
+                      Guida ai costi
+                    </Link>
+                  ) : (
+                    <Link href="#quanto-costa" className="eg-button-ghost w-full sm:w-auto">
+                      Vedi i costi
+                    </Link>
+                  )}
                 </div>
 
                 <p className="eg-form-help mt-4 max-w-[54ch]">
@@ -119,6 +183,92 @@ export function InterventionLandingPage({
           </div>
         </section>
 
+        {landing.scopeIncluded?.length || landing.scopeExcluded?.length ? (
+          <section aria-labelledby="perimetro-lavoro-title" className="eg-section">
+            <div className="eg-container">
+              <div className="mx-auto max-w-[760px] text-center">
+                <p className="eg-eyebrow">Perimetro del lavoro</p>
+
+                <h2 id="perimetro-lavoro-title" className="eg-h2 mt-4">
+                  Cosa entra nel preventivo e cosa va chiarito
+                </h2>
+              </div>
+
+              <div className="mt-12 grid gap-5 md:grid-cols-2">
+                {landing.scopeIncluded?.length ? (
+                  <div className="eg-panel p-5 md:p-6">
+                    <h3 className="eg-h3 text-[22px]">
+                      Cosa pu&ograve; comprendere
+                    </h3>
+
+                    <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-ardesia">
+                      {landing.scopeIncluded.map((item) => (
+                        <li key={item} className="flex gap-3">
+                          <Dot />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
+                {landing.scopeExcluded?.length ? (
+                  <div className="eg-panel p-5 md:p-6">
+                    <h3 className="eg-h3 text-[22px]">
+                      Cosa spesso resta fuori
+                    </h3>
+
+                    <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-ardesia">
+                      {landing.scopeExcluded.map((item) => (
+                        <li key={item} className="flex gap-3">
+                          <Dot />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+
+              {landing.scopeNote ? (
+                <p className="eg-form-help mx-auto mt-6 max-w-[72ch] text-center">
+                  {landing.scopeNote}
+                </p>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
+
+        {landing.variants?.length ? (
+          <section aria-labelledby="varianti-title" className="eg-section bg-eg-calce-2">
+            <div className="eg-container">
+              <div className="mx-auto max-w-[760px] text-center">
+                <p className="eg-eyebrow">Livelli di intervento</p>
+
+                <h2 id="varianti-title" className="eg-h2 mt-4">
+                  Non tutti i lavori sono uguali
+                </h2>
+
+                <p className="eg-body-muted mx-auto mt-5 max-w-[52ch]">
+                  Capire il livello del tuo lavoro aiuta a leggere i costi e a
+                  ricevere preventivi comparabili. I range indicativi sono
+                  nella tabella pi&ugrave; sotto.
+                </p>
+              </div>
+
+              <div className="mt-12 grid gap-4 md:grid-cols-3">
+                {landing.variants.map((variant) => (
+                  <article key={variant.title} className="eg-panel p-5">
+                    <h3 className="eg-h3 text-[22px]">{variant.title}</h3>
+
+                    <p className="eg-body-muted mt-3">{variant.summary}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         <section aria-labelledby="professionisti-collegati-title" className="eg-section">
           <div className="eg-container">
             <div className="grid gap-12 border-y border-eg-hairline py-10 md:grid-cols-2">
@@ -136,7 +286,7 @@ export function InterventionLandingPage({
 
                 <div className="mt-5 flex flex-wrap gap-2">
                   {landing.professionalCategorySlugs.map((slug) => (
-                    <SeoChip key={slug} label={formatSlugLabel(slug)} />
+                    <ProfessionalCategoryChip key={slug} slug={slug} />
                   ))}
                 </div>
               </div>
@@ -176,9 +326,51 @@ export function InterventionLandingPage({
               costSection={landing.costSection}
               priceData={priceData}
               funnelSlug={landing.funnelSlug}
+              requestCtaLabel={requestCtaLabel}
               costGuideHref={costGuideHref}
             />
           </div>
+        </section>
+
+        {landing.preparationItems?.length ? (
+          <section aria-labelledby="prepara-richiesta-title" className="eg-section bg-eg-calce-2">
+            <div className="eg-container">
+              <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
+                <div className="max-w-2xl">
+                  <p className="eg-eyebrow">Prima della richiesta</p>
+
+                  <h2 id="prepara-richiesta-title" className="eg-h2 mt-4">
+                    Cosa preparare per un preventivo pi&ugrave; preciso
+                  </h2>
+
+                  <p className="eg-body-muted mt-5 max-w-[44ch]">
+                    Non serve avere tutto: pi&ugrave; dettagli dai, pi&ugrave;
+                    le risposte saranno comparabili.
+                  </p>
+
+                  <Link
+                    href={requestHref}
+                    className="eg-button-primary mt-7 w-full sm:w-auto"
+                  >
+                    {requestCtaLabel}
+                  </Link>
+                </div>
+
+                <ul className="eg-panel grid gap-4 p-5 md:grid-cols-2 md:p-6">
+                  {landing.preparationItems.map((item) => (
+                    <li key={item} className="flex gap-3 text-sm leading-6 text-eg-ardesia">
+                      <Dot />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        <section aria-labelledby="come-funziona-title" className="eg-section">
+          <HowItWorks />
         </section>
 
         <section className="eg-section bg-eg-calce-2">
@@ -199,7 +391,7 @@ export function InterventionLandingPage({
             </p>
 
             <Link href={requestHref} className="eg-button-primary mt-8 w-full sm:w-auto">
-              Vai alla richiesta
+              {requestCtaLabel}
             </Link>
           </div>
         </section>
@@ -210,15 +402,44 @@ export function InterventionLandingPage({
 
 function RelatedInterventionChip({ slug }: { slug: string }) {
   const label = formatSlugLabel(slug);
+
+  // Landing SEO se esiste, altrimenti funnel diretto per interventi taxonomy
+  // reali (stesso pattern delle pagine professione). Chip senza link solo se
+  // lo slug non esiste da nessuna parte — mai un link finto.
   const href = seoInterventionLandingSlugs.has(slug)
     ? `/interventi/${slug}`
-    : undefined;
+    : taxonomyInterventionSlugs.has(slug)
+      ? `/richiesta/${slug}`
+      : undefined;
 
   if (href) {
     return <SeoChip href={href} label={label} />;
   }
 
   return <SeoChip label={label} />;
+}
+
+function ProfessionalCategoryChip({ slug }: { slug: string }) {
+  const category = taxonomyCategoriesBySlug.get(slug);
+
+  // Le pagine /professionisti/[categorySlug] esistono per ogni categoria
+  // taxonomy: link reale con il nome vero, mai una label derivata dallo slug.
+  if (category) {
+    return (
+      <SeoChip href={`/professionisti/${category.slug}`} label={category.name} />
+    );
+  }
+
+  return <SeoChip label={formatSlugLabel(slug)} />;
+}
+
+function Dot() {
+  return (
+    <span
+      aria-hidden="true"
+      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+    />
+  );
 }
 
 function SeoChip({ href, label }: { href?: string; label: string }) {

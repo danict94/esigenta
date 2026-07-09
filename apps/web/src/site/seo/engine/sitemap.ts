@@ -1,17 +1,17 @@
 import { listSeoInterventionLandings } from "../pages/interventi";
-import {
-  listCostGuides,
-  listIndexableCostGuideCityPages,
-} from "../pages/costi";
+import { listCostGuides } from "../pages/costi";
 import { listSeoGroupLandings } from "../pages/gruppi";
 import { buildCanonicalPath } from "./canonical";
 
 /**
  * Percorsi indicizzabili di proprietà di site/seo, derivati dagli stessi
  * registry usati da static-params.ts: se una pagina non viene generata, non
- * può entrare in sitemap, e viceversa. Le pagine città passano dalla stessa
- * policy di geo-policy.ts (listIndexableCostGuideCityPages): draft/thin
- * restano fuori senza bisogno di liste scritte a mano.
+ * può entrare in sitemap, e viceversa.
+ *
+ * Fase 5.E — le pagine città delle guide costi sono generate e crawlabili
+ * (vedi static-params.ts) ma restano fuori da qui: leggono la fascia
+ * nazionale, non un prezzo locale reale, quindi non vanno spinte in indice.
+ * Sono noindex via engine/metadata.ts, coerente con l'esclusione qui sotto.
  */
 export function listSeoIndexablePaths(): string[] {
   const costGuides = listCostGuides();
@@ -25,10 +25,5 @@ export function listSeoIndexablePaths(): string[] {
       buildCanonicalPath({ family: "intervention", slug: landing.slug }),
     ),
     ...costGuides.map((guide) => guide.canonicalPath),
-    ...costGuides.flatMap((guide) =>
-      listIndexableCostGuideCityPages(guide.slug).map(
-        (cityPage) => cityPage.canonicalPath,
-      ),
-    ),
   ];
 }

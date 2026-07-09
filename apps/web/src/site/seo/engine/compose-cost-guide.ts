@@ -119,6 +119,8 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     nationalRange: basePriceRange.nationalRange,
     pricePerSquareMeter: basePriceRange.pricePerSquareMeter,
     priceRows: [...basePriceRange.priceRows],
+    sourceLabel: basePriceRange.sourceLabel,
+    sourceYear: basePriceRange.sourceYear,
     sizeExamples: [...basePriceRange.sizeExamples],
     citySections: cityPages.map((cityPage) => ({
       city: cityPage.city,

@@ -8,7 +8,7 @@ import {
 } from "../pages/costi";
 import { resolveInterventionHrefForCostGuide } from "../engine/resolve-seo-page";
 import { PublicShell } from "../../shell/public-shell";
-import { GeoRequestForm } from "./geo-request-form";
+import { RequestCtaPanel } from "./request-cta-panel";
 import { SeoFaq } from "./seo-faq";
 
 export type CostGuidePageProps = {
@@ -97,7 +97,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 <p className="eg-form-help mt-5 max-w-[58ch]">{priceNote}</p>
               </div>
 
-              <GeoRequestForm funnelSlug={guide.funnelSlug} />
+              <RequestCtaPanel
+                requestHref={requestHref}
+                ctaLabel={`Richiedi preventivi per ${guide.topicLabel}`}
+              />
             </div>
           </div>
         </section>
@@ -112,7 +115,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               </h2>
             </div>
 
-            <PriceTable rows={guide.priceRows} />
+            <PriceTable
+              rows={guide.priceRows}
+              sourceLabel={guide.sourceLabel}
+              sourceYear={guide.sourceYear}
+            />
           </div>
         </section>
 
@@ -176,9 +183,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 </h2>
 
                 <p className="eg-body-muted mx-auto mt-5 max-w-[56ch]">
-                  Le differenze locali dipendono da cantiere, accessibilit&agrave;,
-                  disponibilit&agrave; dei professionisti e caratteristiche
-                  dell&apos;immobile.
+                  Le pagine città leggono la stessa fascia nazionale qui sopra,
+                  con una lettura locale di cosa può incidere: cantiere,
+                  accessibilità, disponibilità dei professionisti e
+                  caratteristiche dell&apos;immobile. Non sono un prezzo di zona.
                 </p>
 
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -289,39 +297,76 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   );
 }
 
-function PriceTable({ rows }: { rows: CostGuide["priceRows"] }) {
+function PriceTable({
+  rows,
+  sourceLabel,
+  sourceYear,
+}: {
+  rows: CostGuide["priceRows"];
+  sourceLabel?: string;
+  sourceYear?: string;
+}) {
   return (
-    <div className="eg-panel mt-12 overflow-hidden">
-      <div className="hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]">
-        <span>Voce</span>
-        <span>Fascia indicativa</span>
-        <span>Note</span>
+    <>
+      <div className="eg-panel mt-12 overflow-hidden">
+        <div className="hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1.2fr)]">
+          <span>Voce</span>
+          <span>Fascia indicativa</span>
+          <span>Note</span>
+        </div>
+
+        <div className="divide-y divide-eg-hairline">
+          {rows.map((row) => (
+            <div
+              key={row.label}
+              className="grid gap-4 px-5 py-5 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1.2fr)]"
+            >
+              <div>
+                <p className="eg-mono-label md:hidden">Voce</p>
+                <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.label}</p>
+                {row.unit ? (
+                  <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.1em] text-eg-ardesia-2">
+                    {row.unit}
+                  </p>
+                ) : null}
+              </div>
+
+              <div>
+                <p className="eg-mono-label md:hidden">Fascia</p>
+                <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.range}</p>
+              </div>
+
+              <div>
+                <p className="eg-mono-label md:hidden">Note</p>
+                <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
+
+                {row.includes ? (
+                  <p className="mt-2 text-[13px] leading-5 text-eg-ardesia">
+                    <span className="font-medium text-eg-terra">Include:</span>{" "}
+                    {row.includes}
+                  </p>
+                ) : null}
+
+                {row.excludes ? (
+                  <p className="mt-1 text-[13px] leading-5 text-eg-ardesia">
+                    <span className="font-medium text-eg-terra">Escluso:</span>{" "}
+                    {row.excludes}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="divide-y divide-eg-hairline">
-        {rows.map((row) => (
-          <div
-            key={row.label}
-            className="grid gap-4 px-5 py-5 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]"
-          >
-            <div>
-              <p className="eg-mono-label md:hidden">Voce</p>
-              <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.label}</p>
-            </div>
-
-            <div>
-              <p className="eg-mono-label md:hidden">Fascia</p>
-              <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.range}</p>
-            </div>
-
-            <div>
-              <p className="eg-mono-label md:hidden">Note</p>
-              <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      {sourceLabel ? (
+        <p className="eg-form-help mt-4 text-center">
+          {sourceLabel}
+          {sourceYear ? `, aggiornati ${sourceYear}` : null}. Le fasce non
+          sono un preventivo: il prezzo reale dipende dal sopralluogo.
+        </p>
+      ) : null}
+    </>
   );
 }
 

@@ -1,3 +1,5 @@
+import type { PriceRow } from "../../market-data/base-price-ranges";
+
 export type CityPageQualityStatus = "draft" | "ready";
 export type CityPageUniquenessLevel = "thin" | "acceptable" | "strong";
 
@@ -99,7 +101,11 @@ export type CostGuide = {
   summary: string;
   nationalRange: string;
   pricePerSquareMeter: string;
-  priceRows: { label: string; range: string; note: string }[];
+  /** Righe tecniche da market-data (stessa shape, mai ridefinita qui). */
+  priceRows: PriceRow[];
+  /** Base dati mostrata sotto la tabella (da market-data, se dichiarata). */
+  sourceLabel?: string;
+  sourceYear?: string;
   sizeExamples: { label: string; range: string; note: string }[];
   citySections: {
     city: string;
