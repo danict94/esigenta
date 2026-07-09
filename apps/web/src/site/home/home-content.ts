@@ -17,13 +17,6 @@ export type ScatterTag = {
   floatR: string;
 };
 
-export type ProcessStep = {
-  marker: string;
-  verified?: boolean;
-  title: string;
-  description: string;
-};
-
 export type FeaturedWork = {
   idx: string;
   title: string;
@@ -60,30 +53,6 @@ export const scatterTags: ScatterTag[] = [
   { label: "clima", dx: "136px", dy: "226px", dr: "-10deg", gx: "26px", gy: "92px", delay: "410ms", floatX: "-14px", floatY: "11px", floatR: "2deg" },
   { label: "preventivo", dx: "-520px", dy: "50px", dr: "14deg", gx: "-110px", gy: "12px", delay: "490ms", floatX: "9px", floatY: "14px", floatR: "-2deg" },
   { label: "urgenza", dx: "516px", dy: "-48px", dr: "-15deg", gx: "104px", gy: "-8px", delay: "570ms", floatX: "-12px", floatY: "-10px", floatR: "2deg" },
-];
-
-export const processSteps: ProcessStep[] = [
-  {
-    marker: "1",
-    title: "Descrivi",
-    description: "Racconti cosa devi fare con parole semplici: bagno, tetto, impianto, energia o clima.",
-  },
-  {
-    marker: "2",
-    title: "Verifichiamo",
-    description: "Mettiamo ordine nei dettagli essenziali prima di inviare la richiesta alle imprese adatte.",
-  },
-  {
-    marker: "3",
-    title: "Confrontiamo",
-    description: "Ricevi risposte leggibili e comparabili, senza disperdere il lavoro tra mille contatti casuali.",
-  },
-  {
-    marker: "ok",
-    verified: true,
-    title: "Lavoro fatto",
-    description: "Scegli chi ti convince e porti il progetto a terra con un percorso chiaro dall'inizio alla fine.",
-  },
 ];
 
 export const featuredWorks: FeaturedWork[] = [

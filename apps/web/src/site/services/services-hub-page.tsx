@@ -2,12 +2,14 @@ import Link from "next/link";
 
 import { frozenTaxonomySource } from "@esigenta/taxonomy";
 
+import { getSeoGroupLandingBySlug } from "../seo/pages/gruppi";
+import { buildCanonicalPath } from "../seo/engine/canonical";
 import { PublicShell } from "../shell/public-shell";
 
 export function ServicesHubPage() {
-  // /servizi espone i Group Service della taxonomy. Le pagine dei singoli
-  // group service arriveranno dopo: per ora le righe restano non cliccabili,
-  // cosi non promettiamo destinazioni che non esistono ancora.
+  // /servizi espone i Group Service della taxonomy. Una riga diventa
+  // cliccabile solo se il gruppo ha una landing reale registrata in
+  // site/seo/pages/gruppi: mai promettere destinazioni che non esistono.
   const groupServices = frozenTaxonomySource.projectGroups;
   const interventionCount = groupServices.reduce(
     (total, group) => total + group.interventions.length,
@@ -72,6 +74,14 @@ export function ServicesHubPage() {
                     index={index + 1}
                     name={group.name}
                     interventionCount={group.interventions.length}
+                    href={
+                      getSeoGroupLandingBySlug(group.slug)
+                        ? buildCanonicalPath({
+                            family: "groupHub",
+                            slug: group.slug,
+                          })
+                        : null
+                    }
                   />
                 ))}
               </ul>
@@ -129,13 +139,15 @@ function GroupServiceRow({
   index,
   name,
   interventionCount,
+  href,
 }: {
   index: number;
   name: string;
   interventionCount: number;
+  href: string | null;
 }) {
-  return (
-    <li className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
+  const rowContent = (
+    <>
       <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">{String(index).padStart(2, "0")}</span>
       <div>
         <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em]">{name}</h3>
@@ -144,8 +156,29 @@ function GroupServiceRow({
         </p>
       </div>
       <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
-        {interventionCount} {interventionCount === 1 ? "intervento" : "interventi"}
+        {href
+          ? "Apri →"
+          : `${interventionCount} ${interventionCount === 1 ? "intervento" : "interventi"}`}
       </span>
-    </li>
+    </>
   );
+
+  const rowClassName =
+    "grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]";
+
+  if (href) {
+    return (
+      <li>
+        <Link
+          href={href}
+          prefetch={false}
+          className={`${rowClassName} transition-colors hover:text-eg-cotto-dark`}
+        >
+          {rowContent}
+        </Link>
+      </li>
+    );
+  }
+
+  return <li className={rowClassName}>{rowContent}</li>;
 }

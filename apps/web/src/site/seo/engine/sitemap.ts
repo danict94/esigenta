@@ -3,6 +3,7 @@ import {
   listCostGuides,
   listIndexableCostGuideCityPages,
 } from "../pages/costi";
+import { listSeoGroupLandings } from "../pages/gruppi";
 import { buildCanonicalPath } from "./canonical";
 
 /**
@@ -17,6 +18,9 @@ export function listSeoIndexablePaths(): string[] {
 
   return [
     "/costi",
+    ...listSeoGroupLandings().map((landing) =>
+      buildCanonicalPath({ family: "groupHub", slug: landing.slug }),
+    ),
     ...listSeoInterventionLandings().map((landing) =>
       buildCanonicalPath({ family: "intervention", slug: landing.slug }),
     ),

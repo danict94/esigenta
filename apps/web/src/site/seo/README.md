@@ -28,6 +28,10 @@ site/seo/
     compose-cost-guide.ts  — UNICO composer guide costi (Fase 3): base+faq+
                               local-overrides+geo+market-data+canonical, con
                               validazioni fail-fast a build-time
+    resolve-group-page.ts  — view-model landing gruppo /servizi/[groupSlug]
+                              (Fase 4): interventi dalla taxonomy, link da
+                              registry landing/guide, costi solo da CostGuide
+                              reali; fail-fast su gruppo/featured incoerenti
     resolve-seo-page.ts    — dispatch: data una slug, ritorna il dato della pagina
     metadata.ts             — costruisce title/description/canonical/openGraph
     static-params.ts        — generateStaticParams per le route Next.js
@@ -47,6 +51,15 @@ site/seo/
     interventi/<slug-intervento>/
       content.ts          — oggi un solo file per intervento (nessuna città, vedi
                               "Limiti attuali" più sotto)
+    gruppi/<slug-gruppo>/
+      content.ts          — SOLO editoriale della landing gruppo (Fase 4,
+                              pilota: ristrutturazioni). Gli interventi del
+                              gruppo vengono dalla taxonomy via
+                              engine/resolve-group-page.ts, mai elencati qui;
+                              i costi solo da CostGuide reali. Un gruppo è
+                              abilitato solo se registrato in gruppi/index.ts
+                              (dynamicParams=false: gli altri gruppi non
+                              esistono come pagine né in sitemap).
   templates/
     *.tsx                  — solo presentazione. Non vanno mai toccati per
                               aggiungere contenuto: ricevono dati già pronti.

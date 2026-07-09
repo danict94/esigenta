@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-import { processSteps } from "./home-content";
+import { processSteps } from "../shared/process-steps";
 import { SectionHeader } from "./section-header";
 
 type TrackStyle = CSSProperties & Record<"--track-progress", string>;

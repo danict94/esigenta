@@ -5,6 +5,8 @@ import {
   getCostGuideBySlug,
   getCostGuideCityPageBySlug,
 } from "../pages/costi";
+import { getSeoGroupLandingBySlug } from "../pages/gruppi";
+import { buildCanonicalPath } from "./canonical";
 
 const ogInterventiImage = "/assets/images/professionisti-hero.webp";
 
@@ -34,6 +36,31 @@ export function buildInterventionMetadata(slug: string): Metadata {
           alt: landing.title,
         },
       ],
+    },
+  };
+}
+
+export function buildGroupLandingMetadata(slug: string): Metadata {
+  const landing = getSeoGroupLandingBySlug(slug);
+
+  if (!landing) {
+    return { title: "Servizio non trovato" };
+  }
+
+  const canonicalPath = buildCanonicalPath({
+    family: "groupHub",
+    slug: landing.slug,
+  });
+
+  return {
+    title: landing.metaTitle,
+    description: landing.metaDescription,
+    alternates: { canonical: canonicalPath },
+    openGraph: {
+      title: landing.metaTitle,
+      description: landing.metaDescription,
+      type: "website",
+      url: canonicalPath,
     },
   };
 }

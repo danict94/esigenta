@@ -1,5 +1,12 @@
 import { listSeoInterventionLandings } from "../pages/interventi";
 import { listCostGuides, listIndexableCostGuideCityPages } from "../pages/costi";
+import { listSeoGroupLandings } from "../pages/gruppi";
+
+export function getGroupLandingStaticParams(): { groupSlug: string }[] {
+  return listSeoGroupLandings().map((landing) => ({
+    groupSlug: landing.slug,
+  }));
+}
 
 export function getInterventionStaticParams(): { interventoSlug: string }[] {
   return listSeoInterventionLandings().map((landing) => ({
