@@ -1,6 +1,6 @@
-export const rifareTettoFamilyKey = "costGuide:rifare-tetto";
+import type { CostGuideBaseContent } from "../types";
 
-export const rifareTettoBase = {
+export const rifareTettoBase: CostGuideBaseContent = {
   slug: "rifare-tetto",
   funnelSlug: "rifare-tetto",
   interventionSeoSlug: "rifare-tetto",

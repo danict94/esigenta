@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google"
 
 import "./globals.css"
 import { CookieConsent } from "../site/shell/cookie-consent"
+import { resolveSiteOrigin } from "../site/seo/engine/site-url"
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -20,7 +21,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(resolveSiteOrigin()),
   title: "Esigenta",
   description: "Trova professionisti verificati per i tuoi interventi.",
 }

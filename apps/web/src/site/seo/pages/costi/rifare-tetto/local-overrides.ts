@@ -1,6 +1,4 @@
-import type { CityLocalOverride } from "../ristrutturare-bagno/local-overrides";
-
-export type { CityLocalOverride };
+import type { CityLocalOverride } from "../types";
 
 /**
  * Nessuna pagina città per questa guida in Phase 20.1 (decisione esplicita:

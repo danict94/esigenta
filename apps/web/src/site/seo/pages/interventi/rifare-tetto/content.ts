@@ -35,7 +35,6 @@ export const rifareTettoLanding: SeoInterventionLanding = {
     title: "Quanto costa rifare un tetto?",
     summary:
       "Il prezzo cambia in base a superficie, materiali, isolamento, accessibilità, ponteggi e stato della struttura. Per lavori importanti è essenziale una valutazione tecnica.",
-    priceRange: "indicativamente da 120 € a 300 € al mq",
     factors: [
       "superficie della copertura",
       "materiale scelto per il manto",

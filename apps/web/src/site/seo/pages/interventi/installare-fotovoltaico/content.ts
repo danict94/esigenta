@@ -37,7 +37,6 @@ export const installareFotovoltaicoLanding: SeoInterventionLanding = {
     title: "Quanto costa installare il fotovoltaico?",
     summary:
       "Il costo dipende dalla potenza dell'impianto, dal tipo di pannelli, dalla complessità della copertura, dall'eventuale accumulo e dagli adeguamenti elettrici necessari.",
-    priceRange: "indicativamente da 5.000 € a 18.000 €",
     factors: [
       "potenza richiesta e consumi dell'abitazione",
       "numero e qualità dei pannelli",

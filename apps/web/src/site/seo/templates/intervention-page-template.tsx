@@ -5,7 +5,10 @@ import {
   listSeoInterventionLandings,
   type SeoInterventionLanding,
 } from "../pages/interventi";
-import { resolveCostGuideHrefForIntervention } from "../engine/resolve-seo-page";
+import {
+  resolveCostGuideHrefForIntervention,
+  resolveInterventionCostSectionPriceData,
+} from "../engine/resolve-seo-page";
 import { PublicShell } from "../../shell/public-shell";
 import { GeoCostModule } from "./geo-cost-module";
 import { RelatedFunnelWork } from "./related-funnel-work";
@@ -24,6 +27,7 @@ export function InterventionLandingPage({
 }: InterventionLandingPageProps) {
   const requestHref = `/richiesta/${landing.funnelSlug}`;
   const costGuideHref = resolveCostGuideHrefForIntervention(landing.costSlug);
+  const priceData = resolveInterventionCostSectionPriceData(landing);
 
   return (
     <PublicShell>
@@ -170,6 +174,7 @@ export function InterventionLandingPage({
             <GeoCostModule
               geoSection={landing.geoSection}
               costSection={landing.costSection}
+              priceData={priceData}
               funnelSlug={landing.funnelSlug}
               costGuideHref={costGuideHref}
             />

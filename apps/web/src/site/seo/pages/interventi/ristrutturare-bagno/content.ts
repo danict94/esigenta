@@ -43,23 +43,10 @@ export const ristrutturareBagnoLanding: SeoInterventionLanding = {
     title: "Quanto costa ristrutturare un bagno?",
     summary:
       "Il costo dipende soprattutto da dimensioni, materiali, demolizioni, spostamento degli impianti e livello delle finiture. Per un preventivo attendibile serve descrivere lo stato attuale e il risultato desiderato.",
-    priceRange: "indicativamente da 3.500 € a 12.000 €",
-    priceRows: [
-      {
-        label: "Rinnovo leggero bagno",
-        range: "da 1.500 € a 4.000 €",
-        note: "sostituzioni mirate e finiture senza rifacimento completo",
-      },
-      {
-        label: "Ristrutturazione completa",
-        range: "da 3.500 € a 12.000 €",
-        note: "demolizioni, impianti, rivestimenti, sanitari e finiture",
-      },
-      {
-        label: "Costo indicativo al mq",
-        range: "da 600 € a 1.500 € al mq",
-        note: "varia in base a materiali, impianti e complessità del cantiere",
-      },
+    priceRowLabels: [
+      "Rinnovo leggero bagno",
+      "Ristrutturazione completa",
+      "Costo indicativo al mq",
     ],
     factors: [
       "metratura del bagno",

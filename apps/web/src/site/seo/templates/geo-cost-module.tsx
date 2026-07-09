@@ -1,11 +1,14 @@
 import Link from "next/link";
 
 import type { SeoInterventionLanding } from "../pages/interventi";
+import type { InterventionCostSectionPriceData } from "../engine/resolve-seo-page";
 import { GeoRequestForm } from "./geo-request-form";
 
 export type GeoCostModuleProps = {
   geoSection: SeoInterventionLanding["geoSection"];
   costSection: SeoInterventionLanding["costSection"];
+  /** Fase 2 — numeri risolti dalla guida costi collegata, mai da costSection. */
+  priceData: InterventionCostSectionPriceData;
   funnelSlug: string;
   costGuideHref: string | null;
 };
@@ -13,6 +16,7 @@ export type GeoCostModuleProps = {
 export function GeoCostModule({
   geoSection,
   costSection,
+  priceData,
   funnelSlug,
   costGuideHref,
 }: GeoCostModuleProps) {
@@ -55,12 +59,12 @@ export function GeoCostModule({
             <p className="eg-body-muted mt-5 max-w-[52ch]">{costSection.summary}</p>
           ) : null}
 
-          {costSection?.priceRange ? (
+          {priceData ? (
             <div className="eg-panel mt-7 p-5">
               <p className="eg-mono-label">Range indicativo</p>
 
               <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">
-                {costSection.priceRange}
+                {priceData.priceRange}
               </p>
             </div>
           ) : null}
@@ -79,7 +83,7 @@ export function GeoCostModule({
         </div>
 
         <div className="grid gap-7">
-          {costSection?.priceRows?.length ? (
+          {priceData && priceData.priceRows.length > 0 ? (
             <div className="eg-panel overflow-hidden">
               <div className="hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]">
                 <span>Voce</span>
@@ -88,7 +92,7 @@ export function GeoCostModule({
               </div>
 
               <div className="divide-y divide-eg-hairline">
-                {costSection.priceRows.map((row) => (
+                {priceData.priceRows.map((row) => (
                   <div
                     key={row.label}
                     className="grid gap-4 px-5 py-5 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]"

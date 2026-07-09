@@ -1,18 +1,4 @@
-export type CityLocalOverride = {
-  citySlug: string;
-  title: string;
-  h1: string;
-  metaTitle: string;
-  metaDescription: string;
-  summary: string;
-  localReading: string;
-  priceInterpretation: string;
-  typicalCases: string[];
-  localFactors: string[];
-  whenPriceGoesUp: string[];
-  whatToAskInQuote: string[];
-  faq: { question: string; answer: string }[];
-};
+import type { CityLocalOverride } from "../types";
 
 export const ristrutturareBagnoLocalOverrides: readonly CityLocalOverride[] = [
   {

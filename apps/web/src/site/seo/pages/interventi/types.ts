@@ -30,12 +30,14 @@ export type SeoInterventionLanding = {
   costSection?: {
     title: string;
     summary: string;
-    priceRange?: string;
-    priceRows?: readonly {
-      label: string;
-      range: string;
-      note: string;
-    }[];
+    /**
+     * Fase 2 — SSOT prezzi: i numeri non vivono qui. `priceRowLabels`
+     * seleziona quali righe di `CostGuide.priceRows` mostrare nel riepilogo
+     * (risolte da engine/resolve-seo-page.ts leggendo la guida collegata via
+     * `costSlug`). Se `costSlug` non punta a una guida reale, il blocco
+     * prezzo non viene mostrato: mai un numero inventato in questo file.
+     */
+    priceRowLabels?: readonly string[];
     factors: readonly string[];
     examples?: readonly string[];
   };

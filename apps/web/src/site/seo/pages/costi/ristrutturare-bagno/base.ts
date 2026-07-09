@@ -1,6 +1,6 @@
-export const ristrutturareBagnoFamilyKey = "costGuide:ristrutturare-bagno";
+import type { CostGuideBaseContent } from "../types";
 
-export const ristrutturareBagnoBase = {
+export const ristrutturareBagnoBase: CostGuideBaseContent = {
   slug: "ristrutturare-bagno",
   funnelSlug: "ristrutturare-bagno",
   interventionSeoSlug: "ristrutturare-bagno",

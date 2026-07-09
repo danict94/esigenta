@@ -58,3 +58,44 @@ export function resolveInterventionHrefForCostGuide(
   const landing = getSeoInterventionLandingBySlug(interventionSeoSlug);
   return landing ? `/interventi/${interventionSeoSlug}` : null;
 }
+
+export type InterventionCostSectionPriceData = {
+  priceRange: string;
+  priceRows: readonly CostGuide["priceRows"][number][];
+} | null;
+
+/**
+ * Fase 2 — SSOT prezzi. Unica fonte numerica per il blocco prezzo di una
+ * landing intervento: la guida costi collegata via costSlug (stessi dati di
+ * /costi/[slug], derivati da market-data). Nessun numero vive nel content.ts
+ * della landing. Se costSlug non è dichiarato o non punta a una guida reale,
+ * ritorna null — il template non mostra alcun blocco prezzo, mai un valore
+ * inventato. priceRowLabels seleziona quali righe della guida mostrare: un
+ * label che non esiste nella guida fa fallire il build, non silenziosamente
+ * a runtime.
+ */
+export function resolveInterventionCostSectionPriceData(
+  landing: SeoInterventionLanding,
+): InterventionCostSectionPriceData {
+  if (!landing.costSlug) return null;
+
+  const guide = getCostGuideBySlug(landing.costSlug);
+  if (!guide) return null;
+
+  const priceRowLabels = landing.costSection?.priceRowLabels ?? [];
+
+  const priceRows = priceRowLabels.map((label) => {
+    const row = guide.priceRows.find((candidate) => candidate.label === label);
+
+    if (!row) {
+      throw new Error(
+        `SeoInterventionLanding "${landing.slug}" declares priceRowLabel ` +
+          `"${label}" that does not exist in CostGuide "${guide.slug}".priceRows`,
+      );
+    }
+
+    return row;
+  });
+
+  return { priceRange: guide.nationalRange, priceRows };
+}

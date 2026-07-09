@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description:
       page.category.description ??
       `Trova richieste e interventi per ${page.category.name.toLowerCase()}.`,
+    alternates: { canonical: `/professionisti/${categorySlug}` },
   };
 }
 

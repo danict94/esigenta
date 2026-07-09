@@ -1,6 +1,28 @@
 export type CityPageQualityStatus = "draft" | "ready";
 export type CityPageUniquenessLevel = "thin" | "acceptable" | "strong";
 
+/**
+ * Delta editoriale di UNA città dentro local-overrides.ts (Fase 3: tipo
+ * condiviso qui, mai definito dentro una famiglia e importato dalle altre).
+ * Niente nome città (viene da geo/cities.ts via citySlug), niente canonical
+ * (calcolato), niente prezzi (market-data): solo prosa locale.
+ */
+export type CityLocalOverride = {
+  citySlug: string;
+  title: string;
+  h1: string;
+  metaTitle: string;
+  metaDescription: string;
+  summary: string;
+  localReading: string;
+  priceInterpretation: string;
+  typicalCases: string[];
+  localFactors: string[];
+  whenPriceGoesUp: string[];
+  whatToAskInQuote: string[];
+  faq: { question: string; answer: string }[];
+};
+
 export type CostGuideCityPage = {
   city: string;
   citySlug: string;
@@ -28,6 +50,27 @@ export type CostGuideCityPage = {
 export type CostGuideHubCategory = {
   slug: string;
   name: string;
+};
+
+/**
+ * Contenuto NAZIONALE di una famiglia (il base.ts della cartella): solo
+ * editoriale, mai numeri (i prezzi vivono in market-data e vengono agganciati
+ * dal composer via familyKey derivata dallo slug: "costGuide:<slug>").
+ */
+export type CostGuideBaseContent = {
+  slug: string;
+  funnelSlug: string;
+  interventionSeoSlug: string;
+  title: string;
+  h1: string;
+  metaTitle: string;
+  metaDescription: string;
+  heroImage: { src: string; alt: string };
+  hubCategory: CostGuideHubCategory;
+  topicLabel: string;
+  summary: string;
+  factors: string[];
+  savingTips: string[];
 };
 
 export type CostGuide = {

@@ -36,7 +36,6 @@ export const installareClimatizzatoreLanding: SeoInterventionLanding = {
     title: "Quanto costa installare un climatizzatore?",
     summary:
       "Il costo dipende da numero di split, potenza, predisposizione esistente, distanza tra unità interna ed esterna e complessità dei collegamenti.",
-    priceRange: "indicativamente da 700 € a 2.500 €",
     factors: [
       "numero di unità interne",
       "potenza e modello del climatizzatore",

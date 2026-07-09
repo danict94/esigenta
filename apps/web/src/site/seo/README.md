@@ -25,16 +25,25 @@ site/seo/
     pricing-resolver.ts  — deriva il range finale (base + modificatore città)
     canonical.ts          — deriva canonical da family + slug + citySlug
     geo-policy.ts          — decide se una pagina città è indicizzabile (owner reale)
+    compose-cost-guide.ts  — UNICO composer guide costi (Fase 3): base+faq+
+                              local-overrides+geo+market-data+canonical, con
+                              validazioni fail-fast a build-time
     resolve-seo-page.ts    — dispatch: data una slug, ritorna il dato della pagina
     metadata.ts             — costruisce title/description/canonical/openGraph
     static-params.ts        — generateStaticParams per le route Next.js
+    sitemap.ts               — percorsi indicizzabili site/seo per app/sitemap.ts
+                                (stessi registry di static-params, mai liste a mano)
+    site-url.ts              — origin pubblico + URL assoluti (metadataBase,
+                                sitemap, robots); env esplicita, throw in prod
   pages/
     costi/<slug-famiglia>/
-      base.ts            — contenuto NAZIONALE (niente città, niente prezzo)
+      base.ts            — contenuto NAZIONALE tipizzato CostGuideBaseContent
+                            (niente città, niente prezzo, niente familyKey)
       faq.ts              — FAQ nazionali
       local-overrides.ts  — SOLO i delta editoriali per ogni città supportata
-      content.ts           — composer: assembla base+faq+local-overrides+geo+
-                              market-data+canonical nell'oggetto finale tipizzato
+                            (tipo CityLocalOverride condiviso in costi/types.ts)
+      content.ts           — una sola chiamata a engine/compose-cost-guide.ts:
+                              zero logica per famiglia
     interventi/<slug-intervento>/
       content.ts          — oggi un solo file per intervento (nessuna città, vedi
                               "Limiti attuali" più sotto)
@@ -148,20 +157,32 @@ Esempio: aggiungere "Bari" alla guida `ristrutturare-bagno`.
 
 ## Caso 2 — Aggiungere una nuova famiglia "guida costi" (es. `installare-fotovoltaico` sotto `/costi`)
 
-1. Crea la cartella `pages/costi/installare-fotovoltaico/` con tre file, sullo
-   stesso pattern di `ristrutturare-bagno/`:
-   - `base.ts` — contenuto nazionale (slug, funnelSlug, interventionSeoSlug,
-     title, h1, metaTitle, metaDescription, summary, factors, savingTips) +
-     una costante `<nome>FamilyKey = "costGuide:installare-fotovoltaico"`.
+1. Crea la cartella `pages/costi/installare-fotovoltaico/` con quattro file,
+   sullo stesso pattern di `ristrutturare-bagno/`:
+   - `base.ts` — contenuto nazionale tipizzato `CostGuideBaseContent` (slug,
+     funnelSlug, interventionSeoSlug, title, h1, metaTitle, metaDescription,
+     heroImage, hubCategory, topicLabel, summary, factors, savingTips).
+     Nessuna costante familyKey: la deriva il composer dallo slug.
    - `faq.ts` — FAQ nazionali.
-   - `local-overrides.ts` — vuoto `[]` o con le prime città già pronte editorialmente.
-   - `content.ts` — composer, **copia quasi identica** di
-     `ristrutturare-bagno/content.ts`, cambiando solo gli import dei tre file
-     sopra e il `familyKey`. Non inventare logica nuova qui.
+   - `local-overrides.ts` — vuoto `[]` o con le prime città già pronte
+     editorialmente (tipo `CityLocalOverride` da `../types`).
+   - `content.ts` — una sola chiamata:
+     ```ts
+     export const installareFotovoltaicoGuide: CostGuide = composeCostGuide({
+       base: installareFotovoltaicoBase,
+       faq: installareFotovoltaicoFaq,
+       localOverrides: installareFotovoltaicoLocalOverrides,
+     });
+     ```
+     Mai logica per famiglia qui: se manca qualcosa, il composer fallisce il
+     build con un errore esplicito (market-data assente, tabella prezzi vuota,
+     città non registrata, città dichiarata pronta senza contenuto locale).
 
 2. **`market-data/base-price-ranges.ts`** — aggiungi una entry con la chiave
    `"costGuide:installare-fotovoltaico"` (nationalRange, pricePerSquareMeter
-   se ha senso per quell'intervento, priceRows, sizeExamples).
+   se ha senso per quell'intervento, priceRows, sizeExamples). Senza questa
+   entry, o con `priceRows` vuoto, il build fallisce: una guida costi senza
+   tabella prezzi reale non è pubblicabile.
 
 3. **`market-data/city-price-index.ts`** — aggiungi una entry con la stessa
    chiave, anche vuota `[]` se non hai ancora città per questa famiglia.
@@ -201,6 +222,16 @@ intervento:
 (oggi `SeoInterventionLanding` non ha un concetto di città). Se serve, è un
 cambio di architettura (Phase futura), non un'aggiunta di contenuto.
 
+**Prezzi in `costSection` (Fase 2 — SSOT prezzi):** `costSection` non deve mai
+contenere un numero scritto a mano. Se `costSlug` punta a una guida costi
+reale in `pages/costi/index.ts`, `costSection.priceRowLabels` può elencare
+quali label di `CostGuide.priceRows` mostrare nel riepilogo: i numeri vengono
+risolti da `engine/resolve-seo-page.ts` (`resolveInterventionCostSectionPriceData`),
+mai duplicati qui. Se non esiste ancora una guida per quella famiglia, non
+inventare un range: lascia `costSlug`/`priceRowLabels` assenti e il blocco
+prezzo semplicemente non compare nella landing (pattern già esistente in
+`geo-cost-module.tsx`, nessun placeholder da scrivere).
+
 ---
 
 ## Regole vincolanti (valgono per ogni AI/sviluppatore che tocca questa cartella)
@@ -228,9 +259,15 @@ cambio di architettura (Phase futura), non un'aggiunta di contenuto.
 
 - Non esiste `site/seo/matrix/` (combinazioni pubblicabili centralizzate): con
   una sola famiglia costi non è ancora necessario.
-- Non esiste `engine/schema-builder.ts` (JSON-LD) né `engine/sitemap.ts`
-  (sitemap dinamica): nessuna pagina SEO oggi emette estructured data o entra
-  in una sitemap generata.
+- Non esiste `engine/schema-builder.ts` (JSON-LD): nessuna pagina SEO oggi
+  emette structured data. La sitemap invece esiste (`app/sitemap.ts` +
+  `engine/sitemap.ts`) e deriva dai registry: una nuova famiglia/città
+  registrata entra in sitemap da sola, non aggiungerla a mano; ciò che non
+  passa la policy (draft/thin) non viene generato né entra in sitemap.
+- Regola funnel `/richiesta/*`: fuori dalla sitemap, meta `noindex, nofollow`
+  sulla pagina, nessun canonical/OpenGraph. NON va messo in Disallow dentro
+  `app/robots.ts`: la route deve restare crawlabile perché il noindex sia
+  leggibile dai crawler. `robots.ts` blocca solo API e aree private/runtime.
 - `/interventi/[slug]/[citySlug]` non esiste: gli interventi non hanno ancora
   varianti città.
 

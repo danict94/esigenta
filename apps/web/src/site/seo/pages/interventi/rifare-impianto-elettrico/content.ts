@@ -36,7 +36,6 @@ export const rifareImpiantoElettricoLanding: SeoInterventionLanding = {
     title: "Quanto costa rifare un impianto elettrico?",
     summary:
       "Il costo varia in base a dimensioni dell'abitazione, numero di punti luce, quadro elettrico, tracce murarie e livello di finitura richiesto. La verifica sul posto aiuta a definire un preventivo realistico.",
-    priceRange: "indicativamente da 2.000 € a 8.000 €",
     factors: [
       "numero di stanze e punti elettrici",
       "presenza di tracce da aprire o richiudere",
