@@ -288,6 +288,24 @@ model Company {
   statusChangeReason         String?
 
   /**
+   * PUBLIC PROFILE (Phase 8.C) — minimal fields to support today's profile
+   * checklist and a future public vetrina, without building the vetrina
+   * itself. Completeness is never stored — see
+   * deriveCompanyProfileCompleteness in @esigenta/domain, the single
+   * source of truth for "is this profile complete." publicProfileConsentAt
+   * only records consent; nothing is published anywhere yet.
+   * publicSlug is unique but nullable — Postgres allows multiple NULLs
+   * under a unique constraint, so companies without a slug yet don't
+   * collide with each other.
+   */
+  publicName              String?
+  publicSlug              String?   @unique
+  shortDescription        String?
+  fullDescription         String?
+  yearsOfExperience       Int?
+  publicProfileConsentAt  DateTime?
+
+  /**
    * ONBOARDING CONTEXT ONLY
    * Captures the first professional category selected in the public signup flow.
    * Runtime matching must use CompanyCategory, not this onboarding snapshot.

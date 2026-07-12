@@ -7,6 +7,7 @@ import {
   deactivateCompanyAccount,
   requestCompanyPhoneContactChange,
   updateCompanyProfile,
+  updateCompanyPublicProfile,
 } from "@esigenta/domain"
 
 import { isGeoPlace } from "@esigenta/shared"
@@ -67,6 +68,40 @@ export async function updateCompanyProfileAction(formData: FormData) {
   if (monitored) {
     console.info(
       `[esigenta-perf] [profile-update-action] actor=${actorMs}ms total=${Math.round(performance.now() - t0)}ms result=${result.ok ? "ok" : result.code}`,
+    )
+  }
+
+  if (!result.ok) redirectWithError(result.code)
+
+  revalidatePath("/area-impresa/profilo")
+  redirect("/area-impresa/profilo?saved=1")
+}
+
+export async function updateCompanyPublicProfileAction(formData: FormData) {
+  const monitored = isAreaMonitoringEnabled()
+  const t0 = performance.now()
+
+  const actor = await requireAreaImpresaAccess()
+  const actorMs = Math.round(performance.now() - t0)
+
+  const result = await updateCompanyPublicProfile(
+    actor,
+    {
+      publicName: normalizeText(formData.get("publicName")) || null,
+      shortDescription: normalizeText(formData.get("shortDescription")) || null,
+      fullDescription: normalizeText(formData.get("fullDescription")) || null,
+      yearsOfExperience: normalizeText(formData.get("yearsOfExperience")) || null,
+      publicProfileConsent: formData.get("publicProfileConsent") === "on",
+    },
+    monitored
+      ? (label, ms) =>
+          console.info(`[esigenta-perf] [public-profile-update-action] ${label}=${ms}ms`)
+      : undefined,
+  )
+
+  if (monitored) {
+    console.info(
+      `[esigenta-perf] [public-profile-update-action] actor=${actorMs}ms total=${Math.round(performance.now() - t0)}ms result=${result.ok ? "ok" : result.code}`,
     )
   }
 

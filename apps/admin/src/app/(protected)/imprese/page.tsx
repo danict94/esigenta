@@ -65,26 +65,6 @@ function formatValue(value: string | null) {
     : "-"
 }
 
-function getStatusLabel(status: string) {
-  if (status === "PENDING_REVIEW") {
-    return "Da verificare"
-  }
-
-  if (status === "APPROVED") {
-    return "Approvata"
-  }
-
-  if (status === "SUSPENDED") {
-    return "Sospesa"
-  }
-
-  if (status === "BLOCKED") {
-    return "Bloccata"
-  }
-
-  return status
-}
-
 function getStatusEventDate(
   company: AdminCompanyListItem,
 ) {
@@ -131,23 +111,46 @@ function StatusEventInfo({
   )
 }
 
-function getStatusBadgeVariant(status: string) {
-  if (status === "APPROVED") {
+function badgeVariantForColor(
+  color: AdminCompanyListItem["adminBadge"]["color"],
+) {
+  if (color === "green") {
     return "success" as const
   }
 
-  if (status === "BLOCKED") {
+  if (color === "red") {
     return "danger" as const
   }
 
-  if (
-    status === "PENDING_REVIEW" ||
-    status === "SUSPENDED"
-  ) {
+  if (color === "orange" || color === "yellow") {
     return "warning" as const
   }
 
   return "neutral" as const
+}
+
+function CompanyBadge({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  const badge = company.adminBadge
+  const visibleReasons = badge.reasons.slice(0, 2)
+  const remainingCount = badge.reasons.length - visibleReasons.length
+
+  return (
+    <div>
+      <Badge variant={badgeVariantForColor(badge.color)}>
+        {badge.label}
+      </Badge>
+      {visibleReasons.length > 0 ? (
+        <p className="mt-1 text-xs leading-5 text-eg-ardesia">
+          {visibleReasons.join(" · ")}
+          {remainingCount > 0 ? ` (+${remainingCount})` : ""}
+        </p>
+      ) : null}
+    </div>
+  )
 }
 
 async function approveCompanyAction(
@@ -379,6 +382,12 @@ function StatusTabs({
       status: "APPROVED",
     },
     {
+      label: "Approvate incomplete",
+      href: "/imprese?status=APPROVED_INCOMPLETE",
+      count: counts.approvedIncomplete,
+      status: "APPROVED_INCOMPLETE",
+    },
+    {
       label: "Sospese",
       href: "/imprese?status=SUSPENDED",
       count: counts.suspended,
@@ -464,9 +473,7 @@ function CompaniesDesktopTable({
           >
             <CompanyNameCell company={company} />
             <div>
-              <Badge variant={getStatusBadgeVariant(company.status)}>
-                {getStatusLabel(company.status)}
-              </Badge>
+              <CompanyBadge company={company} />
               <StatusEventInfo company={company} />
             </div>
             <span className="break-words text-eg-ardesia">
@@ -504,9 +511,7 @@ function CompaniesMobileList({
           <div className="flex items-start justify-between gap-3">
             <CompanyNameCell company={company} />
             <div className="text-right">
-              <Badge variant={getStatusBadgeVariant(company.status)}>
-                {getStatusLabel(company.status)}
-              </Badge>
+              <CompanyBadge company={company} />
               <StatusEventInfo company={company} />
             </div>
           </div>

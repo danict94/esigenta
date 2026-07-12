@@ -4,6 +4,10 @@ import { getCompanyCreditSummary } from "@esigenta/billing"
 import type { GeoPlace } from "@esigenta/shared"
 
 import { deriveCompanyConfigurationStatus } from "../configuration/company-configuration-status"
+import {
+  deriveCompanyProfileCompleteness,
+  type CompanyProfileCompleteness,
+} from "./derive-company-profile-completeness"
 
 type PerfRecorder = (label: string, ms: number) => void
 
@@ -26,6 +30,12 @@ type CompanyProfileRow = {
   operating_radius_km: number
   categories: Array<{ id: string; name: string }> | null
   interventions: Array<{ id: string; name: string }> | null
+  public_name: string | null
+  public_slug: string | null
+  short_description: string | null
+  full_description: string | null
+  years_of_experience: number | null
+  public_profile_consent_at: Date | null
 }
 
 type ContactChangeRow = {
@@ -45,6 +55,13 @@ export type CompanyProfileData = {
   geoPlace: GeoPlace | null
   operatingRadiusKm: number
   isConfigured: boolean
+  publicName: string | null
+  publicSlug: string | null
+  shortDescription: string | null
+  fullDescription: string | null
+  yearsOfExperience: number | null
+  publicProfileConsentAt: Date | null
+  profileCompleteness: CompanyProfileCompleteness
 }
 
 export type CompanyProfileCategory = { id: string; name: string }
@@ -136,6 +153,12 @@ export async function getCompanyProfilePage(
         gl."source"                AS geo_source,
         gl."resolvedAt"            AS geo_resolved_at,
         c."operatingRadiusKm"      AS operating_radius_km,
+        c."publicName"             AS public_name,
+        c."publicSlug"             AS public_slug,
+        c."shortDescription"       AS short_description,
+        c."fullDescription"        AS full_description,
+        c."yearsOfExperience"      AS years_of_experience,
+        c."publicProfileConsentAt" AS public_profile_consent_at,
         (
           SELECT COALESCE(
             json_agg(jsonb_build_object('id', cat."id", 'name', cat."name") ORDER BY cc."createdAt"),
@@ -213,15 +236,39 @@ export async function getCompanyProfilePage(
     }),
   )
 
+  const geoPlace = rowToGeoPlace(row)
+  const operatingRadiusKm = Number(row.operating_radius_km)
+
+  const profileCompleteness = deriveCompanyProfileCompleteness({
+    publicName: row.public_name,
+    shortDescription: row.short_description,
+    fullDescription: row.full_description,
+    website: row.website,
+    yearsOfExperience: row.years_of_experience,
+    hasGeoLocation: geoPlace !== null,
+    operatingRadiusKm,
+    categoryCount: categories.length,
+    interventionCount: interventions.length,
+    phone: row.phone,
+    vatNumber: row.vat_number,
+  })
+
   const company: CompanyProfileData = {
     id: row.id,
     name: row.name,
     vatNumber: row.vat_number,
     phone: row.phone,
     website: row.website,
-    geoPlace: rowToGeoPlace(row),
-    operatingRadiusKm: Number(row.operating_radius_km),
+    geoPlace,
+    operatingRadiusKm,
     isConfigured,
+    publicName: row.public_name,
+    publicSlug: row.public_slug,
+    shortDescription: row.short_description,
+    fullDescription: row.full_description,
+    yearsOfExperience: row.years_of_experience,
+    publicProfileConsentAt: row.public_profile_consent_at,
+    profileCompleteness,
   }
 
   return { company, categories, interventions, contactChangeRequests, credit }

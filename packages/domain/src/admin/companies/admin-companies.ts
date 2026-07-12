@@ -6,9 +6,20 @@ import {
   prisma,
 } from "@esigenta/database"
 
+import {
+  deriveCompanyProfileCompleteness,
+  type CompanyProfileCompleteness,
+} from "../../company/profile/derive-company-profile-completeness"
+
+import {
+  deriveCompanyAdminBadge,
+  type CompanyAdminBadge,
+} from "./derive-company-admin-badge"
+
 export type AdminCompanyStatusFilter =
   | CompanyStatus
   | "ALL"
+  | "APPROVED_INCOMPLETE"
 
 export type AdminCompanyListItem = {
   id: string
@@ -33,6 +44,8 @@ export type AdminCompanyListItem = {
     email: string
     name: string | null
   } | null
+  profileCompleteness: CompanyProfileCompleteness
+  adminBadge: CompanyAdminBadge
 }
 
 export type AdminCompanyStatusCounts = {
@@ -41,6 +54,7 @@ export type AdminCompanyStatusCounts = {
   approved: number
   suspended: number
   blocked: number
+  approvedIncomplete: number
   pendingContactChangeRequests: number
 }
 
@@ -96,6 +110,10 @@ function isCompanyStatus(
 export function normalizeAdminCompanyStatusFilter(
   value: string | null | undefined,
 ): AdminCompanyStatusFilter {
+  if (value === "APPROVED_INCOMPLETE") {
+    return "APPROVED_INCOMPLETE"
+  }
+
   return isCompanyStatus(value)
     ? value
     : "ALL"
@@ -106,7 +124,9 @@ function mapCompanyListItem(company: {
   name: string
   vatNumber: string
   phone: string
+  website: string | null
   geoLocation: { city: string } | null
+  operatingRadiusKm: number
   status: CompanyStatus
   approvedAt: Date | null
   suspendedAt: Date | null
@@ -117,6 +137,10 @@ function mapCompanyListItem(company: {
     email: string
     name: string | null
   } | null
+  publicName: string | null
+  shortDescription: string | null
+  fullDescription: string | null
+  yearsOfExperience: number | null
   createdAt: Date
   updatedAt: Date
   memberships: Array<{
@@ -126,7 +150,25 @@ function mapCompanyListItem(company: {
       name: string | null
     }
   }>
+  _count: {
+    categories: number
+    interventions: number
+  }
 }): AdminCompanyListItem {
+  const profileCompleteness = deriveCompanyProfileCompleteness({
+    publicName: company.publicName,
+    shortDescription: company.shortDescription,
+    fullDescription: company.fullDescription,
+    website: company.website,
+    yearsOfExperience: company.yearsOfExperience,
+    hasGeoLocation: company.geoLocation !== null,
+    operatingRadiusKm: company.operatingRadiusKm,
+    categoryCount: company._count.categories,
+    interventionCount: company._count.interventions,
+    phone: company.phone,
+    vatNumber: company.vatNumber,
+  })
+
   return {
     id: company.id,
     name: company.name,
@@ -144,6 +186,12 @@ function mapCompanyListItem(company: {
     owner:
       company.memberships[0]?.user ??
       null,
+    profileCompleteness,
+    adminBadge: deriveCompanyAdminBadge({
+      status: company.status,
+      statusChangeReason: company.statusChangeReason,
+      profileCompleteness,
+    }),
   }
 }
 
@@ -155,7 +203,9 @@ export async function listAdminCompanies({
   const normalizedStatus =
     status === "ALL"
       ? undefined
-      : status
+      : status === "APPROVED_INCOMPLETE"
+        ? "APPROVED"
+        : status
 
   const companies =
     await prisma.company.findMany({
@@ -179,6 +229,8 @@ export async function listAdminCompanies({
         name: true,
         vatNumber: true,
         phone: true,
+        website: true,
+        operatingRadiusKm: true,
         geoLocation: {
           select: { city: true },
         },
@@ -194,8 +246,18 @@ export async function listAdminCompanies({
             name: true,
           },
         },
+        publicName: true,
+        shortDescription: true,
+        fullDescription: true,
+        yearsOfExperience: true,
         createdAt: true,
         updatedAt: true,
+        _count: {
+          select: {
+            categories: true,
+            interventions: true,
+          },
+        },
         memberships: {
           where: {
             role: "OWNER",
@@ -217,9 +279,60 @@ export async function listAdminCompanies({
       },
     })
 
-  return companies.map(
+  const mapped = companies.map(
     mapCompanyListItem,
   )
+
+  return status === "APPROVED_INCOMPLETE"
+    ? mapped.filter(
+        (company) => !company.profileCompleteness.isComplete,
+      )
+    : mapped
+}
+
+async function countApprovedIncompleteCompanies(): Promise<number> {
+  const companies = await prisma.company.findMany({
+    where: {
+      isActive: true,
+      deletedAt: null,
+      status: "APPROVED",
+    },
+    select: {
+      geoLocationId: true,
+      operatingRadiusKm: true,
+      publicName: true,
+      shortDescription: true,
+      fullDescription: true,
+      website: true,
+      yearsOfExperience: true,
+      phone: true,
+      vatNumber: true,
+      _count: {
+        select: {
+          categories: true,
+          interventions: true,
+        },
+      },
+    },
+  })
+
+  return companies.filter((company) => {
+    const completeness = deriveCompanyProfileCompleteness({
+      publicName: company.publicName,
+      shortDescription: company.shortDescription,
+      fullDescription: company.fullDescription,
+      website: company.website,
+      yearsOfExperience: company.yearsOfExperience,
+      hasGeoLocation: company.geoLocationId !== null,
+      operatingRadiusKm: company.operatingRadiusKm,
+      categoryCount: company._count.categories,
+      interventionCount: company._count.interventions,
+      phone: company.phone,
+      vatNumber: company.vatNumber,
+    })
+
+    return !completeness.isComplete
+  }).length
 }
 
 export async function getAdminCompanyStatusCounts(): Promise<AdminCompanyStatusCounts> {
@@ -229,6 +342,7 @@ export async function getAdminCompanyStatusCounts(): Promise<AdminCompanyStatusC
     approved,
     suspended,
     blocked,
+    approvedIncomplete,
     pendingContactChangeRequests,
   ] = await Promise.all([
     prisma.company.count({
@@ -265,6 +379,7 @@ export async function getAdminCompanyStatusCounts(): Promise<AdminCompanyStatusC
         status: "BLOCKED",
       },
     }),
+    countApprovedIncompleteCompanies(),
     prisma.companyContactChangeRequest.count({
       where: {
         status: "PENDING_REVIEW",
@@ -278,6 +393,7 @@ export async function getAdminCompanyStatusCounts(): Promise<AdminCompanyStatusC
     approved,
     suspended,
     blocked,
+    approvedIncomplete,
     pendingContactChangeRequests,
   }
 }

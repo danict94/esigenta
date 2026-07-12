@@ -1,8 +1,20 @@
 import Link from "next/link"
 
-import { Badge, Button, Card, Input, PageShell, Select } from "@esigenta/ui"
+import {
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  PageShell,
+  Select,
+  Textarea,
+} from "@esigenta/ui"
 
-import { getCompanyProfilePage } from "@esigenta/domain"
+import {
+  companyProfileCompletenessFieldLabels,
+  getCompanyProfilePage,
+} from "@esigenta/domain"
 
 import { requireAreaImpresaAccess } from "../../../../auth/server"
 import {
@@ -18,6 +30,7 @@ import {
   deactivateAccountAction,
   requestCompanyContactChangeAction,
   updateCompanyProfileAction,
+  updateCompanyPublicProfileAction,
 } from "../actions/profile-actions"
 
 export type ProfilePageProps = {
@@ -44,6 +57,13 @@ const errorMessages: Record<string, string> = {
     "Esiste gia una richiesta in revisione per questo dato.",
   company_membership_not_found:
     "Non puoi richiedere modifiche per questa impresa.",
+  invalid_public_name: "Inserisci un nome pubblico valido (massimo 80 caratteri).",
+  invalid_short_description:
+    "La descrizione breve puo avere al massimo 240 caratteri.",
+  invalid_full_description:
+    "La descrizione completa puo avere al massimo 2000 caratteri.",
+  invalid_years_of_experience:
+    "Inserisci un numero di anni di esperienza valido (0-60).",
 }
 
 function formatValue(value?: string | number | null) {
@@ -234,6 +254,87 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
         <Card className="p-6">
           <div className="border-b border-eg-hairline pb-5">
             <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
+              Dati pubblici futuri
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              Questi dati non sono ancora pubblicati da nessuna parte: servono a
+              preparare una futura vetrina pubblica Esigenta.
+            </p>
+          </div>
+
+          <form
+            action={updateCompanyPublicProfileAction}
+            className="mt-6 grid gap-5"
+          >
+            <label className="grid gap-2">
+              <span className="text-sm font-medium text-eg-terra">Nome pubblico</span>
+              <Input
+                name="publicName"
+                maxLength={80}
+                defaultValue={company.publicName ?? ""}
+                placeholder="Nome con cui vuoi farti conoscere"
+              />
+            </label>
+
+            <label className="grid gap-2">
+              <span className="text-sm font-medium text-eg-terra">
+                Descrizione breve
+              </span>
+              <Textarea
+                name="shortDescription"
+                rows={2}
+                maxLength={240}
+                defaultValue={company.shortDescription ?? ""}
+                placeholder="In una frase, cosa fai e per chi (max 240 caratteri)"
+              />
+            </label>
+
+            <label className="grid gap-2">
+              <span className="text-sm font-medium text-eg-terra">
+                Descrizione completa
+              </span>
+              <Textarea
+                name="fullDescription"
+                rows={5}
+                maxLength={2000}
+                defaultValue={company.fullDescription ?? ""}
+                placeholder="Racconta la tua attivita, esperienza e specializzazioni"
+              />
+            </label>
+
+            <label className="grid gap-2 md:max-w-xs">
+              <span className="text-sm font-medium text-eg-terra">
+                Anni di esperienza
+              </span>
+              <Input
+                type="number"
+                name="yearsOfExperience"
+                min={0}
+                max={60}
+                defaultValue={company.yearsOfExperience ?? ""}
+              />
+            </label>
+
+            <label className="flex items-start gap-3">
+              <Checkbox
+                name="publicProfileConsent"
+                defaultChecked={company.publicProfileConsentAt !== null}
+              />
+              <span className="text-sm leading-6 text-eg-ardesia">
+                Acconsento a un futuro utilizzo di questi dati per una vetrina
+                pubblica Esigenta. Nulla viene pubblicato oggi.
+              </span>
+            </label>
+
+            <div className="flex justify-end border-t border-eg-hairline pt-5">
+              <Button type="submit">Salva dati pubblici</Button>
+            </div>
+          </form>
+        </Card>
+
+        <Card className="p-6">
+          <div className="border-b border-eg-hairline pb-5">
+            <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
               Sede operativa
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-ardesia">
@@ -331,6 +432,35 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                 </p>
               )}
             </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="border-b border-eg-hairline pb-5">
+            <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
+              Checklist completamento profilo
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              Un profilo completo non e obbligatorio per operare oggi: aiuta
+              solo a preparare una futura vetrina pubblica.
+            </p>
+          </div>
+
+          <div className="mt-5">
+            {company.profileCompleteness.isComplete ? (
+              <Badge variant="success">Profilo completo</Badge>
+            ) : (
+              <>
+                <Badge variant="warning">Profilo incompleto</Badge>
+                <ul className="mt-3 grid gap-2">
+                  {company.profileCompleteness.missing.map((field) => (
+                    <li key={field} className="text-sm text-eg-ardesia">
+                      Manca: {companyProfileCompletenessFieldLabels[field]}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         </Card>
 

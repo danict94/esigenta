@@ -27,3 +27,22 @@ export type {
   DeactivateAccountResult,
   DeactivateAccountErrorCode,
 } from "./deactivate-account"
+
+export { updateCompanyPublicProfile } from "./update-public-profile"
+export type {
+  UpdateCompanyPublicProfileInput,
+  UpdateCompanyPublicProfileResult,
+  UpdateCompanyPublicProfileErrorCode,
+} from "./update-public-profile"
+
+export { generateUniqueCompanyPublicSlug } from "./generate-company-public-slug"
+
+export {
+  deriveCompanyProfileCompleteness,
+  companyProfileCompletenessFieldLabels,
+} from "./derive-company-profile-completeness"
+export type {
+  CompanyProfileCompleteness,
+  CompanyProfileCompletenessField,
+  DeriveCompanyProfileCompletenessInput,
+} from "./derive-company-profile-completeness"
