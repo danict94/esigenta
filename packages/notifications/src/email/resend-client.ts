@@ -30,11 +30,7 @@ export function getResendFromEmail(): string {
     return fromEmail
   }
 
-  if (process.env.NODE_ENV !== "production") {
-    return "Esigenta <onboarding@resend.dev>"
-  }
-
   throw new Error(
-    "RESEND_FROM_EMAIL is required to send email in production.",
+    "Missing RESEND_FROM_EMAIL environment variable",
   )
 }
