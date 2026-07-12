@@ -66,15 +66,17 @@ export type GroupInterventionItem = {
   costRange: string | null;
 };
 
-export type FeaturedGroupIntervention = GroupInterventionItem & {
-  /** Intro della landing SEO reale (garantita dal fail-fast sul featured). */
-  landingDescription: string;
-};
-
 export type GroupLandingPageData = {
   content: SeoGroupLanding;
   interventions: GroupInterventionItem[];
-  featured: FeaturedGroupIntervention;
+  /**
+   * Fase 6 — l'intervento in evidenza NON richiede più una landing SEO reale
+   * (solo 5/100 interventi ne hanno una): la descrizione mostrata è sempre
+   * `summary`, già obbligatoria per ogni intervento del gruppo. `landingHref`
+   * resta null quando non esiste, e il template nasconde il bottone
+   * "Approfondisci" di conseguenza — mai un link finto.
+   */
+  featured: GroupInterventionItem;
   professionalCategories: { slug: string; name: string; href: string }[];
 };
 
@@ -82,7 +84,8 @@ export type GroupLandingPageData = {
  * Server-only (importa @esigenta/taxonomy come related-funnel-work.tsx: mai
  * da Client Component). Ritorna null per slug non registrati (→ notFound),
  * ma fallisce il build per contenuto registrato incoerente: gruppo
- * inesistente in taxonomy, featured fuori dal gruppo o senza landing reale.
+ * inesistente in taxonomy, summary mancante/fuori gruppo, o featured fuori
+ * dal gruppo. Il featured NON deve avere una landing SEO reale (Fase 6).
  */
 export function resolveGroupLandingPage(
   slug: string,
@@ -146,31 +149,16 @@ export function resolveGroupLandingPage(
     },
   );
 
-  const featuredItem = interventions.find(
+  const featured = interventions.find(
     (item) => item.slug === content.featuredInterventionSlug,
   );
 
-  if (!featuredItem) {
+  if (!featured) {
     throw new Error(
       `SeoGroupLanding "${content.slug}" declares featuredInterventionSlug ` +
         `"${content.featuredInterventionSlug}" which is not an intervention of that group`,
     );
   }
-
-  const featuredLanding = getSeoInterventionLandingBySlug(featuredItem.slug);
-
-  if (!featuredItem.landingHref || !featuredLanding) {
-    throw new Error(
-      `SeoGroupLanding "${content.slug}" featured intervention ` +
-        `"${content.featuredInterventionSlug}" has no SEO landing: the featured ` +
-        `path must link a real /interventi page, pick a different intervention`,
-    );
-  }
-
-  const featured: FeaturedGroupIntervention = {
-    ...featuredItem,
-    landingDescription: featuredLanding.description,
-  };
 
   const professionalCategories = frozenTaxonomySource.categories
     .filter((category) => category.projectGroups.includes(content.slug))

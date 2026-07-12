@@ -73,7 +73,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
                 </h2>
 
                 <p className="eg-body-muted mt-5 max-w-[52ch]">
-                  {featured.landingDescription}
+                  {featured.summary}
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
