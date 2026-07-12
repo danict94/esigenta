@@ -39,9 +39,9 @@ export function AdminBrand({ href, onClick, className }: AdminBrandProps) {
     return (
       <Link
         href={href}
-        onClick={onClick}
         className={brandClassName}
         aria-label="esigenta Admin"
+        {...(onClick ? { onClick } : {})}
       >
         <AdminBrandContent />
       </Link>
