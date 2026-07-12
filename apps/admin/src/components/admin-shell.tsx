@@ -3,10 +3,11 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Badge, Button, Container, cn } from "@esigenta/ui";
 
+import { authClient } from "../auth/client";
 import { AdminBrand } from "./admin-brand";
 
 type AdminShellProps = {
@@ -160,7 +161,9 @@ export function AdminShell({
   children,
   unreadSupportCount = 0,
 }: AdminShellProps) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const supportBadge = formatBadgeCount(unreadSupportCount);
   const visibleNavItems = navItems.map((item) =>
     item.href === "/support" && supportBadge
@@ -173,6 +176,23 @@ export function AdminShell({
 
   function closeMenu() {
     setIsMenuOpen(false);
+  }
+
+  async function handleLogout() {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setIsLoggingOut(true);
+
+    try {
+      await authClient.signOut();
+      closeMenu();
+      router.replace("/accedi");
+      router.refresh();
+    } finally {
+      setIsLoggingOut(false);
+    }
   }
 
   return (
@@ -193,6 +213,17 @@ export function AdminShell({
               <DesktopNavLink key={item.href} item={item} onClick={closeMenu} />
             ))}
           </nav>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="hidden md:inline-flex"
+            disabled={isLoggingOut}
+            onClick={handleLogout}
+          >
+            {isLoggingOut ? "Uscita..." : "Esci"}
+          </Button>
 
           <Button
             type="button"
@@ -223,6 +254,19 @@ export function AdminShell({
                     onClick={closeMenu}
                   />
                 ))}
+
+                <div className="mt-2 border-t border-eg-hairline pt-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    disabled={isLoggingOut}
+                    onClick={handleLogout}
+                  >
+                    {isLoggingOut ? "Uscita..." : "Esci"}
+                  </Button>
+                </div>
               </nav>
             </Container>
           </div>
