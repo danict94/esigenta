@@ -23,7 +23,7 @@ export async function toggleSavedRequestAction(
 
   const result =
     await toggleCompanySavedRequest({
-      companyId: actor.company.id,
+      actor,
       requestId,
     })
 

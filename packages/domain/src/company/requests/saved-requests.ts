@@ -3,7 +3,11 @@ import type {
   RequestStatus,
 } from "@prisma/client"
 
+import type { CompanyActor } from "@esigenta/auth"
+import { isCompanyMarketplaceReady } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
+
+import { getCompanyRequestDetailPage } from "./get-request-detail-page"
 
 export type ToggleCompanySavedRequestResult =
   | {
@@ -78,14 +82,26 @@ function normalizeRequiredId(value: string, fieldName: string) {
 }
 
 export async function toggleCompanySavedRequest({
-  companyId,
+  actor,
   requestId,
 }: {
-  companyId: string
+  actor: CompanyActor
   requestId: string
 }): Promise<ToggleCompanySavedRequestResult> {
+  if (!isCompanyMarketplaceReady(actor.company)) {
+    return {
+      ok: false,
+      code: "company_not_approved",
+      message:
+        "Il profilo impresa deve essere approvato per salvare richieste.",
+    }
+  }
+
   const normalizedCompanyId =
-    normalizeRequiredId(companyId, "companyId")
+    normalizeRequiredId(
+      actor.company.id,
+      "companyId",
+    )
 
   if (!normalizedCompanyId.ok) {
     return normalizedCompanyId
@@ -98,37 +114,18 @@ export async function toggleCompanySavedRequest({
     return normalizedRequestId
   }
 
-  const request = await prisma.request.findUnique({
-    where: {
-      id: normalizedRequestId.value,
-    },
-    select: {
-      id: true,
-    },
-  })
+  const visibleRequest =
+    await getCompanyRequestDetailPage(
+      actor,
+      normalizedRequestId.value,
+    )
 
-  if (!request) {
+  if (!visibleRequest.ok) {
     return {
       ok: false,
-      code: "request_not_found",
-      message: "Richiesta non trovata.",
-    }
-  }
-
-  const company = await prisma.company.findUnique({
-    where: {
-      id: normalizedCompanyId.value,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!company) {
-    return {
-      ok: false,
-      code: "company_not_found",
-      message: "Impresa non trovata.",
+      code: "request_not_visible",
+      message:
+        "Questa richiesta non è disponibile per l'impresa.",
     }
   }
 
@@ -173,4 +170,3 @@ export async function toggleCompanySavedRequest({
     saved: true,
   }
 }
-

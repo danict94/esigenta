@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import type { CompanyActor } from "@esigenta/auth";
 import {
+  deriveCompanyRequestAccess,
   isCompanyMarketplaceEnabled,
 } from "@esigenta/domain";
 import { getCompanyCreditSummary } from "@esigenta/billing";
@@ -71,6 +72,7 @@ export async function AreaImpresaPrivateLayout({
   const accountLabel = actor.user.name ?? actor.user.email ?? "Account";
   const companyStatus = actor.company.status;
   const marketplaceEnabled = isCompanyMarketplaceEnabled(companyStatus);
+  const requestAccess = deriveCompanyRequestAccess(actor.company);
   const statusNotice = getCompanyStatusNotice(companyStatus);
 
   return (
@@ -81,6 +83,9 @@ export async function AreaImpresaPrivateLayout({
         unreadContactCount={counts.unreadContactCount}
         unreadSupportCount={counts.unreadSupportCount}
         marketplaceEnabled={marketplaceEnabled}
+        requestPreviewEnabled={
+          requestAccess.mode === "preview_locked"
+        }
         creditBalance={creditSummary.balance}
       />
       {statusNotice ? (

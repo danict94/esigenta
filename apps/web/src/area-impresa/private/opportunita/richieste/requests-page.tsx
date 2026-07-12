@@ -10,7 +10,10 @@ import {
 } from "@esigenta/ui"
 
 import {
+  deriveCompanyRequestAccess,
   getCompanyRequestsListPage,
+  listCompanyRequestPreviews,
+  type ListCompanyRequestPreviewsResult,
   type RequestDashboardFilters,
   type RequestDashboardSort,
 } from "@esigenta/domain"
@@ -30,6 +33,9 @@ import {
 import {
   CompanyRequestList,
 } from "../components/company-request-list"
+import {
+  CompanyRequestPreviewList,
+} from "../components/company-request-preview-list"
 import {
   RequestFiltersPanel,
 } from "../components/request-filters-panel"
@@ -187,6 +193,111 @@ function formatProfileSummary({
   return `${categories} operative, raggio ${radiusKm} km`
 }
 
+function PendingReviewRequestsPreview({
+  result,
+}: {
+  result: ListCompanyRequestPreviewsResult
+}) {
+  const company = result.ok
+    ? result.company
+    : null
+  const companyLocation = [
+    company?.city,
+    company?.province,
+  ]
+    .filter(Boolean)
+    .join(" ")
+
+  return (
+    <PageShell size="xl" className="py-8 md:py-10">
+      <section className="space-y-7">
+        <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-3xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-eg-terra md:text-4xl">
+              Richieste disponibili
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia md:text-base">
+              Scopri in anteprima le opportunità compatibili con i servizi
+              della tua impresa.
+            </p>
+
+            {company ? (
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-eg-ardesia">
+                <span className="inline-flex items-center gap-2">
+                  <MapPin className="size-4" aria-hidden="true" />
+                  {companyLocation || "Sede operativa configurata"}
+                </span>
+                {company.operatingRadiusKm ? (
+                  <span className="inline-flex items-center gap-2">
+                    <BriefcaseBusiness
+                      className="size-4"
+                      aria-hidden="true"
+                    />
+                    Raggio {company.operatingRadiusKm} km
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="text-sm font-medium text-eg-ardesia">
+            {result.ok ? result.requests.length : 0} anteprime
+          </div>
+        </div>
+
+        <Card className="border-eg-cotto bg-eg-calce-2 p-5">
+          <p className="text-sm font-semibold text-eg-terra">
+            Il tuo profilo è in revisione
+          </p>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-eg-ardesia">
+            Intanto puoi vedere alcune richieste compatibili con la tua
+            impresa. Dettagli, contatti e azioni saranno disponibili dopo
+            l’approvazione.
+          </p>
+        </Card>
+
+        {result.ok ? (
+          <>
+            <CompanyRequestPreviewList requests={result.requests} />
+            {result.hasMore ? (
+              <p className="text-center text-sm text-eg-ardesia">
+                Altre richieste compatibili saranno disponibili dopo
+                l’approvazione del profilo.
+              </p>
+            ) : null}
+          </>
+        ) : (
+          <Card className="p-8">
+            <p className="text-base font-semibold text-eg-terra">
+              Preview non disponibile
+            </p>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-eg-ardesia">
+              {result.message}
+            </p>
+            {result.code === "missing_category" ? (
+              <Link
+                href="/area-impresa/configura-servizi"
+                className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
+                prefetch={false}
+              >
+                Configura servizi
+              </Link>
+            ) : result.code === "missing_location" ? (
+              <Link
+                href="/area-impresa/profilo"
+                className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
+                prefetch={false}
+              >
+                Completa il profilo
+              </Link>
+            ) : null}
+          </Card>
+        )}
+      </section>
+    </PageShell>
+  )
+}
+
 export async function RequestsPage({
   searchParams,
 }: RequestsPageProps) {
@@ -217,6 +328,38 @@ export async function RequestsPage({
     Number.isFinite(pageParam) && pageParam >= 1
       ? Math.floor(pageParam)
       : 1
+
+  const requestAccess =
+    deriveCompanyRequestAccess(actor.company)
+
+  if (requestAccess.mode === "preview_locked") {
+    const previewResult =
+      await listCompanyRequestPreviews(actor)
+
+    if (monitored) {
+      areaLog("area.model.requestsList.end", {
+        durationMs: Math.round(
+          areaTimestamp() - pageStart,
+        ),
+        result: previewResult.ok
+          ? "preview-locked"
+          : previewResult.code,
+        dbFetchedCount: previewResult.ok
+          ? previewResult.requests.length
+          : 0,
+        returnedCount: previewResult.ok
+          ? previewResult.requests.length
+          : 0,
+        previewLocked: true,
+      })
+    }
+
+    return (
+      <PendingReviewRequestsPreview
+        result={previewResult}
+      />
+    )
+  }
 
   const requestTrace = monitored
     ? createPerfTrace({ scope: "request-list" })
@@ -284,7 +427,11 @@ export async function RequestsPage({
     !result.ok &&
     result.code ===
       "company_not_approved_for_marketplace"
-      ? "Profilo impresa in revisione"
+      ? actor.company.status === "SUSPENDED"
+        ? "Profilo impresa sospeso"
+        : actor.company.status === "BLOCKED"
+          ? "Profilo impresa bloccato"
+          : "Marketplace non disponibile"
       : !result.ok &&
           result.code === "missing_category"
         ? "Categoria impresa non configurata"

@@ -280,6 +280,7 @@ export function ImpresaSidebar({
   unreadContactCount,
   unreadSupportCount,
   marketplaceEnabled,
+  requestPreviewEnabled,
   creditBalance,
 }: {
   accountLabel: string;
@@ -287,6 +288,7 @@ export function ImpresaSidebar({
   unreadContactCount: number;
   unreadSupportCount: number;
   marketplaceEnabled: boolean;
+  requestPreviewEnabled: boolean;
   creditBalance: number;
 }) {
   const pathname = usePathname();
@@ -303,8 +305,12 @@ export function ImpresaSidebar({
     : "Disponibile dopo approvazione del profilo impresa";
 
   const mainNavigationItems = mainNavigation.map((item) => {
+    const requestPreviewAvailable =
+      requestPreviewEnabled &&
+      item.href === "/area-impresa/richieste";
     const availability =
       !marketplaceEnabled &&
+      !requestPreviewAvailable &&
       commercialNavigationHrefs.has(item.href)
         ? {
             enabled: false,
