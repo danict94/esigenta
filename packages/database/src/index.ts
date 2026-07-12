@@ -10,3 +10,8 @@ export { setCompanyLocation, setCompanyLocationWithClient } from "./geo/set-comp
 export type { SetCompanyLocationResult } from "./geo/set-company-location"
 export { setRequestLocationWithClient } from "./geo/set-request-location"
 export type { SetRequestLocationResult } from "./geo/set-request-location"
+
+// ADMIN NOTIFICATIONS — same cross-package placement reason as above:
+// @esigenta/auth must also read admin recipients and cannot depend on
+// @esigenta/domain.
+export { getAdminNotificationRecipientEmails } from "./admin/get-admin-notification-recipients"

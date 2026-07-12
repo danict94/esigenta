@@ -7,3 +7,7 @@ export { conversationMessageEmail } from "./templates/conversation-message-email
 export type { ConversationMessageEmailInput } from "./templates/conversation-message-email"
 export { customerRequestsAccessEmail } from "./templates/customer-requests-access-email"
 export type { CustomerRequestsAccessEmailInput } from "./templates/customer-requests-access-email"
+export { newRequestAdminEmail } from "./templates/new-request-admin-email"
+export type { NewRequestAdminEmailInput } from "./templates/new-request-admin-email"
+export { newCompanyAdminEmail } from "./templates/new-company-admin-email"
+export type { NewCompanyAdminEmailInput } from "./templates/new-company-admin-email"

@@ -23,6 +23,10 @@ import {
   findValidRequestVerificationAccessToken,
 } from "../../internal/request/customer-access-token"
 
+import {
+  notifyAdminsOfRequestPendingReview,
+} from "../../internal/request/notify-admins-request-pending-review"
+
 export type VerifyRequestEmailInput = {
   requestId: string
   token: string
@@ -179,6 +183,8 @@ async function verifyWithAccessToken({
     },
   )
 
+  await notifyAdminsOfRequestPendingReview(request.id)
+
   return {
     requestId: request.id,
     status: "PENDING_REVIEW",
@@ -323,6 +329,8 @@ async function verifyWithLegacyStructuredDataToken({
       }
     },
   )
+
+  await notifyAdminsOfRequestPendingReview(request.id)
 
   return {
     requestId: request.id,
@@ -544,6 +552,8 @@ export async function verifyRequestManually({
       verifiedAt,
     }),
   )
+
+  await notifyAdminsOfRequestPendingReview(request.id)
 
   return {
     requestId: request.id,

@@ -12,6 +12,10 @@ import {
   type GeoPlace,
 } from "@esigenta/shared"
 
+import {
+  notifyAdminsOfCompanyPendingReview,
+} from "./notify-admins-company-pending-review"
+
 const allowedOperatingRadiusKm = [
   10,
   20,
@@ -285,7 +289,7 @@ export async function createCompanyForUser({
   }
 
   try {
-    return await prisma.$transaction(
+    const result = await prisma.$transaction(
       async (tx) => {
         const companyRecord =
           await tx.company.create({
@@ -325,9 +329,16 @@ export async function createCompanyForUser({
             companyRecord.id,
           membershipId:
             membership.id,
-        }
+        } as const
       },
     )
+
+    await notifyAdminsOfCompanyPendingReview({
+      companyId: result.companyId,
+      userId,
+    })
+
+    return result
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
