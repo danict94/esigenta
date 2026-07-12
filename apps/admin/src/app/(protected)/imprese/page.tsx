@@ -18,6 +18,7 @@ import {
   Badge,
   Button,
   PageShell,
+  Textarea,
   cn,
 } from "@esigenta/ui"
 
@@ -84,6 +85,52 @@ function getStatusLabel(status: string) {
   return status
 }
 
+function getStatusEventDate(
+  company: AdminCompanyListItem,
+) {
+  if (company.status === "APPROVED") {
+    return company.approvedAt
+  }
+
+  if (company.status === "SUSPENDED") {
+    return company.suspendedAt
+  }
+
+  if (company.status === "BLOCKED") {
+    return company.blockedAt
+  }
+
+  return null
+}
+
+function StatusEventInfo({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  const eventDate =
+    getStatusEventDate(company)
+
+  if (!eventDate && !company.statusChangedByAdmin) {
+    return null
+  }
+
+  return (
+    <p className="mt-1 text-xs leading-5 text-eg-ardesia">
+      {eventDate ? formatDate(eventDate) : null}
+      {company.statusChangedByAdmin
+        ? ` — ${
+            company.statusChangedByAdmin.name ??
+            company.statusChangedByAdmin.email
+          }`
+        : null}
+      {company.statusChangeReason
+        ? ` — ${company.statusChangeReason}`
+        : null}
+    </p>
+  )
+}
+
 function getStatusBadgeVariant(status: string) {
   if (status === "APPROVED") {
     return "success" as const
@@ -108,12 +155,15 @@ async function approveCompanyAction(
 ) {
   "use server"
 
-  await requireAdmin()
+  const admin = await requireAdmin()
 
   const result =
     await approveCompanyForMarketplace({
       companyId:
         String(formData.get("companyId") ?? ""),
+      adminUserId: admin.userId,
+      reason:
+        String(formData.get("reason") ?? ""),
     })
 
   if (!result.ok) {
@@ -129,12 +179,15 @@ async function suspendCompanyAction(
 ) {
   "use server"
 
-  await requireAdmin()
+  const admin = await requireAdmin()
 
   const result =
     await suspendCompanyForMarketplace({
       companyId:
         String(formData.get("companyId") ?? ""),
+      adminUserId: admin.userId,
+      reason:
+        String(formData.get("reason") ?? ""),
     })
 
   if (!result.ok) {
@@ -150,12 +203,15 @@ async function blockCompanyAction(
 ) {
   "use server"
 
-  await requireAdmin()
+  const admin = await requireAdmin()
 
   const result =
     await blockCompanyForMarketplace({
       companyId:
         String(formData.get("companyId") ?? ""),
+      adminUserId: admin.userId,
+      reason:
+        String(formData.get("reason") ?? ""),
     })
 
   if (!result.ok) {
@@ -241,27 +297,34 @@ function CompanyActionForms({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {actions.map((item) => (
-        <form
-          key={item.label}
-          action={item.action}
-        >
-          <input
-            type="hidden"
-            name="companyId"
-            value={company.id}
-          />
+    <form className="grid gap-2">
+      <input
+        type="hidden"
+        name="companyId"
+        value={company.id}
+      />
+
+      <Textarea
+        name="reason"
+        rows={2}
+        placeholder="Motivo (obbligatorio per sospendi/blocca, facoltativo per approva)"
+        className="text-xs"
+      />
+
+      <div className="flex flex-wrap gap-2">
+        {actions.map((item) => (
           <Button
+            key={item.label}
             type="submit"
+            formAction={item.action}
             size="sm"
             variant={item.variant ?? "primary"}
           >
             {item.label}
           </Button>
-        </form>
-      ))}
-    </div>
+        ))}
+      </div>
+    </form>
   )
 }
 
@@ -404,6 +467,7 @@ function CompaniesDesktopTable({
               <Badge variant={getStatusBadgeVariant(company.status)}>
                 {getStatusLabel(company.status)}
               </Badge>
+              <StatusEventInfo company={company} />
             </div>
             <span className="break-words text-eg-ardesia">
               {company.vatNumber}
@@ -439,9 +503,12 @@ function CompaniesMobileList({
         >
           <div className="flex items-start justify-between gap-3">
             <CompanyNameCell company={company} />
-            <Badge variant={getStatusBadgeVariant(company.status)}>
-              {getStatusLabel(company.status)}
-            </Badge>
+            <div className="text-right">
+              <Badge variant={getStatusBadgeVariant(company.status)}>
+                {getStatusLabel(company.status)}
+              </Badge>
+              <StatusEventInfo company={company} />
+            </div>
           </div>
 
           <dl className="mt-4 grid gap-2 text-sm text-eg-ardesia">

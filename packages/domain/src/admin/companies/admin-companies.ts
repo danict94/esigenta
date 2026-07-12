@@ -20,6 +20,12 @@ export type AdminCompanyListItem = {
   approvedAt: Date | null
   suspendedAt: Date | null
   blockedAt: Date | null
+  statusChangeReason: string | null
+  statusChangedByAdmin: {
+    id: string
+    email: string
+    name: string | null
+  } | null
   createdAt: Date
   updatedAt: Date
   owner: {
@@ -68,6 +74,17 @@ function normalizeCompanyId(
     : null
 }
 
+function normalizeText(
+  value: string | null | undefined,
+) {
+  const normalized =
+    value?.trim() ?? ""
+
+  return normalized.length > 0
+    ? normalized
+    : null
+}
+
 function isCompanyStatus(
   value: string | null | undefined,
 ): value is CompanyStatus {
@@ -94,6 +111,12 @@ function mapCompanyListItem(company: {
   approvedAt: Date | null
   suspendedAt: Date | null
   blockedAt: Date | null
+  statusChangeReason: string | null
+  statusChangedByAdminUser: {
+    id: string
+    email: string
+    name: string | null
+  } | null
   createdAt: Date
   updatedAt: Date
   memberships: Array<{
@@ -114,6 +137,8 @@ function mapCompanyListItem(company: {
     approvedAt: company.approvedAt,
     suspendedAt: company.suspendedAt,
     blockedAt: company.blockedAt,
+    statusChangeReason: company.statusChangeReason,
+    statusChangedByAdmin: company.statusChangedByAdminUser,
     createdAt: company.createdAt,
     updatedAt: company.updatedAt,
     owner:
@@ -161,6 +186,14 @@ export async function listAdminCompanies({
         approvedAt: true,
         suspendedAt: true,
         blockedAt: true,
+        statusChangeReason: true,
+        statusChangedByAdminUser: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
         createdAt: true,
         updatedAt: true,
         memberships: {
@@ -251,11 +284,17 @@ export async function getAdminCompanyStatusCounts(): Promise<AdminCompanyStatusC
 
 async function mutateCompanyStatus({
   companyId,
+  adminUserId,
+  reason,
+  requireReason,
   allowedFrom,
   data,
   invalidMessage,
 }: {
   companyId: string
+  adminUserId: string
+  reason?: string | null | undefined
+  requireReason: boolean
   allowedFrom: CompanyStatus[]
   data: {
     status: CompanyStatus
@@ -273,6 +312,28 @@ async function mutateCompanyStatus({
       ok: false,
       code: "invalid_company_id",
       message: "Impresa non valida.",
+    }
+  }
+
+  const normalizedAdminUserId =
+    normalizeText(adminUserId)
+
+  if (!normalizedAdminUserId) {
+    return {
+      ok: false,
+      code: "invalid_admin_user_id",
+      message: "Admin non valido.",
+    }
+  }
+
+  const normalizedReason =
+    normalizeText(reason)
+
+  if (requireReason && (!normalizedReason || normalizedReason.length < 3)) {
+    return {
+      ok: false,
+      code: "invalid_status_change_reason",
+      message: "Inserisci un motivo di almeno 3 caratteri.",
     }
   }
 
@@ -338,7 +399,11 @@ async function mutateCompanyStatus({
         where: {
           id: company.id,
         },
-        data,
+        data: {
+          ...data,
+          statusChangedByAdminUserId: normalizedAdminUserId,
+          statusChangeReason: normalizedReason,
+        },
         select: {
           id: true,
           status: true,
@@ -355,13 +420,20 @@ async function mutateCompanyStatus({
 
 export async function approveCompanyForMarketplace({
   companyId,
+  adminUserId,
+  reason,
   now = new Date(),
 }: {
   companyId: string
+  adminUserId: string
+  reason?: string | null
   now?: Date
 }): Promise<AdminCompanyStatusMutationResult> {
   return mutateCompanyStatus({
     companyId,
+    adminUserId,
+    reason,
+    requireReason: false,
     allowedFrom: [
       "PENDING_REVIEW",
       "SUSPENDED",
@@ -380,13 +452,20 @@ export async function approveCompanyForMarketplace({
 
 export async function suspendCompanyForMarketplace({
   companyId,
+  adminUserId,
+  reason,
   now = new Date(),
 }: {
   companyId: string
+  adminUserId: string
+  reason?: string | null
   now?: Date
 }): Promise<AdminCompanyStatusMutationResult> {
   return mutateCompanyStatus({
     companyId,
+    adminUserId,
+    reason,
+    requireReason: true,
     allowedFrom: [
       "APPROVED",
     ],
@@ -401,13 +480,20 @@ export async function suspendCompanyForMarketplace({
 
 export async function blockCompanyForMarketplace({
   companyId,
+  adminUserId,
+  reason,
   now = new Date(),
 }: {
   companyId: string
+  adminUserId: string
+  reason?: string | null
   now?: Date
 }): Promise<AdminCompanyStatusMutationResult> {
   return mutateCompanyStatus({
     companyId,
+    adminUserId,
+    reason,
+    requireReason: true,
     allowedFrom: [
       "PENDING_REVIEW",
       "APPROVED",

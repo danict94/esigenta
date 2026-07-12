@@ -276,6 +276,18 @@ model Company {
   blockedAt   DateTime?
 
   /**
+   * AUDIT — who/why for the most recent approve/suspend/block action.
+   * Deliberately a single generic pair, not one per action: approvedAt/
+   * suspendedAt/blockedAt above already record *when* each transition last
+   * happened; this only needs to answer "who did the current status, and
+   * why" for the admin UI, not a full history. Same FK pattern as
+   * Request's archivedByAdminUserId/archiveReason.
+   */
+  statusChangedByAdminUserId String?
+  statusChangedByAdminUser   User?     @relation("CompanyStatusChangeActor", fields: [statusChangedByAdminUserId], references: [id], onDelete: SetNull)
+  statusChangeReason         String?
+
+  /**
    * ONBOARDING CONTEXT ONLY
    * Captures the first professional category selected in the public signup flow.
    * Runtime matching must use CompanyCategory, not this onboarding snapshot.
@@ -315,6 +327,7 @@ model Company {
   @@index([onboardingCategorySlug])
   @@index([status])
   @@index([createdAt])
+  @@index([statusChangedByAdminUserId])
 }
 
 model CompanyCategory {
@@ -424,6 +437,7 @@ model User {
   archivedRequests                     Request[]                     @relation("RequestArchivedBy")
   deletedRequests                      Request[]                     @relation("RequestDeletedBy")
   commercialOverriddenRequests         Request[]                     @relation("RequestCommercialOverriddenBy")
+  companyStatusChanges                 Company[]                     @relation("CompanyStatusChangeActor")
 
   sessions                 Session[]
   accounts                 Account[]
