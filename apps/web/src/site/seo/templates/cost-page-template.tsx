@@ -1,11 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import {
-  getCostGuidePriceNote,
-  isIndexableCityPage,
-  type CostGuide,
-} from "../pages/costi";
+import { getCostGuidePriceNote, type CostGuide } from "../pages/costi";
 import { resolveInterventionHrefForCostGuide } from "../engine/resolve-seo-page";
 import { PublicShell } from "../../shell/public-shell";
 import { RequestCtaPanel } from "./request-cta-panel";
@@ -15,13 +11,28 @@ export type CostGuidePageProps = {
   guide: CostGuide;
 };
 
+/**
+ * Fase 5.G — fattori generici (non specifici di una città, nessun link,
+ * nessun prezzo locale) sul perché il preventivo può variare per zona.
+ * Le pagine città sono disabilitate: vedi engine/static-params.ts.
+ */
+const cityInfluenceFactors: readonly string[] = [
+  "accesso al cantiere",
+  "piano dell'immobile e disponibilità dell'ascensore",
+  "parcheggio e carico/scarico dei materiali",
+  "regole condominiali sugli orari di cantiere",
+  "trasporto dei materiali fino al cantiere",
+  "smaltimento delle macerie",
+  "disponibilità dei professionisti nella zona",
+  "complessità e stato dell'immobile",
+];
+
 export function CostGuidePage({ guide }: CostGuidePageProps) {
   const requestHref = `/richiesta/${guide.funnelSlug}`;
   const interventionHref = resolveInterventionHrefForCostGuide(
     guide.interventionSeoSlug,
   );
   const priceNote = getCostGuidePriceNote();
-  const indexableCityPages = guide.cityPages.filter(isIndexableCityPage);
 
   return (
     <PublicShell>
@@ -172,71 +183,35 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        {indexableCityPages.length > 0 ? (
-          <section aria-labelledby="costi-citta-title" className="eg-section bg-eg-calce-2">
-            <div className="eg-container">
-              <div className="mx-auto max-w-[760px] text-center">
-                <p className="eg-eyebrow">Citt&agrave;</p>
+        <section aria-labelledby="citta-preventivo-title" className="eg-section bg-eg-calce-2">
+          <div className="eg-container">
+            <div className="mx-auto max-w-[720px] text-center">
+              <p className="eg-eyebrow">Citt&agrave;</p>
 
-                <h2 id="costi-citta-title" className="eg-h2 mt-4">
-                  Quanto costa {guide.topicLabel} nella tua citt&agrave;?
-                </h2>
+              <h2 id="citta-preventivo-title" className="eg-h2 mt-4">
+                La citt&agrave; pu&ograve; incidere sul preventivo?
+              </h2>
 
-                <p className="eg-body-muted mx-auto mt-5 max-w-[56ch]">
-                  Le pagine città leggono la stessa fascia nazionale qui sopra,
-                  con una lettura locale di cosa può incidere: cantiere,
-                  accessibilità, disponibilità dei professionisti e
-                  caratteristiche dell&apos;immobile. Non sono un prezzo di zona.
-                </p>
-
-                <div className="mt-6 flex flex-wrap justify-center gap-2">
-                  {indexableCityPages.map((cityPage) => (
-                    <Link
-                      key={cityPage.citySlug}
-                      href={cityPage.canonicalPath}
-                      className="inline-flex min-h-9 items-center rounded-full border border-eg-hairline bg-eg-calce px-3 text-sm font-medium leading-5 text-eg-ardesia transition-colors hover:border-eg-cotto hover:text-eg-cotto-dark"
-                      prefetch={false}
-                    >
-                      {cityPage.city}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-12 grid gap-4 md:grid-cols-2">
-                {guide.citySections.map((section) => {
-                  const cityPage = indexableCityPages.find(
-                    (page) => page.city === section.city,
-                  );
-
-                  return (
-                    <article key={section.city} className="eg-panel p-5">
-                      <h3 className="eg-h3 text-[24px]">{section.title}</h3>
-
-                      <p className="eg-body-muted mt-3">{section.summary}</p>
-                      <p className="eg-body-muted mt-3">{section.localReading}</p>
-
-                      <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                        <MiniList title="Casi frequenti" items={section.typicalCases} />
-                        <MiniList title="Fattori locali" items={section.factors} />
-                      </div>
-
-                      {cityPage ? (
-                        <Link
-                          href={cityPage.canonicalPath}
-                          className="eg-button-ghost mt-6 w-full sm:w-auto"
-                          prefetch={false}
-                        >
-                          Costi a {cityPage.city}
-                        </Link>
-                      ) : null}
-                    </article>
-                  );
-                })}
-              </div>
+              <p className="eg-body-muted mx-auto mt-5 max-w-[62ch]">
+                Le fasce di questa guida sono nazionali: {guide.topicLabel} nella
+                tua zona pu&ograve; costare diversamente in base a fattori
+                locali, non a un prezzo di citt&agrave; che oggi non abbiamo.
+              </p>
             </div>
-          </section>
-        ) : null}
+
+            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {cityInfluenceFactors.map((factor) => (
+                <li
+                  key={factor}
+                  className="eg-panel flex gap-3 p-4 text-sm leading-6 text-eg-ardesia"
+                >
+                  <Dot />
+                  <span>{factor}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
         <section aria-labelledby="risparmiare-title" className="eg-section">
           <div className="eg-container">
@@ -297,6 +272,31 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   );
 }
 
+const priceTableGridCols =
+  "md:grid-cols-[minmax(0,1.15fr)_minmax(4.5rem,0.45fr)_minmax(8rem,0.6fr)_minmax(0,1.35fr)]";
+
+type PriceRowGroup = { category: string; rows: CostGuide["priceRows"] };
+
+/** Raggruppa preservando l'ordine di prima apparizione di ogni categoria nell'array sorgente. */
+function groupPriceRowsByCategory(rows: CostGuide["priceRows"]): PriceRowGroup[] {
+  const groups: PriceRowGroup[] = [];
+  const groupByCategory = new Map<string, PriceRowGroup>();
+
+  for (const row of rows) {
+    const existingGroup = groupByCategory.get(row.category);
+
+    if (existingGroup) {
+      existingGroup.rows.push(row);
+    } else {
+      const newGroup: PriceRowGroup = { category: row.category, rows: [row] };
+      groupByCategory.set(row.category, newGroup);
+      groups.push(newGroup);
+    }
+  }
+
+  return groups;
+}
+
 function PriceTable({
   rows,
   sourceLabel,
@@ -306,57 +306,33 @@ function PriceTable({
   sourceLabel?: string;
   sourceYear?: string;
 }) {
+  const groups = groupPriceRowsByCategory(rows);
+
   return (
     <>
       <div className="eg-panel mt-12 overflow-hidden">
-        <div className="hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1.2fr)]">
+        <div
+          className={`hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid ${priceTableGridCols}`}
+        >
           <span>Voce</span>
+          <span>Unit&agrave;</span>
           <span>Fascia indicativa</span>
           <span>Note</span>
         </div>
 
-        <div className="divide-y divide-eg-hairline">
-          {rows.map((row) => (
-            <div
-              key={row.label}
-              className="grid gap-4 px-5 py-5 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1.2fr)]"
-            >
-              <div>
-                <p className="eg-mono-label md:hidden">Voce</p>
-                <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.label}</p>
-                {row.unit ? (
-                  <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.1em] text-eg-ardesia-2">
-                    {row.unit}
-                  </p>
-                ) : null}
-              </div>
-
-              <div>
-                <p className="eg-mono-label md:hidden">Fascia</p>
-                <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.range}</p>
-              </div>
-
-              <div>
-                <p className="eg-mono-label md:hidden">Note</p>
-                <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
-
-                {row.includes ? (
-                  <p className="mt-2 text-[13px] leading-5 text-eg-ardesia">
-                    <span className="font-medium text-eg-terra">Include:</span>{" "}
-                    {row.includes}
-                  </p>
-                ) : null}
-
-                {row.excludes ? (
-                  <p className="mt-1 text-[13px] leading-5 text-eg-ardesia">
-                    <span className="font-medium text-eg-terra">Escluso:</span>{" "}
-                    {row.excludes}
-                  </p>
-                ) : null}
-              </div>
+        {groups.map((group) => (
+          <div key={group.category}>
+            <div className="border-b border-eg-hairline bg-eg-calce-2 px-5 py-2.5">
+              <p className="eg-mono-label">{group.category}</p>
             </div>
-          ))}
-        </div>
+
+            <div className="divide-y divide-eg-hairline">
+              {group.rows.map((row) => (
+                <PriceTableRow key={row.label} row={row} />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
       {sourceLabel ? (
@@ -370,19 +346,50 @@ function PriceTable({
   );
 }
 
-function MiniList({ title, items }: { title: string; items: readonly string[] }) {
+function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
   return (
-    <div>
-      <h4 className="text-sm font-medium leading-6 text-eg-terra">{title}</h4>
+    <div
+      className={`grid gap-4 px-5 py-5 text-sm leading-6 md:grid ${priceTableGridCols}`}
+    >
+      <div>
+        <p className="eg-mono-label md:hidden">Voce</p>
+        <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.label}</p>
+      </div>
 
-      <ul className="mt-2 space-y-2 text-sm leading-6 text-eg-ardesia">
-        {items.map((item) => (
-          <li key={item} className="flex gap-2">
-            <Dot />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <p className="eg-mono-label md:hidden">Unit&agrave;</p>
+        <p className="mt-1 text-eg-ardesia md:mt-0">{row.unit ?? "—"}</p>
+      </div>
+
+      <div>
+        <p className="eg-mono-label md:hidden">Fascia</p>
+        <p className="mt-1 font-medium text-eg-terra [font-variant-numeric:tabular-nums] md:mt-0">
+          {row.range}
+        </p>
+      </div>
+
+      <div>
+        <p className="eg-mono-label md:hidden">Note</p>
+        <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
+
+        {row.includes || row.excludes ? (
+          <div className="mt-2 grid gap-1">
+            {row.includes ? (
+              <p className="text-[12.5px] leading-5 text-eg-ardesia">
+                <span className="eg-mono-label mr-1.5 text-eg-cotto-dark">Include</span>
+                {row.includes}
+              </p>
+            ) : null}
+
+            {row.excludes ? (
+              <p className="text-[12.5px] leading-5 text-eg-ardesia">
+                <span className="eg-mono-label mr-1.5">Escluso</span>
+                {row.excludes}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

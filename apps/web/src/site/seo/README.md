@@ -88,6 +88,37 @@ Regola di fondo, da non violare mai: **un dato ha un solo posto dove vivere**.
 
 ---
 
+## Pagine città: DISABILITATE (Fase 5.G)
+
+`/costi/<slug>/[citySlug]` non genera più nessuna pagina, indipendentemente
+dai flag in `geo/supported-cities.ts` o dal contenuto in
+`local-overrides.ts`. Il gate è `engine/static-params.ts` →
+`getCostGuideCityStaticParams()`, che oggi ritorna sempre `[]`; con
+`dynamicParams = false` sulla route, questo trasforma OGNI
+`/costi/<slug>/<città>` (comprese quelle già esistenti, es.
+`ristrutturare-bagno/milano`) in 404, sia in build che in `next dev`.
+
+Perché: senza dati locali reali (osservazioni di prezzo, preventivi
+raccolti) queste pagine leggevano solo la fascia nazionale con una lettura
+locale — troppo vicino a una doorway page per restare pubbliche. La guida
+nazionale (`/costi/<slug>`) resta la pagina forte indicizzabile; ha un
+blocco onesto "La città può incidere sul preventivo?" con fattori generici,
+senza link a pagine città e senza prezzi locali.
+
+**Non provare ad "aggiustare" questo aggiungendo o modificando città in
+`geo/supported-cities.ts` o `local-overrides.ts`: non ha effetto sulla
+generazione finché `getCostGuideCityStaticParams()` resta `[]`.** La
+struttura sotto (`geo/`, `local-overrides.ts`, `market-data/city-price-index.ts`,
+`engine/geo-policy.ts`) resta intatta apposta: torna operativa quando
+esisteranno dati locali reali o una metodologia di calcolo documentata e
+difendibile — a quel punto `getCostGuideCityStaticParams()` torna a
+chiamare `listIndexableCostGuideCityPages()` (ancora definita in
+`pages/costi/index.ts`, oggi semplicemente non richiamata da nessuna route).
+
+La procedura "Caso 1" qui sotto resta come riferimento per QUANDO le
+pagine città verranno riattivate: seguirla oggi produce contenuto pronto
+ma non pubblicato, il che va bene, ma non aspettarti che la pagina compaia.
+
 ## Caso 1 — Aggiungere una città a una guida costi già esistente
 
 Esempio: aggiungere "Bari" alla guida `ristrutturare-bagno`.
@@ -284,6 +315,10 @@ prezzo semplicemente non compare nella landing (pattern già esistente in
    genera le pagine statiche (`generateStaticParams`) e qualsiasi errore di
    composizione (es. città non registrata in `geo/cities.ts`) fallisce a
    build-time con un errore esplicito (vedi i controlli in `content.ts`).
+8. **Nessuna pagina città è pubblica (Fase 5.G).** Vedi la sezione dedicata
+   sopra prima di toccare geo/, local-overrides.ts o static-params.ts per
+   una città: senza dati locali reali restano disabilitate a prescindere dai
+   flag.
 
 ## Limiti attuali (non risolverli da soli, sono scope di fasi future)
 

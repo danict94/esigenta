@@ -96,7 +96,7 @@ export const ristrutturareBagnoLanding: SeoInterventionLanding = {
       "Rinnovo leggero bagno",
       "Ristrutturazione completa",
       "Costo indicativo al mq",
-      "Demolizione e smaltimento",
+      "Punto acqua completo",
       "Trasformazione vasca in doccia",
     ],
     factors: [
