@@ -17,6 +17,17 @@ below. Sending technically-valid mail from a shared, generic provider
 domain with a mismatched display name is a textbook cause of spam
 placement, independent of sandbox status.
 
+**STATUS UPDATE (2026-07-12, FASE 7.C):** the display-name inconsistency
+(item 9 of the TASK 5 checklist) is fixed — `apps/admin/.env.local`
+(local, untracked, never committed) now reads
+`RESEND_FROM_EMAIL="Esigenta <onboarding@resend.dev>"`, matching root
+`.env`. `.env.example` now documents `RESEND_FROM_EMAIL` with an explicit
+`your-verified-domain.it` placeholder and a comment pointing back to this
+doc. Everything else below — no verified custom domain, no SPF/DKIM/DMARC,
+`PRODUCTION_READY = NO` — is unchanged: those remain infrastructure/DNS
+work (TASK 2/3, checklist items 1–8, 10) that only whoever owns the real
+domain registration and Resend account access can complete.
+
 ---
 
 ## TASK 1 — Current email configuration inventory
