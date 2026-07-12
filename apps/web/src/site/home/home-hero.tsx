@@ -9,6 +9,7 @@ import {
 
 const MIN_SEARCH_QUERY_LENGTH = 3;
 const SEARCH_ERROR_MESSAGE = "Non riesco a caricare i risultati ora";
+const SEARCH_VALIDATION_MESSAGE_ID = "home-search-validation";
 
 type ScatterStyle = CSSProperties &
   Record<
@@ -27,6 +28,7 @@ type ScatterStyle = CSSProperties &
 export function HomeHero() {
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -34,6 +36,7 @@ export function HomeHero() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -132,15 +135,42 @@ export function HomeHero() {
     router.push(`/richiesta/${encodeURIComponent(result.slug)}${qs ? `?${qs}` : ""}`);
   }
 
-  function submitSearch() {
-    const firstResult = displayedResults[0];
+  function focusSearchInput() {
+    setIsFocused(true);
+    inputRef.current?.focus();
+  }
 
-    if (firstResult) {
-      goToResult(firstResult);
+  function selectResult(result: SearchResult) {
+    setValidationError(null);
+    goToResult(result);
+  }
+
+  function submitSearch() {
+    focusSearchInput();
+
+    if (!hasQuery) {
+      setValidationError('Scrivi cosa devi fare, ad esempio “ristrutturare bagno”.');
       return;
     }
 
-    router.push(trimmedQuery ? `/servizi?q=${encodeURIComponent(trimmedQuery)}` : "/servizi");
+    if (!isSearchQueryValid) {
+      setValidationError('Scrivi almeno 3 caratteri, ad esempio “tetto”.');
+      return;
+    }
+
+    if (isLoading || !hasSearched) {
+      setValidationError("Cerco gli interventi disponibili...");
+      return;
+    }
+
+    if (displayedResults.length > 0) {
+      setValidationError("Scegli un intervento tra i risultati per continuare.");
+      return;
+    }
+
+    setValidationError(
+      'Nessun intervento trovato. Prova con “rifare tetto” o “installare fotovoltaico”.',
+    );
   }
 
   return (
@@ -192,6 +222,7 @@ export function HomeHero() {
             }}
           >
             <input
+              ref={inputRef}
               type="text"
               value={query}
               onFocus={() => {
@@ -199,24 +230,42 @@ export function HomeHero() {
                 keepDropdownInView();
               }}
               onBlur={() => {
-                setTimeout(() => setIsFocused(false), 150);
+                setTimeout(() => {
+                  if (!searchRef.current?.contains(document.activeElement)) {
+                    setIsFocused(false);
+                  }
+                }, 150);
               }}
               onChange={(event) => {
                 const nextQuery = event.target.value;
                 setQuery(nextQuery);
+                setValidationError(null);
                 resetShortSearch(nextQuery);
               }}
               aria-label="Di cosa hai bisogno?"
-              placeholder="ad esempio: bagno"
+              aria-invalid={validationError !== null}
+              aria-describedby={validationError ? SEARCH_VALIDATION_MESSAGE_ID : undefined}
+              placeholder="Es. ristrutturare bagno"
               className="min-w-0 flex-1 border-0 bg-transparent text-lg leading-8 text-eg-terra outline-none placeholder:text-eg-ardesia-2 max-[860px]:text-base"
             />
             <button
               type="submit"
               className="shrink-0 border-0 bg-transparent font-mono text-[13px] font-medium uppercase tracking-[0.16em] text-eg-cotto-dark transition-colors hover:text-eg-cotto max-[860px]:text-[11px] max-[860px]:tracking-[0.12em]"
             >
-              AVVIA <span aria-hidden="true">&rarr;</span>
+              CERCA <span aria-hidden="true">&rarr;</span>
             </button>
           </form>
+
+          {validationError ? (
+            <p
+              id={SEARCH_VALIDATION_MESSAGE_ID}
+              role="status"
+              aria-live="polite"
+              className="mt-3 text-left text-sm leading-5 text-eg-cotto-dark"
+            >
+              {validationError}
+            </p>
+          ) : null}
 
           {showDropdown ? (
             <ul
@@ -229,7 +278,7 @@ export function HomeHero() {
                 searchError={searchError}
                 hasSearched={hasSearched}
                 results={displayedResults}
-                onSelect={goToResult}
+                onSelect={selectResult}
               />
             </ul>
           ) : null}

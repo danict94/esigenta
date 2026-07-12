@@ -380,12 +380,19 @@ export function RequestStepUI({
   return (
     <div className="mt-8 flex flex-col gap-8">
       <p className="sr-only">
-        {selectedInterventionName}. Passaggio {stepIndex + 1} di {totalSteps}.
-        {filledAnswers} risposte raccolte.
+        Passaggio {stepIndex + 1} di {totalSteps}. {filledAnswers} risposte
+        raccolte.
       </p>
 
       <div>
-        <div className="h-px w-20 bg-eg-cotto-dark" aria-hidden="true" />
+        <div className="w-full border border-eg-hairline bg-eg-calce-2 px-4 py-3 sm:w-fit sm:max-w-full">
+          <p className="eg-mono-label">Intervento selezionato</p>
+          <p className="mt-1 break-words text-sm font-medium leading-6 text-eg-terra">
+            {selectedInterventionName}
+          </p>
+        </div>
+
+        <div className="mt-6 h-px w-20 bg-eg-cotto-dark" aria-hidden="true" />
 
         <div className="mt-6">
           <p className="eg-eyebrow">
