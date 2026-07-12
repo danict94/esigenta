@@ -1,13 +1,37 @@
 import Link from "next/link";
 
 import {
+  getAdminRequestStatusCounts,
   listAdminRequests,
   listUnverifiedRequests,
+  normalizeAdminRequestStatusFilter,
   type AdminRequestListItem,
+  type AdminRequestStatusFilter,
 } from "@esigenta/domain";
-import { Badge, Card, PageShell, buttonClassName } from "@esigenta/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  Input,
+  PageShell,
+  buttonClassName,
+  cn,
+} from "@esigenta/ui";
+
+import { AdminStatusPill } from "../../../components/admin-status-pill";
 
 export const dynamic = "force-dynamic";
+
+type RequestsPageProps = {
+  searchParams?: Promise<{
+    status?: string | string[];
+    q?: string | string[];
+  }>;
+};
+
+function readSearchParam(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("it-IT", {
@@ -54,55 +78,23 @@ function formatFreshness(date: Date) {
   return formatDate(date);
 }
 
-function getStatusBadgeVariant(status: string) {
-  if (status === "APPROVED" || status === "PUBLISHED") {
-    return "success";
-  }
-
-  if (status === "REJECTED") {
-    return "danger";
-  }
-
-  if (status === "PENDING_REVIEW") {
-    return "warning";
-  }
-
-  return "neutral";
-}
-
-function getStatusLabel(status: string) {
-  if (status === "APPROVED") {
-    return "Approvata";
-  }
-
-  if (status === "PUBLISHED") {
-    return "Pubblicata";
-  }
-
-  if (status === "REJECTED") {
-    return "Rifiutata";
-  }
-
-  if (status === "PENDING_REVIEW") {
-    return "In revisione";
-  }
-
-  if (status === "CLOSED") {
-    return "Chiusa";
-  }
-
-  return status;
-}
-
 function RequestCard({ request }: { request: AdminRequestListItem }) {
+  const badge = request.adminBadge;
+
   return (
     <Card className="p-5 transition-colors hover:border-eg-cotto">
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant={getStatusBadgeVariant(request.status)}>
-              {getStatusLabel(request.status)}
-            </Badge>
+          <div className="flex flex-wrap items-center gap-3">
+            <AdminStatusPill color={badge.color} label={badge.label} />
+
+            {badge.secondaryBadges.map((secondaryBadge) => (
+              <AdminStatusPill
+                key={secondaryBadge.label}
+                color={secondaryBadge.color}
+                label={secondaryBadge.label}
+              />
+            ))}
 
             <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
               {formatFreshness(request.createdAt)}
@@ -113,6 +105,10 @@ function RequestCard({ request }: { request: AdminRequestListItem }) {
             {formatInterventionLabel(request.interventionSlug)}
           </h2>
 
+          <p className="mt-1 text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+            {request.requestCode ?? "Codice non disponibile"}
+          </p>
+
           <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-ardesia">
             <span>
               <span className="text-eg-ardesia">Città:</span>{" "}
@@ -122,6 +118,11 @@ function RequestCard({ request }: { request: AdminRequestListItem }) {
             <span>
               <span className="text-eg-ardesia">Cliente:</span>{" "}
               {request.customerName ?? "-"}
+            </span>
+
+            <span>
+              <span className="text-eg-ardesia">Email:</span>{" "}
+              {request.customerEmail ?? "-"}
             </span>
 
             <span>
@@ -189,21 +190,136 @@ function RequestListSection({
   );
 }
 
-export default async function RequestsModerationPage() {
-  const [requests, unverifiedRequests] = await Promise.all([
-    listAdminRequests(),
+function RequestStatusTabs({
+  activeStatus,
+  counts,
+}: {
+  activeStatus: AdminRequestStatusFilter;
+  counts: Awaited<ReturnType<typeof getAdminRequestStatusCounts>>;
+}) {
+  const tabs = [
+    { label: "Tutte", href: "/requests", count: counts.all, status: "ALL" },
+    {
+      label: "Non verificate",
+      href: "/requests?status=PENDING_VERIFICATION",
+      count: counts.pendingVerification,
+      status: "PENDING_VERIFICATION",
+    },
+    {
+      label: "Da approvare",
+      href: "/requests?status=PENDING_REVIEW",
+      count: counts.pendingReview,
+      status: "PENDING_REVIEW",
+    },
+    {
+      label: "Approvate",
+      href: "/requests?status=APPROVED",
+      count: counts.approved,
+      status: "APPROVED",
+    },
+    {
+      label: "Pubblicate",
+      href: "/requests?status=PUBLISHED",
+      count: counts.published,
+      status: "PUBLISHED",
+    },
+    {
+      label: "Rifiutate",
+      href: "/requests?status=REJECTED",
+      count: counts.rejected,
+      status: "REJECTED",
+    },
+    {
+      label: "Chiuse",
+      href: "/requests?status=CLOSED",
+      count: counts.closed,
+      status: "CLOSED",
+    },
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tabs.map((tab) => {
+        const isActive = activeStatus === tab.status;
+
+        return (
+          <Link
+            key={tab.href}
+            href={tab.href}
+            className={cn(
+              "inline-flex items-center gap-2 border px-3 py-2 text-sm font-medium transition-colors",
+              isActive
+                ? "border-eg-cotto bg-eg-cotto text-eg-calce"
+                : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:text-eg-terra",
+            )}
+          >
+            <span>{tab.label}</span>
+            <span
+              className={cn(
+                "text-xs",
+                isActive ? "text-eg-calce" : "text-eg-ardesia",
+              )}
+            >
+              {tab.count}
+            </span>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function RequestSearchForm({
+  activeStatus,
+  query,
+}: {
+  activeStatus: AdminRequestStatusFilter;
+  query: string;
+}) {
+  return (
+    <form className="flex gap-2">
+      {activeStatus !== "ALL" ? (
+        <input type="hidden" name="status" value={activeStatus} />
+      ) : null}
+      <Input
+        type="search"
+        name="q"
+        defaultValue={query}
+        placeholder="Cerca per codice, cliente, email o intervento…"
+        className="max-w-sm"
+      />
+      <Button type="submit" variant="ghost">
+        Cerca
+      </Button>
+    </form>
+  );
+}
+
+export default async function RequestsModerationPage({
+  searchParams,
+}: RequestsPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const activeStatus = normalizeAdminRequestStatusFilter(
+    readSearchParam(resolvedSearchParams.status),
+  );
+  const query = readSearchParam(resolvedSearchParams.q) ?? "";
+
+  const [requests, counts, unverifiedRequests] = await Promise.all([
+    listAdminRequests({ status: activeStatus, search: query }),
+    getAdminRequestStatusCounts(),
     listUnverifiedRequests(),
   ]);
 
-  // Same lean array, partitioned in memory — no extra query. "Da approvare"
-  // (PENDING_REVIEW) needs admin action, so it surfaces first; the rest are
-  // terminal/informational states.
-  const pendingReviewRequests = requests.filter(
-    (request) => request.status === "PENDING_REVIEW",
-  );
-  const otherRequests = requests.filter(
-    (request) => request.status !== "PENDING_REVIEW",
-  );
+  // Only when viewing "Tutte" do we split PENDING_REVIEW to the top — a
+  // single-status tab already shows one homogeneous group, splitting it
+  // again would be redundant.
+  const showsSplitSections = activeStatus === "ALL";
+  const pendingReviewRequests = showsSplitSections
+    ? requests.filter((request) => request.status === "PENDING_REVIEW")
+    : [];
+  const otherRequests = showsSplitSections
+    ? requests.filter((request) => request.status !== "PENDING_REVIEW")
+    : requests;
 
   return (
     <PageShell size="lg">
@@ -233,6 +349,14 @@ export default async function RequestsModerationPage() {
         </div>
       </header>
 
+      <section className="mt-6">
+        <RequestStatusTabs activeStatus={activeStatus} counts={counts} />
+      </section>
+
+      <section className="mt-4">
+        <RequestSearchForm activeStatus={activeStatus} query={query} />
+      </section>
+
       {unverifiedRequests.length > 0 ? (
         <Link href="/requests/non-verificate" className="mt-8 block">
           <Card className="border-2 border-eg-cotto bg-eg-calce-2 p-5 transition-colors hover:border-eg-cotto">
@@ -244,7 +368,8 @@ export default async function RequestsModerationPage() {
                 <p className="mt-1 text-sm text-eg-ardesia">
                   Non sono nella coda di revisione e non possono entrare nel
                   marketplace finché il cliente non conferma l&apos;email (o
-                  un admin la verifica manualmente).
+                  un admin la verifica manualmente). Usa questa pagina per le
+                  azioni di recupero (reinvio email, verifica manuale).
                 </p>
               </div>
 
@@ -269,7 +394,7 @@ export default async function RequestsModerationPage() {
             </div>
           </Card>
         </section>
-      ) : (
+      ) : showsSplitSections ? (
         <>
           {pendingReviewRequests.length > 0 ? (
             <RequestListSection
@@ -284,13 +409,23 @@ export default async function RequestsModerationPage() {
           {otherRequests.length > 0 ? (
             <RequestListSection
               title="Altre richieste"
-              description="Approvate, pubblicate, rifiutate o chiuse."
+              description="Non verificate, approvate, pubblicate, rifiutate o chiuse."
               countLabel={`${otherRequests.length} richieste`}
               countVariant="neutral"
               requests={otherRequests}
             />
           ) : null}
         </>
+      ) : (
+        <section className="mt-8">
+          <ul className="grid gap-4">
+            {requests.map((request) => (
+              <li key={request.id}>
+                <RequestCard request={request} />
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </PageShell>
   );

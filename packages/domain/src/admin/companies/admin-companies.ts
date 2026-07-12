@@ -1,5 +1,6 @@
 import type {
   CompanyStatus,
+  Prisma,
 } from "@prisma/client"
 
 import {
@@ -39,6 +40,14 @@ export type AdminCompanyListItem = {
   } | null
   createdAt: Date
   updatedAt: Date
+  /**
+   * The company account's own email — always sourced from a real
+   * CompanyMembership (owner preferred, otherwise the earliest member),
+   * NEVER from statusChangedByAdminUser or AdminProfile. Null only when a
+   * company genuinely has no membership at all (should not happen in
+   * practice, but the UI must show "—" rather than guess).
+   */
+  email: string | null
   owner: {
     id: string
     email: string
@@ -144,6 +153,7 @@ function mapCompanyListItem(company: {
   createdAt: Date
   updatedAt: Date
   memberships: Array<{
+    role: string
     user: {
       id: string
       email: string
@@ -169,6 +179,14 @@ function mapCompanyListItem(company: {
     vatNumber: company.vatNumber,
   })
 
+  // Owner preferred; otherwise the earliest member added (memberships are
+  // pre-sorted by createdAt asc in the query) — never an AdminProfile user,
+  // membership rows are exclusively company-side accounts.
+  const owner =
+    company.memberships.find((m) => m.role === "OWNER")?.user ??
+    company.memberships[0]?.user ??
+    null
+
   return {
     id: company.id,
     name: company.name,
@@ -183,22 +201,63 @@ function mapCompanyListItem(company: {
     statusChangedByAdmin: company.statusChangedByAdminUser,
     createdAt: company.createdAt,
     updatedAt: company.updatedAt,
-    owner:
-      company.memberships[0]?.user ??
-      null,
+    email: owner?.email ?? null,
+    owner,
     profileCompleteness,
     adminBadge: deriveCompanyAdminBadge({
       status: company.status,
       statusChangeReason: company.statusChangeReason,
-      profileCompleteness,
     }),
+  }
+}
+
+function normalizeCompanySearch(
+  search: string | undefined,
+): string | null {
+  const trimmed = search?.trim() ?? ""
+  return trimmed.length > 0 ? trimmed : null
+}
+
+/**
+ * Server-side search only, no client-side filtering of a paginated list.
+ * name/vatNumber/phone are scalar columns on Company (cheap). The email
+ * clause reaches through the existing memberships relation via a `some`
+ * filter — Prisma/Postgres translate this into a single EXISTS subquery,
+ * not a separate query or N+1.
+ */
+function buildCompanySearchWhere(
+  search: string | undefined,
+): Prisma.CompanyWhereInput {
+  const normalized = normalizeCompanySearch(search)
+
+  if (!normalized) {
+    return {}
+  }
+
+  return {
+    OR: [
+      { name: { contains: normalized, mode: "insensitive" } },
+      { vatNumber: { contains: normalized, mode: "insensitive" } },
+      { phone: { contains: normalized, mode: "insensitive" } },
+      {
+        memberships: {
+          some: {
+            user: {
+              email: { contains: normalized, mode: "insensitive" },
+            },
+          },
+        },
+      },
+    ],
   }
 }
 
 export async function listAdminCompanies({
   status,
+  search,
 }: {
   status?: AdminCompanyStatusFilter
+  search?: string
 } = {}): Promise<AdminCompanyListItem[]> {
   const normalizedStatus =
     status === "ALL"
@@ -218,6 +277,7 @@ export async function listAdminCompanies({
                 normalizedStatus,
             }
           : {}),
+        ...buildCompanySearchWhere(search),
       },
       orderBy: [
         {
@@ -259,14 +319,11 @@ export async function listAdminCompanies({
           },
         },
         memberships: {
-          where: {
-            role: "OWNER",
-          },
           orderBy: {
             createdAt: "asc",
           },
-          take: 1,
           select: {
+            role: true,
             user: {
               select: {
                 id: true,

@@ -1,10 +1,5 @@
 import type { CompanyStatus } from "@prisma/client"
 
-import {
-  companyProfileCompletenessFieldLabels,
-  type CompanyProfileCompleteness,
-} from "../../company/profile/derive-company-profile-completeness"
-
 export type CompanyAdminBadgeColor =
   | "green"
   | "orange"
@@ -26,11 +21,17 @@ export type CompanyAdminBadge = {
 }
 
 /**
- * THE single source of truth for the admin "traffic light" on a company row
- * — pure UX derivation, never written to Company, never consulted by any
+ * THE single source of truth for the admin "Stato" pill on a company row —
+ * pure UX derivation, never written to Company, never consulted by any
  * operational gate (isCompanyMarketplaceReady, credit purchase, unlock all
- * remain unaware of this). Reuses deriveCompanyProfileCompleteness's output
- * rather than re-deriving completeness itself.
+ * remain unaware of this).
+ *
+ * Status-only (Phase 8.G): profile completeness moved to its own separate
+ * "Profilo" column/pill, computed directly from
+ * deriveCompanyProfileCompleteness where the row is built — so this
+ * function no longer conflates "is the company approved" with "is its
+ * profile complete," which used to make APPROVED companies show
+ * "Completa"/"Incompleta" instead of a real status label.
  *
  * SUSPENDED is orange (not red) deliberately, to keep the same visual
  * distinction the admin list already made before this badge existed
@@ -44,11 +45,9 @@ export type CompanyAdminBadge = {
 export function deriveCompanyAdminBadge({
   status,
   statusChangeReason,
-  profileCompleteness,
 }: {
   status: CompanyStatus
   statusChangeReason: string | null
-  profileCompleteness: CompanyProfileCompleteness
 }): CompanyAdminBadge {
   if (status === "BLOCKED") {
     return {
@@ -78,21 +77,10 @@ export function deriveCompanyAdminBadge({
   }
 
   // APPROVED
-  if (profileCompleteness.isComplete) {
-    return {
-      color: "green",
-      label: "Operativa e completa",
-      severity: "ok",
-      reasons: [],
-    }
-  }
-
   return {
-    color: "orange",
-    label: "Operativa, profilo incompleto",
-    severity: "warning",
-    reasons: profileCompleteness.missing.map(
-      (field) => companyProfileCompletenessFieldLabels[field],
-    ),
+    color: "green",
+    label: "Approvata",
+    severity: "ok",
+    reasons: [],
   }
 }

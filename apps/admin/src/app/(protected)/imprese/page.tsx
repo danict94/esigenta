@@ -17,6 +17,7 @@ import {
 import {
   Badge,
   Button,
+  Input,
   PageShell,
   Textarea,
   cn,
@@ -26,11 +27,16 @@ import {
   requireAdmin,
 } from "../../../auth/server"
 
+import {
+  AdminStatusPill,
+} from "../../../components/admin-status-pill"
+
 export const dynamic = "force-dynamic"
 
 type AdminCompaniesPageProps = {
   searchParams?: Promise<{
     status?: string | string[]
+    q?: string | string[]
   }>
 }
 
@@ -57,12 +63,6 @@ function formatDate(date: Date | null) {
   return new Intl.DateTimeFormat("it-IT", {
     dateStyle: "medium",
   }).format(date)
-}
-
-function formatValue(value: string | null) {
-  return value && value.trim().length > 0
-    ? value
-    : "-"
 }
 
 function getStatusEventDate(
@@ -99,7 +99,7 @@ function StatusEventInfo({
     <p className="mt-1 text-xs leading-5 text-eg-ardesia">
       {eventDate ? formatDate(eventDate) : null}
       {company.statusChangedByAdmin
-        ? ` — ${
+        ? ` — admin: ${
             company.statusChangedByAdmin.name ??
             company.statusChangedByAdmin.email
           }`
@@ -109,24 +109,6 @@ function StatusEventInfo({
         : null}
     </p>
   )
-}
-
-function badgeVariantForColor(
-  color: AdminCompanyListItem["adminBadge"]["color"],
-) {
-  if (color === "green") {
-    return "success" as const
-  }
-
-  if (color === "red") {
-    return "danger" as const
-  }
-
-  if (color === "orange" || color === "yellow") {
-    return "warning" as const
-  }
-
-  return "neutral" as const
 }
 
 function CompanyBadge({
@@ -140,9 +122,10 @@ function CompanyBadge({
 
   return (
     <div>
-      <Badge variant={badgeVariantForColor(badge.color)}>
-        {badge.label}
-      </Badge>
+      <AdminStatusPill
+        color={badge.color}
+        label={badge.label}
+      />
       {visibleReasons.length > 0 ? (
         <p className="mt-1 text-xs leading-5 text-eg-ardesia">
           {visibleReasons.join(" · ")}
@@ -150,6 +133,47 @@ function CompanyBadge({
         </p>
       ) : null}
     </div>
+  )
+}
+
+function ProfileBadge({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  const isComplete = company.profileCompleteness.isComplete
+
+  return (
+    <AdminStatusPill
+      color={isComplete ? "green" : "orange"}
+      label={isComplete ? "Completa" : "Incompleta"}
+    />
+  )
+}
+
+function CompanySearchForm({
+  activeStatus,
+  query,
+}: {
+  activeStatus: AdminCompanyStatusFilter
+  query: string
+}) {
+  return (
+    <form className="flex gap-2">
+      {activeStatus !== "ALL" ? (
+        <input type="hidden" name="status" value={activeStatus} />
+      ) : null}
+      <Input
+        type="search"
+        name="q"
+        defaultValue={query}
+        placeholder="Cerca per nome, P.IVA, email o telefono…"
+        className="max-w-sm"
+      />
+      <Button type="submit" variant="ghost">
+        Cerca
+      </Button>
+    </form>
   )
 }
 
@@ -341,13 +365,24 @@ function CompanyNameCell({
       <p className="truncate text-sm font-semibold text-eg-terra">
         {company.name}
       </p>
-      <p className="mt-1 truncate text-xs text-eg-ardesia">
-        {company.owner
-          ? company.owner.name ??
-            company.owner.email
-          : "Owner non disponibile"}
-      </p>
+      {company.owner?.name ? (
+        <p className="mt-1 truncate text-xs text-eg-ardesia">
+          {company.owner.name}
+        </p>
+      ) : null}
     </div>
+  )
+}
+
+function CompanyEmailCell({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  return (
+    <span className="break-words text-eg-ardesia">
+      {company.email ?? "—"}
+    </span>
   )
 }
 
@@ -370,7 +405,7 @@ function StatusTabs({
       status: "ALL",
     },
     {
-      label: "Da verificare",
+      label: "Da approvare",
       href: "/imprese?status=PENDING_REVIEW",
       count: counts.pendingReview,
       status: "PENDING_REVIEW",
@@ -382,7 +417,7 @@ function StatusTabs({
       status: "APPROVED",
     },
     {
-      label: "Approvate incomplete",
+      label: "Incomplete",
       href: "/imprese?status=APPROVED_INCOMPLETE",
       count: counts.approvedIncomplete,
       status: "APPROVED_INCOMPLETE",
@@ -455,13 +490,13 @@ function CompaniesDesktopTable({
 }) {
   return (
     <div className="hidden overflow-x-auto border-y border-eg-hairline md:block">
-      <div className="min-w-[64rem]">
-        <div className="grid grid-cols-[minmax(14rem,1.4fr)_9rem_9rem_10rem_10rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline bg-eg-calce-2 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
+      <div className="min-w-[68rem]">
+        <div className="grid grid-cols-[minmax(12rem,1.1fr)_minmax(14rem,1.2fr)_9rem_9rem_9rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline bg-eg-calce-2 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
           <span>Impresa</span>
-          <span>Stato</span>
+          <span>Email</span>
           <span>P.IVA</span>
-          <span>Città</span>
-          <span>Telefono</span>
+          <span>Stato</span>
+          <span>Profilo</span>
           <span>Registrata</span>
           <span>Azioni</span>
         </div>
@@ -469,22 +504,18 @@ function CompaniesDesktopTable({
         {companies.map((company) => (
           <div
             key={company.id}
-            className="grid grid-cols-[minmax(14rem,1.4fr)_9rem_9rem_10rem_10rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline px-4 py-4 text-sm last:border-b-0"
+            className="grid grid-cols-[minmax(12rem,1.1fr)_minmax(14rem,1.2fr)_9rem_9rem_9rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline px-4 py-4 text-sm last:border-b-0"
           >
             <CompanyNameCell company={company} />
+            <CompanyEmailCell company={company} />
+            <span className="break-words text-eg-ardesia">
+              {company.vatNumber}
+            </span>
             <div>
               <CompanyBadge company={company} />
               <StatusEventInfo company={company} />
             </div>
-            <span className="break-words text-eg-ardesia">
-              {company.vatNumber}
-            </span>
-            <span className="text-eg-ardesia">
-              {formatValue(company.city)}
-            </span>
-            <span className="break-words text-eg-ardesia">
-              {company.phone}
-            </span>
+            <ProfileBadge company={company} />
             <span className="text-eg-ardesia">
               {formatDate(company.createdAt)}
             </span>
@@ -519,16 +550,10 @@ function CompaniesMobileList({
           <dl className="mt-4 grid gap-2 text-sm text-eg-ardesia">
             <div className="flex justify-between gap-4">
               <dt className="text-eg-ardesia">
-                Città
-              </dt>
-              <dd>{formatValue(company.city)}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-eg-ardesia">
-                Telefono
+                Email
               </dt>
               <dd className="break-words text-right">
-                {company.phone}
+                {company.email ?? "—"}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
@@ -537,6 +562,14 @@ function CompaniesMobileList({
               </dt>
               <dd className="break-words text-right">
                 {company.vatNumber}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-eg-ardesia">
+                Profilo
+              </dt>
+              <dd>
+                <ProfileBadge company={company} />
               </dd>
             </div>
             <div className="flex justify-between gap-4">
@@ -569,6 +602,8 @@ export default async function AdminCompaniesPage({
         resolvedSearchParams.status,
       ),
     )
+  const query =
+    readSearchParam(resolvedSearchParams.q) ?? ""
 
   const [
     companies,
@@ -576,6 +611,7 @@ export default async function AdminCompaniesPage({
   ] = await Promise.all([
     listAdminCompanies({
       status: activeStatus,
+      search: query,
     }),
     getAdminCompanyStatusCounts(),
   ])
@@ -600,6 +636,13 @@ export default async function AdminCompaniesPage({
         <StatusTabs
           activeStatus={activeStatus}
           counts={counts}
+        />
+      </section>
+
+      <section className="mt-4">
+        <CompanySearchForm
+          activeStatus={activeStatus}
+          query={query}
         />
       </section>
 

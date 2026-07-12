@@ -1,10 +1,24 @@
 export {
   listAdminRequests,
+  getAdminRequestStatusCounts,
+  normalizeAdminRequestStatusFilter,
 } from "./list-admin-requests"
 export type {
   AdminRequestListItem,
   ListAdminRequestsInput,
+  AdminRequestStatusFilter,
+  AdminRequestStatusCounts,
 } from "./list-admin-requests"
+
+export {
+  deriveRequestAdminBadge,
+} from "./derive-request-admin-badge"
+export type {
+  RequestAdminBadge,
+  RequestAdminBadgeColor,
+  RequestAdminBadgeSeverity,
+  RequestAdminSecondaryBadge,
+} from "./derive-request-admin-badge"
 
 export {
   listUnverifiedRequests,
