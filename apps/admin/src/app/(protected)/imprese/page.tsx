@@ -17,9 +17,11 @@ import {
 import {
   Badge,
   Button,
+  Card,
   Input,
   PageShell,
   Textarea,
+  buttonClassName,
   cn,
 } from "@esigenta/ui"
 
@@ -45,6 +47,7 @@ type CompanyAction =
       label: string
       action: typeof approveCompanyAction
       variant?: "primary" | "ghost"
+      requiresReason?: boolean
     }
 
 function readSearchParam(
@@ -83,6 +86,13 @@ function getStatusEventDate(
   return null
 }
 
+/**
+ * Deliberately neutral and terse in the list: only a date, no admin
+ * name/reason here — those read as if they were the company's own
+ * identity when placed this close to its row (see FASE ADMIN audit,
+ * "Super Admin" confusion). Full moderation detail (who + why) lives only
+ * on the company detail page.
+ */
 function StatusEventInfo({
   company,
 }: {
@@ -91,22 +101,13 @@ function StatusEventInfo({
   const eventDate =
     getStatusEventDate(company)
 
-  if (!eventDate && !company.statusChangedByAdmin) {
+  if (!eventDate) {
     return null
   }
 
   return (
     <p className="mt-1 text-xs leading-5 text-eg-ardesia">
-      {eventDate ? formatDate(eventDate) : null}
-      {company.statusChangedByAdmin
-        ? ` — admin: ${
-            company.statusChangedByAdmin.name ??
-            company.statusChangedByAdmin.email
-          }`
-        : null}
-      {company.statusChangeReason
-        ? ` — ${company.statusChangeReason}`
-        : null}
+      Ultima moderazione: {formatDate(eventDate)}
     </p>
   )
 }
@@ -117,22 +118,18 @@ function CompanyBadge({
   company: AdminCompanyListItem
 }) {
   const badge = company.adminBadge
-  const visibleReasons = badge.reasons.slice(0, 2)
-  const remainingCount = badge.reasons.length - visibleReasons.length
+  const color =
+    company.status === "PENDING_REVIEW"
+      ? "yellow"
+      : company.status === "APPROVED"
+        ? "blue"
+        : badge.color
 
   return (
-    <div>
-      <AdminStatusPill
-        color={badge.color}
-        label={badge.label}
-      />
-      {visibleReasons.length > 0 ? (
-        <p className="mt-1 text-xs leading-5 text-eg-ardesia">
-          {visibleReasons.join(" · ")}
-          {remainingCount > 0 ? ` (+${remainingCount})` : ""}
-        </p>
-      ) : null}
-    </div>
+    <AdminStatusPill
+      color={color}
+      label={badge.label}
+    />
   )
 }
 
@@ -159,7 +156,7 @@ function CompanySearchForm({
   query: string
 }) {
   return (
-    <form className="flex gap-2">
+    <form className="flex flex-col gap-2 sm:flex-row">
       {activeStatus !== "ALL" ? (
         <input type="hidden" name="status" value={activeStatus} />
       ) : null}
@@ -168,7 +165,7 @@ function CompanySearchForm({
         name="q"
         defaultValue={query}
         placeholder="Cerca per nome, P.IVA, email o telefono…"
-        className="max-w-sm"
+        className="w-full sm:max-w-sm"
       />
       <Button type="submit" variant="ghost">
         Cerca
@@ -262,6 +259,7 @@ function getCompanyActions(
         label: "Blocca",
         action: blockCompanyAction,
         variant: "ghost",
+        requiresReason: true,
       },
     ]
   }
@@ -272,11 +270,13 @@ function getCompanyActions(
         label: "Sospendi",
         action: suspendCompanyAction,
         variant: "ghost",
+        requiresReason: true,
       },
       {
         label: "Blocca",
         action: blockCompanyAction,
         variant: "ghost",
+        requiresReason: true,
       },
     ]
   }
@@ -291,6 +291,7 @@ function getCompanyActions(
         label: "Blocca",
         action: blockCompanyAction,
         variant: "ghost",
+        requiresReason: true,
       },
     ]
   }
@@ -315,43 +316,78 @@ function CompanyActionForms({
   const actions =
     getCompanyActions(company.status)
 
-  if (actions.length === 0) {
-    return (
-      <span className="text-sm text-eg-ardesia">
-        Nessuna azione
-      </span>
-    )
-  }
-
   return (
-    <form className="grid gap-2">
-      <input
-        type="hidden"
-        name="companyId"
-        value={company.id}
-      />
+    <div className="grid gap-2">
+      <Link
+        href={`/imprese/${company.id}`}
+        className={buttonClassName({
+          variant: "ghost",
+          size: "sm",
+          className: "w-full",
+        })}
+      >
+        Dettaglio
+      </Link>
 
-      <Textarea
-        name="reason"
-        rows={2}
-        placeholder="Motivo (obbligatorio per sospendi/blocca, facoltativo per approva)"
-        className="text-xs"
-      />
-
-      <div className="flex flex-wrap gap-2">
-        {actions.map((item) => (
-          <Button
+      {actions.map((item) =>
+        item.requiresReason ? (
+          <details
             key={item.label}
-            type="submit"
-            formAction={item.action}
-            size="sm"
-            variant={item.variant ?? "primary"}
+            className="group border-t border-eg-hairline pt-2"
           >
-            {item.label}
-          </Button>
-        ))}
-      </div>
-    </form>
+            <summary
+              className={buttonClassName({
+                variant: item.variant ?? "primary",
+                size: "sm",
+                className: "w-full cursor-pointer list-none",
+              })}
+            >
+              {item.label}
+            </summary>
+            <form className="mt-3 grid gap-2">
+              <input
+                type="hidden"
+                name="companyId"
+                value={company.id}
+              />
+              <Textarea
+                name="reason"
+                rows={3}
+                required
+                placeholder={`Motivo per ${item.label.toLowerCase()}`}
+                className="text-xs"
+              />
+              <Button
+                type="submit"
+                formAction={item.action}
+                size="sm"
+                variant={item.variant ?? "primary"}
+                className="w-full"
+              >
+                Conferma
+              </Button>
+            </form>
+          </details>
+        ) : (
+          <form key={item.label}>
+            <input
+              type="hidden"
+              name="companyId"
+              value={company.id}
+            />
+            <Button
+              type="submit"
+              formAction={item.action}
+              size="sm"
+              variant={item.variant ?? "primary"}
+              className="w-full"
+            >
+              {item.label}
+            </Button>
+          </form>
+        ),
+      )}
+    </div>
   )
 }
 
@@ -362,27 +398,67 @@ function CompanyNameCell({
 }) {
   return (
     <div className="min-w-0">
-      <p className="truncate text-sm font-semibold text-eg-terra">
+      <h2 className="text-base font-semibold leading-6 text-eg-terra">
         {company.name}
+      </h2>
+      <p className="mt-1 text-xs leading-5 text-eg-ardesia">
+        {company.owner?.name ?? company.owner?.email ?? "Owner non disponibile"}
       </p>
-      {company.owner?.name ? (
-        <p className="mt-1 truncate text-xs text-eg-ardesia">
-          {company.owner.name}
-        </p>
-      ) : null}
+      <p className="mt-2 break-words text-xs text-eg-ardesia">
+        P.IVA {company.vatNumber}
+      </p>
     </div>
   )
 }
 
-function CompanyEmailCell({
+function CompanyContactsCell({
   company,
 }: {
   company: AdminCompanyListItem
 }) {
   return (
-    <span className="break-words text-eg-ardesia">
-      {company.email ?? "—"}
-    </span>
+    <div className="min-w-0">
+      <p className="break-words text-eg-ardesia">
+        {company.email ?? "—"}
+      </p>
+      <p className="mt-1 break-words text-xs text-eg-ardesia">
+        {company.phone}
+      </p>
+    </div>
+  )
+}
+
+function CompanyAreaCell({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  return (
+    <div className="min-w-0">
+      <p className="text-eg-ardesia">
+        {company.city ?? "—"}
+      </p>
+      <p className="mt-1 text-xs text-eg-ardesia">
+        {company.operatingRadiusKm} km
+      </p>
+    </div>
+  )
+}
+
+function CompanyServicesCell({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  return (
+    <div className="min-w-0">
+      <p className="break-words text-eg-ardesia">
+        {company.principalCategoryName ?? "—"}
+      </p>
+      <p className="mt-1 text-xs text-eg-ardesia">
+        {company.interventionCount} interventi
+      </p>
+    </div>
   )
 }
 
@@ -483,106 +559,63 @@ function StatusTabs({
   )
 }
 
-function CompaniesDesktopTable({
+function CompaniesList({
   companies,
 }: {
   companies: AdminCompanyListItem[]
 }) {
   return (
-    <div className="hidden overflow-x-auto border-y border-eg-hairline md:block">
-      <div className="min-w-[68rem]">
-        <div className="grid grid-cols-[minmax(12rem,1.1fr)_minmax(14rem,1.2fr)_9rem_9rem_9rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline bg-eg-calce-2 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-eg-ardesia">
-          <span>Impresa</span>
-          <span>Email</span>
-          <span>P.IVA</span>
-          <span>Stato</span>
-          <span>Profilo</span>
-          <span>Registrata</span>
-          <span>Azioni</span>
-        </div>
-
-        {companies.map((company) => (
-          <div
-            key={company.id}
-            className="grid grid-cols-[minmax(12rem,1.1fr)_minmax(14rem,1.2fr)_9rem_9rem_9rem_9rem_minmax(14rem,auto)] gap-4 border-b border-eg-hairline px-4 py-4 text-sm last:border-b-0"
-          >
-            <CompanyNameCell company={company} />
-            <CompanyEmailCell company={company} />
-            <span className="break-words text-eg-ardesia">
-              {company.vatNumber}
-            </span>
-            <div>
-              <CompanyBadge company={company} />
-              <StatusEventInfo company={company} />
-            </div>
-            <ProfileBadge company={company} />
-            <span className="text-eg-ardesia">
-              {formatDate(company.createdAt)}
-            </span>
-            <CompanyActionForms company={company} />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function CompaniesMobileList({
-  companies,
-}: {
-  companies: AdminCompanyListItem[]
-}) {
-  return (
-    <ul className="grid gap-3 md:hidden">
+    <ul className="grid gap-4">
       {companies.map((company) => (
-        <li
-          key={company.id}
-          className="border border-eg-hairline bg-eg-calce p-4"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <CompanyNameCell company={company} />
-            <div className="text-right">
-              <CompanyBadge company={company} />
-              <StatusEventInfo company={company} />
-            </div>
-          </div>
+        <li key={company.id}>
+          <Card className="p-5 transition-colors hover:border-eg-cotto md:p-6">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_11rem_14rem]">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-eg-ardesia">
+                  Informazioni
+                </p>
+                <div className="mt-3 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                  <CompanyNameCell company={company} />
+                  <div>
+                    <p className="mb-2 text-xs font-medium text-eg-ardesia">
+                      Contatti
+                    </p>
+                    <CompanyContactsCell company={company} />
+                  </div>
+                  <div>
+                    <p className="mb-2 text-xs font-medium text-eg-ardesia">
+                      Area
+                    </p>
+                    <CompanyAreaCell company={company} />
+                  </div>
+                  <div>
+                    <p className="mb-2 text-xs font-medium text-eg-ardesia">
+                      Servizi
+                    </p>
+                    <CompanyServicesCell company={company} />
+                  </div>
+                </div>
+              </div>
 
-          <dl className="mt-4 grid gap-2 text-sm text-eg-ardesia">
-            <div className="flex justify-between gap-4">
-              <dt className="text-eg-ardesia">
-                Email
-              </dt>
-              <dd className="break-words text-right">
-                {company.email ?? "—"}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-eg-ardesia">
-                P.IVA
-              </dt>
-              <dd className="break-words text-right">
-                {company.vatNumber}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-eg-ardesia">
-                Profilo
-              </dt>
-              <dd>
-                <ProfileBadge company={company} />
-              </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-eg-ardesia">
-                Registrata
-              </dt>
-              <dd>{formatDate(company.createdAt)}</dd>
-            </div>
-          </dl>
+              <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                <p className="text-xs font-medium text-eg-ardesia">
+                  Stato
+                </p>
+                <div className="mt-3 grid gap-3">
+                  <CompanyBadge company={company} />
+                  <ProfileBadge company={company} />
+                </div>
+                <StatusEventInfo company={company} />
+              </div>
 
-          <div className="mt-4 border-t border-eg-hairline pt-4">
-            <CompanyActionForms company={company} />
-          </div>
+              <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                <p className="mb-3 text-xs font-medium text-eg-ardesia">
+                  Azioni
+                </p>
+                <CompanyActionForms company={company} />
+              </div>
+            </div>
+          </Card>
         </li>
       ))}
     </ul>
@@ -657,14 +690,7 @@ export default async function AdminCompaniesPage({
             </p>
           </div>
         ) : (
-          <>
-            <CompaniesDesktopTable
-              companies={companies}
-            />
-            <CompaniesMobileList
-              companies={companies}
-            />
-          </>
+          <CompaniesList companies={companies} />
         )}
       </section>
     </PageShell>

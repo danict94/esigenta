@@ -53,6 +53,15 @@ export type AdminCompanyListItem = {
     email: string
     name: string | null
   } | null
+  operatingRadiusKm: number
+  /**
+   * First category added (by createdAt), or null if none configured yet.
+   * The list shows only this + interventionCount (never the full
+   * intervention list) — full names live only in the detail page, to keep
+   * the list query cheap.
+   */
+  principalCategoryName: string | null
+  interventionCount: number
   profileCompleteness: CompanyProfileCompleteness
   adminBadge: CompanyAdminBadge
 }
@@ -160,6 +169,9 @@ function mapCompanyListItem(company: {
       name: string | null
     }
   }>
+  categories: Array<{
+    category: { name: string }
+  }>
   _count: {
     categories: number
     interventions: number
@@ -203,6 +215,9 @@ function mapCompanyListItem(company: {
     updatedAt: company.updatedAt,
     email: owner?.email ?? null,
     owner,
+    operatingRadiusKm: company.operatingRadiusKm,
+    principalCategoryName: company.categories[0]?.category.name ?? null,
+    interventionCount: company._count.interventions,
     profileCompleteness,
     adminBadge: deriveCompanyAdminBadge({
       status: company.status,
@@ -316,6 +331,20 @@ export async function listAdminCompanies({
           select: {
             categories: true,
             interventions: true,
+          },
+        },
+        // Only the first category's name, never the full list or any
+        // intervention names — keeps the list query cheap. Full lists live
+        // only in getAdminCompanyDetail.
+        categories: {
+          take: 1,
+          orderBy: {
+            createdAt: "asc",
+          },
+          select: {
+            category: {
+              select: { name: true },
+            },
           },
         },
         memberships: {
