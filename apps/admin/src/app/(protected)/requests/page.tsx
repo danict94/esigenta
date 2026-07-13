@@ -82,12 +82,41 @@ function RequestCard({ request }: { request: AdminRequestListItem }) {
   const badge = request.adminBadge;
 
   return (
-    <Card className="p-5 transition-colors hover:border-eg-cotto">
-      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+    <Card className="p-5 transition-colors hover:border-eg-cotto md:p-6">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_11rem_12rem]">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-3">
-            <AdminStatusPill color={badge.color} label={badge.label} />
+          <p className="text-xs font-medium text-eg-ardesia">Informazioni</p>
+          <h2 className="mt-3 text-lg font-semibold tracking-tight text-eg-terra">
+            {formatInterventionLabel(request.interventionSlug)}
+          </h2>
 
+          <p className="mt-1 text-xs font-medium text-eg-ardesia">
+            {request.requestCode ?? "Codice non disponibile"}
+          </p>
+
+          <div className="mt-4 grid gap-4 text-sm text-eg-ardesia sm:grid-cols-2 xl:grid-cols-3">
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-eg-ardesia">Cliente</p>
+              <p className="mt-1 text-eg-terra">{request.customerName ?? "-"}</p>
+              <p className="mt-1 break-words text-xs">
+                {request.customerEmail ?? "-"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-eg-ardesia">Area</p>
+              <p className="mt-1 text-eg-terra">{request.city ?? "-"}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-eg-ardesia">Creata</p>
+              <p className="mt-1 text-eg-terra">{formatDate(request.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+          <p className="text-xs font-medium text-eg-ardesia">Stato</p>
+          <div className="mt-3 grid gap-3">
+            <AdminStatusPill color={badge.color} label={badge.label} />
             {badge.secondaryBadges.map((secondaryBadge) => (
               <AdminStatusPill
                 key={secondaryBadge.label}
@@ -95,55 +124,20 @@ function RequestCard({ request }: { request: AdminRequestListItem }) {
                 label={secondaryBadge.label}
               />
             ))}
-
-            <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
-              {formatFreshness(request.createdAt)}
-            </span>
           </div>
-
-          <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-terra">
-            {formatInterventionLabel(request.interventionSlug)}
-          </h2>
-
-          <p className="mt-1 text-xs font-medium uppercase tracking-wide text-eg-ardesia">
-            {request.requestCode ?? "Codice non disponibile"}
-          </p>
-
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-ardesia">
-            <span>
-              <span className="text-eg-ardesia">Città:</span>{" "}
-              {request.city ?? "-"}
-            </span>
-
-            <span>
-              <span className="text-eg-ardesia">Cliente:</span>{" "}
-              {request.customerName ?? "-"}
-            </span>
-
-            <span>
-              <span className="text-eg-ardesia">Email:</span>{" "}
-              {request.customerEmail ?? "-"}
-            </span>
-
-            <span>
-              <span className="text-eg-ardesia">Creata:</span>{" "}
-              {formatDate(request.createdAt)}
-            </span>
-          </div>
-
-          <p className="mt-4 text-sm leading-6 text-eg-ardesia">
-            Controlla contenuto, località e qualità del contatto per gestire
-            questa opportunità nel marketplace.
+          <p className="mt-3 text-xs leading-5 text-eg-ardesia">
+            {formatFreshness(request.createdAt)}
           </p>
         </div>
 
-        <div className="flex shrink-0 md:justify-end">
+        <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+          <p className="mb-3 text-xs font-medium text-eg-ardesia">Azioni</p>
           {/* D-020: edit (commercial settings), archive and soft-delete
               actions live on the request detail page, consistent with the
               existing review/edit actions already there. */}
           <Link
             href={`/requests/${request.id}`}
-            className={buttonClassName()}
+            className={buttonClassName({ size: "sm", className: "w-full" })}
           >
             Apri richiesta
           </Link>
@@ -168,10 +162,10 @@ function RequestListSection({
 }) {
   return (
     <section className="mt-8">
-      <div className="border border-eg-hairline bg-eg-calce-2 p-5">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div className="border-b border-eg-hairline pb-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-semibold text-eg-terra">{title}</p>
+            <h2 className="text-lg font-semibold text-eg-terra">{title}</h2>
             <p className="mt-1 text-sm text-eg-ardesia">{description}</p>
           </div>
 
@@ -179,7 +173,7 @@ function RequestListSection({
         </div>
       </div>
 
-      <ul className="mt-6 grid gap-4">
+      <ul className="mt-4 grid gap-4">
         {requests.map((request) => (
           <li key={request.id}>
             <RequestCard request={request} />
@@ -277,7 +271,7 @@ function RequestSearchForm({
   query: string;
 }) {
   return (
-    <form className="flex gap-2">
+    <form className="flex flex-col gap-2 sm:flex-row">
       {activeStatus !== "ALL" ? (
         <input type="hidden" name="status" value={activeStatus} />
       ) : null}
@@ -286,7 +280,7 @@ function RequestSearchForm({
         name="q"
         defaultValue={query}
         placeholder="Cerca per codice, cliente, email o intervento…"
-        className="max-w-sm"
+        className="w-full sm:max-w-sm"
       />
       <Button type="submit" variant="ghost">
         Cerca
@@ -322,31 +316,18 @@ export default async function RequestsModerationPage({
     : requests;
 
   return (
-    <PageShell size="lg">
+    <PageShell size="xl" className="py-8 md:py-10">
       <header className="border-b border-eg-hairline pb-7">
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-sm font-medium text-eg-ardesia">
-              Control room
-            </p>
+        <p className="text-sm font-medium text-eg-ardesia">Control room</p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
-              Richieste
-            </h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+          Richieste
+        </h1>
 
-            <p className="mt-3 max-w-xl text-sm leading-6 text-eg-ardesia">
-              Gestisci le richieste ricevute e controlla lo stato editoriale
-              nel marketplace.
-            </p>
-          </div>
-
-          <Link
-            href="/"
-            className="text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
-          >
-            Torna alla home
-          </Link>
-        </div>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
+          Gestisci le richieste ricevute e controlla lo stato editoriale nel
+          marketplace.
+        </p>
       </header>
 
       <section className="mt-6">
@@ -359,17 +340,14 @@ export default async function RequestsModerationPage({
 
       {unverifiedRequests.length > 0 ? (
         <Link href="/requests/non-verificate" className="mt-8 block">
-          <Card className="border-2 border-eg-cotto bg-eg-calce-2 p-5 transition-colors hover:border-eg-cotto">
+          <Card className="bg-eg-calce-2 p-5 transition-colors hover:border-eg-cotto">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-sm font-semibold text-eg-terra">
                   Richieste in attesa di verifica email
                 </p>
                 <p className="mt-1 text-sm text-eg-ardesia">
-                  Non sono nella coda di revisione e non possono entrare nel
-                  marketplace finché il cliente non conferma l&apos;email (o
-                  un admin la verifica manualmente). Usa questa pagina per le
-                  azioni di recupero (reinvio email, verifica manuale).
+                  Apri la coda dedicata per reinvio email e verifica manuale.
                 </p>
               </div>
 

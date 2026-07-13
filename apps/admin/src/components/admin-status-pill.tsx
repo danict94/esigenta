@@ -38,7 +38,7 @@ export function AdminStatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 text-xs font-medium text-eg-terra",
+        "inline-flex items-center gap-2 text-xs font-medium leading-5 text-eg-terra",
         className,
       )}
     >
@@ -47,6 +47,7 @@ export function AdminStatusPill({
           "h-2 w-2 shrink-0 rounded-full",
           dotColorClasses[color],
         )}
+        aria-hidden="true"
       />
       {label}
     </span>
