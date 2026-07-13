@@ -1,3 +1,5 @@
 export * from "./admin-companies"
 export * from "./contact-change-requests"
 export * from "./derive-company-admin-badge"
+export * from "./get-admin-company-detail"
+export * from "./documents"

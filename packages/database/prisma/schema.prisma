@@ -341,6 +341,7 @@ model Company {
   creditRefundRequests     CreditRefundRequest[]
   contactChangeRequests    CompanyContactChangeRequest[]
   conversationParticipants ConversationParticipant[]
+  documents                CompanyDocument[]
 
   @@index([onboardingCategorySlug])
   @@index([status])
@@ -456,6 +457,8 @@ model User {
   deletedRequests                      Request[]                     @relation("RequestDeletedBy")
   commercialOverriddenRequests         Request[]                     @relation("RequestCommercialOverriddenBy")
   companyStatusChanges                 Company[]                     @relation("CompanyStatusChangeActor")
+  uploadedCompanyDocuments             CompanyDocument[]             @relation("CompanyDocumentUploadedBy")
+  reviewedCompanyDocuments             CompanyDocument[]             @relation("CompanyDocumentReviewedBy")
 
   sessions                 Session[]
   accounts                 Account[]
@@ -1344,6 +1347,72 @@ model CompanyContactChangeRequest {
 
   @@index([companyId, createdAt])
   @@index([status, createdAt])
+  @@index([reviewedByAdminUserId])
+}
+
+/**
+ * FASE DOCUMENTI 3.A — foundation only. Company document verification,
+ * separate from Company.status (the only real marketplace gate) and from
+ * CompanyProfileCompleteness. Never blocks marketplace access by itself —
+ * see deriveCompanyDocumentsStatus in @esigenta/domain, the only place
+ * that turns these rows into an admin-facing signal.
+ */
+enum CompanyDocumentType {
+  VISURA_CAMERALE
+  ID_RAPPRESENTANTE
+  DURC
+  ASSICURAZIONE_RC
+  CERTIFICAZIONE
+}
+
+enum CompanyDocumentStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+/**
+ * One row per (company, documentType) — @@unique enforces "current
+ * document per type", not a version history. A rejected-then-reloaded
+ * document overwrites this same row (new objectKey, status back to
+ * PENDING_REVIEW) rather than creating a second row. NOT_UPLOADED is never
+ * stored here — it is the absence of a row for a required type, derived
+ * by deriveCompanyDocumentsStatus, never a status value on this model.
+ *
+ * objectKey points at a private Cloudflare R2 object (see
+ * @esigenta/uploads/r2) — never a public URL. Display/download always
+ * goes through a short-lived signed URL generated on demand, never
+ * persisted here or anywhere else.
+ */
+model CompanyDocument {
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  documentType CompanyDocumentType
+  status       CompanyDocumentStatus @default(PENDING_REVIEW)
+
+  objectKey String
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+
+  uploadedByUserId String
+  uploadedByUser   User     @relation("CompanyDocumentUploadedBy", fields: [uploadedByUserId], references: [id], onDelete: Restrict)
+  uploadedAt       DateTime @default(now())
+
+  reviewedAt            DateTime?
+  reviewedByAdminUserId String?
+  reviewedByAdminUser   User?     @relation("CompanyDocumentReviewedBy", fields: [reviewedByAdminUserId], references: [id], onDelete: SetNull)
+  rejectionReason       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, documentType])
+  @@index([companyId])
+  @@index([status])
   @@index([reviewedByAdminUserId])
 }
 

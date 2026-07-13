@@ -5,15 +5,19 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./server": "./src/server.ts"
+    "./server": "./src/server.ts",
+    "./r2": "./src/r2-client.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1086.0",
+    "@aws-sdk/s3-request-presigner": "^3.1086.0",
     "uploadthing": "^7.7.4"
   },
   "devDependencies": {
+    "@types/node": "^20.19.39",
     "typescript": "^5.9.3"
   }
 }
