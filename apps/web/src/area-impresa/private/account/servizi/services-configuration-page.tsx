@@ -131,6 +131,7 @@ export async function ServicesConfigurationPage({
   const categoryOptions: CategoryOption[] = categories.map((category) => ({
     id: category.id,
     name: category.name,
+    projectGroupIds: category.projectGroupIds,
   }))
 
   const projectGroupOptions: ProjectGroupOption[] = projectGroups.map(

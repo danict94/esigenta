@@ -20,6 +20,14 @@ export type ProjectGroupOption = {
 export type CategoryOption = {
   id: string;
   name: string;
+  /**
+   * Already resolved server-side (Category.projectGroupIds, see
+   * packages/domain/src/company/services/get-services-configuration-page.ts)
+   * — used here only to decide which already-fetched ProjectGroups to list
+   * first for the currently selected categories. No category -> group ->
+   * intervention mapping is computed in this component.
+   */
+  projectGroupIds: string[];
 };
 
 export type CategoryInterventionsSelectorProps = {
@@ -39,7 +47,6 @@ export type CategoryInterventionsSelectorProps = {
 
 const maxCategories = 6;
 const interventionBatchSize = 10;
-const visibleChipLimit = 12;
 
 // Same hand as site/shell/icons.tsx: 24x24 grid, 1.5px stroke, round
 // caps/joins, currentColor. Kept local instead of importing the site/shell
@@ -72,14 +79,6 @@ function CheckGlyph({ className }: { className?: string }) {
   );
 }
 
-function CloseGlyph({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
-      <path d="M6 6 18 18M18 6 6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function normalizeSearchText(value: string) {
   return value
     .toLocaleLowerCase("it")
@@ -100,6 +99,29 @@ function getInterventionMatchesQuery(
   return normalizeSearchText(
     `${intervention.name} ${intervention.description ?? ""}`,
   ).includes(normalizedQuery);
+}
+
+// Which ProjectGroup ids belong to the given categories — a plain lookup
+// over data already resolved server-side (CategoryOption.projectGroupIds),
+// not a re-derivation of the category -> group mapping itself.
+function computePriorityProjectGroupIds(
+  categories: CategoryOption[],
+  categoryIds: string[],
+): Set<string> {
+  const categoryIdSet = new Set(categoryIds);
+  const groupIds = new Set<string>();
+
+  for (const category of categories) {
+    if (!categoryIdSet.has(category.id)) {
+      continue;
+    }
+
+    for (const groupId of category.projectGroupIds) {
+      groupIds.add(groupId);
+    }
+  }
+
+  return groupIds;
 }
 
 // Order-independent comparison — the form works with plain string[] ids,
@@ -154,9 +176,6 @@ export function CategoryInterventionsSelector({
   );
   const [selectedCategoryIds, setSelectedCategoryIds] =
     useState(initialCategoryIds);
-  const [activeProjectGroupId, setActiveProjectGroupId] = useState<
-    string | null
-  >(projectGroups[0]?.id ?? null);
   const [interventionQueries, setInterventionQueries] = useState<
     Record<string, string>
   >({});
@@ -175,6 +194,83 @@ export function CategoryInterventionsSelector({
     () => new Set(selectedInterventionIds),
     [selectedInterventionIds],
   );
+
+  // Priority groups follow the LIVE category selection (not just the saved
+  // one) — checking a category during this same edit immediately promotes
+  // its groups, so the list reacts to what the user is doing right now.
+  // When no category is selected, there is nothing to prioritize: every
+  // group renders in the single main list, matching the pre-UX2 behaviour.
+  const priorityProjectGroupIdSet = useMemo(
+    () => computePriorityProjectGroupIds(categories, selectedCategoryIds),
+    [categories, selectedCategoryIds],
+  );
+  const priorityGroups = useMemo(
+    () =>
+      priorityProjectGroupIdSet.size === 0
+        ? projectGroups
+        : projectGroups.filter((group) =>
+            priorityProjectGroupIdSet.has(group.id),
+          ),
+    [projectGroups, priorityProjectGroupIdSet],
+  );
+  const otherGroups = useMemo(
+    () =>
+      priorityProjectGroupIdSet.size === 0
+        ? []
+        : projectGroups.filter(
+            (group) => !priorityProjectGroupIdSet.has(group.id),
+          ),
+    [projectGroups, priorityProjectGroupIdSet],
+  );
+
+  const [activeProjectGroupId, setActiveProjectGroupId] = useState<
+    string | null
+  >(() => {
+    const initialPriorityIds = computePriorityProjectGroupIds(
+      categories,
+      initialCategoryIds,
+    );
+    const firstPriorityGroup = projectGroups.find((group) =>
+      initialPriorityIds.has(group.id),
+    );
+
+    return (firstPriorityGroup ?? projectGroups[0])?.id ?? null;
+  });
+
+  // "Altri servizi" opens by default only if it already contains a saved
+  // selection — an existing, deliberate fuori-categoria choice must never
+  // start out of sight. Otherwise it stays collapsed to keep the page
+  // short. Computed once from the saved (initial*) props, not re-evaluated
+  // as the user edits, so collapsing it never feels like it is fighting
+  // the user's own later changes.
+  const [showOtherGroups, setShowOtherGroups] = useState(() => {
+    const initialPriorityIds = computePriorityProjectGroupIds(
+      categories,
+      initialCategoryIds,
+    );
+
+    if (initialPriorityIds.size === 0) {
+      return true;
+    }
+
+    const initialSelectedInterventionIdSet = new Set(initialInterventionIds);
+
+    return projectGroups.some(
+      (group) =>
+        !initialPriorityIds.has(group.id) &&
+        group.interventions.some((intervention) =>
+          initialSelectedInterventionIdSet.has(intervention.id),
+        ),
+    );
+  });
+
+  // The currently open group must never disappear from view. If checking a
+  // different category moves it from the priority list into "Altri
+  // servizi" while that section happens to be collapsed, force it visible
+  // rather than silently hiding an open, possibly mid-edit group.
+  const isOtherGroupsVisible =
+    showOtherGroups ||
+    otherGroups.some((group) => group.id === activeProjectGroupId);
 
   // Dirty state compares current local selections against the last
   // saved configuration (the initial* props) — not against whatever was
@@ -296,6 +392,171 @@ export function CategoryInterventionsSelector({
     return (
       getFilteredInterventions(projectGroup).length >
       getVisibleCount(projectGroup.id)
+    );
+  }
+
+  // Shared by both the priority list and the "Altri servizi" list below —
+  // one accordion row implementation, rendered for two different arrays,
+  // never duplicated markup.
+  function renderProjectGroupRow(projectGroup: ProjectGroupOption) {
+    const open = activeProjectGroupId === projectGroup.id;
+    const selected = getSelectedInterventions(projectGroup.interventions);
+    const allSelected = isProjectGroupFullySelected(projectGroup);
+    const isPartiallySelected = selected.length > 0 && !allSelected;
+    const visibleInterventions = getVisibleInterventions(projectGroup);
+    const showSearch = projectGroup.interventions.length > interventionBatchSize;
+
+    return (
+      <div
+        key={projectGroup.id}
+        className="overflow-hidden rounded-eg-lg border border-eg-hairline bg-eg-calce"
+      >
+        <Button
+          type="button"
+          variant="ghost"
+          className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-eg-calce-2"
+          aria-expanded={open}
+          onClick={() => {
+            setActiveProjectGroupId((currentId) =>
+              currentId === projectGroup.id ? null : projectGroup.id,
+            );
+          }}
+        >
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-eg-terra">
+              {projectGroup.name}
+            </span>
+            <span className="mt-1 block text-xs font-normal text-eg-ardesia">
+              {projectGroup.interventions.length > 0
+                ? `${selected.length}/${projectGroup.interventions.length} interventi selezionati`
+                : "Nessun intervento disponibile"}
+            </span>
+          </span>
+
+          <ChevronGlyph
+            className={cn(
+              "h-4 w-4 shrink-0 text-eg-ardesia transition-transform",
+              open ? "rotate-180" : "",
+            )}
+          />
+        </Button>
+
+        {open ? (
+          <div className="space-y-4 border-t border-eg-hairline bg-eg-calce-2 p-4">
+            {projectGroup.interventions.length === 0 ? (
+              <p className="text-sm text-eg-ardesia">
+                Nessun intervento disponibile per questa area.
+              </p>
+            ) : (
+              <>
+                <label className="flex cursor-pointer items-center gap-3 py-1">
+                  {/* Raw input (not the shared Checkbox) only because the
+                      "mixed" visual state requires setting the DOM
+                      .indeterminate property via a ref, which Checkbox does
+                      not currently expose — same classes/token as Checkbox,
+                      no design-system change. */}
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    ref={(node) => {
+                      if (node) {
+                        node.indeterminate = isPartiallySelected;
+                      }
+                    }}
+                    onChange={() => toggleSelectAll(projectGroup)}
+                    className="h-4 w-4 accent-eg-cotto disabled:cursor-not-allowed disabled:opacity-60"
+                  />
+                  <span className="text-sm font-semibold text-eg-terra">
+                    Seleziona tutti
+                  </span>
+                </label>
+
+                {showSearch ? (
+                  <label className="grid gap-2">
+                    <span className="text-sm font-medium text-eg-terra">
+                      Cerca intervento
+                    </span>
+                    <Input
+                      type="search"
+                      value={getQuery(projectGroup.id)}
+                      onChange={(event) => {
+                        setInterventionQueries((current) => ({
+                          ...current,
+                          [projectGroup.id]: event.target.value,
+                        }));
+                        setVisibleInterventionCounts((current) => ({
+                          ...current,
+                          [projectGroup.id]: interventionBatchSize,
+                        }));
+                      }}
+                      placeholder="Cerca intervento..."
+                    />
+                  </label>
+                ) : null}
+
+                <div className="grid gap-2">
+                  {visibleInterventions.map((intervention) => {
+                    const isSelected = selectedInterventionIdSet.has(
+                      intervention.id,
+                    );
+
+                    return (
+                      <label
+                        key={intervention.id}
+                        className={cn(
+                          "flex cursor-pointer gap-3 rounded-eg-md border border-eg-hairline bg-eg-calce p-3 transition-colors hover:border-eg-cotto",
+                          isSelected ? "border-eg-cotto bg-eg-cotto-tint" : "",
+                        )}
+                      >
+                        <Checkbox
+                          name="interventionIds"
+                          value={intervention.id}
+                          checked={isSelected}
+                          onChange={() => toggleIntervention(intervention.id)}
+                          className="mt-0.5"
+                        />
+
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-semibold text-eg-terra">
+                            {intervention.name}
+                          </span>
+
+                          {intervention.description ? (
+                            <span className="mt-1 block text-sm leading-6 text-eg-ardesia">
+                              {intervention.description}
+                            </span>
+                          ) : null}
+                        </span>
+
+                        {isSelected ? (
+                          <CheckGlyph className="h-4 w-4 shrink-0 text-eg-cotto" />
+                        ) : null}
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {hasMoreInterventions(projectGroup) ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      setVisibleInterventionCounts((current) => ({
+                        ...current,
+                        [projectGroup.id]:
+                          getVisibleCount(projectGroup.id) +
+                          interventionBatchSize,
+                      }));
+                    }}
+                  >
+                    Mostra altri
+                  </Button>
+                ) : null}
+              </>
+            )}
+          </div>
+        ) : null}
+      </div>
     );
   }
 
@@ -434,195 +695,40 @@ export function CategoryInterventionsSelector({
 
           <p className="mt-1 max-w-3xl text-sm leading-6 text-eg-ardesia">
             Scegli gli interventi che vuoi ricevere, organizzati per area di
-            lavoro.
+            lavoro, a partire da quelle delle tue categorie.
           </p>
         </div>
 
-        <div className="space-y-2">
-          {projectGroups.map((projectGroup) => {
-            const open = activeProjectGroupId === projectGroup.id;
-            const selected = getSelectedInterventions(
-              projectGroup.interventions,
-            );
-            const allSelected = isProjectGroupFullySelected(projectGroup);
-            const visibleInterventions = getVisibleInterventions(projectGroup);
-            const showSearch =
-              projectGroup.interventions.length > interventionBatchSize;
-            const visibleChips = selected.slice(0, visibleChipLimit);
-            const hiddenChipCount = selected.length - visibleChips.length;
+        <div className="space-y-2">{priorityGroups.map(renderProjectGroupRow)}</div>
 
-            return (
-              <div
-                key={projectGroup.id}
-                className="overflow-hidden rounded-eg-lg border border-eg-hairline bg-eg-calce"
-              >
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-eg-calce-2"
-                  aria-expanded={open}
-                  onClick={() => {
-                    setActiveProjectGroupId((currentId) =>
-                      currentId === projectGroup.id ? null : projectGroup.id,
-                    );
-                  }}
-                >
-                  <span className="min-w-0">
-                    <span className="block text-sm font-semibold text-eg-terra">
-                      {projectGroup.name}
-                    </span>
-                    <span className="mt-1 block text-xs font-normal text-eg-ardesia">
-                      {projectGroup.interventions.length > 0
-                        ? `${selected.length}/${projectGroup.interventions.length} interventi selezionati`
-                        : "Nessun intervento disponibile"}
-                    </span>
-                  </span>
+        {otherGroups.length > 0 ? (
+          <div className="space-y-2 border-t border-eg-hairline pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-auto w-full justify-between gap-4 p-3 text-left"
+              aria-expanded={isOtherGroupsVisible}
+              onClick={() => setShowOtherGroups((current) => !current)}
+            >
+              <span className="text-sm font-semibold text-eg-terra">
+                Altri servizi disponibili ({otherGroups.length})
+              </span>
 
-                  <ChevronGlyph
-                    className={cn(
-                      "h-4 w-4 shrink-0 text-eg-ardesia transition-transform",
-                      open ? "rotate-180" : "",
-                    )}
-                  />
-                </Button>
+              <ChevronGlyph
+                className={cn(
+                  "h-4 w-4 shrink-0 text-eg-ardesia transition-transform",
+                  isOtherGroupsVisible ? "rotate-180" : "",
+                )}
+              />
+            </Button>
 
-                {open ? (
-                  <div className="space-y-4 border-t border-eg-hairline bg-eg-calce-2 p-4">
-                    {projectGroup.interventions.length === 0 ? (
-                      <p className="text-sm text-eg-ardesia">
-                        Nessun intervento disponibile per questa area.
-                      </p>
-                    ) : (
-                      <>
-                        {selected.length > 0 ? (
-                          <div className="flex flex-wrap gap-2">
-                            {visibleChips.map((intervention) => (
-                              <button
-                                key={intervention.id}
-                                type="button"
-                                onClick={() =>
-                                  toggleIntervention(intervention.id)
-                                }
-                                className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-eg-cotto px-3 py-1 text-xs font-medium text-eg-calce transition-colors hover:bg-eg-cotto-dark"
-                              >
-                                <span className="truncate">
-                                  {intervention.name}
-                                </span>
-                                <CloseGlyph className="h-3 w-3 shrink-0" />
-                              </button>
-                            ))}
-
-                            {hiddenChipCount > 0 ? (
-                              <span className="inline-flex items-center rounded-full bg-eg-calce-2 px-3 py-1 text-xs font-medium text-eg-ardesia">
-                                +{hiddenChipCount} altri selezionati
-                              </span>
-                            ) : null}
-                          </div>
-                        ) : null}
-
-                        <label className="flex cursor-pointer items-center gap-3">
-                          <Checkbox
-                            checked={allSelected}
-                            onChange={() => toggleSelectAll(projectGroup)}
-                          />
-                          <span className="text-sm font-semibold text-eg-terra">
-                            Seleziona tutti
-                          </span>
-                        </label>
-
-                        {showSearch ? (
-                          <label className="grid gap-2">
-                            <span className="text-sm font-medium text-eg-terra">
-                              Cerca intervento
-                            </span>
-                            <Input
-                              type="search"
-                              value={getQuery(projectGroup.id)}
-                              onChange={(event) => {
-                                setInterventionQueries((current) => ({
-                                  ...current,
-                                  [projectGroup.id]: event.target.value,
-                                }));
-                                setVisibleInterventionCounts((current) => ({
-                                  ...current,
-                                  [projectGroup.id]: interventionBatchSize,
-                                }));
-                              }}
-                              placeholder="Cerca intervento..."
-                            />
-                          </label>
-                        ) : null}
-
-                        <div className="grid gap-2">
-                          {visibleInterventions.map((intervention) => {
-                            const isSelected = selectedInterventionIdSet.has(
-                              intervention.id,
-                            );
-
-                            return (
-                              <label
-                                key={intervention.id}
-                                className={cn(
-                                  "flex cursor-pointer gap-3 rounded-eg-md border border-eg-hairline bg-eg-calce p-3 transition-colors hover:border-eg-cotto",
-                                  isSelected
-                                    ? "border-eg-cotto bg-eg-cotto-tint"
-                                    : "",
-                                )}
-                              >
-                                <Checkbox
-                                  name="interventionIds"
-                                  value={intervention.id}
-                                  checked={isSelected}
-                                  onChange={() =>
-                                    toggleIntervention(intervention.id)
-                                  }
-                                  className="mt-0.5"
-                                />
-
-                                <span className="min-w-0 flex-1">
-                                  <span className="block text-sm font-semibold text-eg-terra">
-                                    {intervention.name}
-                                  </span>
-
-                                  {intervention.description ? (
-                                    <span className="mt-1 block text-sm leading-6 text-eg-ardesia">
-                                      {intervention.description}
-                                    </span>
-                                  ) : null}
-                                </span>
-
-                                {isSelected ? (
-                                  <CheckGlyph className="h-4 w-4 shrink-0 text-eg-cotto" />
-                                ) : null}
-                              </label>
-                            );
-                          })}
-                        </div>
-
-                        {hasMoreInterventions(projectGroup) ? (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => {
-                              setVisibleInterventionCounts((current) => ({
-                                ...current,
-                                [projectGroup.id]:
-                                  getVisibleCount(projectGroup.id) +
-                                  interventionBatchSize,
-                              }));
-                            }}
-                          >
-                            Mostra altri
-                          </Button>
-                        ) : null}
-                      </>
-                    )}
-                  </div>
-                ) : null}
+            {isOtherGroupsVisible ? (
+              <div className="space-y-2">
+                {otherGroups.map(renderProjectGroupRow)}
               </div>
-            );
-          })}
-        </div>
+            ) : null}
+          </div>
+        ) : null}
       </section>
 
       <div className="flex flex-col gap-4 border-t border-eg-hairline pt-6 sm:flex-row sm:items-center sm:justify-between">
