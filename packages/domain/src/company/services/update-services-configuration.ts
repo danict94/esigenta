@@ -1,5 +1,5 @@
 import type { CompanyActor } from "@esigenta/auth"
-import { prisma } from "@esigenta/database"
+import { prisma, writeCompanyServiceConfigurationWithClient } from "@esigenta/database"
 
 type PerfRecorder = (label: string, ms: number) => void
 
@@ -80,7 +80,10 @@ export async function updateCompanyServicesConfiguration(
 
   const companyId = actor.company.id
 
-  // Round-trip 2: atomic write CTE.
+  // Round-trip 2: atomic write CTE, shared with @esigenta/auth's onboarding
+  // bootstrap via @esigenta/database (which cannot be @esigenta/domain —
+  // see packages/database/src/index.ts) so both writers use the exact same
+  // replace-set semantics instead of two independently-maintained copies.
   // - CompanyCategory <- selectedCategoryIds (replace set)
   // - CompanyIntervention <- selectedInterventionIds (replace set) — the
   //   sole frozen-model source of truth for matching (Phase 10) and the
@@ -90,30 +93,11 @@ export async function updateCompanyServicesConfiguration(
   // the dashboard, not the profile page. See
   // docs/archive-legacy/refoundation/taxonomy-refoundation/15A_IMMEDIATE_REMOVALS_REPORT.md.
   const t1 = performance.now()
-  await prisma.$executeRaw`
-    WITH
-      _del_cat AS (
-        DELETE FROM "CompanyCategory"
-        WHERE "companyId" = ${companyId}
-          AND "categoryId" != ALL(${selectedCategoryIds}::text[])
-      ),
-      _ins_cat AS (
-        INSERT INTO "CompanyCategory" ("companyId", "categoryId")
-        SELECT ${companyId}, id FROM unnest(${selectedCategoryIds}::text[]) AS id
-        ON CONFLICT ("companyId", "categoryId") DO NOTHING
-      ),
-      _del_iv AS (
-        DELETE FROM "CompanyIntervention"
-        WHERE "companyId" = ${companyId}
-          AND "interventionId" != ALL(${selectedInterventionIds}::text[])
-      ),
-      _ins_iv AS (
-        INSERT INTO "CompanyIntervention" ("companyId", "interventionId")
-        SELECT ${companyId}, id FROM unnest(${selectedInterventionIds}::text[]) AS id
-        ON CONFLICT ("companyId", "interventionId") DO NOTHING
-      )
-    SELECT 1
-  `
+  await writeCompanyServiceConfigurationWithClient(prisma, {
+    companyId,
+    categoryIds: selectedCategoryIds,
+    interventionIds: selectedInterventionIds,
+  })
   recordPerf?.("services-config-write", Math.round(performance.now() - t1))
 
   return { ok: true }

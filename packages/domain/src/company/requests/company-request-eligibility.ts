@@ -1,4 +1,5 @@
-import { prisma } from "@esigenta/database"
+import { prisma, resolveInterventionsForCategoryIdsWithClient } from "@esigenta/database"
+import type { CategoryInterventionRow } from "@esigenta/database"
 
 /**
  * THE canonical "which interventions can this company see requests for"
@@ -13,17 +14,7 @@ import { prisma } from "@esigenta/database"
  * Intervention.projectGroupId.
  */
 
-type CategoryProjectGroupsRow = {
-  id: string
-  projectGroupIds: string[]
-}
-
-export type EligibilityInterventionRow = {
-  id: string
-  slug: string
-  name: string
-  projectGroupId: string | null
-}
+export type EligibilityInterventionRow = CategoryInterventionRow
 
 export type CompanyRequestEligibility = {
   resolvedCategoryIds: string[]
@@ -38,45 +29,17 @@ export type CompanyRequestEligibility = {
   isConfigured: boolean
 }
 
-function unique(values: string[]): string[] {
-  return Array.from(new Set(values))
-}
-
-// Resolves the ProjectGroup ids referenced by a set of categories, then the
-// Interventions those ProjectGroups contain — 2 round trips total
-// regardless of how many categories are passed in, never one query per
-// category.
+// Category -> ProjectGroup -> Intervention traversal, shared with
+// @esigenta/auth's onboarding bootstrap via @esigenta/database (which
+// cannot be @esigenta/domain — see packages/database/src/index.ts) so
+// there is exactly one implementation of this expansion, not two.
 export async function loadInterventionsForCategoryIds(
   categoryIds: string[],
 ): Promise<{
   projectGroupIds: string[]
   interventions: EligibilityInterventionRow[]
 }> {
-  if (categoryIds.length === 0) {
-    return { projectGroupIds: [], interventions: [] }
-  }
-
-  const categories = await prisma.category.findMany({
-    where: { id: { in: categoryIds } },
-    select: { id: true, projectGroupIds: true },
-  })
-
-  const projectGroupIds = unique(
-    (categories as CategoryProjectGroupsRow[]).flatMap(
-      (category) => category.projectGroupIds,
-    ),
-  )
-
-  if (projectGroupIds.length === 0) {
-    return { projectGroupIds, interventions: [] }
-  }
-
-  const interventions = await prisma.intervention.findMany({
-    where: { projectGroupId: { in: projectGroupIds } },
-    select: { id: true, slug: true, name: true, projectGroupId: true },
-  })
-
-  return { projectGroupIds, interventions }
+  return resolveInterventionsForCategoryIdsWithClient(prisma, categoryIds)
 }
 
 /**

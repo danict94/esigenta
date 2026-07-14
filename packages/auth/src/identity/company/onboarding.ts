@@ -4,7 +4,10 @@ import {
 
 import {
   prisma,
+  resolveCategoryBySlugWithClient,
+  resolveInterventionsForCategoryIdsWithClient,
   setCompanyLocationWithClient,
+  writeCompanyServiceConfigurationWithClient,
 } from "@esigenta/database"
 
 import {
@@ -90,6 +93,16 @@ export type CreateCompanyForUserResult =
       code: "company_vat_number_exists"
       message: string
     }
+  | {
+      ok: false
+      code: "invalid_company_category"
+      message: string
+    }
+  | {
+      ok: false
+      code: "company_category_configuration_unavailable"
+      message: string
+    }
 
 export class CompanyOnboardingError extends Error {
   code: "invalid_company_profile"
@@ -100,6 +113,32 @@ export class CompanyOnboardingError extends Error {
       "CompanyOnboardingError"
     this.code =
       "invalid_company_profile"
+  }
+}
+
+/**
+ * Thrown only inside the createCompanyForUser transaction, when the
+ * onboarding category preset cannot be applied (unknown slug, or a real
+ * Category whose ProjectGroups resolve to zero Intervention rows — a
+ * catalog inconsistency, not a user input error). Thrown mid-transaction
+ * so Prisma rolls back Company/GeoLocation/CompanyMembership atomically —
+ * there is no successful path that leaves a Company without its category
+ * preset when a category was requested. Caught below and mapped to a
+ * controlled CreateCompanyForUserResult; never leaks past this file.
+ */
+class CompanyOnboardingCategoryError extends Error {
+  code:
+    | "invalid_company_category"
+    | "company_category_configuration_unavailable"
+
+  constructor(
+    code: CompanyOnboardingCategoryError["code"],
+    message: string,
+  ) {
+    super(message)
+    this.name =
+      "CompanyOnboardingCategoryError"
+    this.code = code
   }
 }
 
@@ -291,6 +330,64 @@ export async function createCompanyForUser({
   try {
     const result = await prisma.$transaction(
       async (tx) => {
+        // Initial configuration bootstrap: resolved first, inside this
+        // same transaction, so an invalid/empty category aborts before
+        // any row is written and rolls back atomically —
+        // there is no partially-created Company, GeoLocation, or
+        // CompanyMembership left behind on failure. Category and
+        // Intervention are read here, not before the transaction, so the
+        // whole bootstrap is one atomic unit per the approved design.
+        let categoryPreset:
+          | { categoryId: string; interventionIds: string[] }
+          | null = null
+
+        if (normalizedOnboardingCategorySlug) {
+          const resolvedCategory =
+            await resolveCategoryBySlugWithClient(
+              tx,
+              normalizedOnboardingCategorySlug,
+            )
+
+          if (!resolvedCategory) {
+            throw new CompanyOnboardingCategoryError(
+              "invalid_company_category",
+              "La categoria professionale selezionata non è valida. Torna alla pagina professionisti e riprova.",
+            )
+          }
+
+          const { interventions } =
+            await resolveInterventionsForCategoryIdsWithClient(tx, [
+              resolvedCategory.id,
+            ])
+
+          if (interventions.length === 0) {
+            // Catalog inconsistency, not a user input error: a real
+            // Category whose ProjectGroups resolve to zero Intervention
+            // rows. Logged via the existing console-based structured
+            // logging convention (see notify-admins-company-pending-review.ts)
+            // — no new notification system introduced.
+            console.error(
+              "company_onboarding_category_preset_empty",
+              {
+                categorySlug: normalizedOnboardingCategorySlug,
+                categoryId: resolvedCategory.id,
+              },
+            )
+
+            throw new CompanyOnboardingCategoryError(
+              "company_category_configuration_unavailable",
+              "Non è possibile completare la registrazione con questa categoria in questo momento. Riprova più tardi o contatta l'assistenza.",
+            )
+          }
+
+          categoryPreset = {
+            categoryId: resolvedCategory.id,
+            interventionIds: interventions.map(
+              (intervention) => intervention.id,
+            ),
+          }
+        }
+
         const companyRecord =
           await tx.company.create({
             data: buildCompanyCreateData({
@@ -323,6 +420,20 @@ export async function createCompanyForUser({
             },
           })
 
+        // Applied once, only at creation, only when a valid category
+        // resolved to at least one Intervention — never re-run against an
+        // existing Company (this function only ever creates new
+        // companies) and never touched by the separate manual-save path
+        // (updateCompanyServicesConfiguration), so a later personalization
+        // can never be overwritten by this bootstrap.
+        if (categoryPreset) {
+          await writeCompanyServiceConfigurationWithClient(tx, {
+            companyId: companyRecord.id,
+            categoryIds: [categoryPreset.categoryId],
+            interventionIds: categoryPreset.interventionIds,
+          })
+        }
+
         return {
           ok: true,
           companyId:
@@ -340,6 +451,14 @@ export async function createCompanyForUser({
 
     return result
   } catch (error) {
+    if (error instanceof CompanyOnboardingCategoryError) {
+      return {
+        ok: false,
+        code: error.code,
+        message: error.message,
+      }
+    }
+
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
