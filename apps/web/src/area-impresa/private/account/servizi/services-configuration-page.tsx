@@ -28,6 +28,7 @@ import {
 export type ServicesConfigurationPageProps = {
   searchParams: Promise<{
     error?: string
+    saved?: string
   }>
 }
 
@@ -49,7 +50,7 @@ export async function ServicesConfigurationPage({
     areaLog("area.model.servicesConfiguration.start", {})
   }
 
-  const [{ error }, actor] = await Promise.all([
+  const [{ error, saved }, actor] = await Promise.all([
     searchParams,
     requireAreaImpresaAccess(),
   ])
@@ -153,6 +154,13 @@ export async function ServicesConfigurationPage({
     null
 
   const errorMessage = error ? (errorMessages[error] ?? null) : null
+  const savedMessage = saved === "1" ? "Configurazione salvata." : null
+
+  // Edit mode opens directly for an unconfigured company (nothing to
+  // summarize yet) or right after a failed save (the error needs the form
+  // visible to be actionable) — otherwise the page opens on the calm
+  // read-only summary. See category-interventions-selector.tsx.
+  const startInEditMode = !company.isConfigured || errorMessage !== null
 
   return (
     <PageShell size="lg">
@@ -200,12 +208,19 @@ export async function ServicesConfigurationPage({
             </div>
           ) : null}
 
+          {savedMessage ? (
+            <div className="mt-5 border border-eg-hairline bg-eg-calce-2 px-4 py-3 text-sm font-medium text-eg-terra">
+              {savedMessage}
+            </div>
+          ) : null}
+
           <CategoryInterventionsSelector
             categories={categoryOptions}
             projectGroups={projectGroupOptions}
             initialCategoryIds={initialCategoryIds}
             initialInterventionIds={initialInterventionIds}
             action={updateServicesAction}
+            startInEditMode={startInEditMode}
           />
         </Card>
       </div>

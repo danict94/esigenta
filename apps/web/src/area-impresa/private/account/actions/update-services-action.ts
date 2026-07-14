@@ -68,5 +68,5 @@ export async function updateServicesAction(
     redirectWithError(result.code)
   }
 
-  redirect("/area-impresa/richieste")
+  redirect("/area-impresa/configura-servizi?saved=1")
 }

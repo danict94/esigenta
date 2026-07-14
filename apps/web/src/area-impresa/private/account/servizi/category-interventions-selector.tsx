@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useFormStatus } from "react-dom";
 
 import { Badge, Button, Checkbox, Input, cn } from "@esigenta/ui";
 
@@ -27,6 +28,13 @@ export type CategoryInterventionsSelectorProps = {
   initialCategoryIds: string[];
   initialInterventionIds: string[];
   action: (formData: FormData) => Promise<void>;
+  /**
+   * View/edit mode is a display concern owned by apps/web (see
+   * services-configuration-page.tsx) — the server decides whether to open
+   * in edit mode (unconfigured company, or an error just occurred) and
+   * this component only holds the resulting local UI state.
+   */
+  startInEditMode: boolean;
 };
 
 const maxCategories = 6;
@@ -94,13 +102,56 @@ function getInterventionMatchesQuery(
   ).includes(normalizedQuery);
 }
 
+// Order-independent comparison — the form works with plain string[] ids,
+// not Sets, so equality must ignore order and duplicates.
+function areIdSetsEqual(a: string[], b: string[]) {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  const setA = new Set(a);
+
+  return b.every((id) => setA.has(id));
+}
+
+// "A", "A e B", "A, B e C" — Italian list join for the view-mode summary
+// sentence. Display-only formatting, not a taxonomy/business rule.
+function formatNameList(names: string[]): string {
+  if (names.length <= 1) {
+    return names[0] ?? "";
+  }
+
+  if (names.length === 2) {
+    return `${names[0]} e ${names[1]}`;
+  }
+
+  return `${names.slice(0, -1).join(", ")} e ${names[names.length - 1]}`;
+}
+
+// Reads pending state from the nearest ancestor <form>, so Save reflects
+// the actual in-flight submission and disables itself against a double
+// click/tap without any extra state wiring in the parent component.
+function SaveConfigurationButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? "Salvataggio…" : "Salva configurazione"}
+    </Button>
+  );
+}
+
 export function CategoryInterventionsSelector({
   categories,
   projectGroups,
   initialCategoryIds,
   initialInterventionIds,
   action,
+  startInEditMode,
 }: CategoryInterventionsSelectorProps) {
+  const [mode, setMode] = useState<"view" | "edit">(
+    startInEditMode ? "edit" : "view",
+  );
   const [selectedCategoryIds, setSelectedCategoryIds] =
     useState(initialCategoryIds);
   const [activeProjectGroupId, setActiveProjectGroupId] = useState<
@@ -124,6 +175,33 @@ export function CategoryInterventionsSelector({
     () => new Set(selectedInterventionIds),
     [selectedInterventionIds],
   );
+
+  // Dirty state compares current local selections against the last
+  // saved configuration (the initial* props) — not against whatever was
+  // on screen a moment ago, so it stays correct across toggles in either
+  // direction, including toggling something back to its saved value.
+  const isDirty = useMemo(
+    () =>
+      !areIdSetsEqual(selectedCategoryIds, initialCategoryIds) ||
+      !areIdSetsEqual(selectedInterventionIds, initialInterventionIds),
+    [
+      selectedCategoryIds,
+      selectedInterventionIds,
+      initialCategoryIds,
+      initialInterventionIds,
+    ],
+  );
+
+  // Nothing to cancel back to for a company that has never saved a
+  // configuration — Annulla is only meaningful once a saved state exists.
+  const canCancel =
+    initialCategoryIds.length > 0 || initialInterventionIds.length > 0;
+
+  function handleCancel() {
+    setSelectedCategoryIds(initialCategoryIds);
+    setSelectedInterventionIds(initialInterventionIds);
+    setMode("view");
+  }
 
   function toggleCategory(categoryId: string) {
     setSelectedCategoryIds((currentCategoryIds) => {
@@ -239,6 +317,47 @@ export function CategoryInterventionsSelector({
   const hiddenSelectedInterventionIds = selectedInterventionIds.filter(
     (interventionId) => !renderedInterventionIdSet.has(interventionId),
   );
+
+  // Riepilogo — shown for an already-configured company instead of the
+  // full form, per the approved view/edit split. Built only from the
+  // saved (initial*) ids, never from the in-progress local selection, so
+  // it can never show something that hasn't actually been saved.
+  if (mode === "view") {
+    const savedCategoryNames = categories
+      .filter((category) => initialCategoryIds.includes(category.id))
+      .map((category) => category.name);
+    const savedInterventionCount = initialInterventionIds.length;
+    const hasSavedConfiguration = savedCategoryNames.length > 0;
+
+    return (
+      <div className="mt-6 space-y-5">
+        <p className="text-sm leading-6 text-eg-terra">
+          {hasSavedConfiguration ? (
+            <>
+              Operi come{" "}
+              <span className="font-semibold">
+                {formatNameList(savedCategoryNames)}
+              </span>
+              . Hai selezionato{" "}
+              <span className="font-semibold">
+                {savedInterventionCount}{" "}
+                {savedInterventionCount === 1 ? "intervento" : "interventi"}
+              </span>
+              .
+            </>
+          ) : (
+            "Non hai ancora selezionato categorie o interventi."
+          )}
+        </p>
+
+        <div className="flex justify-end">
+          <Button type="button" onClick={() => setMode("edit")}>
+            {hasSavedConfiguration ? "Modifica configurazione" : "Configura ora"}
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form action={action} className="mt-6 space-y-8">
@@ -506,8 +625,25 @@ export function CategoryInterventionsSelector({
         </div>
       </section>
 
-      <div className="flex justify-end border-t border-eg-hairline pt-6">
-        <Button type="submit">Salva configurazione</Button>
+      <div className="flex flex-col gap-4 border-t border-eg-hairline pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p
+          className={cn(
+            "text-sm",
+            isDirty ? "font-medium text-eg-terra" : "text-eg-ardesia",
+          )}
+        >
+          {isDirty ? "Modifiche non salvate" : "Nessuna modifica da salvare"}
+        </p>
+
+        <div className="flex justify-end gap-3">
+          {canCancel ? (
+            <Button type="button" variant="ghost" onClick={handleCancel}>
+              Annulla
+            </Button>
+          ) : null}
+
+          <SaveConfigurationButton />
+        </div>
       </div>
     </form>
   );
