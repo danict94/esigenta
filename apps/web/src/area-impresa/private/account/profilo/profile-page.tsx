@@ -13,6 +13,7 @@ import {
 
 import {
   companyProfileCompletenessFieldLabels,
+  getCompanyDocumentsPage,
   getCompanyProfilePage,
 } from "@esigenta/domain"
 
@@ -24,6 +25,7 @@ import {
 } from "../../../../platform/monitoring/area-monitoring"
 import { createPerfTrace } from "../../../monitoring/area-impresa-perf-trace"
 
+import { CompanyDocumentsSection } from "./company-documents-section"
 import { CompanyLocationFields } from "./company-location-fields"
 import { DeactivateAccountForm } from "./deactivate-account-form"
 import {
@@ -118,6 +120,8 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
   const { company, categories, interventions, contactChangeRequests, credit } =
     await getCompanyProfilePage(actor, trace.add)
+
+  const { documents } = await getCompanyDocumentsPage(actor)
 
   const durationMs = Math.round(areaTimestamp() - pageStart)
 
@@ -461,6 +465,23 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                 </ul>
               </>
             )}
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="border-b border-eg-hairline pb-5">
+            <h2 className="text-xl font-semibold tracking-tight text-eg-terra">
+              Documenti impresa
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              Carica i documenti richiesti per la verifica dell&apos;impresa.
+              I file sono conservati in uno storage privato e non sono
+              accessibili pubblicamente.
+            </p>
+          </div>
+
+          <div className="mt-5">
+            <CompanyDocumentsSection documents={documents} />
           </div>
         </Card>
 

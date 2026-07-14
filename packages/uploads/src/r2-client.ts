@@ -6,6 +6,7 @@
 import {
   DeleteObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3"
@@ -139,4 +140,64 @@ export async function createR2SignedDownloadUrl(
   return getSignedUrl(client, command, {
     expiresIn: expiresInSeconds,
   })
+}
+
+/**
+ * Presigned PUT for direct browser→R2 upload — never routes the file body
+ * through a Vercel serverless function, which caps request bodies at ~4.5MB
+ * well below the 15MB document limit. Short expiry: the URL is only meant
+ * to survive the time between authorize and the immediate follow-up PUT.
+ */
+export async function createR2SignedUploadUrl(
+  objectKey: string,
+  contentType: string,
+  expiresInSeconds: number = R2_SIGNED_URL_DEFAULT_EXPIRES_SECONDS,
+): Promise<string> {
+  const client = getR2Client()
+
+  const command = new PutObjectCommand({
+    Bucket: getRequiredEnv("R2_BUCKET_NAME"),
+    Key: objectKey,
+    ContentType: contentType,
+  })
+
+  return getSignedUrl(client, command, {
+    expiresIn: expiresInSeconds,
+  })
+}
+
+export type R2ObjectMetadata = {
+  sizeBytes: number
+  contentType: string | null
+}
+
+/**
+ * Confirms an object actually landed in R2 before trusting client-declared
+ * fileName/mimeType/sizeBytes — the presigned PUT client never proves
+ * anything about what it actually uploaded.
+ */
+export async function getR2ObjectMetadata(
+  objectKey: string,
+): Promise<R2ObjectMetadata | null> {
+  const client = getR2Client()
+
+  try {
+    const result = await client.send(
+      new HeadObjectCommand({
+        Bucket: getRequiredEnv("R2_BUCKET_NAME"),
+        Key: objectKey,
+      }),
+    )
+
+    return {
+      sizeBytes: result.ContentLength ?? 0,
+      contentType: result.ContentType ?? null,
+    }
+  } catch (error) {
+    const name = (error as { name?: string } | null)?.name
+    if (name === "NotFound" || name === "NoSuchKey") {
+      return null
+    }
+    throw error
+  }
 }

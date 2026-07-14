@@ -148,6 +148,36 @@ function ProfileBadge({
   )
 }
 
+/**
+ * Deliberately text-only, no dot/badge — a small red-ish link that reads
+ * as an inline note, not a status pill, per FASE DOCUMENTI 3.C ("niente
+ * pallini, niente badge pesanti"). Renders nothing when there is nothing
+ * pending, to avoid visual noise on the common case.
+ */
+function PendingDocumentsSignal({
+  company,
+}: {
+  company: AdminCompanyListItem
+}) {
+  if (company.pendingDocumentsCount === 0) {
+    return null
+  }
+
+  const label =
+    company.pendingDocumentsCount === 1
+      ? "1 documento da verificare"
+      : `${company.pendingDocumentsCount} documenti da verificare`
+
+  return (
+    <Link
+      href={`/imprese/${company.id}`}
+      className="mt-2 block text-xs font-medium text-eg-cotto-dark hover:underline"
+    >
+      {label}
+    </Link>
+  )
+}
+
 function CompanySearchForm({
   activeStatus,
   query,
@@ -606,6 +636,7 @@ function CompaniesList({
                   <ProfileBadge company={company} />
                 </div>
                 <StatusEventInfo company={company} />
+                <PendingDocumentsSignal company={company} />
               </div>
 
               <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">

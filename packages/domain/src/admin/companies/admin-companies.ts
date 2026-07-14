@@ -64,6 +64,13 @@ export type AdminCompanyListItem = {
   interventionCount: number
   profileCompleteness: CompanyProfileCompleteness
   adminBadge: CompanyAdminBadge
+  /**
+   * Count of CompanyDocument rows in PENDING_REVIEW for this company —
+   * drives the minimal "N documenti da verificare" text signal in the
+   * list. Never reflects MISSING documents (those have no row) and never
+   * feeds into adminBadge or Company.status.
+   */
+  pendingDocumentsCount: number
 }
 
 export type AdminCompanyStatusCounts = {
@@ -175,6 +182,7 @@ function mapCompanyListItem(company: {
   _count: {
     categories: number
     interventions: number
+    documents: number
   }
 }): AdminCompanyListItem {
   const profileCompleteness = deriveCompanyProfileCompleteness({
@@ -219,6 +227,7 @@ function mapCompanyListItem(company: {
     principalCategoryName: company.categories[0]?.category.name ?? null,
     interventionCount: company._count.interventions,
     profileCompleteness,
+    pendingDocumentsCount: company._count.documents,
     adminBadge: deriveCompanyAdminBadge({
       status: company.status,
       statusChangeReason: company.statusChangeReason,
@@ -331,6 +340,9 @@ export async function listAdminCompanies({
           select: {
             categories: true,
             interventions: true,
+            documents: {
+              where: { status: "PENDING_REVIEW" },
+            },
           },
         },
         // Only the first category's name, never the full list or any

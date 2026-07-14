@@ -6,12 +6,17 @@ import {
 } from "next/cache"
 
 import {
+  approveCompanyDocument,
   approveCompanyForMarketplace,
   blockCompanyForMarketplace,
   companyProfileCompletenessFieldLabels,
   getAdminCompanyDetail,
+  getAdminCompanyDocuments,
+  rejectCompanyDocument,
   suspendCompanyForMarketplace,
   type AdminCompanyDetail,
+  type AdminCompanyDocumentItem,
+  type AdminCompanyDocumentStatus,
 } from "@esigenta/domain"
 
 import {
@@ -20,6 +25,7 @@ import {
   Card,
   PageShell,
   Textarea,
+  buttonClassName,
 } from "@esigenta/ui"
 
 import {
@@ -47,6 +53,28 @@ function formatDate(date: Date | null) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date)
+}
+
+function formatFileSize(sizeBytes: number | null) {
+  if (sizeBytes === null) {
+    return "-"
+  }
+
+  return `${(sizeBytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function documentStatusLabel(status: AdminCompanyDocumentStatus) {
+  if (status === "MISSING") return "Mancante"
+  if (status === "PENDING_REVIEW") return "In verifica"
+  if (status === "APPROVED") return "Approvato"
+  return "Da correggere"
+}
+
+function documentStatusColor(status: AdminCompanyDocumentStatus) {
+  if (status === "APPROVED") return "green" as const
+  if (status === "PENDING_REVIEW") return "yellow" as const
+  if (status === "REJECTED") return "red" as const
+  return "gray" as const
 }
 
 function getStatusEventDate(
@@ -136,6 +164,45 @@ async function blockCompanyAction(
   revalidatePath("/imprese")
 }
 
+async function approveCompanyDocumentAction(
+  formData: FormData,
+) {
+  "use server"
+
+  const admin = await requireAdmin()
+  const companyId = String(formData.get("companyId") ?? "")
+  const documentId = String(formData.get("documentId") ?? "")
+
+  const result = await approveCompanyDocument(documentId, admin.userId)
+
+  if (!result.ok) {
+    throw new Error(result.code)
+  }
+
+  revalidatePath(`/imprese/${companyId}`)
+  revalidatePath("/imprese")
+}
+
+async function rejectCompanyDocumentAction(
+  formData: FormData,
+) {
+  "use server"
+
+  const admin = await requireAdmin()
+  const companyId = String(formData.get("companyId") ?? "")
+  const documentId = String(formData.get("documentId") ?? "")
+  const reason = String(formData.get("reason") ?? "")
+
+  const result = await rejectCompanyDocument(documentId, admin.userId, reason)
+
+  if (!result.ok) {
+    throw new Error(result.code)
+  }
+
+  revalidatePath(`/imprese/${companyId}`)
+  revalidatePath("/imprese")
+}
+
 type CompanyAction = {
   label: string
   action: typeof approveCompanyAction
@@ -205,6 +272,118 @@ function Field({
   )
 }
 
+function DocumentRow({
+  document,
+  companyId,
+}: {
+  document: AdminCompanyDocumentItem
+  companyId: string
+}) {
+  return (
+    <li className="border-b border-eg-hairline pb-5 last:border-b-0 last:pb-0">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-eg-terra">{document.label}</p>
+          <p className="mt-1 text-xs text-eg-ardesia">
+            {document.requiredByDefault ? "Obbligatorio" : "Consigliato"}
+          </p>
+        </div>
+        <AdminStatusPill
+          color={documentStatusColor(document.status)}
+          label={documentStatusLabel(document.status)}
+        />
+      </div>
+
+      {document.status === "MISSING" || !document.id ? (
+        <p className="mt-3 text-sm text-eg-ardesia">Non caricato.</p>
+      ) : (
+        <div className="mt-3 grid gap-2">
+          <p className="text-sm text-eg-terra">
+            {document.fileName} · {formatFileSize(document.sizeBytes)}
+          </p>
+          <p className="text-xs text-eg-ardesia">
+            Caricato il {formatDate(document.uploadedAt)}
+            {document.uploadedByUser
+              ? ` da ${document.uploadedByUser.name ?? document.uploadedByUser.email}`
+              : ""}
+          </p>
+
+          {document.status === "REJECTED" && document.rejectionReason ? (
+            <p className="text-xs text-eg-cotto-dark">
+              Motivo: {document.rejectionReason}
+            </p>
+          ) : null}
+
+          {document.status === "APPROVED" && document.reviewedByAdminUser ? (
+            <p className="text-xs text-eg-ardesia">
+              Approvato il {formatDate(document.reviewedAt)} da{" "}
+              {document.reviewedByAdminUser.name ?? document.reviewedByAdminUser.email}
+            </p>
+          ) : null}
+
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <a
+              href={`/api/company-documents/${document.id}/download`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-eg-cotto"
+            >
+              Apri documento
+            </a>
+
+            {document.status === "PENDING_REVIEW" ? (
+              <>
+                <form>
+                  <input type="hidden" name="documentId" value={document.id} />
+                  <input type="hidden" name="companyId" value={companyId} />
+                  <Button
+                    type="submit"
+                    formAction={approveCompanyDocumentAction}
+                    size="sm"
+                  >
+                    Approva
+                  </Button>
+                </form>
+
+                <details className="group">
+                  <summary
+                    className={buttonClassName({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "cursor-pointer list-none",
+                    })}
+                  >
+                    Rifiuta
+                  </summary>
+                  <form className="mt-3 grid gap-2">
+                    <input type="hidden" name="documentId" value={document.id} />
+                    <input type="hidden" name="companyId" value={companyId} />
+                    <Textarea
+                      name="reason"
+                      rows={2}
+                      required
+                      placeholder="Motivo del rifiuto"
+                      className="text-xs"
+                    />
+                    <Button
+                      type="submit"
+                      formAction={rejectCompanyDocumentAction}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      Conferma rifiuto
+                    </Button>
+                  </form>
+                </details>
+              </>
+            ) : null}
+          </div>
+        </div>
+      )}
+    </li>
+  )
+}
+
 export default async function CompanyDetailPage({
   params,
 }: CompanyDetailPageProps) {
@@ -216,6 +395,8 @@ export default async function CompanyDetailPage({
   if (!company) {
     notFound()
   }
+
+  const documents = await getAdminCompanyDocuments(companyId)
 
   const actions = getCompanyActions(company.status)
   const eventDate = getStatusEventDate(company)
@@ -349,11 +530,15 @@ export default async function CompanyDetailPage({
         </SectionCard>
 
         <SectionCard title="Documenti impresa">
-          <p className="text-sm leading-6 text-eg-ardesia">
-            Il flusso documentale è in preparazione. In questa area saranno
-            disponibili caricamento e verifica dei documenti tramite storage
-            privato, senza esporre funzionalità non ancora operative.
-          </p>
+          <ul className="grid gap-5">
+            {documents.map((document) => (
+              <DocumentRow
+                key={document.type}
+                document={document}
+                companyId={company.id}
+              />
+            ))}
+          </ul>
         </SectionCard>
 
         <SectionCard title="Attività marketplace">
