@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(resolveSiteOrigin()),
   title: "Esigenta",
   description: "Trova professionisti verificati per i tuoi interventi.",
+  applicationName: "Esigenta",
 }
 
 export default function RootLayout({

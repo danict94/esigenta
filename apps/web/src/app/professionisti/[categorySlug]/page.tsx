@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getProfessionPage, listProfessionPageCategorySlugs } from "@esigenta/taxonomy";
 
+import { buildCanonicalPath } from "../../../site/seo/engine/canonical";
 import { ProfessionPageTemplate } from "../../../site/professions/profession-page-template";
 
 type Props = { params: Promise<{ categorySlug: string }> };
@@ -22,11 +23,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${page.category.name} — Esigenta`,
+    title: page.category.name,
     description:
       page.category.description ??
       `Trova richieste e interventi per ${page.category.name.toLowerCase()}.`,
-    alternates: { canonical: `/professionisti/${categorySlug}` },
+    alternates: {
+      canonical: buildCanonicalPath({ family: "profession", slug: categorySlug }),
+    },
   };
 }
 

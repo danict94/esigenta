@@ -1,4 +1,4 @@
-export type SeoFamily = "costGuide" | "intervention" | "groupHub";
+export type SeoFamily = "costGuide" | "intervention" | "groupHub" | "profession";
 
 export type CanonicalPageRef = {
   family: SeoFamily;
@@ -10,6 +10,7 @@ const familyBasePath: Record<SeoFamily, string> = {
   costGuide: "/costi",
   intervention: "/interventi",
   groupHub: "/servizi",
+  profession: "/professionisti",
 };
 
 export function buildCanonicalPath(ref: CanonicalPageRef): string {

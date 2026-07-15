@@ -15,7 +15,10 @@ export function buildInterventionMetadata(slug: string): Metadata {
     return { title: "Intervento non trovato" };
   }
 
-  const canonicalPath = `/interventi/${landing.slug}`;
+  const canonicalPath = buildCanonicalPath({
+    family: "intervention",
+    slug: landing.slug,
+  });
 
   return {
     title: landing.metaTitle,
