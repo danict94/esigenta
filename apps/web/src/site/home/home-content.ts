@@ -30,14 +30,6 @@ export type FeaturedWork = {
   reverse?: boolean;
 };
 
-export type HomeHub = {
-  title: string;
-  meta: string;
-  href: string;
-  icon: "bath" | "roof" | "bolt" | "sun" | "fan" | "plus";
-  tone: "cotto" | "salvia" | "miele" | "terra";
-};
-
 export const preloadedResults: SearchResult[] = [
   { id: "preload-1", name: "Ristrutturare bagno", slug: "ristrutturare-bagno" },
   { id: "preload-2", name: "Rifare tetto", slug: "rifare-tetto" },
@@ -62,7 +54,7 @@ export const featuredWorks: FeaturedWork[] = [
     description:
       "Dal rifacimento completo alla sostituzione di sanitari e rivestimenti: una richiesta chiara per partire con il piede giusto.",
     href: "/interventi/ristrutturare-bagno",
-    cta: "ESPLORA L'HUB BAGNO",
+    cta: "SCOPRI IL PERCORSO BAGNO",
     imageSrc: "/assets/images/rifacimento-bagno.webp",
     imageAlt: "Bagno ristrutturato con rivestimenti chiari e sanitari moderni",
     fallbackLabel: "Foto ristrutturazione bagno",
@@ -74,7 +66,7 @@ export const featuredWorks: FeaturedWork[] = [
     description:
       "Coperture, infiltrazioni, isolamento e manutenzioni importanti: raccogli i dettagli e raggiungi imprese adatte al lavoro.",
     href: "/interventi/rifare-tetto",
-    cta: "ESPLORA L'HUB TETTO",
+    cta: "SCOPRI IL PERCORSO TETTO",
     imageSrc: "/assets/images/rifare-tetto.webp",
     imageAlt: "Operaio al lavoro su un tetto con tegole",
     fallbackLabel: "Foto rifacimento tetto",
@@ -87,7 +79,7 @@ export const featuredWorks: FeaturedWork[] = [
     description:
       "Adeguamenti, rifacimenti e nuove linee domestiche: trasformi un bisogno tecnico in una richiesta comprensibile.",
     href: "/interventi/rifare-impianto-elettrico",
-    cta: "ESPLORA L'HUB ELETTRICO",
+    cta: "SCOPRI IL PERCORSO ELETTRICO",
     imageSrc: "/assets/images/impianto-elettrico.webp",
     imageAlt: "Quadro elettrico domestico durante un intervento tecnico",
     fallbackLabel: "Foto impianto elettrico",
@@ -99,7 +91,7 @@ export const featuredWorks: FeaturedWork[] = [
     description:
       "Impianti solari, sopralluoghi e configurazioni iniziali: parti dai dati utili e confronti proposte coerenti.",
     href: "/interventi/installare-fotovoltaico",
-    cta: "ESPLORA L'HUB ENERGIA",
+    cta: "SCOPRI IL PERCORSO ENERGIA",
     imageSrc: "/assets/images/installazione-fotovoltaico.webp",
     imageAlt: "Pannelli fotovoltaici installati sul tetto di una casa",
     fallbackLabel: "Foto installazione fotovoltaico",
@@ -112,26 +104,10 @@ export const featuredWorks: FeaturedWork[] = [
     description:
       "Installazione o sostituzione del climatizzatore: descrivi ambienti, tempi e necessita senza perdere informazioni.",
     href: "/interventi/installare-climatizzatore",
-    cta: "ESPLORA L'HUB CLIMA",
+    cta: "SCOPRI IL PERCORSO CLIMA",
     imageSrc: "/assets/images/climatizzazione.webp",
     imageAlt: "Climatizzatore installato in un ambiente domestico",
     fallbackLabel: "Foto climatizzazione",
     tone: "cotto",
   },
 ];
-
-export const homeHubs: HomeHub[] = [
-  { title: "Bagno", meta: "Ristrutturazioni e finiture", href: "/interventi/ristrutturare-bagno", icon: "bath", tone: "cotto" },
-  { title: "Tetto", meta: "Coperture e infiltrazioni", href: "/interventi/rifare-tetto", icon: "roof", tone: "salvia" },
-  { title: "Elettrico", meta: "Impianti e adeguamenti", href: "/interventi/rifare-impianto-elettrico", icon: "bolt", tone: "miele" },
-  { title: "Energia", meta: "Fotovoltaico e consumi", href: "/interventi/installare-fotovoltaico", icon: "sun", tone: "terra" },
-  { title: "Clima", meta: "Comfort e climatizzazione", href: "/interventi/installare-climatizzatore", icon: "fan", tone: "salvia" },
-  { title: "Altro / Extra", meta: "Catalogo completo", href: "/servizi", icon: "plus", tone: "terra" },
-];
-
-export const homeProof = [
-  { number: "5", label: "lavori prioritari in primo piano" },
-  { number: "4", label: "passaggi per arrivare alla scelta" },
-  { number: "6", label: "hub per orientare ogni richiesta" },
-  { number: "1", label: "metodo unico per orientare ogni richiesta" },
-] as const;

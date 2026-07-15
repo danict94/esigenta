@@ -282,6 +282,10 @@ export function HomeHero() {
               />
             </ul>
           ) : null}
+
+          <p className="eg-form-help mx-auto mt-4 max-w-[34ch] text-center">
+            Gratuita e senza impegno: decidi tu se accettare una proposta.
+          </p>
         </div>
       </div>
 

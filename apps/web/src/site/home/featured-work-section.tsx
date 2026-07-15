@@ -27,6 +27,15 @@ export function FeaturedWorkSection() {
           <WorkRow key={work.idx} work={work} />
         ))}
       </div>
+
+      <div className="border-t border-eg-hairline">
+        <div className="eg-container-narrow flex flex-col items-center gap-2 py-10 text-center min-[861px]:flex-row min-[861px]:justify-between min-[861px]:gap-6 min-[861px]:py-8 min-[861px]:text-left">
+          <p className="eg-body-muted">Non trovi il lavoro che ti serve tra questi?</p>
+          <Link href="/servizi" prefetch={false} className="eg-link-mono shrink-0">
+            Scopri tutti i servizi <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }

@@ -2,8 +2,7 @@
 
 import { FeaturedWorkSection } from "./featured-work-section";
 import { HomeHero } from "./home-hero";
-import { HomeHubSection } from "./home-hub-section";
-import { HomeProofSection } from "./home-proof-section";
+import { HomeTrustSection } from "./home-trust-section";
 import { ProcessSteps } from "./process-steps";
 
 export function HomeExperience() {
@@ -13,8 +12,7 @@ export function HomeExperience() {
       <HomeHero />
       <ProcessSteps />
       <FeaturedWorkSection />
-      <HomeHubSection />
-      <HomeProofSection />
+      <HomeTrustSection />
     </main>
   );
 }
