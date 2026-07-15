@@ -1,11 +1,15 @@
-import { Bookmark, Clock3, MapPin, Ruler, UsersRound, } from "lucide-react"
+"use client"
 
-import {
-  Badge, Card, cn, type BadgeProps } from "@esigenta/ui";
+import type { ReactNode } from "react"
+import { usePathname } from "next/navigation"
+
+import { Bookmark } from "lucide-react"
+
+import { cn, type BadgeProps } from "@esigenta/ui"
 
 import {
   formatCreditCost,
-} from "./request-commercial-display"
+} from "./request-commercial-format"
 import {
   PendingRequestLink,
   PendingSubmitButton,
@@ -17,11 +21,14 @@ export type RequestListCardProps = {
   location: string
   createdAt: string
   matchLabel?: string
-  description?: string | null
   surfaceArea?: string | number | null
   creditCost: number | null
+  /** Overrides the computed credit-cost label, e.g. for restricted-access rows. */
+  costLabel?: string
   maxUnlocks: number | null
   unlockCount: number
+  /** Omit to hide the "N interessati" chip (e.g. data not available yet). */
+  showInterestCount?: boolean
   isSaved?: boolean
   savedAction?: (formData: FormData) => Promise<void>
   badges?: Array<{
@@ -98,30 +105,25 @@ function formatInterestCount({
   return `${unlockCount}/${maxUnlocks} interessati`
 }
 
-function buildPreviewText({
-  description,
-  formattedSurface,
-  intervention,
+function Chip({
+  children,
+  tone = "default",
 }: {
-  description?: string | null
-  formattedSurface: string | null
-  intervention: string
+  children: ReactNode
+  tone?: "default" | "accent"
 }) {
-  const cleanDescription =
-    description?.trim()
-
-  if (cleanDescription) {
-    return cleanDescription
-  }
-
-  const interventionLabel =
-    intervention.toLowerCase()
-
-  if (formattedSurface) {
-    return `Richiesta per ${interventionLabel}, superficie indicativa ${formattedSurface}.`
-  }
-
-  return `Richiesta per ${interventionLabel}.`
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border px-[9px] py-1 font-mono text-[11px] leading-none",
+        tone === "accent"
+          ? "border-eg-cotto/50 bg-eg-cotto-tint text-eg-cotto-dark"
+          : "border-eg-hairline bg-eg-calce text-eg-ardesia",
+      )}
+    >
+      {children}
+    </span>
+  )
 }
 
 export function RequestListCard({
@@ -130,11 +132,12 @@ export function RequestListCard({
   location,
   createdAt,
   matchLabel,
-  description,
   surfaceArea,
   creditCost,
+  costLabel,
   maxUnlocks,
   unlockCount,
+  showInterestCount = true,
   isSaved = false,
   savedAction,
   badges = [],
@@ -145,148 +148,111 @@ export function RequestListCard({
   })
   const formattedSurface =
     formatSurfaceArea(surfaceArea)
-  const previewText =
-    buildPreviewText({
-      description,
-      formattedSurface,
-      intervention,
-    })
   const detailHref =
     `/area-impresa/richieste/${id}`
+  const pathname = usePathname()
+  const isActive =
+    pathname === detailHref || pathname.startsWith(`${detailHref}/`)
 
   return (
-    <Card className="border-l-4 border-l-brand-primary p-4 transition-colors hover:border-eg-cotto lg:p-5">
-      <div className="space-y-3.5 lg:space-y-4">
-        <div className="flex flex-col gap-1.5 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
-          <h2 className="text-xl font-semibold leading-snug tracking-tight text-eg-terra lg:text-2xl">
-            {title}
-          </h2>
+    <div
+      aria-current={isActive ? "true" : undefined}
+      className={cn(
+        "relative border-b border-eg-hairline px-7 py-5 transition-colors",
+        isActive ? "bg-eg-calce-2" : "hover:bg-eg-calce-2",
+      )}
+    >
+      {isActive ? (
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-0 left-0 w-[3px] bg-eg-cotto"
+        />
+      ) : null}
 
-          <span className="shrink-0 text-sm font-medium text-eg-terra lg:pt-1 lg:text-lg">
-            {formatCreditCost(creditCost)}
+      {/* Full-row click target. Must sit ABOVE the plain (non-interactive)
+          content below — z-index only controls which element receives the
+          pointer event, not visual stacking (this link renders nothing
+          visible). Anything that needs its own independent click target
+          (the save button) is raised further with a higher z-index. */}
+      <PendingRequestLink
+        href={detailHref}
+        ariaLabel={`Apri richiesta: ${title}`}
+        className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-eg-cotto"
+      >
+        <span className="sr-only">Apri richiesta: {title}</span>
+      </PendingRequestLink>
+
+      <div className="relative">
+        <div className="mb-3 flex items-start justify-between gap-3">
+          <span className="text-[16px] font-semibold leading-snug tracking-[-0.01em] text-eg-terra">
+            {title}
+          </span>
+
+          <span className="shrink-0 whitespace-nowrap font-mono text-[11px] text-eg-ardesia-2">
+            {createdAt}
           </span>
         </div>
 
-        {(matchLabel || badges.length > 0) ? (
-          <div className="flex flex-wrap items-center gap-2">
-            {matchLabel ? (
-              <Badge variant="warning" size="sm">
-                {matchLabel}
-              </Badge>
+        <div className="mb-3 flex flex-wrap items-center gap-1.5">
+          <Chip>{intervention}</Chip>
+          <Chip>{location}</Chip>
+          <Chip tone="accent">{costLabel ?? formatCreditCost(creditCost)}</Chip>
+          {formattedSurface ? <Chip>{formattedSurface}</Chip> : null}
+
+          {badges.map((badge) => (
+            <Chip
+              key={badge.label}
+              tone={badge.variant === "success" ? "accent" : "default"}
+            >
+              {badge.label}
+            </Chip>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-between">
+          {matchLabel ? (
+            <span className="inline-flex items-center gap-[7px] font-mono text-[11px] tracking-[0.04em] text-eg-ardesia">
+              <span
+                className="h-2 w-2 shrink-0 rounded-full bg-eg-cotto"
+                aria-hidden="true"
+              />
+              {matchLabel}
+            </span>
+          ) : (
+            <span />
+          )}
+
+          <div className="relative z-20 flex items-center gap-4">
+            {showInterestCount ? (
+              <span className="font-mono text-[11px] text-eg-ardesia-2">
+                {formatInterestCount({ maxUnlocks, unlockCount })}
+              </span>
             ) : null}
 
-            {badges.map((badge) => (
-              <Badge
-                key={badge.label}
-                variant={badge.variant ?? "neutral"}
-                size="sm"
-              >
-                {badge.label}
-              </Badge>
-            ))}
-          </div>
-        ) : null}
-
-        <p className="line-clamp-2 max-w-3xl text-sm leading-6 text-eg-terra lg:text-lg lg:leading-7">
-          {previewText}{" "}
-          <PendingRequestLink
-            href={detailHref}
-            pendingChildren="Apertura..."
-            className="font-medium text-eg-cotto transition-colors hover:text-eg-cotto-dark"
-          >
-            Leggi tutto
-          </PendingRequestLink>
-        </p>
-
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0 flex-1 space-y-3 lg:space-y-4">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-eg-terra lg:gap-x-12 lg:gap-y-3 lg:text-base">
-              <span className="inline-flex items-center gap-2">
-                <MapPin
-                  className="size-4 text-eg-ardesia lg:size-5"
-                  aria-hidden="true"
-                />
-                {location}
-              </span>
-
-              <span className="inline-flex items-center gap-2">
-                <Clock3
-                  className="size-4 text-eg-ardesia lg:size-5"
-                  aria-hidden="true"
-                />
-                {createdAt}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-eg-terra lg:gap-x-12 lg:gap-y-3 lg:text-base">
-              <span className="inline-flex items-center gap-2">
-                <UsersRound
-                  className="size-4 text-eg-ardesia lg:size-5"
-                  aria-hidden="true"
-                />
-                {formatInterestCount({
-                  maxUnlocks,
-                  unlockCount,
-                })}
-              </span>
-
-              {formattedSurface ? (
-                <span className="inline-flex items-center gap-2">
-                  <Ruler
-                    className="size-4 text-eg-ardesia lg:size-5"
-                    aria-hidden="true"
-                  />
-                  {formattedSurface}
-                </span>
-              ) : null}
-
-              {savedAction ? (
-                <form action={savedAction}>
-                  <PendingSubmitButton
-                    type="submit"
-                    name="requestId"
-                    value={id}
-                    variant="ghost"
-                    size="sm"
-                    className="gap-2 px-0 text-sm font-normal text-eg-terra hover:bg-transparent hover:text-eg-cotto lg:text-base"
-                    pendingChildren={
-                      <>
-                        <Bookmark
-                          className="size-4 lg:size-5"
-                          aria-hidden="true"
-                        />
-                        Aggiorno...
-                      </>
-                    }
-                  >
-                    <Bookmark
-                      className="size-4 lg:size-5"
-                      aria-hidden="true"
-                    />
-                    {isSaved ? "salvata" : "salva"}
-                  </PendingSubmitButton>
-                </form>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="flex shrink-0 lg:min-w-44 lg:justify-end">
-            <PendingRequestLink
-              href={detailHref}
-              pendingChildren="Apertura..."
-              className={cn(
-                "inline-flex items-center justify-center font-medium transition-colors",
-                "rounded-eg-lg",
-                "h-12 px-5 text-[15px]",
-                "border border-eg-cotto bg-eg-cotto text-eg-calce hover:border-eg-cotto-dark hover:bg-eg-cotto-dark",
-                "w-full gap-2 lg:w-auto",
-              )}
-            >
-              Vedi richiesta
-            </PendingRequestLink>
+            {savedAction ? (
+              <form action={savedAction}>
+                <PendingSubmitButton
+                  type="submit"
+                  name="requestId"
+                  value={id}
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto min-h-0 gap-1 border-none p-0 font-mono text-[11px] normal-case tracking-normal text-eg-ardesia hover:bg-transparent hover:text-eg-cotto"
+                  pendingChildren={
+                    <>
+                      <Bookmark className="size-3.5" aria-hidden="true" />
+                      Aggiorno...
+                    </>
+                  }
+                >
+                  <Bookmark className="size-3.5" aria-hidden="true" />
+                  {isSaved ? "salvata" : "salva"}
+                </PendingSubmitButton>
+              </form>
+            ) : null}
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   )
 }

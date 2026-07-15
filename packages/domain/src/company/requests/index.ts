@@ -30,12 +30,18 @@ export type {
 } from "./list-company-request-previews"
 
 export {
-  getCompanyRequestDetailPage,
+  getCompanyFullRequestDetail,
 } from "./get-request-detail-page"
 export type {
-  AvailableCompanyRequestDetail,
-  GetCompanyRequestDetailPageResult,
+  FullRequestDetail,
+  GetCompanyFullRequestDetailResult,
 } from "./get-request-detail-page"
+
+export { getCompanyRequestPanelDetail } from "./get-request-panel-detail"
+export type {
+  GetCompanyRequestPanelDetailResult,
+  PanelRequestDetail,
+} from "./get-request-panel-detail"
 
 export {
   toggleCompanySavedRequest,

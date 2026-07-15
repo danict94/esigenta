@@ -10,7 +10,6 @@ import { authClient } from "../../../auth/client";
 import {
   ChevronDownIcon,
   CloseIcon,
-  CreditCoinIcon,
   MenuIcon,
 } from "../../../site/shell/icons";
 
@@ -93,15 +92,33 @@ function formatUnreadCount(count: number) {
   return count > 99 ? "99+" : String(count);
 }
 
+function getInitials(label: string) {
+  const parts = label.trim().split(/\s+/).filter(Boolean);
+  const initials = parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+  return initials || "?";
+}
+
+function Avatar({ label }: { label: string }) {
+  return (
+    <span
+      className="flex size-[34px] shrink-0 items-center justify-center rounded-full bg-eg-salvia text-sm font-semibold text-eg-calce"
+      aria-hidden="true"
+    >
+      {getInitials(label)}
+    </span>
+  );
+}
+
 function Brand() {
   return (
-    <span className="inline-flex items-baseline gap-2">
-      <span className="text-[17px] font-semibold tracking-[-0.01em] text-eg-terra">
-        esigenta
-      </span>
-
-      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-eg-cotto">
-        Imprese
+    <span className="inline-flex items-center gap-[13px] text-eg-terra">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo%20esigenta.svg" alt="" className="block h-[22px] w-auto" />
+      <span className="text-lg font-semibold tracking-[-0.01em]">
+        esigenta <small className="font-medium text-eg-cotto-dark">/ pro</small>
       </span>
     </span>
   );
@@ -123,15 +140,22 @@ function CreditBalanceChip({
   onClick?: () => void;
 }) {
   return (
-    <Link
-      href="/area-impresa/crediti"
-      onClick={onClick}
-      className="inline-flex items-center gap-1.5 rounded-full border border-eg-hairline bg-eg-calce-2 px-3 py-1.5 text-xs font-semibold text-eg-terra transition-colors hover:border-eg-cotto"
-      prefetch={false}
-    >
-      <CreditCoinIcon className="size-3.5 text-eg-ardesia" />
-      {balance} {balance === 1 ? "credito" : "crediti"}
-    </Link>
+    <div className="flex items-center gap-2.5 rounded-full border border-eg-hairline bg-eg-calce-2 py-[7px] pr-[7px] pl-4">
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-eg-ardesia">
+        Credito
+      </span>
+      <span className="font-mono text-base font-medium text-eg-terra">
+        {balance}
+      </span>
+      <Link
+        href="/area-impresa/crediti"
+        onClick={onClick}
+        prefetch={false}
+        className="rounded-full bg-eg-terra px-[13px] py-[7px] font-mono text-[11px] text-eg-calce transition-colors hover:bg-eg-cotto-dark"
+      >
+        Ricarica
+      </Link>
+    </div>
   );
 }
 
@@ -412,7 +436,7 @@ export function ImpresaSidebar({
         <Link
           href="/area-impresa/richieste"
           onClick={closeMenus}
-          aria-label="esigenta Imprese"
+          aria-label="esigenta / pro"
           prefetch={false}
         >
           <Brand />
@@ -435,16 +459,15 @@ export function ImpresaSidebar({
           <CreditBalanceChip balance={creditBalance} />
 
           <div ref={accountMenuRef} className="relative">
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="gap-2"
+              className="flex items-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-eg-cotto"
               aria-expanded={accountOpen}
               aria-haspopup="menu"
+              aria-label="Il mio account"
               onClick={() => setAccountOpen((open) => !open)}
             >
-              <span className="max-w-40 truncate">Il mio account</span>
+              <Avatar label={accountLabel} />
 
               <ChevronDownIcon
                 className={cn(
@@ -452,7 +475,7 @@ export function ImpresaSidebar({
                   accountOpen ? "rotate-180" : "",
                 )}
               />
-            </Button>
+            </button>
 
             {accountOpen ? (
               <Card

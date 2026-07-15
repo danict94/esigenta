@@ -1,102 +1,141 @@
-import { prisma, resolveInterventionsForCategoryIdsWithClient } from "@esigenta/database"
-import type { CategoryInterventionRow } from "@esigenta/database"
+import { isCompanyMarketplaceReady } from "@esigenta/auth"
+import { getDistanceKm } from "@esigenta/shared"
 
-/**
- * THE canonical "which interventions can this company see requests for"
- * computation — see docs/domain-invariants/03_REQUEST_VISIBILITY.md.
- * Used by both the browse list (get-requests-list-page.ts) and the detail
- * page (get-request-detail-page.ts) so they can never disagree about which
- * interventions are in scope for a company. Marketplace visibility/ranking
- * is Intervention-only (Phase 14): no Service, CategoryService,
- * CompanyService, or RequestRequiredService anywhere here. Category has no
- * direct relation to Intervention — the only path is
- * Category.projectGroupIds (a plain string[] column, no join) ->
- * Intervention.projectGroupId.
- */
+import type { CompanyMarketplaceCapabilitySnapshot } from "./company-marketplace-capability-snapshot"
 
-export type EligibilityInterventionRow = CategoryInterventionRow
+export type CompanyRequestEligibilityRequestSnapshot = {
+  interventionId: string | null
+  interventionProjectGroupId: string | null
+  coordinates: {
+    latitude: number
+    longitude: number
+  } | null
+}
 
-export type CompanyRequestEligibility = {
-  resolvedCategoryIds: string[]
-  selectedInterventionIds: Set<string>
-  operationalInterventionIds: Set<string>
-  /**
-   * Same definition as CompanyConfigured (Phase 1,
-   * docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md): at least one
-   * real CompanyCategory row AND at least one resolvable operational
-   * intervention. Gates whether browsing/visibility happens at all.
-   */
+export type CompanyRequestEligibilityReason =
+  | "eligible_by_selected_intervention"
+  | "eligible_by_category"
+  | "company_not_marketplace_ready"
+  | "company_not_configured"
+  | "company_location_missing"
+  | "request_location_missing"
+  | "no_compatible_intervention"
+  | "outside_operating_radius"
+
+export type CompanyRequestEligibilityResult = {
+  eligible: boolean
+  reason: CompanyRequestEligibilityReason
   isConfigured: boolean
+  matchesSelectedIntervention: boolean
+  matchesCategory: boolean
+  withinOperatingRadius: boolean
 }
 
-// Category -> ProjectGroup -> Intervention traversal, shared with
-// @esigenta/auth's onboarding bootstrap via @esigenta/database (which
-// cannot be @esigenta/domain — see packages/database/src/index.ts) so
-// there is exactly one implementation of this expansion, not two.
-export async function loadInterventionsForCategoryIds(
-  categoryIds: string[],
-): Promise<{
-  projectGroupIds: string[]
-  interventions: EligibilityInterventionRow[]
-}> {
-  return resolveInterventionsForCategoryIdsWithClient(prisma, categoryIds)
+export function isCompanyMarketplaceCapabilityConfigured(
+  snapshot: CompanyMarketplaceCapabilitySnapshot,
+): boolean {
+  return (
+    snapshot.enabledCategoryIds.length > 0 &&
+    snapshot.enabledCategoryProjectGroupIds.length > 0
+  )
 }
 
-/**
- * The one place that computes "what is this company configured/eligible
- * for." Both readers of CompanyConfigured-adjacent visibility data
- * (browse list, request detail) call this — neither recomputes it
- * independently.
- */
-export async function resolveCompanyRequestEligibility(
-  companyId: string,
-): Promise<CompanyRequestEligibility> {
-  const [companyCategoryRows, companyInterventionRows] = await Promise.all([
-    prisma.companyCategory.findMany({
-      where: { companyId },
-      select: { categoryId: true },
-    }),
-    prisma.companyIntervention.findMany({
-      where: { companyId },
-      select: { interventionId: true },
-    }),
-  ])
+export function evaluateCompanyRequestEligibility({
+  companySnapshot,
+  requestSnapshot,
+}: {
+  companySnapshot: CompanyMarketplaceCapabilitySnapshot
+  requestSnapshot: CompanyRequestEligibilityRequestSnapshot
+}): CompanyRequestEligibilityResult {
+  const isConfigured =
+    isCompanyMarketplaceCapabilityConfigured(companySnapshot)
+  const matchesSelectedIntervention =
+    requestSnapshot.interventionId !== null &&
+    companySnapshot.selectedInterventionIds.includes(
+      requestSnapshot.interventionId,
+    )
+  const matchesCategory =
+    requestSnapshot.interventionProjectGroupId !== null &&
+    companySnapshot.enabledCategoryProjectGroupIds.includes(
+      requestSnapshot.interventionProjectGroupId,
+    )
 
-  const resolvedCategoryIds = companyCategoryRows.map((cc) => cc.categoryId)
-  const selectedInterventionIds = new Set(
-    companyInterventionRows.map((ci) => ci.interventionId),
-  )
+  const base = {
+    isConfigured,
+    matchesSelectedIntervention,
+    matchesCategory,
+  }
 
-  const { interventions: operationalInterventions } =
-    await loadInterventionsForCategoryIds(resolvedCategoryIds)
+  if (!isCompanyMarketplaceReady(companySnapshot.marketplaceState)) {
+    return {
+      ...base,
+      eligible: false,
+      reason: "company_not_marketplace_ready",
+      withinOperatingRadius: false,
+    }
+  }
 
-  const operationalInterventionIds = new Set(
-    operationalInterventions.map((iv) => iv.id),
-  )
+  if (!isConfigured) {
+    return {
+      ...base,
+      eligible: false,
+      reason: "company_not_configured",
+      withinOperatingRadius: false,
+    }
+  }
+
+  if (!companySnapshot.coordinates) {
+    return {
+      ...base,
+      eligible: false,
+      reason: "company_location_missing",
+      withinOperatingRadius: false,
+    }
+  }
+
+  if (!requestSnapshot.coordinates) {
+    return {
+      ...base,
+      eligible: false,
+      reason: "request_location_missing",
+      withinOperatingRadius: false,
+    }
+  }
+
+  if (!matchesSelectedIntervention && !matchesCategory) {
+    return {
+      ...base,
+      eligible: false,
+      reason: "no_compatible_intervention",
+      withinOperatingRadius: false,
+    }
+  }
+
+  const distanceKm = getDistanceKm({
+    fromLatitude: companySnapshot.coordinates.latitude,
+    fromLongitude: companySnapshot.coordinates.longitude,
+    toLatitude: requestSnapshot.coordinates.latitude,
+    toLongitude: requestSnapshot.coordinates.longitude,
+  })
+  const withinOperatingRadius =
+    Number.isFinite(companySnapshot.operatingRadiusKm) &&
+    distanceKm <= companySnapshot.operatingRadiusKm
+
+  if (!withinOperatingRadius) {
+    return {
+      ...base,
+      eligible: false,
+      reason: "outside_operating_radius",
+      withinOperatingRadius,
+    }
+  }
 
   return {
-    resolvedCategoryIds,
-    selectedInterventionIds,
-    operationalInterventionIds,
-    isConfigured:
-      resolvedCategoryIds.length > 0 && operationalInterventionIds.size > 0,
+    ...base,
+    eligible: true,
+    reason: matchesSelectedIntervention
+      ? "eligible_by_selected_intervention"
+      : "eligible_by_category",
+    withinOperatingRadius,
   }
-}
-
-/**
- * The "no filter applied" default visibility set — union of directly
- * selected (CompanyIntervention) and category-derived (CompanyCategory ->
- * ProjectGroup -> Intervention) interventions. Dispatch (CompanyIntervention
- * only, no category broadening) is deliberately narrower than this — see
- * docs/domain-invariants/03_REQUEST_VISIBILITY.md Task 7. The dashboard
- * must not be stricter than dispatch, or a company stops seeing requests
- * it's actually being notified about.
- */
-export function getDefaultVisibilityInterventionIds(
-  eligibility: CompanyRequestEligibility,
-): Set<string> {
-  return new Set([
-    ...eligibility.selectedInterventionIds,
-    ...eligibility.operationalInterventionIds,
-  ])
 }

@@ -1,22 +1,20 @@
+import type { ReactNode } from "react"
 import Link from "next/link"
-import {
-  BriefcaseBusiness,
-  MapPin,
-} from "lucide-react"
 
 import {
-  Card,
-  PageShell,
+  cn,
 } from "@esigenta/ui"
 
 import {
   deriveCompanyRequestAccess,
   getCompanyRequestsListPage,
   listCompanyRequestPreviews,
-  type ListCompanyRequestPreviewsResult,
   type RequestDashboardFilters,
   type RequestDashboardSort,
 } from "@esigenta/domain"
+import {
+  getCompanyCreditSummary,
+} from "@esigenta/billing"
 
 import { requireAreaImpresaAccess } from "../../../../auth/server"
 
@@ -34,11 +32,17 @@ import {
   CompanyRequestList,
 } from "../components/company-request-list"
 import {
-  CompanyRequestPreviewList,
-} from "../components/company-request-preview-list"
+  AvailableRequestsList,
+} from "../components/available-requests-list"
 import {
   RequestFiltersPanel,
 } from "../components/request-filters-panel"
+import {
+  KpiStrip,
+} from "../components/kpi-strip"
+import {
+  PANEL_TOP_OFFSET,
+} from "../components/dashboard-layout-constants"
 
 import {
   toggleSavedRequestAction,
@@ -142,159 +146,112 @@ function hasActiveFilters(
   )
 }
 
-function formatCompanyLocation(
-  company:
-    | {
-        city: string | null
-        province: string | null
-        postalCode: string | null
-      }
-    | null
-    | undefined,
-) {
-  if (!company) {
-    return "Sede operativa non configurata"
-  }
-
-  const cityWithProvince = [
-    company.city,
-    company.province,
-  ]
-    .filter(Boolean)
-    .join(" ")
-
-  if (cityWithProvince && company.postalCode) {
-    return `${cityWithProvince} - ${company.postalCode}`
-  }
-
+/**
+ * The one visual shell for the requests dashboard — reused by every company
+ * access mode (full, preview_locked, unavailable). Full-bleed (no centered
+ * PageShell container) to match the approved reference: edge-to-edge KPI
+ * strip, list column and docked detail-panel rail, exactly like the HTML
+ * mockup at docs/design/mockups/pro-dashboard.html.
+ */
+function RequestsDashboardShell({
+  kpi,
+  children,
+  showPanelRail,
+}: {
+  kpi?: ReactNode
+  children: ReactNode
+  showPanelRail: boolean
+}) {
   return (
-    cityWithProvince ||
-    company.postalCode ||
-    "Sede operativa non configurata"
+    <>
+      <div className="bg-eg-calce">
+        {kpi}
+
+        <div className={cn(showPanelRail && "min-[900px]:pr-[460px]")}>
+          {children}
+        </div>
+      </div>
+
+      {showPanelRail ? (
+        <aside
+          className="hidden min-[900px]:fixed min-[900px]:inset-y-0 min-[900px]:right-0 min-[900px]:flex min-[900px]:w-[460px] min-[900px]:flex-col min-[900px]:items-center min-[900px]:justify-center min-[900px]:border-l min-[900px]:border-eg-hairline min-[900px]:bg-eg-calce min-[900px]:px-10 min-[900px]:text-center"
+          style={{ top: PANEL_TOP_OFFSET }}
+        >
+          <div className="flex flex-col items-center gap-5">
+            <div className="flex gap-[5px]" aria-hidden="true">
+              <span className="h-[18px] w-[6px] rounded-[3px] bg-eg-hairline" />
+              <span className="h-[24px] w-[6px] rounded-[3px] bg-eg-hairline" />
+              <span className="h-[18px] w-[6px] rounded-[3px] bg-eg-hairline" />
+            </div>
+            <p className="max-w-[24ch] text-sm leading-6 text-eg-ardesia-2">
+              Seleziona una richiesta per vederne i dettagli e sbloccare il
+              contatto.
+            </p>
+          </div>
+        </aside>
+      ) : null}
+    </>
   )
 }
 
-function formatProfileSummary({
-  categoryCount,
-  radiusKm,
+function ListHead({
+  title,
+  count,
 }: {
-  categoryCount: number
-  radiusKm: number | null | undefined
+  title: string
+  count?: number
 }) {
-  const categories =
-    categoryCount === 1
-      ? "1 categoria"
-      : `${categoryCount} categorie`
-
-  if (!radiusKm) {
-    return `${categories} operative`
-  }
-
-  return `${categories} operative, raggio ${radiusKm} km`
+  return (
+    <div className="flex items-center justify-between border-b border-eg-hairline px-7 py-5">
+      <h2 className="text-[17px] font-semibold text-eg-terra">{title}</h2>
+      {count !== undefined ? (
+        <span className="font-mono text-[11px] text-eg-ardesia">
+          {count} {count === 1 ? "richiesta" : "richieste"}
+        </span>
+      ) : null}
+    </div>
+  )
 }
 
-function PendingReviewRequestsPreview({
-  result,
-}: {
-  result: ListCompanyRequestPreviewsResult
-}) {
-  const company = result.ok
-    ? result.company
-    : null
-  const companyLocation = [
-    company?.city,
-    company?.province,
-  ]
-    .filter(Boolean)
-    .join(" ")
-
+function NoticeBar({ children }: { children: ReactNode }) {
   return (
-    <PageShell size="xl" className="py-8 md:py-10">
-      <section className="space-y-7">
-        <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl font-semibold tracking-tight text-eg-terra md:text-4xl">
-              Richieste disponibili
-            </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia md:text-base">
-              Scopri in anteprima le opportunità compatibili con i servizi
-              della tua impresa.
-            </p>
+    <div className="flex items-center gap-3 border-b border-eg-hairline bg-eg-calce-2 px-7 py-4">
+      <span
+        className="h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto"
+        aria-hidden="true"
+      />
+      <p className="text-sm leading-6 text-eg-terra">{children}</p>
+    </div>
+  )
+}
 
-            {company ? (
-              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-eg-ardesia">
-                <span className="inline-flex items-center gap-2">
-                  <MapPin className="size-4" aria-hidden="true" />
-                  {companyLocation || "Sede operativa configurata"}
-                </span>
-                {company.operatingRadiusKm ? (
-                  <span className="inline-flex items-center gap-2">
-                    <BriefcaseBusiness
-                      className="size-4"
-                      aria-hidden="true"
-                    />
-                    Raggio {company.operatingRadiusKm} km
-                  </span>
-                ) : null}
-              </div>
-            ) : null}
-          </div>
-
-          <div className="text-sm font-medium text-eg-ardesia">
-            {result.ok ? result.requests.length : 0} anteprime
-          </div>
-        </div>
-
-        <Card className="border-eg-cotto bg-eg-calce-2 p-5">
-          <p className="text-sm font-semibold text-eg-terra">
-            Il tuo profilo è in revisione
-          </p>
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-eg-ardesia">
-            Intanto puoi vedere alcune richieste compatibili con la tua
-            impresa. Dettagli, contatti e azioni saranno disponibili dopo
-            l’approvazione.
-          </p>
-        </Card>
-
-        {result.ok ? (
-          <>
-            <CompanyRequestPreviewList requests={result.requests} />
-            {result.hasMore ? (
-              <p className="text-center text-sm text-eg-ardesia">
-                Altre richieste compatibili saranno disponibili dopo
-                l’approvazione del profilo.
-              </p>
-            ) : null}
-          </>
-        ) : (
-          <Card className="p-8">
-            <p className="text-base font-semibold text-eg-terra">
-              Preview non disponibile
-            </p>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-eg-ardesia">
-              {result.message}
-            </p>
-            {result.code === "missing_category" ? (
-              <Link
-                href="/area-impresa/configura-servizi"
-                className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
-                prefetch={false}
-              >
-                Configura servizi
-              </Link>
-            ) : result.code === "missing_location" ? (
-              <Link
-                href="/area-impresa/profilo"
-                className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
-                prefetch={false}
-              >
-                Completa il profilo
-              </Link>
-            ) : null}
-          </Card>
-        )}
-      </section>
-    </PageShell>
+function UnavailableNotice({
+  title,
+  message,
+  ctaHref,
+  ctaLabel,
+}: {
+  title: string
+  message: string
+  ctaHref?: string | null
+  ctaLabel?: string
+}) {
+  return (
+    <div className="px-7 py-10">
+      <p className="text-base font-semibold text-eg-terra">{title}</p>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-eg-ardesia">
+        {message}
+      </p>
+      {ctaHref ? (
+        <Link
+          href={ctaHref}
+          className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
+          prefetch={false}
+        >
+          {ctaLabel}
+        </Link>
+      ) : null}
+    </div>
   )
 }
 
@@ -332,6 +289,9 @@ export async function RequestsPage({
   const requestAccess =
     deriveCompanyRequestAccess(actor.company)
 
+  // ── preview_locked: same dashboard shell/list/panel components, ─────────
+  // limited data (no cost, no interest count, no filters) and no save
+  // action — canSaveRequests/canUnlockRequests are false for this mode.
   if (requestAccess.mode === "preview_locked") {
     const previewResult =
       await listCompanyRequestPreviews(actor)
@@ -354,10 +314,76 @@ export async function RequestsPage({
       })
     }
 
+    if (!previewResult.ok) {
+      return (
+        <RequestsDashboardShell showPanelRail={false}>
+          <ListHead title="Richieste per te" />
+          <UnavailableNotice
+            title="Preview non disponibile"
+            message={previewResult.message}
+            ctaHref={
+              previewResult.code === "missing_category"
+                ? "/area-impresa/configura-servizi"
+                : previewResult.code === "missing_location"
+                  ? "/area-impresa/profilo"
+                  : null
+            }
+            ctaLabel={
+              previewResult.code === "missing_category"
+                ? "Configura servizi"
+                : "Completa il profilo"
+            }
+          />
+        </RequestsDashboardShell>
+      )
+    }
+
+    const previewItems = previewResult.requests.map((request) => ({
+      id: request.id,
+      interventionSlug: request.interventionSlug,
+      city: request.city,
+      postalCode: null,
+      creditCost: null,
+      maxUnlocks: null,
+      unlockCount: 0,
+      createdAt: request.createdAt,
+      matchLevel: request.matchLevel,
+    }))
+
     return (
-      <PendingReviewRequestsPreview
-        result={previewResult}
-      />
+      <RequestsDashboardShell
+        showPanelRail
+        kpi={
+          <KpiStrip
+            items={[
+              { value: previewItems.length, label: "anteprime compatibili" },
+            ]}
+          />
+        }
+      >
+        <ListHead title="Richieste per te" count={previewItems.length} />
+
+        <NoticeBar>
+          <span className="font-semibold">Il tuo profilo è in revisione.</span>{" "}
+          <span className="text-eg-ardesia">
+            Apri una richiesta per vedere l&rsquo;anteprima: dettagli, foto e
+            contatti si sbloccano dopo l&rsquo;approvazione.
+          </span>
+        </NoticeBar>
+
+        <CompanyRequestList
+          requests={previewItems}
+          mode="preview"
+          emptyMessage="Nessuna richiesta compatibile al momento."
+        />
+
+        {previewResult.hasMore ? (
+          <p className="px-7 py-4 text-center text-sm text-eg-ardesia">
+            Altre richieste compatibili saranno disponibili dopo
+            l&rsquo;approvazione del profilo.
+          </p>
+        ) : null}
+      </RequestsDashboardShell>
     )
   }
 
@@ -366,12 +392,15 @@ export async function RequestsPage({
     : null
 
   const requestQueryStart = areaTimestamp()
-  const result = await getCompanyRequestsListPage(
-    actor,
-    filters,
-    currentPage,
-    requestTrace !== null ? requestTrace.add : undefined,
-  )
+  const [result, creditSummary] = await Promise.all([
+    getCompanyRequestsListPage(
+      actor,
+      filters,
+      currentPage,
+      requestTrace !== null ? requestTrace.add : undefined,
+    ),
+    getCompanyCreditSummary(actor.company.id),
+  ])
   const requestQueryMs = Math.round(areaTimestamp() - requestQueryStart)
 
   if (monitored) {
@@ -397,23 +426,6 @@ export async function RequestsPage({
     })
   }
 
-  function buildPageHref(targetPage: number) {
-    const params = new URLSearchParams()
-    const active = result.filters.active
-    if (active.q) params.set("q", active.q)
-    if (active.radiusKm !== null)
-      params.set("radiusKm", String(active.radiusKm))
-    if (active.categoryId)
-      params.set("categoryId", active.categoryId)
-    if (active.interventionId)
-      params.set("interventionId", active.interventionId)
-    if (active.sort !== "recommended")
-      params.set("sort", active.sort)
-    if (targetPage > 1) params.set("page", String(targetPage))
-    const qs = params.toString()
-    return qs ? `/area-impresa/richieste?${qs}` : "/area-impresa/richieste"
-  }
-
   const activeFilters =
     result.filters.active
 
@@ -421,8 +433,6 @@ export async function RequestsPage({
     hasActiveFilters(activeFilters)
   const requestCount =
     result.ok ? result.requests.length : 0
-  const companyProfile =
-    result.company ?? null
   const unavailableTitle =
     !result.ok &&
     result.code ===
@@ -452,53 +462,31 @@ export async function RequestsPage({
       : "Completa sede e raggio operativo"
 
   return (
-    <PageShell size="xl" className="py-8 md:py-10">
-      <section className="space-y-7">
-        <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl font-semibold tracking-tight text-eg-terra md:text-4xl">
-              Richieste disponibili
-            </h1>
+    <RequestsDashboardShell
+      showPanelRail={result.ok}
+      kpi={
+        result.ok ? (
+          <KpiStrip
+            items={[
+              { value: requestCount, label: "richieste disponibili" },
+              {
+                value: creditSummary.balance,
+                label: "crediti disponibili",
+                href: "/area-impresa/crediti",
+                accent: true,
+              },
+            ]}
+          />
+        ) : undefined
+      }
+    >
+      <ListHead
+        title="Richieste per te"
+        count={result.ok ? requestCount : undefined}
+      />
 
-            <p className="mt-2 text-base text-eg-terra">
-              richieste compatibili con il tuo profilo
-            </p>
-
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-eg-ardesia">
-              <span className="inline-flex items-center gap-2">
-                <MapPin
-                  className="size-4"
-                  aria-hidden="true"
-                />
-                {formatCompanyLocation(
-                  companyProfile,
-                )}
-              </span>
-
-              {result.ok ? (
-                <span className="inline-flex items-center gap-2">
-                  <BriefcaseBusiness
-                    className="size-4"
-                    aria-hidden="true"
-                  />
-                  {formatProfileSummary({
-                    categoryCount:
-                      companyProfile
-                        ?.operationalCategoryCount ?? 0,
-                    radiusKm:
-                      companyProfile?.operatingRadiusKm,
-                  })}
-                </span>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="text-sm font-medium text-eg-ardesia">
-            {requestCount} richieste
-          </div>
-        </div>
-
-        {result.ok ? (
+      {result.ok ? (
+        <div className="border-b border-eg-hairline px-7 py-4">
           <RequestFiltersPanel
             active={activeFilters}
             categories={result.filters.categories}
@@ -508,83 +496,47 @@ export async function RequestsPage({
             }
             activeFilterCount={activeFilterCount}
           />
-        ) : null}
+        </div>
+      ) : null}
 
-        {!result.ok ? (
-          <Card className="p-8">
-            <p className="text-base font-semibold text-eg-terra">
-              {unavailableTitle}
-            </p>
-
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-eg-ardesia">
-              {result.message}
-            </p>
-
-            {unavailableHref ? (
+      {!result.ok ? (
+        <UnavailableNotice
+          title={unavailableTitle}
+          message={result.message}
+          ctaHref={unavailableHref}
+          ctaLabel={unavailableCta}
+        />
+      ) : (
+        <>
+          {!result.hasSelectedInterventions ? (
+            <NoticeBar>
+              <span className="font-semibold">
+                Seleziona gli interventi che offri
+              </span>{" "}
+              <span className="text-eg-ardesia">
+                per vedere prima le richieste più adatte.
+              </span>{" "}
               <Link
-                href={unavailableHref}
-                className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
+                href="/area-impresa/configura-servizi"
+                className="font-medium text-eg-cotto"
                 prefetch={false}
               >
-                {unavailableCta}
+                Configura servizi
               </Link>
-            ) : null}
-          </Card>
-        ) : (
-          <>
-            {!result.hasSelectedInterventions ? (
-              <Card className="bg-eg-calce-2 p-5">
-                <p className="text-sm font-semibold text-eg-terra">
-                  Seleziona gli interventi che offri per vedere prima le
-                  richieste più adatte.
-                </p>
+            </NoticeBar>
+          ) : null}
 
-                <Link
-                  href="/area-impresa/configura-servizi"
-                  className="mt-3 inline-flex text-sm font-medium text-eg-cotto"
-                  prefetch={false}
-                >
-                  Configura servizi
-                </Link>
-              </Card>
-            ) : null}
-
-            <CompanyRequestList
-              requests={result.requests}
-              mode="available"
-              emptyMessage="Nessuna richiesta disponibile al momento."
-              savedAction={toggleSavedRequestAction}
-            />
-
-            {(result.page > 1 || result.hasNextPage) ? (
-              <div className="flex items-center justify-between gap-4 pt-2">
-                <div>
-                  {result.page > 1 ? (
-                    <Link
-                      href={buildPageHref(result.page - 1)}
-                      className="text-sm font-medium text-eg-cotto"
-                      prefetch={false}
-                    >
-                      &larr; Pagina precedente
-                    </Link>
-                  ) : null}
-                </div>
-                <div>
-                  {result.hasNextPage ? (
-                    <Link
-                      href={buildPageHref(result.page + 1)}
-                      className="text-sm font-medium text-eg-cotto"
-                      prefetch={false}
-                    >
-                      Pagina successiva &rarr;
-                    </Link>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
-          </>
-        )}
-      </section>
-    </PageShell>
+          <AvailableRequestsList
+            key={JSON.stringify(activeFilters)}
+            initialRequests={result.requests}
+            initialHasNextPage={result.hasNextPage}
+            initialPage={result.page}
+            filters={activeFilters}
+            emptyMessage="Nessuna richiesta disponibile al momento."
+            savedAction={toggleSavedRequestAction}
+          />
+        </>
+      )}
+    </RequestsDashboardShell>
   )
 }

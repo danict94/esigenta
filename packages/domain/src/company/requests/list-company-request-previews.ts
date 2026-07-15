@@ -6,9 +6,9 @@ import {
   deriveCompanyRequestAccess,
 } from "./derive-company-request-access"
 import {
-  getDefaultVisibilityInterventionIds,
-  resolveCompanyRequestEligibility,
+  isCompanyMarketplaceCapabilityConfigured,
 } from "./company-request-eligibility"
+import { getCompanyMarketplaceCapabilitySnapshot } from "./company-marketplace-capability-snapshot"
 import type {
   CompanyRequestMatchLevel,
 } from "./get-requests-list-page"
@@ -89,7 +89,7 @@ export async function listCompanyRequestPreviews(
     }
   }
 
-  const [company, eligibility] =
+  const [company, capabilitySnapshot] =
     await Promise.all([
       prisma.company.findUnique({
         where: { id: actor.company.id },
@@ -106,12 +106,10 @@ export async function listCompanyRequestPreviews(
           },
         },
       }),
-      resolveCompanyRequestEligibility(
-        actor.company.id,
-      ),
+      getCompanyMarketplaceCapabilitySnapshot(actor.company.id),
     ])
 
-  if (!company) {
+  if (!company || !capabilitySnapshot) {
     return {
       ok: false,
       code: "company_not_found",
@@ -119,7 +117,7 @@ export async function listCompanyRequestPreviews(
     }
   }
 
-  if (!eligibility.isConfigured) {
+  if (!isCompanyMarketplaceCapabilityConfigured(capabilitySnapshot)) {
     return {
       ok: false,
       code: "missing_category",
@@ -149,14 +147,17 @@ export async function listCompanyRequestPreviews(
     }
   }
 
-  const visibilityInterventionIds =
-    Array.from(
-      getDefaultVisibilityInterventionIds(
-        eligibility,
-      ),
-    )
+  const selectedInterventionIds = Array.from(
+    capabilitySnapshot.selectedInterventionIds,
+  )
+  const enabledCategoryProjectGroupIds = Array.from(
+    capabilitySnapshot.enabledCategoryProjectGroupIds,
+  )
 
-  if (visibilityInterventionIds.length === 0) {
+  if (
+    selectedInterventionIds.length === 0 &&
+    enabledCategoryProjectGroupIds.length === 0
+  ) {
     return {
       ok: true,
       company: {
@@ -172,14 +173,6 @@ export async function listCompanyRequestPreviews(
     }
   }
 
-  const selectedInterventionIds =
-    Array.from(
-      eligibility.selectedInterventionIds,
-    )
-  const operationalInterventionIds =
-    Array.from(
-      eligibility.operationalInterventionIds,
-    )
   const radiusMeters = operatingRadiusKm * 1000
 
   const rows = await prisma.$queryRaw<
@@ -195,7 +188,7 @@ export async function listCompanyRequestPreviews(
       CASE
         WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[])
           THEN 'selected_intervention'
-        WHEN r."interventionId" = ANY(${operationalInterventionIds}::text[])
+        WHEN iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[])
           THEN 'category'
         ELSE 'explore'
       END AS match_level
@@ -207,7 +200,10 @@ export async function listCompanyRequestPreviews(
     WHERE r."status" IN ('APPROVED', 'PUBLISHED')
       AND r."archivedAt" IS NULL
       AND r."deletedAt" IS NULL
-      AND r."interventionId" = ANY(${visibilityInterventionIds}::text[])
+      AND (
+        r."interventionId" = ANY(${selectedInterventionIds}::text[])
+        OR iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[])
+      )
       AND earth_box(
         ll_to_earth(${latitude}, ${longitude}),
         ${radiusMeters}
@@ -220,7 +216,7 @@ export async function listCompanyRequestPreviews(
       CASE
         WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[])
           THEN 0
-        WHEN r."interventionId" = ANY(${operationalInterventionIds}::text[])
+        WHEN iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[])
           THEN 1
         ELSE 2
       END ASC,

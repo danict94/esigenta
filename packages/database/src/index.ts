@@ -29,3 +29,5 @@ export { resolveInterventionsForCategoryIdsWithClient } from "./catalog/resolve-
 export type { CategoryInterventionRow } from "./catalog/resolve-interventions-for-category-ids"
 export { writeCompanyServiceConfigurationWithClient } from "./company/write-company-service-configuration"
 export type { WriteCompanyServiceConfigurationInput } from "./company/write-company-service-configuration"
+export { readCompanyMarketplaceCapabilitySnapshot } from "./company/read-company-marketplace-capability-snapshot"
+export type { CompanyMarketplaceCapabilitySnapshotRow } from "./company/read-company-marketplace-capability-snapshot"

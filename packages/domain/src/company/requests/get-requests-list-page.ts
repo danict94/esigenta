@@ -15,14 +15,14 @@ import {
 
 import {
   prisma,
+  type CategoryInterventionRow,
 } from "@esigenta/database"
 
 import {
-  getDefaultVisibilityInterventionIds,
-  loadInterventionsForCategoryIds,
-  resolveCompanyRequestEligibility,
-  type EligibilityInterventionRow,
+  isCompanyMarketplaceCapabilityConfigured,
 } from "./company-request-eligibility"
+import { getCompanyMarketplaceCapabilitySnapshot } from "./company-marketplace-capability-snapshot"
+import { loadRequestCategoryInterventions } from "./request-category-interventions"
 
 // ─── Public types ────────────────────────────────────────────────────────────
 
@@ -246,8 +246,7 @@ function buildCompanyQuery(companyId: string) {
           longitude: true,
         },
       },
-      // selectedInterventionIds/operationalInterventionIds now come from
-      // resolveCompanyRequestEligibility (company-request-eligibility.ts)
+      // Matching capability comes from the canonical company snapshot.
       // — the same canonical computation request-detail uses, see
       // docs/domain-invariants/03_REQUEST_VISIBILITY.md.
     },
@@ -287,8 +286,9 @@ function buildOrderByClause(sort: RequestDashboardSort) {
 async function queryPaginatedRequests({
   companyId,
   visibilityInterventionIds,
+  visibilityProjectGroupIds,
   selectedInterventionIds,
-  operationalInterventionIds,
+  enabledCategoryProjectGroupIds,
   companyLat,
   companyLng,
   effectiveRadiusKm,
@@ -298,8 +298,9 @@ async function queryPaginatedRequests({
 }: {
   companyId: string
   visibilityInterventionIds: string[]
+  visibilityProjectGroupIds: string[]
   selectedInterventionIds: string[]
-  operationalInterventionIds: string[]
+  enabledCategoryProjectGroupIds: string[]
   companyLat: number
   companyLng: number
   effectiveRadiusKm: number
@@ -332,7 +333,7 @@ async function queryPaginatedRequests({
         (csr."companyId" IS NOT NULL) AS is_saved,
         CASE
           WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[]) THEN 0
-          WHEN r."interventionId" = ANY(${operationalInterventionIds}::text[]) THEN 1
+          WHEN iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[]) THEN 1
           ELSE 2
         END AS match_rank,
         (
@@ -343,6 +344,7 @@ async function queryPaginatedRequests({
         ) AS distance_km
       FROM "Request" r
       JOIN "GeoLocation" rg ON rg."id" = r."geoLocationId"
+      JOIN "Intervention" iv ON iv."id" = r."interventionId"
       LEFT JOIN "CompanySavedRequest" csr
         ON csr."requestId" = r."id" AND csr."companyId" = ${companyId}
       WHERE r."status" IN ('APPROVED', 'PUBLISHED')
@@ -352,7 +354,10 @@ async function queryPaginatedRequests({
           ll_to_earth(${companyLat}, ${companyLng}),
           ${radiusMeters}
         ) @> ll_to_earth(rg."latitude", rg."longitude")
-        AND r."interventionId" = ANY(${visibilityInterventionIds}::text[])
+        AND (
+          r."interventionId" = ANY(${visibilityInterventionIds}::text[])
+          OR iv."projectGroupId" = ANY(${visibilityProjectGroupIds}::text[])
+        )
         AND (
           ${likeTerm}::text IS NULL
           OR r."requestCode" ILIKE ${likeTerm}
@@ -453,21 +458,21 @@ export async function getCompanyRequestsListPage(
 
   const [
     company,
-    eligibility,
+    capabilitySnapshot,
     allTaxonomyCategories,
   ] = await Promise.all([
     measureAsync("batch1-company", recordPerf, () =>
       buildCompanyQuery(companyId),
     ),
     measureAsync("batch1-eligibility", recordPerf, () =>
-      resolveCompanyRequestEligibility(companyId),
+      getCompanyMarketplaceCapabilitySnapshot(companyId),
     ),
     measureAsync("batch1-taxonomy-categories", recordPerf, () =>
       buildTaxonomyCategoriesQuery(),
     ),
   ])
 
-  if (!company) {
+  if (!company || !capabilitySnapshot) {
     return {
       ok: false,
       company: null,
@@ -523,12 +528,14 @@ export async function getCompanyRequestsListPage(
   // fallback (docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md): an
   // unconfigured company correctly falls through to the missing_category
   // empty state below, the same one matching/dispatch implicitly enforces.
-  const {
-    resolvedCategoryIds,
-    selectedInterventionIds,
-    operationalInterventionIds,
-    isConfigured,
-  } = eligibility
+  const resolvedCategoryIds = capabilitySnapshot.enabledCategoryIds
+  const selectedInterventionIds = new Set(
+    capabilitySnapshot.selectedInterventionIds,
+  )
+  const enabledCategoryProjectGroupIds =
+    capabilitySnapshot.enabledCategoryProjectGroupIds
+  const isConfigured =
+    isCompanyMarketplaceCapabilityConfigured(capabilitySnapshot)
 
   const companyProfile: RequestDashboardCompanyProfile = {
     ...companyProfileBase,
@@ -562,13 +569,13 @@ export async function getCompanyRequestsListPage(
     ? await measureAsync(
         "filter-category-interventions",
         recordPerf,
-        () => loadInterventionsForCategoryIds([activeCategoryId]),
+        () => loadRequestCategoryInterventions([activeCategoryId]),
       )
-    : { interventions: [] as EligibilityInterventionRow[] }
+    : { interventions: [] as CategoryInterventionRow[] }
 
   const activeCategoryInterventionSet = activeCategoryId
     ? new Set(filterCategoryInterventions.map((iv) => iv.id))
-    : operationalInterventionIds
+    : new Set<string>()
 
   const activeInterventionId =
     normalizedFilters.interventionId &&
@@ -598,9 +605,15 @@ export async function getCompanyRequestsListPage(
     ? [activeInterventionId]
     : activeCategoryId
       ? Array.from(activeCategoryInterventionSet)
-      : Array.from(getDefaultVisibilityInterventionIds(eligibility))
+      : Array.from(selectedInterventionIds)
+  const visibilityProjectGroupIds = activeCategoryId
+    ? []
+    : Array.from(enabledCategoryProjectGroupIds)
 
-  if (visibilityInterventionIds.length === 0) {
+  if (
+    visibilityInterventionIds.length === 0 &&
+    visibilityProjectGroupIds.length === 0
+  ) {
     return {
       ok: true,
       company: companyProfile,
@@ -657,8 +670,11 @@ export async function getCompanyRequestsListPage(
       queryPaginatedRequests({
         companyId,
         visibilityInterventionIds,
+        visibilityProjectGroupIds,
         selectedInterventionIds: Array.from(selectedInterventionIds),
-        operationalInterventionIds: Array.from(operationalInterventionIds),
+        enabledCategoryProjectGroupIds: Array.from(
+          enabledCategoryProjectGroupIds,
+        ),
         companyLat,
         companyLng,
         effectiveRadiusKm,

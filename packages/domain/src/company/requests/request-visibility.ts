@@ -1,11 +1,10 @@
 import { isCompanyMarketplaceReady } from "@esigenta/auth"
-import type { CompanyMarketplaceState } from "@esigenta/auth"
-import { getDistanceKm } from "@esigenta/shared"
 
 import {
-  getDefaultVisibilityInterventionIds,
-  type CompanyRequestEligibility,
+  evaluateCompanyRequestEligibility,
+  type CompanyRequestEligibilityRequestSnapshot,
 } from "./company-request-eligibility"
+import type { CompanyMarketplaceCapabilitySnapshot } from "./company-marketplace-capability-snapshot"
 
 /**
  * THE canonical "can this company see this request" decision — see
@@ -31,14 +30,8 @@ type RequestVisibilityGrants = {
 }
 
 export type RequestVisibilityInput = {
-  company: CompanyMarketplaceState
-  eligibility: CompanyRequestEligibility
-  companyCoordinates: { latitude: number; longitude: number } | null
-  operatingRadiusKm: number | null
-  request: {
-    interventionId: string | null
-    coordinates: { latitude: number; longitude: number } | null
-  }
+  companySnapshot: CompanyMarketplaceCapabilitySnapshot
+  request: CompanyRequestEligibilityRequestSnapshot
   grants: RequestVisibilityGrants
 }
 
@@ -48,58 +41,20 @@ export type RequestVisibilityResult = {
   hasGrant: boolean
 }
 
-function isWithinCoverage({
-  companyCoordinates,
-  operatingRadiusKm,
-  requestCoordinates,
-}: {
-  companyCoordinates: { latitude: number; longitude: number } | null
-  operatingRadiusKm: number | null
-  requestCoordinates: { latitude: number; longitude: number } | null
-}): boolean {
-  if (
-    !companyCoordinates ||
-    !requestCoordinates ||
-    typeof operatingRadiusKm !== "number" ||
-    !Number.isFinite(operatingRadiusKm)
-  ) {
-    return false
-  }
-
-  const distanceKm = getDistanceKm({
-    fromLatitude: companyCoordinates.latitude,
-    fromLongitude: companyCoordinates.longitude,
-    toLatitude: requestCoordinates.latitude,
-    toLongitude: requestCoordinates.longitude,
-  })
-
-  return distanceKm <= operatingRadiusKm
-}
-
 export function evaluateRequestVisibility({
-  company,
-  eligibility,
-  companyCoordinates,
-  operatingRadiusKm,
+  companySnapshot,
   request,
   grants,
 }: RequestVisibilityInput): RequestVisibilityResult {
-  if (!isCompanyMarketplaceReady(company)) {
+  if (!isCompanyMarketplaceReady(companySnapshot.marketplaceState)) {
     return { visible: false, isLiveMatch: false, hasGrant: false }
   }
 
-  const visibilityInterventionIds =
-    getDefaultVisibilityInterventionIds(eligibility)
-
-  const isLiveMatch =
-    eligibility.isConfigured &&
-    request.interventionId !== null &&
-    visibilityInterventionIds.has(request.interventionId) &&
-    isWithinCoverage({
-      companyCoordinates,
-      operatingRadiusKm,
-      requestCoordinates: request.coordinates,
-    })
+  const eligibility = evaluateCompanyRequestEligibility({
+    companySnapshot,
+    requestSnapshot: request,
+  })
+  const isLiveMatch = eligibility.eligible
 
   const hasGrant =
     grants.hasUnlock || grants.hasSaved || grants.hasDispatch

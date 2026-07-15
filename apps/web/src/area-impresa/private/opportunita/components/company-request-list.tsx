@@ -1,13 +1,8 @@
 import {
-  Card,
-} from "@esigenta/ui"
-
-import {
   formatDate,
   formatFreshness,
   formatInterventionLabel,
   formatLocationLabel,
-  getDescription,
   getStructuredData,
   getSurfaceArea,
 } from "./request-card-format"
@@ -20,6 +15,7 @@ export type CompanyRequestListMode =
   | "available"
   | "saved"
   | "purchased"
+  | "preview"
 
 type RequestStructuredDataInput = Parameters<
   typeof getStructuredData
@@ -29,9 +25,9 @@ type CompanyRequestListItem = {
   id: string
   interventionSlug: string | null
   city: string | null
-  address: string | null
+  address?: string | null
   postalCode: string | null
-  structuredData: RequestStructuredDataInput
+  structuredData?: RequestStructuredDataInput
   creditCost: number | null
   maxUnlocks: number | null
   unlockCount: number
@@ -135,7 +131,7 @@ function getRequestMatchLabel(
   request: CompanyRequestListItem,
   mode: CompanyRequestListMode,
 ) {
-  if (mode === "available") {
+  if (mode === "available" || mode === "preview") {
     return getMatchLabel(request.matchLevel)
   }
 
@@ -144,6 +140,10 @@ function getRequestMatchLabel(
   }
 
   return undefined
+}
+
+function getCostLabel(mode: CompanyRequestListMode) {
+  return mode === "preview" ? "Dopo l'approvazione" : undefined
 }
 
 export function CompanyRequestList<
@@ -156,21 +156,19 @@ export function CompanyRequestList<
 }: CompanyRequestListProps<TRequest>) {
   if (requests.length === 0) {
     return (
-      <Card className="p-8">
+      <div className="px-7 py-10 text-center">
         <p className="text-sm text-eg-ardesia">
           {emptyMessage}
         </p>
-      </Card>
+      </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       {requests.map((request) => {
         const structuredData =
           getStructuredData(request.structuredData)
-        const description =
-          getDescription(structuredData)
         const surfaceArea =
           getSurfaceArea(structuredData)
 
@@ -188,13 +186,14 @@ export function CompanyRequestList<
             })}
             createdAt={getCreatedAtLabel(request, mode)}
             matchLabel={getRequestMatchLabel(request, mode)}
-            description={description}
             surfaceArea={surfaceArea}
             creditCost={request.creditCost}
+            costLabel={getCostLabel(mode)}
             maxUnlocks={request.maxUnlocks}
             unlockCount={request.unlockCount}
+            showInterestCount={mode !== "preview"}
             isSaved={request.isSaved}
-            savedAction={savedAction}
+            savedAction={mode === "preview" ? undefined : savedAction}
             badges={getBadges(request, mode)}
           />
         )

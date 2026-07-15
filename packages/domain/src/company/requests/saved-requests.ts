@@ -7,7 +7,7 @@ import type { CompanyActor } from "@esigenta/auth"
 import { isCompanyMarketplaceReady } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
 
-import { getCompanyRequestDetailPage } from "./get-request-detail-page"
+import { resolveCompanyRequestDetailCore } from "./resolve-request-detail-core"
 
 export type ToggleCompanySavedRequestResult =
   | {
@@ -115,7 +115,7 @@ export async function toggleCompanySavedRequest({
   }
 
   const visibleRequest =
-    await getCompanyRequestDetailPage(
+    await resolveCompanyRequestDetailCore(
       actor,
       normalizedRequestId.value,
     )

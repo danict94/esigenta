@@ -13,10 +13,7 @@ export type {
   RequestCommercialState,
 } from "@esigenta/domain";
 
-export function formatCreditCost(value: number | null) {
-  return value === null ? "Costo non impostato" : `${value} crediti`;
-}
-
-export function formatUnlockAvailability(value: number | null) {
-  return value === null ? "Disponibilità non impostata" : `${value} posti disponibili`;
-}
+export {
+  formatCreditCost,
+  formatUnlockAvailability,
+} from "./request-commercial-format";
