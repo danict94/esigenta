@@ -11,6 +11,7 @@ import {
 } from "../../../../platform/monitoring/area-monitoring"
 import { createPerfTrace } from "../../../monitoring/area-impresa-perf-trace"
 
+import { getCompanyCreditSummaryCached } from "../../shell/credit-summary-cache"
 import { getRequestUnlockError } from "../view-models/request-detail-view-model"
 
 /**
@@ -37,7 +38,13 @@ export async function loadFullRequestDetailPageData({
   }
 
   const detailStart = areaTimestamp()
-  const pageData = await getCompanyFullRequestDetail(actor, requestId, trace.add)
+  const creditSummary = await getCompanyCreditSummaryCached(actor.company.id)
+  const pageData = await getCompanyFullRequestDetail(
+    actor,
+    requestId,
+    creditSummary.balance,
+    trace.add,
+  )
   const detailMs = Math.round(areaTimestamp() - detailStart)
 
   if (!pageData.ok) {

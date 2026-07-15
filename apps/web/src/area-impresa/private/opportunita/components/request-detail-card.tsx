@@ -596,8 +596,6 @@ export function RequestDetailCard({
       : cityWithProvince || postalCode || "Non specificato";
   const hasSufficientCredits =
     creditCost === null ? true : creditBalance >= creditCost;
-  const balanceAfterUnlock =
-    creditCost === null ? null : Math.max(creditBalance - creditCost, 0);
   const creditDeficit =
     creditCost === null ? 0 : Math.max(creditCost - creditBalance, 0);
   const canUnlock =
@@ -816,25 +814,6 @@ export function RequestDetailCard({
                     </span>
                     <span className="text-lg font-semibold text-eg-terra">
                       {formatCreditCost(creditCost)}
-                    </span>
-                  </div>
-
-                  <div
-                    className="my-3 border-t border-dashed border-eg-hairline"
-                    aria-hidden="true"
-                  />
-
-                  <div className="flex items-center justify-between gap-2 text-sm">
-                    <span className="text-eg-ardesia">
-                      {creditBalance} crediti
-                    </span>
-                    <span className="text-eg-ardesia" aria-hidden="true">
-                      &rarr;
-                    </span>
-                    <span className="font-semibold text-eg-terra">
-                      {hasSufficientCredits && balanceAfterUnlock !== null
-                        ? `${balanceAfterUnlock} crediti`
-                        : `manca ${creditDeficit}`}
                     </span>
                   </div>
 

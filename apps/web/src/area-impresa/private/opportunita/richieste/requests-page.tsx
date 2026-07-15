@@ -12,9 +12,6 @@ import {
   type RequestDashboardFilters,
   type RequestDashboardSort,
 } from "@esigenta/domain"
-import {
-  getCompanyCreditSummary,
-} from "@esigenta/billing"
 
 import { requireAreaImpresaAccess } from "../../../../auth/server"
 
@@ -392,15 +389,12 @@ export async function RequestsPage({
     : null
 
   const requestQueryStart = areaTimestamp()
-  const [result, creditSummary] = await Promise.all([
-    getCompanyRequestsListPage(
-      actor,
-      filters,
-      currentPage,
-      requestTrace !== null ? requestTrace.add : undefined,
-    ),
-    getCompanyCreditSummary(actor.company.id),
-  ])
+  const result = await getCompanyRequestsListPage(
+    actor,
+    filters,
+    currentPage,
+    requestTrace !== null ? requestTrace.add : undefined,
+  )
   const requestQueryMs = Math.round(areaTimestamp() - requestQueryStart)
 
   if (monitored) {
@@ -469,12 +463,6 @@ export async function RequestsPage({
           <KpiStrip
             items={[
               { value: requestCount, label: "richieste disponibili" },
-              {
-                value: creditSummary.balance,
-                label: "crediti disponibili",
-                href: "/area-impresa/crediti",
-                accent: true,
-              },
             ]}
           />
         ) : undefined

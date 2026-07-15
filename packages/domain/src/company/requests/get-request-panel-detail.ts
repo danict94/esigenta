@@ -1,5 +1,4 @@
 import type { CompanyActor } from "@esigenta/auth"
-import { getCompanyCreditSummary } from "@esigenta/billing"
 
 import { deriveCompanyRequestAccess } from "./derive-company-request-access"
 import { listCompanyRequestPreviews } from "./list-company-request-previews"
@@ -14,20 +13,6 @@ import { resolveCompanyRequestDetailCore } from "./resolve-request-detail-core"
 import type { RequestCommercialState } from "../../commercial"
 
 type PerfRecorder = (operation: string, durationMs: number) => void
-
-async function measureAsync<T>(
-  operation: string,
-  recordPerf: PerfRecorder | undefined,
-  task: () => Promise<T>,
-): Promise<T> {
-  if (!recordPerf) return task()
-  const start = performance.now()
-  try {
-    return await task()
-  } finally {
-    recordPerf(operation, Math.round(performance.now() - start))
-  }
-}
 
 export type PanelRequestDetail =
   | {
@@ -71,6 +56,7 @@ export type GetCompanyRequestPanelDetailResult =
 export async function getCompanyRequestPanelDetail(
   actor: CompanyActor,
   requestId: string,
+  creditBalance: number,
   recordPerf?: PerfRecorder,
 ): Promise<GetCompanyRequestPanelDetailResult> {
   const normalizedRequestId = requestId.trim()
@@ -116,12 +102,11 @@ export async function getCompanyRequestPanelDetail(
   }
 
   const startedAt = performance.now()
-  const [coreResult, creditSummary] = await Promise.all([
-    resolveCompanyRequestDetailCore(actor, normalizedRequestId, recordPerf),
-    measureAsync("panel-credit", recordPerf, () =>
-      getCompanyCreditSummary(actor.company.id),
-    ),
-  ])
+  const coreResult = await resolveCompanyRequestDetailCore(
+    actor,
+    normalizedRequestId,
+    recordPerf,
+  )
 
   recordPerf?.("panel-batch-total", Math.round(performance.now() - startedAt))
   if (!coreResult.ok) return coreResult
@@ -129,7 +114,7 @@ export async function getCompanyRequestPanelDetail(
   const shared = buildSharedRequestDetailReadModel({
     actor,
     request: coreResult.request,
-    creditBalance: creditSummary.balance,
+    creditBalance,
   })
 
   return {

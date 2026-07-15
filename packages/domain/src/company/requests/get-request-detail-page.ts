@@ -1,5 +1,4 @@
 import type { CompanyActor } from "@esigenta/auth"
-import { getCompanyCreditSummary } from "@esigenta/billing"
 
 import {
   listAttachedRequestPhotos,
@@ -46,6 +45,7 @@ export type GetCompanyFullRequestDetailResult =
 export async function getCompanyFullRequestDetail(
   actor: CompanyActor,
   requestId: string,
+  creditBalance: number,
   recordPerf?: PerfRecorder,
 ): Promise<GetCompanyFullRequestDetailResult> {
   const startedAt = performance.now()
@@ -55,12 +55,11 @@ export async function getCompanyFullRequestDetail(
     return { ok: false, code: "not_found", message: "Richiesta non trovata." }
   }
 
-  const [coreResult, creditSummary] = await Promise.all([
-    resolveCompanyRequestDetailCore(actor, normalizedRequestId, recordPerf),
-    measureAsync("detail-credit", recordPerf, () =>
-      getCompanyCreditSummary(actor.company.id),
-    ),
-  ])
+  const coreResult = await resolveCompanyRequestDetailCore(
+    actor,
+    normalizedRequestId,
+    recordPerf,
+  )
 
   if (!coreResult.ok) return coreResult
 
@@ -79,7 +78,7 @@ export async function getCompanyFullRequestDetail(
       ...buildSharedRequestDetailReadModel({
         actor,
         request: coreResult.request,
-        creditBalance: creditSummary.balance,
+        creditBalance,
       }),
       photoCount,
       photos,

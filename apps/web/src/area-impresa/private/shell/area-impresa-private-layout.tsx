@@ -5,7 +5,6 @@ import {
   deriveCompanyRequestAccess,
   isCompanyMarketplaceEnabled,
 } from "@esigenta/domain";
-import { getCompanyCreditSummary } from "@esigenta/billing";
 
 import { Container } from "@esigenta/ui";
 
@@ -19,6 +18,7 @@ import {
 
 import { ImpresaSidebar } from "./impresa-sidebar";
 import { getAreaImpresaShellCountsCached } from "./shell-counts-cache";
+import { getCompanyCreditSummaryCached } from "./credit-summary-cache";
 
 type CompanyStatus = CompanyActor["company"]["status"];
 
@@ -55,7 +55,7 @@ export async function AreaImpresaPrivateLayout({
   const countsStart = areaTimestamp();
   const [counts, creditSummary] = await Promise.all([
     getAreaImpresaShellCountsCached(actor),
-    getCompanyCreditSummary(actor.company.id),
+    getCompanyCreditSummaryCached(actor.company.id),
   ]);
   const countsDurationMs = Math.round(areaTimestamp() - countsStart);
 

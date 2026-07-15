@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { getCompanyRequestPanelDetail } from "@esigenta/domain"
 
 import { requireAreaImpresaAccess } from "../../../../../../auth/server"
+import { getCompanyCreditSummaryCached } from "../../../../../../area-impresa/private/shell/credit-summary-cache"
 import { createPerfTrace } from "../../../../../../area-impresa/monitoring/area-impresa-perf-trace"
 import { toggleSavedRequestAction } from "../../../../../../area-impresa/private/opportunita/actions/toggle-saved-request-action"
 import {
@@ -32,7 +33,13 @@ export default async function Page({
     requireAreaImpresaAccess(),
   ])
   const trace = createPerfTrace({ scope: "request-panel" })
-  const result = await getCompanyRequestPanelDetail(actor, id, trace.add)
+  const creditSummary = await getCompanyCreditSummaryCached(actor.company.id)
+  const result = await getCompanyRequestPanelDetail(
+    actor,
+    id,
+    creditSummary.balance,
+    trace.add,
+  )
 
   if (!result.ok) {
     trace.finish({ requestId: id, status: "not-found" })
