@@ -7,7 +7,7 @@ const defaultAdminOrigin =
   "https://esigenta-admin.vercel.app"
 
 const defaultWebOrigin =
-  "https://esigenta-web.vercel.app"
+  "https://www.esigenta.it"
 
 function normalizeOrigin(
   value: string | undefined,

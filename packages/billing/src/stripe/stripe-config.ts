@@ -16,7 +16,7 @@ export function logStripeDebug(
 }
 
 export const STRIPE_EXPECTED_WEBHOOK_ENDPOINT =
-  "https://esigenta-web.vercel.app/api/stripe/webhook"
+  "https://www.esigenta.it/api/stripe/webhook"
 
 export const STRIPE_REQUIRED_WEBHOOK_EVENTS = [
   "checkout.session.completed",
