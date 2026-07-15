@@ -8,11 +8,6 @@ export {
   getRequestCommercialState,
 } from "@esigenta/domain";
 
-export type {
-  RequestCommercialFields,
-  RequestCommercialState,
-} from "@esigenta/domain";
-
 export {
   formatCreditCost,
   formatUnlockAvailability,

@@ -57,23 +57,6 @@ function isRecord(
   )
 }
 
-const descriptionKeys = new Set([
-  "description",
-  "customerdescription",
-  "message",
-  "details",
-  "detail",
-  "notes",
-  "note",
-  "summary",
-])
-
-function normalizeKey(key: string) {
-  return key
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-}
-
 function getRawAnswers(
   structuredData: Record<string, unknown>,
 ) {
@@ -89,75 +72,6 @@ function getRawAnswers(
   }
 
   return structuredData
-}
-
-function findDescriptionInValue(
-  value: unknown,
-): string | null {
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const found =
-        findDescriptionInValue(item)
-
-      if (found) {
-        return found
-      }
-    }
-
-    return null
-  }
-
-  if (!isRecord(value)) {
-    return null
-  }
-
-  for (const [key, entryValue] of Object.entries(value)) {
-    if (
-      descriptionKeys.has(normalizeKey(key)) &&
-      typeof entryValue === "string"
-    ) {
-      const trimmed =
-        entryValue.trim()
-
-      if (trimmed.length > 0) {
-        return trimmed
-      }
-    }
-  }
-
-  for (const entryValue of Object.values(value)) {
-    const found =
-      findDescriptionInValue(entryValue)
-
-    if (found) {
-      return found
-    }
-  }
-
-  return null
-}
-
-export function getDescription(
-  structuredData: Record<string, unknown> | null,
-) {
-  if (!structuredData) {
-    return null
-  }
-
-  const draftDescription =
-    isRecord(structuredData.draft) &&
-    typeof structuredData.draft.customerDescription ===
-      "string"
-      ? structuredData.draft.customerDescription.trim()
-      : ""
-
-  return (
-    draftDescription ||
-    findDescriptionInValue(
-      getRawAnswers(structuredData),
-    ) ||
-    findDescriptionInValue(structuredData)
-  )
 }
 
 function findNumericSuperficie(rawAnswers: unknown): number | string | null {

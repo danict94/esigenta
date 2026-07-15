@@ -18,7 +18,7 @@ import { getRequestUnlockError } from "../view-models/request-detail-view-model"
  * Next adapter for the dedicated full-detail page. Domain owns the read model;
  * this layer only maps route errors and signs the full photo collection.
  */
-export async function loadFullRequestDetailPageData({
+async function loadFullRequestDetailPageData({
   actor,
   requestId,
   errorParam,
