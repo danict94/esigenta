@@ -5,15 +5,64 @@ import {
 } from "@esigenta/domain";
 
 import { PublicShell } from "../../site/shell/public-shell";
-import { CustomerRequestsNav } from "../comunicazioni/components/customer-requests-nav";
 
 type RequestVerificationPageProps = {
   requestId?: string;
   token?: string;
 };
 
+type VerificationResult =
+  | {
+      ok: true;
+      alreadyVerified: boolean;
+      title: string;
+      message: string;
+      statusUrl?: string;
+    }
+  | {
+      ok: false;
+      title: string;
+      message: string;
+    };
+
 function buildStatusUrl(statusToken: string) {
   return `/stato-richiesta/${encodeURIComponent(statusToken)}`;
+}
+
+/**
+ * I messaggi di dominio in verify-request.ts sono in inglese (consumer anche
+ * admin, non li tocchiamo qui): il livello presentazionale mappa solo i
+ * codici noti su copy italiano, mai error.message direttamente.
+ */
+function mapVerificationErrorCode(code: string | undefined): {
+  title: string;
+  message: string;
+} {
+  switch (code) {
+    case "invalid_verification_token":
+      return {
+        title: "Link non valido",
+        message: "Il link di conferma non e valido.",
+      };
+
+    case "verification_token_expired":
+      return {
+        title: "Link non valido",
+        message: "Il link di conferma e scaduto.",
+      };
+
+    case "request_not_found":
+      return {
+        title: "Conferma non riuscita",
+        message: "Non siamo riusciti a trovare la richiesta.",
+      };
+
+    default:
+      return {
+        title: "Conferma non riuscita",
+        message: "Non siamo riusciti a confermare la richiesta.",
+      };
+  }
 }
 
 async function verifyFromParams({
@@ -22,13 +71,9 @@ async function verifyFromParams({
 }: {
   requestId?: string;
   token?: string;
-}) {
+}): Promise<VerificationResult> {
   if (!token) {
-    return {
-      ok: false as const,
-      title: "Link non valido",
-      message: "Il link di conferma non contiene tutti i dati necessari.",
-    };
+    return { ok: false, ...mapVerificationErrorCode("invalid_verification_token") };
   }
 
   try {
@@ -40,37 +85,31 @@ async function verifyFromParams({
 
     if (result.status === "ALREADY_VERIFIED") {
       return {
-        ok: true as const,
-        title: "Richiesta gia confermata",
-        message: "Ora e in attesa di revisione.",
-        historyAccessToken: null,
-        statusUrl: undefined,
+        ok: true,
+        alreadyVerified: true,
+        title: "Email gia confermata",
+        message: "La richiesta e gia stata confermata.",
       };
     }
 
     return {
-      ok: true as const,
-      title: "Richiesta confermata",
-      message: "Ora e in attesa di revisione.",
+      ok: true,
+      alreadyVerified: false,
+      title: "Email confermata",
+      // Nessun template email per "revisione completata" esiste in
+      // @esigenta/notifications: nessuna promessa di aggiornamento
+      // automatico non supportata dal codice.
+      message: "La richiesta e ora in revisione.",
       statusUrl: result.statusAccessToken
         ? buildStatusUrl(result.statusAccessToken)
         : undefined,
-      historyAccessToken: result.historyAccessToken ?? null,
     };
   } catch (error) {
-    if (error instanceof RequestFlowError) {
-      return {
-        ok: false as const,
-        title: "Conferma non riuscita",
-        message: error.message,
-      };
-    }
-
     return {
-      ok: false as const,
-      title: "Conferma non riuscita",
-      message:
-        "Non siamo riusciti a confermare la richiesta. Riprova tra poco.",
+      ok: false,
+      ...mapVerificationErrorCode(
+        error instanceof RequestFlowError ? error.code : undefined,
+      ),
     };
   }
 }
@@ -80,6 +119,8 @@ export async function RequestVerificationPage({
   token,
 }: RequestVerificationPageProps) {
   const result = await verifyFromParams({ requestId, token });
+  const primaryHref = result.ok && result.statusUrl ? result.statusUrl : "/";
+  const primaryLabel = result.ok && result.statusUrl ? "Vedi stato richiesta" : "Torna alla home";
 
   return (
     <PublicShell>
@@ -90,12 +131,6 @@ export async function RequestVerificationPage({
           <div className="eg-container-narrow">
             <div className="eg-panel p-6 md:p-8">
               <div className="flex flex-col gap-6">
-                {result.ok ? (
-                  <CustomerRequestsNav
-                    token={result.historyAccessToken ?? undefined}
-                  />
-                ) : null}
-
                 <div>
                   <p className="eg-eyebrow">Conferma richiesta</p>
 
@@ -104,20 +139,9 @@ export async function RequestVerificationPage({
                   <p className="eg-body-muted mt-4">{result.message}</p>
                 </div>
 
-                {result.ok ? (
-                  <>
-                    <p className="eg-body-muted">
-                      In futuro puoi tornare dalla voce Storico richieste e
-                      vedere le richieste inviate con questa email.
-                    </p>
-
-                    {result.statusUrl ? (
-                      <a href={result.statusUrl} className="eg-button-primary w-full sm:w-fit">
-                        Vedi stato richiesta
-                      </a>
-                    ) : null}
-                  </>
-                ) : null}
+                <a href={primaryHref} className="eg-button-primary w-full sm:w-fit">
+                  {primaryLabel}
+                </a>
               </div>
             </div>
           </div>

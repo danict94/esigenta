@@ -1,4 +1,7 @@
-import type { CookieConsentPreferences } from "./cookie-consent-storage"
+import {
+  readCookieConsentPreferences,
+  type CookieConsentPreferences,
+} from "./cookie-consent-storage"
 import {
   DEFAULT_DENIED_GOOGLE_CONSENT_STATE,
   toGoogleConsentState,
@@ -167,5 +170,54 @@ export function sendGa4PageView(pathname: string): void {
   gtag("event", "page_view", {
     page_path: sanitizedPath,
     page_location: `${window.location.origin}${sanitizedPath}`,
+  })
+}
+
+export type TrackGenerateLeadParams = {
+  leadType: "customer_request"
+  /** Slug tassonomico pubblico già validato lato server, mai testo libero. */
+  serviceGroup: string | null
+  /** Slug tassonomico pubblico già validato lato server, mai testo libero. */
+  intervention: string
+}
+
+/**
+ * generate_lead per una richiesta cliente realmente acquisita (transazione
+ * committata). No-op silenzioso — mai un throw — se: measurementId assente,
+ * GA4 mai attivato in questa pagina, window.gtag assente, consenso analytics
+ * non concesso nelle preferenze CORRENTI (rilette qui, non cache di stato
+ * React: un utente può aver revocato dopo l'attivazione), o
+ * ga-disable-<id> === true. Nessun requestId/requestCode/dato cliente in
+ * ingresso: la firma accetta solo i due slug tassonomici.
+ */
+export function trackGenerateLead(
+  measurementId: string,
+  params: TrackGenerateLeadParams,
+): void {
+  if (!ga4Activated) {
+    return
+  }
+
+  if (readCookieConsentPreferences()?.analytics !== true) {
+    return
+  }
+
+  const win = getGtagWindow()
+
+  if (win[`ga-disable-${measurementId}`] === true) {
+    return
+  }
+
+  const gtag = win.gtag
+
+  if (!gtag) {
+    return
+  }
+
+  gtag("event", "generate_lead", {
+    lead_type: params.leadType,
+    ...(params.serviceGroup ? { service_group: params.serviceGroup } : {}),
+    intervention: params.intervention,
+    send_to: measurementId,
   })
 }

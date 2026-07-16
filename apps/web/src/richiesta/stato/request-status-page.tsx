@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import {
   RequestFlowError,
   getRequestStatusByToken,
@@ -163,6 +161,8 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
                 <div className="flex flex-col gap-7">
                   <CustomerRequestsNav
                     token={result.request.historyAccessToken ?? undefined}
+                    showNewRequest={false}
+                    showAccessLink={false}
                   />
 
                   <div>
@@ -225,10 +225,6 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
                       ))}
                     </ol>
                   </div>
-
-                  <Link href="/" className="eg-button-primary w-full sm:w-fit">
-                    Richiedi un nuovo intervento
-                  </Link>
                 </div>
               ) : (
                 <div>

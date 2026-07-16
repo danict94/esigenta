@@ -3,6 +3,9 @@ import Link from "next/link";
 type CustomerRequestsNavProps = {
   token?: string;
   className?: string;
+  /** Retrocompatibili: di default true, invariato per i consumer esistenti. */
+  showNewRequest?: boolean;
+  showAccessLink?: boolean;
 };
 
 function buildHistoryHref(token?: string) {
@@ -18,6 +21,8 @@ function buildHistoryHref(token?: string) {
 export function CustomerRequestsNav({
   token,
   className,
+  showNewRequest = true,
+  showAccessLink = true,
 }: CustomerRequestsNavProps) {
   return (
     <nav
@@ -32,12 +37,16 @@ export function CustomerRequestsNav({
       <Link href={buildHistoryHref(token)} prefetch={false}>
         Storico richieste
       </Link>
-      <Link href="/" prefetch={false}>
-        Nuova richiesta
-      </Link>
-      <Link href="/richieste/accesso" prefetch={false}>
-        Ricevi un nuovo link
-      </Link>
+      {showNewRequest ? (
+        <Link href="/" prefetch={false}>
+          Nuova richiesta
+        </Link>
+      ) : null}
+      {showAccessLink ? (
+        <Link href="/richieste/accesso" prefetch={false}>
+          Ricevi un nuovo link
+        </Link>
+      ) : null}
     </nav>
   );
 }

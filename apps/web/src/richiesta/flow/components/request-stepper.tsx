@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import type {
   RequestDraft,
@@ -15,7 +15,10 @@ import {
   NOTE_STEP_ID,
 } from "@esigenta/funnel";
 
+import { trackGenerateLead } from "../../../site/shell/ga4";
 import { RequestStepUI } from "./request-step-ui";
+
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 type JsonRequestDraft = Omit<RequestDraft, "createdAt"> & {
   createdAt: string;
@@ -38,6 +41,8 @@ type CreatedRequestPayload = {
   status: "PENDING_VERIFICATION";
   verificationEmailSent: boolean;
   verificationEmailProvider: "resend" | "console";
+  interventionSlug: string;
+  serviceGroupSlug: string | null;
 };
 
 type SubmittedRequestPayload = {
@@ -133,6 +138,7 @@ export function RequestStepper({
   const [showLeadQualityHint, setShowLeadQualityHint] = useState(false);
   const [leadQualityHintDismissed, setLeadQualityHintDismissed] =
     useState(false);
+  const generateLeadFiredRef = useRef(false);
 
   const capabilities = payload.orderedCapabilities;
   const currentCapability = capabilities[stepIndex];
@@ -174,11 +180,6 @@ export function RequestStepper({
 
     setShowLeadQualityHint(false);
     setStepIndex((current) => current - 1);
-  }
-
-  function editSubmittedRequest() {
-    setSubmittedRequest(null);
-    setStepIndex(0);
   }
 
   async function submitDraft() {
@@ -224,7 +225,25 @@ export function RequestStepper({
         throw new Error("Invalid request response");
       }
 
-      setSubmittedRequest(responseBody as SubmittedRequestPayload);
+      const submitted = responseBody as SubmittedRequestPayload;
+
+      setSubmittedRequest(submitted);
+
+      // Una richiesta realmente acquisita (transazione già committata sul
+      // server, indipendentemente dall'esito dell'email di verifica) = al
+      // massimo un generate_lead in questo browser. Il ref viene impostato
+      // prima della chiamata Analytics stessa, non dopo: un doppio click è
+      // già bloccato dal bottone disabilitato, questo copre re-render e
+      // rimonti dello stepper sulla stessa risposta già elaborata.
+      if (GA_MEASUREMENT_ID && !generateLeadFiredRef.current) {
+        generateLeadFiredRef.current = true;
+
+        trackGenerateLead(GA_MEASUREMENT_ID, {
+          leadType: "customer_request",
+          serviceGroup: submitted.request.serviceGroupSlug,
+          intervention: submitted.request.interventionSlug,
+        });
+      }
     } catch (error) {
       console.warn("[request-stepper] Request submit crashed", {
         error: error instanceof Error ? error.message : String(error),
@@ -319,7 +338,6 @@ export function RequestStepper({
         setShowLeadQualityHint(false);
         setStepIndex((current) => Math.min(current + 1, totalSteps - 1));
       }}
-      onEditSubmittedRequest={editSubmittedRequest}
       onNext={() => {
         void goNext();
       }}

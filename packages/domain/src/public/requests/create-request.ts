@@ -28,6 +28,9 @@ export type CreateRequestFromDraftResult = {
   status: "PENDING_VERIFICATION"
   verificationEmailSent: boolean
   verificationEmailProvider: "resend"
+  /** Snapshot tassonomico già risolto/validato in questa stessa chiamata — mai da rifidare lato client (es. per Analytics). */
+  interventionSlug: string
+  serviceGroupSlug: string | null
 }
 
 function isValidEmail(value: string): boolean {
@@ -348,15 +351,41 @@ export async function createRequestFromDraft({
     token: verification.token,
   })
 
-  const emailResult = await sendRequestVerificationEmail({
-    to: customer.customerEmail,
-    verificationUrl,
-  })
+  // La transazione sopra è già committata: la richiesta esiste, con ID e
+  // token definitivi. Un fallimento dell'invio email da qui in poi non deve
+  // mai retrocedere a un errore che farebbe credere al chiamante che la
+  // richiesta non sia stata creata — quel falso negativo è esattamente ciò
+  // che spinge un utente a riprovare e creare una seconda Request reale.
+  // Log volutamente minimo: né error.message né error.stack, perché il
+  // messaggio di errore di un provider email può incorporare l'indirizzo
+  // del destinatario o altri dettagli non controllabili da qui.
+  let verificationEmailSent = false
+
+  try {
+    const emailResult = await sendRequestVerificationEmail({
+      to: customer.customerEmail,
+      verificationUrl,
+    })
+
+    verificationEmailSent = emailResult.sent
+  } catch (error) {
+    console.error(
+      "[createRequestFromDraft] Verification email failed after commit",
+      {
+        operation: "send_request_verification_email",
+        provider: "resend",
+        requestId: request.id,
+        errorName: error instanceof Error ? error.name : "UnknownError",
+      },
+    )
+  }
 
   return {
     requestId: request.id,
     status: "PENDING_VERIFICATION",
-    verificationEmailSent: emailResult.sent,
-    verificationEmailProvider: emailResult.provider,
+    verificationEmailSent,
+    verificationEmailProvider: "resend",
+    interventionSlug: persistedDraft.interventionSlug,
+    serviceGroupSlug: intervention.groupSlug,
   }
 }

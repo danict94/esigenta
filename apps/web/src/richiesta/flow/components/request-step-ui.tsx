@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 
 import type { RuntimeCapability } from "@esigenta/funnel";
 
@@ -19,6 +20,9 @@ import { RequestPhotoUpload } from "./request-photo-upload";
 
 type FunnelSubmittedRequest = {
   requestDraft: unknown;
+  request: {
+    verificationEmailSent: boolean;
+  };
 };
 
 type RequestStepUIProps = {
@@ -41,7 +45,6 @@ type RequestStepUIProps = {
   onContinueAfterLeadQualityHint: () => void;
   onCustomerDescriptionChange: (value: string) => void;
   onPhotoUploadingChange: (isUploading: boolean) => void;
-  onEditSubmittedRequest: () => void;
   onNext: () => void;
   onReset: () => void;
 };
@@ -310,11 +313,20 @@ export function RequestStepUI({
   onContinueAfterLeadQualityHint,
   onCustomerDescriptionChange,
   onPhotoUploadingChange,
-  onEditSubmittedRequest,
   onNext,
   onReset,
 }: RequestStepUIProps) {
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (submittedRequest) {
+      successHeadingRef.current?.focus();
+    }
+  }, [submittedRequest]);
+
   if (submittedRequest) {
+    const verificationEmailSent = submittedRequest.request.verificationEmailSent;
+
     return (
       <div className="eg-panel mt-8 p-6 md:p-8">
         <div className="flex flex-col gap-8">
@@ -327,46 +339,37 @@ export function RequestStepUI({
             </span>
 
             <div>
-              <p className="eg-eyebrow">Richiesta preparata</p>
+              <p className="eg-eyebrow">Richiesta</p>
 
-              <h2 className="eg-h2 mt-3">
-                Grazie, la tua richiesta &egrave; quasi pronta
+              <h2
+                ref={successHeadingRef}
+                tabIndex={-1}
+                className="eg-h2 mt-3 focus:outline-none"
+              >
+                {verificationEmailSent ? "Controlla la tua email" : "Richiesta salvata"}
               </h2>
 
               <p className="eg-body-muted mx-auto mt-4 max-w-xl">
-                Ti abbiamo inviato un link via email per confermare la richiesta
-                e completare l&apos;invio. Dopo la conferma, la richiesta
-                passer&agrave; in revisione.
+                {verificationEmailSent ? (
+                  <>
+                    La richiesta &egrave; stata salvata. Apri l&apos;email
+                    che ti abbiamo inviato e conferma il tuo indirizzo per
+                    mandarla in revisione.
+                  </>
+                ) : (
+                  <>
+                    La richiesta &egrave; stata salvata. Al momento non siamo
+                    riusciti a inviare l&apos;email di conferma. Non inviare
+                    di nuovo la richiesta.
+                  </>
+                )}
               </p>
             </div>
           </div>
 
-          <div className="border-y border-eg-hairline">
-            <InfoRow
-              title="Conferma via email"
-              description="Apri il link che ti abbiamo inviato per far arrivare correttamente la richiesta."
-            />
-            <InfoRow
-              title="Revisione della richiesta"
-              description="Dopo la conferma, verificheremo i dati principali e ti contatteremo se servono altri dettagli."
-            />
-            <InfoRow
-              title="Le mie richieste"
-              description="Puoi accedere allo storico e seguire lo stato delle richieste inviate usando il link ricevuto via email."
-            />
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <div className="flex justify-center">
             <button type="button" className="eg-button-primary" onClick={onReset}>
-              Nuova richiesta
-            </button>
-
-            <button
-              type="button"
-              className="eg-button-ghost"
-              onClick={onEditSubmittedRequest}
-            >
-              Modifica risposte
+              Torna alla home
             </button>
           </div>
         </div>
@@ -502,21 +505,6 @@ export function RequestStepUI({
                 : "Avanti"}
         </button>
       </div>
-    </div>
-  );
-}
-
-function InfoRow({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="grid gap-1 border-b border-eg-hairline py-4 last:border-b-0">
-      <h3 className="text-sm font-medium text-eg-terra">{title}</h3>
-      <p className="eg-form-help">{description}</p>
     </div>
   );
 }
