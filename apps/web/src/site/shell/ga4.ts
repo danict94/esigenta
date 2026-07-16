@@ -33,16 +33,6 @@ function setGaDisableFlag(measurementId: string, disabled: boolean): void {
   getGtagWindow()[`ga-disable-${measurementId}`] = disabled
 }
 
-/**
- * Rimuove query string e hash: page_path/page_location non devono mai
- * contenere token, callback URL o altri parametri — solo il pathname
- * approvato dall'allowlist.
- */
-function sanitizePathname(pathname: string): string {
-  const withoutQuery = pathname.split("?", 1)[0] ?? pathname
-  return withoutQuery.split("#", 1)[0] ?? withoutQuery
-}
-
 function ensureGtagStub(): GtagFn {
   const win = getGtagWindow()
 
@@ -146,7 +136,7 @@ export function activateGa4(
   ga4ActivationPromise = injectGa4Script(measurementId)
     .then(() => {
       gtag("js", new Date())
-      gtag("config", measurementId, { send_page_view: false })
+      gtag("config", measurementId)
     })
     .catch((error: unknown) => {
       ga4ActivationPromise = null
@@ -194,31 +184,6 @@ export function updateGa4Consent(
     gtag?.("consent", "update", toGoogleConsentState(preferences))
     setGaDisableFlag(measurementId, true)
   }
-}
-
-/**
- * page_view manuale (send_page_view è disattivato in config): mai inviato
- * se GA non è stato attivato, quindi mai prima del consenso analytics.
- * page_path/page_location usano solo origin + pathname sanitizzato — mai
- * window.location.href, mai query string, mai hash, mai token.
- */
-export function sendGa4PageView(pathname: string): void {
-  if (!ga4ActivationPromise) {
-    return
-  }
-
-  const gtag = getGtagWindow().gtag
-
-  if (!gtag) {
-    return
-  }
-
-  const sanitizedPath = sanitizePathname(pathname)
-
-  gtag("event", "page_view", {
-    page_path: sanitizedPath,
-    page_location: `${window.location.origin}${sanitizedPath}`,
-  })
 }
 
 export type TrackGenerateLeadParams = {

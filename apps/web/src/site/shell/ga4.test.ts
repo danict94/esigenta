@@ -168,35 +168,15 @@ test("js/config non partono prima del load reale dello script", async () => {
   await activation
 
   const afterLoad = dataLayerCommands()
+  const configCommand = afterLoad.find((c) => c[0] === "config")
 
   assert.ok(afterLoad.some((c) => c[0] === "js"))
-  assert.ok(
-    afterLoad.some((c) => c[0] === "config" && c[1] === "G-TEST123"),
-  )
-})
-
-test("il primo page_view (contratto await activateGa4 poi sendGa4PageView) parte solo dopo config", async () => {
-  const doc = installFakeBrowser()
-  const { activateGa4, sendGa4PageView } = await freshGa4Module()
-
-  const activation = activateGa4("G-TEST123", makePreferences())
-
-  firstScript(doc).simulateLoad()
-  await activation
-
-  sendGa4PageView("/prova")
-
-  const commands = dataLayerCommands()
-  const configIndex = commands.findIndex((c) => c[0] === "config")
-  const pageViewIndex = commands.findIndex(
-    (c) => c[0] === "event" && c[1] === "page_view",
-  )
-
-  assert.ok(configIndex !== -1, "config deve essere presente")
-  assert.ok(pageViewIndex !== -1, "page_view deve essere presente")
-  assert.ok(
-    configIndex < pageViewIndex,
-    "config deve precedere il page_view nel dataLayer",
+  assert.ok(configCommand, "config deve essere presente dopo il load")
+  assert.equal(configCommand?.[1], "G-TEST123")
+  assert.equal(
+    configCommand?.length,
+    2,
+    "config non deve contenere alcun secondo argomento (niente send_page_view:false): il page_view resta automatico",
   )
 })
 
@@ -224,29 +204,6 @@ test("due chiamate concorrenti ad activateGa4 condividono la stessa inizializzaz
     1,
     "nessuno script aggiuntivo dopo il load",
   )
-})
-
-test("una navigazione successiva invia un nuovo page_view senza ripetere config né ricaricare lo script", async () => {
-  const doc = installFakeBrowser()
-  const { activateGa4, sendGa4PageView } = await freshGa4Module()
-
-  const activation = activateGa4("G-TEST123", makePreferences())
-
-  firstScript(doc).simulateLoad()
-  await activation
-
-  sendGa4PageView("/pagina-1")
-  sendGa4PageView("/pagina-2")
-
-  const commands = dataLayerCommands()
-  const configCommands = commands.filter((c) => c[0] === "config")
-  const pageViews = commands.filter(
-    (c) => c[0] === "event" && c[1] === "page_view",
-  )
-
-  assert.equal(configCommands.length, 1, "config non deve ripetersi")
-  assert.equal(pageViews.length, 2, "ogni navigazione invia il proprio page_view")
-  assert.equal(doc.appended.length, 1, "lo script non viene ricaricato")
 })
 
 test("script.onerror non lascia uno stato falsamente inizializzato e permette un retry", async () => {
@@ -381,5 +338,141 @@ test("trackGenerateLead attende il load reale, rispetta l'ordine js->config->gen
       .length,
     2,
     "la seconda chiamata invia comunque il proprio generate_lead",
+  )
+})
+
+test("integrazione home + funnel: attivazione dalla home poi trackGenerateLead usano la stessa inizializzazione (un solo script, una sola js/config)", async () => {
+  const doc = installFakeBrowser()
+  installFakeLocalStorage()
+  writeCookieConsentPreferences(makePreferences())
+
+  const { activateGa4, trackGenerateLead } = await freshGa4Module()
+
+  // 1. Attivazione dalla home: equivalente a ciò che fa Ga4MinimalLoader al
+  // mount quando il consenso è già granted.
+  const homeActivation = activateGa4("G-TEST123", makePreferences())
+
+  firstScript(doc).simulateLoad()
+  await homeActivation
+
+  assert.equal(
+    dataLayerCommands().filter((c) => c[0] === "config").length,
+    1,
+    "la home deve aver già completato una sola config",
+  )
+
+  // 2. Successiva chiamata trackGenerateLead dal funnel, in un momento
+  // separato, dopo che l'inizializzazione della home è già risolta.
+  await trackGenerateLead("G-TEST123", {
+    leadType: "customer_request",
+    serviceGroup: "gruppo-test",
+    intervention: "intervento-test",
+  })
+
+  const finalCommands = dataLayerCommands()
+
+  // 3. Un solo script per l'intero flusso home + funnel.
+  assert.equal(doc.appended.length, 1)
+
+  // 4. Una sola js/config in tutto il flusso.
+  assert.equal(finalCommands.filter((c) => c[0] === "js").length, 1)
+  assert.equal(finalCommands.filter((c) => c[0] === "config").length, 1)
+
+  // 5. generate_lead inviato usando la stessa inizializzazione, con i
+  // parametri attesi.
+  const leadCommands = finalCommands.filter(
+    (c) => c[0] === "event" && c[1] === "generate_lead",
+  )
+
+  assert.equal(leadCommands.length, 1)
+
+  const payload = leadCommands[0]?.[2] as Record<string, unknown>
+
+  assert.equal(payload.lead_type, "customer_request")
+  assert.equal(payload.service_group, "gruppo-test")
+  assert.equal(payload.intervention, "intervento-test")
+  assert.equal(payload.send_to, "G-TEST123")
+})
+
+test("revoca del consenso durante il caricamento: isGa4Activated() è già true, consent update denied viene accodato prima del load, nessun automatismo può inviare hit con consenso ancora granted", async () => {
+  const doc = installFakeBrowser()
+  const { activateGa4, updateGa4Consent, isGa4Activated } =
+    await freshGa4Module()
+
+  // 1. Consenso analytics=true.
+  const grantedPreferences = makePreferences({ analytics: true })
+
+  // 2. activateGa4 avviata, script non ancora caricato.
+  const activation = activateGa4("G-TEST123", grantedPreferences)
+
+  assert.equal(
+    isGa4Activated(),
+    true,
+    "isGa4Activated() deve risultare true da subito, anche con lo script ancora in attesa del load",
+  )
+  assert.equal(doc.appended.length, 1)
+
+  // 3. Il consenso cambia ad analytics=false mentre lo script è ancora in
+  // caricamento (equivalente a ciò che fa Ga4MinimalLoader alla ricezione di
+  // COOKIE_CONSENT_CHANGED_EVENT quando isGa4Activated() è già true).
+  const revokedPreferences = makePreferences({ analytics: false })
+  updateGa4Consent("G-TEST123", revokedPreferences)
+
+  // 4. Il consent update denied è accodato subito, ben prima del load.
+  const afterRevocation = dataLayerCommands()
+  const consentUpdatesBeforeLoad = afterRevocation.filter(
+    (c) => c[0] === "consent" && c[1] === "update",
+  )
+
+  assert.equal(
+    consentUpdatesBeforeLoad.length,
+    2,
+    "granted iniziale + denied da revoca, entrambi già in coda",
+  )
+  assert.equal(
+    (consentUpdatesBeforeLoad[1]?.[2] as Record<string, string>)
+      .analytics_storage,
+    "denied",
+    "l'update di revoca è accodato con analytics_storage denied prima del load",
+  )
+  assert.equal(
+    (globalThis as unknown as Record<string, unknown>)[
+      "ga-disable-G-TEST123"
+    ],
+    true,
+    "ga-disable passa a true sulla revoca, indipendentemente dal load",
+  )
+  assert.ok(
+    !afterRevocation.some((c) => c[0] === "js") &&
+      !afterRevocation.some((c) => c[0] === "config"),
+    "js/config non sono ancora partiti a questo punto",
+  )
+
+  // 5. Dopo il load reale, config parte comunque (Consent Mode non blocca
+  // config), ma l'ultimo consent update in coda PRIMA di config è denied, e
+  // ga-disable è già true: nessun automatismo di gtag.js può inviare un hit
+  // (incluso l'auto page_view) con consenso ancora granted. Il nostro
+  // codice, inoltre, non invia più alcun page_view manuale (rimosso).
+  firstScript(doc).simulateLoad()
+  await activation
+
+  const finalCommands = dataLayerCommands()
+  const configIndex = finalCommands.findIndex((c) => c[0] === "config")
+
+  assert.ok(configIndex !== -1, "config deve comunque partire dopo il load")
+
+  const lastConsentStateBeforeConfig = finalCommands
+    .slice(0, configIndex)
+    .filter((c) => c[0] === "consent" && c[1] === "update")
+    .at(-1)?.[2] as Record<string, string>
+
+  assert.equal(
+    lastConsentStateBeforeConfig.analytics_storage,
+    "denied",
+    "al momento in cui config viene processato, il consenso in coda è denied",
+  )
+  assert.ok(
+    !finalCommands.some((c) => c[0] === "event" && c[1] === "page_view"),
+    "nessun page_view manuale: la funzione non esiste più nel codice",
   )
 })
