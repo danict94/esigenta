@@ -15,7 +15,7 @@ import {
   NOTE_STEP_ID,
 } from "@esigenta/funnel";
 
-import { trackGenerateLead } from "../../../site/shell/ga4";
+import { trackGenerateLead } from "../../../site/analytics/ga4-events";
 import { RequestStepUI } from "./request-step-ui";
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
