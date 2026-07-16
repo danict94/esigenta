@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google"
 
 import "./globals.css"
 import { CookieConsent } from "../site/shell/cookie-consent"
+import { Ga4Tracker } from "../site/shell/ga4-tracker"
 import { resolveSiteOrigin } from "../site/seo/engine/site-url"
 
 const spaceGrotesk = Space_Grotesk({
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col bg-eg-calce font-sans text-eg-terra">
         {children}
         <CookieConsent />
+        <Ga4Tracker />
       </body>
     </html>
   )

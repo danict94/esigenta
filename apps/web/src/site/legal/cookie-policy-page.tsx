@@ -24,9 +24,9 @@ const cookieCategories = [
   },
   {
     title: "Analytics",
-    status: "Non attivi al momento",
+    status: "Disattivati di default",
     description:
-      "Esigenta non usa strumenti analytics nel codice attuale. Se verranno aggiunti, non partiranno prima del consenso.",
+      "Abilitano Google Analytics 4, usato per misurare traffico e utilizzo del sito. Lo script non viene caricato prima del consenso analytics.",
   },
   {
     title: "Marketing",
@@ -91,12 +91,39 @@ export function CookiePolicyPage() {
               </section>
 
               <section className="eg-panel p-6">
-                <h2 className="eg-h3">Analytics e marketing</h2>
+                <h2 className="eg-h3">Google Analytics 4</h2>
                 <p className="eg-body-muted mt-3">
-                  Nel codice attuale non risultano Google Analytics, Meta Pixel,
-                  Vercel Analytics, Speed Insights o strumenti equivalenti. Se in
-                  futuro saranno introdotti, dovranno essere dichiarati e
-                  bloccati fino al consenso della categoria corretta.
+                  Usiamo Google Analytics 4, fornito da Google, per misurare il
+                  traffico e l&apos;utilizzo del sito in forma aggregata. Lo
+                  script viene caricato solo dopo che la categoria Analytics
+                  viene accettata dal banner o dalle preferenze cookie: prima
+                  di quel momento non parte nessuna richiesta verso i domini
+                  di Google Analytics. Puoi rifiutare o revocare il consenso
+                  in qualsiasi momento dal footer tramite &quot;Preferenze
+                  cookie&quot;; dopo la revoca non vengono inviate nuove
+                  misurazioni.
+                </p>
+                <p className="eg-body-muted mt-3">
+                  Quando la categoria e attiva, Google Analytics 4 puo
+                  impostare cookie come{" "}
+                  <span className="font-medium text-eg-terra">_ga</span> e{" "}
+                  <span className="font-medium text-eg-terra">
+                    _ga_&lt;ID&gt;
+                  </span>
+                  , usati per distinguere le sessioni di navigazione. Per
+                  dettagli sul trattamento dei dati da parte di Google,
+                  consulta l&apos;informativa privacy di Google.
+                </p>
+              </section>
+
+              <section className="eg-panel p-6">
+                <h2 className="eg-h3">Marketing e pubblicita</h2>
+                <p className="eg-body-muted mt-3">
+                  Nel codice attuale non risultano Google Ads, remarketing,
+                  Meta Pixel, Vercel Analytics, Speed Insights o strumenti
+                  equivalenti di profilazione pubblicitaria. Se in futuro
+                  saranno introdotti, dovranno essere dichiarati qui e
+                  bloccati fino al consenso della categoria Marketing.
                 </p>
               </section>
 

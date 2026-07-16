@@ -7,6 +7,14 @@ export const COOKIE_CONSENT_OPEN_EVENT =
 export const COOKIE_CONSENT_CHANGED_EVENT =
   "esigenta:cookie-consent-changed"
 
+/**
+ * Bump a 2 in Fase 3B (introduzione GA4): un consenso salvato con versione
+ * assente, diversa o non valida è obsoleto e va ignorato — mai migrato in
+ * automatico. parseCookieConsentPreferences ritorna null in quel caso, il
+ * banner ricompare e l'utente sceglie di nuovo.
+ */
+const COOKIE_CONSENT_SCHEMA_VERSION = 2 as const
+
 export type CookieConsentCategory =
   | "necessary"
   | "functional"
@@ -17,13 +25,13 @@ export type CookieConsentPreferences = Record<
   CookieConsentCategory,
   boolean
 > & {
-  version: 1
+  version: typeof COOKIE_CONSENT_SCHEMA_VERSION
   updatedAt: string
 }
 
 export function createDefaultCookieConsentPreferences(): CookieConsentPreferences {
   return {
-    version: 1,
+    version: COOKIE_CONSENT_SCHEMA_VERSION,
     updatedAt: new Date().toISOString(),
     necessary: true,
     functional: false,
@@ -34,7 +42,7 @@ export function createDefaultCookieConsentPreferences(): CookieConsentPreference
 
 export function createAcceptedCookieConsentPreferences(): CookieConsentPreferences {
   return {
-    version: 1,
+    version: COOKIE_CONSENT_SCHEMA_VERSION,
     updatedAt: new Date().toISOString(),
     necessary: true,
     functional: true,
@@ -43,16 +51,14 @@ export function createAcceptedCookieConsentPreferences(): CookieConsentPreferenc
   }
 }
 
-export function readCookieConsentPreferences() {
-  if (typeof window === "undefined") {
-    return null
-  }
-
-  const rawValue =
-    window.localStorage.getItem(
-      COOKIE_CONSENT_STORAGE_KEY,
-    )
-
+/**
+ * Pura, senza I/O: isolata così da essere verificabile con fixture
+ * sintetiche senza un localStorage reale. readCookieConsentPreferences() è
+ * il solo punto che le passa il valore effettivo del browser.
+ */
+export function parseCookieConsentPreferences(
+  rawValue: string | null,
+): CookieConsentPreferences | null {
   if (!rawValue) {
     return null
   }
@@ -62,8 +68,12 @@ export function readCookieConsentPreferences() {
       rawValue,
     ) as Partial<CookieConsentPreferences>
 
+    if (parsed.version !== COOKIE_CONSENT_SCHEMA_VERSION) {
+      return null
+    }
+
     return {
-      version: 1,
+      version: COOKIE_CONSENT_SCHEMA_VERSION,
       updatedAt:
         typeof parsed.updatedAt === "string"
           ? parsed.updatedAt
@@ -79,6 +89,16 @@ export function readCookieConsentPreferences() {
   } catch {
     return null
   }
+}
+
+export function readCookieConsentPreferences() {
+  if (typeof window === "undefined") {
+    return null
+  }
+
+  return parseCookieConsentPreferences(
+    window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY),
+  )
 }
 
 export function writeCookieConsentPreferences(
