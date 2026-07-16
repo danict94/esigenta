@@ -29,6 +29,7 @@ export function buildInterventionMetadata(slug: string): Metadata {
       description: landing.metaDescription,
       type: "website",
       url: canonicalPath,
+      siteName: "Esigenta",
       images: [
         {
           // Immagine propria della landing, mai una fissa condivisa tra
@@ -64,6 +65,7 @@ export function buildGroupLandingMetadata(slug: string): Metadata {
       description: landing.metaDescription,
       type: "website",
       url: canonicalPath,
+      siteName: "Esigenta",
     },
   };
 }
@@ -83,6 +85,7 @@ export function buildCostHubMetadata(): Metadata {
       description,
       type: "website",
       url: canonicalPath,
+      siteName: "Esigenta",
     },
   };
 }
@@ -103,6 +106,7 @@ export function buildCostGuideMetadata(slug: string): Metadata {
       description: guide.metaDescription,
       type: "website",
       url: guide.canonicalPath,
+      siteName: "Esigenta",
       images: [
         {
           url: guide.heroImage.src,
@@ -140,6 +144,7 @@ export function buildCostGuideCityMetadata(
       description: cityPage.metaDescription,
       type: "website",
       url: cityPage.canonicalPath,
+      siteName: "Esigenta",
       images: [
         {
           url: guide.heroImage.src,

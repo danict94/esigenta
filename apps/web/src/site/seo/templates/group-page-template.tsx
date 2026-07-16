@@ -1,9 +1,14 @@
 import Link from "next/link";
 
+import { buildCanonicalPath } from "../engine/canonical";
 import type {
   GroupInterventionItem,
   GroupLandingPageData,
 } from "../engine/resolve-group-page";
+import {
+  buildBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "../engine/schema-builder";
 import { getCostGuidePriceNote } from "../pages/costi";
 import { HowItWorks } from "./how-it-works";
 import { PublicShell } from "../../shell/public-shell";
@@ -15,8 +20,21 @@ export type GroupLandingPageProps = {
 export function GroupLandingPage({ data }: GroupLandingPageProps) {
   const { content, interventions, featured, professionalCategories } = data;
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Servizi", path: "/servizi" },
+    {
+      name: content.title,
+      path: buildCanonicalPath({ family: "groupHub", slug: content.slug }),
+    },
+  ]);
+
   return (
     <PublicShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="eg-page eg-page-bg">
         <div className="eg-thread" aria-hidden="true" />
 
@@ -243,10 +261,14 @@ function GroupInterventionRow({
 }) {
   return (
     <li className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-start gap-6 border-b border-eg-hairline py-6 max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
-      <span className="pt-1.5 font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">
+      <span
+        aria-hidden="true"
+        data-nosnippet=""
+        className="pt-1.5 font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark"
+      >
         {String(index).padStart(2, "0")}
       </span>
-
+      {" "}
       <div>
         <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] text-eg-terra">
           {item.name}

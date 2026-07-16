@@ -1,11 +1,13 @@
 import { toAbsoluteUrl } from "./site-url";
 
 /**
- * Unico punto che emette JSON-LD (Fase 5). Solo schema derivati da dati
- * visibili in pagina: BreadcrumbList dal breadcrumb reale, FAQPage dalle FAQ
- * renderizzate. MAI rating, review, AggregateRating, offerte, disponibilità,
- * prezzi puntuali o LocalBusiness: se un futuro schema richiede dati che non
- * abbiamo, non si emette.
+ * Unico punto che emette JSON-LD (Fase 5, estesa in Fase 2 Google con
+ * WebSite/Organization). Solo schema derivati da dati reali: BreadcrumbList
+ * dal breadcrumb reale, FAQPage dalle FAQ renderizzate, WebSite/Organization
+ * dall'identità di marca già pubblicata (title, applicationName, home).
+ * MAI rating, review, AggregateRating, offerte, disponibilità, prezzi
+ * puntuali, LocalBusiness o SearchAction: se un futuro schema richiede dati
+ * che non abbiamo, non si emette.
  */
 
 export type BreadcrumbJsonLdItem = {
@@ -26,6 +28,33 @@ export function buildBreadcrumbJsonLd(
       name: item.name,
       item: toAbsoluteUrl(item.path),
     })),
+  };
+}
+
+/**
+ * Solo sulla home canonica (mai nel root layout): un WebSite per pagina
+ * evita che ogni route pubblica emetta lo stesso schema.
+ */
+export function buildWebsiteJsonLd(): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Esigenta",
+    url: toAbsoluteUrl("/"),
+    inLanguage: "it-IT",
+    publisher: { "@id": toAbsoluteUrl("/#organization") },
+  };
+}
+
+/** Stesso vincolo di buildWebsiteJsonLd: solo sulla home. */
+export function buildOrganizationJsonLd(): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": toAbsoluteUrl("/#organization"),
+    name: "Esigenta",
+    url: toAbsoluteUrl("/"),
+    logo: toAbsoluteUrl("/icon.png"),
   };
 }
 

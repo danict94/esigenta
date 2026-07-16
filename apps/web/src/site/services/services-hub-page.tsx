@@ -148,7 +148,8 @@ function GroupServiceRow({
 }) {
   const rowContent = (
     <>
-      <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">{String(index).padStart(2, "0")}</span>
+      <span aria-hidden="true" data-nosnippet="" className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">{String(index).padStart(2, "0")}</span>
+      {" "}
       <div>
         <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em]">{name}</h3>
         <p className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia">

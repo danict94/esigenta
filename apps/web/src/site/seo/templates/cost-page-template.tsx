@@ -3,6 +3,10 @@ import Link from "next/link";
 
 import { getCostGuidePriceNote, type CostGuide } from "../pages/costi";
 import { resolveInterventionHrefForCostGuide } from "../engine/resolve-seo-page";
+import {
+  buildBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "../engine/schema-builder";
 import { PublicShell } from "../../shell/public-shell";
 import { RequestCtaPanel } from "./request-cta-panel";
 import { SeoFaq } from "./seo-faq";
@@ -34,8 +38,18 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
   );
   const priceNote = getCostGuidePriceNote();
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Costi", path: "/costi" },
+    { name: guide.h1, path: guide.canonicalPath },
+  ]);
+
   return (
     <PublicShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="eg-page eg-page-bg">
         <div className="eg-thread" aria-hidden="true" />
 

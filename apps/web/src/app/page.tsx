@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     description: homeDescription,
     type: "website",
     url: "/",
+    siteName: "Esigenta",
   },
 }
 

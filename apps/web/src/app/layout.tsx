@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   title: "Esigenta",
   description: "Trova professionisti verificati per i tuoi interventi.",
   applicationName: "Esigenta",
+  openGraph: {
+    siteName: "Esigenta",
+  },
 }
 
 export default function RootLayout({

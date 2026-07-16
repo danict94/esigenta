@@ -55,9 +55,14 @@ export function CostHubPage({ categories }: CostHubPageProps) {
                             href={guide.canonicalPath}
                             className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-cotto-dark"
                           >
-                            <span className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">
+                            <span
+                              aria-hidden="true"
+                              data-nosnippet=""
+                              className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark"
+                            >
                               {String(index + 1).padStart(2, "0")}
                             </span>
+                            {" "}
                             <span>
                               <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">{guide.h1}</span>
                               <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia block">
