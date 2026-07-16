@@ -21,6 +21,7 @@ const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 export function Ga4Tracker() {
   const pathname = usePathname()
   const [analyticsGranted, setAnalyticsGranted] = useState(false)
+  const [ga4Ready, setGa4Ready] = useState(false)
 
   useEffect(() => {
     const measurementId = GA_MEASUREMENT_ID
@@ -28,6 +29,8 @@ export function Ga4Tracker() {
     if (!measurementId) {
       return
     }
+
+    let cancelled = false
 
     const applyPreferences = (preferences: CookieConsentPreferences | null) => {
       if (!preferences) {
@@ -37,10 +40,21 @@ export function Ga4Tracker() {
       const granted = preferences.analytics === true
 
       if (granted) {
-        if (isGa4Activated()) {
+        const wasAlreadyActivated = isGa4Activated()
+
+        activateGa4(measurementId, preferences)
+          .then(() => {
+            if (!cancelled) {
+              setGa4Ready(true)
+            }
+          })
+          .catch(() => {
+            // onerror: activateGa4 azzera già il proprio stato per un
+            // eventuale tentativo successivo, niente da fare qui.
+          })
+
+        if (wasAlreadyActivated) {
           updateGa4Consent(measurementId, preferences)
-        } else {
-          activateGa4(measurementId, preferences)
         }
       } else if (isGa4Activated()) {
         updateGa4Consent(measurementId, preferences)
@@ -60,18 +74,19 @@ export function Ga4Tracker() {
     window.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, handleConsentChanged)
 
     return () => {
+      cancelled = true
       window.clearTimeout(initTimeout)
       window.removeEventListener(COOKIE_CONSENT_CHANGED_EVENT, handleConsentChanged)
     }
   }, [])
 
   useEffect(() => {
-    if (!GA_MEASUREMENT_ID || !analyticsGranted || !isTrackablePathname(pathname)) {
+    if (!GA_MEASUREMENT_ID || !analyticsGranted || !ga4Ready || !isTrackablePathname(pathname)) {
       return
     }
 
     sendGa4PageView(pathname)
-  }, [pathname, analyticsGranted])
+  }, [pathname, analyticsGranted, ga4Ready])
 
   return null
 }

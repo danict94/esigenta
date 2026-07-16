@@ -59,21 +59,59 @@ function ensureGtagStub(): GtagFn {
   return win.gtag
 }
 
-function injectGa4Script(measurementId: string): void {
-  if (document.getElementById(GA4_SCRIPT_ID)) {
-    return
+/**
+ * Risolve quando lo script gtag.js reale ha eseguito il proprio 'load'
+ * (non quando il tag <script> è semplicemente presente nel DOM): la sola
+ * presenza dell'elemento non prova che il runtime sia pronto a processare
+ * comandi accodati prima del suo caricamento. Se lo script esiste già ma
+ * non risulta ancora caricato (data-ga4-loaded), si aggancia ai suoi stessi
+ * eventi invece di iniettarne uno secondo. Un tag già fallito in precedenza
+ * (data-ga4-failed) non riceverà mai più un secondo 'load'/'error' dal
+ * browser: va rimosso e ricreato da zero per permettere un retry reale.
+ */
+function injectGa4Script(measurementId: string): Promise<void> {
+  const existing = document.getElementById(
+    GA4_SCRIPT_ID,
+  ) as HTMLScriptElement | null
+
+  if (existing && existing.dataset.ga4Failed !== "true") {
+    if (existing.dataset.ga4Loaded === "true") {
+      return Promise.resolve()
+    }
+
+    return new Promise((resolve, reject) => {
+      existing.addEventListener("load", () => resolve(), { once: true })
+      existing.addEventListener(
+        "error",
+        () => reject(new Error("GA4 script failed to load")),
+        { once: true },
+      )
+    })
   }
 
-  const script = document.createElement("script")
+  existing?.remove()
 
-  script.id = GA4_SCRIPT_ID
-  script.async = true
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script")
 
-  document.head.appendChild(script)
+    script.id = GA4_SCRIPT_ID
+    script.async = true
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`
+
+    script.onload = () => {
+      script.dataset.ga4Loaded = "true"
+      resolve()
+    }
+    script.onerror = () => {
+      script.dataset.ga4Failed = "true"
+      reject(new Error("GA4 script failed to load"))
+    }
+
+    document.head.appendChild(script)
+  })
 }
 
-let ga4Activated = false
+let ga4ActivationPromise: Promise<void> | null = null
 
 /**
  * Bootstrap GA4 una sola volta per sessione di pagina — va chiamata solo
@@ -81,19 +119,22 @@ let ga4Activated = false
  * script viene creato, nessun window.gtag esiste, nessuna proprietà
  * ga-disable viene creata. Ordine fisso richiesto da Consent Mode v2, mai
  * invertito: ga-disable a false, stub gtag, consenso default (tutto
- * denied), update con lo stato reale, script gtag.js, gtag('js', ...),
- * gtag('config', ...). Chiamate successive sono no-op: l'attivazione non si
- * ripete mai nella stessa pagina.
+ * denied), update con lo stato reale, script gtag.js. gtag('js', ...) e
+ * gtag('config', ...) partono SOLO dopo il vero caricamento dello script
+ * (mai in coda prima del load): accodarli prima non garantisce che gtag.js
+ * li elabori nella pagina reale, a differenza dello snippet ufficiale
+ * testato in isolamento. Chiamate concorrenti/successive condividono la
+ * stessa Promise: mai un secondo script, mai una seconda js/config. Se lo
+ * script fallisce il caricamento, la Promise viene rifiutata e lo stato di
+ * attivazione azzerato, cosí un tentativo successivo può ripartire da zero.
  */
 export function activateGa4(
   measurementId: string,
   preferences: CookieConsentPreferences,
-): void {
-  if (ga4Activated) {
-    return
+): Promise<void> {
+  if (ga4ActivationPromise) {
+    return ga4ActivationPromise
   }
-
-  ga4Activated = true
 
   setGaDisableFlag(measurementId, false)
 
@@ -102,14 +143,21 @@ export function activateGa4(
   gtag("consent", "default", DEFAULT_DENIED_GOOGLE_CONSENT_STATE)
   gtag("consent", "update", toGoogleConsentState(preferences))
 
-  injectGa4Script(measurementId)
+  ga4ActivationPromise = injectGa4Script(measurementId)
+    .then(() => {
+      gtag("js", new Date())
+      gtag("config", measurementId, { send_page_view: false })
+    })
+    .catch((error: unknown) => {
+      ga4ActivationPromise = null
+      throw error
+    })
 
-  gtag("js", new Date())
-  gtag("config", measurementId, { send_page_view: false })
+  return ga4ActivationPromise
 }
 
 export function isGa4Activated(): boolean {
-  return ga4Activated
+  return ga4ActivationPromise !== null
 }
 
 /**
@@ -132,7 +180,7 @@ export function updateGa4Consent(
   measurementId: string,
   preferences: CookieConsentPreferences,
 ): void {
-  if (!ga4Activated) {
+  if (!ga4ActivationPromise) {
     return
   }
 
@@ -155,7 +203,7 @@ export function updateGa4Consent(
  * window.location.href, mai query string, mai hash, mai token.
  */
 export function sendGa4PageView(pathname: string): void {
-  if (!ga4Activated) {
+  if (!ga4ActivationPromise) {
     return
   }
 
@@ -184,17 +232,25 @@ export type TrackGenerateLeadParams = {
 /**
  * generate_lead per una richiesta cliente realmente acquisita (transazione
  * committata). No-op silenzioso — mai un throw — se: measurementId assente,
- * GA4 mai attivato in questa pagina, window.gtag assente, consenso analytics
- * non concesso nelle preferenze CORRENTI (rilette qui, non cache di stato
- * React: un utente può aver revocato dopo l'attivazione), o
- * ga-disable-<id> === true. Nessun requestId/requestCode/dato cliente in
- * ingresso: la firma accetta solo i due slug tassonomici.
+ * GA4 mai attivato in questa pagina, script mai caricato con successo
+ * (attende la stessa Promise di activateGa4: mai un generate_lead prima di
+ * js/config), window.gtag assente, consenso analytics non concesso nelle
+ * preferenze CORRENTI (rilette qui, non cache di stato React: un utente può
+ * aver revocato dopo l'attivazione), o ga-disable-<id> === true. Nessun
+ * requestId/requestCode/dato cliente in ingresso: la firma accetta solo i
+ * due slug tassonomici.
  */
-export function trackGenerateLead(
+export async function trackGenerateLead(
   measurementId: string,
   params: TrackGenerateLeadParams,
-): void {
-  if (!ga4Activated) {
+): Promise<void> {
+  if (!ga4ActivationPromise) {
+    return
+  }
+
+  try {
+    await ga4ActivationPromise
+  } catch {
     return
   }
 
