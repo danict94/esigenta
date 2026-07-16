@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<title>GA4 Replica Diagnostic (ga4.ts verbatim)</title>
+<style>
+  body { font-family: monospace; max-width: 760px; margin: 40px auto; padding: 0 16px; }
+  button { font-size: 16px; padding: 10px 16px; cursor: pointer; }
+  #log { white-space: pre-wrap; word-break: break-word; background: #111; color: #0f0; padding: 12px; margin-top: 20px; min-height: 200px; font-size: 12px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <h1>GA4 Replica Diagnostic — G-TWH30WBSXF</h1>
+  <p>
+    Replica verbatim della logica di <code>ga4.ts</code> (ensureGtagStub, setGaDisableFlag,
+    injectGa4Script, activateGa4, toGoogleConsentState) fuori da React/Next.
+    Nessuna correzione, nessun onload usato per avviare config/js, nessun setTimeout.
+  </p>
+  <button id="run-btn">Simula activateGa4 (replica ga4.ts)</button>
+  <div id="log"></div>
+
+  <script>
+  (function () {
+    // Identico a ga4.ts:10
+    var GA4_SCRIPT_ID = "esigenta-ga4-gtag";
+    var MEASUREMENT_ID = "G-TWH30WBSXF";
+
+    var ga4Activated = false; // replica di ga4.ts:76 (module-level let ga4Activated = false)
+    var activateCallCount = 0;
+
+    var logEl;
+
+    function nowTs() {
+      return new Date().toISOString().split("T")[1].replace("Z", "");
+    }
+
+    function dumpDataLayer() {
+      if (!window.dataLayer) return "(dataLayer non esiste)";
+      try {
+        return JSON.stringify(window.dataLayer.map(function (entry) {
+          return Array.prototype.slice.call(entry);
+        }));
+      } catch (e) {
+        return "(errore serializzazione: " + e.message + ")";
+      }
+    }
+
+    function log(msg) {
+      var line = "[" + nowTs() + "] " + msg;
+      if (window.console) console.log(line);
+      if (logEl) logEl.textContent += line + "\n";
+    }
+
+    window.addEventListener("error", function (event) {
+      log("ERRORE GLOBALE: " + event.message + " (" + event.filename + ":" + event.lineno + ":" + event.colno + ")");
+    });
+
+    // Replica esatta di ga4.ts:32-34 (setGaDisableFlag)
+    function setGaDisableFlag(measurementId, disabled) {
+      window["ga-disable-" + measurementId] = disabled;
+    }
+
+    // Replica esatta di ga4.ts:46-60 (ensureGtagStub).
+    // NOTA: dataLayer.push(args) dove args e' un vero Array (equivalente a ...args
+    // in ES5 tramite Array.prototype.slice.call(arguments)), non dataLayer.push(arguments).
+    // Questo e' IL COMPORTAMENTO REALE del codice in produzione, non corretto qui di proposito.
+    function ensureGtagStub() {
+      window.dataLayer = window.dataLayer || [];
+      if (!window.gtag) {
+        var dataLayer = window.dataLayer;
+        window.gtag = function gtag() {
+          var args = Array.prototype.slice.call(arguments);
+          dataLayer.push(args);
+        };
+      }
+      return window.gtag;
+    }
+
+    // Replica esatta di google-consent.ts:12-17
+    var DEFAULT_DENIED_GOOGLE_CONSENT_STATE = {
+      analytics_storage: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied"
+    };
+
+    // Replica esatta di google-consent.ts:26-39
+    function toGoogleConsentState(preferences) {
+      var adSignal = preferences.marketing ? "granted" : "denied";
+      return {
+        analytics_storage: preferences.analytics ? "granted" : "denied",
+        ad_storage: adSignal,
+        ad_user_data: adSignal,
+        ad_personalization: adSignal
+      };
+    }
+
+    // Replica esatta di ga4.ts:62-74 (injectGa4Script).
+    // onload/onerror qui sono SOLO osservazione per il log: non avviano js/config,
+    // esattamente come richiesto (nel codice reale lo script non ha nessun handler onload).
+    function injectGa4Script(measurementId) {
+      var existing = document.getElementById(GA4_SCRIPT_ID);
+      log("injectGa4Script: script gia' presente in DOM? " + (existing ? "si" : "no") + " (id=" + GA4_SCRIPT_ID + ")");
+
+      if (existing) {
+        log("injectGa4Script: skip appendChild (early return, replica di ga4.ts:63-65)");
+        return;
+      }
+
+      var script = document.createElement("script");
+      script.id = GA4_SCRIPT_ID;
+      script.async = true;
+      script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(measurementId);
+
+      script.onload = function () {
+        log("OSSERVAZIONE (non usata per avviare nulla): script.onload sparato a " + nowTs() + " per " + GA4_SCRIPT_ID);
+      };
+      script.onerror = function () {
+        log("OSSERVAZIONE: script.onerror sparato per " + GA4_SCRIPT_ID);
+      };
+
+      log("injectGa4Script: script creato — src=" + script.src + " async=" + script.async + " id=" + script.id);
+
+      document.head.appendChild(script);
+      log("injectGa4Script: appendChild(document.head) eseguito al momento " + nowTs());
+    }
+
+    // Replica esatta di ga4.ts:88-109 (activateGa4).
+    // gtag('js', ...) e gtag('config', ...) vengono chiamati SUBITO dopo
+    // injectGa4Script, senza attendere onload — esattamente come nel codice reale.
+    function activateGa4(measurementId, preferences) {
+      activateCallCount++;
+      log("=== activateGa4 invocata (simulazione #" + activateCallCount + ") ===");
+
+      if (ga4Activated) {
+        log("activateGa4: ga4Activated gia' true -> no-op (replica del guard di ga4.ts:92-94)");
+        return;
+      }
+      ga4Activated = true;
+
+      log("dataLayer PRIMA di setGaDisableFlag: " + dumpDataLayer());
+
+      setGaDisableFlag(measurementId, false);
+      log("setGaDisableFlag(" + measurementId + ", false) eseguito. window['ga-disable-" + measurementId + "'] = " + window["ga-disable-" + measurementId]);
+
+      var gtag = ensureGtagStub();
+      log("ensureGtagStub eseguito. typeof window.gtag = " + typeof window.gtag);
+
+      gtag("consent", "default", DEFAULT_DENIED_GOOGLE_CONSENT_STATE);
+      log("gtag('consent','default', " + JSON.stringify(DEFAULT_DENIED_GOOGLE_CONSENT_STATE) + ") inviato.");
+      log("dataLayer ora: " + dumpDataLayer());
+
+      var consentUpdate = toGoogleConsentState(preferences);
+      gtag("consent", "update", consentUpdate);
+      log("gtag('consent','update', " + JSON.stringify(consentUpdate) + ") inviato.");
+      log("dataLayer ora: " + dumpDataLayer());
+
+      injectGa4Script(measurementId);
+
+      gtag("js", new Date());
+      log("gtag('js', new Date()) inviato SUBITO (nessuna attesa onload, nessun setTimeout).");
+      log("dataLayer ora: " + dumpDataLayer());
+
+      gtag("config", measurementId, { send_page_view: false });
+      log("gtag('config', '" + measurementId + "', {send_page_view:false}) inviato SUBITO.");
+      log("dataLayer ora: " + dumpDataLayer());
+
+      log("=== activateGa4 completata (simulazione #" + activateCallCount + ") ===");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      logEl = document.getElementById("log");
+      log("pagina pronta. script gia' in DOM? " + (document.getElementById(GA4_SCRIPT_ID) ? "si" : "no"));
+      log("window.gtag esiste? " + (typeof window.gtag) + " | window.dataLayer esiste? " + (window.dataLayer ? "si (" + window.dataLayer.length + " voci)" : "no"));
+
+      document.getElementById("run-btn").addEventListener("click", function () {
+        var preferences = { necessary: true, functional: false, analytics: true, marketing: false };
+        log("--- click pulsante (invocazione #" + (activateCallCount + 1) + ") — preferenze simulate: " + JSON.stringify(preferences) + " ---");
+
+        activateGa4(MEASUREMENT_ID, preferences);
+
+        // Replica del secondo punto di invio evento (analogo a sendGa4PageView /
+        // trackGenerateLead in ga4.ts:157-223), eseguito subito dopo l'attivazione,
+        // usando il gtag gia' definito su window.
+        window.gtag("event", "ga4_replica_diagnostic", {
+          send_to: MEASUREMENT_ID,
+          debug_mode: true,
+          page_location: location.href
+        });
+        log("gtag('event','ga4_replica_diagnostic', {send_to, debug_mode:true, page_location}) inviato.");
+        log("dataLayer finale: " + dumpDataLayer());
+        log("ga-disable-" + MEASUREMENT_ID + " = " + window["ga-disable-" + MEASUREMENT_ID]);
+        log("Controlla ora il pannello Network filtrato per 'collect'.");
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
