@@ -3,12 +3,10 @@ import { RequestFlowShell } from "./components/request-flow-shell";
 
 type RequestFlowPageProps = {
   interventionSlug: string;
-  query?: string;
 };
 
 export function RequestFlowPage({
   interventionSlug,
-  query,
 }: RequestFlowPageProps) {
   return (
     <PublicShell navbarVariant="funnel" showFooter={false}>
@@ -25,7 +23,7 @@ export function RequestFlowPage({
                 </p>
               </header>
 
-              <RequestFlowShell interventionSlug={interventionSlug} query={query} />
+              <RequestFlowShell interventionSlug={interventionSlug} />
             </div>
           </div>
         </section>

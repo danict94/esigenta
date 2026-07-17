@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
+import { storeFunnelQuery } from "../../richiesta/flow/components/resolve-funnel-query";
 import {
   preloadedResults,
   scatterTags,
@@ -125,14 +126,14 @@ export function HomeHero() {
   }
 
   function goToResult(result: SearchResult) {
-    const params = new URLSearchParams();
-
+    // Il testo libero non deve mai finire nella query string dell'URL: passa
+    // per sessionStorage (per-scheda, letto una sola volta dal funnel), mai
+    // come ?q= visibile o conservato dal browser.
     if (trimmedQuery) {
-      params.set("q", trimmedQuery);
+      storeFunnelQuery(result.slug, trimmedQuery);
     }
 
-    const qs = params.toString();
-    router.push(`/richiesta/${encodeURIComponent(result.slug)}${qs ? `?${qs}` : ""}`);
+    router.push(`/richiesta/${encodeURIComponent(result.slug)}`);
   }
 
   function focusSearchInput() {

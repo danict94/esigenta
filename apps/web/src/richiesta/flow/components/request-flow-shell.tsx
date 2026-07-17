@@ -3,24 +3,26 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { resolveFunnelQuery } from "./resolve-funnel-query";
 import { RequestStepper } from "./request-stepper";
 
 import type { JsonRuntimeFunnelPayload } from "./request-stepper";
 
 type RequestFlowShellProps = {
   interventionSlug: string;
-  query?: string;
 };
 
 export function RequestFlowShell({
   interventionSlug,
-  query,
 }: RequestFlowShellProps) {
   const router = useRouter();
   const [runtimePayload, setRuntimePayload] =
     useState<JsonRuntimeFunnelPayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [resolvedQuery] = useState<string | undefined>(() =>
+    resolveFunnelQuery(interventionSlug),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -37,7 +39,7 @@ export function RequestFlowShell({
           },
           body: JSON.stringify({
             interventionSlug,
-            query,
+            query: resolvedQuery,
           }),
         });
 
@@ -68,7 +70,7 @@ export function RequestFlowShell({
     return () => {
       cancelled = true;
     };
-  }, [interventionSlug, query]);
+  }, [interventionSlug, resolvedQuery]);
 
   if (isLoading) {
     return (
