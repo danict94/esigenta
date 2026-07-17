@@ -11,8 +11,6 @@ export function RequestFlowPage({
   return (
     <PublicShell navbarVariant="funnel" showFooter={false}>
       <div className="eg-page eg-page-bg">
-        <div className="eg-thread" aria-hidden="true" />
-
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+44px)]">
           <div className="eg-container">
             <div className="mx-auto w-full max-w-[980px]">

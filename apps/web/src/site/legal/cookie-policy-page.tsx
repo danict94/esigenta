@@ -40,8 +40,6 @@ export function CookiePolicyPage() {
   return (
     <PublicShell>
       <div className="eg-page eg-page-bg">
-        <div className="eg-thread" aria-hidden="true" />
-
         <article className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className="eg-container">
             <header className="mx-auto max-w-[760px] text-center">

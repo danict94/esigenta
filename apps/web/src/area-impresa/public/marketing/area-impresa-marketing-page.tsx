@@ -50,7 +50,6 @@ export async function AreaImpresaMarketingPage() {
     <PublicShell hero={<ProHeader />} showFooter={false}>
       <div className="eg-page eg-page-bg">
         <Grain />
-        <div className="eg-thread" aria-hidden="true" />
 
         <ProHero />
         <ProSelector

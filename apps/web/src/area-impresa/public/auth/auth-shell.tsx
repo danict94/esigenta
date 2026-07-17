@@ -15,7 +15,6 @@ export function AuthShell({ children, size = "sm" }: AuthShellProps) {
     <PublicShell>
       <div className="eg-page eg-page-bg">
         <Grain />
-        <div className="eg-thread" aria-hidden="true" />
 
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className={`eg-container mx-auto ${widthClass}`}>

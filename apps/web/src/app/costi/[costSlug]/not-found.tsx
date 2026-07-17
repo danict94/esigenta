@@ -6,8 +6,6 @@ export default function CostGuideNotFound() {
   return (
     <PublicShell>
       <div className="eg-page eg-page-bg">
-        <div className="eg-thread" aria-hidden="true" />
-
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className="eg-container-narrow text-center">
             <p className="eg-eyebrow">Guide ai costi</p>

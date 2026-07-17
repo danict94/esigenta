@@ -36,8 +36,6 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <div className="eg-page eg-page-bg">
-        <div className="eg-thread" aria-hidden="true" />
-
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className="eg-container-narrow text-center">
             <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">

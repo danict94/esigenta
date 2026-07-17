@@ -74,8 +74,6 @@ export function InterventionLandingPage({
       ) : null}
 
       <div className="eg-page eg-page-bg">
-        <div className="eg-thread" aria-hidden="true" />
-
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className="eg-container">
             <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
