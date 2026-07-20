@@ -66,7 +66,7 @@ export function RelatedFunnelWork({
               <span
                 aria-hidden="true"
                 data-nosnippet=""
-                className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark"
+                className="eg-list-index"
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
@@ -74,7 +74,7 @@ export function RelatedFunnelWork({
               <span>
                 <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">{item.label}</span>
               </span>
-              <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Richiedi &rarr;</span>
+              <span className="eg-list-status justify-self-end whitespace-nowrap max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Richiedi &rarr;</span>
             </Link>
           </li>
         ))}

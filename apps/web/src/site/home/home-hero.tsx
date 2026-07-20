@@ -179,11 +179,11 @@ export function HomeHero() {
       className="relative z-10 flex h-screen min-h-[680px] items-center justify-center bg-eg-calce"
       aria-labelledby="home-title"
     >
-      <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden opacity-70 min-[861px]:opacity-100" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden opacity-70 font-(family-name:--eg-font-ui) min-[861px]:opacity-100" aria-hidden="true">
         {scatterTags.map((tag) => (
           <span
             key={tag.label}
-            className="absolute left-1/2 top-[47%] border border-eg-hairline bg-transparent px-2.5 py-[7px] font-mono text-[10px] uppercase tracking-[0.1em] text-eg-ardesia will-change-transform [animation:eg-home-settle_1100ms_cubic-bezier(0.65,0,0.15,1)_both,eg-home-tag-float_7600ms_ease-in-out_infinite] [animation-delay:var(--delay,0ms),calc(var(--delay,0ms)+1100ms)] [transform:translate(var(--dx),var(--dy))_rotate(var(--dr))] min-[861px]:px-3 min-[861px]:py-2 min-[861px]:text-xs"
+            className="absolute left-1/2 top-[47%] border border-eg-hairline bg-transparent px-2.5 py-[7px] text-[10px] uppercase tracking-[0.1em] text-eg-ardesia will-change-transform [animation:eg-home-settle_1100ms_cubic-bezier(0.65,0,0.15,1)_both,eg-home-tag-float_7600ms_ease-in-out_infinite] [animation-delay:var(--delay,0ms),calc(var(--delay,0ms)+1100ms)] [transform:translate(var(--dx),var(--dy))_rotate(var(--dr))] min-[861px]:px-3 min-[861px]:py-2 min-[861px]:text-xs"
             style={
               {
                 "--dx": tag.dx,
@@ -214,7 +214,7 @@ export function HomeHero() {
         </p>
 
         <div ref={searchRef} className="relative z-[4] mt-[38px] inline-block w-[min(100%,42ch)] max-[860px]:w-[min(100%,200px)]">
-          <p className="eg-mono-label mb-3">Di cosa hai bisogno?</p>
+          <p className="eg-form-eyebrow mb-3">Di cosa hai bisogno?</p>
           <form
             className="inline-flex w-[min(100%,42ch)] items-center gap-3.5 border-b-[1.5px] border-eg-terra bg-transparent pb-2.5 max-[860px]:w-[min(100%,200px)] max-[860px]:gap-2.5"
             onSubmit={(event) => {
@@ -251,7 +251,7 @@ export function HomeHero() {
             />
             <button
               type="submit"
-              className="shrink-0 border-0 bg-transparent font-mono text-[13px] font-medium uppercase tracking-[0.16em] text-eg-cotto-dark transition-colors hover:text-eg-cotto max-[860px]:text-[11px] max-[860px]:tracking-[0.12em]"
+              className="shrink-0 border-0 bg-transparent font-(family-name:--eg-font-ui) text-[13px] font-medium uppercase tracking-[0.16em] text-eg-cotto-dark transition-colors hover:text-eg-cotto max-[860px]:text-[11px] max-[860px]:tracking-[0.12em]"
             >
               CERCA <span aria-hidden="true">&rarr;</span>
             </button>
@@ -292,7 +292,7 @@ export function HomeHero() {
 
       <a
         href="#processo"
-        className="absolute bottom-8 left-1/2 z-[3] inline-flex -translate-x-1/2 flex-col items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-eg-ardesia-2 after:block after:h-[34px] after:w-px after:bg-eg-ardesia-2 after:content-[''] after:[animation:eg-home-drip_1500ms_ease-in-out_infinite]"
+        className="absolute bottom-8 left-1/2 z-[3] inline-flex -translate-x-1/2 flex-col items-center gap-2.5 font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.14em] text-eg-ardesia-2 after:block after:h-[34px] after:w-px after:bg-eg-ardesia-2 after:content-[''] after:[animation:eg-home-drip_1500ms_ease-in-out_infinite]"
       >
         Scorri
       </a>

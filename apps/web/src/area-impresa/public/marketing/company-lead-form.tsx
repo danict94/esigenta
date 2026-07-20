@@ -74,14 +74,14 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="border border-eg-hairline bg-eg-calce-2">
-      <div className="flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.1em] text-eg-ardesia">
+      <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5">
         <span>Configura il tuo profilo</span>
         <span>2 passi</span>
       </div>
 
       <div className="px-[26px] py-7 max-[860px]:px-5">
         <fieldset>
-          <legend className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.04em] text-eg-cotto-dark">
+          <legend className="eg-step-label flex items-center gap-2">
             <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-cotto-dark text-[10px]">
               1
             </span>
@@ -125,7 +125,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
         <div className="mt-7">
           <label
             htmlFor="company-city"
-            className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.04em] text-eg-cotto-dark"
+            className="eg-step-label flex items-center gap-2"
           >
             <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-cotto-dark text-[10px]">
               2
@@ -152,12 +152,12 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
             />
           </div>
 
-          <div className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Citta popolari">
+          <div className="mt-2.5 flex flex-wrap gap-1.5 font-(family-name:--eg-font-ui)" aria-label="Citta popolari">
             {popularCityQueries.map((city) => (
               <button
                 key={city}
                 type="button"
-                className="rounded-full border border-eg-hairline px-2.5 py-1 font-mono text-[11px] text-eg-ardesia transition-colors hover:border-eg-terra hover:text-eg-terra"
+                className="rounded-full border border-eg-hairline px-2.5 py-1 text-[11px] text-eg-ardesia transition-colors hover:border-eg-terra hover:text-eg-terra"
                 aria-label={`Usa ${city} come ricerca`}
                 onClick={() => {
                   handleCityShortcut(city);
@@ -182,15 +182,15 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
         <div className="flex flex-wrap items-center justify-between gap-5 px-[26px] py-6 max-[860px]:px-5">
           <p className="max-w-[46ch] text-base leading-[1.5] text-eg-terra">
             Profilo per{" "}
-            <b className="font-mono text-[21px] font-medium text-eg-cotto-dark">
+            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-cotto-dark">
               {selectedCategory?.name ?? "-"}
             </b>{" "}
             in{" "}
-            <b className="font-mono text-[21px] font-medium text-eg-cotto-dark">
+            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-cotto-dark">
               {locationLabel ?? "-"}
             </b>
             . Completa l&apos;attivazione gratuita.
-            <span className="mt-1.5 block font-mono text-[13px] text-eg-salvia">
+            <span className="mt-1.5 block font-(family-name:--eg-font-ui) text-[13px] text-eg-salvia">
               Configuri tu zona e categorie nel profilo.
             </span>
           </p>

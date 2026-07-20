@@ -85,7 +85,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
               key={item.href}
               href={item.href}
               prefetch={false}
-              className="eg-link-mono whitespace-nowrap border-b border-eg-hairline px-[18px] py-4 last:border-b-0 min-[861px]:border-0 min-[861px]:p-0"
+              className="eg-nav-link whitespace-nowrap border-b border-eg-hairline px-[18px] py-4 last:border-b-0 min-[861px]:border-0 min-[861px]:p-0"
               onClick={() => setMenuOpen(false)}
             >
               {item.label}

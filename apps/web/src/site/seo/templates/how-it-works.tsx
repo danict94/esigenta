@@ -18,7 +18,7 @@ export function HowItWorks() {
       <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {processSteps.map((step) => (
           <li key={step.title} className="eg-panel p-5">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-eg-hairline font-mono text-xs uppercase tracking-[0.08em] text-eg-cotto-dark">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-eg-hairline font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.08em] text-eg-cotto-dark">
               {step.verified ? "✓" : step.marker}
             </span>
 

@@ -105,7 +105,7 @@ function DesktopNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "relative inline-flex items-center gap-2 py-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-eg-ardesia transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
+        "eg-shell-nav-link relative inline-flex items-center gap-2 py-2 transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
         isActive && "text-eg-terra",
       )}
     >
@@ -142,7 +142,7 @@ function MobileNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "flex items-center justify-between gap-3 px-2 py-3 font-mono text-xs font-medium uppercase tracking-[0.08em] text-eg-ardesia transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
+        "eg-shell-nav-link flex items-center justify-between gap-3 px-2 py-3 transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
         isActive && "text-eg-terra",
       )}
     >

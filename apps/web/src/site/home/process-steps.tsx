@@ -109,7 +109,7 @@ function StepMarker({
   return (
     <span
       className={[
-        "relative col-start-1 row-span-2 flex size-12 items-center justify-center justify-self-center rounded-full border border-eg-hairline bg-eg-terra font-mono text-sm font-medium tracking-[0.04em] text-eg-calce transition-[background-color,border-color,color,box-shadow] duration-[240ms] min-[861px]:col-start-auto min-[861px]:row-auto min-[861px]:size-[58px]",
+        "relative col-start-1 row-span-2 flex size-12 items-center justify-center justify-self-center rounded-full border border-eg-hairline bg-eg-terra font-(family-name:--eg-font-ui) text-sm font-medium tracking-[0.04em] text-eg-calce transition-[background-color,border-color,color,box-shadow] duration-[240ms] min-[861px]:col-start-auto min-[861px]:row-auto min-[861px]:size-[58px]",
         state === "active" ? "border-eg-cotto shadow-eg-elevation" : "",
         state === "past" ? "shadow-eg-elevation" : "",
         verified ? "border-eg-verde-conferma bg-eg-verde-conferma shadow-eg-elevation-lg" : "",

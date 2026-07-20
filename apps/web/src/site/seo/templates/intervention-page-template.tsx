@@ -78,7 +78,7 @@ export function InterventionLandingPage({
           <div className="eg-container">
             <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
               <div className="max-w-[720px] max-lg:max-w-none">
-                <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+                <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
                   <Link href="/" prefetch={false}>
                     Home
                   </Link>

@@ -23,8 +23,8 @@ export function KpiStrip({ items }: { items: KpiStripItem[] }) {
             <p
               className={
                 item.accent
-                  ? "font-mono text-[28px] font-medium leading-tight text-eg-cotto-dark"
-                  : "font-mono text-[28px] font-medium leading-tight text-eg-terra"
+                  ? "eg-kpi-value text-eg-cotto-dark"
+                  : "eg-kpi-value text-eg-terra"
               }
             >
               {item.value}

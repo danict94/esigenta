@@ -115,7 +115,7 @@ function Chip({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-[9px] py-1 font-mono text-[11px] leading-none",
+        "eg-chip-text inline-flex items-center rounded-full border px-[9px] py-1",
         tone === "accent"
           ? "border-eg-cotto/50 bg-eg-cotto-tint text-eg-cotto-dark"
           : "border-eg-hairline bg-eg-calce text-eg-ardesia",
@@ -188,7 +188,7 @@ export function RequestListCard({
             {title}
           </span>
 
-          <span className="shrink-0 whitespace-nowrap font-mono text-[11px] text-eg-ardesia-2">
+          <span className="eg-metadata shrink-0 whitespace-nowrap text-[11px]">
             {createdAt}
           </span>
         </div>
@@ -211,7 +211,7 @@ export function RequestListCard({
 
         <div className="flex items-center justify-between">
           {matchLabel ? (
-            <span className="inline-flex items-center gap-[7px] font-mono text-[11px] tracking-[0.04em] text-eg-ardesia">
+            <span className="eg-ui-muted inline-flex items-center gap-[7px] text-[11px] tracking-[0.04em]">
               <span
                 className="h-2 w-2 shrink-0 rounded-full bg-eg-cotto"
                 aria-hidden="true"
@@ -224,7 +224,7 @@ export function RequestListCard({
 
           <div className="relative z-20 flex items-center gap-4">
             {showInterestCount ? (
-              <span className="font-mono text-[11px] text-eg-ardesia-2">
+              <span className="eg-metadata text-[11px]">
                 {formatInterestCount({ maxUnlocks, unlockCount })}
               </span>
             ) : null}
@@ -237,7 +237,7 @@ export function RequestListCard({
                   value={id}
                   variant="ghost"
                   size="sm"
-                  className="h-auto min-h-0 gap-1 border-none p-0 font-mono text-[11px] normal-case tracking-normal text-eg-ardesia hover:bg-transparent hover:text-eg-cotto"
+                  className="eg-ui-muted h-auto min-h-0 gap-1 border-none p-0 text-[11px] normal-case tracking-normal hover:bg-transparent hover:text-eg-cotto"
                   pendingChildren={
                     <>
                       <Bookmark className="size-3.5" aria-hidden="true" />

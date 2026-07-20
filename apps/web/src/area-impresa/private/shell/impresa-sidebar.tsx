@@ -137,18 +137,18 @@ function CreditBalanceChip({
   onClick?: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-full border border-eg-hairline bg-eg-calce-2 py-[7px] pr-[7px] pl-4">
-      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-eg-ardesia">
+    <div className="flex items-center gap-2.5 rounded-full border border-eg-hairline bg-eg-calce-2 py-[7px] pr-[7px] pl-4 font-(family-name:--eg-font-ui)">
+      <span className="text-[10px] uppercase tracking-[0.08em] text-eg-ardesia">
         Credito
       </span>
-      <span className="font-mono text-base font-medium text-eg-terra">
+      <span className="text-base font-medium text-eg-terra">
         {balance}
       </span>
       <Link
         href="/area-impresa/crediti"
         onClick={onClick}
         prefetch={false}
-        className="rounded-full bg-eg-terra px-[13px] py-[7px] font-mono text-[11px] text-eg-calce transition-colors hover:bg-eg-cotto-dark"
+        className="rounded-full bg-eg-terra px-[13px] py-[7px] text-[11px] text-eg-calce transition-colors hover:bg-eg-cotto-dark"
       >
         Ricarica
       </Link>

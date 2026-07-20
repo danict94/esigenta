@@ -70,7 +70,7 @@ export function CookiePolicyPage() {
                 {cookieCategories.map((category) => (
                   <section key={category.title} className="eg-panel p-6">
                     <h2 className="eg-h3">{category.title}</h2>
-                    <p className="eg-mono-label mt-3">{category.status}</p>
+                    <p className="eg-status-label mt-3">{category.status}</p>
                     <p className="eg-body-muted mt-3">{category.description}</p>
                   </section>
                 ))}
@@ -132,7 +132,7 @@ export function CookiePolicyPage() {
                   terzi, categorie di cookie, finalita o strumenti di
                   tracciamento.
                 </p>
-                <p className="eg-mono-label mt-4">
+                <p className="eg-doc-meta mt-4">
                   Ultimo aggiornamento: {legalProfile.lastUpdated}
                 </p>
               </section>

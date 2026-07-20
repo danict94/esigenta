@@ -357,7 +357,7 @@ export async function CustomerRequestDetailPage({
           <div className="eg-container">
             <div className="mx-auto max-w-[860px]">
               <div>
-                <Link href={historyHref} className="eg-link-mono" prefetch={false}>
+                <Link href={historyHref} className="eg-action-link" prefetch={false}>
                   Torna allo storico richieste
                 </Link>
 
@@ -453,7 +453,7 @@ function DetailItem({
         .filter(Boolean)
         .join(" ")}
     >
-      <dt className="eg-mono-label">{label}</dt>
+      <dt className="eg-eyebrow">{label}</dt>
       <dd className="mt-2 text-eg-terra">{value}</dd>
     </div>
   );

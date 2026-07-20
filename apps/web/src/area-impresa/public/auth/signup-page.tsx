@@ -59,7 +59,7 @@ export async function AreaImpresaSignupPage({
 
         {activity || locationLabel ? (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-eg-hairline py-4">
-            <span className="eg-mono-label text-[11px]">Ti iscrivi per</span>
+            <span className="eg-eyebrow text-[11px]">Ti iscrivi per</span>
 
             {activity ? (
               <span className="text-[14px] font-medium text-eg-terra">
@@ -84,7 +84,7 @@ export async function AreaImpresaSignupPage({
 
         <Link
           href="/area-impresa"
-          className="eg-link-mono inline-flex w-fit items-center gap-2"
+          className="eg-action-link inline-flex w-fit items-center gap-2"
         >
           <span aria-hidden="true">&larr;</span> Torna alla pagina professionisti
         </Link>

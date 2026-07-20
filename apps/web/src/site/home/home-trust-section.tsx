@@ -61,7 +61,7 @@ export function HomeTrustSection() {
             </Link>
           </p>
 
-          <Link href="/privacy" prefetch={false} className="eg-link-mono shrink-0">
+          <Link href="/privacy" prefetch={false} className="eg-action-link shrink-0">
             Come trattiamo i tuoi dati <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>

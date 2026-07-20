@@ -26,12 +26,12 @@ export function ProFinalCta() {
         <Link href="#inizia" className="eg-button-primary mt-8">
           Crea il profilo professionista <span aria-hidden="true">&rarr;</span>
         </Link>
-        <small className="mt-[18px] block font-mono text-[11.5px] text-eg-ardesia-2">
+        <small className="mt-[18px] block font-(family-name:--eg-font-ui) text-[11.5px] text-eg-ardesia-2">
           Registrazione gratuita &middot; Verifica P.IVA &middot; Credito solo quando vuoi
         </small>
       </section>
 
-      <footer className="relative z-[2] flex justify-between gap-6 border-t border-eg-hairline px-12 py-[34px] font-mono text-[11.5px] uppercase tracking-[0.08em] text-eg-ardesia-2 max-[860px]:flex-col max-[860px]:px-[22px]">
+      <footer className="relative z-[2] flex justify-between gap-6 border-t border-eg-hairline px-12 py-[34px] font-(family-name:--eg-font-ui) text-[11.5px] uppercase tracking-[0.08em] text-eg-ardesia-2 max-[860px]:flex-col max-[860px]:px-[22px]">
         <span>&copy; 2026 Esigenta / Pro</span>
         <span>Il lavoro giusto, gia organizzato</span>
       </footer>

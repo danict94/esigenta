@@ -389,7 +389,7 @@ export function RequestStepUI({
 
       <div>
         <div className="w-full border border-eg-hairline bg-eg-calce-2 px-4 py-3 sm:w-fit sm:max-w-full">
-          <p className="eg-mono-label">Intervento selezionato</p>
+          <p className="eg-eyebrow">Intervento selezionato</p>
           <p className="mt-1 break-words text-sm font-medium leading-6 text-eg-terra">
             {selectedInterventionName}
           </p>

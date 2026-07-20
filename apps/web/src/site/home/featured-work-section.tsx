@@ -31,7 +31,7 @@ export function FeaturedWorkSection() {
       <div className="border-t border-eg-hairline">
         <div className="eg-container-narrow flex flex-col items-center gap-2 py-10 text-center min-[861px]:flex-row min-[861px]:justify-between min-[861px]:gap-6 min-[861px]:py-8 min-[861px]:text-left">
           <p className="eg-body-muted">Non trovi il lavoro che ti serve tra questi?</p>
-          <Link href="/servizi" prefetch={false} className="eg-link-mono shrink-0">
+          <Link href="/servizi" prefetch={false} className="eg-action-link shrink-0">
             Scopri tutti i servizi <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
@@ -103,12 +103,12 @@ function WorkRow({ work }: { work: FeaturedWork }) {
       </div>
 
       <div className={["flex flex-col justify-center px-[26px] py-9 min-[861px]:px-16 min-[861px]:py-[72px]", work.reverse ? "min-[861px]:order-1" : ""].filter(Boolean).join(" ")}>
-        <p className="eg-mono-label">{work.idx}</p>
+        <p className="eg-eyebrow">{work.idx}</p>
         <h3 className="mt-5 text-[clamp(26px,3vw,38px)] font-medium leading-[1.12] tracking-[-0.01em]">
           {work.title}
         </h3>
         <p className="eg-body-muted mt-5 max-w-[42ch]">{work.description}</p>
-        <Link href={work.href} prefetch={false} className="eg-link-mono mt-8">
+        <Link href={work.href} prefetch={false} className="eg-action-link mt-8">
           {work.cta} <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>

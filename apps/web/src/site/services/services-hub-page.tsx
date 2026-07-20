@@ -21,7 +21,7 @@ export function ServicesHubPage() {
       <div className="eg-page eg-page-bg">
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]" aria-labelledby="services-title">
           <div className="eg-container-narrow text-center">
-            <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+            <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
               <Link href="/" prefetch={false}>
                 Home
               </Link>
@@ -111,19 +111,19 @@ export function ServicesHubPage() {
         <section className="border-y border-eg-hairline bg-eg-calce" aria-label="Sintesi catalogo servizi">
           <div className="eg-container grid grid-cols-2 md:grid-cols-4">
             <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
-              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">{groupServices.length}</p>
+              <p className="eg-stat-value">{groupServices.length}</p>
               <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Ambiti di lavoro raccolti dalla taxonomy</p>
             </div>
             <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
-              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">{interventionCount}</p>
+              <p className="eg-stat-value">{interventionCount}</p>
               <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Interventi disponibili dentro i funnel</p>
             </div>
             <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
-              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">1</p>
+              <p className="eg-stat-value">1</p>
               <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Metodo unico, dalla richiesta alla scelta</p>
             </div>
             <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
-              <p className="font-mono text-[26px] tracking-[0.02em] text-eg-cotto-dark">0</p>
+              <p className="eg-stat-value">0</p>
               <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Percorsi finti o link verso pagine non pronte</p>
             </div>
           </div>
@@ -146,7 +146,7 @@ function GroupServiceRow({
 }) {
   const rowContent = (
     <>
-      <span aria-hidden="true" data-nosnippet="" className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark">{String(index).padStart(2, "0")}</span>
+      <span aria-hidden="true" data-nosnippet="" className="eg-list-index">{String(index).padStart(2, "0")}</span>
       {" "}
       <div>
         <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em]">{name}</h3>
@@ -154,7 +154,7 @@ function GroupServiceRow({
           Ambito pronto per raccogliere richieste e dettagli del lavoro.
         </p>
       </div>
-      <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
+      <span className="eg-list-status justify-self-end whitespace-nowrap max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
         {href
           ? "Apri →"
           : `${interventionCount} ${interventionCount === 1 ? "intervento" : "interventi"}`}

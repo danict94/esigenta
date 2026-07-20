@@ -140,7 +140,7 @@ export function BusinessAccessTab({ heroBoundaryId }: BusinessAccessTabProps) {
           prefetch={false}
           tabIndex={visible ? 0 : -1}
           aria-label="Sei un professionista? Scopri l'area dedicata alle imprese"
-          className="eg-link-mono flex flex-col items-center gap-1 rounded-l-eg-lg border border-r-0 border-eg-hairline bg-eg-calce px-3 py-2.5 text-center text-eg-terra shadow-eg-elevation transition-colors hover:text-eg-cotto-dark"
+          className="eg-action-link flex flex-col items-center gap-1 rounded-l-eg-lg border border-r-0 border-eg-hairline bg-eg-calce px-3 py-2.5 text-center text-eg-terra shadow-eg-elevation transition-colors hover:text-eg-cotto-dark"
         >
           <Building2 className="size-4 shrink-0" aria-hidden="true" strokeWidth={1.75} />
           <span className="leading-tight tracking-normal">

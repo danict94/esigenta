@@ -22,7 +22,7 @@ export function CityCostGuidePage({
           <div className="eg-container">
             <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
               <div className="max-w-[720px] max-lg:max-w-none">
-                <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+                <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
                   <Link href="/" prefetch={false}>
                     Home
                   </Link>
@@ -182,7 +182,7 @@ export function CityCostGuidePage({
 function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div className="eg-panel p-5">
-      <p className="eg-mono-label">{label}</p>
+      <p className="eg-metric-label">{label}</p>
       <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">{value}</p>
     </div>
   );

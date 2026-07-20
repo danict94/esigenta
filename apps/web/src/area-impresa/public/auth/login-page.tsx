@@ -37,7 +37,7 @@ export async function AreaImpresaLoginPage({
 
         <div className="flex items-center gap-4 text-eg-ardesia">
           <span className="h-px flex-1 bg-eg-hairline" />
-          <span className="eg-mono-label text-[11px]">oppure</span>
+          <span className="eg-divider-label text-[11px]">oppure</span>
           <span className="h-px flex-1 bg-eg-hairline" />
         </div>
 

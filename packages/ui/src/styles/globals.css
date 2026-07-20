@@ -42,7 +42,6 @@
 
 @theme inline {
   --font-sans: var(--eg-font-brand);
-  --font-mono: var(--eg-font-ui);
 
   --color-eg-calce: var(--eg-calce);
   --color-eg-calce-2: var(--eg-calce-2);
@@ -150,8 +149,6 @@ body {
   }
 
   .eg-eyebrow,
-  .eg-mono-label,
-  .eg-link-mono,
   .eg-nav-link,
   .eg-action-link,
   .eg-divider-label,
@@ -188,7 +185,6 @@ body {
   }
 
   .eg-eyebrow,
-  .eg-mono-label,
   .eg-divider-label,
   .eg-metric-label,
   .eg-table-label,
@@ -281,7 +277,6 @@ body {
     color: var(--eg-calce);
   }
 
-  .eg-link-mono,
   .eg-nav-link,
   .eg-action-link {
     color: var(--eg-ardesia);
@@ -290,7 +285,6 @@ body {
     transition: color 220ms ease;
   }
 
-  .eg-link-mono:hover,
   .eg-action-link:hover,
   a.eg-nav-link:hover,
   .eg-nav-link a:hover {

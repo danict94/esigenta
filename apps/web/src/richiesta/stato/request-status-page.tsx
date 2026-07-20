@@ -242,7 +242,7 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="border border-eg-hairline bg-eg-calce p-3">
-      <dt className="eg-mono-label">{label}</dt>
+      <dt className="eg-eyebrow">{label}</dt>
       <dd className="mt-2 font-medium text-eg-terra">{value}</dd>
     </div>
   );

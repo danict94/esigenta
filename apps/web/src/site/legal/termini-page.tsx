@@ -129,7 +129,7 @@ export function TerminiPage() {
                   disponibili dati fiscali, ragione sociale, sede e condizioni
                   definitive dei pacchetti.
                 </p>
-                <p className="eg-mono-label mt-4">
+                <p className="eg-doc-meta mt-4">
                   Ultimo aggiornamento: {legalProfile.lastUpdated}
                 </p>
               </section>

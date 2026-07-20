@@ -63,7 +63,7 @@ export function RequestCard({
   return (
     <article className={cn("eg-panel bg-eg-calce", compact ? "p-4" : "p-5 md:p-6", className)}>
       <div className="flex items-center justify-between gap-3">
-        <span className="eg-mono-label text-[11px]">Esempio richiesta</span>
+        <span className="eg-eyebrow text-[11px]">Esempio richiesta</span>
 
         {badge ? (
           <span
@@ -118,7 +118,7 @@ export function RequestCard({
 
       <div className="mt-5 flex items-end justify-between gap-4 border-t border-eg-hairline pt-4">
         <div className="flex flex-col gap-2">
-          <span className="eg-mono-label text-[11px]">Sblocco</span>
+          <span className="eg-eyebrow text-[11px]">Sblocco</span>
           {seats ? (
             <SeatDots taken={seats.taken} total={seats.total} />
           ) : (

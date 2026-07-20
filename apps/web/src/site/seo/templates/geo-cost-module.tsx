@@ -63,7 +63,7 @@ export function GeoCostModule({
 
           {priceData ? (
             <div className="eg-panel mt-7 p-5">
-              <p className="eg-mono-label">Range indicativo</p>
+              <p className="eg-metric-label">Range indicativo</p>
 
               <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">
                 {priceData.priceRange}
@@ -100,21 +100,21 @@ export function GeoCostModule({
                     className="grid gap-4 px-5 py-5 text-sm leading-6 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]"
                   >
                     <div>
-                      <p className="eg-mono-label md:hidden">Voce</p>
+                      <p className="eg-table-label md:hidden">Voce</p>
                       <p className="mt-1 font-medium text-eg-terra md:mt-0">
                         {row.label}
                       </p>
                     </div>
 
                     <div>
-                      <p className="eg-mono-label md:hidden">Fascia</p>
+                      <p className="eg-table-label md:hidden">Fascia</p>
                       <p className="mt-1 font-medium text-eg-terra md:mt-0">
                         {row.range}
                       </p>
                     </div>
 
                     <div>
-                      <p className="eg-mono-label md:hidden">Note</p>
+                      <p className="eg-table-label md:hidden">Note</p>
                       <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
                     </div>
                   </div>

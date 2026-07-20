@@ -73,7 +73,7 @@ export function ProAdvantages() {
       <div className="grid grid-cols-2 gap-px border border-eg-hairline bg-eg-hairline max-[860px]:grid-cols-1">
         {advantages.map(({ index, title, body, badgeClassName, iconClassName, glyph: Glyph }) => (
           <article key={index} className="relative min-h-[200px] overflow-hidden bg-eg-calce px-[34px] py-[38px]">
-            <span className="absolute right-[34px] top-[30px] font-mono text-xs text-eg-ardesia-2">
+            <span className="eg-index-tag absolute right-[34px] top-[30px] text-xs">
               {index}
             </span>
             <div className={["mb-5 flex size-[34px] items-center justify-center rounded-full", badgeClassName].join(" ")}>

@@ -46,7 +46,7 @@ const footerGroups: readonly FooterGroup[] = [
 
 export function Footer() {
   return (
-    <footer className="relative z-[1] bg-eg-calce px-[22px] py-[30px] font-mono text-xs uppercase tracking-[0.08em] text-eg-ardesia-2 min-[861px]:px-12 min-[861px]:py-[34px]">
+    <footer className="eg-footer relative z-[1] bg-eg-calce px-[22px] py-[30px] min-[861px]:px-12 min-[861px]:py-[34px]">
       <div className="grid grid-cols-1 gap-8 min-[861px]:grid-cols-3 min-[861px]:gap-10">
         {footerGroups.map((group) => (
           <nav key={group.title} aria-label={group.title}>
@@ -57,7 +57,7 @@ export function Footer() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="eg-link-mono inline-block py-0.5"
+                    className="eg-nav-link inline-block py-0.5"
                   >
                     {link.label}
                   </Link>

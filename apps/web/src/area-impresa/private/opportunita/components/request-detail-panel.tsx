@@ -65,7 +65,7 @@ const MAX_PANEL_PHOTOS = 3;
 
 function Chip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-eg-hairline bg-eg-calce px-[9px] py-1 font-mono text-[11px] leading-none text-eg-ardesia">
+    <span className="inline-flex items-center rounded-full border border-eg-hairline bg-eg-calce px-[9px] py-1 font-(family-name:--eg-font-ui) text-[11px] leading-none text-eg-ardesia">
       {children}
     </span>
   );
@@ -83,7 +83,7 @@ function ActionButton({
     <button
       {...props}
       className={cn(
-        "flex-1 rounded-[2px] border px-3 py-3 text-center font-mono text-[11px] tracking-[0.02em] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+        "flex-1 rounded-[2px] border px-3 py-3 text-center font-(family-name:--eg-font-ui) text-[11px] tracking-[0.02em] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
         tone === "refund"
           ? "border-eg-cotto/40 bg-eg-calce text-eg-cotto-dark hover:bg-eg-cotto-tint"
           : "border-eg-hairline bg-eg-calce text-eg-terra hover:border-eg-terra",
@@ -179,7 +179,7 @@ export function RequestDetailPanel({
 
   return (
     <div className="px-8 pb-24 pt-[26px] min-[900px]:pb-[30px]">
-      <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-eg-cotto-dark">
+      <p className="font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.08em] text-eg-cotto-dark">
         {requestCode ? `Richiesta ${requestCode}` : "Richiesta"} &middot; {createdAt}
       </p>
 
@@ -246,7 +246,7 @@ export function RequestDetailPanel({
         <div className="mb-[26px] grid grid-cols-2 gap-4">
           {formDetails.slice(0, 6).map((detail) => (
             <div key={`${detail.label}-${detail.value}`}>
-              <p className="mb-[5px] font-mono text-[10px] uppercase tracking-[0.06em] text-eg-ardesia-2">
+              <p className="mb-[5px] font-(family-name:--eg-font-ui) text-[10px] uppercase tracking-[0.06em] text-eg-ardesia-2">
                 {detail.label}
               </p>
               <p className="text-[15px] font-medium text-eg-terra">
@@ -289,12 +289,12 @@ export function RequestDetailPanel({
                   <p className="truncate text-[15px] font-medium text-eg-terra">
                     {formatContactValue(customerContact?.phone)}
                   </p>
-                  <p className="font-mono text-[11px] text-eg-ardesia">telefono</p>
+                  <p className="eg-field-caption text-[11px]">telefono</p>
                 </div>
                 {customerContact?.phone ? (
                   <a
                     href={`tel:${customerContact.phone}`}
-                    className="ml-auto shrink-0 rounded-full border border-eg-hairline px-3 py-[7px] font-mono text-[11px] text-eg-cotto-dark transition-colors hover:border-eg-cotto"
+                    className="ml-auto shrink-0 rounded-full border border-eg-hairline px-3 py-[7px] font-(family-name:--eg-font-ui) text-[11px] text-eg-cotto-dark transition-colors hover:border-eg-cotto"
                   >
                     CHIAMA &rarr;
                   </a>
@@ -314,7 +314,7 @@ export function RequestDetailPanel({
                     >
                       {customerContact.email}
                     </a>
-                    <p className="font-mono text-[11px] text-eg-ardesia">email</p>
+                    <p className="eg-field-caption text-[11px]">email</p>
                   </div>
                 </div>
               ) : null}
@@ -385,7 +385,7 @@ export function RequestDetailPanel({
                   </p>
                   <Link
                     href="/area-impresa/crediti"
-                    className="inline-flex h-11 w-full items-center justify-center rounded-[2px] border border-eg-terra bg-eg-terra px-4 font-mono text-xs uppercase tracking-[0.06em] text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-[2px] border border-eg-terra bg-eg-terra px-4 font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.06em] text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
                     prefetch={false}
                   >
                     Acquista crediti

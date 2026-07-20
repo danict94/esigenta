@@ -38,7 +38,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
       <div className="eg-page eg-page-bg">
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className="eg-container-narrow text-center">
-            <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+            <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
               <Link href="/" prefetch={false}>
                 Home
               </Link>
@@ -116,7 +116,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
               <div className="grid gap-4">
                 {featured.costRange ? (
                   <div className="eg-panel p-5">
-                    <p className="eg-mono-label">Range indicativo</p>
+                    <p className="eg-metric-label">Range indicativo</p>
 
                     <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">
                       {featured.costRange}
@@ -262,7 +262,7 @@ function GroupInterventionRow({
       <span
         aria-hidden="true"
         data-nosnippet=""
-        className="pt-1.5 font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark"
+        className="eg-list-index pt-1.5"
       >
         {String(index).padStart(2, "0")}
       </span>
@@ -300,7 +300,7 @@ function GroupInterventionRow({
           <Link
             href={item.landingHref}
             prefetch={false}
-            className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 transition-colors hover:text-eg-cotto-dark"
+            className="eg-list-status whitespace-nowrap transition-colors hover:text-eg-cotto-dark"
           >
             Approfondisci &rarr;
           </Link>
@@ -309,7 +309,7 @@ function GroupInterventionRow({
         <Link
           href={item.requestHref}
           prefetch={false}
-          className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-cotto-dark transition-colors hover:text-eg-terra"
+          className="eg-list-status text-eg-cotto-dark whitespace-nowrap transition-colors hover:text-eg-terra"
         >
           Richiedi &rarr;
         </Link>

@@ -41,7 +41,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
         <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
           <div className="eg-container">
             <div className="mx-auto max-w-[760px] text-center">
-              <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+              <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
                 <Link href="/" prefetch={false}>
                   Home
                 </Link>
@@ -89,7 +89,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                             <span
                               aria-hidden="true"
                               data-nosnippet=""
-                              className="font-mono text-xs uppercase tracking-[0.12em] text-eg-cotto-dark"
+                              className="eg-list-index"
                             >
                               {String(index + 1).padStart(2, "0")}
                             </span>
@@ -104,7 +104,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                                 </span>
                               ) : null}
                             </span>
-                            <span className="justify-self-end whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
+                            <span className="eg-list-status justify-self-end whitespace-nowrap max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
                           </Link>
                         </li>
                       ))}

@@ -55,7 +55,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           <div className="eg-container">
             <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
               <div className="max-w-[720px] max-lg:max-w-none">
-                <nav aria-label="Breadcrumb" className="eg-link-mono mb-10">
+                <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
                   <Link href="/" prefetch={false}>
                     Home
                   </Link>
@@ -278,7 +278,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div className="eg-panel p-5">
-      <p className="eg-mono-label">{label}</p>
+      <p className="eg-metric-label">{label}</p>
       <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">{value}</p>
     </div>
   );
@@ -335,7 +335,7 @@ function PriceTable({
         {groups.map((group) => (
           <div key={group.category}>
             <div className="border-b border-eg-hairline bg-eg-terra/5 px-5 py-2.5">
-              <p className="eg-mono-label">{group.category}</p>
+              <p className="eg-table-label">{group.category}</p>
             </div>
 
             <div className="divide-y divide-eg-hairline">
@@ -364,38 +364,38 @@ function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
       className={`grid gap-4 px-5 py-5 text-sm leading-6 md:grid ${priceTableGridCols}`}
     >
       <div>
-        <p className="eg-mono-label md:hidden">Voce</p>
+        <p className="eg-table-label md:hidden">Voce</p>
         <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.label}</p>
       </div>
 
       <div>
-        <p className="eg-mono-label md:hidden">Unit&agrave;</p>
+        <p className="eg-table-label md:hidden">Unit&agrave;</p>
         <p className="mt-1 text-eg-ardesia md:mt-0">{row.unit ?? "—"}</p>
       </div>
 
       <div>
-        <p className="eg-mono-label md:hidden">Fascia</p>
+        <p className="eg-table-label md:hidden">Fascia</p>
         <p className="mt-1 font-medium text-eg-terra [font-variant-numeric:tabular-nums] md:mt-0">
           {row.range}
         </p>
       </div>
 
       <div>
-        <p className="eg-mono-label md:hidden">Note</p>
+        <p className="eg-table-label md:hidden">Note</p>
         <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
 
         {row.includes || row.excludes ? (
           <div className="mt-2 grid gap-1">
             {row.includes ? (
               <p className="text-[12.5px] leading-5 text-eg-ardesia">
-                <span className="eg-mono-label mr-1.5 text-eg-cotto-dark">Include</span>
+                <span className="eg-scope-tag mr-1.5 text-eg-cotto-dark">Include</span>
                 {row.includes}
               </p>
             ) : null}
 
             {row.excludes ? (
               <p className="text-[12.5px] leading-5 text-eg-ardesia">
-                <span className="eg-mono-label mr-1.5">Escluso</span>
+                <span className="eg-scope-tag mr-1.5">Escluso</span>
                 {row.excludes}
               </p>
             ) : null}

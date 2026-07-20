@@ -202,7 +202,7 @@ function ListHead({
     <div className="flex items-center justify-between border-b border-eg-hairline px-7 py-5">
       <h2 className="text-[17px] font-semibold text-eg-terra">{title}</h2>
       {count !== undefined ? (
-        <span className="font-mono text-[11px] text-eg-ardesia">
+        <span className="eg-metadata text-eg-ardesia text-[11px]">
           {count} {count === 1 ? "richiesta" : "richieste"}
         </span>
       ) : null}

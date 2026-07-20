@@ -17,7 +17,7 @@ export function ProEyebrow({
   return (
     <p
       className={[
-        "inline-flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.12em]",
+        "inline-flex items-center gap-2.5 font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.12em]",
         textTone,
         className,
       ]

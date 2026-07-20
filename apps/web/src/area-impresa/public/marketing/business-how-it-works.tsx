@@ -29,7 +29,7 @@ const detailRows = [
 function DetailPanel() {
   return (
     <div className="eg-panel bg-eg-calce p-4 md:p-5">
-      <div className="eg-mono-label flex items-center gap-2">
+      <div className="eg-eyebrow flex items-center gap-2">
         <ZoneGlyph className="size-4 text-eg-cotto-dark" />
         Dettagli richiesta
       </div>
@@ -97,7 +97,7 @@ export function BusinessHowItWorks() {
                 {visual}
 
                 <div className="mt-6 flex items-center gap-3">
-                  <span className="eg-mono-label text-eg-cotto-dark">{number}</span>
+                  <span className="eg-eyebrow text-eg-cotto-dark">{number}</span>
                   <Glyph className="size-5 text-eg-ardesia" />
                 </div>
 

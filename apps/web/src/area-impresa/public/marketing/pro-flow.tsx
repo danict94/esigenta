@@ -42,7 +42,7 @@ export function ProFlow() {
       <ol>
         {steps.map((step) => (
           <li key={step.number} className="relative py-[60px] text-center first:pt-0 last:pb-0">
-            <span className="absolute left-1/2 top-3 -translate-x-1/2 font-mono text-[11px] text-eg-ardesia-2">
+            <span className="eg-index-tag absolute left-1/2 top-3 -translate-x-1/2 text-[11px]">
               {step.number}
             </span>
             <ProMarker state={step.state} />

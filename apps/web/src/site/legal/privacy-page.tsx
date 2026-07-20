@@ -144,7 +144,7 @@ export function PrivacyPage() {
                   quando saranno disponibili dati fiscali, societari, tempi di
                   conservazione definitivi e ruoli privacy dei fornitori.
                 </p>
-                <p className="eg-mono-label mt-4">
+                <p className="eg-doc-meta mt-4">
                   Ultimo aggiornamento: {legalProfile.lastUpdated}
                 </p>
               </section>

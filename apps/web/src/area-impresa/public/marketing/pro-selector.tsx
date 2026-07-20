@@ -26,12 +26,12 @@ export function ProSelector({
     >
       {hasDeactivatedCompany ? (
         <div className="border border-eg-hairline bg-eg-calce-2">
-          <div className="flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.1em] text-eg-ardesia">
+          <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5">
             <span>Profilo trovato</span>
             <span>riattiva</span>
           </div>
           <div className="px-[26px] py-7 max-[860px]:px-5">
-            <p className="eg-mono-label text-eg-cotto-dark">Account disattivato</p>
+            <p className="eg-eyebrow text-eg-cotto-dark">Account disattivato</p>
             <h2 className="eg-h3 mt-4">Riattiva il tuo profilo impresa</h2>
             <p className="eg-body-muted mt-4">
               Abbiamo trovato un account impresa associato a questa sessione.
