@@ -204,7 +204,7 @@ export function HomeHero() {
       </div>
 
       <div className="relative z-[2] w-[min(100%,760px)] px-[22px] text-center [animation:eg-home-fade-up_900ms_ease_180ms_both]">
-        <p className="eg-eyebrow">Metodo Esigenta</p>
+        
         <h1 id="home-title" className="eg-h1 mt-5">
           Trasformiamo il caos di casa in <strong>un percorso</strong> chiaro e affidabile.
         </h1>

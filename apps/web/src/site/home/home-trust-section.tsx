@@ -31,7 +31,7 @@ const trustItems: TrustItem[] = [
 
 export function HomeTrustSection() {
   return (
-    <section className="eg-section-large bg-eg-calce-2" aria-labelledby="trust-title">
+    <section className="eg-section-large bg-eg-calce" aria-labelledby="trust-title">
       <div className="eg-container">
         <SectionHeader
           eyebrow="Prima di iniziare"

@@ -334,7 +334,7 @@ function PriceTable({
 
         {groups.map((group) => (
           <div key={group.category}>
-            <div className="border-b border-eg-hairline bg-eg-calce-2 px-5 py-2.5">
+            <div className="border-b border-eg-hairline bg-eg-terra/5 px-5 py-2.5">
               <p className="eg-mono-label">{group.category}</p>
             </div>
 
