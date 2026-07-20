@@ -22,3 +22,4 @@ export * from "./components/badge";
 export * from "./components/textarea";
 export * from "./components/checkbox";
 export * from "./components/select";
+export * from "./components/esigenta-wordmark";

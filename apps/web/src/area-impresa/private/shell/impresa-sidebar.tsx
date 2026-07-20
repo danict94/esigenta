@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Button, Card, cn } from "@esigenta/ui";
+import { Button, Card, EsigentaWordmark, cn } from "@esigenta/ui";
 
 import { authClient } from "../../../auth/client";
 import {
@@ -115,11 +115,8 @@ function Avatar({ label }: { label: string }) {
 function Brand() {
   return (
     <span className="inline-flex items-center gap-[13px] text-eg-terra">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo%20esigenta.svg" alt="" className="block h-[22px] w-auto" />
-      <span className="text-lg font-semibold tracking-[-0.01em]">
-        esigenta <small className="font-medium text-eg-cotto-dark">/ pro</small>
-      </span>
+      <EsigentaWordmark decorative className="block h-[22px] w-auto" />
+      <small className="eg-pro-tag">/ pro</small>
     </span>
   );
 }

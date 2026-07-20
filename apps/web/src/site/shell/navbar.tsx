@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 
+import { EsigentaWordmark } from "@esigenta/ui";
+
 import { CloseIcon, MenuIcon } from "./icons";
 
 export type NavbarVariant = "default" | "funnel";
@@ -52,9 +54,8 @@ export function Navbar({ variant = "default" }: NavbarProps) {
 
   return (
     <header className="fixed inset-x-0 top-0 z-[100] flex items-center justify-between gap-6 bg-transparent px-[22px] py-[18px] min-[861px]:px-12 min-[861px]:py-6">
-      <Link href="/" className="relative z-[102] inline-flex items-center gap-2.5 text-eg-terra no-underline" prefetch={false} aria-label="Esigenta home">
-        <img src="/logo%20esigenta.svg" alt="" className="block h-[22px] w-auto min-[861px]:h-6" />
-        <span className="text-lg font-semibold tracking-[-0.01em]">esigenta</span>
+      <Link href="/" className="relative z-[102] inline-flex items-center text-eg-terra no-underline" prefetch={false} aria-label="Esigenta home">
+        <EsigentaWordmark decorative className="block h-[22px] w-auto min-[861px]:h-6" />
       </Link>
 
       <button
