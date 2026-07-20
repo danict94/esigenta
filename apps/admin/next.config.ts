@@ -62,6 +62,7 @@ loadEnvFile(resolve(appDir, ".env.local"), true);
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: workspaceRoot,
+  transpilePackages: ["@esigenta/ui"],
   turbopack: {
     root: workspaceRoot,
   },

@@ -16,7 +16,7 @@ type ButtonSize =
   | "xl"
 
 export const buttonBase =
-  "inline-flex items-center justify-center gap-2 border font-mono font-medium uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra disabled:pointer-events-none disabled:opacity-60"
+  "inline-flex items-center justify-center gap-2 border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra disabled:pointer-events-none disabled:opacity-60"
 
 export const buttonRadius = "rounded-eg-sm"
 

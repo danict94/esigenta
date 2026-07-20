@@ -33,16 +33,16 @@
   --eg-text-heading: clamp(28px, 3.6vw, 42px);
   --eg-text-lede: 16px;
 
-  --eg-font-sans: var(--font-space-grotesk, "Space Grotesk"), sans-serif;
-  --eg-font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), monospace;
+  --eg-font-brand: var(--font-brand), sans-serif;
+  --eg-font-ui: var(--font-ui), sans-serif;
 
   --eg-nav-height: 72px;
   --eg-nav-clear: calc(var(--eg-nav-height) + 1.5rem);
 }
 
 @theme inline {
-  --font-sans: var(--eg-font-sans);
-  --font-mono: var(--eg-font-mono);
+  --font-sans: var(--eg-font-brand);
+  --font-mono: var(--eg-font-ui);
 
   --color-eg-calce: var(--eg-calce);
   --color-eg-calce-2: var(--eg-calce-2);
@@ -87,7 +87,7 @@ html {
 body {
   background: var(--eg-calce);
   color: var(--eg-terra);
-  font-family: var(--eg-font-sans);
+  font-family: var(--eg-font-brand);
 }
 
 @layer components {
@@ -96,7 +96,7 @@ body {
     min-height: 100vh;
     overflow: hidden;
     color: var(--eg-terra);
-    font-family: var(--eg-font-sans);
+    font-family: var(--eg-font-brand);
   }
 
   .eg-page-bg {
@@ -151,13 +151,50 @@ body {
 
   .eg-eyebrow,
   .eg-mono-label,
-  .eg-link-mono {
-    font-family: var(--eg-font-mono);
+  .eg-link-mono,
+  .eg-nav-link,
+  .eg-action-link,
+  .eg-divider-label,
+  .eg-metric-label,
+  .eg-table-label,
+  .eg-scope-tag,
+  .eg-list-index,
+  .eg-list-status,
+  .eg-doc-meta,
+  .eg-shell-nav-link,
+  .eg-status-label {
+    font-family: var(--eg-font-ui);
     text-transform: uppercase;
   }
 
+  .eg-list-index {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.12em;
+    color: var(--eg-cotto-dark);
+  }
+
+  .eg-list-status {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--eg-ardesia-2);
+  }
+
+  .eg-shell-nav-link {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--eg-ardesia);
+  }
+
   .eg-eyebrow,
-  .eg-mono-label {
+  .eg-mono-label,
+  .eg-divider-label,
+  .eg-metric-label,
+  .eg-table-label,
+  .eg-scope-tag,
+  .eg-doc-meta,
+  .eg-status-label {
     color: var(--eg-ardesia);
     font-size: 12px;
     letter-spacing: 0.12em;
@@ -210,7 +247,7 @@ body {
     gap: 8px;
     border-radius: var(--eg-radius-sm);
     padding: 0 22px;
-    font-family: var(--eg-font-mono);
+    font-family: var(--eg-font-ui);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.06em;
@@ -244,14 +281,37 @@ body {
     color: var(--eg-calce);
   }
 
-  .eg-link-mono {
+  .eg-link-mono,
+  .eg-nav-link,
+  .eg-action-link {
     color: var(--eg-ardesia);
     font-size: 12px;
     letter-spacing: 0.12em;
     transition: color 220ms ease;
   }
 
-  .eg-link-mono:hover {
+  .eg-link-mono:hover,
+  .eg-action-link:hover,
+  a.eg-nav-link:hover,
+  .eg-nav-link a:hover {
+    color: var(--eg-cotto-dark);
+  }
+
+  .eg-footer {
+    font-family: var(--eg-font-ui);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.08em;
+    color: var(--eg-ardesia-2);
+  }
+
+  .eg-pro-tag {
+    font-family: var(--eg-font-ui);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--eg-cotto-dark);
   }
 
@@ -271,6 +331,74 @@ body {
     color: var(--eg-terra);
     font-size: 14px;
     font-weight: 500;
+  }
+
+  .eg-form-eyebrow {
+    font-family: var(--eg-font-ui);
+    text-transform: uppercase;
+    color: var(--eg-ardesia);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+
+  .eg-step-label {
+    font-family: var(--eg-font-ui);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.04em;
+    color: var(--eg-cotto-dark);
+  }
+
+  .eg-index-tag {
+    font-family: var(--eg-font-ui);
+    color: var(--eg-ardesia-2);
+  }
+
+  .eg-stat-value {
+    font-family: var(--eg-font-ui);
+    font-size: 26px;
+    letter-spacing: 0.02em;
+    color: var(--eg-cotto-dark);
+  }
+
+  .eg-field-caption {
+    font-family: var(--eg-font-ui);
+    color: var(--eg-ardesia);
+  }
+
+  .eg-chip-text {
+    font-family: var(--eg-font-ui);
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .eg-ui-muted,
+  .eg-metadata {
+    font-family: var(--eg-font-ui);
+  }
+
+  .eg-ui-muted {
+    color: var(--eg-ardesia);
+  }
+
+  .eg-metadata {
+    color: var(--eg-ardesia-2);
+  }
+
+  .eg-kpi-value {
+    font-family: var(--eg-font-ui);
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .eg-panel-header {
+    font-family: var(--eg-font-ui);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--eg-ardesia);
   }
 
   .eg-form-help {

@@ -7,6 +7,7 @@ const workspaceRoot = resolve(appDir, "../..");
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: workspaceRoot,
+  transpilePackages: ["@esigenta/ui"],
   turbopack: {
     root: workspaceRoot,
   },

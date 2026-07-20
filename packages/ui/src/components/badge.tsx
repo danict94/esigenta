@@ -16,7 +16,7 @@ type BadgeSize =
   | "md"
 
 const badgeBase =
-  "inline-flex items-center border font-mono font-medium uppercase tracking-[0.06em]"
+  "inline-flex items-center border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em]"
 
 const badgeVariants = {
   neutral:
