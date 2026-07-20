@@ -8,10 +8,10 @@ export function SelezionaImpresaPage() {
       <div className="flex flex-col gap-6">
         <div>
           <p className="eg-eyebrow">Profilo gia presente</p>
-          <h1 className="eg-h2 mt-4">Questo account ha gia un'impresa.</h1>
+          <h1 className="eg-h2 mt-4">Questo account ha gia un&apos;impresa.</h1>
           <p className="eg-body-muted mt-4">
             Per questa versione ogni account impresa gestisce una sola azienda.
-            Se hai gia completato l'iscrizione, accedi alla tua area impresa.
+            Se hai gia completato l&apos;iscrizione, accedi alla tua area impresa.
           </p>
         </div>
 

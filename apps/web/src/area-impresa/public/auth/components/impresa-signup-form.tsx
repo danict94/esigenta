@@ -220,7 +220,7 @@ export function ImpresaSignupForm({
           </label>
 
           <label className="eg-form-field" htmlFor="operatingRadiusKm">
-            <span className="eg-form-label">Raggio d'azione</span>
+            <span className="eg-form-label">Raggio d&apos;azione</span>
             <Select
               id="operatingRadiusKm"
               required
@@ -244,7 +244,7 @@ export function ImpresaSignupForm({
           <div>
             <h2 className="eg-h3">Referente e accesso</h2>
             <p className="eg-body-muted mt-2">
-              Inserisci i dati della persona che gestira l'area impresa.
+              Inserisci i dati della persona che gestira l&apos;area impresa.
             </p>
           </div>
 

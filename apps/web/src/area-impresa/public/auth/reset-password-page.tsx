@@ -58,7 +58,7 @@ export async function CompanyResetPasswordPage({
           <p className="eg-eyebrow">Nuova password</p>
           <h1 className="eg-h2 mt-4">Scegli un nuovo accesso.</h1>
           <p className="eg-body-muted mt-4">
-            Imposta una password nuova per continuare nell'area impresa.
+            Imposta una password nuova per continuare nell&apos;area impresa.
           </p>
         </div>
 

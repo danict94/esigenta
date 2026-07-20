@@ -36,16 +36,16 @@ export async function CompanyForgotPasswordPage({
       <div className="flex flex-col gap-6">
         <div>
           <p className="eg-eyebrow">Recupero accesso</p>
-          <h1 className="eg-h2 mt-4">Rimetti in ordine l'accesso.</h1>
+          <h1 className="eg-h2 mt-4">Rimetti in ordine l&apos;accesso.</h1>
           <p className="eg-body-muted mt-4">
-            Inserisci l'email del tuo account impresa. Se esiste, riceverai un
+            Inserisci l&apos;email del tuo account impresa. Se esiste, riceverai un
             link sicuro per reimpostare la password.
           </p>
         </div>
 
         {sent ? (
           <div className="eg-alert">
-            Se l'email e associata a un account impresa, riceverai a breve il
+            Se l&apos;email e associata a un account impresa, riceverai a breve il
             link per reimpostare la password.
           </div>
         ) : (

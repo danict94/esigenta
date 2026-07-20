@@ -2,6 +2,7 @@
 
 import {
   type MutableRefObject,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -244,15 +245,16 @@ export function CityAutocomplete({
   const inputValue =
     query ?? internalInputValue
 
-  function setInputValue(
-    nextValue: string,
-  ) {
-    if (query === undefined) {
-      setInternalInputValue(nextValue)
-    }
+  const setInputValue = useCallback(
+    (nextValue: string) => {
+      if (query === undefined) {
+        setInternalInputValue(nextValue)
+      }
 
-    onQueryChange?.(nextValue)
-  }
+      onQueryChange?.(nextValue)
+    },
+    [query, onQueryChange],
+  )
 
   const [message, setMessage] =
     useState<string | null>(null)
@@ -319,6 +321,7 @@ export function CityAutocomplete({
   }, [
     inputValue,
     value?.formattedAddress,
+    setInputValue,
   ])
 
   useEffect(() => {
@@ -443,7 +446,7 @@ export function CityAutocomplete({
       listenerRef.current?.remove()
       listenerRef.current = null
     }
-  }, [hasFunctionalConsent])
+  }, [hasFunctionalConsent, setInputValue])
 
   return (
     <div className="grid gap-2">

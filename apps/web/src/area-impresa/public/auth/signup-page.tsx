@@ -52,7 +52,7 @@ export async function AreaImpresaSignupPage({
           <p className="eg-eyebrow">Crea accesso</p>
           <h1 className="eg-h2 mt-4">Raccontaci della tua azienda.</h1>
           <p className="eg-body-muted mt-4 max-w-[52ch]">
-            Completa i dati essenziali: dopo la registrazione accederai all'area
+            Completa i dati essenziali: dopo la registrazione accederai all&apos;area
             impresa per configurare e gestire le richieste.
           </p>
         </div>

@@ -42,7 +42,7 @@ export function TerminiPage() {
               <p className="eg-eyebrow">Termini</p>
               <h1 className="eg-h1 mt-5">Termini di servizio.</h1>
               <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
-                Le regole d'uso di {legalProfile.projectName}, piattaforma di
+                Le regole d&apos;uso di {legalProfile.projectName}, piattaforma di
                 raccolta richieste e contatto tra clienti e
                 imprese/professionisti.
               </p>
