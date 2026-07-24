@@ -6,13 +6,13 @@ import type {
 import { cn } from "../lib/cn"
 
 const cardBase =
-  "rounded-eg-lg border border-eg-hairline bg-eg-calce shadow-eg-elevation"
+  "rounded-eg-lg border border-eg-border bg-eg-surface shadow-eg-elevation"
 
 const cardHeader = "space-y-1.5 p-6"
 const cardContent = "p-6 pt-0"
 const cardTitle =
-  "text-lg font-semibold leading-none tracking-tight text-eg-terra"
-const cardDescription = "text-sm text-eg-ardesia"
+  "text-lg font-semibold leading-none tracking-tight text-eg-ink"
+const cardDescription = "text-sm text-eg-text-muted"
 
 export type CardProps = {
   children: ReactNode

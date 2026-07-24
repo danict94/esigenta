@@ -36,13 +36,13 @@ function SeatDots({ taken, total }: RequestCardSeats) {
             key={index}
             className={cn(
               "size-2.5 rounded-full",
-              index < taken ? "bg-eg-cotto" : "border border-eg-hairline",
+              index < taken ? "bg-eg-brand-strong" : "border border-eg-border",
             )}
           />
         ))}
       </span>
 
-      <span className="text-[13px] text-eg-ardesia">
+      <span className="text-[13px] text-eg-text-muted">
         {taken} di {total} imprese
       </span>
     </span>
@@ -61,7 +61,7 @@ export function RequestCard({
   className,
 }: RequestCardProps) {
   return (
-    <article className={cn("eg-panel bg-eg-calce", compact ? "p-4" : "p-5 md:p-6", className)}>
+    <article className={cn("eg-panel bg-eg-surface", compact ? "p-4" : "p-5 md:p-6", className)}>
       <div className="flex items-center justify-between gap-3">
         <span className="eg-eyebrow text-[11px]">Esempio richiesta</span>
 
@@ -70,8 +70,8 @@ export function RequestCard({
             className={cn(
               "inline-flex items-center gap-1.5 border px-2.5 py-1 text-[12px] font-medium",
               badge.tone === "verified"
-                ? "border-eg-cotto text-eg-cotto-dark"
-                : "border-eg-hairline text-eg-terra",
+                ? "border-eg-brand text-eg-brand-strong"
+                : "border-eg-border text-eg-ink",
             )}
           >
             {badge.tone === "verified" ? <VerifiedGlyph className="size-3.5" /> : null}
@@ -82,15 +82,15 @@ export function RequestCard({
 
       <p
         className={cn(
-          "mt-4 font-medium leading-[1.25] tracking-[-0.01em] text-eg-terra",
+          "mt-4 font-medium leading-[1.25] tracking-[-0.01em] text-eg-ink",
           compact ? "text-[16px]" : "text-[20px]",
         )}
       >
         {category}
       </p>
 
-      <p className="mt-2 flex items-center gap-2 text-[14px] text-eg-ardesia">
-        <ZoneGlyph className="size-4 shrink-0 text-eg-ardesia" />
+      <p className="mt-2 flex items-center gap-2 text-[14px] text-eg-text-muted">
+        <ZoneGlyph className="size-4 shrink-0 text-eg-text-muted" />
         <span>
           {city}
           {zoneLabel ? ` / ${zoneLabel}` : ""}
@@ -102,7 +102,7 @@ export function RequestCard({
           {chips.map((chip) => (
             <span
               key={chip}
-              className="border border-eg-hairline px-2.5 py-1 text-[12.5px] text-eg-ardesia"
+              className="border border-eg-border px-2.5 py-1 text-[12.5px] text-eg-text-muted"
             >
               {chip}
             </span>
@@ -111,18 +111,18 @@ export function RequestCard({
       ) : null}
 
       {description && !compact ? (
-        <p className="mt-4 text-[13.5px] leading-[1.55] text-eg-ardesia">
+        <p className="mt-4 text-[13.5px] leading-[1.55] text-eg-text-muted">
           {description}
         </p>
       ) : null}
 
-      <div className="mt-5 flex items-end justify-between gap-4 border-t border-eg-hairline pt-4">
+      <div className="mt-5 flex items-end justify-between gap-4 border-t border-eg-border pt-4">
         <div className="flex flex-col gap-2">
           <span className="eg-eyebrow text-[11px]">Sblocco</span>
           {seats ? (
             <SeatDots taken={seats.taken} total={seats.total} />
           ) : (
-            <span className="text-[13px] text-eg-ardesia">
+            <span className="text-[13px] text-eg-text-muted">
               Crediti visibili prima dello sblocco
             </span>
           )}
@@ -130,7 +130,7 @@ export function RequestCard({
 
         <span
           aria-hidden="true"
-          className="inline-flex h-9 shrink-0 select-none items-center bg-eg-cotto px-4 text-[13px] font-medium text-eg-calce"
+          className="inline-flex h-9 shrink-0 select-none items-center bg-eg-brand-strong px-4 text-[13px] font-medium text-eg-on-brand"
         >
           Sblocca
         </span>

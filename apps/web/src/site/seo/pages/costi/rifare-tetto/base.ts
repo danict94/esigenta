@@ -10,7 +10,7 @@ export const rifareTettoBase: CostGuideBaseContent = {
   metaDescription:
     "Scopri quanto costa rifare un tetto, con range indicativi, costo al mq, esempi e fattori di prezzo per la tua copertura.",
   heroImage: {
-    src: "/assets/images/rifare-tetto.webp",
+    src: "/assets/images/rifacimento-tetto.webp",
     alt: "Rifacimento tetto e copertura",
   },
   hubCategory: { slug: "tetti-e-facciate", name: "Tetti e facciate" },

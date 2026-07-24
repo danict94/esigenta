@@ -47,15 +47,15 @@ export async function ContactsPage() {
     <PageShell size="xl" className="py-8 md:py-10">
       <section className="space-y-7">
         <div className="pt-4">
-          <p className="text-sm font-medium text-eg-ardesia">
+          <p className="text-sm font-medium text-eg-text-muted">
             Area impresa
           </p>
 
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-eg-terra">
+          <h1 className="mt-1 text-xl font-semibold tracking-tight text-eg-ink">
             Contatti
           </h1>
 
-          <p className="mt-1 text-sm text-eg-ardesia">
+          <p className="mt-1 text-sm text-eg-text-muted">
             Clienti collegati alle richieste che hai sbloccato.
           </p>
         </div>
@@ -69,7 +69,7 @@ export async function ContactsPage() {
         ) : (
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-eg-ardesia">
+              <p className="text-sm text-eg-text-muted">
                 {result.message}
               </p>
             </CardContent>

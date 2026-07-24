@@ -157,7 +157,7 @@ export function CompanyRequestList<
   if (requests.length === 0) {
     return (
       <div className="px-7 py-10 text-center">
-        <p className="text-sm text-eg-ardesia">
+        <p className="text-sm text-eg-text-muted">
           {emptyMessage}
         </p>
       </div>

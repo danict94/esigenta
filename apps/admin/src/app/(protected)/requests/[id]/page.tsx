@@ -259,8 +259,8 @@ function renderStructuredValue(value: unknown): ReactNode {
       <dl className="grid gap-2">
         {entries.map(([key, entryValue]) => (
           <div key={key} className="grid gap-1 sm:grid-cols-[10rem_1fr]">
-            <dt className="text-eg-ardesia">{formatKey(key)}</dt>
-            <dd className="text-eg-terra">
+            <dt className="text-eg-text-muted">{formatKey(key)}</dt>
+            <dd className="text-eg-ink">
               {renderStructuredValue(entryValue)}
             </dd>
           </div>
@@ -557,9 +557,9 @@ function DetailSection({
 }) {
   return (
     <Card className="p-6">
-      <div className="mb-5 border-b border-eg-hairline pb-5">
-        <p className="text-sm font-medium text-eg-ardesia">{eyebrow}</p>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight text-eg-terra">
+      <div className="mb-5 border-b border-eg-border pb-5">
+        <p className="text-sm font-medium text-eg-text-muted">{eyebrow}</p>
+        <h2 className="mt-1 text-xl font-semibold tracking-tight text-eg-ink">
           {title}
         </h2>
       </div>
@@ -578,10 +578,10 @@ function FieldBlock({
 }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+      <dt className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
         {label}
       </dt>
-      <dd className="mt-2 text-sm leading-6 text-eg-terra">{children}</dd>
+      <dd className="mt-2 text-sm leading-6 text-eg-ink">{children}</dd>
     </div>
   );
 }
@@ -638,49 +638,49 @@ export default async function RequestDetailPage({
 
   return (
     <PageShell size="lg">
-      <header className="border-b border-eg-hairline pb-7">
+      <header className="border-b border-eg-border pb-7">
         <Link
           href="/requests"
-          className="text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
+          className="text-sm font-medium text-eg-text-muted transition-colors hover:text-eg-ink"
         >
           ← Coda richieste
         </Link>
 
         <div className="mt-5 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-eg-ardesia">
+            <p className="text-sm font-medium text-eg-text-muted">
               Dossier richiesta
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
               {interventionName}
             </h1>
 
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-ardesia">
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-text-muted">
               <span>
-                <span className="text-eg-ardesia">Luogo:</span>{" "}
+                <span className="text-eg-text-muted">Luogo:</span>{" "}
                 {[request.city, request.postalCode].filter(Boolean).join(" ") ||
                   "-"}
               </span>
 
               <span>
-                <span className="text-eg-ardesia">Cliente:</span>{" "}
+                <span className="text-eg-text-muted">Cliente:</span>{" "}
                 {request.customerName ?? "-"}
               </span>
 
               <span>
-                <span className="text-eg-ardesia">Creata:</span>{" "}
+                <span className="text-eg-text-muted">Creata:</span>{" "}
                 {formatDate(request.createdAt)}
               </span>
             </div>
 
             <div className="mt-4 grid gap-1">
-              <p className="text-sm font-medium text-eg-terra">
-                <span className="text-eg-ardesia">Codice richiesta:</span>{" "}
+              <p className="text-sm font-medium text-eg-ink">
+                <span className="text-eg-text-muted">Codice richiesta:</span>{" "}
                 {publicRequestCode}
               </p>
 
-              <p className="text-xs text-eg-ardesia">
+              <p className="text-xs text-eg-text-muted">
                 ID tecnico: {request.id}
               </p>
             </div>
@@ -701,12 +701,12 @@ export default async function RequestDetailPage({
             <dl className="grid gap-6">
               <FieldBlock label="Intervento">
                 <div className="space-y-2">
-                  <p className="text-base font-semibold text-eg-terra">
+                  <p className="text-base font-semibold text-eg-ink">
                     {interventionName}
                   </p>
 
                   {interventionDescription ? (
-                    <p className="text-sm leading-6 text-eg-ardesia">
+                    <p className="text-sm leading-6 text-eg-text-muted">
                       {interventionDescription}
                     </p>
                   ) : null}
@@ -719,17 +719,17 @@ export default async function RequestDetailPage({
                     {categories.map((category) => (
                       <span
                         key={category.slug}
-                        className="border border-eg-hairline bg-eg-calce-2 px-3 py-2 text-sm font-medium text-eg-terra"
+                        className="border border-eg-border bg-eg-surface-muted px-3 py-2 text-sm font-medium text-eg-ink"
                       >
                         {category.name}
-                        <span className="ml-2 text-eg-ardesia">
+                        <span className="ml-2 text-eg-text-muted">
                           · {category.sector.name}
                         </span>
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-eg-ardesia">
+                  <span className="text-eg-text-muted">
                     Categoria non derivabile dai dati disponibili.
                   </span>
                 )}
@@ -737,11 +737,11 @@ export default async function RequestDetailPage({
 
               <FieldBlock label="Descrizione cliente">
                 {customerDescription ? (
-                  <p className="whitespace-pre-line text-base leading-7 text-eg-terra">
+                  <p className="whitespace-pre-line text-base leading-7 text-eg-ink">
                     {customerDescription}
                   </p>
                 ) : (
-                  <p className="text-sm leading-6 text-eg-ardesia">
+                  <p className="text-sm leading-6 text-eg-text-muted">
                     Nessuna descrizione libera trovata nei dati salvati dal
                     funnel.
                   </p>
@@ -794,9 +794,9 @@ export default async function RequestDetailPage({
                 {photos.map((photo) => (
                   <figure
                     key={photo.src}
-                    className="overflow-hidden border border-eg-hairline bg-eg-calce"
+                    className="overflow-hidden border border-eg-border bg-eg-surface"
                   >
-                    <div className="relative aspect-video bg-eg-calce-2">
+                    <div className="relative aspect-video bg-eg-surface-muted">
                       <Image
                         src={photo.src}
                         alt={photo.fileName}
@@ -808,7 +808,7 @@ export default async function RequestDetailPage({
                       />
                     </div>
 
-                    <figcaption className="truncate px-3 py-2 text-xs text-eg-ardesia">
+                    <figcaption className="truncate px-3 py-2 text-xs text-eg-text-muted">
                       {photo.fileName}
                     </figcaption>
                   </figure>
@@ -823,14 +823,14 @@ export default async function RequestDetailPage({
                 {primaryServices.map((service) => (
                   <div
                     key={service.slug}
-                    className="border border-eg-hairline bg-eg-calce p-4"
+                    className="border border-eg-border bg-eg-surface p-4"
                   >
-                    <p className="text-sm font-semibold text-eg-terra">
+                    <p className="text-sm font-semibold text-eg-ink">
                       {service.name}
                     </p>
 
                     {service.description ? (
-                      <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+                      <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                         {service.description}
                       </p>
                     ) : null}
@@ -838,7 +838,7 @@ export default async function RequestDetailPage({
                 ))}
               </div>
             ) : (
-              <p className="text-sm leading-6 text-eg-ardesia">
+              <p className="text-sm leading-6 text-eg-text-muted">
                 Nessun servizio rilevante associato alla richiesta.
               </p>
             )}
@@ -846,7 +846,7 @@ export default async function RequestDetailPage({
 
           <DetailSection eyebrow="Audit funnel" title="Dati aggiuntivi">
             {answerEntries.length === 0 ? (
-              <p className="text-sm leading-6 text-eg-ardesia">
+              <p className="text-sm leading-6 text-eg-text-muted">
                 Nessun dato aggiuntivo da mostrare oltre a luogo e contatto.
               </p>
             ) : (
@@ -854,15 +854,15 @@ export default async function RequestDetailPage({
                 {answerEntries.map(([key, value]) => (
                   <div
                     key={key}
-                    className="border border-eg-hairline bg-eg-calce p-4"
+                    className="border border-eg-border bg-eg-surface p-4"
                   >
-                    <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                    <dt className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                       {answerLabels[key] ??
                         (key.endsWith(":superficie")
                           ? "Superficie"
                           : formatKey(key))}
                     </dt>
-                    <dd className="mt-3 text-sm leading-6 text-eg-terra">
+                    <dd className="mt-3 text-sm leading-6 text-eg-ink">
                       {renderStructuredValue(value)}
                     </dd>
                   </div>
@@ -875,46 +875,46 @@ export default async function RequestDetailPage({
         <aside className="grid gap-6 lg:sticky lg:top-6">
           <Card className="p-5">
             <div>
-              <p className="text-sm font-medium text-eg-ardesia">
+              <p className="text-sm font-medium text-eg-text-muted">
                 Crediti
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-eg-terra">
+              <h2 className="mt-1 text-xl font-semibold text-eg-ink">
                 Impostazioni commerciali
               </h2>
             </div>
 
             <dl className="mt-5 grid gap-3">
-              <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+              <div className="border border-eg-border bg-eg-surface-muted p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                   Costo attuale
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-eg-terra">
+                <dd className="mt-2 text-sm font-semibold text-eg-ink">
                   {formatCreditCost(request.creditCost)}
                 </dd>
               </div>
 
-              <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+              <div className="border border-eg-border bg-eg-surface-muted p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                   Limite sblocchi
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-eg-terra">
+                <dd className="mt-2 text-sm font-semibold text-eg-ink">
                   {formatMaxUnlocks(request.maxUnlocks)}
                 </dd>
               </div>
 
-              <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+              <div className="border border-eg-border bg-eg-surface-muted p-4">
+                <dt className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                   Sblocchi attuali
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-eg-terra">
+                <dd className="mt-2 text-sm font-semibold text-eg-ink">
                   {request.unlockCount}
                 </dd>
               </div>
             </dl>
 
-            <div className="mt-5 grid gap-3 border-t border-eg-hairline pt-5">
-              <p className="text-sm font-semibold text-eg-terra">
+            <div className="mt-5 grid gap-3 border-t border-eg-border pt-5">
+              <p className="text-sm font-semibold text-eg-ink">
                 Valutazione commerciale
               </p>
 
@@ -930,32 +930,32 @@ export default async function RequestDetailPage({
                   </div>
 
                   {commercialReview.belowFloor ? (
-                    <div className="border border-eg-cotto bg-eg-calce-2 p-3">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-eg-cotto">
+                    <div className="border border-eg-warning-border bg-eg-warning-soft p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-eg-warning">
                         Avviso, non un blocco
                       </p>
-                      <p className="mt-1 text-sm leading-6 text-eg-terra">
+                      <p className="mt-1 text-sm leading-6 text-eg-ink">
                         Richiesta sotto soglia commerciale: valuta prima di
                         pubblicarla.
                       </p>
                     </div>
                   ) : null}
 
-                  <div className="border border-eg-hairline bg-eg-calce-2 p-3">
-                    <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                  <div className="border border-eg-border bg-eg-surface-muted p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                       Valore automatico (sistema)
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-eg-terra">
+                    <p className="mt-1 text-sm font-semibold text-eg-ink">
                       {formatCreditCost(commercialReview.auto.creditCost)} ·{" "}
                       {formatMaxUnlocks(commercialReview.auto.maxUnlocks)}
                     </p>
                   </div>
 
-                  <div className="border border-eg-hairline bg-eg-calce-2 p-3">
-                    <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                  <div className="border border-eg-border bg-eg-surface-muted p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                       Valore effettivo (in vigore)
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-eg-terra">
+                    <p className="mt-1 text-sm font-semibold text-eg-ink">
                       {formatCreditCost(commercialReview.effective.creditCost)} ·{" "}
                       {formatMaxUnlocks(commercialReview.effective.maxUnlocks)}
                     </p>
@@ -963,14 +963,14 @@ export default async function RequestDetailPage({
 
                   {commercialReview.auto.reasons.length > 0 ? (
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                      <p className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                         Motivi
                       </p>
                       <ul className="mt-2 grid gap-1">
                         {commercialReview.auto.reasons.map((reason) => (
                           <li
                             key={reason}
-                            className="text-sm leading-6 text-eg-ardesia"
+                            className="text-sm leading-6 text-eg-text-muted"
                           >
                             {reason}
                           </li>
@@ -980,22 +980,22 @@ export default async function RequestDetailPage({
                   ) : null}
                 </>
               ) : (
-                <p className="text-sm leading-6 text-eg-ardesia">
+                <p className="text-sm leading-6 text-eg-text-muted">
                   Valutazione automatica non disponibile per questa richiesta.
                 </p>
               )}
 
               {commercialReview.isOverridden ? (
-                <div className="border border-eg-hairline bg-eg-calce-2 p-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                <div className="border border-eg-border bg-eg-surface-muted p-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                     Override commerciale
                   </p>
                   {request.commercialOverrideReason ? (
-                    <p className="mt-1 text-sm leading-6 text-eg-terra">
+                    <p className="mt-1 text-sm leading-6 text-eg-ink">
                       {request.commercialOverrideReason}
                     </p>
                   ) : null}
-                  <p className="mt-1 text-xs text-eg-ardesia">
+                  <p className="mt-1 text-xs text-eg-text-muted">
                     {request.commercialOverriddenAt
                       ? formatDate(request.commercialOverriddenAt)
                       : "-"}
@@ -1023,12 +1023,12 @@ export default async function RequestDetailPage({
 
             <form
               action={updateCommercialSettingsAction}
-              className="mt-5 grid gap-4 border-t border-eg-hairline pt-5"
+              className="mt-5 grid gap-4 border-t border-eg-border pt-5"
             >
               <input type="hidden" name="requestId" value={request.id} />
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-eg-terra">
+                <span className="text-sm font-medium text-eg-ink">
                   Costo in crediti
                 </span>
                 <Input
@@ -1043,7 +1043,7 @@ export default async function RequestDetailPage({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-eg-terra">
+                <span className="text-sm font-medium text-eg-ink">
                   Limite massimo imprese
                 </span>
                 <Input
@@ -1058,7 +1058,7 @@ export default async function RequestDetailPage({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-eg-terra">
+                <span className="text-sm font-medium text-eg-ink">
                   Motivo override (obbligatorio)
                 </span>
                 <Textarea
@@ -1077,22 +1077,22 @@ export default async function RequestDetailPage({
 
           <Card className="p-5">
             <div>
-              <p className="text-sm font-medium text-eg-ardesia">
+              <p className="text-sm font-medium text-eg-text-muted">
                 Decisione editoriale
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-eg-terra">
+              <h2 className="mt-1 text-xl font-semibold text-eg-ink">
                 Revisione marketplace
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                 Approva solo richieste chiare, localizzabili e utili per le
                 imprese.
               </p>
             </div>
 
-            <div className="mt-5 border border-eg-hairline bg-eg-calce-2 p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+            <div className="mt-5 border border-eg-border bg-eg-surface-muted p-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                 Stato attuale
               </p>
 
@@ -1105,11 +1105,11 @@ export default async function RequestDetailPage({
 
             {request.status === "PENDING_VERIFICATION" ? (
               <div className="mt-5 space-y-4">
-                <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                  <p className="text-sm font-medium text-eg-terra">
+                <div className="border border-eg-border bg-eg-surface-muted p-4">
+                  <p className="text-sm font-medium text-eg-ink">
                     Email cliente non verificata
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+                  <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                     Il cliente non ha ancora confermato la richiesta tramite
                     il link inviato per email. Finché resta in questo stato
                     non entra nella coda di revisione e non può essere
@@ -1128,7 +1128,7 @@ export default async function RequestDetailPage({
 
                 <form
                   action={verifyRequestManuallyAction}
-                  className="border-t border-eg-hairline pt-4"
+                  className="border-t border-eg-border pt-4"
                 >
                   <input type="hidden" name="requestId" value={request.id} />
                   <Button type="submit">
@@ -1139,11 +1139,11 @@ export default async function RequestDetailPage({
             ) : request.status === "PENDING_REVIEW" ? (
               <div className="mt-5 space-y-4">
                 {!hasRequiredPublishingSettings ? (
-                  <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                    <p className="text-sm font-medium text-eg-terra">
+                  <div className="border border-eg-border bg-eg-surface-muted p-4">
+                    <p className="text-sm font-medium text-eg-ink">
                       Configurazione commerciale incompleta
                     </p>
-                    <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+                    <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                       Prima di pubblicare la richiesta devi impostare costo
                       crediti e limite imprese.
                     </p>
@@ -1157,7 +1157,7 @@ export default async function RequestDetailPage({
                   <div className="space-y-2">
                     <label
                       htmlFor="approve-moderation-notes"
-                      className="text-sm font-medium text-eg-terra"
+                      className="text-sm font-medium text-eg-ink"
                     >
                       Nota moderazione
                     </label>
@@ -1178,14 +1178,14 @@ export default async function RequestDetailPage({
                   </Button>
                 </form>
 
-                <form action={reviewRequestAction} className="space-y-3 border-t border-eg-hairline pt-4">
+                <form action={reviewRequestAction} className="space-y-3 border-t border-eg-border pt-4">
                   <input type="hidden" name="requestId" value={request.id} />
                   <input type="hidden" name="status" value="REJECTED" />
 
                   <div className="space-y-2">
                     <label
                       htmlFor="reject-moderation-notes"
-                      className="text-sm font-medium text-eg-terra"
+                      className="text-sm font-medium text-eg-ink"
                     >
                       Motivo rifiuto
                     </label>
@@ -1204,22 +1204,22 @@ export default async function RequestDetailPage({
                 </form>
               </div>
             ) : (
-              <div className="mt-5 border border-eg-hairline bg-eg-calce p-4">
-                <p className="text-sm font-medium text-eg-terra">
+              <div className="mt-5 border border-eg-border bg-eg-surface p-4">
+                <p className="text-sm font-medium text-eg-ink">
                   Revisione chiusa
                 </p>
-                <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+                <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                   Questa richiesta ha già ricevuto una decisione editoriale.
                 </p>
               </div>
             )}
 
-            <div className="mt-6 border-t border-eg-hairline pt-5">
-              <p className="text-sm font-semibold text-eg-terra">
+            <div className="mt-6 border-t border-eg-border pt-5">
+              <p className="text-sm font-semibold text-eg-ink">
                 Checklist qualità
               </p>
 
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-eg-ardesia">
+              <ul className="mt-3 space-y-2 text-sm leading-6 text-eg-text-muted">
                 <li>• Intervento comprensibile</li>
                 <li>• Descrizione utile o dati funnel sufficienti</li>
                 <li>• Luogo coerente</li>
@@ -1231,15 +1231,15 @@ export default async function RequestDetailPage({
 
           <Card className="p-5">
             <div>
-              <p className="text-sm font-medium text-eg-ardesia">
+              <p className="text-sm font-medium text-eg-text-muted">
                 Gestione richiesta
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-eg-terra">
+              <h2 className="mt-1 text-xl font-semibold text-eg-ink">
                 Archiviazione e rimozione
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                 Non eliminano mai dati o storico: nascondono solo la
                 richiesta dalle liste operative e dal marketplace.
               </p>
@@ -1247,18 +1247,18 @@ export default async function RequestDetailPage({
 
             {request.deletedAt ? (
               <div className="mt-5 space-y-4">
-                <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                  <p className="text-sm font-medium text-eg-terra">
+                <div className="border border-eg-border bg-eg-surface-muted p-4">
+                  <p className="text-sm font-medium text-eg-ink">
                     Richiesta eliminata (soft-delete)
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-eg-ardesia">
+                  <p className="mt-2 text-xs leading-5 text-eg-text-muted">
                     {formatDate(request.deletedAt)}
                     {request.deletedByAdminUser
                       ? ` · ${request.deletedByAdminUser.name ?? request.deletedByAdminUser.email}`
                       : null}
                   </p>
                   {request.deleteReason ? (
-                    <p className="mt-3 text-sm leading-6 text-eg-ardesia">
+                    <p className="mt-3 text-sm leading-6 text-eg-text-muted">
                       {request.deleteReason}
                     </p>
                   ) : null}
@@ -1275,18 +1275,18 @@ export default async function RequestDetailPage({
               <div className="mt-5 space-y-5">
                 {request.archivedAt ? (
                   <div className="space-y-3">
-                    <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-                      <p className="text-sm font-medium text-eg-terra">
+                    <div className="border border-eg-border bg-eg-surface-muted p-4">
+                      <p className="text-sm font-medium text-eg-ink">
                         Richiesta archiviata
                       </p>
-                      <p className="mt-2 text-xs leading-5 text-eg-ardesia">
+                      <p className="mt-2 text-xs leading-5 text-eg-text-muted">
                         {formatDate(request.archivedAt)}
                         {request.archivedByAdminUser
                           ? ` · ${request.archivedByAdminUser.name ?? request.archivedByAdminUser.email}`
                           : null}
                       </p>
                       {request.archiveReason ? (
-                        <p className="mt-3 text-sm leading-6 text-eg-ardesia">
+                        <p className="mt-3 text-sm leading-6 text-eg-text-muted">
                           {request.archiveReason}
                         </p>
                       ) : null}
@@ -1304,7 +1304,7 @@ export default async function RequestDetailPage({
                     <input type="hidden" name="requestId" value={request.id} />
 
                     <label className="grid gap-2">
-                      <span className="text-sm font-medium text-eg-terra">
+                      <span className="text-sm font-medium text-eg-ink">
                         Motivo archiviazione (opzionale)
                       </span>
                       <Textarea
@@ -1322,12 +1322,12 @@ export default async function RequestDetailPage({
 
                 <form
                   action={softDeleteRequestAction}
-                  className="space-y-3 border-t border-eg-hairline pt-5"
+                  className="space-y-3 border-t border-eg-border pt-5"
                 >
                   <input type="hidden" name="requestId" value={request.id} />
 
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-eg-terra">
+                    <span className="text-sm font-medium text-eg-ink">
                       Motivo eliminazione (opzionale)
                     </span>
                     <Textarea

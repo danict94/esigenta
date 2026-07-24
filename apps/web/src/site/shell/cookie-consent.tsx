@@ -113,7 +113,7 @@ export function CookieConsent() {
         >
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
             <div>
-              <p className="text-sm font-medium text-eg-terra">
+              <p className="text-sm font-medium text-eg-ink">
                 Preferenze cookie
               </p>
               <p className="eg-body-muted mt-2 text-sm">
@@ -122,7 +122,7 @@ export function CookieConsent() {
                 abiliti. Puoi leggere la{" "}
                 <Link
                   href="/cookie-policy"
-                  className="font-medium text-eg-cotto-dark"
+                  className="font-medium text-eg-brand-strong"
                   prefetch={false}
                 >
                   cookie policy
@@ -161,7 +161,7 @@ export function CookieConsent() {
       ) : null}
 
       {isPanelOpen ? (
-        <div className="fixed inset-0 z-50 grid place-items-end bg-eg-terra/70 p-3 md:place-items-center md:p-6">
+        <div className="fixed inset-0 z-50 grid place-items-end bg-eg-ink/70 p-3 md:place-items-center md:p-6">
           <section
             role="dialog"
             aria-modal="true"
@@ -171,7 +171,7 @@ export function CookieConsent() {
             <div>
               <p
                 id="cookie-preferences-title"
-                className="text-lg font-medium text-eg-terra"
+                className="text-lg font-medium text-eg-ink"
               >
                 Preferenze cookie
               </p>
@@ -182,17 +182,17 @@ export function CookieConsent() {
             </div>
 
             <div className="mt-5 grid gap-3">
-              <div className="border border-eg-hairline bg-eg-calce p-4">
+              <div className="border border-eg-border bg-eg-surface p-4">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     checked
                     disabled
-                    className="mt-1 accent-eg-cotto"
+                    className="mt-1 accent-eg-brand"
                     aria-label="Cookie necessari sempre attivi"
                   />
                   <div>
-                    <p className="text-sm font-medium text-eg-terra">
+                    <p className="text-sm font-medium text-eg-ink">
                       Necessari
                     </p>
                     <p className="eg-form-help mt-1">
@@ -206,12 +206,12 @@ export function CookieConsent() {
               {optionalCategories.map((category) => (
                 <label
                   key={category.id}
-                  className="flex cursor-pointer items-start gap-3 border border-eg-hairline bg-eg-calce p-4"
+                  className="flex cursor-pointer items-start gap-3 border border-eg-border bg-eg-surface p-4"
                 >
                   <input
                     type="checkbox"
                     checked={draft[category.id]}
-                    className="mt-1 accent-eg-cotto"
+                    className="mt-1 accent-eg-brand"
                     onChange={(event) => {
                       setDraft((current) => ({
                         ...current,
@@ -220,7 +220,7 @@ export function CookieConsent() {
                     }}
                   />
                   <span>
-                    <span className="block text-sm font-medium text-eg-terra">
+                    <span className="block text-sm font-medium text-eg-ink">
                       {category.label}
                     </span>
                     <span className="eg-form-help mt-1 block">

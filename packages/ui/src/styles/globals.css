@@ -1,22 +1,136 @@
-:root {
-  --eg-calce: #fefcf8;
-  --eg-calce-2: #f1ebdf;
-  --eg-terra: #2b2520;
-  --eg-cotto: #bf6f4a;
-  --eg-cotto-dark: #a35a39;
-  --eg-salvia: #7e8c6f;
-  --eg-verde-conferma: #36b26b;
-  --eg-miele: #d9a441;
-  --eg-ardesia: rgba(43, 37, 32, 0.62);
-  --eg-ardesia-2: rgba(43, 37, 32, 0.38);
-  --eg-hairline: rgba(43, 37, 32, 0.14);
-  --eg-calce-translucent: rgba(248, 244, 237, 0.72);
-  --eg-cotto-tint: rgba(191, 111, 74, 0.12);
-  --eg-miele-tint: rgba(217, 164, 65, 0.24);
-  --eg-panel-bg: rgba(248, 244, 237, 0.76);
-  --eg-alert-border: rgba(191, 111, 74, 0.42);
-  --eg-alert-bg: rgba(191, 111, 74, 0.08);
+/*
+ * ESIGENTA — PALETTE ATTIVA
+ * Questo blocco descrive i valori realmente in uso in :root, sotto.
+ * docs/color-system.md è disallineato con questa palette (hex diversi,
+ * nessun token accent/error/success/warning, e riporta ancora lo status
+ * "proposta da approvare prima della migrazione") — non è stato
+ * aggiornato in questa fase perché appartiene a un flusso di
+ * pianificazione parallelo, non toccato senza indicazione esplicita.
+ *
+ * Identitari
+ * Page:          #FFF8F0
+ * Ink:           #202B2E
+ * Brand:         #0A7F82
+ *
+ * Strutturali
+ * Surface:       #FFFFFF
+ * Surface muted: #F3ECE3
+ * Text muted:    #67706E
+ * Border:        #DED5CA
+ *
+ * Derivati brand
+ * Brand strong:  #075A60
+ * Brand soft:    #DDF3F0
+ * On brand:      #FFFFFF
+ *
+ * Accento (uso puntuale — vedi regola sotto)
+ * Accent:        #D7F45B
+ *
+ * Feedback (testo/icona — vedi *-soft/*-border in :root per sfondo/bordo)
+ * Error:         #8F3328
+ * Success:       #285E45
+ * Warning:       #8A5A12
+ *
+ * Non introdurre nuovi colori senza verificarne il ruolo qui.
+ *
+ * DISTRIBUZIONE VISIVA INDICATIVA
+ *
+ * Page:                    55–65%
+ * Surface:                 20–25%
+ * Surface muted:            5–10%
+ * Ink, testi e bordi:       8–12%
+ * Intera famiglia Brand:    3–5% massimo
+ *
+ * Le percentuali indicano la presenza visiva percepita,
+ * non una misurazione matematica del DOM.
+ *
+ * Brand, Brand strong e Brand soft appartengono
+ * alla stessa quota complessiva.
+ *
+ * Brand soft non è una superficie neutra.
+ * Page deve restare dominante.
+ * Surface va usato solo per superfici reali.
+ * Surface muted deve restare raro.
+ * I contenitori strutturali devono restare trasparenti.
+ *
+ * REGOLA ACCENT
+ *
+ * Su superfici scure con contrasto adeguato (es. Brand strong) l'Accent
+ * può essere usato come testo. Su superfici chiare va usato solo come
+ * piccolo riempimento o segno grafico, oppure accompagnato da testo Ink
+ * — mai come colore di testo esteso e leggibile su Page o Surface.
+ *
+ * ECCEZIONE IDENTITARIA — HERO
+ *
+ * La Hero della home è l'unica grande superficie identitaria
+ * colorata prevista nel sito.
+ *
+ * Sfondo Hero:               Brand strong (#075A60)
+ * Testo principale su Hero:  On brand (#FFFFFF)
+ * Testo secondario su Hero:  On brand muted (rgba(255, 255, 255, 0.76))
+ * Bordi/separatori su Hero:  On brand border (rgba(255, 255, 255, 0.22))
+ * Form e pannelli su Hero:   Surface
+ * Azione principale nel form: Brand
+ *
+ * Il limite "Intera famiglia Brand: 3–5% massimo" riguarda l'uso
+ * del Brand come accento nelle superfici neutre, non la Hero.
+ *
+ * La Hero è un'eccezione identitaria controllata: non autorizza
+ * altre sezioni, card o contenitori colorati di verde/petrolio.
+ *
+ * Il resto della home deve restare prevalentemente Page e Surface.
+ */
 
+:root {
+  /* ============================================================
+   * SISTEMA COLORI SEMANTICO
+   * Fonte: docs/color-system.md — non introdurre nuovi colori
+   * senza aggiornare il documento.
+   * ============================================================ */
+
+  /* Superfici */
+  --eg-color-page: #fcfcfc;
+  --eg-color-surface: #ffffff;
+  --eg-color-surface-muted: #f6f5f4;
+
+  /* Testi e bordi */
+  --eg-color-ink: #202b2e;
+  --eg-color-text-muted: #67706e;
+  --eg-color-border: #ded5ca;
+
+  /* Brand */
+  --eg-color-brand: #0a7f82;
+  --eg-color-brand-strong: #075a60;
+  --eg-color-brand-soft: #ddf3f0;
+
+  /* Contenuti on-brand: testo/bordi sopra superfici Brand (es. Hero) */
+  --eg-color-on-brand: #ffffff;
+  --eg-color-on-brand-muted: rgba(255, 255, 255, 0.76);
+  --eg-color-on-brand-border: rgba(255, 255, 255, 0.22);
+
+  /* Accent: dettagli puntuali già selezionati nei componenti che lo
+   * consumano. Mai come default di massa (CTA, fill estesi, stati). */
+  --eg-color-accent: #d7f45b;
+
+  /* Feedback: error, success, warning.
+   * Ruoli: colore pieno per testo/icona; *-soft per lo sfondo;
+   * *-border per il bordo. Non usare Brand o Accent per gli stati. */
+  --eg-color-error: #8f3328;
+  --eg-color-error-soft: #fbe9e5;
+  --eg-color-error-border: #e9b6ac;
+
+  --eg-color-success: #285e45;
+  --eg-color-success-soft: #e7f2eb;
+  --eg-color-success-border: #b8d6c4;
+
+  --eg-color-warning: #8a5a12;
+  --eg-color-warning-soft: #faf3e2;
+  --eg-color-warning-border: #e6c789;
+
+  /* ============================================================
+   * TOKEN NON CROMATICI
+   * Ombre, radius, tipografia, misure header.
+   * ============================================================ */
   --eg-shadow-elevation:
     0 1px 2px rgba(23, 21, 17, 0.04), 0 12px 32px rgba(23, 21, 17, 0.07);
   --eg-shadow-slab:
@@ -31,7 +145,6 @@
 
   --eg-text-display: clamp(34px, 5.2vw, 60px);
   --eg-text-heading: clamp(28px, 3.6vw, 42px);
-  --eg-text-lede: 16px;
 
   --eg-font-brand: var(--font-brand), sans-serif;
   --eg-font-ui: var(--font-ui), sans-serif;
@@ -43,21 +156,50 @@
 @theme inline {
   --font-sans: var(--eg-font-brand);
 
-  --color-eg-calce: var(--eg-calce);
-  --color-eg-calce-2: var(--eg-calce-2);
-  --color-eg-calce-translucent: var(--eg-calce-translucent);
-  --color-eg-terra: var(--eg-terra);
-  --color-eg-cotto: var(--eg-cotto);
-  --color-eg-cotto-dark: var(--eg-cotto-dark);
-  --color-eg-cotto-tint: var(--eg-cotto-tint);
-  --color-eg-salvia: var(--eg-salvia);
-  --color-eg-verde-conferma: var(--eg-verde-conferma);
-  --color-eg-miele: var(--eg-miele);
-  --color-eg-miele-tint: var(--eg-miele-tint);
-  --color-eg-ardesia: var(--eg-ardesia);
-  --color-eg-ardesia-2: var(--eg-ardesia-2);
-  --color-eg-hairline: var(--eg-hairline);
+  /* ============================================================
+   * SISTEMA COLORI SEMANTICO
+   * Palette approvata — fonte: docs/color-system.md. Ogni token qui
+   * sotto rispecchia uno definito in :root sopra.
+   * ============================================================ */
 
+  /* Superfici */
+  --color-eg-page: var(--eg-color-page);
+  --color-eg-surface: var(--eg-color-surface);
+  --color-eg-surface-muted: var(--eg-color-surface-muted);
+
+  /* Testi e bordi */
+  --color-eg-ink: var(--eg-color-ink);
+  --color-eg-text-muted: var(--eg-color-text-muted);
+  --color-eg-border: var(--eg-color-border);
+
+  /* Brand */
+  --color-eg-brand: var(--eg-color-brand);
+  --color-eg-brand-strong: var(--eg-color-brand-strong);
+  --color-eg-brand-soft: var(--eg-color-brand-soft);
+
+  /* Contenuti on-brand */
+  --color-eg-on-brand: var(--eg-color-on-brand);
+  --color-eg-on-brand-muted: var(--eg-color-on-brand-muted);
+  --color-eg-on-brand-border: var(--eg-color-on-brand-border);
+
+  /* Accent */
+  --color-eg-accent: var(--eg-color-accent);
+
+  /* Feedback: testo/icona, sfondo, bordo. */
+  --color-eg-error: var(--eg-color-error);
+  --color-eg-error-soft: var(--eg-color-error-soft);
+  --color-eg-error-border: var(--eg-color-error-border);
+
+  --color-eg-success: var(--eg-color-success);
+  --color-eg-success-soft: var(--eg-color-success-soft);
+  --color-eg-success-border: var(--eg-color-success-border);
+
+  --color-eg-warning: var(--eg-color-warning);
+  --color-eg-warning-soft: var(--eg-color-warning-soft);
+  --color-eg-warning-border: var(--eg-color-warning-border);
+
+  /* Token di fondazione non di colore (ombre, radius): condivisi
+   * da entrambi i sistemi sopra. */
   --shadow-eg-elevation: var(--eg-shadow-elevation);
   --shadow-eg-slab: var(--eg-shadow-slab);
   --shadow-eg-elevation-lg: var(--eg-shadow-elevation-lg);
@@ -65,41 +207,29 @@
   --radius-eg-sm: var(--eg-radius-sm);
   --radius-eg-md: var(--eg-radius-md);
   --radius-eg-lg: var(--eg-radius-lg);
-
-  --text-eg-display: var(--eg-text-display);
-  --text-eg-display--line-height: 1.1;
-  --text-eg-display--letter-spacing: -0.02em;
-  --text-eg-display--font-weight: 400;
-
-  --text-eg-heading: var(--eg-text-heading);
-  --text-eg-heading--line-height: 1.15;
-  --text-eg-heading--letter-spacing: -0.01em;
-  --text-eg-heading--font-weight: 400;
-
-  --text-eg-lede: var(--eg-text-lede);
 }
 
 html {
-  background: var(--eg-calce);
+  background: var(--eg-color-page);
 }
 
 body {
-  background: var(--eg-calce);
-  color: var(--eg-terra);
+  background: var(--eg-color-page);
+  color: var(--eg-color-ink);
   font-family: var(--eg-font-brand);
 }
 
 @layer components {
   .eg-page {
+    /* color/font-family already come from body { } below — no need to
+     * redeclare them here, they inherit automatically. */
     position: relative;
     min-height: 100vh;
     overflow: hidden;
-    color: var(--eg-terra);
-    font-family: var(--eg-font-brand);
   }
 
   .eg-page-bg {
-    background: var(--eg-calce);
+    background: var(--eg-color-page);
   }
 
   .eg-thread {
@@ -113,8 +243,8 @@ body {
     background: linear-gradient(
       to bottom,
       transparent,
-      var(--eg-hairline) 9%,
-      var(--eg-hairline) 92%,
+      var(--eg-color-border) 9%,
+      var(--eg-color-border) 92%,
       transparent
     );
   }
@@ -159,7 +289,8 @@ body {
   .eg-list-status,
   .eg-doc-meta,
   .eg-shell-nav-link,
-  .eg-status-label {
+  .eg-status-label,
+  .eg-form-eyebrow {
     font-family: var(--eg-font-ui);
     text-transform: uppercase;
   }
@@ -168,20 +299,20 @@ body {
     font-size: 0.75rem;
     line-height: 1rem;
     letter-spacing: 0.12em;
-    color: var(--eg-cotto-dark);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-list-status {
     font-size: 11px;
     letter-spacing: 0.12em;
-    color: var(--eg-ardesia-2);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-shell-nav-link {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.08em;
-    color: var(--eg-ardesia);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-eyebrow,
@@ -190,8 +321,9 @@ body {
   .eg-table-label,
   .eg-scope-tag,
   .eg-doc-meta,
-  .eg-status-label {
-    color: var(--eg-ardesia);
+  .eg-status-label,
+  .eg-form-eyebrow {
+    color: var(--eg-color-text-muted);
     font-size: 12px;
     letter-spacing: 0.12em;
   }
@@ -203,9 +335,8 @@ body {
     letter-spacing: -0.02em;
   }
 
-  .eg-h1 strong,
-  .eg-h1-bold {
-    color: var(--eg-cotto-dark);
+  .eg-h1 strong {
+    color: var(--eg-color-ink);
     font-weight: 600;
   }
 
@@ -229,7 +360,7 @@ body {
   }
 
   .eg-body-muted {
-    color: var(--eg-ardesia);
+    color: var(--eg-color-text-muted);
     font-size: 15px;
     line-height: 1.65;
   }
@@ -255,31 +386,31 @@ body {
   }
 
   .eg-button-primary {
-    border: 1px solid var(--eg-terra);
-    background: var(--eg-terra);
-    color: var(--eg-calce);
+    border: 1px solid var(--eg-color-brand-strong);
+    background: var(--eg-color-brand-strong);
+    color: var(--eg-color-on-brand);
   }
 
   .eg-button-primary:hover {
-    border-color: var(--eg-cotto-dark);
-    background: var(--eg-cotto-dark);
+    border-color: var(--eg-color-brand);
+    background: var(--eg-color-brand);
   }
 
   .eg-button-ghost {
-    border: 1px solid var(--eg-terra);
+    border: 1px solid var(--eg-color-brand-strong);
     background: transparent;
-    color: var(--eg-terra);
+    color: var(--eg-color-brand-strong);
   }
 
   .eg-button-ghost:hover {
-    border-color: var(--eg-terra);
-    background: var(--eg-terra);
-    color: var(--eg-calce);
+    border-color: var(--eg-color-brand-strong);
+    background: var(--eg-color-brand-strong);
+    color: var(--eg-color-on-brand);
   }
 
   .eg-nav-link,
   .eg-action-link {
-    color: var(--eg-ardesia);
+    color: var(--eg-color-text-muted);
     font-size: 12px;
     letter-spacing: 0.12em;
     transition: color 220ms ease;
@@ -288,7 +419,7 @@ body {
   .eg-action-link:hover,
   a.eg-nav-link:hover,
   .eg-nav-link a:hover {
-    color: var(--eg-cotto-dark);
+    color: var(--eg-color-brand-strong);
   }
 
   .eg-footer {
@@ -297,22 +428,13 @@ body {
     font-size: 0.75rem;
     line-height: 1rem;
     letter-spacing: 0.08em;
-    color: var(--eg-ardesia-2);
-  }
-
-  .eg-pro-tag {
-    font-family: var(--eg-font-ui);
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--eg-cotto-dark);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-panel {
-    border: 1px solid var(--eg-hairline);
+    border: 1px solid var(--eg-color-border);
     border-radius: var(--eg-radius-lg);
-    background: var(--eg-panel-bg);
+    background: var(--eg-color-surface);
     box-shadow: var(--eg-shadow-slab);
   }
 
@@ -322,17 +444,9 @@ body {
   }
 
   .eg-form-label {
-    color: var(--eg-terra);
+    color: var(--eg-color-ink);
     font-size: 14px;
     font-weight: 500;
-  }
-
-  .eg-form-eyebrow {
-    font-family: var(--eg-font-ui);
-    text-transform: uppercase;
-    color: var(--eg-ardesia);
-    font-size: 12px;
-    letter-spacing: 0.12em;
   }
 
   .eg-step-label {
@@ -341,24 +455,20 @@ body {
     font-size: 0.75rem;
     line-height: 1rem;
     letter-spacing: 0.04em;
-    color: var(--eg-cotto-dark);
+    color: var(--eg-color-ink);
   }
 
-  .eg-index-tag {
+  .eg-index-tag,
+  .eg-field-caption {
     font-family: var(--eg-font-ui);
-    color: var(--eg-ardesia-2);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-stat-value {
     font-family: var(--eg-font-ui);
     font-size: 26px;
     letter-spacing: 0.02em;
-    color: var(--eg-cotto-dark);
-  }
-
-  .eg-field-caption {
-    font-family: var(--eg-font-ui);
-    color: var(--eg-ardesia);
+    color: var(--eg-color-ink);
   }
 
   .eg-chip-text {
@@ -370,14 +480,7 @@ body {
   .eg-ui-muted,
   .eg-metadata {
     font-family: var(--eg-font-ui);
-  }
-
-  .eg-ui-muted {
-    color: var(--eg-ardesia);
-  }
-
-  .eg-metadata {
-    color: var(--eg-ardesia-2);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-kpi-value {
@@ -392,25 +495,36 @@ body {
     text-transform: uppercase;
     font-size: 11px;
     letter-spacing: 0.1em;
-    color: var(--eg-ardesia);
+    color: var(--eg-color-text-muted);
   }
 
   .eg-form-help {
-    color: var(--eg-ardesia);
+    color: var(--eg-color-text-muted);
     font-size: 13px;
     line-height: 1.55;
   }
 
   .eg-alert {
-    border: 1px solid var(--eg-alert-border);
+    border: 1px solid var(--eg-color-border);
     border-radius: var(--eg-radius-lg);
-    background: var(--eg-alert-bg);
+    background: var(--eg-color-surface-muted);
     padding: 12px 14px;
-    color: var(--eg-terra);
+    color: var(--eg-color-ink);
     font-size: 14px;
     line-height: 1.45;
   }
 
+  .eg-alert-error {
+    border-color: var(--eg-color-error-border);
+    background-color: var(--eg-color-error-soft);
+    color: var(--eg-color-error);
+  }
+
+  .eg-alert-success {
+    border-color: var(--eg-color-success-border);
+    background-color: var(--eg-color-success-soft);
+    color: var(--eg-color-success);
+  }
 }
 
 @media (max-width: 860px) {
@@ -430,7 +544,6 @@ body {
   .eg-container-narrow {
     padding-inline: 22px;
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {

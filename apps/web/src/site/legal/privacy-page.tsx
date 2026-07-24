@@ -61,7 +61,7 @@ export function PrivacyPage() {
             <header className="mx-auto max-w-[760px] text-center">
               <p className="eg-eyebrow">Privacy</p>
               <h1 className="eg-h1 mt-5">Informativa privacy.</h1>
-              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">
                 Come {legalProfile.projectName} tratta i dati personali raccolti
                 tramite sito pubblico, richieste cliente, area impresa,
                 pagamenti, upload foto ed email transazionali.
@@ -91,7 +91,7 @@ export function PrivacyPage() {
                 </dl>
 
                 {initialNotice || fiscalNotice ? (
-                  <p className="eg-body-muted mt-5 border-t border-eg-hairline pt-4">
+                  <p className="eg-body-muted mt-5 border-t border-eg-border pt-4">
                     {initialNotice ?? fiscalNotice}
                   </p>
                 ) : null}
@@ -136,7 +136,7 @@ export function PrivacyPage() {
                 </p>
               </section>
 
-              <section className="eg-panel bg-eg-calce-2 p-6">
+              <section className="eg-panel bg-eg-surface-muted p-6">
                 <h2 className="eg-h3">Nota di revisione</h2>
                 <p className="eg-body-muted mt-3">
                   Documento operativo in bozza. Deve essere revisionato da un
@@ -159,7 +159,7 @@ export function PrivacyPage() {
 function LegalDefinition({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-medium text-eg-terra">{label}</dt>
+      <dt className="font-medium text-eg-ink">{label}</dt>
       <dd>{value}</dd>
     </div>
   );

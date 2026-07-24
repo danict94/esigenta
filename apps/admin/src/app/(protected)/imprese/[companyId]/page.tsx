@@ -249,7 +249,7 @@ function SectionCard({
 }) {
   return (
     <Card className="p-6">
-      <h2 className="text-lg font-semibold tracking-tight text-eg-terra">
+      <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
         {title}
       </h2>
       <div className="mt-4">{children}</div>
@@ -265,9 +265,9 @@ function Field({
   value: ReactNode
 }) {
   return (
-    <div className="grid gap-1 border-b border-eg-hairline py-3 last:border-b-0 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-6">
-      <dt className="text-sm font-medium text-eg-ardesia">{label}</dt>
-      <dd className="text-sm text-eg-terra">{value}</dd>
+    <div className="grid gap-1 border-b border-eg-border py-3 last:border-b-0 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-6">
+      <dt className="text-sm font-medium text-eg-text-muted">{label}</dt>
+      <dd className="text-sm text-eg-ink">{value}</dd>
     </div>
   )
 }
@@ -280,11 +280,11 @@ function DocumentRow({
   companyId: string
 }) {
   return (
-    <li className="border-b border-eg-hairline pb-5 last:border-b-0 last:pb-0">
+    <li className="border-b border-eg-border pb-5 last:border-b-0 last:pb-0">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-eg-terra">{document.label}</p>
-          <p className="mt-1 text-xs text-eg-ardesia">
+          <p className="text-sm font-semibold text-eg-ink">{document.label}</p>
+          <p className="mt-1 text-xs text-eg-text-muted">
             {document.requiredByDefault ? "Obbligatorio" : "Consigliato"}
           </p>
         </div>
@@ -295,13 +295,13 @@ function DocumentRow({
       </div>
 
       {document.status === "MISSING" || !document.id ? (
-        <p className="mt-3 text-sm text-eg-ardesia">Non caricato.</p>
+        <p className="mt-3 text-sm text-eg-text-muted">Non caricato.</p>
       ) : (
         <div className="mt-3 grid gap-2">
-          <p className="text-sm text-eg-terra">
+          <p className="text-sm text-eg-ink">
             {document.fileName} · {formatFileSize(document.sizeBytes)}
           </p>
-          <p className="text-xs text-eg-ardesia">
+          <p className="text-xs text-eg-text-muted">
             Caricato il {formatDate(document.uploadedAt)}
             {document.uploadedByUser
               ? ` da ${document.uploadedByUser.name ?? document.uploadedByUser.email}`
@@ -309,13 +309,13 @@ function DocumentRow({
           </p>
 
           {document.status === "REJECTED" && document.rejectionReason ? (
-            <p className="text-xs text-eg-cotto-dark">
+            <p className="text-xs text-eg-error">
               Motivo: {document.rejectionReason}
             </p>
           ) : null}
 
           {document.status === "APPROVED" && document.reviewedByAdminUser ? (
-            <p className="text-xs text-eg-ardesia">
+            <p className="text-xs text-eg-text-muted">
               Approvato il {formatDate(document.reviewedAt)} da{" "}
               {document.reviewedByAdminUser.name ?? document.reviewedByAdminUser.email}
             </p>
@@ -326,7 +326,7 @@ function DocumentRow({
               href={`/api/company-documents/${document.id}/download`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-eg-cotto"
+              className="text-sm font-medium text-eg-brand-strong"
             >
               Apri documento
             </a>
@@ -411,14 +411,14 @@ export default async function CompanyDetailPage({
     <PageShell size="lg" className="py-8 md:py-10">
       <Link
         href="/imprese"
-        className="text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
+        className="text-sm font-medium text-eg-text-muted transition-colors hover:text-eg-ink"
       >
         ← Imprese
       </Link>
 
-      <header className="mt-4 border-b border-eg-hairline pb-7">
+      <header className="mt-4 border-b border-eg-border pb-7">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight text-eg-terra">
+          <h1 className="text-3xl font-semibold tracking-tight text-eg-ink">
             {company.name}
           </h1>
           <AdminStatusPill
@@ -466,7 +466,7 @@ export default async function CompanyDetailPage({
           </dl>
 
           {actions.length > 0 ? (
-            <form className="mt-6 grid gap-3 border-t border-eg-hairline pt-6">
+            <form className="mt-6 grid gap-3 border-t border-eg-border pt-6">
               <input type="hidden" name="companyId" value={company.id} />
               <Textarea
                 name="reason"

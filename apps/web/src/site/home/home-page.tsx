@@ -28,7 +28,7 @@ export function HomePage() {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }}
       />
       <Grain />
-      <Navbar />
+      <Navbar tone="brand" heroBoundaryId={HERO_BOUNDARY_ID} />
       <HomeExperience heroBoundaryId={HERO_BOUNDARY_ID} />
       <Footer />
       <BusinessAccessTab heroBoundaryId={HERO_BOUNDARY_ID} />

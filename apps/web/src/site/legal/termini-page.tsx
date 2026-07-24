@@ -41,7 +41,7 @@ export function TerminiPage() {
             <header className="mx-auto max-w-[760px] text-center">
               <p className="eg-eyebrow">Termini</p>
               <h1 className="eg-h1 mt-5">Termini di servizio.</h1>
-              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">
                 Le regole d&apos;uso di {legalProfile.projectName}, piattaforma di
                 raccolta richieste e contatto tra clienti e
                 imprese/professionisti.
@@ -72,7 +72,7 @@ export function TerminiPage() {
                   </p>
                 ) : null}
                 {initialNotice || fiscalNotice ? (
-                  <p className="eg-body-muted mt-4 border-t border-eg-hairline pt-4">
+                  <p className="eg-body-muted mt-4 border-t border-eg-border pt-4">
                     {initialNotice ?? fiscalNotice}
                   </p>
                 ) : null}
@@ -121,7 +121,7 @@ export function TerminiPage() {
                 </p>
               </section>
 
-              <section className="eg-panel bg-eg-calce-2 p-6">
+              <section className="eg-panel bg-eg-surface-muted p-6">
                 <h2 className="eg-h3">Nota di revisione</h2>
                 <p className="eg-body-muted mt-3">
                   Documento operativo in bozza. Deve essere revisionato prima del

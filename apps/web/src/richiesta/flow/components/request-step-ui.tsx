@@ -50,10 +50,10 @@ type RequestStepUIProps = {
 };
 
 const inputClass =
-  "w-full border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark";
+  "w-full border-0 border-b border-eg-ink bg-transparent px-0 py-3 text-base text-eg-ink outline-none placeholder:text-eg-text-muted focus:border-eg-brand";
 
 const textareaClass =
-  "min-h-36 w-full resize-y border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base leading-7 text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark";
+  "min-h-36 w-full resize-y border-0 border-b border-eg-ink bg-transparent px-0 py-3 text-base leading-7 text-eg-ink outline-none placeholder:text-eg-text-muted focus:border-eg-brand";
 
 function joinClasses(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -163,8 +163,8 @@ function renderCapabilityInput({
                 className={joinClasses(
                   "flex min-h-12 w-full items-center justify-start border px-4 py-3 text-left text-sm font-medium leading-6 transition-colors",
                   selected
-                    ? "border-eg-cotto bg-eg-calce-2 text-eg-terra"
-                    : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:border-eg-cotto hover:text-eg-terra",
+                    ? "border-eg-brand bg-eg-brand-soft text-eg-ink"
+                    : "border-eg-border bg-eg-surface text-eg-text-muted hover:border-eg-brand hover:text-eg-ink",
                 )}
               >
                 <span className="flex w-full items-center gap-3">
@@ -172,13 +172,13 @@ function renderCapabilityInput({
                     className={joinClasses(
                       "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
                       selected
-                        ? "border-eg-cotto bg-eg-cotto"
-                        : "border-eg-hairline bg-eg-calce",
+                        ? "border-eg-brand-strong bg-eg-brand-strong"
+                        : "border-eg-border bg-eg-surface",
                     )}
                     aria-hidden="true"
                   >
                     {selected ? (
-                      <span className="h-2 w-2 rounded-full bg-eg-calce" />
+                      <span className="h-2 w-2 rounded-full bg-eg-on-brand" />
                     ) : null}
                   </span>
 
@@ -212,8 +212,8 @@ function renderCapabilityInput({
                 className={joinClasses(
                   "flex min-h-12 w-full items-center justify-start border px-4 py-3 text-left text-sm font-medium leading-6 transition-colors",
                   selected
-                    ? "border-eg-cotto bg-eg-calce-2 text-eg-terra"
-                    : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:border-eg-cotto hover:text-eg-terra",
+                    ? "border-eg-brand bg-eg-brand-soft text-eg-ink"
+                    : "border-eg-border bg-eg-surface text-eg-text-muted hover:border-eg-brand hover:text-eg-ink",
                 )}
               >
                 <span className="flex w-full items-center gap-3">
@@ -221,8 +221,8 @@ function renderCapabilityInput({
                     className={joinClasses(
                       "flex h-5 w-5 shrink-0 items-center justify-center border text-[11px]",
                       selected
-                        ? "border-eg-cotto bg-eg-cotto text-eg-calce"
-                        : "border-eg-hairline bg-eg-calce text-transparent",
+                        ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                        : "border-eg-border bg-eg-surface text-transparent",
                     )}
                     aria-hidden="true"
                   >
@@ -332,7 +332,7 @@ export function RequestStepUI({
         <div className="flex flex-col gap-8">
           <div className="flex flex-col items-center gap-4 text-center">
             <span
-              className="flex h-14 w-14 items-center justify-center rounded-full bg-eg-calce-2 text-eg-cotto-dark"
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-eg-success-soft text-eg-success"
               aria-hidden="true"
             >
               &#10003;
@@ -388,14 +388,14 @@ export function RequestStepUI({
       </p>
 
       <div>
-        <div className="w-full border border-eg-hairline bg-eg-calce-2 px-4 py-3 sm:w-fit sm:max-w-full">
+        <div className="w-full border border-eg-border bg-eg-surface-muted px-4 py-3 sm:w-fit sm:max-w-full">
           <p className="eg-eyebrow">Intervento selezionato</p>
-          <p className="mt-1 break-words text-sm font-medium leading-6 text-eg-terra">
+          <p className="mt-1 break-words text-sm font-medium leading-6 text-eg-ink">
             {selectedInterventionName}
           </p>
         </div>
 
-        <div className="mt-6 h-px w-20 bg-eg-cotto-dark" aria-hidden="true" />
+        <div className="mt-6 h-px w-20 bg-eg-brand-strong" aria-hidden="true" />
 
         <div className="mt-6">
           <p className="eg-eyebrow">
@@ -462,16 +462,16 @@ export function RequestStepUI({
         })
       )}
 
-      {error ? <p className="text-sm text-eg-cotto-dark">{error}</p> : null}
+      {error ? <p className="text-sm text-eg-error">{error}</p> : null}
 
       {isLastStep ? (
         <p className="eg-form-help">
           Inviando la richiesta confermi di aver letto l&apos;
-          <Link href="/privacy" className="font-medium text-eg-cotto-dark" prefetch={false}>
+          <Link href="/privacy" className="font-medium text-eg-brand-strong" prefetch={false}>
             informativa privacy
           </Link>{" "}
           e accetti i{" "}
-          <Link href="/termini" className="font-medium text-eg-cotto-dark" prefetch={false}>
+          <Link href="/termini" className="font-medium text-eg-brand-strong" prefetch={false}>
             termini del servizio
           </Link>
           .

@@ -47,7 +47,7 @@ export async function AreaImpresaMarketingPage() {
     });
 
   return (
-    <PublicShell hero={<ProHeader />} showFooter={false}>
+    <PublicShell header={<ProHeader />} showFooter={false}>
       <div className="eg-page eg-page-bg">
         <Grain />
 

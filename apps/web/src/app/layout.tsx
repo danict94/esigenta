@@ -26,7 +26,7 @@ export default function RootLayout({
       lang="it"
       className={`${fontVariables} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-eg-calce font-sans text-eg-terra">
+      <body className="flex min-h-full flex-col">
         {children}
         <CookieConsent />
       </body>

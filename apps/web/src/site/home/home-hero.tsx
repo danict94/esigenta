@@ -176,14 +176,14 @@ export function HomeHero() {
 
   return (
     <section
-      className="relative z-10 flex h-screen min-h-[680px] items-center justify-center bg-eg-calce"
+      className="relative z-10 flex min-h-[620px] items-center justify-center bg-eg-brand-strong text-eg-on-brand min-[861px]:min-h-[640px]"
       aria-labelledby="home-title"
     >
-      <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden opacity-70 font-(family-name:--eg-font-ui) min-[861px]:opacity-100" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0 z-[1] hidden overflow-hidden opacity-70 font-(family-name:--eg-font-ui) min-[601px]:block min-[861px]:opacity-100" aria-hidden="true">
         {scatterTags.map((tag) => (
           <span
             key={tag.label}
-            className="absolute left-1/2 top-[47%] border border-eg-hairline bg-transparent px-2.5 py-[7px] text-[10px] uppercase tracking-[0.1em] text-eg-ardesia will-change-transform [animation:eg-home-settle_1100ms_cubic-bezier(0.65,0,0.15,1)_both,eg-home-tag-float_7600ms_ease-in-out_infinite] [animation-delay:var(--delay,0ms),calc(var(--delay,0ms)+1100ms)] [transform:translate(var(--dx),var(--dy))_rotate(var(--dr))] min-[861px]:px-3 min-[861px]:py-2 min-[861px]:text-xs"
+            className="absolute left-1/2 top-[47%] border border-eg-on-brand-border bg-transparent px-2.5 py-[7px] text-[10px] uppercase tracking-[0.1em] text-eg-on-brand-muted will-change-transform [animation:eg-home-settle_1100ms_cubic-bezier(0.65,0,0.15,1)_both,eg-home-tag-float_7600ms_ease-in-out_infinite] [animation-delay:var(--delay,0ms),calc(var(--delay,0ms)+1100ms)] [transform:translate(var(--dx),var(--dy))_rotate(var(--dr))] min-[861px]:px-3 min-[861px]:py-2 min-[861px]:text-xs"
             style={
               {
                 "--dx": tag.dx,
@@ -205,18 +205,17 @@ export function HomeHero() {
 
       <div className="relative z-[2] w-[min(100%,760px)] px-[22px] text-center [animation:eg-home-fade-up_900ms_ease_180ms_both]">
         
-        <h1 id="home-title" className="eg-h1 mt-5">
-          Trasformiamo il caos di casa in <strong>un percorso</strong> chiaro e affidabile.
+        <h1 id="home-title" className="eg-h1 mt-5 text-balance text-[clamp(34px,4.8vw,56px)]">
+          Trasformiamo il caos di casa in <strong className="inline-block whitespace-nowrap text-eg-accent font-semibold">un percorso</strong> chiaro e affidabile.
         </h1>
-        <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
-          Non un elenco infinito di preventivi. Un percorso che puoi seguire, passo dopo passo,
-          fino alla scelta giusta.
+        <p className="mx-auto mt-[22px] max-w-[44ch] text-balance text-base leading-[1.65] text-eg-on-brand-muted">
+          Descrivi il lavoro, ricevi e confronta proposte da professionisti qualificati.
         </p>
 
-        <div ref={searchRef} className="relative z-[4] mt-[38px] inline-block w-[min(100%,42ch)] max-[860px]:w-[min(100%,200px)]">
-          <p className="eg-form-eyebrow mb-3">Di cosa hai bisogno?</p>
+        <div ref={searchRef} className="relative z-[4] mt-[38px] w-full max-w-[600px] mx-auto text-left">
+          <p className="eg-form-eyebrow mb-3 text-eg-on-brand-muted font-semibold min-[601px]:mb-5">Di cosa hai bisogno?</p>
           <form
-            className="inline-flex w-[min(100%,42ch)] items-center gap-3.5 border-b-[1.5px] border-eg-terra bg-transparent pb-2.5 max-[860px]:w-[min(100%,200px)] max-[860px]:gap-2.5"
+            className="flex w-full min-h-[60px] items-center gap-2 rounded-eg-sm border border-eg-border bg-eg-surface-muted py-2 pl-4 pr-1.5 transition-colors focus-within:border-eg-brand min-[601px]:pl-5 min-[601px]:pr-2 max-[340px]:flex-col max-[340px]:items-stretch"
             onSubmit={(event) => {
               event.preventDefault();
               submitSearch();
@@ -247,13 +246,14 @@ export function HomeHero() {
               aria-invalid={validationError !== null}
               aria-describedby={validationError ? SEARCH_VALIDATION_MESSAGE_ID : undefined}
               placeholder="Es. ristrutturare bagno"
-              className="min-w-0 flex-1 border-0 bg-transparent text-lg leading-8 text-eg-terra outline-none placeholder:text-eg-ardesia-2 max-[860px]:text-base"
+              className="min-w-0 flex-1 border-0 bg-transparent text-lg font-medium text-eg-ink outline-none placeholder:text-eg-text-muted placeholder:font-medium max-[860px]:text-base"
             />
             <button
               type="submit"
-              className="shrink-0 border-0 bg-transparent font-(family-name:--eg-font-ui) text-[13px] font-medium uppercase tracking-[0.16em] text-eg-cotto-dark transition-colors hover:text-eg-cotto max-[860px]:text-[11px] max-[860px]:tracking-[0.12em]"
+              className="inline-flex shrink-0 min-h-11 items-center justify-center gap-2 rounded-eg-sm border-0 bg-eg-brand px-4 font-(family-name:--eg-font-ui) text-[13px] font-medium uppercase tracking-[0.16em] text-eg-on-brand transition-colors hover:bg-eg-brand-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-brand-strong min-[601px]:px-5 max-[340px]:w-full max-[860px]:text-[11px] max-[860px]:tracking-[0.12em]"
             >
-              CERCA <span aria-hidden="true">&rarr;</span>
+              <span>CERCA</span>
+              <span aria-hidden="true">&rarr;</span>
             </button>
           </form>
 
@@ -262,7 +262,7 @@ export function HomeHero() {
               id={SEARCH_VALIDATION_MESSAGE_ID}
               role="status"
               aria-live="polite"
-              className="mt-3 text-left text-sm leading-5 text-eg-cotto-dark"
+              className="mt-3 text-left text-sm leading-5 text-eg-on-brand"
             >
               {validationError}
             </p>
@@ -270,7 +270,7 @@ export function HomeHero() {
 
           {showDropdown ? (
             <ul
-              className="absolute inset-x-0 top-[calc(100%+10px)] z-20 max-h-[min(20rem,40vh)] overflow-y-auto rounded-eg-sm border border-eg-hairline bg-eg-calce text-left shadow-eg-slab"
+              className="absolute inset-x-0 top-[calc(100%+10px)] z-20 max-h-[min(20rem,40vh)] overflow-y-auto rounded-eg-sm border border-eg-border bg-eg-surface text-left shadow-eg-slab"
               aria-label="Risultati suggeriti"
             >
               <SearchMenuContent
@@ -284,18 +284,12 @@ export function HomeHero() {
             </ul>
           ) : null}
 
-          <p className="eg-form-help mx-auto mt-4 max-w-[34ch] text-center">
+          <p className="eg-form-help mx-auto mt-4 max-w-[34ch] text-center text-eg-on-brand-muted">
             Gratuita e senza impegno: decidi tu se accettare una proposta.
           </p>
         </div>
       </div>
 
-      <a
-        href="#processo"
-        className="absolute bottom-8 left-1/2 z-[3] inline-flex -translate-x-1/2 flex-col items-center gap-2.5 font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.14em] text-eg-ardesia-2 after:block after:h-[34px] after:w-px after:bg-eg-ardesia-2 after:content-[''] after:[animation:eg-home-drip_1500ms_ease-in-out_infinite]"
-      >
-        Scorri
-      </a>
       <HomeHeroMotion />
     </section>
   );
@@ -345,27 +339,6 @@ function HomeHeroMotion() {
             transform: translateY(0);
           }
         }
-
-        @keyframes eg-home-drip {
-          0% {
-            transform: scaleY(0);
-            transform-origin: top;
-            opacity: 0;
-          }
-
-          35% {
-            transform: scaleY(1);
-            transform-origin: top;
-            opacity: 1;
-          }
-
-          70%,
-          100% {
-            transform: scaleY(0);
-            transform-origin: bottom;
-            opacity: 0;
-          }
-        }
       `}
     </style>
   );
@@ -396,10 +369,10 @@ function SearchMenuContent({
 
   if (results.length > 0) {
     return results.map((result) => (
-      <li key={result.id} className="border-b border-eg-hairline last:border-b-0">
+      <li key={result.id} className="border-b border-eg-border last:border-b-0">
         <button
           type="button"
-          className="block w-full border-0 bg-transparent px-[15px] py-3 text-left font-sans text-sm text-eg-ardesia transition-colors hover:bg-eg-calce-2 hover:text-eg-terra"
+          className="block w-full border-0 bg-transparent px-[15px] py-3 text-left font-sans text-sm text-eg-text-muted transition-colors hover:bg-eg-surface-muted hover:text-eg-ink"
           onMouseDown={() => onSelect(result)}
         >
           {result.name}
@@ -417,8 +390,8 @@ function SearchMenuContent({
 
 function SearchMessage({ children }: { children: string }) {
   return (
-    <li className="border-b border-eg-hairline last:border-b-0">
-      <span className="block w-full border-0 bg-transparent px-[15px] py-3 text-left font-sans text-sm text-eg-ardesia">
+    <li className="border-b border-eg-border last:border-b-0">
+      <span className="block w-full border-0 bg-transparent px-[15px] py-3 text-left font-sans text-sm text-eg-text-muted">
         {children}
       </span>
     </li>

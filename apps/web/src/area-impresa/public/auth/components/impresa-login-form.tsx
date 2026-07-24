@@ -87,25 +87,29 @@ export function ImpresaLoginForm() {
       <div className="flex justify-end">
         <Link
           href="/area-impresa/recupera-password"
-          className="text-sm font-medium text-eg-cotto-dark"
+          className="text-sm font-medium text-eg-brand-strong hover:text-eg-brand"
         >
           Recupera password
         </Link>
       </div>
 
-      {error ? <div className="eg-alert">{error}</div> : null}
+      {error ? <div className="eg-alert eg-alert-error">{error}</div> : null}
 
-      <button type="submit" disabled={isSubmitting} className="eg-button-primary w-full">
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="eg-button-primary w-full"
+      >
         {isSubmitting ? "Accesso in corso..." : "Accedi"}
       </button>
 
       <p className="eg-form-help text-center">
         Usando l&apos;area impresa confermi di aver letto l&apos;
-        <Link href="/privacy" className="font-medium text-eg-cotto-dark">
+        <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
           informativa privacy
         </Link>{" "}
         e i{" "}
-        <Link href="/termini" className="font-medium text-eg-cotto-dark">
+        <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
           termini del servizio
         </Link>
         .

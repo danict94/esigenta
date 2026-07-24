@@ -47,7 +47,7 @@ export function ProFlow() {
             </span>
             <ProMarker state={step.state} />
             <h3 className="text-2xl font-medium leading-[1.2] tracking-[-0.01em]">{step.title}</h3>
-            <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.6] text-eg-ardesia">
+            <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.6] text-eg-text-muted">
               {step.body}
             </p>
           </li>

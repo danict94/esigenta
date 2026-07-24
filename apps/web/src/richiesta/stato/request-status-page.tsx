@@ -194,8 +194,8 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
                     />
                   </dl>
 
-                  <div className="border-y border-eg-hairline py-5">
-                    <h2 className="text-sm font-medium text-eg-terra">
+                  <div className="border-y border-eg-border py-5">
+                    <h2 className="text-sm font-medium text-eg-ink">
                       Avanzamento
                     </h2>
 
@@ -209,13 +209,13 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
                             className={[
                               "h-2.5 w-2.5 rounded-full border",
                               item.active
-                                ? "border-eg-cotto bg-eg-cotto"
-                                : "border-eg-hairline bg-eg-calce",
+                                ? "border-eg-brand-strong bg-eg-brand-strong"
+                                : "border-eg-border bg-eg-surface",
                             ].join(" ")}
                             aria-hidden="true"
                           />
                           <span
-                            className={item.active ? "text-eg-terra" : "text-eg-ardesia"}
+                            className={item.active ? "text-eg-ink" : "text-eg-text-muted"}
                           >
                             {item.label}
                           </span>
@@ -241,9 +241,9 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
 
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-eg-hairline bg-eg-calce p-3">
+    <div className="border border-eg-border bg-eg-surface p-3">
       <dt className="eg-eyebrow">{label}</dt>
-      <dd className="mt-2 font-medium text-eg-terra">{value}</dd>
+      <dd className="mt-2 font-medium text-eg-ink">{value}</dd>
     </div>
   );
 }

@@ -161,7 +161,7 @@ function RequestsDashboardShell({
 }) {
   return (
     <>
-      <div className="bg-eg-calce">
+      <div className="bg-eg-surface">
         {kpi}
 
         <div className={cn(showPanelRail && "min-[900px]:pr-[460px]")}>
@@ -171,16 +171,16 @@ function RequestsDashboardShell({
 
       {showPanelRail ? (
         <aside
-          className="hidden min-[900px]:fixed min-[900px]:inset-y-0 min-[900px]:right-0 min-[900px]:flex min-[900px]:w-[460px] min-[900px]:flex-col min-[900px]:items-center min-[900px]:justify-center min-[900px]:border-l min-[900px]:border-eg-hairline min-[900px]:bg-eg-calce min-[900px]:px-10 min-[900px]:text-center"
+          className="hidden min-[900px]:fixed min-[900px]:inset-y-0 min-[900px]:right-0 min-[900px]:flex min-[900px]:w-[460px] min-[900px]:flex-col min-[900px]:items-center min-[900px]:justify-center min-[900px]:border-l min-[900px]:border-eg-border min-[900px]:bg-eg-surface min-[900px]:px-10 min-[900px]:text-center"
           style={{ top: PANEL_TOP_OFFSET }}
         >
           <div className="flex flex-col items-center gap-5">
             <div className="flex gap-[5px]" aria-hidden="true">
-              <span className="h-[18px] w-[6px] rounded-[3px] bg-eg-hairline" />
-              <span className="h-[24px] w-[6px] rounded-[3px] bg-eg-hairline" />
-              <span className="h-[18px] w-[6px] rounded-[3px] bg-eg-hairline" />
+              <span className="h-[18px] w-[6px] rounded-[3px] bg-eg-border" />
+              <span className="h-[24px] w-[6px] rounded-[3px] bg-eg-border" />
+              <span className="h-[18px] w-[6px] rounded-[3px] bg-eg-border" />
             </div>
-            <p className="max-w-[24ch] text-sm leading-6 text-eg-ardesia-2">
+            <p className="max-w-[24ch] text-sm leading-6 text-eg-text-muted">
               Seleziona una richiesta per vederne i dettagli e sbloccare il
               contatto.
             </p>
@@ -199,10 +199,10 @@ function ListHead({
   count?: number
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-eg-hairline px-7 py-5">
-      <h2 className="text-[17px] font-semibold text-eg-terra">{title}</h2>
+    <div className="flex items-center justify-between border-b border-eg-border px-7 py-5">
+      <h2 className="text-[17px] font-semibold text-eg-ink">{title}</h2>
       {count !== undefined ? (
-        <span className="eg-metadata text-eg-ardesia text-[11px]">
+        <span className="eg-metadata text-[11px]">
           {count} {count === 1 ? "richiesta" : "richieste"}
         </span>
       ) : null}
@@ -212,12 +212,12 @@ function ListHead({
 
 function NoticeBar({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-center gap-3 border-b border-eg-hairline bg-eg-calce-2 px-7 py-4">
+    <div className="flex items-center gap-3 border-b border-eg-border bg-eg-surface-muted px-7 py-4">
       <span
-        className="h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto"
+        className="h-1.5 w-1.5 shrink-0 rounded-full bg-eg-brand-strong"
         aria-hidden="true"
       />
-      <p className="text-sm leading-6 text-eg-terra">{children}</p>
+      <p className="text-sm leading-6 text-eg-ink">{children}</p>
     </div>
   )
 }
@@ -235,14 +235,14 @@ function UnavailableNotice({
 }) {
   return (
     <div className="px-7 py-10">
-      <p className="text-base font-semibold text-eg-terra">{title}</p>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-eg-ardesia">
+      <p className="text-base font-semibold text-eg-ink">{title}</p>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-eg-text-muted">
         {message}
       </p>
       {ctaHref ? (
         <Link
           href={ctaHref}
-          className="mt-5 inline-flex text-sm font-medium text-eg-cotto"
+          className="mt-5 inline-flex text-sm font-medium text-eg-brand-strong"
           prefetch={false}
         >
           {ctaLabel}
@@ -362,7 +362,7 @@ export async function RequestsPage({
 
         <NoticeBar>
           <span className="font-semibold">Il tuo profilo è in revisione.</span>{" "}
-          <span className="text-eg-ardesia">
+          <span className="text-eg-text-muted">
             Apri una richiesta per vedere l&rsquo;anteprima: dettagli, foto e
             contatti si sbloccano dopo l&rsquo;approvazione.
           </span>
@@ -375,7 +375,7 @@ export async function RequestsPage({
         />
 
         {previewResult.hasMore ? (
-          <p className="px-7 py-4 text-center text-sm text-eg-ardesia">
+          <p className="px-7 py-4 text-center text-sm text-eg-text-muted">
             Altre richieste compatibili saranno disponibili dopo
             l&rsquo;approvazione del profilo.
           </p>
@@ -474,7 +474,7 @@ export async function RequestsPage({
       />
 
       {result.ok ? (
-        <div className="border-b border-eg-hairline px-7 py-4">
+        <div className="border-b border-eg-border px-7 py-4">
           <RequestFiltersPanel
             active={activeFilters}
             categories={result.filters.categories}
@@ -501,12 +501,12 @@ export async function RequestsPage({
               <span className="font-semibold">
                 Seleziona gli interventi che offri
               </span>{" "}
-              <span className="text-eg-ardesia">
+              <span className="text-eg-text-muted">
                 per vedere prima le richieste più adatte.
               </span>{" "}
               <Link
                 href="/area-impresa/configura-servizi"
-                className="font-medium text-eg-cotto"
+                className="font-medium text-eg-brand-strong"
                 prefetch={false}
               >
                 Configura servizi

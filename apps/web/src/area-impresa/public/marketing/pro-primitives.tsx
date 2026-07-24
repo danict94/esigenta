@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@esigenta/ui";
+
 type ProEyebrowProps = {
   children: ReactNode;
   tone?: "default" | "light";
@@ -11,22 +13,20 @@ export function ProEyebrow({
   tone = "default",
   className,
 }: ProEyebrowProps) {
-  const lineTone = tone === "light" ? "bg-eg-calce/40" : "bg-eg-ardesia-2";
-  const textTone = tone === "light" ? "text-eg-calce/60" : "text-eg-ardesia";
+  const lineTone = tone === "light" ? "bg-eg-on-brand-border" : "bg-eg-border";
+  const textTone = tone === "light" ? "text-eg-on-brand-muted" : "text-eg-text-muted";
 
   return (
     <p
-      className={[
+      className={cn(
         "inline-flex items-center gap-2.5 font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.12em]",
         textTone,
         className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      )}
     >
-      <span className={["h-px w-5", lineTone].join(" ")} aria-hidden="true" />
+      <span className={cn("h-px w-5", lineTone)} aria-hidden="true" />
       <span>{children}</span>
-      <span className={["h-px w-5", lineTone].join(" ")} aria-hidden="true" />
+      <span className={cn("h-px w-5", lineTone)} aria-hidden="true" />
     </p>
   );
 }
@@ -45,7 +45,7 @@ export function ProSectionHeader({
   titleId,
 }: ProSectionHeaderProps) {
   return (
-    <header className={["mx-auto mb-[54px] max-w-[620px] text-center", className].filter(Boolean).join(" ")}>
+    <header className={cn("mx-auto mb-[54px] max-w-[620px] text-center", className)}>
       <ProEyebrow>{eyebrow}</ProEyebrow>
       <h2 id={titleId} className="eg-h2 mt-4">
         {title}
@@ -61,29 +61,29 @@ type ProMarkerProps = {
 export function ProMarker({ state = "idle" }: ProMarkerProps) {
   const markerTone =
     state === "done"
-      ? "border-eg-salvia bg-eg-salvia"
+      ? "border-eg-brand-strong bg-eg-brand-strong"
       : state === "active"
-        ? "border-eg-cotto bg-eg-calce"
-        : "border-eg-hairline bg-eg-calce";
+        ? "border-eg-brand bg-eg-surface"
+        : "border-eg-border bg-eg-surface";
   const dabTone =
     state === "done"
-      ? "bg-eg-calce"
+      ? "bg-eg-on-brand"
       : state === "active"
-        ? "bg-eg-cotto-dark"
-        : "bg-eg-ardesia-2";
+        ? "bg-eg-brand-strong"
+        : "bg-eg-text-muted";
 
   return (
     <span
-      className={[
+      className={cn(
         "relative z-[2] mx-auto mb-6 flex size-9 items-center justify-center rounded-full border transition-colors",
         markerTone,
-      ].join(" ")}
+      )}
       aria-hidden="true"
     >
       <span className="relative block h-3.5 w-3.5">
-        <span className={["absolute left-0 top-0 h-2 w-[3px] rounded-full", dabTone].join(" ")} />
-        <span className={["absolute left-[5.5px] top-[3px] h-2 w-[3px] rounded-full", dabTone].join(" ")} />
-        <span className={["absolute left-[11px] top-0 h-2 w-[3px] rounded-full", dabTone].join(" ")} />
+        <span className={cn("absolute left-0 top-0 h-2 w-[3px] rounded-full", dabTone)} />
+        <span className={cn("absolute left-[5.5px] top-[3px] h-2 w-[3px] rounded-full", dabTone)} />
+        <span className={cn("absolute left-[11px] top-0 h-2 w-[3px] rounded-full", dabTone)} />
       </span>
     </span>
   );

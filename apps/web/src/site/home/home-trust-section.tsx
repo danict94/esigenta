@@ -31,7 +31,7 @@ const trustItems: TrustItem[] = [
 
 export function HomeTrustSection() {
   return (
-    <section className="eg-section-large bg-eg-calce" aria-labelledby="trust-title">
+    <section className="eg-section-large bg-eg-surface-muted" aria-labelledby="trust-title">
       <div className="eg-container">
         <SectionHeader
           eyebrow="Prima di iniziare"
@@ -42,26 +42,26 @@ export function HomeTrustSection() {
 
         <dl className="mt-[54px] grid gap-x-12 gap-y-10 min-[861px]:grid-cols-2">
           {trustItems.map((item) => (
-            <div key={item.question} className="border-t border-eg-hairline pt-5">
+            <div key={item.question} className="border-t border-eg-border pt-5">
               <dt className="eg-h3 text-[20px]">{item.question}</dt>
               <dd className="eg-body-muted mt-2">{item.answer}</dd>
             </div>
           ))}
         </dl>
 
-        <div className="mt-12 flex flex-col gap-2 border-t border-eg-hairline pt-6 min-[861px]:flex-row min-[861px]:items-center min-[861px]:justify-between">
+        <div className="mt-12 flex flex-col gap-2 border-t border-eg-border pt-6 min-[861px]:flex-row min-[861px]:items-center min-[861px]:justify-between">
           <p className="eg-form-help">
             Guide ai costi già pubblicate:{" "}
-            <Link href="/costi/ristrutturare-bagno" prefetch={false} className="text-eg-cotto-dark">
+            <Link href="/costi/ristrutturare-bagno" prefetch={false} className="text-eg-brand-strong hover:text-eg-brand">
               ristrutturare bagno
             </Link>
             {" · "}
-            <Link href="/costi/rifare-tetto" prefetch={false} className="text-eg-cotto-dark">
+            <Link href="/costi/rifare-tetto" prefetch={false} className="text-eg-brand-strong hover:text-eg-brand">
               rifare tetto
             </Link>
           </p>
 
-          <Link href="/privacy" prefetch={false} className="eg-action-link shrink-0">
+          <Link href="/privacy" prefetch={false} className="eg-action-link shrink-0 text-eg-brand-strong hover:text-eg-brand">
             Come trattiamo i tuoi dati <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>

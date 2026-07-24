@@ -10,7 +10,7 @@ export const ristrutturareBagnoBase: CostGuideBaseContent = {
   metaDescription:
     "Scopri quanto costa ristrutturare un bagno, con range indicativi, costo al mq, esempi per dimensione, fattori di prezzo e preventivi.",
   heroImage: {
-    src: "/assets/images/rifacimento-bagno.webp",
+    src: "/assets/images/rifare-bagno.webp",
     alt: "Ristrutturazione bagno con sanitari e rivestimenti moderni",
   },
   hubCategory: { slug: "ristrutturazioni", name: "Ristrutturazioni" },

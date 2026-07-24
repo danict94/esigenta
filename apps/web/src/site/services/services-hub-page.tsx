@@ -25,17 +25,17 @@ export function ServicesHubPage() {
               <Link href="/" prefetch={false}>
                 Home
               </Link>
-              <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+              <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                 /
               </span>
-              <span className="text-eg-terra">Servizi</span>
+              <span className="text-eg-ink">Servizi</span>
             </nav>
 
             <p className="eg-eyebrow">Esplora per ambito</p>
             <h1 id="services-title" className="eg-h1 mt-5">
               Tutti i servizi, <strong>un solo metodo</strong>.
             </h1>
-            <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+            <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">
               Parti dall&apos;ambito della casa e arriva a una richiesta leggibile:
               pochi passaggi, dati ordinati, professionisti piu adatti al lavoro.
             </p>
@@ -65,7 +65,7 @@ export function ServicesHubPage() {
             </div>
 
             {groupServices.length > 0 ? (
-              <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]" aria-label="Ambiti servizio">
+              <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]" aria-label="Ambiti servizio">
                 {groupServices.map((group, index) => (
                   <GroupServiceRow
                     key={group.slug}
@@ -91,7 +91,7 @@ export function ServicesHubPage() {
           </div>
         </section>
 
-        <section className="eg-section-large bg-eg-calce-2" aria-labelledby="services-cta-title">
+        <section className="eg-section-large bg-eg-surface-muted" aria-labelledby="services-cta-title">
           <div className="eg-container-narrow text-center">
             <p className="eg-eyebrow">Non trovi il tuo lavoro?</p>
             <h2 id="services-cta-title" className="eg-h2 mt-4">
@@ -108,23 +108,23 @@ export function ServicesHubPage() {
           </div>
         </section>
 
-        <section className="border-y border-eg-hairline bg-eg-calce" aria-label="Sintesi catalogo servizi">
+        <section className="border-y border-eg-border bg-eg-surface" aria-label="Sintesi catalogo servizi">
           <div className="eg-container grid grid-cols-2 md:grid-cols-4">
-            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+            <div className="border-r border-eg-border px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
               <p className="eg-stat-value">{groupServices.length}</p>
-              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Ambiti di lavoro raccolti dalla taxonomy</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-text-muted">Ambiti di lavoro raccolti dalla taxonomy</p>
             </div>
-            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+            <div className="border-r border-eg-border px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
               <p className="eg-stat-value">{interventionCount}</p>
-              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Interventi disponibili dentro i funnel</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-text-muted">Interventi disponibili dentro i funnel</p>
             </div>
-            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+            <div className="border-r border-eg-border px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
               <p className="eg-stat-value">1</p>
-              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Metodo unico, dalla richiesta alla scelta</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-text-muted">Metodo unico, dalla richiesta alla scelta</p>
             </div>
-            <div className="border-r border-eg-hairline px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
+            <div className="border-r border-eg-border px-7 py-8 even:border-r-0 md:even:border-r md:last:border-r-0">
               <p className="eg-stat-value">0</p>
-              <p className="mt-2 text-sm leading-[1.45] text-eg-ardesia">Percorsi finti o link verso pagine non pronte</p>
+              <p className="mt-2 text-sm leading-[1.45] text-eg-text-muted">Percorsi finti o link verso pagine non pronte</p>
             </div>
           </div>
         </section>
@@ -150,7 +150,7 @@ function GroupServiceRow({
       {" "}
       <div>
         <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em]">{name}</h3>
-        <p className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia">
+        <p className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-text-muted">
           Ambito pronto per raccogliere richieste e dettagli del lavoro.
         </p>
       </div>
@@ -163,7 +163,7 @@ function GroupServiceRow({
   );
 
   const rowClassName =
-    "grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]";
+    "grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]";
 
   if (href) {
     return (
@@ -171,7 +171,7 @@ function GroupServiceRow({
         <Link
           href={href}
           prefetch={false}
-          className={`${rowClassName} transition-colors hover:text-eg-cotto-dark`}
+          className={`${rowClassName} transition-colors hover:text-eg-brand-strong`}
         >
           {rowContent}
         </Link>

@@ -106,7 +106,7 @@ function StatusEventInfo({
   }
 
   return (
-    <p className="mt-1 text-xs leading-5 text-eg-ardesia">
+    <p className="mt-1 text-xs leading-5 text-eg-text-muted">
       Ultima moderazione: {formatDate(eventDate)}
     </p>
   )
@@ -171,7 +171,7 @@ function PendingDocumentsSignal({
   return (
     <Link
       href={`/imprese/${company.id}`}
-      className="mt-2 block text-xs font-medium text-eg-cotto-dark hover:underline"
+      className="mt-2 block text-xs font-medium text-eg-brand-strong hover:underline"
     >
       {label}
     </Link>
@@ -363,7 +363,7 @@ function CompanyActionForms({
         item.requiresReason ? (
           <details
             key={item.label}
-            className="group border-t border-eg-hairline pt-2"
+            className="group border-t border-eg-border pt-2"
           >
             <summary
               className={buttonClassName({
@@ -428,13 +428,13 @@ function CompanyNameCell({
 }) {
   return (
     <div className="min-w-0">
-      <h2 className="text-base font-semibold leading-6 text-eg-terra">
+      <h2 className="text-base font-semibold leading-6 text-eg-ink">
         {company.name}
       </h2>
-      <p className="mt-1 text-xs leading-5 text-eg-ardesia">
+      <p className="mt-1 text-xs leading-5 text-eg-text-muted">
         {company.owner?.name ?? company.owner?.email ?? "Owner non disponibile"}
       </p>
-      <p className="mt-2 break-words text-xs text-eg-ardesia">
+      <p className="mt-2 break-words text-xs text-eg-text-muted">
         P.IVA {company.vatNumber}
       </p>
     </div>
@@ -448,10 +448,10 @@ function CompanyContactsCell({
 }) {
   return (
     <div className="min-w-0">
-      <p className="break-words text-eg-ardesia">
+      <p className="break-words text-eg-text-muted">
         {company.email ?? "—"}
       </p>
-      <p className="mt-1 break-words text-xs text-eg-ardesia">
+      <p className="mt-1 break-words text-xs text-eg-text-muted">
         {company.phone}
       </p>
     </div>
@@ -465,10 +465,10 @@ function CompanyAreaCell({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-eg-ardesia">
+      <p className="text-eg-text-muted">
         {company.city ?? "—"}
       </p>
-      <p className="mt-1 text-xs text-eg-ardesia">
+      <p className="mt-1 text-xs text-eg-text-muted">
         {company.operatingRadiusKm} km
       </p>
     </div>
@@ -482,10 +482,10 @@ function CompanyServicesCell({
 }) {
   return (
     <div className="min-w-0">
-      <p className="break-words text-eg-ardesia">
+      <p className="break-words text-eg-text-muted">
         {company.principalCategoryName ?? "—"}
       </p>
-      <p className="mt-1 text-xs text-eg-ardesia">
+      <p className="mt-1 text-xs text-eg-text-muted">
         {company.interventionCount} interventi
       </p>
     </div>
@@ -555,8 +555,8 @@ function StatusTabs({
             className={cn(
               "inline-flex items-center gap-2 border px-3 py-2 text-sm font-medium transition-colors",
               isActive
-                ? "border-eg-cotto bg-eg-cotto text-eg-calce"
-                : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:text-eg-terra",
+                ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                : "border-eg-border bg-eg-surface text-eg-text-muted hover:text-eg-ink",
             )}
           >
             <span>{tab.label}</span>
@@ -564,8 +564,8 @@ function StatusTabs({
               className={cn(
                 "text-xs",
                 isActive
-                  ? "text-eg-calce"
-                  : "text-eg-ardesia",
+                  ? "text-eg-on-brand"
+                  : "text-eg-text-muted",
               )}
             >
               {tab.count}
@@ -576,7 +576,7 @@ function StatusTabs({
 
       <Link
         href="/imprese/modifiche-contatto"
-        className="inline-flex items-center gap-2 border border-eg-hairline bg-eg-calce px-3 py-2 text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
+        className="inline-flex items-center gap-2 border border-eg-border bg-eg-surface px-3 py-2 text-sm font-medium text-eg-text-muted transition-colors hover:text-eg-ink"
       >
         <span>Aggiornamenti contatto</span>
         {counts.pendingContactChangeRequests > 0 ? (
@@ -598,28 +598,28 @@ function CompaniesList({
     <ul className="grid gap-4">
       {companies.map((company) => (
         <li key={company.id}>
-          <Card className="p-5 transition-colors hover:border-eg-cotto md:p-6">
+          <Card className="p-5 transition-colors hover:border-eg-brand-strong md:p-6">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_11rem_14rem]">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-eg-ardesia">
+                <p className="text-xs font-medium text-eg-text-muted">
                   Informazioni
                 </p>
                 <div className="mt-3 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                   <CompanyNameCell company={company} />
                   <div>
-                    <p className="mb-2 text-xs font-medium text-eg-ardesia">
+                    <p className="mb-2 text-xs font-medium text-eg-text-muted">
                       Contatti
                     </p>
                     <CompanyContactsCell company={company} />
                   </div>
                   <div>
-                    <p className="mb-2 text-xs font-medium text-eg-ardesia">
+                    <p className="mb-2 text-xs font-medium text-eg-text-muted">
                       Area
                     </p>
                     <CompanyAreaCell company={company} />
                   </div>
                   <div>
-                    <p className="mb-2 text-xs font-medium text-eg-ardesia">
+                    <p className="mb-2 text-xs font-medium text-eg-text-muted">
                       Servizi
                     </p>
                     <CompanyServicesCell company={company} />
@@ -627,8 +627,8 @@ function CompaniesList({
                 </div>
               </div>
 
-              <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-                <p className="text-xs font-medium text-eg-ardesia">
+              <div className="border-t border-eg-border pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                <p className="text-xs font-medium text-eg-text-muted">
                   Stato
                 </p>
                 <div className="mt-3 grid gap-3">
@@ -639,8 +639,8 @@ function CompaniesList({
                 <PendingDocumentsSignal company={company} />
               </div>
 
-              <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-                <p className="mb-3 text-xs font-medium text-eg-ardesia">
+              <div className="border-t border-eg-border pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                <p className="mb-3 text-xs font-medium text-eg-text-muted">
                   Azioni
                 </p>
                 <CompanyActionForms company={company} />
@@ -682,16 +682,16 @@ export default async function AdminCompaniesPage({
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
-      <header className="border-b border-eg-hairline pb-7">
-        <p className="text-sm font-medium text-eg-ardesia">
+      <header className="border-b border-eg-border pb-7">
+        <p className="text-sm font-medium text-eg-text-muted">
           Control room
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
           Imprese
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
           Gestisci verifiche, autorizzazioni e stato operativo delle imprese.
         </p>
       </header>
@@ -712,11 +712,11 @@ export default async function AdminCompaniesPage({
 
       <section className="mt-6">
         {companies.length === 0 ? (
-          <div className="border-y border-eg-hairline py-8">
-            <p className="text-base font-semibold text-eg-terra">
+          <div className="border-y border-eg-border py-8">
+            <p className="text-base font-semibold text-eg-ink">
               Nessuna impresa da mostrare
             </p>
-            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+            <p className="mt-2 text-sm leading-6 text-eg-text-muted">
               Cambia filtro oppure attendi nuove registrazioni.
             </p>
           </div>

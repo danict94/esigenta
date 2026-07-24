@@ -80,7 +80,7 @@ export type RequestDetailCardProps = {
 function Icon({ children }: { children: ReactNode }) {
   return (
     <span
-      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-eg-calce-2 text-eg-ardesia"
+      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-eg-surface-muted text-eg-text-muted"
       aria-hidden="true"
     >
       {children}
@@ -324,12 +324,12 @@ function DetailRow({
 }) {
   return (
     <div className="grid gap-2 py-2.5 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-8">
-      <dt className="flex items-center gap-3 text-sm leading-6 text-eg-ardesia">
+      <dt className="flex items-center gap-3 text-sm leading-6 text-eg-text-muted">
         {icon ?? getDetailIcon(label)}
         <span>{label}</span>
       </dt>
 
-      <dd className="text-sm font-medium leading-6 text-eg-terra">
+      <dd className="text-sm font-medium leading-6 text-eg-ink">
         {formatDetailValue(label, value)}
       </dd>
     </div>
@@ -351,8 +351,8 @@ function SealIcon({ filled }: { filled: boolean }) {
     <span
       className={
         filled
-          ? "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-eg-cotto text-eg-calce"
-          : "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-eg-hairline text-eg-ardesia"
+          ? "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-eg-brand-strong text-eg-on-brand"
+          : "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-eg-border text-eg-text-muted"
       }
       aria-hidden="true"
     >
@@ -380,10 +380,10 @@ function AvailabilityDot({ tone }: { tone: "ok" | "low" | "off" }) {
     <span
       className={
         tone === "ok"
-          ? "h-1.5 w-1.5 rounded-full bg-eg-cotto"
+          ? "h-1.5 w-1.5 rounded-full bg-eg-brand-strong"
           : tone === "low"
-            ? "h-1.5 w-1.5 rounded-full bg-eg-terra"
-            : "h-1.5 w-1.5 rounded-full bg-eg-ardesia"
+            ? "h-1.5 w-1.5 rounded-full bg-eg-ink"
+            : "h-1.5 w-1.5 rounded-full bg-eg-text-muted"
       }
       aria-hidden="true"
     />
@@ -400,7 +400,7 @@ function ContactLine({
   value: string;
 }) {
   const content = (
-    <span className="flex items-center gap-3 text-sm font-medium text-eg-terra">
+    <span className="flex items-center gap-3 text-sm font-medium text-eg-ink">
       {icon}
       <span className="truncate">{value}</span>
     </span>
@@ -410,7 +410,7 @@ function ContactLine({
     return (
       <Link
         href={href}
-        className="block py-1.5 transition-colors hover:text-eg-cotto"
+        className="block py-1.5 transition-colors hover:text-eg-brand-strong"
       >
         {content}
       </Link>
@@ -424,7 +424,7 @@ function PhoneGlyph() {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-4 w-4 shrink-0 text-eg-ardesia"
+      className="h-4 w-4 shrink-0 text-eg-text-muted"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.8"
@@ -440,7 +440,7 @@ function MailGlyph() {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-4 w-4 shrink-0 text-eg-ardesia"
+      className="h-4 w-4 shrink-0 text-eg-text-muted"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.8"
@@ -465,11 +465,11 @@ function StatusRow({
   return (
     <div className="flex items-baseline gap-2 py-1 text-sm">
       <span
-        className="h-1.5 w-1.5 shrink-0 translate-y-0.5 rounded-full bg-eg-cotto"
+        className="h-1.5 w-1.5 shrink-0 translate-y-0.5 rounded-full bg-eg-brand-strong"
         aria-hidden="true"
       />
       <span>
-        <span className="font-medium text-eg-terra">{label}</span>
+        <span className="font-medium text-eg-ink">{label}</span>
         {detail ? (
           href ? (
             <>
@@ -477,14 +477,14 @@ function StatusRow({
               \u00b7{" "}
               <Link
                 href={href}
-                className="text-eg-cotto hover:text-eg-cotto-dark"
+                className="text-eg-brand-strong hover:text-eg-brand"
                 prefetch={false}
               >
                 {detail}
               </Link>
             </>
           ) : (
-            <span className="text-eg-ardesia"> \u00b7 {detail}</span>
+            <span className="text-eg-text-muted"> \u00b7 {detail}</span>
           )
         ) : null}
       </span>
@@ -621,14 +621,14 @@ export function RequestDetailCard({
       <main className="min-w-0">
         <section>
           <div className="flex gap-4">
-            <span className="mt-2 h-20 w-1 shrink-0 rounded-full bg-eg-cotto" />
+            <span className="mt-2 h-20 w-1 shrink-0 rounded-full bg-eg-brand-strong" />
 
             <div>
-              <h1 className="max-w-4xl text-3xl font-semibold tracking-tight text-eg-terra md:text-4xl">
+              <h1 className="max-w-4xl text-3xl font-semibold tracking-tight text-eg-ink md:text-4xl">
                 {title}
               </h1>
 
-              <p className="mt-3 text-sm text-eg-ardesia">
+              <p className="mt-3 text-sm text-eg-text-muted">
                 Pubblicata il {createdAt}
               </p>
             </div>
@@ -636,13 +636,13 @@ export function RequestDetailCard({
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-eg-terra">
+          <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
             {"Attivit\u00e0 su questa richiesta"}
           </h2>
 
           <div className="mt-3 flex items-center gap-3">
             <UsersIcon />
-            <p className="text-sm font-semibold text-eg-terra">
+            <p className="text-sm font-semibold text-eg-ink">
               {unlockCount}
               {maxUnlocks === null ? "" : `/${maxUnlocks}`} professionisti interessati
             </p>
@@ -650,16 +650,16 @@ export function RequestDetailCard({
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-eg-terra">
+          <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
             Descrizione
           </h2>
 
           {description ? (
-            <p className="mt-4 max-w-3xl whitespace-pre-line text-base leading-7 text-eg-terra">
+            <p className="mt-4 max-w-3xl whitespace-pre-line text-base leading-7 text-eg-ink">
               {description}
             </p>
           ) : (
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-eg-ardesia">
+            <p className="mt-4 max-w-3xl text-sm leading-6 text-eg-text-muted">
               Il cliente non ha aggiunto una descrizione libera. I dettagli del
               form sono disponibili qui sotto.
             </p>
@@ -668,7 +668,7 @@ export function RequestDetailCard({
 
         {photos.length > 0 ? (
           <section className="mt-10">
-            <h2 className="text-lg font-semibold tracking-tight text-eg-terra">
+            <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
               Foto allegate
             </h2>
 
@@ -676,9 +676,9 @@ export function RequestDetailCard({
               {photos.map((photo) => (
                 <figure
                   key={photo.src}
-                  className="overflow-hidden rounded-md border border-eg-hairline bg-eg-calce"
+                  className="overflow-hidden rounded-md border border-eg-border bg-eg-surface"
                 >
-                  <div className="relative aspect-video bg-eg-calce-2">
+                  <div className="relative aspect-video bg-eg-surface-muted">
                     <Image
                       src={photo.src}
                       alt={photo.fileName}
@@ -690,7 +690,7 @@ export function RequestDetailCard({
                     />
                   </div>
 
-                  <figcaption className="truncate px-3 py-2 text-xs text-eg-ardesia">
+                  <figcaption className="truncate px-3 py-2 text-xs text-eg-text-muted">
                     {photo.fileName}
                   </figcaption>
                 </figure>
@@ -700,7 +700,7 @@ export function RequestDetailCard({
         ) : null}
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-eg-terra">
+          <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
             Dettagli richiesta
           </h2>
 
@@ -738,23 +738,23 @@ export function RequestDetailCard({
               <div className="flex items-center gap-3">
                 <SealIcon filled />
                 <div>
-                  <p className="text-sm font-semibold text-eg-terra">
+                  <p className="text-sm font-semibold text-eg-ink">
                     Contatto sbloccato
                   </p>
                   {unlockedAt ? (
-                    <p className="text-xs text-eg-ardesia">
+                    <p className="text-xs text-eg-text-muted">
                       Sbloccato il {unlockedAt}
                     </p>
                   ) : null}
                 </div>
               </div>
 
-              <div className="mt-5 rounded-md border border-eg-hairline bg-eg-calce-2 p-4">
-                <p className="text-base font-semibold leading-6 text-eg-terra">
+              <div className="mt-5 rounded-md border border-eg-border bg-eg-surface-muted p-4">
+                <p className="text-base font-semibold leading-6 text-eg-ink">
                   {formatContactValue(customerContact?.name)}
                 </p>
 
-                <div className="mt-2 divide-y divide-eg-hairline">
+                <div className="mt-2 divide-y divide-eg-border">
                   <ContactLine
                     icon={<PhoneGlyph />}
                     value={formatContactValue(customerContact?.phone)}
@@ -794,10 +794,10 @@ export function RequestDetailCard({
               <div className="flex items-center gap-3">
                 <SealIcon filled={false} />
                 <div>
-                  <p className="text-sm font-semibold text-eg-terra">
+                  <p className="text-sm font-semibold text-eg-ink">
                     Sblocco richiesta
                   </p>
-                  <p className="text-xs text-eg-ardesia">
+                  <p className="text-xs text-eg-text-muted">
                     {getUnlockStatusMessage({
                       ...commercialState,
                       hasUnlocked,
@@ -807,25 +807,25 @@ export function RequestDetailCard({
               </div>
 
               {commercialState.isCommerciallyConfigured ? (
-                <div className="mt-5 rounded-md border border-eg-hairline bg-eg-calce-2 p-4">
+                <div className="mt-5 rounded-md border border-eg-border bg-eg-surface-muted p-4">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-sm text-eg-ardesia">
+                    <span className="text-sm text-eg-text-muted">
                       Costo sblocco
                     </span>
-                    <span className="text-lg font-semibold text-eg-terra">
+                    <span className="text-lg font-semibold text-eg-ink">
                       {formatCreditCost(creditCost)}
                     </span>
                   </div>
 
                   {showInsufficientCreditsRecovery ? (
                     <>
-                      <p className="mt-3 text-sm leading-6 text-eg-ardesia">
+                      <p className="mt-3 text-sm leading-6 text-eg-text-muted">
                         Ti mancano {creditDeficit} crediti per sbloccare
                         questa richiesta.
                       </p>
                       <Link
                         href="/area-impresa/crediti"
-                        className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-md border border-eg-cotto bg-eg-cotto px-4 text-sm font-medium text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
+                        className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-md border border-eg-brand-strong bg-eg-brand-strong px-4 text-sm font-medium text-eg-on-brand transition-colors hover:border-eg-brand hover:bg-eg-brand"
                         prefetch={false}
                       >
                         Acquista crediti
@@ -845,7 +845,7 @@ export function RequestDetailCard({
                         : "ok"
                   }
                 />
-                <span className="text-eg-ardesia">
+                <span className="text-eg-text-muted">
                   {commercialState.isSoldOut
                     ? "Posti terminati"
                     : `${formatUnlockAvailability(commercialState.availableUnlockSlots)} su ${formatMaxUnlocks(maxUnlocks)}`}
@@ -875,7 +875,7 @@ export function RequestDetailCard({
                 )}
               </div>
 
-              <p className="mt-3 text-xs leading-5 text-eg-ardesia">
+              <p className="mt-3 text-xs leading-5 text-eg-text-muted">
                 Il costo si applica solo se confermi lo sblocco. Email e
                 telefono restano protetti finché non lo fai.
               </p>
@@ -885,7 +885,7 @@ export function RequestDetailCard({
           {hasUnlocked ? (
             <>
               {hasRefundedUnlock ? (
-                <div className="mt-5 border-t border-eg-hairline pt-4">
+                <div className="mt-5 border-t border-eg-border pt-4">
                   <StatusRow
                     label="Crediti rimborsati"
                     detail={
@@ -896,7 +896,7 @@ export function RequestDetailCard({
                   />
                 </div>
               ) : refundRequest ? (
-                <div className="mt-5 border-t border-eg-hairline pt-4">
+                <div className="mt-5 border-t border-eg-border pt-4">
                   <StatusRow {...getRefundRequestStatusRow(refundRequest)} />
                 </div>
               ) : canRequestRefund ? (
@@ -907,7 +907,7 @@ export function RequestDetailCard({
                 />
               ) : null}
 
-              <form action={savedAction} className="mt-6 border-t border-eg-hairline pt-4">
+              <form action={savedAction} className="mt-6 border-t border-eg-border pt-4">
                 <PendingSubmitButton
                   type="submit"
                   name="requestId"
@@ -922,7 +922,7 @@ export function RequestDetailCard({
               </form>
             </>
           ) : (
-            <form action={savedAction} className="mt-5 border-t border-eg-hairline pt-4">
+            <form action={savedAction} className="mt-5 border-t border-eg-border pt-4">
               <PendingSubmitButton
                 type="submit"
                 name="requestId"
@@ -938,7 +938,7 @@ export function RequestDetailCard({
         </Card>
       </aside>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-eg-hairline bg-eg-calce p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-eg-border bg-eg-surface p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
         {hasUnlocked ? (
           contactCustomerAction && !hasRefundedUnlock ? (
             <form action={contactCustomerAction}>
@@ -966,7 +966,7 @@ export function RequestDetailCard({
         ) : showInsufficientCreditsRecovery ? (
           <Link
             href="/area-impresa/crediti"
-            className="flex h-10 w-full items-center justify-center rounded-md border border-eg-cotto bg-eg-cotto px-4 text-sm font-medium text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
+            className="flex h-10 w-full items-center justify-center rounded-md border border-eg-brand-strong bg-eg-brand-strong px-4 text-sm font-medium text-eg-on-brand transition-colors hover:border-eg-brand hover:bg-eg-brand"
             prefetch={false}
           >
             Acquista crediti

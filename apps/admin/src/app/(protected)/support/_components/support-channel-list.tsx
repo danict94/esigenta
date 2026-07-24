@@ -52,7 +52,7 @@ export function SupportChannelList({
     return (
       <Card>
         <CardContent className="pt-6">
-          <p className="text-sm text-eg-ardesia">
+          <p className="text-sm text-eg-text-muted">
             Nessun canale di assistenza disponibile.
           </p>
         </CardContent>
@@ -68,7 +68,7 @@ export function SupportChannelList({
           href={`/support/${encodeURIComponent(channel.id)}`}
           className="block"
         >
-          <Card className="transition-colors hover:bg-eg-calce-2">
+          <Card className="transition-colors hover:bg-eg-surface-muted">
             <CardHeader className="gap-4 sm:flex sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
@@ -95,13 +95,13 @@ export function SupportChannelList({
                 </CardDescription>
               </div>
 
-              <time className="text-sm text-eg-ardesia">
+              <time className="text-sm text-eg-text-muted">
                 {formatDateTime(channel.updatedAt)}
               </time>
             </CardHeader>
 
             <CardContent>
-              <p className="line-clamp-2 text-sm leading-6 text-eg-ardesia">
+              <p className="line-clamp-2 text-sm leading-6 text-eg-text-muted">
                 {channel.lastMessage?.body ??
                   "Nessun messaggio ancora inviato."}
               </p>

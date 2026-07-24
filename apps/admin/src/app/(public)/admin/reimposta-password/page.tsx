@@ -142,7 +142,7 @@ export default async function AdminResetPasswordPage({
     tokenState.ok;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-eg-calce px-6">
+    <main className="flex min-h-screen items-center justify-center bg-eg-surface px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
           <AdminBrand className="mb-2" />
@@ -156,7 +156,7 @@ export default async function AdminResetPasswordPage({
 
         <CardContent>
           {errorMessage ? (
-            <p className="mb-5 border border-eg-cotto bg-eg-calce-2 px-4 py-3 text-sm text-eg-terra">
+            <p className="mb-5 border border-eg-error-border bg-eg-error-soft px-4 py-3 text-sm text-eg-error">
               {errorMessage}
             </p>
           ) : null}
@@ -173,7 +173,7 @@ export default async function AdminResetPasswordPage({
               />
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-eg-terra">
+                <span className="text-sm font-medium text-eg-ink">
                   Nuova password
                 </span>
                 <Input
@@ -186,7 +186,7 @@ export default async function AdminResetPasswordPage({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-eg-terra">
+                <span className="text-sm font-medium text-eg-ink">
                   Conferma password
                 </span>
                 <Input
@@ -204,12 +204,12 @@ export default async function AdminResetPasswordPage({
             </form>
           ) : (
             <div className="grid gap-4">
-              <p className="text-sm leading-6 text-eg-ardesia">
+              <p className="text-sm leading-6 text-eg-text-muted">
                 Richiedi un nuovo link per continuare.
               </p>
               <Link
                 href="/admin/recupera-password"
-                className="text-sm font-semibold text-eg-cotto transition-colors hover:text-eg-cotto-dark"
+                className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
               >
                 Richiedi nuovo link
               </Link>

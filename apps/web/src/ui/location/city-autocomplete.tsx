@@ -12,6 +12,7 @@ import {
   type GeoPlace,
   resolvePlaceFromGooglePlace,
 } from '@esigenta/shared'
+import { cn } from '@esigenta/ui'
 
 import {
   COOKIE_CONSENT_CHANGED_EVENT,
@@ -86,12 +87,6 @@ const GOOGLE_MAPS_SCRIPT_ID =
 let googleMapsPlacesPromise:
   | Promise<void>
   | null = null
-
-function joinClasses(
-  ...classes: Array<string | false | null | undefined>
-) {
-  return classes.filter(Boolean).join(' ')
-}
 
 function getGoogleMapsWindow() {
   return window as GoogleMapsWindow
@@ -480,14 +475,14 @@ export function CityAutocomplete({
             )
           }}
           placeholder={placeholder}
-          className={joinClasses(
-            "h-16 w-full border-0 border-b border-eg-terra bg-transparent pr-14 text-lg text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark",
+          className={cn(
+            "h-16 w-full border-0 border-b border-eg-border bg-transparent pr-14 text-lg text-eg-ink outline-none placeholder:text-eg-text-muted focus:border-eg-brand",
             className,
           )}
         />
 
         <span
-          className="pointer-events-none absolute right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-eg-cotto-dark"
+          className="pointer-events-none absolute right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-eg-brand"
           aria-hidden="true"
         />
       </div>

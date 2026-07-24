@@ -170,7 +170,7 @@ function Field({
 }) {
   return (
     <label className="grid gap-2">
-      <span className="text-sm font-medium text-eg-terra">
+      <span className="text-sm font-medium text-eg-ink">
         {label}
       </span>
       {children}
@@ -179,7 +179,7 @@ function Field({
 }
 
 const selectClass =
-  "h-12 w-full border border-eg-hairline bg-eg-calce px-4 text-sm text-eg-terra outline-none transition-colors focus:border-eg-cotto disabled:cursor-not-allowed disabled:opacity-60"
+  "h-12 w-full border border-eg-border bg-eg-surface px-4 text-sm text-eg-ink outline-none transition-colors focus:border-eg-brand-strong disabled:cursor-not-allowed disabled:opacity-60"
 
 export default async function CreditPackagesPage() {
   const packages =
@@ -187,16 +187,16 @@ export default async function CreditPackagesPage() {
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
-      <header className="border-b border-eg-hairline pb-7">
-        <p className="text-sm font-medium text-eg-ardesia">
+      <header className="border-b border-eg-border pb-7">
+        <p className="text-sm font-medium text-eg-text-muted">
           Crediti
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
           Pacchetti crediti
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
           Crea e gestisci i pacchetti che le imprese potranno acquistare.
           Questo step non attiva ancora pagamenti o sblocchi richiesta.
         </p>
@@ -204,11 +204,11 @@ export default async function CreditPackagesPage() {
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[24rem_minmax(0,1fr)]">
         <Card className="p-6">
-          <h2 className="text-lg font-semibold text-eg-terra">
+          <h2 className="text-lg font-semibold text-eg-ink">
             Nuovo pacchetto
           </h2>
 
-          <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+          <p className="mt-2 text-sm leading-6 text-eg-text-muted">
             Definisci crediti, prezzo e stato del pacchetto.
           </p>
 
@@ -307,10 +307,10 @@ export default async function CreditPackagesPage() {
         <section className="grid gap-4">
           {packages.length === 0 ? (
             <Card className="p-8">
-              <p className="text-lg font-semibold text-eg-terra">
+              <p className="text-lg font-semibold text-eg-ink">
                 Nessun pacchetto creato
               </p>
-              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                 Crea il primo pacchetto crediti per preparare la vendita
                 alle imprese.
               </p>
@@ -348,7 +348,7 @@ export default async function CreditPackagesPage() {
                             : "Non attivo"}
                         </Badge>
 
-                        <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                        <span className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                           {creditPackage.credits} crediti ·{" "}
                           {formatCentsAsCurrency(
                             creditPackage.priceCents,
@@ -358,12 +358,12 @@ export default async function CreditPackagesPage() {
                         </span>
                       </div>
 
-                      <h2 className="mt-3 text-xl font-semibold tracking-tight text-eg-terra">
+                      <h2 className="mt-3 text-xl font-semibold tracking-tight text-eg-ink">
                         {creditPackage.name}
                       </h2>
 
                       {creditPackage.description ? (
-                        <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+                        <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                           {creditPackage.description}
                         </p>
                       ) : null}

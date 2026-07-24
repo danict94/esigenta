@@ -168,9 +168,9 @@ export function ImpresaSignupForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="flex items-center gap-3 border-b border-eg-hairline pb-5">
+      <div className="flex items-center gap-3 border-b border-eg-border pb-5">
         <StepLabel active={step === "company"} number="1" label="Dati azienda" />
-        <span className="h-px flex-1 bg-eg-hairline" />
+        <span className="h-px flex-1 bg-eg-border" />
         <StepLabel active={step === "account"} number="2" label="Accesso" />
       </div>
 
@@ -285,23 +285,23 @@ export function ImpresaSignupForm({
             />
           </label>
 
-          <label className="flex items-start gap-3 text-sm leading-6 text-eg-ardesia">
+          <label className="flex items-start gap-3 text-sm leading-6 text-eg-text-muted">
             <input
               type="checkbox"
               required
               checked={hasAcceptedLegalTerms}
-              className="mt-1"
+              className="mt-1 accent-eg-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-brand-strong"
               onChange={(event) => {
                 setHasAcceptedLegalTerms(event.target.checked);
               }}
             />
             <span>
               Ho letto l&apos;
-              <Link href="/privacy" className="font-medium text-eg-cotto-dark">
+              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
                 informativa privacy
               </Link>{" "}
               e accetto i{" "}
-              <Link href="/termini" className="font-medium text-eg-cotto-dark">
+              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
                 termini del servizio
               </Link>
               .
@@ -310,15 +310,23 @@ export function ImpresaSignupForm({
         </div>
       )}
 
-      {error ? <p className="eg-alert">{error}</p> : null}
+      {error ? <p className="eg-alert eg-alert-error">{error}</p> : null}
 
       {step === "company" ? (
-        <button type="button" className="eg-button-primary w-full" onClick={handleContinue}>
+        <button
+          type="button"
+          className="eg-button-primary w-full"
+          onClick={handleContinue}
+        >
           Continua <span aria-hidden="true">&rarr;</span>
         </button>
       ) : (
         <div className="flex flex-col gap-3">
-          <button type="submit" disabled={isSubmitting} className="eg-button-primary w-full">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="eg-button-primary w-full"
+          >
             {isSubmitting ? "Creazione in corso..." : "Crea accesso impresa"}
           </button>
 
@@ -353,13 +361,13 @@ function StepLabel({
         className={cn(
           "flex size-7 items-center justify-center rounded-full border text-[12px] font-medium transition-colors",
           active
-            ? "border-eg-cotto bg-eg-cotto text-eg-calce"
-            : "border-eg-hairline text-eg-ardesia",
+            ? "border-eg-brand bg-eg-brand text-eg-on-brand"
+            : "border-eg-border text-eg-text-muted",
         )}
       >
         {number}
       </span>
-      <span className={cn("text-[14px] font-medium", active ? "text-eg-terra" : "text-eg-ardesia")}>
+      <span className={cn("text-[14px] font-medium", active ? "text-eg-ink" : "text-eg-text-muted")}>
         {label}
       </span>
     </span>

@@ -13,25 +13,23 @@ type ButtonSize =
   | "sm"
   | "md"
   | "lg"
-  | "xl"
 
 export const buttonBase =
-  "inline-flex items-center justify-center gap-2 border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra disabled:pointer-events-none disabled:opacity-60"
+  "inline-flex items-center justify-center gap-2 border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong disabled:pointer-events-none disabled:opacity-60"
 
 export const buttonRadius = "rounded-eg-sm"
 
 export const buttonVariants = {
   primary:
-    "border-eg-terra bg-eg-terra text-eg-calce hover:border-eg-cotto-dark hover:bg-eg-cotto-dark",
+    "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand hover:border-eg-brand hover:bg-eg-brand",
   ghost:
-    "border-eg-terra bg-transparent text-eg-terra hover:bg-eg-terra hover:text-eg-calce",
+    "border-eg-brand-strong bg-transparent text-eg-brand-strong hover:bg-eg-brand-strong hover:text-eg-on-brand",
 } as const
 
 export const buttonSizes = {
   sm: "h-10 px-4 text-xs",
   md: "h-11 px-5 text-xs",
   lg: "h-12 px-6 text-xs",
-  xl: "h-14 px-7 text-sm",
 } as const
 
 export type { ButtonVariant, ButtonSize }

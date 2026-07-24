@@ -28,17 +28,17 @@ const detailRows = [
 
 function DetailPanel() {
   return (
-    <div className="eg-panel bg-eg-calce p-4 md:p-5">
+    <div className="eg-panel bg-eg-surface p-4 md:p-5">
       <div className="eg-eyebrow flex items-center gap-2">
-        <ZoneGlyph className="size-4 text-eg-cotto-dark" />
+        <ZoneGlyph className="size-4 text-eg-brand-strong" />
         Dettagli richiesta
       </div>
 
-      <dl className="mt-3 divide-y divide-eg-hairline">
+      <dl className="mt-3 divide-y divide-eg-border">
         {detailRows.map(([label, value]) => (
           <div key={label} className="flex items-center justify-between gap-4 py-2.5">
-            <dt className="text-[13px] text-eg-ardesia">{label}</dt>
-            <dd className="text-right text-[13.5px] font-medium text-eg-terra">
+            <dt className="text-[13px] text-eg-text-muted">{label}</dt>
+            <dd className="text-right text-[13.5px] font-medium text-eg-ink">
               {value}
             </dd>
           </div>
@@ -77,7 +77,7 @@ const steps = [
 
 export function BusinessHowItWorks() {
   return (
-    <section className="eg-section bg-eg-calce" aria-labelledby="business-steps-title">
+    <section className="eg-section bg-eg-surface" aria-labelledby="business-steps-title">
       <div className="eg-container">
         <div className="mx-auto max-w-[760px] text-center">
           <p className="eg-eyebrow">Come funziona</p>
@@ -97,8 +97,8 @@ export function BusinessHowItWorks() {
                 {visual}
 
                 <div className="mt-6 flex items-center gap-3">
-                  <span className="eg-eyebrow text-eg-cotto-dark">{number}</span>
-                  <Glyph className="size-5 text-eg-ardesia" />
+                  <span className="eg-eyebrow text-eg-brand-strong">{number}</span>
+                  <Glyph className="size-5 text-eg-text-muted" />
                 </div>
 
                 <h3 className="eg-h3 mt-4">{title}</h3>

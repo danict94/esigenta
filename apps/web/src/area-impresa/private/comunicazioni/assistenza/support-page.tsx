@@ -64,15 +64,15 @@ export async function SupportPage() {
     <PageShell size="xl" className="py-8 md:py-10">
       <section className="space-y-7">
         <div className="pt-4">
-          <p className="text-sm font-medium text-eg-ardesia">
+          <p className="text-sm font-medium text-eg-text-muted">
             Area impresa
           </p>
 
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-eg-terra">
+          <h1 className="mt-1 text-xl font-semibold tracking-tight text-eg-ink">
             Assistenza
           </h1>
 
-          <p className="mt-1 text-sm text-eg-ardesia">
+          <p className="mt-1 text-sm text-eg-text-muted">
             Scrivi al team Esigenta per dubbi operativi sulla piattaforma.
           </p>
         </div>
@@ -105,14 +105,14 @@ export async function SupportPage() {
             </div>
 
             {supportConversation ? (
-              <time className="text-sm text-eg-ardesia">
+              <time className="text-sm text-eg-text-muted">
                 {formatDateTime(supportConversation.updatedAt)}
               </time>
             ) : null}
           </CardHeader>
 
           <CardContent className="space-y-5">
-            <p className="text-sm leading-6 text-eg-ardesia">
+            <p className="text-sm leading-6 text-eg-text-muted">
               {supportConversation?.lastMessage?.body ??
                 "Scrivi al team Esigenta se hai bisogno di supporto su richieste, crediti o profilo impresa."}
             </p>

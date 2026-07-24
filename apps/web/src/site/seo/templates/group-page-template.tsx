@@ -42,23 +42,23 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
               <Link href="/" prefetch={false}>
                 Home
               </Link>
-              <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+              <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                 /
               </span>
               <Link href="/servizi" prefetch={false}>
                 Servizi
               </Link>
-              <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+              <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                 /
               </span>
-              <span className="text-eg-terra">{content.title}</span>
+              <span className="text-eg-ink">{content.title}</span>
             </nav>
 
             <p className="eg-eyebrow">Ambito</p>
 
             <h1 className="eg-h1 mt-5">{content.h1}</h1>
 
-            <p className="mx-auto mt-[22px] max-w-[48ch] text-base leading-[1.65] text-eg-ardesia">
+            <p className="mx-auto mt-[22px] max-w-[48ch] text-base leading-[1.65] text-eg-text-muted">
               {content.description}
             </p>
 
@@ -77,10 +77,10 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
 
         <section
           aria-labelledby="percorso-in-evidenza-title"
-          className="eg-section bg-eg-calce-2"
+          className="eg-section bg-eg-surface-muted"
         >
           <div className="eg-container">
-            <div className="grid gap-10 border-y border-eg-hairline py-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
+            <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
               <div>
                 <p className="eg-eyebrow">Percorso in evidenza</p>
 
@@ -118,7 +118,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
                   <div className="eg-panel p-5">
                     <p className="eg-metric-label">Range indicativo</p>
 
-                    <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">
+                    <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">
                       {featured.costRange}
                     </p>
 
@@ -161,7 +161,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
               </p>
             </div>
 
-            <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+            <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
               {interventions.map((item, index) => (
                 <GroupInterventionRow
                   key={item.slug}
@@ -175,7 +175,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
 
         <section
           aria-labelledby="come-funziona-title"
-          className="eg-section bg-eg-calce-2"
+          className="eg-section bg-eg-surface-muted"
         >
           <HowItWorks />
         </section>
@@ -186,7 +186,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
             className="eg-section"
           >
             <div className="eg-container">
-              <div className="grid gap-10 border-y border-eg-hairline py-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
+              <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
                 <div>
                   <p className="eg-eyebrow">Professionisti</p>
 
@@ -206,7 +206,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
                       key={category.slug}
                       href={category.href}
                       prefetch={false}
-                      className="inline-flex min-h-9 items-center rounded-full border border-eg-hairline bg-eg-calce px-3 text-sm font-medium leading-5 text-eg-ardesia transition-colors hover:border-eg-cotto hover:text-eg-cotto-dark"
+                      className="inline-flex min-h-9 items-center rounded-full border border-eg-border bg-eg-surface px-3 text-sm font-medium leading-5 text-eg-text-muted transition-colors hover:border-eg-brand hover:text-eg-brand-strong"
                     >
                       {category.name}
                     </Link>
@@ -217,15 +217,15 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
           </section>
         ) : null}
 
-        <section className="eg-section-large bg-eg-terra text-eg-calce">
+        <section className="eg-section-large bg-eg-brand-strong text-eg-on-brand">
           <div className="eg-container-narrow text-center">
-            <p className="eg-eyebrow text-eg-calce/60">Prossimo passo</p>
+            <p className="eg-eyebrow text-eg-on-brand-muted">Prossimo passo</p>
 
             <h2 className="eg-h2 mt-4">
               Racconta il lavoro e confronta i preventivi
             </h2>
 
-            <p className="mt-5 text-[15px] leading-7 text-eg-calce/70">
+            <p className="mt-5 text-[15px] leading-7 text-eg-on-brand-muted">
               Scegli l&apos;intervento pi&ugrave; vicino al tuo lavoro e
               continua nella richiesta dedicata: dettagli, tempi e zona.
             </p>
@@ -258,7 +258,7 @@ function GroupInterventionRow({
   item: GroupInterventionItem;
 }) {
   return (
-    <li className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-start gap-6 border-b border-eg-hairline py-6 max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
+    <li className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-start gap-6 border-b border-eg-border py-6 max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
       <span
         aria-hidden="true"
         data-nosnippet=""
@@ -268,24 +268,24 @@ function GroupInterventionRow({
       </span>
       {" "}
       <div>
-        <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] text-eg-terra">
+        <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] text-eg-ink">
           {item.name}
         </h3>
 
-        <p className="mt-2.5 max-w-[54ch] text-[15px] leading-[1.55] text-eg-ardesia">
+        <p className="mt-2.5 max-w-[54ch] text-[15px] leading-[1.55] text-eg-text-muted">
           {item.summary}
         </p>
 
         {item.costRange ? (
-          <p className="mt-2.5 text-[14px] leading-[1.55] text-eg-ardesia">
-            <span className="font-medium text-eg-terra">{item.costRange}</span>
+          <p className="mt-2.5 text-[14px] leading-[1.55] text-eg-text-muted">
+            <span className="font-medium text-eg-ink">{item.costRange}</span>
             {item.costGuideHref ? (
               <>
                 {" — "}
                 <Link
                   href={item.costGuideHref}
                   prefetch={false}
-                  className="underline decoration-eg-hairline underline-offset-4 transition-colors hover:text-eg-cotto-dark"
+                  className="underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-brand-strong"
                 >
                   guida ai costi
                 </Link>
@@ -300,7 +300,7 @@ function GroupInterventionRow({
           <Link
             href={item.landingHref}
             prefetch={false}
-            className="eg-list-status whitespace-nowrap transition-colors hover:text-eg-cotto-dark"
+            className="eg-list-status whitespace-nowrap transition-colors hover:text-eg-brand-strong"
           >
             Approfondisci &rarr;
           </Link>
@@ -309,7 +309,7 @@ function GroupInterventionRow({
         <Link
           href={item.requestHref}
           prefetch={false}
-          className="eg-list-status text-eg-cotto-dark whitespace-nowrap transition-colors hover:text-eg-terra"
+          className="eg-list-status text-eg-brand-strong whitespace-nowrap transition-colors hover:text-eg-ink"
         >
           Richiedi &rarr;
         </Link>

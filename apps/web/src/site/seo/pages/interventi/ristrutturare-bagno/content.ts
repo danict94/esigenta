@@ -13,7 +13,7 @@ export const ristrutturareBagnoLanding: SeoInterventionLanding = {
   groupSlug: "ristrutturazioni",
   requestCtaLabel: "Richiedi preventivi per il bagno",
   image: {
-    src: "/assets/images/rifacimento-bagno.webp",
+    src: "/assets/images/rifare-bagno.webp",
     alt: "Ristrutturazione bagno con sanitari e rivestimenti moderni",
   },
   geoSection: {

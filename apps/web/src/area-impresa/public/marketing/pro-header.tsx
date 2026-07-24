@@ -1,22 +1,56 @@
 import Link from "next/link";
 
-import { EsigentaWordmark } from "@esigenta/ui";
+import { buttonClassName, cn } from "@esigenta/ui";
 
-export function ProHeader() {
+import {
+  headerGutterClassName,
+  headerHeightClassName,
+  headerSurfaceClassName,
+} from "../../../site/shell/header-gutter";
+import { ProBrand } from "../../shared/pro-brand";
+
+export type ProHeaderAction = {
+  label: string;
+  href: string;
+};
+
+type ProHeaderProps = {
+  action?: ProHeaderAction | null;
+};
+
+const defaultAction: ProHeaderAction = {
+  label: "Ho gia un account",
+  href: "/area-impresa/accedi",
+};
+
+export function ProHeader({ action = defaultAction }: ProHeaderProps) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 bg-gradient-to-b from-eg-calce from-60% to-transparent px-12 py-6 max-[860px]:px-[22px] max-[860px]:py-[18px]">
-      <Link href="/" className="flex items-center gap-[13px] text-eg-terra no-underline" aria-label="Esigenta home" prefetch={false}>
-        <EsigentaWordmark decorative className="block h-[22px] w-auto" />
-        <small className="eg-pro-tag">/ pro</small>
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6",
+        headerHeightClassName,
+        headerGutterClassName,
+        headerSurfaceClassName,
+      )}
+    >
+      <Link href="/" className="flex items-center no-underline" aria-label="Esigenta — area professionisti" prefetch={false}>
+        <ProBrand />
       </Link>
 
-      <Link
-        href="/area-impresa/accedi"
-        prefetch={false}
-        className="eg-button-ghost min-h-0 px-4 py-2.5 text-[11px] tracking-[0.05em] max-[420px]:px-3 max-[420px]:text-[10px]"
-      >
-        Ho gia un account
-      </Link>
+      {action ? (
+        <Link
+          href={action.href}
+          prefetch={false}
+          className={buttonClassName({
+            variant: "ghost",
+            size: "sm",
+            className:
+              "border-eg-border text-eg-brand-strong hover:bg-eg-brand-soft hover:text-eg-brand-strong focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-brand-strong max-[420px]:px-3",
+          })}
+        >
+          {action.label}
+        </Link>
+      ) : null}
     </header>
   );
 }

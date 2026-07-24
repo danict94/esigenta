@@ -15,7 +15,7 @@ export function AdminMessageForm({
       <div className="space-y-2">
         <label
           htmlFor="support-message-body"
-          className="text-sm font-medium text-eg-terra"
+          className="text-sm font-medium text-eg-ink"
         >
           Messaggio
         </label>

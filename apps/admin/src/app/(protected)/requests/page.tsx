@@ -82,39 +82,39 @@ function RequestCard({ request }: { request: AdminRequestListItem }) {
   const badge = request.adminBadge;
 
   return (
-    <Card className="p-5 transition-colors hover:border-eg-cotto md:p-6">
+    <Card className="p-5 transition-colors hover:border-eg-brand-strong md:p-6">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_11rem_12rem]">
         <div className="min-w-0">
-          <p className="text-xs font-medium text-eg-ardesia">Informazioni</p>
-          <h2 className="mt-3 text-lg font-semibold tracking-tight text-eg-terra">
+          <p className="text-xs font-medium text-eg-text-muted">Informazioni</p>
+          <h2 className="mt-3 text-lg font-semibold tracking-tight text-eg-ink">
             {formatInterventionLabel(request.interventionSlug)}
           </h2>
 
-          <p className="mt-1 text-xs font-medium text-eg-ardesia">
+          <p className="mt-1 text-xs font-medium text-eg-text-muted">
             {request.requestCode ?? "Codice non disponibile"}
           </p>
 
-          <div className="mt-4 grid gap-4 text-sm text-eg-ardesia sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-4 grid gap-4 text-sm text-eg-text-muted sm:grid-cols-2 xl:grid-cols-3">
             <div className="min-w-0">
-              <p className="text-xs font-medium text-eg-ardesia">Cliente</p>
-              <p className="mt-1 text-eg-terra">{request.customerName ?? "-"}</p>
+              <p className="text-xs font-medium text-eg-text-muted">Cliente</p>
+              <p className="mt-1 text-eg-ink">{request.customerName ?? "-"}</p>
               <p className="mt-1 break-words text-xs">
                 {request.customerEmail ?? "-"}
               </p>
             </div>
             <div>
-              <p className="text-xs font-medium text-eg-ardesia">Area</p>
-              <p className="mt-1 text-eg-terra">{request.city ?? "-"}</p>
+              <p className="text-xs font-medium text-eg-text-muted">Area</p>
+              <p className="mt-1 text-eg-ink">{request.city ?? "-"}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-eg-ardesia">Creata</p>
-              <p className="mt-1 text-eg-terra">{formatDate(request.createdAt)}</p>
+              <p className="text-xs font-medium text-eg-text-muted">Creata</p>
+              <p className="mt-1 text-eg-ink">{formatDate(request.createdAt)}</p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-          <p className="text-xs font-medium text-eg-ardesia">Stato</p>
+        <div className="border-t border-eg-border pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+          <p className="text-xs font-medium text-eg-text-muted">Stato</p>
           <div className="mt-3 grid gap-3">
             <AdminStatusPill color={badge.color} label={badge.label} />
             {badge.secondaryBadges.map((secondaryBadge) => (
@@ -125,13 +125,13 @@ function RequestCard({ request }: { request: AdminRequestListItem }) {
               />
             ))}
           </div>
-          <p className="mt-3 text-xs leading-5 text-eg-ardesia">
+          <p className="mt-3 text-xs leading-5 text-eg-text-muted">
             {formatFreshness(request.createdAt)}
           </p>
         </div>
 
-        <div className="border-t border-eg-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-          <p className="mb-3 text-xs font-medium text-eg-ardesia">Azioni</p>
+        <div className="border-t border-eg-border pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+          <p className="mb-3 text-xs font-medium text-eg-text-muted">Azioni</p>
           {/* D-020: edit (commercial settings), archive and soft-delete
               actions live on the request detail page, consistent with the
               existing review/edit actions already there. */}
@@ -162,11 +162,11 @@ function RequestListSection({
 }) {
   return (
     <section className="mt-8">
-      <div className="border-b border-eg-hairline pb-4">
+      <div className="border-b border-eg-border pb-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-eg-terra">{title}</h2>
-            <p className="mt-1 text-sm text-eg-ardesia">{description}</p>
+            <h2 className="text-lg font-semibold text-eg-ink">{title}</h2>
+            <p className="mt-1 text-sm text-eg-text-muted">{description}</p>
           </div>
 
           <Badge variant={countVariant}>{countLabel}</Badge>
@@ -243,15 +243,15 @@ function RequestStatusTabs({
             className={cn(
               "inline-flex items-center gap-2 border px-3 py-2 text-sm font-medium transition-colors",
               isActive
-                ? "border-eg-cotto bg-eg-cotto text-eg-calce"
-                : "border-eg-hairline bg-eg-calce text-eg-ardesia hover:text-eg-terra",
+                ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                : "border-eg-border bg-eg-surface text-eg-text-muted hover:text-eg-ink",
             )}
           >
             <span>{tab.label}</span>
             <span
               className={cn(
                 "text-xs",
-                isActive ? "text-eg-calce" : "text-eg-ardesia",
+                isActive ? "text-eg-on-brand" : "text-eg-text-muted",
               )}
             >
               {tab.count}
@@ -317,14 +317,14 @@ export default async function RequestsModerationPage({
 
   return (
     <PageShell size="xl" className="py-8 md:py-10">
-      <header className="border-b border-eg-hairline pb-7">
-        <p className="text-sm font-medium text-eg-ardesia">Control room</p>
+      <header className="border-b border-eg-border pb-7">
+        <p className="text-sm font-medium text-eg-text-muted">Control room</p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
           Richieste
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
           Gestisci le richieste ricevute e controlla lo stato editoriale nel
           marketplace.
         </p>
@@ -340,13 +340,13 @@ export default async function RequestsModerationPage({
 
       {unverifiedRequests.length > 0 ? (
         <Link href="/requests/non-verificate" className="mt-8 block">
-          <Card className="bg-eg-calce-2 p-5 transition-colors hover:border-eg-cotto">
+          <Card className="bg-eg-surface-muted p-5 transition-colors hover:border-eg-brand-strong">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-sm font-semibold text-eg-terra">
+                <p className="text-sm font-semibold text-eg-ink">
                   Richieste in attesa di verifica email
                 </p>
-                <p className="mt-1 text-sm text-eg-ardesia">
+                <p className="mt-1 text-sm text-eg-text-muted">
                   Apri la coda dedicata per reinvio email e verifica manuale.
                 </p>
               </div>
@@ -363,10 +363,10 @@ export default async function RequestsModerationPage({
         <section className="mt-8">
           <Card className="p-8">
             <div className="max-w-xl">
-              <p className="text-lg font-semibold text-eg-terra">
+              <p className="text-lg font-semibold text-eg-ink">
                 Nessuna richiesta
               </p>
-              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                 Non ci sono richieste da mostrare in questo momento.
               </p>
             </div>

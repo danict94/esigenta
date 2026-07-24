@@ -65,7 +65,7 @@ const MAX_PANEL_PHOTOS = 3;
 
 function Chip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-eg-hairline bg-eg-calce px-[9px] py-1 font-(family-name:--eg-font-ui) text-[11px] leading-none text-eg-ardesia">
+    <span className="inline-flex items-center rounded-full border border-eg-border bg-eg-surface px-[9px] py-1 font-(family-name:--eg-font-ui) text-[11px] leading-none text-eg-text-muted">
       {children}
     </span>
   );
@@ -85,8 +85,8 @@ function ActionButton({
       className={cn(
         "flex-1 rounded-[2px] border px-3 py-3 text-center font-(family-name:--eg-font-ui) text-[11px] tracking-[0.02em] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
         tone === "refund"
-          ? "border-eg-cotto/40 bg-eg-calce text-eg-cotto-dark hover:bg-eg-cotto-tint"
-          : "border-eg-hairline bg-eg-calce text-eg-terra hover:border-eg-terra",
+          ? "border-eg-brand/40 bg-eg-surface text-eg-brand-strong hover:bg-eg-brand-soft"
+          : "border-eg-border bg-eg-surface text-eg-ink hover:border-eg-brand",
       )}
     >
       {children}
@@ -179,11 +179,11 @@ export function RequestDetailPanel({
 
   return (
     <div className="px-8 pb-24 pt-[26px] min-[900px]:pb-[30px]">
-      <p className="font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.08em] text-eg-cotto-dark">
+      <p className="font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.08em] text-eg-text-muted">
         {requestCode ? `Richiesta ${requestCode}` : "Richiesta"} &middot; {createdAt}
       </p>
 
-      <h2 className="mb-[18px] mt-[10px] text-[24px] font-semibold leading-tight tracking-[-0.01em] text-eg-terra">
+      <h2 className="mb-[18px] mt-[10px] text-[24px] font-semibold leading-tight tracking-[-0.01em] text-eg-ink">
         {title}
       </h2>
 
@@ -194,7 +194,7 @@ export function RequestDetailPanel({
         {fullDetailHref ? (
           <a
             href={fullDetailHref}
-            className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-eg-cotto transition-colors hover:text-eg-cotto-dark"
+            className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-eg-brand-strong transition-colors hover:text-eg-brand"
           >
             Apri dettaglio completo &rarr;
           </a>
@@ -206,7 +206,7 @@ export function RequestDetailPanel({
           {visiblePhotos.map((photo) => (
             <div
               key={photo.src}
-              className="relative aspect-square overflow-hidden rounded-md border border-eg-hairline bg-eg-calce-2"
+              className="relative aspect-square overflow-hidden rounded-md border border-eg-border bg-eg-surface-muted"
             >
               <Image
                 src={photo.src}
@@ -224,7 +224,7 @@ export function RequestDetailPanel({
             <Link
               href={fullDetailHref}
               prefetch={false}
-              className="flex aspect-square items-center justify-center rounded-md border border-eg-hairline bg-eg-calce-2 text-xs font-medium text-eg-terra transition-colors hover:border-eg-cotto"
+              className="flex aspect-square items-center justify-center rounded-md border border-eg-border bg-eg-surface-muted text-xs font-medium text-eg-ink transition-colors hover:border-eg-brand"
             >
               +{remainingPhotoCount} foto
             </Link>
@@ -232,11 +232,11 @@ export function RequestDetailPanel({
         </div>
       ) : null}
 
-      <p className="mb-6 border-b border-eg-hairline pb-6 text-[14.5px] leading-[1.65] text-eg-terra">
+      <p className="mb-6 border-b border-eg-border pb-6 text-[14.5px] leading-[1.65] text-eg-ink">
         {description ? (
           <span className="whitespace-pre-line">{description}</span>
         ) : (
-          <span className="text-eg-ardesia">
+          <span className="text-eg-text-muted">
             Il cliente non ha aggiunto una descrizione libera.
           </span>
         )}
@@ -246,10 +246,10 @@ export function RequestDetailPanel({
         <div className="mb-[26px] grid grid-cols-2 gap-4">
           {formDetails.slice(0, 6).map((detail) => (
             <div key={`${detail.label}-${detail.value}`}>
-              <p className="mb-[5px] font-(family-name:--eg-font-ui) text-[10px] uppercase tracking-[0.06em] text-eg-ardesia-2">
+              <p className="mb-[5px] font-(family-name:--eg-font-ui) text-[10px] uppercase tracking-[0.06em] text-eg-text-muted">
                 {detail.label}
               </p>
-              <p className="text-[15px] font-medium text-eg-terra">
+              <p className="text-[15px] font-medium text-eg-ink">
                 {detail.value}
               </p>
             </div>
@@ -257,24 +257,24 @@ export function RequestDetailPanel({
         </div>
       ) : null}
 
-      <div className="mb-5 overflow-hidden rounded-[4px] border border-eg-hairline">
+      <div className="mb-5 overflow-hidden rounded-[4px] border border-eg-border">
         {hasUnlocked ? (
           <div className="px-6 py-[22px]">
-            <p className="text-sm font-semibold text-eg-terra">
+            <p className="text-sm font-semibold text-eg-ink">
               Contatto sbloccato
             </p>
             {unlockedAt ? (
-              <p className="text-xs text-eg-ardesia">Sbloccato il {unlockedAt}</p>
+              <p className="text-xs text-eg-text-muted">Sbloccato il {unlockedAt}</p>
             ) : null}
 
-            <div className="mt-3 divide-y divide-eg-hairline">
+            <div className="mt-3 divide-y divide-eg-border">
               <div className="flex items-center gap-3 py-[11px]">
                 <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eg-calce-2"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eg-surface-muted"
                   aria-hidden="true"
                 />
                 <div className="min-w-0">
-                  <p className="truncate text-[15px] font-semibold text-eg-terra">
+                  <p className="truncate text-[15px] font-semibold text-eg-ink">
                     {formatContactValue(customerContact?.name)}
                   </p>
                 </div>
@@ -282,11 +282,11 @@ export function RequestDetailPanel({
 
               <div className="flex items-center gap-3 py-[11px]">
                 <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eg-calce-2"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eg-surface-muted"
                   aria-hidden="true"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[15px] font-medium text-eg-terra">
+                  <p className="truncate text-[15px] font-medium text-eg-ink">
                     {formatContactValue(customerContact?.phone)}
                   </p>
                   <p className="eg-field-caption text-[11px]">telefono</p>
@@ -294,7 +294,7 @@ export function RequestDetailPanel({
                 {customerContact?.phone ? (
                   <a
                     href={`tel:${customerContact.phone}`}
-                    className="ml-auto shrink-0 rounded-full border border-eg-hairline px-3 py-[7px] font-(family-name:--eg-font-ui) text-[11px] text-eg-cotto-dark transition-colors hover:border-eg-cotto"
+                    className="ml-auto shrink-0 rounded-full border border-eg-border px-3 py-[7px] font-(family-name:--eg-font-ui) text-[11px] text-eg-brand-strong transition-colors hover:border-eg-brand"
                   >
                     CHIAMA &rarr;
                   </a>
@@ -304,13 +304,13 @@ export function RequestDetailPanel({
               {customerContact?.email ? (
                 <div className="flex items-center gap-3 py-[11px]">
                   <span
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eg-calce-2"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eg-surface-muted"
                     aria-hidden="true"
                   />
                   <div className="min-w-0 flex-1">
                     <a
                       href={`mailto:${customerContact.email}`}
-                      className="block truncate text-[15px] font-medium text-eg-terra hover:text-eg-cotto"
+                      className="block truncate text-[15px] font-medium text-eg-ink hover:text-eg-brand-strong"
                     >
                       {customerContact.email}
                     </a>
@@ -339,11 +339,11 @@ export function RequestDetailPanel({
             </div>
 
             {hasRefundedUnlock ? (
-              <p className="mt-3 text-xs text-eg-ardesia">
+              <p className="mt-3 text-xs text-eg-text-muted">
                 Crediti rimborsati{creditCost !== null ? ` (+${creditCost})` : ""}.
               </p>
             ) : refundRequest ? (
-              <p className="mt-3 text-xs text-eg-ardesia">
+              <p className="mt-3 text-xs text-eg-text-muted">
                 {getRefundRequestStatusLabel(refundRequest)}
               </p>
             ) : canRequestRefund && refundRequestAction ? (
@@ -355,21 +355,21 @@ export function RequestDetailPanel({
             ) : null}
           </div>
         ) : restrictedNotice ? (
-          <div className="bg-eg-calce-2 px-6 py-6 text-center">
-            <p className="text-[18px] font-semibold text-eg-terra">
+          <div className="bg-eg-surface-muted px-6 py-6 text-center">
+            <p className="text-[18px] font-semibold text-eg-ink">
               Sblocco richiesta
             </p>
-            <p className="mt-1 text-[12.5px] leading-6 text-eg-ardesia">
+            <p className="mt-1 text-[12.5px] leading-6 text-eg-text-muted">
               {restrictedNotice}
             </p>
           </div>
         ) : (
           <>
-            <div className="bg-eg-calce-2 px-6 py-6 text-center">
-              <p className="text-[18px] font-semibold text-eg-terra">
+            <div className="bg-eg-surface-muted px-6 py-6 text-center">
+              <p className="text-[18px] font-semibold text-eg-ink">
                 Sblocco richiesta
               </p>
-              <p className="mt-1 text-[12.5px] text-eg-ardesia">
+              <p className="mt-1 text-[12.5px] text-eg-text-muted">
                 {commercialState.isCommerciallyConfigured
                   ? "Sblocca per vedere nome completo, telefono ed email."
                   : "Questa richiesta non è ancora pronta per lo sblocco."}
@@ -379,13 +379,13 @@ export function RequestDetailPanel({
             <div className="px-6 py-[22px]">
               {showInsufficientCreditsRecovery ? (
                 <>
-                  <p className="mb-3 text-xs leading-5 text-eg-ardesia">
+                  <p className="mb-3 text-xs leading-5 text-eg-text-muted">
                     Ti mancano {creditDeficit} crediti per sbloccare questa
                     richiesta.
                   </p>
                   <Link
                     href="/area-impresa/crediti"
-                    className="inline-flex h-11 w-full items-center justify-center rounded-[2px] border border-eg-terra bg-eg-terra px-4 font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.06em] text-eg-calce transition-colors hover:border-eg-cotto-dark hover:bg-eg-cotto-dark"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-[2px] border border-eg-brand-strong bg-eg-brand-strong px-4 font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.06em] text-eg-on-brand transition-colors hover:border-eg-brand hover:bg-eg-brand"
                     prefetch={false}
                   >
                     Acquista crediti
@@ -401,7 +401,7 @@ export function RequestDetailPanel({
                     pendingChildren="Sblocco in corso..."
                   >
                     <span>Sblocca contatto</span>
-                    <span className="rounded-full bg-eg-calce-translucent px-2 py-0.5 text-[11px] normal-case tracking-normal">
+                    <span className="rounded-full bg-eg-surface-muted px-2 py-0.5 text-[11px] normal-case tracking-normal">
                       {commercialState.isSoldOut
                         ? "posti terminati"
                         : `−${formatCreditCost(creditCost)}`}

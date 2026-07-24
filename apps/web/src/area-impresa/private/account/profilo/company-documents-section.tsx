@@ -162,7 +162,7 @@ export function CompanyDocumentsSection({
 
   return (
     <div className="grid gap-4">
-      <p className="text-sm leading-6 text-eg-ardesia">
+      <p className="text-sm leading-6 text-eg-text-muted">
         I documenti aiutano la verifica dell&apos;impresa. Per ora non
         bloccano automaticamente l&apos;operativita.
       </p>
@@ -175,11 +175,11 @@ export function CompanyDocumentsSection({
           return (
             <li
               key={item.type}
-              className="grid gap-3 border border-eg-hairline p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-6"
+              className="grid gap-3 border border-eg-border p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-6"
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-semibold text-eg-terra">
+                  <p className="text-sm font-semibold text-eg-ink">
                     {item.label}
                   </p>
                   <Badge
@@ -192,15 +192,15 @@ export function CompanyDocumentsSection({
                     {badge.label}
                   </Badge>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-eg-ardesia">
+                <p className="mt-2 text-xs leading-5 text-eg-text-muted">
                   {item.description}
                 </p>
-                <p className="mt-2 text-xs leading-5 text-eg-ardesia">
+                <p className="mt-2 text-xs leading-5 text-eg-text-muted">
                   Formati: {formatAcceptedFormats(item.acceptedMimeTypes)} ·
                   Max {formatSizeLabel(item.maxSizeBytes)}
                 </p>
                 {item.fileName ? (
-                  <p className="mt-2 text-xs leading-5 text-eg-ardesia">
+                  <p className="mt-2 text-xs leading-5 text-eg-text-muted">
                     File attuale: {item.fileName}
                     {item.uploadedAt
                       ? ` · caricato il ${formatDate(item.uploadedAt)}`
@@ -208,12 +208,12 @@ export function CompanyDocumentsSection({
                   </p>
                 ) : null}
                 {item.status === "REJECTED" && item.rejectionReason ? (
-                  <p className="mt-2 text-xs leading-5 text-eg-cotto-dark">
+                  <p className="mt-2 text-xs leading-5 text-eg-error">
                     Motivo: {item.rejectionReason}
                   </p>
                 ) : null}
                 {rowState.error ? (
-                  <p className="mt-2 text-xs leading-5 text-eg-cotto-dark">
+                  <p className="mt-2 text-xs leading-5 text-eg-error">
                     {rowState.error}
                   </p>
                 ) : null}

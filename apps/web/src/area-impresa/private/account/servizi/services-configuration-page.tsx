@@ -88,11 +88,11 @@ export async function ServicesConfigurationPage({
         <Card className="p-8">
           <Badge variant="warning">Profilo non disponibile</Badge>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-terra">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
             Non troviamo il tuo profilo impresa
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
             L&apos;account risulta autenticato, ma non è collegato a un profilo
             impresa valido.
           </p>
@@ -107,18 +107,18 @@ export async function ServicesConfigurationPage({
         <Card className="p-8">
           <Badge variant="warning">Categorie non disponibili</Badge>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-terra">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
             Configurazione servizi non disponibile
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-ardesia">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
             Non ci sono categorie operative configurabili. Puoi comunque
             entrare nell&apos;area impresa.
           </p>
 
           <Link
             href="/area-impresa/richieste"
-            className="mt-6 inline-flex text-sm font-medium text-eg-cotto"
+            className="mt-6 inline-flex text-sm font-medium text-eg-brand-strong"
             prefetch={false}
           >
             Vai alle richieste
@@ -166,23 +166,23 @@ export async function ServicesConfigurationPage({
   return (
     <PageShell size="lg">
       <div className="max-w-4xl">
-        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-eg-terra">
+        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-eg-ink">
           Configura categorie e interventi
         </h1>
 
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-eg-ardesia">
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-eg-text-muted">
           Le categorie determinano la tua identità professionale. Gli
           interventi determinano quali richieste puoi vedere.
         </p>
 
         <Card className="mt-8 p-6">
-          <div className="flex flex-col gap-3 border-b border-eg-hairline pb-5 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-3 border-b border-eg-border pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-sm font-medium text-eg-ardesia">
+              <p className="text-sm font-medium text-eg-text-muted">
                 Profilo impresa
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-eg-terra">
+              <h2 className="mt-1 text-xl font-semibold text-eg-ink">
                 {company.name}
               </h2>
             </div>
@@ -193,9 +193,9 @@ export async function ServicesConfigurationPage({
           </div>
 
           {!company.isConfigured && onboardingCategory ? (
-            <p className="mt-5 text-sm leading-6 text-eg-ardesia">
+            <p className="mt-5 text-sm leading-6 text-eg-text-muted">
               Suggerimento dalla registrazione:{" "}
-              <span className="font-medium text-eg-terra">
+              <span className="font-medium text-eg-ink">
                 {onboardingCategory.name}
               </span>
               . Non è ancora salvato — selezionalo qui sotto e premi
@@ -204,13 +204,13 @@ export async function ServicesConfigurationPage({
           ) : null}
 
           {errorMessage ? (
-            <div className="mt-5 border border-eg-cotto bg-eg-calce-2 px-4 py-3 text-sm text-eg-terra">
+            <div className="mt-5 border border-eg-error-border bg-eg-error-soft px-4 py-3 text-sm text-eg-error">
               {errorMessage}
             </div>
           ) : null}
 
           {savedMessage ? (
-            <div className="mt-5 border border-eg-hairline bg-eg-calce-2 px-4 py-3 text-sm font-medium text-eg-terra">
+            <div className="mt-5 border border-eg-success-border bg-eg-success-soft px-4 py-3 text-sm font-medium text-eg-success">
               {savedMessage}
             </div>
           ) : null}

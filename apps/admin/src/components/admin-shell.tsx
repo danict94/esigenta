@@ -105,8 +105,8 @@ function DesktopNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "eg-shell-nav-link relative inline-flex items-center gap-2 py-2 transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
-        isActive && "text-eg-terra",
+        "eg-shell-nav-link relative inline-flex items-center gap-2 py-2 transition-colors hover:text-eg-ink focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong",
+        isActive && "text-eg-ink",
       )}
     >
       <span>{item.label}</span>
@@ -120,7 +120,7 @@ function DesktopNavLink({
       {isActive ? (
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 -bottom-0.5 h-px bg-eg-cotto-dark"
+          className="absolute inset-x-0 -bottom-0.5 h-px bg-eg-brand-strong"
         />
       ) : null}
     </Link>
@@ -142,8 +142,8 @@ function MobileNavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "eg-shell-nav-link flex items-center justify-between gap-3 px-2 py-3 transition-colors hover:text-eg-terra focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-terra",
-        isActive && "text-eg-terra",
+        "eg-shell-nav-link flex items-center justify-between gap-3 px-2 py-3 transition-colors hover:text-eg-ink focus:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong",
+        isActive && "text-eg-ink",
       )}
     >
       <span>{item.label}</span>
@@ -196,8 +196,8 @@ export function AdminShell({
   }
 
   return (
-    <div className="min-h-screen bg-eg-calce text-eg-terra">
-      <header className="sticky top-0 z-40 border-b border-eg-hairline bg-eg-calce-translucent backdrop-blur">
+    <div className="min-h-screen bg-eg-page text-eg-ink">
+      <header className="sticky top-0 z-40 border-b border-eg-border bg-eg-surface-muted backdrop-blur">
         <Container
           size="lg"
           gutter="md"
@@ -231,7 +231,7 @@ export function AdminShell({
             size="sm"
             aria-label={isMenuOpen ? "Chiudi menu admin" : "Apri menu admin"}
             aria-expanded={isMenuOpen}
-            className="h-10 w-10 px-0 text-eg-terra md:hidden"
+            className="h-10 w-10 px-0 text-eg-ink md:hidden"
             onClick={() => {
               setIsMenuOpen((current) => !current);
             }}
@@ -241,7 +241,7 @@ export function AdminShell({
         </Container>
 
         {isMenuOpen ? (
-          <div className="border-t border-eg-hairline bg-eg-calce md:hidden">
+          <div className="border-t border-eg-border bg-eg-surface md:hidden">
             <Container size="lg" gutter="md">
               <nav
                 aria-label="Navigazione admin mobile"
@@ -255,7 +255,7 @@ export function AdminShell({
                   />
                 ))}
 
-                <div className="mt-2 border-t border-eg-hairline pt-3">
+                <div className="mt-2 border-t border-eg-border pt-3">
                   <Button
                     type="button"
                     variant="ghost"

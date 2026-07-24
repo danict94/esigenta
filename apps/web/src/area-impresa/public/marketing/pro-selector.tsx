@@ -25,20 +25,23 @@ export function ProSelector({
       aria-label="Configura il profilo professionista"
     >
       {hasDeactivatedCompany ? (
-        <div className="border border-eg-hairline bg-eg-calce-2">
-          <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5">
+        <div className="border border-eg-border bg-eg-surface">
+          <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-border px-5 py-3.5">
             <span>Profilo trovato</span>
             <span>riattiva</span>
           </div>
           <div className="px-[26px] py-7 max-[860px]:px-5">
-            <p className="eg-eyebrow text-eg-cotto-dark">Account disattivato</p>
+            <p className="eg-eyebrow">Account disattivato</p>
             <h2 className="eg-h3 mt-4">Riattiva il tuo profilo impresa</h2>
             <p className="eg-body-muted mt-4">
               Abbiamo trovato un account impresa associato a questa sessione.
               Puoi riattivarlo mantenendo storico, richieste e configurazione.
             </p>
             <form action={reactivateAction} className="mt-6">
-              <button type="submit" className="eg-button-primary">
+              <button
+                type="submit"
+                className="eg-button-primary"
+              >
                 Riattiva account <span aria-hidden="true">&rarr;</span>
               </button>
             </form>
@@ -50,7 +53,7 @@ export function ProSelector({
 
       <p className="eg-body-muted mt-4 text-center text-sm">
         Hai gia un profilo?{" "}
-        <Link href="/area-impresa/accedi" prefetch={false} className="font-medium text-eg-cotto-dark">
+        <Link href="/area-impresa/accedi" prefetch={false} className="font-medium text-eg-brand-strong hover:text-eg-brand">
           Accedi all&apos;area impresa
         </Link>
       </p>

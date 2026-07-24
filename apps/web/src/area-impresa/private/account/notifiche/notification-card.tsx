@@ -110,8 +110,8 @@ function MetaItem({
   children: React.ReactNode
 }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-eg-ardesia">
-      <span className="text-eg-ardesia/70">{icon}</span>
+    <span className="inline-flex items-center gap-1.5 text-eg-text-muted">
+      <span className="text-eg-text-muted/70">{icon}</span>
       {children}
     </span>
   )
@@ -148,11 +148,11 @@ export function NotificationCard({
         // the premium credit package) instead of just a thin border — the
         // weight of the card itself signals priority, not only a label.
         unread
-          ? "border-eg-cotto shadow-eg-elevation-lg"
-          : "border-eg-hairline",
+          ? "border-eg-brand-strong shadow-eg-elevation-lg"
+          : "border-eg-border",
       )}
     >
-      <CardHeader className="border-b border-eg-hairline">
+      <CardHeader className="border-b border-eg-border">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -160,8 +160,8 @@ export function NotificationCard({
                 // Solid chip, not the shared outline Badge: this is the one
                 // status that must be impossible to miss while scanning a
                 // list, so it gets real fill instead of a thin border.
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-eg-cotto px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-eg-calce">
-                  <span className="h-1.5 w-1.5 rounded-full bg-eg-calce" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-eg-brand-strong px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-eg-on-brand">
+                  <span className="h-1.5 w-1.5 rounded-full bg-eg-on-brand" />
                   Nuova
                 </span>
               ) : null}
@@ -173,7 +173,7 @@ export function NotificationCard({
               ) : null}
 
               {notification.type === "CONVERSATION_MESSAGE" ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-eg-miele-tint px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-eg-terra">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-eg-brand-soft px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-eg-brand-strong">
                   Messaggio
                 </span>
               ) : null}
@@ -203,14 +203,14 @@ export function NotificationCard({
       </CardHeader>
 
       <CardContent className="space-y-4 pt-6">
-        <p className="text-sm leading-6 text-eg-ardesia">
+        <p className="text-sm leading-6 text-eg-text-muted">
           {notification.body}
         </p>
 
         {request ? (
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-eg-hairline pt-4 text-sm">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-eg-border pt-4 text-sm">
             <MetaItem icon={<PinGlyph className="h-4 w-4" />}>
-              <span className="font-medium text-eg-terra">
+              <span className="font-medium text-eg-ink">
                 {formatLocation({
                   city: request.city,
                   postalCode: request.postalCode,
@@ -231,7 +231,7 @@ export function NotificationCard({
         {primaryHref ? (
           <Link
             href={primaryHref}
-            className="inline-flex text-sm font-medium text-eg-cotto transition-colors hover:text-eg-cotto-dark"
+            className="inline-flex text-sm font-medium text-eg-brand-strong transition-colors hover:text-eg-brand"
             prefetch={false}
           >
             {primaryActionLabel}

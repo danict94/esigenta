@@ -20,11 +20,13 @@ const badgeBase =
 
 const badgeVariants = {
   neutral:
-    "border-eg-hairline bg-eg-calce text-eg-ardesia",
+    "border-eg-border bg-eg-surface text-eg-text-muted",
   success:
-    "border-eg-cotto bg-eg-calce text-eg-cotto",
-  warning: "border-eg-hairline bg-eg-calce-2 text-eg-terra",
-  danger: "border-eg-cotto bg-eg-calce text-eg-terra",
+    "border-eg-success-border bg-eg-success-soft text-eg-success",
+  warning:
+    "border-eg-warning-border bg-eg-warning-soft text-eg-warning",
+  danger:
+    "border-eg-error-border bg-eg-error-soft text-eg-error",
 } as const
 
 const badgeSizes = {

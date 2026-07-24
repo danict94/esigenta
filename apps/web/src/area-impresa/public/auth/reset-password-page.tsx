@@ -52,7 +52,9 @@ export async function CompanyResetPasswordPage({
   const canReset = tokenState.ok;
 
   return (
-    <AuthShell>
+    <AuthShell
+      headerAction={{ label: "Torna ad accedere", href: "/area-impresa/accedi" }}
+    >
       <div className="flex flex-col gap-6">
         <div>
           <p className="eg-eyebrow">Nuova password</p>
@@ -62,7 +64,7 @@ export async function CompanyResetPasswordPage({
           </p>
         </div>
 
-        {errorMessage ? <p className="eg-alert">{errorMessage}</p> : null}
+        {errorMessage ? <p className="eg-alert eg-alert-error">{errorMessage}</p> : null}
 
         {canReset ? (
           <form action={resetCompanyPasswordAction} className="flex flex-col gap-5">
@@ -90,17 +92,20 @@ export async function CompanyResetPasswordPage({
               />
             </label>
 
-            <button type="submit" className="eg-button-primary w-full">
+            <button
+              type="submit"
+              className="eg-button-primary w-full"
+            >
               Salva nuova password <span aria-hidden="true">&rarr;</span>
             </button>
 
             <p className="eg-form-help text-center">
               Per maggiori informazioni leggi l&apos;
-              <Link href="/privacy" className="font-medium text-eg-cotto-dark">
+              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
                 informativa privacy
               </Link>{" "}
               e i{" "}
-              <Link href="/termini" className="font-medium text-eg-cotto-dark">
+              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
                 termini del servizio
               </Link>
               .

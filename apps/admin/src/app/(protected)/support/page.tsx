@@ -40,18 +40,18 @@ export default async function AdminSupportPage() {
   return (
     <PageShell size="lg" className="py-8 md:py-10">
       <section className="space-y-7">
-        <header className="border-b border-eg-hairline pb-7">
+        <header className="border-b border-eg-border pb-7">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              <p className="text-sm font-medium text-eg-ardesia">
+              <p className="text-sm font-medium text-eg-text-muted">
                 Control room
               </p>
 
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
                 Assistenza
               </h1>
 
-              <p className="mt-3 max-w-xl text-sm leading-6 text-eg-ardesia">
+              <p className="mt-3 max-w-xl text-sm leading-6 text-eg-text-muted">
                 Messaggi operativi tra imprese e team Esigenta.
               </p>
             </div>
@@ -76,7 +76,7 @@ export default async function AdminSupportPage() {
         ) : (
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-eg-ardesia">
+              <p className="text-sm text-eg-text-muted">
                 {result.message}
               </p>
             </CardContent>

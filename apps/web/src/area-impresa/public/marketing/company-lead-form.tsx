@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
 import { isGeoPlace, type GeoPlace } from "@esigenta/shared";
+import { cn } from "@esigenta/ui";
 
 import { CityAutocomplete } from "../../../ui/location/city-autocomplete";
 
@@ -73,16 +74,16 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-eg-hairline bg-eg-calce-2">
-      <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-hairline px-5 py-3.5">
+    <form onSubmit={handleSubmit} className="border border-eg-border bg-eg-surface">
+      <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-border px-5 py-3.5">
         <span>Configura il tuo profilo</span>
         <span>2 passi</span>
       </div>
 
       <div className="px-[26px] py-7 max-[860px]:px-5">
         <fieldset>
-          <legend className="eg-step-label flex items-center gap-2">
-            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-cotto-dark text-[10px]">
+          <legend className="eg-step-label flex items-center gap-2 text-eg-ink">
+            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-accent text-[10px] text-eg-ink">
               1
             </span>
             Che professionista sei?
@@ -98,13 +99,13 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
                     key={category.slug}
                     type="button"
                     aria-pressed={isSelected}
-                    className={[
+                    className={cn(
                       "border px-[15px] py-2 text-sm transition-colors",
                       "rounded-full",
                       isSelected
-                        ? "border-eg-terra bg-eg-terra text-eg-calce"
-                        : "border-eg-hairline bg-eg-calce text-eg-terra hover:border-eg-terra",
-                    ].join(" ")}
+                        ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                        : "border-eg-border bg-eg-surface text-eg-ink hover:border-eg-brand",
+                    )}
                     onClick={() => {
                       setCategorySlug(category.slug);
                       setError(null);
@@ -116,7 +117,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
               })}
             </div>
           ) : (
-            <p className="eg-alert mt-4">
+            <p className="eg-alert eg-alert-error mt-4">
               Le categorie professionali non sono disponibili in questo momento.
             </p>
           )}
@@ -125,9 +126,9 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
         <div className="mt-7">
           <label
             htmlFor="company-city"
-            className="eg-step-label flex items-center gap-2"
+            className="eg-step-label flex items-center gap-2 text-eg-ink"
           >
-            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-cotto-dark text-[10px]">
+            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-accent text-[10px] text-eg-ink">
               2
             </span>
             Dove operi?
@@ -157,7 +158,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
               <button
                 key={city}
                 type="button"
-                className="rounded-full border border-eg-hairline px-2.5 py-1 text-[11px] text-eg-ardesia transition-colors hover:border-eg-terra hover:text-eg-terra"
+                className="rounded-full border border-eg-border bg-eg-surface px-2.5 py-1 text-[11px] text-eg-ink transition-colors hover:border-eg-brand hover:bg-eg-brand-soft hover:text-eg-brand-strong"
                 aria-label={`Usa ${city} come ricerca`}
                 onClick={() => {
                   handleCityShortcut(city);
@@ -169,41 +170,44 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
           </div>
         </div>
 
-        {error ? <p className="eg-alert mt-5">{error}</p> : null}
+        {error ? <p className="eg-alert eg-alert-error mt-5">{error}</p> : null}
       </div>
 
       <div
-        className={[
+        className={cn(
           "overflow-hidden border-t transition-[max-height,border-color] duration-500",
-          canContinue ? "max-h-56 border-eg-hairline" : "max-h-0 border-transparent",
-        ].join(" ")}
+          canContinue ? "max-h-56 border-eg-border" : "max-h-0 border-transparent",
+        )}
         aria-live="polite"
       >
         <div className="flex flex-wrap items-center justify-between gap-5 px-[26px] py-6 max-[860px]:px-5">
-          <p className="max-w-[46ch] text-base leading-[1.5] text-eg-terra">
+          <p className="max-w-[46ch] text-base leading-[1.5] text-eg-ink">
             Profilo per{" "}
-            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-cotto-dark">
+            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-brand-strong">
               {selectedCategory?.name ?? "-"}
             </b>{" "}
             in{" "}
-            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-cotto-dark">
+            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-brand-strong">
               {locationLabel ?? "-"}
             </b>
             . Completa l&apos;attivazione gratuita.
-            <span className="mt-1.5 block font-(family-name:--eg-font-ui) text-[13px] text-eg-salvia">
+            <span className="mt-1.5 block font-(family-name:--eg-font-ui) text-[13px] text-eg-text-muted">
               Configuri tu zona e categorie nel profilo.
             </span>
           </p>
 
-          <button type="submit" className="eg-button-primary whitespace-nowrap">
+          <button
+            type="submit"
+            className="eg-button-primary whitespace-nowrap"
+          >
             Attiva il profilo <span aria-hidden="true">&rarr;</span>
           </button>
         </div>
       </div>
 
-      <p className="px-[26px] pb-5 text-[13px] leading-[1.55] text-eg-ardesia max-[860px]:px-5">
+      <p className="px-[26px] pb-5 text-[13px] leading-[1.55] text-eg-text-muted max-[860px]:px-5">
         I dati saranno usati per preparare il profilo e ricontattarti. Leggi l&apos;
-        <Link href="/privacy" className="font-medium text-eg-cotto-dark">
+        <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
           informativa privacy
         </Link>
         .

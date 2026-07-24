@@ -112,13 +112,13 @@ function getStatusClass(
 ) {
   switch (status) {
     case "uploaded":
-      return "border-eg-salvia text-eg-salvia";
+      return "border-eg-success-border text-eg-success";
 
     case "error":
-      return "border-eg-cotto text-eg-cotto-dark";
+      return "border-eg-error-border text-eg-error";
 
     default:
-      return "border-eg-hairline text-eg-ardesia";
+      return "border-eg-border text-eg-text-muted";
   }
 }
 
@@ -403,20 +403,20 @@ export function RequestPhotoUpload({
     <div className="grid gap-4">
       <label
         className={joinClasses(
-          "flex min-h-36 cursor-pointer flex-col items-center justify-center gap-3 border border-dashed border-eg-hairline bg-eg-calce px-5 py-8 text-center transition-colors hover:border-eg-cotto hover:bg-eg-calce-2",
+          "flex min-h-36 cursor-pointer flex-col items-center justify-center gap-3 border border-dashed border-eg-border bg-eg-surface px-5 py-8 text-center transition-colors hover:border-eg-brand hover:bg-eg-surface-muted",
           isUploading &&
             "pointer-events-none opacity-60",
         )}
       >
-        <span className="flex size-11 items-center justify-center rounded-full bg-eg-calce-2 text-eg-cotto-dark">
+        <span className="flex size-11 items-center justify-center rounded-full bg-eg-surface-muted text-eg-brand-strong">
           +
         </span>
 
-        <span className="text-sm font-medium text-eg-terra">
+        <span className="text-sm font-medium text-eg-ink">
           Aggiungi foto
         </span>
 
-        <span className="max-w-sm text-xs leading-5 text-eg-ardesia">
+        <span className="max-w-sm text-xs leading-5 text-eg-text-muted">
           JPEG, PNG o WebP. Massimo {REQUEST_PHOTO_MAX_FILES} foto da{" "}
           {REQUEST_PHOTO_MAX_SIZE_LABEL} ciascuna.
         </span>
@@ -448,7 +448,7 @@ export function RequestPhotoUpload({
       <p className="eg-form-help">
         Le foto caricate saranno usate per descrivere la richiesta e possono
         essere gestite tramite provider di upload indicato nella{" "}
-        <Link href="/privacy" className="font-medium text-eg-cotto-dark" prefetch={false}>
+        <Link href="/privacy" className="font-medium text-eg-brand-strong" prefetch={false}>
           privacy policy
         </Link>
         .
@@ -459,10 +459,10 @@ export function RequestPhotoUpload({
           {items.map((item) => (
             <div
               key={item.id}
-              className="overflow-hidden border border-eg-hairline bg-eg-calce"
+              className="overflow-hidden border border-eg-border bg-eg-surface"
             >
               {item.previewUrl ? (
-                <div className="relative aspect-video bg-eg-calce-2">
+                <div className="relative aspect-video bg-eg-surface-muted">
                   <Image
                     src={item.previewUrl}
                     alt=""
@@ -476,7 +476,7 @@ export function RequestPhotoUpload({
 
               <div className="flex items-center gap-3 p-3">
                 <div className="min-w-0 flex-1 space-y-2">
-                  <p className="truncate text-sm font-medium text-eg-terra">
+                  <p className="truncate text-sm font-medium text-eg-ink">
                     {item.fileName}
                   </p>
 
@@ -509,7 +509,7 @@ export function RequestPhotoUpload({
       ) : null}
 
       {error ? (
-        <p className="text-sm text-eg-cotto-dark">
+        <p className="text-sm text-eg-error">
           {error}
         </p>
       ) : null}

@@ -11,7 +11,7 @@ export const rifareTettoLanding: SeoInterventionLanding = {
     "Devi rifare il tetto? Scopri cosa incide sul costo, quali lavori puoi richiedere e confronta preventivi da imprese qualificate.",
   funnelSlug: "rifare-tetto",
   image: {
-    src: "/assets/images/rifare-tetto.webp",
+    src: "/assets/images/rifacimento-tetto.webp",
     alt: "Rifacimento tetto e copertura",
   },
   geoSection: {

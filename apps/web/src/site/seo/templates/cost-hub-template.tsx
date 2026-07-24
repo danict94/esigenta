@@ -18,15 +18,15 @@ export function CostHubPage({ categories }: CostHubPageProps) {
                 <Link href="/" prefetch={false}>
                   Home
                 </Link>
-                <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                   /
                 </span>
-                <span className="text-eg-terra">Guide ai costi</span>
+                <span className="text-eg-ink">Guide ai costi</span>
               </nav>
 
               <p className="eg-eyebrow">Guide ai costi</p>
               <h1 className="eg-h1 mt-5">Prezzi chiari prima del preventivo.</h1>
-              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">
                 Range indicativi, fattori che cambiano il prezzo e domande utili
                 da fare prima di raccontare il lavoro.
               </p>
@@ -46,28 +46,28 @@ export function CostHubPage({ categories }: CostHubPageProps) {
                       </h2>
                     </div>
 
-                    <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+                    <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
                       {category.guides.map((guide, index) => (
                         <li key={guide.slug}>
                           <Link
                             href={guide.canonicalPath}
-                            className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-cotto-dark"
+                            className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
                           >
                             <span
                               aria-hidden="true"
                               data-nosnippet=""
-                              className="font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.12em] text-eg-cotto-dark"
+                              className="font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.12em] text-eg-brand-strong"
                             >
                               {String(index + 1).padStart(2, "0")}
                             </span>
                             {" "}
                             <span>
                               <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">{guide.h1}</span>
-                              <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia block">
+                              <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-text-muted block">
                                 {guide.summary}
                               </span>
                             </span>
-                            <span className="justify-self-end whitespace-nowrap font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.12em] text-eg-ardesia-2 max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
+                            <span className="justify-self-end whitespace-nowrap font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.12em] text-eg-text-muted max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
                           </Link>
                         </li>
                       ))}

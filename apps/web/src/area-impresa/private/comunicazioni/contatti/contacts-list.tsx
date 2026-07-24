@@ -60,7 +60,7 @@ export function ContactsList({
     return (
       <Card>
         <CardContent className="pt-6">
-          <p className="text-sm text-eg-ardesia">
+          <p className="text-sm text-eg-text-muted">
             {emptyMessage}
           </p>
         </CardContent>
@@ -79,7 +79,7 @@ export function ContactsList({
           className="block"
           prefetch={false}
         >
-          <Card className="transition-colors hover:bg-eg-calce-2">
+          <Card className="transition-colors hover:bg-eg-surface-muted">
             <CardHeader className="gap-4 sm:flex sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
@@ -106,7 +106,7 @@ export function ContactsList({
                 </CardDescription>
               </div>
 
-              <time className="text-sm text-eg-ardesia">
+              <time className="text-sm text-eg-text-muted">
                 {formatDateTime(
                   contact.updatedAt,
                 )}
@@ -114,7 +114,7 @@ export function ContactsList({
             </CardHeader>
 
             <CardContent>
-              <p className="line-clamp-2 text-sm leading-6 text-eg-ardesia">
+              <p className="line-clamp-2 text-sm leading-6 text-eg-text-muted">
                 {contact.lastMessage?.body ??
                   "Nessun messaggio ancora inviato."}
               </p>

@@ -24,7 +24,7 @@ export default async function AdminLoginPage({
     params.passwordReset === "1";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-eg-calce px-6">
+    <main className="flex min-h-screen items-center justify-center bg-eg-surface px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
           <AdminBrand className="mb-2" />
@@ -38,7 +38,7 @@ export default async function AdminLoginPage({
 
         <CardContent>
           {passwordResetCompleted ? (
-            <p className="mb-5 border border-eg-hairline bg-eg-calce-2 px-3 py-2 text-sm text-eg-terra">
+            <p className="mb-5 border border-eg-border bg-eg-surface-muted px-3 py-2 text-sm text-eg-ink">
               Password aggiornata. Ora puoi accedere.
             </p>
           ) : null}

@@ -409,12 +409,12 @@ export function CategoryInterventionsSelector({
     return (
       <div
         key={projectGroup.id}
-        className="overflow-hidden rounded-eg-lg border border-eg-hairline bg-eg-calce"
+        className="overflow-hidden rounded-eg-lg border border-eg-border bg-eg-surface"
       >
         <Button
           type="button"
           variant="ghost"
-          className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-eg-calce-2"
+          className="h-auto w-full justify-between gap-4 rounded-none p-4 text-left hover:bg-eg-surface-muted"
           aria-expanded={open}
           onClick={() => {
             setActiveProjectGroupId((currentId) =>
@@ -423,10 +423,10 @@ export function CategoryInterventionsSelector({
           }}
         >
           <span className="min-w-0">
-            <span className="block text-sm font-semibold text-eg-terra">
+            <span className="block text-sm font-semibold text-eg-ink">
               {projectGroup.name}
             </span>
-            <span className="mt-1 block text-xs font-normal text-eg-ardesia">
+            <span className="mt-1 block text-xs font-normal text-eg-text-muted">
               {projectGroup.interventions.length > 0
                 ? `${selected.length}/${projectGroup.interventions.length} interventi selezionati`
                 : "Nessun intervento disponibile"}
@@ -435,16 +435,16 @@ export function CategoryInterventionsSelector({
 
           <ChevronGlyph
             className={cn(
-              "h-4 w-4 shrink-0 text-eg-ardesia transition-transform",
+              "h-4 w-4 shrink-0 text-eg-text-muted transition-transform",
               open ? "rotate-180" : "",
             )}
           />
         </Button>
 
         {open ? (
-          <div className="space-y-4 border-t border-eg-hairline bg-eg-calce-2 p-4">
+          <div className="space-y-4 border-t border-eg-border bg-eg-surface-muted p-4">
             {projectGroup.interventions.length === 0 ? (
-              <p className="text-sm text-eg-ardesia">
+              <p className="text-sm text-eg-text-muted">
                 Nessun intervento disponibile per questa area.
               </p>
             ) : (
@@ -464,16 +464,16 @@ export function CategoryInterventionsSelector({
                       }
                     }}
                     onChange={() => toggleSelectAll(projectGroup)}
-                    className="h-4 w-4 accent-eg-cotto disabled:cursor-not-allowed disabled:opacity-60"
+                    className="h-4 w-4 accent-eg-brand disabled:cursor-not-allowed disabled:opacity-60"
                   />
-                  <span className="text-sm font-semibold text-eg-terra">
+                  <span className="text-sm font-semibold text-eg-ink">
                     Seleziona tutti
                   </span>
                 </label>
 
                 {showSearch ? (
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-eg-terra">
+                    <span className="text-sm font-medium text-eg-ink">
                       Cerca intervento
                     </span>
                     <Input
@@ -504,8 +504,8 @@ export function CategoryInterventionsSelector({
                       <label
                         key={intervention.id}
                         className={cn(
-                          "flex cursor-pointer gap-3 rounded-eg-md border border-eg-hairline bg-eg-calce p-3 transition-colors hover:border-eg-cotto",
-                          isSelected ? "border-eg-cotto bg-eg-cotto-tint" : "",
+                          "flex cursor-pointer gap-3 rounded-eg-md border border-eg-border bg-eg-surface p-3 transition-colors hover:border-eg-brand",
+                          isSelected ? "border-eg-brand bg-eg-brand-soft" : "",
                         )}
                       >
                         <Checkbox
@@ -517,19 +517,19 @@ export function CategoryInterventionsSelector({
                         />
 
                         <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-semibold text-eg-terra">
+                          <span className="block text-sm font-semibold text-eg-ink">
                             {intervention.name}
                           </span>
 
                           {intervention.description ? (
-                            <span className="mt-1 block text-sm leading-6 text-eg-ardesia">
+                            <span className="mt-1 block text-sm leading-6 text-eg-text-muted">
                               {intervention.description}
                             </span>
                           ) : null}
                         </span>
 
                         {isSelected ? (
-                          <CheckGlyph className="h-4 w-4 shrink-0 text-eg-cotto" />
+                          <CheckGlyph className="h-4 w-4 shrink-0 text-eg-brand-strong" />
                         ) : null}
                       </label>
                     );
@@ -592,7 +592,7 @@ export function CategoryInterventionsSelector({
 
     return (
       <div className="mt-6 space-y-5">
-        <p className="text-sm leading-6 text-eg-terra">
+        <p className="text-sm leading-6 text-eg-ink">
           {hasSavedConfiguration ? (
             <>
               Operi come{" "}
@@ -635,11 +635,11 @@ export function CategoryInterventionsSelector({
       <section className="space-y-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-base font-semibold text-eg-terra">
+            <h3 className="text-base font-semibold text-eg-ink">
               Identità: fino a 6 categorie
             </h3>
 
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-eg-ardesia">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-eg-text-muted">
               Determinano come la tua impresa si presenta.
             </p>
           </div>
@@ -659,9 +659,9 @@ export function CategoryInterventionsSelector({
               <label
                 key={category.id}
                 className={cn(
-                  "relative flex cursor-pointer items-center gap-3 rounded-eg-lg border border-eg-hairline bg-eg-calce p-3 transition-colors hover:border-eg-cotto",
+                  "relative flex cursor-pointer items-center gap-3 rounded-eg-lg border border-eg-border bg-eg-surface p-3 transition-colors hover:border-eg-brand",
                   selected
-                    ? "border-eg-cotto bg-eg-cotto-tint"
+                    ? "border-eg-brand bg-eg-brand-soft"
                     : "",
                   disabled ? "cursor-not-allowed opacity-60" : "",
                 )}
@@ -674,12 +674,12 @@ export function CategoryInterventionsSelector({
                   onChange={() => toggleCategory(category.id)}
                 />
 
-                <span className="min-w-0 flex-1 text-sm font-semibold text-eg-terra">
+                <span className="min-w-0 flex-1 text-sm font-semibold text-eg-ink">
                   {category.name}
                 </span>
 
                 {selected ? (
-                  <CheckGlyph className="h-4 w-4 shrink-0 text-eg-cotto" />
+                  <CheckGlyph className="h-4 w-4 shrink-0 text-eg-brand-strong" />
                 ) : null}
               </label>
             );
@@ -687,13 +687,13 @@ export function CategoryInterventionsSelector({
         </div>
       </section>
 
-      <section className="space-y-3 border-t border-eg-hairline pt-6">
+      <section className="space-y-3 border-t border-eg-border pt-6">
         <div>
-          <h3 className="text-base font-semibold text-eg-terra">
+          <h3 className="text-base font-semibold text-eg-ink">
             Operativo: interventi
           </h3>
 
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-eg-ardesia">
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-eg-text-muted">
             Scegli gli interventi che vuoi ricevere, organizzati per area di
             lavoro, a partire da quelle delle tue categorie.
           </p>
@@ -702,7 +702,7 @@ export function CategoryInterventionsSelector({
         <div className="space-y-2">{priorityGroups.map(renderProjectGroupRow)}</div>
 
         {otherGroups.length > 0 ? (
-          <div className="space-y-2 border-t border-eg-hairline pt-4">
+          <div className="space-y-2 border-t border-eg-border pt-4">
             <Button
               type="button"
               variant="ghost"
@@ -710,13 +710,13 @@ export function CategoryInterventionsSelector({
               aria-expanded={isOtherGroupsVisible}
               onClick={() => setShowOtherGroups((current) => !current)}
             >
-              <span className="text-sm font-semibold text-eg-terra">
+              <span className="text-sm font-semibold text-eg-ink">
                 Altri servizi disponibili ({otherGroups.length})
               </span>
 
               <ChevronGlyph
                 className={cn(
-                  "h-4 w-4 shrink-0 text-eg-ardesia transition-transform",
+                  "h-4 w-4 shrink-0 text-eg-text-muted transition-transform",
                   isOtherGroupsVisible ? "rotate-180" : "",
                 )}
               />
@@ -731,11 +731,11 @@ export function CategoryInterventionsSelector({
         ) : null}
       </section>
 
-      <div className="flex flex-col gap-4 border-t border-eg-hairline pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 border-t border-eg-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p
           className={cn(
             "text-sm",
-            isDirty ? "font-medium text-eg-terra" : "text-eg-ardesia",
+            isDirty ? "font-medium text-eg-ink" : "text-eg-text-muted",
           )}
         >
           {isDirty ? "Modifiche non salvate" : "Nessuna modifica da salvare"}

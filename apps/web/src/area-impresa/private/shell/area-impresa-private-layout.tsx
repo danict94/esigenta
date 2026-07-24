@@ -16,7 +16,7 @@ import {
   isAreaMonitoringEnabled,
 } from "../../../platform/monitoring/area-monitoring";
 
-import { ImpresaSidebar } from "./impresa-sidebar";
+import { ImpresaHeader } from "./impresa-header";
 import { getAreaImpresaShellCountsCached } from "./shell-counts-cache";
 import { getCompanyCreditSummaryCached } from "./credit-summary-cache";
 
@@ -76,8 +76,8 @@ export async function AreaImpresaPrivateLayout({
   const statusNotice = getCompanyStatusNotice(companyStatus);
 
   return (
-    <div className="min-h-screen bg-white text-eg-terra">
-      <ImpresaSidebar
+    <div className="min-h-screen bg-white text-eg-ink">
+      <ImpresaHeader
         accountLabel={accountLabel}
         unreadNotificationCount={counts.unreadNotificationCount}
         unreadContactCount={counts.unreadContactCount}
@@ -90,7 +90,7 @@ export async function AreaImpresaPrivateLayout({
       />
       {statusNotice ? (
         <Container size="xl" className="pt-4">
-          <div className="border border-eg-hairline bg-eg-calce-2 px-4 py-3 text-sm font-medium leading-6 text-eg-terra">
+          <div className="border border-eg-warning-border bg-eg-warning-soft px-4 py-3 text-sm font-medium leading-6 text-eg-warning">
             {statusNotice}
           </div>
         </Container>

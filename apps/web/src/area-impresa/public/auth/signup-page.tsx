@@ -46,7 +46,10 @@ export async function AreaImpresaSignupPage({
     : null;
 
   return (
-    <AuthShell size="md">
+    <AuthShell
+      size="md"
+      headerAction={{ label: "Accedi", href: "/area-impresa/accedi" }}
+    >
       <div className="flex flex-col gap-7">
         <div>
           <p className="eg-eyebrow">Crea accesso</p>
@@ -58,18 +61,18 @@ export async function AreaImpresaSignupPage({
         </div>
 
         {activity || locationLabel ? (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-eg-hairline py-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-eg-border py-4">
             <span className="eg-eyebrow text-[11px]">Ti iscrivi per</span>
 
             {activity ? (
-              <span className="text-[14px] font-medium text-eg-terra">
+              <span className="text-[14px] font-medium text-eg-ink">
                 {activity}
               </span>
             ) : null}
 
             {locationLabel ? (
-              <span className="inline-flex items-center gap-1.5 text-[14px] text-eg-ardesia">
-                <ZoneGlyph className="size-4 text-eg-cotto-dark" />
+              <span className="inline-flex items-center gap-1.5 text-[14px] text-eg-text-muted">
+                <ZoneGlyph className="size-4 text-eg-text-muted" />
                 {locationLabel}
               </span>
             ) : null}
@@ -84,7 +87,7 @@ export async function AreaImpresaSignupPage({
 
         <Link
           href="/area-impresa"
-          className="eg-action-link inline-flex w-fit items-center gap-2"
+          className="eg-action-link inline-flex w-fit items-center gap-2 text-eg-brand-strong hover:text-eg-brand"
         >
           <span aria-hidden="true">&larr;</span> Torna alla pagina professionisti
         </Link>

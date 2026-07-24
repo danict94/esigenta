@@ -74,7 +74,7 @@ export function RequestFlowShell({
 
   if (isLoading) {
     return (
-      <div className="eg-panel mt-8 p-5 text-sm text-eg-ardesia md:p-6">
+      <div className="eg-panel mt-8 p-5 text-sm text-eg-text-muted md:p-6">
         Prepariamo il percorso guidato...
       </div>
     );
@@ -84,7 +84,7 @@ export function RequestFlowShell({
     return (
       <div className="eg-panel mt-8 p-5 md:p-6">
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-eg-cotto-dark">
+          <p className="text-sm text-eg-error">
             {error ?? "Percorso guidato non disponibile."}
           </p>
 

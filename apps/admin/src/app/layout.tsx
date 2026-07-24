@@ -14,7 +14,7 @@ export default function AdminRootLayout({ children }: { children: ReactNode }) {
       lang="it"
       className={`${fontVariables} h-full antialiased`}
     >
-      <body className="min-h-full bg-eg-calce font-sans text-eg-terra">
+      <body className="min-h-full">
         {children}
       </body>
     </html>

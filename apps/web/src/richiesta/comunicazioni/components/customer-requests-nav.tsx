@@ -28,7 +28,7 @@ export function CustomerRequestsNav({
     <nav
       aria-label="Navigazione richieste cliente"
       className={[
-        "eg-nav-link flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-eg-hairline pb-4",
+        "eg-nav-link flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-eg-border pb-4",
         className ?? "",
       ]
         .filter(Boolean)

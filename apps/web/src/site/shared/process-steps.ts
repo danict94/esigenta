@@ -11,23 +11,18 @@ export type ProcessStep = {
 export const processSteps: ProcessStep[] = [
   {
     marker: "1",
-    title: "Descrivi",
-    description: "Racconti cosa devi fare con parole semplici: bagno, tetto, impianto, energia o clima.",
+    title: "Descrivi il lavoro",
+    description: "Racconta cosa devi fare con parole semplici: bagno, tetto, impianto, energia o clima.",
   },
   {
     marker: "2",
-    title: "Verifichiamo",
-    description: "Mettiamo ordine nei dettagli essenziali prima di inviare la richiesta alle imprese adatte.",
-  },
-  {
-    marker: "3",
-    title: "Confrontiamo",
-    description: "Ricevi risposte leggibili e comparabili, senza disperdere il lavoro tra mille contatti casuali.",
+    title: "Ricevi risposte adatte",
+    description: "Mettiamo ordine nei dettagli e inviamo la richiesta alle imprese adatte, così ricevi risposte chiare e comparabili.",
   },
   {
     marker: "ok",
     verified: true,
-    title: "Lavoro fatto",
-    description: "Scegli chi ti convince e porti il progetto a terra con un percorso chiaro dall'inizio alla fine.",
+    title: "Scegli con calma",
+    description: "Valuta le risposte e scegli chi ti convince, senza obblighi.",
   },
 ];

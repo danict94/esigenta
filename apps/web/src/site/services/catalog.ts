@@ -11,7 +11,7 @@ const catalogItems: readonly ServiceCatalogItem[] = [
     order: 1,
     homeFeature: {
       description: "Rinnova il bagno con professionisti qualificati.",
-      image: "/assets/images/rifacimento-bagno.webp",
+      image: "/assets/images/rifare-bagno.webp",
       icon: "bath",
       order: 1,
     },
@@ -53,7 +53,7 @@ const catalogItems: readonly ServiceCatalogItem[] = [
     order: 2,
     homeFeature: {
       description: "Ripara o sostituisci la copertura di casa.",
-      image: "/assets/images/rifare-tetto.webp",
+      image: "/assets/images/rifacimento-tetto.webp",
       icon: "house",
       order: 4,
     },
@@ -158,7 +158,9 @@ export function getServiceCatalogItemHref(
  */
 export function listFeaturedServiceCatalogItems(): readonly ServiceCatalogItem[] {
   return catalogItems
-    .filter((item) => item.homeFeature !== undefined && isPubliclyLinkable(item))
+    .filter(
+      (item) => item.homeFeature !== undefined && isPubliclyLinkable(item),
+    )
     .slice()
     .sort((a, b) => (a.homeFeature?.order ?? 0) - (b.homeFeature?.order ?? 0));
 }

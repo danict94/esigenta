@@ -46,11 +46,11 @@ export function MessageThread({
 }: MessageThreadProps) {
   return (
     <section className="eg-panel overflow-hidden">
-      <header className="border-b border-eg-hairline p-5 md:p-6">
+      <header className="border-b border-eg-border p-5 md:p-6">
         <div className="flex flex-wrap items-center gap-3">
           <h2 className="eg-h3 text-[24px]">{formatThreadTitle(thread)}</h2>
 
-          <span className="inline-flex min-h-8 items-center rounded-full border border-eg-hairline px-3 text-[11px] font-medium uppercase tracking-[0.12em] text-eg-ardesia">
+          <span className="inline-flex min-h-8 items-center rounded-full border border-eg-border px-3 text-[11px] font-medium uppercase tracking-[0.12em] text-eg-text-muted">
             {formatRequestTitle(thread)}
           </span>
         </div>
@@ -64,7 +64,7 @@ export function MessageThread({
       <div className="space-y-6 p-5 md:p-6">
         <div className="space-y-4">
           {thread.messages.length === 0 ? (
-            <div className="border border-eg-hairline bg-eg-calce-2 p-4">
+            <div className="border border-eg-border bg-eg-surface-muted p-4">
               <p className="eg-form-help">Nessun messaggio ancora inviato.</p>
             </div>
           ) : (
@@ -81,8 +81,8 @@ export function MessageThread({
                     className={[
                       "max-w-[min(34rem,85%)] border px-4 py-3",
                       isCurrentActor
-                        ? "border-eg-cotto bg-eg-cotto text-eg-calce"
-                        : "border-eg-hairline bg-eg-calce-2 text-eg-terra",
+                        ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                        : "border-eg-border bg-eg-surface-muted text-eg-ink",
                     ].join(" ")}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -91,7 +91,7 @@ export function MessageThread({
                       <time
                         className={[
                           "text-xs",
-                          isCurrentActor ? "text-eg-calce" : "text-eg-ardesia",
+                          isCurrentActor ? "text-eg-on-brand-muted" : "text-eg-text-muted",
                         ].join(" ")}
                       >
                         {formatDateTime(message.createdAt)}
@@ -109,7 +109,7 @@ export function MessageThread({
         </div>
 
         {children ? (
-          <div className="sticky bottom-0 -mx-5 border-t border-eg-hairline bg-eg-calce px-5 pb-5 pt-4 md:-mx-6 md:px-6 md:pb-6">
+          <div className="sticky bottom-0 -mx-5 border-t border-eg-border bg-eg-surface px-5 pb-5 pt-4 md:-mx-6 md:px-6 md:pb-6">
             {children}
           </div>
         ) : null}

@@ -60,7 +60,7 @@ export function CustomerRequestsAccessPage({
                       required
                       autoComplete="email"
                       placeholder="es.nome@email.it"
-                      className="w-full border-0 border-b border-eg-terra bg-transparent px-0 py-3 text-base text-eg-terra outline-none placeholder:text-eg-ardesia-2 focus:border-eg-cotto-dark"
+                      className="w-full border-0 border-b border-eg-ink bg-transparent px-0 py-3 text-base text-eg-ink outline-none placeholder:text-eg-text-muted focus:border-eg-brand"
                     />
                   </label>
 

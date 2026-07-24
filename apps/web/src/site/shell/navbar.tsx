@@ -1,17 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useState } from "react";
+import { useId, useLayoutEffect, useState } from "react";
 
-import { EsigentaWordmark } from "@esigenta/ui";
+import { cn, EsigentaLogo, useDismissableMenu } from "@esigenta/ui";
 
+import {
+  headerGutterClassName,
+  headerHeightClassName,
+  headerSurfaceClassName,
+  headerTriggerBaseClassName,
+  headerTriggerHeroClassName,
+  headerTriggerSolidClassName,
+} from "./header-gutter";
 import { CloseIcon, MenuIcon } from "./icons";
 
 export type NavbarVariant = "default" | "funnel";
+// "brand": home, puo' iniziare sopra la Hero scura e diventare shell
+// solida una volta superato il confine reale della Hero (vedi
+// heroBoundaryId). "light": pagine senza Hero, sempre shell solida.
+export type NavbarTone = "brand" | "light";
 
 type NavbarProps = {
   variant?: NavbarVariant;
+  tone?: NavbarTone;
+  // Id del sentinel muto posto al confine reale tra Hero e resto della
+  // pagina: proprieta' del chiamante (home-page.tsx), condiviso anche con
+  // BusinessAccessTab. Rilevante solo quando tone === "brand".
+  heroBoundaryId?: string;
 };
+
+// Deve restare sincronizzata con --eg-nav-height in globals.css: allinea
+// l'IntersectionObserver al bordo reale dell'header fisso.
+const NAV_HEIGHT_PX = 72;
 
 type NavItem = {
   href: string;
@@ -31,50 +52,111 @@ const funnelNavItems: NavItem[] = [
   { href: "/area-impresa", label: "Sei un professionista?" },
 ];
 
-export function Navbar({ variant = "default" }: NavbarProps) {
+export function Navbar({ variant = "default", tone = "light", heroBoundaryId }: NavbarProps) {
   const navItems = variant === "funnel" ? funnelNavItems : defaultNavItems;
   const navId = useId();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { isOpen, containerRef, toggle, close } = useDismissableMenu();
+  const [isPastHero, setIsPastHero] = useState(false);
 
-  useEffect(() => {
-    if (!menuOpen) {
+  useLayoutEffect(() => {
+    if (tone !== "brand" || !heroBoundaryId) {
       return;
     }
 
-    function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-      }
+    const boundary = document.getElementById(heroBoundaryId);
+
+    if (!boundary) {
+      return;
     }
 
-    window.addEventListener("keydown", closeOnEscape);
+    function syncFromPosition() {
+      const rect = boundary?.getBoundingClientRect();
 
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [menuOpen]);
+      if (!rect) {
+        return;
+      }
+
+      setIsPastHero(rect.top <= NAV_HEIGHT_PX);
+    }
+
+    // Sincrono, prima del paint: evita un flash cromatico se la pagina si
+    // monta gia' scrollata oltre la Hero (refresh, ripristino di scroll).
+    syncFromPosition();
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) {
+          return;
+        }
+
+        // Solido quando il bordo inferiore della Hero (il sentinel) ha
+        // raggiunto o superato l'altezza dell'header fisso. La posizione
+        // e' l'unica fonte di verita' (non isIntersecting): al pixel
+        // esatto della soglia il sentinel risulta ancora "intersecante"
+        // per il root ridotto, il che renderebbe il confine ambiguo.
+        setIsPastHero(entry.boundingClientRect.top <= NAV_HEIGHT_PX);
+      },
+      { rootMargin: `-${NAV_HEIGHT_PX}px 0px 0px 0px`, threshold: 0 },
+    );
+
+    observer.observe(boundary);
+
+    // Rete di sicurezza per salti ampi (ancora, tasto Fine, flick) che
+    // possono far "saltare" il sentinel senza mai attraversare la soglia
+    // osservata: scrollend risincronizza dalla posizione reale.
+    window.addEventListener("scrollend", syncFromPosition);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scrollend", syncFromPosition);
+    };
+  }, [tone, heroBoundaryId]);
+
+  const isSolid = tone === "light" || isPastHero || isOpen;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[100] flex items-center justify-between gap-6 bg-transparent px-[22px] py-[18px] min-[861px]:px-12 min-[861px]:py-6">
-      <Link href="/" className="relative z-[102] inline-flex items-center text-eg-terra no-underline" prefetch={false} aria-label="Esigenta home">
-        <EsigentaWordmark decorative className="block h-[22px] w-auto min-[861px]:h-6" />
+    <header
+      ref={containerRef}
+      className={cn(
+        "fixed inset-x-0 top-0 z-[100] flex items-center justify-between gap-6 transition-[background-color,color,border-color] duration-200",
+        headerHeightClassName,
+        headerGutterClassName,
+        isSolid ? headerSurfaceClassName : "border-b border-transparent bg-transparent text-eg-on-brand",
+      )}
+    >
+      <Link
+        href="/"
+        className="relative z-[102] inline-flex items-center no-underline"
+        prefetch={false}
+        aria-label="Esigenta home"
+      >
+        <EsigentaLogo
+          decorative
+          tone={isSolid ? "default" : "inverse"}
+          className="block h-6 w-auto"
+        />
       </Link>
 
       <button
         type="button"
-        className="relative z-[102] inline-flex size-[42px] items-center justify-center border border-eg-hairline bg-eg-calce-translucent text-eg-terra transition-colors hover:border-eg-ardesia-2 hover:bg-eg-calce-2 hover:text-eg-cotto-dark min-[861px]:hidden"
+        className={cn(
+          headerTriggerBaseClassName,
+          isSolid ? headerTriggerSolidClassName : headerTriggerHeroClassName,
+        )}
         aria-controls={navId}
-        aria-expanded={menuOpen}
-        aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
-        onClick={() => setMenuOpen((isOpen) => !isOpen)}
+        aria-expanded={isOpen}
+        aria-label={isOpen ? "Chiudi menu" : "Apri menu"}
+        onClick={toggle}
       >
-        {menuOpen ? <CloseIcon className="size-5" /> : <MenuIcon className="size-5" />}
+        {isOpen ? <CloseIcon className="size-5" /> : <MenuIcon className="size-5" />}
       </button>
 
       <nav
         id={navId}
         className={[
           "absolute left-[22px] right-[22px] top-[calc(100%+8px)] grid overflow-hidden transition-[grid-template-rows,opacity,transform,border-color,background-color] duration-200 min-[861px]:static min-[861px]:flex min-[861px]:translate-y-0 min-[861px]:overflow-visible min-[861px]:border-0 min-[861px]:bg-transparent min-[861px]:opacity-100 min-[861px]:pointer-events-auto",
-          menuOpen
-            ? "grid-rows-[1fr] border border-eg-hairline bg-eg-calce opacity-100 pointer-events-auto translate-y-0"
+          isOpen
+            ? "grid-rows-[1fr] border border-eg-border bg-eg-surface opacity-100 pointer-events-auto translate-y-0"
             : "grid-rows-[0fr] border border-transparent bg-transparent opacity-0 pointer-events-none -translate-y-2",
         ].join(" ")}
         aria-label="Navigazione principale"
@@ -85,8 +167,11 @@ export function Navbar({ variant = "default" }: NavbarProps) {
               key={item.href}
               href={item.href}
               prefetch={false}
-              className="eg-nav-link whitespace-nowrap border-b border-eg-hairline px-[18px] py-4 last:border-b-0 min-[861px]:border-0 min-[861px]:p-0"
-              onClick={() => setMenuOpen(false)}
+              className={cn(
+                "eg-nav-link whitespace-nowrap border-b border-eg-border px-[18px] py-4 text-eg-ink last:border-b-0 hover:text-eg-brand-strong min-[861px]:border-0 min-[861px]:p-0",
+                !isSolid ? "min-[861px]:text-eg-on-brand min-[861px]:hover:text-eg-on-brand-muted" : "",
+              )}
+              onClick={close}
             >
               {item.label}
             </Link>

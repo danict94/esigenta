@@ -5,6 +5,7 @@ import { Footer } from "./footer";
 
 type PublicShellProps = {
   children: ReactNode;
+  header?: ReactNode;
   hero?: ReactNode;
   navbarVariant?: NavbarVariant;
   showFooter?: boolean;
@@ -12,25 +13,16 @@ type PublicShellProps = {
 
 export function PublicShell({
   children,
+  header,
   hero,
   navbarVariant = "default",
   showFooter = true,
 }: PublicShellProps) {
-  if (hero) {
-    return (
-      <div className="min-h-screen eg-page-bg text-eg-terra">
-        {hero}
-
-        <main>{children}</main>
-
-        {showFooter ? <Footer /> : null}
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen eg-page-bg text-eg-terra">
-      <Navbar variant={navbarVariant} />
+    <div className="min-h-screen eg-page-bg text-eg-ink">
+      {header ?? <Navbar variant={navbarVariant} />}
+
+      {hero}
 
       <main>{children}</main>
 

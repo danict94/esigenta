@@ -28,7 +28,7 @@ export function GeoCostModule({
     <div className="grid gap-16">
       <section
         aria-labelledby="geo-module-title"
-        className="border-y border-eg-hairline py-10"
+        className="border-y border-eg-border py-10"
       >
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.36fr)] lg:items-center">
           <div className="max-w-3xl">
@@ -65,7 +65,7 @@ export function GeoCostModule({
             <div className="eg-panel mt-7 p-5">
               <p className="eg-metric-label">Range indicativo</p>
 
-              <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">
+              <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">
                 {priceData.priceRange}
               </p>
             </div>
@@ -87,13 +87,13 @@ export function GeoCostModule({
         <div className="grid gap-7">
           {priceData && priceData.priceRows.length > 0 ? (
             <div className="eg-panel overflow-hidden">
-              <div className="hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]">
+              <div className="hidden border-b border-eg-border px-5 py-4 text-sm font-medium text-eg-ink md:grid md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.45fr)_minmax(0,1fr)]">
                 <span>Voce</span>
                 <span>Fascia indicativa</span>
                 <span>Note</span>
               </div>
 
-              <div className="divide-y divide-eg-hairline">
+              <div className="divide-y divide-eg-border">
                 {priceData.priceRows.map((row) => (
                   <div
                     key={row.label}
@@ -101,21 +101,21 @@ export function GeoCostModule({
                   >
                     <div>
                       <p className="eg-table-label md:hidden">Voce</p>
-                      <p className="mt-1 font-medium text-eg-terra md:mt-0">
+                      <p className="mt-1 font-medium text-eg-ink md:mt-0">
                         {row.label}
                       </p>
                     </div>
 
                     <div>
                       <p className="eg-table-label md:hidden">Fascia</p>
-                      <p className="mt-1 font-medium text-eg-terra md:mt-0">
+                      <p className="mt-1 font-medium text-eg-ink md:mt-0">
                         {row.range}
                       </p>
                     </div>
 
                     <div>
                       <p className="eg-table-label md:hidden">Note</p>
-                      <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
+                      <p className="mt-1 text-eg-text-muted md:mt-0">{row.note}</p>
                     </div>
                   </div>
                 ))}
@@ -127,12 +127,12 @@ export function GeoCostModule({
             <div className="eg-panel p-5 md:p-6">
               <h3 className="eg-h3 text-[22px]">Fattori che influenzano il prezzo</h3>
 
-              <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-ardesia sm:grid-cols-2">
+              <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-text-muted sm:grid-cols-2">
                 {costSection.factors.map((factor) => (
                   <li key={factor} className="flex gap-3">
                     <span
                       aria-hidden="true"
-                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-brand-strong"
                     />
                     <span>{factor}</span>
                   </li>
@@ -149,7 +149,7 @@ export function GeoCostModule({
                 {costSection.examples.map((example) => (
                   <span
                     key={example}
-                    className="inline-flex min-h-9 items-center rounded-full border border-eg-hairline bg-eg-calce px-3 text-sm font-medium leading-5 text-eg-ardesia"
+                    className="inline-flex min-h-9 items-center rounded-full border border-eg-border bg-eg-surface px-3 text-sm font-medium leading-5 text-eg-text-muted"
                   >
                     {example}
                   </span>

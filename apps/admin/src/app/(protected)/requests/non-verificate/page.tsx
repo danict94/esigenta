@@ -33,25 +33,25 @@ export default async function UnverifiedRequestsPage() {
 
   return (
     <PageShell size="lg">
-      <header className="border-b border-eg-hairline pb-7">
+      <header className="border-b border-eg-border pb-7">
         <Link
           href="/requests"
-          className="text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra"
+          className="text-sm font-medium text-eg-text-muted transition-colors hover:text-eg-ink"
         >
           ← Coda richieste
         </Link>
 
         <div className="mt-5 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-eg-ardesia">
+            <p className="text-sm font-medium text-eg-text-muted">
               Recupero richieste
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
               Richieste non verificate
             </h1>
 
-            <p className="mt-3 max-w-xl text-sm leading-6 text-eg-ardesia">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-eg-text-muted">
               Richieste in attesa che il cliente confermi l&apos;email.
               Finché restano in questo stato non entrano nella coda di
               revisione, non sono mai visibili alle imprese e non generano
@@ -68,10 +68,10 @@ export default async function UnverifiedRequestsPage() {
         {requests.length === 0 ? (
           <Card className="p-8">
             <div className="max-w-xl">
-              <p className="text-lg font-semibold text-eg-terra">
+              <p className="text-lg font-semibold text-eg-ink">
                 Nessuna richiesta da recuperare
               </p>
-              <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+              <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                 Tutte le richieste ricevute sono state verificate o sono
                 ancora nella finestra di attesa dell&apos;email del cliente.
               </p>
@@ -81,38 +81,38 @@ export default async function UnverifiedRequestsPage() {
           <ul className="grid gap-4">
             {requests.map((request) => (
               <li key={request.id}>
-                <Card className="p-5 transition-colors hover:border-eg-cotto">
+                <Card className="p-5 transition-colors hover:border-eg-brand-strong">
                   <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="danger">Email non verificata</Badge>
-                        <span className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                        <span className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                           In attesa da {formatAge(request.createdAt)}
                         </span>
                       </div>
 
-                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-terra">
+                      <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-ink">
                         {request.requestCode ?? "Codice non disponibile"}
                       </h2>
 
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-ardesia">
+                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-eg-text-muted">
                         <span>
-                          <span className="text-eg-ardesia">Cliente:</span>{" "}
+                          <span className="text-eg-text-muted">Cliente:</span>{" "}
                           {request.customerName ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-eg-ardesia">Email:</span>{" "}
+                          <span className="text-eg-text-muted">Email:</span>{" "}
                           {request.customerEmail ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-eg-ardesia">Telefono:</span>{" "}
+                          <span className="text-eg-text-muted">Telefono:</span>{" "}
                           {request.customerPhone ?? "-"}
                         </span>
 
                         <span>
-                          <span className="text-eg-ardesia">Creata:</span>{" "}
+                          <span className="text-eg-text-muted">Creata:</span>{" "}
                           {formatDate(request.createdAt)}
                         </span>
                       </div>

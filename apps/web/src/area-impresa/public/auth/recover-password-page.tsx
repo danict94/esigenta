@@ -32,7 +32,9 @@ export async function CompanyForgotPasswordPage({
   const errorMessage = getErrorMessage(params.error);
 
   return (
-    <AuthShell>
+    <AuthShell
+      headerAction={{ label: "Torna ad accedere", href: "/area-impresa/accedi" }}
+    >
       <div className="flex flex-col gap-6">
         <div>
           <p className="eg-eyebrow">Recupero accesso</p>
@@ -44,7 +46,7 @@ export async function CompanyForgotPasswordPage({
         </div>
 
         {sent ? (
-          <div className="eg-alert">
+          <div className="eg-alert eg-alert-success">
             Se l&apos;email e associata a un account impresa, riceverai a breve il
             link per reimpostare la password.
           </div>
@@ -61,19 +63,22 @@ export async function CompanyForgotPasswordPage({
               />
             </label>
 
-            {errorMessage ? <p className="eg-alert">{errorMessage}</p> : null}
+            {errorMessage ? <p className="eg-alert eg-alert-error">{errorMessage}</p> : null}
 
-            <button type="submit" className="eg-button-primary w-full">
+            <button
+              type="submit"
+              className="eg-button-primary w-full"
+            >
               Invia link di reset <span aria-hidden="true">&rarr;</span>
             </button>
 
             <p className="eg-form-help text-center">
               Per maggiori informazioni leggi l&apos;
-              <Link href="/privacy" className="font-medium text-eg-cotto-dark">
+              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
                 informativa privacy
               </Link>{" "}
               e i{" "}
-              <Link href="/termini" className="font-medium text-eg-cotto-dark">
+              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
                 termini del servizio
               </Link>
               .
@@ -81,9 +86,9 @@ export async function CompanyForgotPasswordPage({
           </form>
         )}
 
-        <p className="text-center text-sm text-eg-ardesia">
+        <p className="text-center text-sm text-eg-text-muted">
           Hai ricordato la password?{" "}
-          <Link href="/area-impresa/accedi" className="font-medium text-eg-cotto-dark">
+          <Link href="/area-impresa/accedi" className="font-medium text-eg-brand-strong hover:text-eg-brand">
             Torna all&apos;accesso
           </Link>
         </p>

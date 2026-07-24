@@ -4,7 +4,7 @@ import { AuthShell } from "./auth-shell";
 
 export function SelezionaImpresaPage() {
   return (
-    <AuthShell>
+    <AuthShell headerAction={null}>
       <div className="flex flex-col gap-6">
         <div>
           <p className="eg-eyebrow">Profilo gia presente</p>
@@ -16,11 +16,17 @@ export function SelezionaImpresaPage() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link href="/area-impresa/richieste" className="eg-button-primary">
+          <Link
+            href="/area-impresa/richieste"
+            className="eg-button-primary"
+          >
             Vai all&apos;area impresa <span aria-hidden="true">&rarr;</span>
           </Link>
 
-          <Link href="/area-impresa/accedi" className="eg-button-ghost">
+          <Link
+            href="/area-impresa/accedi"
+            className="eg-button-ghost"
+          >
             Accedi
           </Link>
         </div>

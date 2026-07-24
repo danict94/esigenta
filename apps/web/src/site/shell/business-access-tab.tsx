@@ -140,7 +140,7 @@ export function BusinessAccessTab({ heroBoundaryId }: BusinessAccessTabProps) {
           prefetch={false}
           tabIndex={visible ? 0 : -1}
           aria-label="Sei un professionista? Scopri l'area dedicata alle imprese"
-          className="eg-action-link flex flex-col items-center gap-1 rounded-l-eg-lg border border-r-0 border-eg-hairline bg-eg-calce px-3 py-2.5 text-center text-eg-terra shadow-eg-elevation transition-colors hover:text-eg-cotto-dark"
+          className="eg-action-link flex flex-col items-center gap-1 rounded-l-eg-lg border border-r-0 border-eg-border bg-eg-surface px-3 py-2.5 text-center text-eg-brand-strong shadow-eg-elevation transition-colors hover:text-eg-brand"
         >
           <Building2 className="size-4 shrink-0" aria-hidden="true" strokeWidth={1.75} />
           <span className="leading-tight tracking-normal">
@@ -155,7 +155,7 @@ export function BusinessAccessTab({ heroBoundaryId }: BusinessAccessTabProps) {
           onClick={dismiss}
           tabIndex={visible ? 0 : -1}
           aria-label="Nascondi il collegamento per le imprese"
-          className="absolute -left-2 -top-2 flex size-8 items-center justify-center rounded-full border border-eg-hairline bg-eg-calce text-eg-ardesia shadow-eg-elevation transition-colors hover:text-eg-cotto-dark"
+          className="absolute -left-2 -top-2 flex size-8 items-center justify-center rounded-full border border-eg-border bg-eg-surface text-eg-text-muted shadow-eg-elevation transition-colors hover:text-eg-brand"
         >
           <X className="size-3.5" aria-hidden="true" strokeWidth={2} />
         </button>

@@ -10,9 +10,9 @@ export function ProHero() {
       <h1 id="business-title" className="eg-h1 mx-auto mt-[22px] max-w-[16ch]">
         Il lavoro giusto
         <br />
-        arriva <strong>gia organizzato.</strong>
+        arriva <strong className="text-eg-brand-strong">gia organizzato.</strong>
       </h1>
-      <p className="mx-auto mt-[22px] max-w-[46ch] text-[17px] leading-[1.55] text-eg-ardesia">
+      <p className="mx-auto mt-[22px] max-w-[46ch] text-[17px] leading-[1.55] text-eg-text-muted">
         Niente piu preventivi a vuoto o clienti che non richiamano. Ricevi
         richieste reali, verificate e nella tua zona. Paghi il contatto solo
         quando e davvero valido.

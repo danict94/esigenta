@@ -6,9 +6,9 @@ import { HomeImage } from "./home-image";
 import { SectionHeader } from "./section-header";
 
 const toneOverlayClass: Record<FeaturedWork["tone"], string> = {
-  terra: "after:bg-eg-terra",
-  cotto: "after:bg-eg-cotto",
-  salvia: "after:bg-eg-salvia",
+  terra: "after:bg-eg-brand",
+  cotto: "after:bg-eg-brand",
+  salvia: "after:bg-eg-brand",
 };
 
 export function FeaturedWorkSection() {
@@ -28,10 +28,10 @@ export function FeaturedWorkSection() {
         ))}
       </div>
 
-      <div className="border-t border-eg-hairline">
+      <div className="border-t border-eg-border">
         <div className="eg-container-narrow flex flex-col items-center gap-2 py-10 text-center min-[861px]:flex-row min-[861px]:justify-between min-[861px]:gap-6 min-[861px]:py-8 min-[861px]:text-left">
           <p className="eg-body-muted">Non trovi il lavoro che ti serve tra questi?</p>
-          <Link href="/servizi" prefetch={false} className="eg-action-link shrink-0">
+          <Link href="/servizi" prefetch={false} className="eg-action-link shrink-0 text-eg-brand-strong hover:text-eg-brand">
             Scopri tutti i servizi <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
@@ -69,7 +69,7 @@ function WorkRow({ work }: { work: FeaturedWork }) {
   return (
     <article
       ref={ref}
-      className="relative z-[1] grid min-h-0 grid-cols-1 border-t border-eg-hairline bg-eg-calce last:border-b last:border-eg-hairline min-[861px]:min-h-[560px] min-[861px]:grid-cols-2"
+      className="relative z-[1] grid min-h-0 grid-cols-1 border-t border-eg-border bg-eg-surface last:border-b last:border-eg-border min-[861px]:min-h-[560px] min-[861px]:grid-cols-2"
     >
       <div
         className={[
@@ -95,7 +95,7 @@ function WorkRow({ work }: { work: FeaturedWork }) {
         </div>
         <div
           className={[
-            "absolute inset-0 z-[3] origin-left bg-eg-terra transition-transform duration-[1100ms] ease-[cubic-bezier(0.65,0,0.15,1)]",
+            "absolute inset-0 z-[3] origin-left bg-eg-brand transition-transform duration-[1100ms] ease-[cubic-bezier(0.65,0,0.15,1)]",
             visible ? "scale-x-0" : "scale-x-100",
           ].join(" ")}
           aria-hidden="true"
@@ -104,11 +104,11 @@ function WorkRow({ work }: { work: FeaturedWork }) {
 
       <div className={["flex flex-col justify-center px-[26px] py-9 min-[861px]:px-16 min-[861px]:py-[72px]", work.reverse ? "min-[861px]:order-1" : ""].filter(Boolean).join(" ")}>
         <p className="eg-eyebrow">{work.idx}</p>
-        <h3 className="mt-5 text-[clamp(26px,3vw,38px)] font-medium leading-[1.12] tracking-[-0.01em]">
+        <h3 className="mt-5 text-[clamp(26px,3vw,38px)] font-medium leading-[1.12] tracking-[-0.01em] text-eg-ink">
           {work.title}
         </h3>
         <p className="eg-body-muted mt-5 max-w-[42ch]">{work.description}</p>
-        <Link href={work.href} prefetch={false} className="eg-action-link mt-8">
+        <Link href={work.href} prefetch={false} className="eg-action-link mt-8 text-eg-brand-strong hover:text-eg-brand">
           {work.cta} <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>

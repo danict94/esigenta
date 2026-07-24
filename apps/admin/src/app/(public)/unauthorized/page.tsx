@@ -13,7 +13,7 @@ import { AdminBrand } from "../../../components/admin-brand";
 
 export default function AdminUnauthorizedPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-eg-calce px-6">
+    <main className="flex min-h-screen items-center justify-center bg-eg-surface px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
           <AdminBrand className="mb-2" />

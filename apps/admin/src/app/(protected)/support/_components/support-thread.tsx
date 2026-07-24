@@ -49,7 +49,7 @@ export function SupportThread({
             </CardDescription>
 
             {thread.resolvedAt ? (
-              <p className="text-xs text-eg-ardesia">
+              <p className="text-xs text-eg-text-muted">
                 Risolta il {formatDateTime(thread.resolvedAt)}
                 {thread.resolvedBy
                   ? ` da ${
@@ -72,8 +72,8 @@ export function SupportThread({
       <CardContent className="space-y-6">
         <div className="space-y-4">
           {thread.messages.length === 0 ? (
-            <div className="border border-eg-hairline bg-eg-calce-2 p-4">
-              <p className="text-sm text-eg-ardesia">
+            <div className="border border-eg-border bg-eg-surface-muted p-4">
+              <p className="text-sm text-eg-text-muted">
                 Nessun messaggio ancora inviato.
               </p>
             </div>
@@ -90,8 +90,8 @@ export function SupportThread({
                   <div
                     className={`${"max-w-[min(34rem,85%)]"} border px-4 py-3 ${
                       isAdmin
-                        ? "border-eg-cotto bg-eg-cotto text-eg-calce"
-                        : "border-eg-hairline bg-eg-calce-2 text-eg-terra"
+                        ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                        : "border-eg-border bg-eg-surface-muted text-eg-ink"
                     }`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -102,8 +102,8 @@ export function SupportThread({
                       <time
                         className={`text-xs ${
                           isAdmin
-                            ? "text-eg-calce"
-                            : "text-eg-ardesia"
+                            ? "text-eg-on-brand"
+                            : "text-eg-text-muted"
                         }`}
                       >
                         {formatDateTime(message.createdAt)}
@@ -121,7 +121,7 @@ export function SupportThread({
         </div>
 
         {children ? (
-          <div className="sticky bottom-0 -mx-6 border-t border-eg-hairline bg-eg-calce px-6 pb-6 pt-4">
+          <div className="sticky bottom-0 -mx-6 border-t border-eg-border bg-eg-surface px-6 pb-6 pt-4">
             {children}
           </div>
         ) : null}

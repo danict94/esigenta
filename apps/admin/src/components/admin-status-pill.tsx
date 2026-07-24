@@ -38,7 +38,7 @@ export function AdminStatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 text-xs font-medium leading-5 text-eg-terra",
+        "inline-flex items-center gap-2 text-xs font-medium leading-5 text-eg-ink",
         className,
       )}
     >

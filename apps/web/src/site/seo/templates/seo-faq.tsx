@@ -22,11 +22,11 @@ export function SeoFaq({ faq }: SeoFaqProps) {
         </h2>
       </div>
 
-      <div className="border-y border-eg-hairline">
+      <div className="border-y border-eg-border">
         {faq.map((item) => (
           <article
             key={item.question}
-            className="grid gap-4 border-b border-eg-hairline py-6 last:border-b-0 md:grid-cols-[0.42fr_1fr] md:gap-10"
+            className="grid gap-4 border-b border-eg-border py-6 last:border-b-0 md:grid-cols-[0.42fr_1fr] md:gap-10"
           >
             <h3 className="eg-h3 text-[22px]">{item.question}</h3>
 

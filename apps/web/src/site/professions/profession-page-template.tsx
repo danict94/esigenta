@@ -45,16 +45,16 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                 <Link href="/" prefetch={false}>
                   Home
                 </Link>
-                <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                   /
                 </span>
-                <span className="text-eg-terra">Professionisti</span>
+                <span className="text-eg-ink">Professionisti</span>
               </nav>
 
               <p className="eg-eyebrow">Professione</p>
               <h1 className="eg-h1 mt-5">{category.name}</h1>
               {category.description ? (
-                <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">{category.description}</p>
+                <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">{category.description}</p>
               ) : null}
             </div>
 
@@ -78,12 +78,12 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                       ) : null}
                     </div>
 
-                    <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+                    <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
                       {projectGroup.interventions.map((intervention, index) => (
                         <li key={intervention.id}>
                           <Link
                             href={getInterventionHref(intervention.slug)}
-                            className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-cotto-dark"
+                            className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
                             prefetch={false}
                           >
                             <span
@@ -99,7 +99,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                                 {intervention.name}
                               </span>
                               {intervention.description ? (
-                                <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-ardesia block">
+                                <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-text-muted block">
                                   {intervention.description}
                                 </span>
                               ) : null}

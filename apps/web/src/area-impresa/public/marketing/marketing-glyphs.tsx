@@ -1,10 +1,10 @@
 // Esigenta — proprietary line glyphs for the professionals marketing page.
 // Same hand as site/shell/icons.tsx: 24×24 grid, 1.5px stroke, round caps and
 // joins, structural lines on currentColor (so they invert cleanly on the dark
-// trust section), with the terracotta accent reserved for the one detail that
+// trust section), with the brand accent reserved for the one detail that
 // carries the meaning. Not a third-party icon set — drawn for this product.
 
-const ACCENT = "var(--eg-cotto)";
+const ACCENT = "var(--color-eg-brand-strong)";
 
 type GlyphProps = {
   className?: string;

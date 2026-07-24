@@ -42,7 +42,7 @@ export function HomeImage({
       {hasError && minimalFallback ? (
         <div
           className={joinClasses(
-            "absolute inset-0 bg-eg-calce-2 text-eg-ardesia",
+            "absolute inset-0 bg-eg-surface-muted text-eg-text-muted",
             fallbackClassName,
           )}
         >
@@ -53,7 +53,7 @@ export function HomeImage({
       ) : hasError ? (
         <div
           className={joinClasses(
-            "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-eg-calce-2 text-center text-xs leading-5 text-eg-ardesia",
+            "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-eg-surface-muted text-center text-xs leading-5 text-eg-text-muted",
             fallbackClassName,
           )}
         >

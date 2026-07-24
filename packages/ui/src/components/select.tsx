@@ -5,12 +5,13 @@ import type {
 import {
   cn,
 } from "../lib/cn"
+import { fieldBase } from "../lib/field-base"
 
 export type SelectProps =
   SelectHTMLAttributes<HTMLSelectElement>
 
 const selectBase =
-  "h-12 w-full rounded-eg-sm border border-eg-hairline bg-eg-calce px-4 text-sm text-eg-terra outline-none transition-colors focus:border-eg-terra focus:ring-1 focus:ring-eg-terra disabled:cursor-not-allowed disabled:opacity-60"
+  cn(fieldBase, "h-12 w-full rounded-eg-sm px-4 text-sm")
 
 export function Select({
   className,

@@ -139,10 +139,10 @@ function Field({
 }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+      <dt className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
         {label}
       </dt>
-      <dd className="mt-1 break-words text-sm leading-6 text-eg-terra">
+      <dd className="mt-1 break-words text-sm leading-6 text-eg-ink">
         {value}
       </dd>
     </div>
@@ -158,13 +158,13 @@ export default async function AdminCompanyContactChangeRequestsPage() {
   return (
     <PageShell size="lg">
       <div className="max-w-3xl">
-        <p className="text-sm font-medium text-eg-ardesia">
+        <p className="text-sm font-medium text-eg-text-muted">
           Imprese
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-terra">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
           Modifiche contatto
         </h1>
-        <p className="mt-3 text-sm leading-6 text-eg-ardesia">
+        <p className="mt-3 text-sm leading-6 text-eg-text-muted">
           Approva o rifiuta le richieste di modifica del telefono
           aziendale. L'email impresa resta quella ufficiale
           dell'account.
@@ -174,10 +174,10 @@ export default async function AdminCompanyContactChangeRequestsPage() {
       <section className="mt-8">
         {changeRequests.length === 0 ? (
           <Card className="p-8">
-            <p className="text-lg font-semibold text-eg-terra">
+            <p className="text-lg font-semibold text-eg-ink">
               Nessuna modifica contatto in revisione
             </p>
-            <p className="mt-2 text-sm leading-6 text-eg-ardesia">
+            <p className="mt-2 text-sm leading-6 text-eg-text-muted">
               Quando arriva una richiesta di modifica del telefono aziendale, la pratica viene mostrata qui.
             </p>
           </Card>
@@ -198,13 +198,13 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                             changeRequest.status}
                         </Badge>
 
-                        <p className="text-sm font-semibold text-eg-terra">
+                        <p className="text-sm font-semibold text-eg-ink">
                           {fieldLabels[changeRequest.field] ??
                             changeRequest.field}
                         </p>
                       </div>
 
-                      <p className="mt-2 text-xs leading-5 text-eg-ardesia">
+                      <p className="mt-2 text-xs leading-5 text-eg-text-muted">
                         Richiesta creata il{" "}
                         {formatDate(changeRequest.createdAt)}
                       </p>
@@ -220,7 +220,7 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                         />
 
                         <label className="grid gap-1">
-                          <span className="text-xs font-medium text-eg-ardesia">
+                          <span className="text-xs font-medium text-eg-text-muted">
                             Note admin
                           </span>
                           <Textarea
@@ -251,11 +251,11 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                         </div>
                       </form>
                     ) : (
-                      <div className="w-full rounded-eg-md border border-eg-hairline bg-eg-calce-2 p-4 lg:w-80">
-                        <p className="text-sm font-semibold text-eg-terra">
+                      <div className="w-full rounded-eg-md border border-eg-border bg-eg-surface-muted p-4 lg:w-80">
+                        <p className="text-sm font-semibold text-eg-ink">
                           Revisione completata
                         </p>
-                        <p className="mt-1 text-xs leading-5 text-eg-ardesia">
+                        <p className="mt-1 text-xs leading-5 text-eg-text-muted">
                           {formatDate(
                             changeRequest.reviewedAt,
                           )}
@@ -264,7 +264,7 @@ export default async function AdminCompanyContactChangeRequestsPage() {
                     )}
                   </div>
 
-                  <dl className="mt-6 grid gap-4 border-t border-eg-hairline pt-5 sm:grid-cols-2 lg:grid-cols-3">
+                  <dl className="mt-6 grid gap-4 border-t border-eg-border pt-5 sm:grid-cols-2 lg:grid-cols-3">
                     <Field
                       label="Valore attuale"
                       value={formatValue(

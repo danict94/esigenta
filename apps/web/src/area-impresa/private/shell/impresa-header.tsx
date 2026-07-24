@@ -1,17 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Button, Card, EsigentaWordmark, cn } from "@esigenta/ui";
+import { Button, Card, cn, useDismissableMenu } from "@esigenta/ui";
 
 import { authClient } from "../../../auth/client";
+import {
+  headerGutterClassName,
+  headerHeightClassName,
+  headerSurfaceClassName,
+  headerTriggerBaseClassName,
+  headerTriggerSolidClassName,
+} from "../../../site/shell/header-gutter";
 import {
   ChevronDownIcon,
   CloseIcon,
   MenuIcon,
 } from "../../../site/shell/icons";
+import { ProBrand } from "../../shared/pro-brand";
 
 type NavigationItem = {
   label: string;
@@ -80,6 +87,12 @@ const commercialNavigationHrefs = new Set([
   "/area-impresa/crediti",
 ]);
 
+// Stessa geometria di Button (ghost) per l'azione testuale "Esci":
+// qui si sovrascrivono i colori e si sostituisce il ring del componente
+// globale con l'outline condiviso dagli header (vedi Esigenta Header Shell).
+const logoutActionClassName =
+  "border-eg-border text-eg-ink hover:bg-eg-brand-soft hover:text-eg-brand-strong focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-brand-strong";
+
 function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -104,7 +117,7 @@ function getInitials(label: string) {
 function Avatar({ label }: { label: string }) {
   return (
     <span
-      className="flex size-[34px] shrink-0 items-center justify-center rounded-full bg-eg-salvia text-sm font-semibold text-eg-calce"
+      className="flex size-[34px] shrink-0 items-center justify-center rounded-full bg-eg-brand-soft text-sm font-semibold text-eg-brand-strong"
       aria-hidden="true"
     >
       {getInitials(label)}
@@ -112,18 +125,9 @@ function Avatar({ label }: { label: string }) {
   );
 }
 
-function Brand() {
-  return (
-    <span className="inline-flex items-center gap-[13px] text-eg-terra">
-      <EsigentaWordmark decorative className="block h-[22px] w-auto" />
-      <small className="eg-pro-tag">/ pro</small>
-    </span>
-  );
-}
-
 function NavBadge({ value }: { value: string }) {
   return (
-    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-eg-cotto px-1 text-[11px] font-semibold leading-none text-eg-calce">
+    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-eg-brand px-1 text-[11px] font-semibold leading-none text-eg-on-brand">
       {value}
     </span>
   );
@@ -137,18 +141,18 @@ function CreditBalanceChip({
   onClick?: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-full border border-eg-hairline bg-eg-calce-2 py-[7px] pr-[7px] pl-4 font-(family-name:--eg-font-ui)">
-      <span className="text-[10px] uppercase tracking-[0.08em] text-eg-ardesia">
+    <div className="flex items-center gap-2.5 rounded-full border border-eg-border bg-eg-surface-muted py-[7px] pr-[7px] pl-4 font-(family-name:--eg-font-ui)">
+      <span className="text-[10px] uppercase tracking-[0.08em] text-eg-text-muted">
         Credito
       </span>
-      <span className="text-base font-medium text-eg-terra">
+      <span className="text-base font-medium text-eg-ink">
         {balance}
       </span>
       <Link
         href="/area-impresa/crediti"
         onClick={onClick}
         prefetch={false}
-        className="rounded-full bg-eg-terra px-[13px] py-[7px] text-[11px] text-eg-calce transition-colors hover:bg-eg-cotto-dark"
+        className="rounded-full bg-eg-brand px-[13px] py-[7px] text-[11px] text-eg-on-brand transition-colors hover:bg-eg-brand-strong"
       >
         Ricarica
       </Link>
@@ -164,11 +168,12 @@ function DesktopNavLink({
   active: boolean;
 }) {
   const className = cn(
-    "relative inline-flex h-[72px] items-center gap-1.5 text-sm font-medium transition-colors",
+    "eg-nav-link relative inline-flex items-center gap-1.5",
+    headerHeightClassName,
     active
-      ? "text-eg-cotto"
-      : "text-eg-ardesia hover:text-eg-terra",
-    !item.enabled ? "cursor-not-allowed text-eg-ardesia" : "",
+      ? "text-eg-brand-strong"
+      : "text-eg-text-muted hover:text-eg-ink",
+    !item.enabled ? "cursor-not-allowed text-eg-text-muted" : "",
   );
 
   const content = (
@@ -180,7 +185,7 @@ function DesktopNavLink({
       {active ? (
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-0.5 bg-eg-cotto"
+          className="absolute inset-x-0 bottom-0 h-0.5 bg-eg-brand-strong"
         />
       ) : null}
     </>
@@ -215,11 +220,11 @@ function MobileNavLink({
   onClick: () => void;
 }) {
   const className = cn(
-    "flex items-center justify-between gap-3 px-2 py-3 text-sm font-medium transition-colors",
+    "eg-nav-link flex items-center justify-between gap-3 px-2 py-3",
     active
-      ? "text-eg-cotto"
-      : "text-eg-ardesia hover:text-eg-terra",
-    !item.enabled ? "cursor-not-allowed text-eg-ardesia" : "",
+      ? "text-eg-brand-strong"
+      : "text-eg-text-muted hover:text-eg-ink",
+    !item.enabled ? "cursor-not-allowed text-eg-text-muted" : "",
   );
 
   const content = (
@@ -261,12 +266,12 @@ function AccountMenuItem({
   const className = cn(
     "block px-5 py-3 text-sm font-medium transition-colors",
     item.enabled &&
-      "hover:bg-eg-calce-2",
+      "hover:bg-eg-surface-muted",
     item.enabled && active
-      ? "text-eg-cotto"
+      ? "text-eg-brand-strong"
       : item.enabled
-        ? "text-eg-terra"
-        : "cursor-not-allowed text-eg-ardesia",
+        ? "text-eg-ink"
+        : "cursor-not-allowed text-eg-text-muted",
   );
 
   if (!item.enabled) {
@@ -295,7 +300,7 @@ function AccountMenuItem({
   );
 }
 
-export function ImpresaSidebar({
+export function ImpresaHeader({
   accountLabel,
   unreadNotificationCount,
   unreadContactCount,
@@ -315,8 +320,18 @@ export function ImpresaSidebar({
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
+  const {
+    isOpen: isMobileMenuOpen,
+    containerRef: mobileMenuRef,
+    toggle: toggleMobileMenuState,
+    close: closeMobileMenu,
+  } = useDismissableMenu();
+  const {
+    isOpen: isAccountMenuOpen,
+    containerRef: accountMenuRef,
+    toggle: toggleAccountMenuState,
+    close: closeAccountMenu,
+  } = useDismissableMenu<HTMLDivElement>();
 
   const notificationBadge = formatUnreadCount(unreadNotificationCount);
   const contactBadge = formatUnreadCount(unreadContactCount);
@@ -379,45 +394,19 @@ export function ImpresaSidebar({
       : item,
   );
 
-  const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  function toggleMobileMenu() {
+    closeAccountMenu();
+    toggleMobileMenuState();
+  }
 
-  useEffect(() => {
-    if (!accountOpen) {
-      return;
-    }
-
-    function handleMouseDown(event: MouseEvent) {
-      const target = event.target;
-
-      if (
-        !(target instanceof Node) ||
-        !accountMenuRef.current ||
-        accountMenuRef.current.contains(target)
-      ) {
-        return;
-      }
-
-      setAccountOpen(false);
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setAccountOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [accountOpen]);
+  function toggleAccountMenu() {
+    closeMobileMenu();
+    toggleAccountMenuState();
+  }
 
   function closeMenus() {
-    setIsMenuOpen(false);
-    setAccountOpen(false);
+    closeMobileMenu();
+    closeAccountMenu();
   }
 
   async function handleLogout() {
@@ -428,19 +417,30 @@ export function ImpresaSidebar({
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-eg-hairline bg-eg-calce">
-      <div className="mx-auto flex h-[72px] items-center justify-between px-5 sm:px-10 lg:px-16">
+    <header
+      ref={mobileMenuRef}
+      className={cn("sticky top-0 z-50", headerSurfaceClassName)}
+    >
+      <div
+        className={cn(
+          "mx-auto flex items-center justify-between",
+          headerHeightClassName,
+          headerGutterClassName,
+        )}
+      >
         <Link
           href="/area-impresa/richieste"
           onClick={closeMenus}
-          aria-label="esigenta / pro"
+          aria-label="Esigenta — area professionisti"
           prefetch={false}
         >
-          <Brand />
+          <span className="inline-flex items-center text-eg-ink">
+            <ProBrand />
+          </span>
         </Link>
 
         <nav
-          className="hidden items-center gap-8 md:flex"
+          className="hidden items-center gap-8 min-[861px]:flex"
           aria-label="Navigazione area impresa"
         >
           {mainNavigationItems.map((item) => (
@@ -452,39 +452,39 @@ export function ImpresaSidebar({
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 min-[861px]:flex">
           <CreditBalanceChip balance={creditBalance} />
 
           <div ref={accountMenuRef} className="relative">
             <button
               type="button"
-              className="flex items-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-eg-cotto"
-              aria-expanded={accountOpen}
+              className="flex items-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-brand-strong"
+              aria-expanded={isAccountMenuOpen}
               aria-haspopup="menu"
               aria-label="Il mio account"
-              onClick={() => setAccountOpen((open) => !open)}
+              onClick={toggleAccountMenu}
             >
               <Avatar label={accountLabel} />
 
               <ChevronDownIcon
                 className={cn(
-                  "size-4 text-eg-ardesia transition-transform",
-                  accountOpen ? "rotate-180" : "",
+                  "size-4 text-eg-text-muted transition-transform",
+                  isAccountMenuOpen ? "rotate-180" : "",
                 )}
               />
             </button>
 
-            {accountOpen ? (
+            {isAccountMenuOpen ? (
               <Card
                 className="absolute right-0 top-12 w-72 py-3 shadow-lg"
                 role="menu"
               >
-                <div className="border-b border-eg-hairline px-5 pb-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+                <div className="border-b border-eg-border px-5 pb-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                     Account impresa
                   </p>
 
-                  <p className="mt-1 truncate text-sm font-semibold text-eg-terra">
+                  <p className="mt-1 truncate text-sm font-semibold text-eg-ink">
                     {accountLabel}
                   </p>
                 </div>
@@ -503,12 +503,12 @@ export function ImpresaSidebar({
                   ))}
                 </nav>
 
-                <div className="border-t border-eg-hairline px-3 pt-3">
+                <div className="border-t border-eg-border px-3 pt-3">
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start"
+                    className={cn("w-full justify-start", logoutActionClassName)}
                     onClick={handleLogout}
                   >
                     Esci
@@ -519,28 +519,23 @@ export function ImpresaSidebar({
           </div>
         </div>
 
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="sm"
-          aria-label={isMenuOpen ? "Chiudi menu" : "Apri menu"}
-          aria-expanded={isMenuOpen}
-          className="md:hidden"
-          onClick={() => {
-            setIsMenuOpen((current) => !current);
-            setAccountOpen(false);
-          }}
+          className={cn(headerTriggerBaseClassName, headerTriggerSolidClassName)}
+          aria-label={isMobileMenuOpen ? "Chiudi menu" : "Apri menu"}
+          aria-expanded={isMobileMenuOpen}
+          onClick={toggleMobileMenu}
         >
-          {isMenuOpen ? (
+          {isMobileMenuOpen ? (
             <CloseIcon className="size-5" />
           ) : (
             <MenuIcon className="size-5" />
           )}
-        </Button>
+        </button>
       </div>
 
-      {isMenuOpen ? (
-        <div className="border-t border-eg-hairline bg-eg-calce md:hidden">
+      {isMobileMenuOpen ? (
+        <div className="border-t border-eg-border bg-eg-surface min-[861px]:hidden">
           <div className="px-5 sm:px-10">
             <nav
               className="flex flex-col gap-1 py-4"
@@ -562,9 +557,9 @@ export function ImpresaSidebar({
                 />
               ))}
 
-              <div className="my-2 border-t border-eg-hairline" />
+              <div className="my-2 border-t border-eg-border" />
 
-              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-eg-ardesia">
+              <p className="px-2 py-2 text-xs font-medium uppercase tracking-wide text-eg-text-muted">
                 Il mio account
               </p>
 
@@ -581,7 +576,7 @@ export function ImpresaSidebar({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="mt-2 justify-start"
+                className={cn("mt-2 justify-start", logoutActionClassName)}
                 onClick={handleLogout}
               >
                 Esci

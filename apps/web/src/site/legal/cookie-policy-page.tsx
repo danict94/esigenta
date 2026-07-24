@@ -45,7 +45,7 @@ export function CookiePolicyPage() {
             <header className="mx-auto max-w-[760px] text-center">
               <p className="eg-eyebrow">Cookie</p>
               <h1 className="eg-h1 mt-5">Cookie policy.</h1>
-              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-ardesia">
+              <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">
                 Cookie, preferenze locali e strumenti simili usati da{" "}
                 {legalProfile.projectName}. Le preferenze possono essere
                 modificate dal footer tramite &quot;Preferenze cookie&quot;.
@@ -57,7 +57,7 @@ export function CookiePolicyPage() {
                 <h2 className="eg-h3">Preferenza cookie salvata localmente</h2>
                 <p className="eg-body-muted mt-3">
                   Esigenta salva nel browser una preferenza locale con chiave{" "}
-                  <span className="font-medium text-eg-terra">
+                  <span className="font-medium text-eg-ink">
                     esigenta_cookie_consent
                   </span>
                   . Questa scelta serve a ricordare se l&apos;utente ha accettato
@@ -104,8 +104,8 @@ export function CookiePolicyPage() {
                 <p className="eg-body-muted mt-3">
                   Quando la categoria e attiva, Google Analytics 4 puo
                   impostare cookie come{" "}
-                  <span className="font-medium text-eg-terra">_ga</span> e{" "}
-                  <span className="font-medium text-eg-terra">
+                  <span className="font-medium text-eg-ink">_ga</span> e{" "}
+                  <span className="font-medium text-eg-ink">
                     _ga_&lt;ID&gt;
                   </span>
                   , usati per distinguere le sessioni di navigazione. Per
@@ -125,7 +125,7 @@ export function CookiePolicyPage() {
                 </p>
               </section>
 
-              <section className="eg-panel bg-eg-calce-2 p-6">
+              <section className="eg-panel bg-eg-surface-muted p-6">
                 <h2 className="eg-h3">Aggiornamenti</h2>
                 <p className="eg-body-muted mt-3">
                   Questa policy deve essere aggiornata se cambiano servizi

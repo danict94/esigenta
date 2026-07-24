@@ -82,7 +82,7 @@ export function InterventionLandingPage({
                   <Link href="/" prefetch={false}>
                     Home
                   </Link>
-                  <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                  <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                     /
                   </span>
                   {groupCrumb ? (
@@ -90,13 +90,13 @@ export function InterventionLandingPage({
                       <Link href={groupCrumb.href} prefetch={false}>
                         {groupCrumb.name}
                       </Link>
-                      <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                      <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                         /
                       </span>
-                      <span className="text-eg-terra">{landing.title}</span>
+                      <span className="text-eg-ink">{landing.title}</span>
                     </>
                   ) : (
-                    <span className="text-eg-terra">Interventi</span>
+                    <span className="text-eg-ink">Interventi</span>
                   )}
                 </nav>
 
@@ -134,7 +134,7 @@ export function InterventionLandingPage({
                 </p>
               </div>
 
-              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-terra after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
+              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
                 <Image
                   src={landing.image.src}
                   alt={landing.image.alt}
@@ -148,7 +148,7 @@ export function InterventionLandingPage({
           </div>
         </section>
 
-        <section aria-labelledby="cosa-puoi-richiedere-title" className="eg-section bg-eg-calce-2">
+        <section aria-labelledby="cosa-puoi-richiedere-title" className="eg-section bg-eg-surface-muted">
           <div className="eg-container">
             <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
               <div className="max-w-2xl">
@@ -167,10 +167,10 @@ export function InterventionLandingPage({
               <div className="eg-panel p-5 md:p-7">
                 <ul className="grid gap-4 sm:grid-cols-2">
                   {landing.requestItems.map((item) => (
-                    <li key={item} className="flex gap-3 text-sm leading-6 text-eg-ardesia">
+                    <li key={item} className="flex gap-3 text-sm leading-6 text-eg-text-muted">
                       <span
                         aria-hidden="true"
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-brand-strong"
                       />
                       <span>{item}</span>
                     </li>
@@ -199,7 +199,7 @@ export function InterventionLandingPage({
                       Cosa pu&ograve; comprendere
                     </h3>
 
-                    <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-ardesia">
+                    <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-text-muted">
                       {landing.scopeIncluded.map((item) => (
                         <li key={item} className="flex gap-3">
                           <Dot />
@@ -216,7 +216,7 @@ export function InterventionLandingPage({
                       Cosa spesso resta fuori
                     </h3>
 
-                    <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-ardesia">
+                    <ul className="mt-5 grid gap-3 text-sm leading-6 text-eg-text-muted">
                       {landing.scopeExcluded.map((item) => (
                         <li key={item} className="flex gap-3">
                           <Dot />
@@ -238,7 +238,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {landing.variants?.length ? (
-          <section aria-labelledby="varianti-title" className="eg-section bg-eg-calce-2">
+          <section aria-labelledby="varianti-title" className="eg-section bg-eg-surface-muted">
             <div className="eg-container">
               <div className="mx-auto max-w-[760px] text-center">
                 <p className="eg-eyebrow">Livelli di intervento</p>
@@ -269,7 +269,7 @@ export function InterventionLandingPage({
 
         <section aria-labelledby="professionisti-collegati-title" className="eg-section">
           <div className="eg-container">
-            <div className="grid gap-12 border-y border-eg-hairline py-10 md:grid-cols-2">
+            <div className="grid gap-12 border-y border-eg-border py-10 md:grid-cols-2">
               <div>
                 <p className="eg-eyebrow">Professionisti</p>
 
@@ -310,7 +310,7 @@ export function InterventionLandingPage({
         </section>
 
         {landing.relatedFunnelWork && landing.relatedFunnelWork.length > 0 ? (
-          <section className="eg-section bg-eg-calce-2">
+          <section className="eg-section bg-eg-surface-muted">
             <div className="eg-container">
               <RelatedFunnelWork taxonomyInterventionSlugs={landing.relatedFunnelWork} />
             </div>
@@ -331,7 +331,7 @@ export function InterventionLandingPage({
         </section>
 
         {landing.preparationItems?.length ? (
-          <section aria-labelledby="prepara-richiesta-title" className="eg-section bg-eg-calce-2">
+          <section aria-labelledby="prepara-richiesta-title" className="eg-section bg-eg-surface-muted">
             <div className="eg-container">
               <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
                 <div className="max-w-2xl">
@@ -356,7 +356,7 @@ export function InterventionLandingPage({
 
                 <ul className="eg-panel grid gap-4 p-5 md:grid-cols-2 md:p-6">
                   {landing.preparationItems.map((item) => (
-                    <li key={item} className="flex gap-3 text-sm leading-6 text-eg-ardesia">
+                    <li key={item} className="flex gap-3 text-sm leading-6 text-eg-text-muted">
                       <Dot />
                       <span>{item}</span>
                     </li>
@@ -371,19 +371,19 @@ export function InterventionLandingPage({
           <HowItWorks />
         </section>
 
-        <section className="eg-section bg-eg-calce-2">
+        <section className="eg-section bg-eg-surface-muted">
           <div className="eg-container">
             <SeoFaq faq={landing.faq} />
           </div>
         </section>
 
-        <section className="eg-section-large bg-eg-terra text-eg-calce">
+        <section className="eg-section-large bg-eg-brand-strong text-eg-on-brand">
           <div className="eg-container-narrow text-center">
-            <p className="eg-eyebrow text-eg-calce/60">Prossimo passo</p>
+            <p className="eg-eyebrow text-eg-on-brand-muted">Prossimo passo</p>
 
             <h2 className="eg-h2 mt-4">Racconta il lavoro e confronta i preventivi</h2>
 
-            <p className="mt-5 text-[15px] leading-7 text-eg-calce/70">
+            <p className="mt-5 text-[15px] leading-7 text-eg-on-brand-muted">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
@@ -435,15 +435,15 @@ function Dot() {
   return (
     <span
       aria-hidden="true"
-      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-brand-strong"
     />
   );
 }
 
 function SeoChip({ href, label }: { href?: string; label: string }) {
   const className = [
-    "inline-flex min-h-9 items-center rounded-full border border-eg-hairline bg-eg-calce px-3 text-sm font-medium leading-5 text-eg-ardesia",
-    href ? "transition-colors hover:border-eg-cotto hover:text-eg-cotto-dark" : "",
+    "inline-flex min-h-9 items-center rounded-full border border-eg-border bg-eg-surface px-3 text-sm font-medium leading-5 text-eg-text-muted",
+    href ? "transition-colors hover:border-eg-brand hover:text-eg-brand-strong" : "",
   ]
     .filter(Boolean)
     .join(" ");

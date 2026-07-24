@@ -16,7 +16,9 @@ export async function AreaImpresaLoginPage({
   const justRegistered = registered === "1";
 
   return (
-    <AuthShell>
+    <AuthShell
+      headerAction={{ label: "Crea un account", href: "/area-impresa/iscriviti" }}
+    >
       <div className="flex flex-col gap-6">
         <div>
           <p className="eg-eyebrow">Area impresa</p>
@@ -28,24 +30,24 @@ export async function AreaImpresaLoginPage({
         </div>
 
         {justRegistered ? (
-          <div className="eg-alert">
+          <div className="eg-alert eg-alert-success">
             Profilo impresa creato. Ora accedi per continuare.
           </div>
         ) : null}
 
         <ImpresaLoginForm />
 
-        <div className="flex items-center gap-4 text-eg-ardesia">
-          <span className="h-px flex-1 bg-eg-hairline" />
+        <div className="flex items-center gap-4 text-eg-text-muted">
+          <span className="h-px flex-1 bg-eg-border" />
           <span className="eg-divider-label text-[11px]">oppure</span>
-          <span className="h-px flex-1 bg-eg-hairline" />
+          <span className="h-px flex-1 bg-eg-border" />
         </div>
 
-        <p className="text-center text-sm text-eg-ardesia">
+        <p className="text-center text-sm text-eg-text-muted">
           Non hai ancora un profilo?{" "}
           <Link
             href="/area-impresa/iscriviti"
-            className="font-medium text-eg-cotto-dark"
+            className="font-medium text-eg-brand-strong hover:text-eg-brand"
           >
             Inizia da qui
           </Link>

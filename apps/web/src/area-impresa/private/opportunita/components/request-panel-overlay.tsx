@@ -51,11 +51,11 @@ export function RequestPanelOverlay({ children }: { children: ReactNode }) {
       role="dialog"
       aria-modal="true"
       className={cn(
-        "fixed inset-0 z-[60] overflow-y-auto bg-eg-calce transition-transform duration-[350ms] ease-in-out",
+        "fixed inset-0 z-[60] overflow-y-auto bg-eg-surface transition-transform duration-[350ms] ease-in-out",
         entered ? "translate-x-0" : "translate-x-full",
         "min-[900px]:translate-x-0 min-[900px]:transition-none",
         "min-[900px]:inset-y-0 min-[900px]:left-auto min-[900px]:right-0 min-[900px]:w-[460px] min-[900px]:bottom-0 min-[900px]:top-[var(--panel-top)]",
-        "min-[900px]:border-l min-[900px]:border-eg-hairline min-[900px]:shadow-eg-elevation-lg",
+        "min-[900px]:border-l min-[900px]:border-eg-border min-[900px]:shadow-eg-elevation-lg",
       )}
       style={
         {
@@ -69,7 +69,7 @@ export function RequestPanelOverlay({ children }: { children: ReactNode }) {
         onClick={() => router.back()}
         aria-label="Chiudi dettaglio"
         className={cn(
-          "sticky top-0 z-10 flex w-full items-center gap-2 border-b border-eg-hairline bg-eg-calce px-5 py-4 text-left text-sm font-medium text-eg-ardesia transition-colors hover:text-eg-terra",
+          "sticky top-0 z-10 flex w-full items-center gap-2 border-b border-eg-border bg-eg-surface px-5 py-4 text-left text-sm font-medium text-eg-text-muted transition-colors hover:text-eg-ink",
           "min-[900px]:w-auto min-[900px]:justify-end min-[900px]:border-none min-[900px]:bg-transparent min-[900px]:px-4 min-[900px]:pb-0 min-[900px]:pt-3",
         )}
       >

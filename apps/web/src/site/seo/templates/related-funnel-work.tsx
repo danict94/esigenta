@@ -55,12 +55,12 @@ export function RelatedFunnelWork({
         </p>
       </div>
 
-      <ul className="mt-[54px] border-t border-eg-hairline max-[860px]:mt-[38px]">
+      <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
         {items.map((item, index) => (
           <li key={item.slug}>
             <Link
               href={`/richiesta/${item.slug}`}
-              className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-hairline py-6 text-eg-terra max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-cotto-dark"
+              className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
               prefetch={false}
             >
               <span

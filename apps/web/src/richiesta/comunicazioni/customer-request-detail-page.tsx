@@ -447,14 +447,14 @@ function DetailItem({
   return (
     <div
       className={[
-        "border border-eg-hairline bg-eg-calce p-3",
+        "border border-eg-border bg-eg-surface p-3",
         className ?? "",
       ]
         .filter(Boolean)
         .join(" ")}
     >
       <dt className="eg-eyebrow">{label}</dt>
-      <dd className="mt-2 text-eg-terra">{value}</dd>
+      <dd className="mt-2 text-eg-ink">{value}</dd>
     </div>
   );
 }

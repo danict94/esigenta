@@ -117,8 +117,8 @@ function Chip({
       className={cn(
         "eg-chip-text inline-flex items-center rounded-full border px-[9px] py-1",
         tone === "accent"
-          ? "border-eg-cotto/50 bg-eg-cotto-tint text-eg-cotto-dark"
-          : "border-eg-hairline bg-eg-calce text-eg-ardesia",
+          ? "border-eg-brand/50 bg-eg-brand-soft text-eg-brand-strong"
+          : "border-eg-border bg-eg-surface text-eg-text-muted",
       )}
     >
       {children}
@@ -158,14 +158,14 @@ export function RequestListCard({
     <div
       aria-current={isActive ? "true" : undefined}
       className={cn(
-        "relative border-b border-eg-hairline px-7 py-5 transition-colors",
-        isActive ? "bg-eg-calce-2" : "hover:bg-eg-calce-2",
+        "relative border-b border-eg-border px-7 py-5 transition-colors",
+        isActive ? "bg-eg-surface-muted" : "hover:bg-eg-surface-muted",
       )}
     >
       {isActive ? (
         <span
           aria-hidden="true"
-          className="absolute inset-y-0 left-0 w-[3px] bg-eg-cotto"
+          className="absolute inset-y-0 left-0 w-[3px] bg-eg-brand-strong"
         />
       ) : null}
 
@@ -177,14 +177,14 @@ export function RequestListCard({
       <PendingRequestLink
         href={detailHref}
         ariaLabel={`Apri richiesta: ${title}`}
-        className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-eg-cotto"
+        className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-eg-brand-strong"
       >
         <span className="sr-only">Apri richiesta: {title}</span>
       </PendingRequestLink>
 
       <div className="relative">
         <div className="mb-3 flex items-start justify-between gap-3">
-          <span className="text-[16px] font-semibold leading-snug tracking-[-0.01em] text-eg-terra">
+          <span className="text-[16px] font-semibold leading-snug tracking-[-0.01em] text-eg-ink">
             {title}
           </span>
 
@@ -213,7 +213,7 @@ export function RequestListCard({
           {matchLabel ? (
             <span className="eg-ui-muted inline-flex items-center gap-[7px] text-[11px] tracking-[0.04em]">
               <span
-                className="h-2 w-2 shrink-0 rounded-full bg-eg-cotto"
+                className="h-2 w-2 shrink-0 rounded-full bg-eg-brand-strong"
                 aria-hidden="true"
               />
               {matchLabel}
@@ -237,7 +237,7 @@ export function RequestListCard({
                   value={id}
                   variant="ghost"
                   size="sm"
-                  className="eg-ui-muted h-auto min-h-0 gap-1 border-none p-0 text-[11px] normal-case tracking-normal hover:bg-transparent hover:text-eg-cotto"
+                  className="eg-ui-muted h-auto min-h-0 gap-1 border-none p-0 text-[11px] normal-case tracking-normal hover:bg-transparent hover:text-eg-brand-strong"
                   pendingChildren={
                     <>
                       <Bookmark className="size-3.5" aria-hidden="true" />

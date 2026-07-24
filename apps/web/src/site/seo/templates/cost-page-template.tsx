@@ -59,7 +59,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                   <Link href="/" prefetch={false}>
                     Home
                   </Link>
-                  <span aria-hidden="true" className="mx-3 text-eg-ardesia-2">
+                  <span aria-hidden="true" className="mx-3 text-eg-text-muted">
                     /
                   </span>
                   <Link href="/costi" prefetch={false}>
@@ -88,7 +88,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-terra after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
+              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
                 <Image
                   src={guide.heroImage.src}
                   alt={guide.heroImage.alt}
@@ -102,9 +102,9 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="sintesi-costo-title" className="eg-section bg-eg-calce-2">
+        <section aria-labelledby="sintesi-costo-title" className="eg-section bg-eg-surface-muted">
           <div className="eg-container">
-            <div className="grid gap-10 border-y border-eg-hairline py-10 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.36fr)] lg:items-start">
+            <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.36fr)] lg:items-start">
               <div>
                 <p className="eg-eyebrow">Sintesi costo</p>
 
@@ -146,7 +146,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="dimensioni-bagno-title" className="eg-section bg-eg-calce-2">
+        <section aria-labelledby="dimensioni-bagno-title" className="eg-section bg-eg-surface-muted">
           <div className="eg-container">
             <div className="mx-auto max-w-[760px] text-center">
               <p className="eg-eyebrow">Esempi</p>
@@ -161,7 +161,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 <article key={example.label} className="eg-panel p-5">
                   <h3 className="eg-h3 text-[22px]">{example.label}</h3>
 
-                  <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">
+                  <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">
                     {example.range}
                   </p>
 
@@ -185,7 +185,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
               <ul className="eg-panel grid gap-4 p-5 md:grid-cols-2 md:p-6">
                 {guide.factors.map((factor) => (
-                  <li key={factor} className="flex gap-3 text-sm leading-6 text-eg-ardesia">
+                  <li key={factor} className="flex gap-3 text-sm leading-6 text-eg-text-muted">
                     <Dot />
                     <span>{factor}</span>
                   </li>
@@ -195,7 +195,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="citta-preventivo-title" className="eg-section bg-eg-calce-2">
+        <section aria-labelledby="citta-preventivo-title" className="eg-section bg-eg-surface-muted">
           <div className="eg-container">
             <div className="mx-auto max-w-[720px] text-center">
               <p className="eg-eyebrow">Citt&agrave;</p>
@@ -215,7 +215,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               {cityInfluenceFactors.map((factor) => (
                 <li
                   key={factor}
-                  className="eg-panel flex gap-3 p-4 text-sm leading-6 text-eg-ardesia"
+                  className="eg-panel flex gap-3 p-4 text-sm leading-6 text-eg-text-muted"
                 >
                   <Dot />
                   <span>{factor}</span>
@@ -238,7 +238,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
               <ul className="mt-7 grid gap-4 md:grid-cols-2">
                 {guide.savingTips.map((tip) => (
-                  <li key={tip} className="flex gap-3 text-sm leading-6 text-eg-ardesia">
+                  <li key={tip} className="flex gap-3 text-sm leading-6 text-eg-text-muted">
                     <Dot />
                     <span>{tip}</span>
                   </li>
@@ -248,19 +248,19 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section className="eg-section bg-eg-calce-2">
+        <section className="eg-section bg-eg-surface-muted">
           <div className="eg-container">
             <SeoFaq faq={guide.faq} />
           </div>
         </section>
 
-        <section className="eg-section-large bg-eg-terra text-eg-calce">
+        <section className="eg-section-large bg-eg-brand-strong text-eg-on-brand">
           <div className="eg-container-narrow text-center">
-            <p className="eg-eyebrow text-eg-calce/60">Prossimo passo</p>
+            <p className="eg-eyebrow text-eg-on-brand-muted">Prossimo passo</p>
 
             <h2 className="eg-h2 mt-4">Racconta il lavoro e confronta i preventivi</h2>
 
-            <p className="mt-5 text-[15px] leading-7 text-eg-calce/70">
+            <p className="mt-5 text-[15px] leading-7 text-eg-on-brand-muted">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
@@ -279,7 +279,7 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
     <div className="eg-panel p-5">
       <p className="eg-metric-label">{label}</p>
-      <p className="mt-3 text-2xl font-medium leading-tight text-eg-terra">{value}</p>
+      <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">{value}</p>
     </div>
   );
 }
@@ -324,7 +324,7 @@ function PriceTable({
     <>
       <div className="eg-panel mt-12 overflow-hidden">
         <div
-          className={`hidden border-b border-eg-hairline px-5 py-4 text-sm font-medium text-eg-terra md:grid ${priceTableGridCols}`}
+          className={`hidden border-b border-eg-border px-5 py-4 text-sm font-medium text-eg-ink md:grid ${priceTableGridCols}`}
         >
           <span>Voce</span>
           <span>Unit&agrave;</span>
@@ -334,11 +334,11 @@ function PriceTable({
 
         {groups.map((group) => (
           <div key={group.category}>
-            <div className="border-b border-eg-hairline bg-eg-terra/5 px-5 py-2.5">
+            <div className="border-b border-eg-border bg-eg-ink/5 px-5 py-2.5">
               <p className="eg-table-label">{group.category}</p>
             </div>
 
-            <div className="divide-y divide-eg-hairline">
+            <div className="divide-y divide-eg-border">
               {group.rows.map((row) => (
                 <PriceTableRow key={row.label} row={row} />
               ))}
@@ -365,36 +365,36 @@ function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
     >
       <div>
         <p className="eg-table-label md:hidden">Voce</p>
-        <p className="mt-1 font-medium text-eg-terra md:mt-0">{row.label}</p>
+        <p className="mt-1 font-medium text-eg-ink md:mt-0">{row.label}</p>
       </div>
 
       <div>
         <p className="eg-table-label md:hidden">Unit&agrave;</p>
-        <p className="mt-1 text-eg-ardesia md:mt-0">{row.unit ?? "—"}</p>
+        <p className="mt-1 text-eg-text-muted md:mt-0">{row.unit ?? "—"}</p>
       </div>
 
       <div>
         <p className="eg-table-label md:hidden">Fascia</p>
-        <p className="mt-1 font-medium text-eg-terra [font-variant-numeric:tabular-nums] md:mt-0">
+        <p className="mt-1 font-medium text-eg-ink [font-variant-numeric:tabular-nums] md:mt-0">
           {row.range}
         </p>
       </div>
 
       <div>
         <p className="eg-table-label md:hidden">Note</p>
-        <p className="mt-1 text-eg-ardesia md:mt-0">{row.note}</p>
+        <p className="mt-1 text-eg-text-muted md:mt-0">{row.note}</p>
 
         {row.includes || row.excludes ? (
           <div className="mt-2 grid gap-1">
             {row.includes ? (
-              <p className="text-[12.5px] leading-5 text-eg-ardesia">
-                <span className="eg-scope-tag mr-1.5 text-eg-cotto-dark">Include</span>
+              <p className="text-[12.5px] leading-5 text-eg-text-muted">
+                <span className="eg-scope-tag mr-1.5 text-eg-brand-strong">Include</span>
                 {row.includes}
               </p>
             ) : null}
 
             {row.excludes ? (
-              <p className="text-[12.5px] leading-5 text-eg-ardesia">
+              <p className="text-[12.5px] leading-5 text-eg-text-muted">
                 <span className="eg-scope-tag mr-1.5">Escluso</span>
                 {row.excludes}
               </p>
@@ -410,7 +410,7 @@ function Dot() {
   return (
     <span
       aria-hidden="true"
-      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-cotto-dark"
+      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-brand-strong"
     />
   );
 }
