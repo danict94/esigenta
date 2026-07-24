@@ -390,7 +390,7 @@ NOTE: stesso item di OI-006, elencato qui per categoria. Vedere OI-006 per i det
 
 ```txt id="oi-cleanup-03"
 ID: OI-034
-TITLE: Immagine OG hardcoded ("rifacimento-bagno.webp") per qualunque cost guide
+TITLE: Immagine OG hardcoded ("rifare-bagno.webp") per qualunque cost guide
 STATUS: RESOLVED_BY_PHASE_20_1
 SOURCE_PHASE: Phase 18 (audit originale) → 19.9 (formalizzato) → 20.1 (risolto)
 DESCRIPTION:

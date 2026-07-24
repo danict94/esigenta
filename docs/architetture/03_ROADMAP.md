@@ -1510,8 +1510,8 @@ FILES_CREATED:
   site/legal/termini-page.tsx (riscritta da app/termini/page.tsx)
   site/legal/cookie-policy-page.tsx (riscritta da app/cookie-policy/page.tsx)
   app/page.tsx (NUOVO — bridge flat verso site/home/home-page)
-  public/assets/images/home/guida-bagno.webp (copiata da rifacimento-bagno.webp)
-  public/assets/images/home/guida-tetto.webp (copiata da rifare-tetto.webp)
+  public/assets/images/home/guida-bagno.webp (copiata da rifare-bagno.webp)
+  public/assets/images/home/guida-tetto.webp (copiata da rifacimento-tetto.webp)
   public/assets/images/home/guida-climatizzatore.webp (copiata da climatizzazione.webp)
   public/assets/images/home/guida-fotovoltaico.webp (copiata da installazione-fotovoltaico.webp)
 
@@ -1978,7 +1978,7 @@ PERFORMANCE_IMPACT:
   AFTER: requireUser → getCurrentUser → 1× getSession per render
 
 NON_ISSUES_CONFIRMED:
-  Immagini: professionisti-hero.webp, rifacimento-bagno.webp, guide-*.webp → tutte esistenti
+  Immagini: professionisti-hero.webp, rifare-bagno.webp, guide-*.webp → tutte esistenti
   metadataBase: già presente in app/layout.tsx:28 → nessun problema
   Google Maps lazy-load: già async+defer con hasFunctionalConsent guard → non P0
 
