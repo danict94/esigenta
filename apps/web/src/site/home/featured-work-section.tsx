@@ -1,117 +1,105 @@
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 
-import { featuredWorks, type FeaturedWork } from "./home-content";
+import { featuredWorks } from "./home-content";
 import { HomeImage } from "./home-image";
-import { SectionHeader } from "./section-header";
+import { Reveal } from "../shared/reveal";
+import { blueprintEyebrowClassName, blueprintTitleClassName, SectionHeader } from "../shared/section-header";
 
-const toneOverlayClass: Record<FeaturedWork["tone"], string> = {
-  terra: "after:bg-eg-brand",
-  cotto: "after:bg-eg-brand",
-  salvia: "after:bg-eg-brand",
-};
+// Segni di registrazione agli angoli della foto (docs/esigenta-brand
+// ServiceCard): una "prova fotografica" allegata alla tavola tecnica, non
+// un'immagine lifestyle. Base condivisa, ogni angolo aggiunge solo
+// posizione e lato del bordo a L.
+const FRAME_MARK_BASE_CLASSNAME =
+  "absolute size-3 border-solid border-eg-brand-strong transition-colors duration-250 ease-(--eg-ease-brand) group-hover:border-eg-accent";
 
 export function FeaturedWorkSection() {
   return (
-    <section id="lavori" className="relative z-[1] pb-0 pt-[88px] min-[861px]:pt-32" aria-labelledby="works-title">
-      <div className="eg-container-narrow mb-[52px] min-[861px]:mb-[78px]">
-        <SectionHeader
-          eyebrow="Lavori piu richiesti"
-          title="Le richieste che partono piu spesso da casa."
-          id="works-title"
-        />
-      </div>
+    <section id="lavori" className="relative z-1 py-24 max-[600px]:py-16" aria-labelledby="works-title">
+      <div className="eg-container">
+        <Reveal>
+          <SectionHeader
+            eyebrow="Lavori piu richiesti"
+            title="Le richieste che partono piu spesso da casa."
+            id="works-title"
+            className="max-w-160 text-left mb-14"
+            eyebrowClassName={blueprintEyebrowClassName}
+            titleClassName={blueprintTitleClassName}
+          />
+        </Reveal>
 
-      <div>
-        {featuredWorks.map((work) => (
-          <WorkRow key={work.idx} work={work} />
-        ))}
-      </div>
+        <Reveal className="grid grid-cols-1 gap-px border border-eg-border bg-eg-border min-[601px]:grid-cols-2 min-[861px]:grid-cols-3">
+          {featuredWorks.map((work) => (
+            <Link
+              key={work.title}
+              href={work.href}
+              prefetch={false}
+              className="group relative flex flex-col bg-eg-surface px-6 pt-6.5 pb-6 no-underline transition-shadow duration-250 ease-(--eg-ease-brand) hover:z-2 hover:shadow-eg-step"
+            >
+              <div className="relative isolate aspect-4/3 overflow-hidden">
+                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -top-px -left-px border-t-2 border-l-2`} />
+                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -top-px -right-px border-t-2 border-r-2`} />
+                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -bottom-px -left-px border-b-2 border-l-2`} />
+                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -bottom-px -right-px border-b-2 border-r-2`} />
+                <HomeImage
+                  src={work.imageSrc}
+                  alt={work.imageAlt}
+                  fallbackLabel={work.fallbackLabel}
+                  sizes="(max-width: 600px) 100vw, (max-width: 860px) 50vw, 33vw"
+                  className="h-full w-full"
+                  imageClassName="object-cover contrast-105"
+                />
+              </div>
 
-      <div className="border-t border-eg-border">
-        <div className="eg-container-narrow flex flex-col items-center gap-2 py-10 text-center min-[861px]:flex-row min-[861px]:justify-between min-[861px]:gap-6 min-[861px]:py-8 min-[861px]:text-left">
-          <p className="eg-body-muted">Non trovi il lavoro che ti serve tra questi?</p>
-          <Link href="/servizi" prefetch={false} className="eg-action-link shrink-0 text-eg-brand-strong hover:text-eg-brand">
-            Scopri tutti i servizi <span aria-hidden="true">&rarr;</span>
+              <h3 className="eg-h3 mt-4 mb-2 text-base font-semibold">{work.title}</h3>
+              <p className="eg-body-muted mb-4 flex-1 text-[13px] leading-[1.55]">{work.description}</p>
+              <span className="flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[11.5px] font-semibold text-eg-accent">
+                {work.cta}
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  className="size-3 shrink-0 transition-transform duration-200 ease-(--eg-ease-brand) group-hover:translate-x-1"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </span>
+            </Link>
+          ))}
+
+          {/* 6a cella della griglia (5 lavori + questa): non un lavoro, un
+              invito a sfogliare il catalogo — solo testo, centrato nello
+              spazio della riga, nessun pannello colorato al posto della
+              foto (che qui non ha senso, non essendo un progetto reale). */}
+          <Link
+            href="/servizi"
+            prefetch={false}
+            className="group relative flex flex-col justify-center bg-eg-surface px-6 py-6 no-underline transition-shadow duration-250 ease-(--eg-ease-brand) hover:z-2 hover:shadow-eg-step"
+          >
+            <span className="mb-2.5 block font-(family-name:--eg-font-brand) text-[10.5px] uppercase tracking-[0.07em] text-eg-text-muted">
+              Altri servizi
+            </span>
+            <h3 className="eg-h3 mb-2 text-base font-semibold">Non trovi il lavoro che ti serve tra questi?</h3>
+            <p className="eg-body-muted mb-4 text-[13px] leading-[1.55]">
+              Il catalogo comprende decine di interventi diversi, dalle piccole manutenzioni ai lavori piu complessi: sfoglia tutte le categorie e trova quella adatta.
+            </p>
+            <span className="flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[11.5px] font-semibold text-eg-accent">
+              Scopri tutti i servizi
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                className="size-3 shrink-0 transition-transform duration-200 ease-(--eg-ease-brand) group-hover:translate-x-1"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
-  );
-}
-
-function WorkRow({ work }: { work: FeaturedWork }) {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-
-    if (!element) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "0px 0px -18% 0px", threshold: 0.22 },
-    );
-
-    observer.observe(element);
-
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <article
-      ref={ref}
-      className="relative z-[1] grid min-h-0 grid-cols-1 border-t border-eg-border bg-eg-surface last:border-b last:border-eg-border min-[861px]:min-h-[560px] min-[861px]:grid-cols-2"
-    >
-      <div
-        className={[
-          "relative isolate h-80 min-h-80 overflow-hidden after:absolute after:inset-0 after:z-[2] after:opacity-[0.18] after:mix-blend-multiply after:content-[''] min-[861px]:h-auto min-[861px]:min-h-[560px]",
-          work.reverse ? "min-[861px]:order-2" : "",
-          toneOverlayClass[work.tone],
-        ].filter(Boolean).join(" ")}
-      >
-        <div
-          className={[
-            "absolute inset-0 z-[1] transition-transform duration-[1200ms] ease-[cubic-bezier(0.65,0,0.15,1)]",
-            visible ? "scale-100" : "scale-[1.04]",
-          ].join(" ")}
-        >
-          <HomeImage
-            src={work.imageSrc}
-            alt={work.imageAlt}
-            fallbackLabel={work.fallbackLabel}
-            sizes="(max-width: 860px) 100vw, 50vw"
-            className="h-full w-full"
-            imageClassName="object-cover [filter:saturate(0.96)_contrast(1.04)]"
-          />
-        </div>
-        <div
-          className={[
-            "absolute inset-0 z-[3] origin-left bg-eg-brand transition-transform duration-[1100ms] ease-[cubic-bezier(0.65,0,0.15,1)]",
-            visible ? "scale-x-0" : "scale-x-100",
-          ].join(" ")}
-          aria-hidden="true"
-        />
-      </div>
-
-      <div className={["flex flex-col justify-center px-[26px] py-9 min-[861px]:px-16 min-[861px]:py-[72px]", work.reverse ? "min-[861px]:order-1" : ""].filter(Boolean).join(" ")}>
-        <p className="eg-eyebrow">{work.idx}</p>
-        <h3 className="mt-5 text-[clamp(26px,3vw,38px)] font-medium leading-[1.12] tracking-[-0.01em] text-eg-ink">
-          {work.title}
-        </h3>
-        <p className="eg-body-muted mt-5 max-w-[42ch]">{work.description}</p>
-        <Link href={work.href} prefetch={false} className="eg-action-link mt-8 text-eg-brand-strong hover:text-eg-brand">
-          {work.cta} <span aria-hidden="true">&rarr;</span>
-        </Link>
-      </div>
-    </article>
   );
 }

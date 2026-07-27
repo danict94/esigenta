@@ -1,3 +1,6 @@
+import { cn } from "@esigenta/ui";
+
+import { blueprintTitleClassName } from "../../../site/shared/section-header";
 import { ProCheckIcon } from "./pro-icons";
 import { ProEyebrow } from "./pro-primitives";
 
@@ -22,7 +25,10 @@ const guarantees = [
 
 function CheckMark() {
   return (
-    <span className="flex size-[22px] items-center justify-center rounded-full border border-eg-on-brand-border text-eg-on-brand" aria-hidden="true">
+    <span
+      className="flex size-5.5 shrink-0 items-center justify-center rounded-full bg-eg-success text-eg-on-brand"
+      aria-hidden="true"
+    >
       <ProCheckIcon className="size-3" />
     </span>
   );
@@ -30,32 +36,44 @@ function CheckMark() {
 
 export function ProGuarantee() {
   return (
-    <section className="relative z-[2] bg-eg-brand-strong px-12 py-[90px] text-eg-on-brand max-[860px]:px-[22px] max-[860px]:py-[60px]">
-      <div className="mx-auto grid max-w-[900px] items-center gap-14 lg:grid-cols-2">
-        <div>
-          <ProEyebrow tone="light">La garanzia sul credito</ProEyebrow>
-          <h2 className="mt-5 text-[clamp(26px,3.2vw,38px)] font-normal leading-[1.15] tracking-[-0.01em]">
-            Se il contatto non e valido,
-            <br />
-            <b className="font-medium text-eg-accent">il credito torna tuo.</b>
+    <section
+      className="relative z-2 overflow-hidden bg-eg-ink py-22 text-eg-on-brand"
+      aria-labelledby="pro-guarantee-title"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-65 -right-35 size-130 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in srgb, var(--eg-color-brand) 28%, transparent), transparent 70%)",
+        }}
+      />
+
+      <div className="eg-container relative">
+        <div className="mb-12 max-w-155">
+          <ProEyebrow>La garanzia sul credito</ProEyebrow>
+          <h2 id="pro-guarantee-title" className={cn(blueprintTitleClassName, "mt-3.5 text-eg-on-brand")}>
+            Se il contatto non e valido, il credito torna tuo.
           </h2>
-          <p className="mt-[18px] text-[15px] leading-[1.65] text-eg-on-brand-muted">
+          <p className="mt-3.5 max-w-140 text-[15px] leading-[1.6] text-eg-on-brand-muted">
             Il costo del lead e un rischio che ci prendiamo insieme a te, non
             che scarichiamo su di te. Ecco cosa copre la restituzione del
             credito dopo verifica.
           </p>
         </div>
 
-        <div>
+        <div className="grid grid-cols-1 gap-px border border-eg-on-brand-border bg-eg-on-brand-border min-[861px]:grid-cols-2">
           {guarantees.map((item) => (
             <div
               key={item.title}
-              className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-4 border-t border-eg-on-brand-border py-5 last:border-b"
+              className="flex gap-3.5 bg-eg-ink px-7 py-6.5 transition-colors duration-250 ease-(--eg-ease-brand) hover:bg-[color-mix(in_srgb,var(--eg-color-ink)_88%,white)]"
             >
               <CheckMark />
               <div>
-                <h3 className="text-[15.5px] font-medium leading-[1.35]">{item.title}</h3>
-                <p className="mt-1 text-[13.5px] leading-[1.5] text-eg-on-brand-muted">{item.body}</p>
+                <h3 className="font-(family-name:--eg-font-brand) text-[14.5px] font-semibold leading-[1.35]">
+                  {item.title}
+                </h3>
+                <p className="mt-1.5 text-[13.5px] leading-normal text-eg-on-brand-muted">{item.body}</p>
               </div>
             </div>
           ))}

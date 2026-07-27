@@ -17,7 +17,7 @@ export async function AreaImpresaLoginPage({
 
   return (
     <AuthShell
-      headerAction={{ label: "Crea un account", href: "/area-impresa/iscriviti" }}
+      headerAction={{ label: "Crea un account", href: "/area-impresa" }}
     >
       <div className="flex flex-col gap-6">
         <div>
@@ -46,7 +46,7 @@ export async function AreaImpresaLoginPage({
         <p className="text-center text-sm text-eg-text-muted">
           Non hai ancora un profilo?{" "}
           <Link
-            href="/area-impresa/iscriviti"
+            href="/area-impresa"
             className="font-medium text-eg-brand-strong hover:text-eg-brand"
           >
             Inizia da qui

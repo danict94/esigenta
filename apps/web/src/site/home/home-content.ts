@@ -6,19 +6,19 @@ export type SearchResult = {
 
 export type ScatterTag = {
   label: string;
-  dx: string;
-  dy: string;
-  dr: string;
-  gx: string;
-  gy: string;
+  // Posizione ai margini (percentuali sul riquadro Hero), sempre ancorata
+  // in ALTO (replica 1:1 docs/index.md: nessun post-it e' ancorato in
+  // basso — vivono tutti nella fascia sopra il titolo).
+  position: { left?: string; right?: string; top: string };
+  rotate: string;
   delay: string;
-  floatX: string;
-  floatY: string;
-  floatR: string;
+  color: "giallo" | "carta";
+  // Sotto questa soglia il post-it e' nascosto (replica le regole
+  // responsive del riferimento): assente = sempre visibile.
+  minVisibleWidth?: 601 | 861;
 };
 
 export type FeaturedWork = {
-  idx: string;
   title: string;
   description: string;
   href: string;
@@ -26,8 +26,6 @@ export type FeaturedWork = {
   imageSrc: string;
   imageAlt: string;
   fallbackLabel: string;
-  tone: "terra" | "cotto" | "salvia";
-  reverse?: boolean;
 };
 
 export const preloadedResults: SearchResult[] = [
@@ -40,48 +38,52 @@ export const preloadedResults: SearchResult[] = [
   },
 ];
 
+// Posizioni/rotazioni/ritardi presi 1:1 da docs/index.md (i 5 post-it della
+// tavola). Solo 2 restano sempre visibili (repliche esatte n1/n4): sono gli
+// unici che compaiono anche nella fascia mobile piu' stretta.
 export const scatterTags: ScatterTag[] = [
   {
-    label: "fotovoltaico",
-    dx: "-220px",
-    dy: "-230px",
-    dr: "6deg",
-    gx: "-35px",
-    gy: "-35px",
-    delay: "0ms",
-    floatX: "6px",
-    floatY: "8px",
-    floatR: "1deg",
+    label: "chi chiamo per il tetto?!",
+    position: { left: "4%", top: "4%" },
+    rotate: "-8deg",
+    delay: "50ms",
+    color: "giallo",
   },
   {
-    label: "bagno",
-    dx: "-250px",
-    dy: "275px",
-    dr: "-7deg",
-    gx: "-40px",
-    gy: "40px",
-    delay: "240ms",
-    floatX: "7px",
-    floatY: "-8px",
-    floatR: "-1deg",
+    label: "urgente! perde ancora",
+    position: { left: "29%", top: "0%" },
+    rotate: "5deg",
+    delay: "160ms",
+    color: "carta",
+    minVisibleWidth: 601,
   },
   {
-    label: "elettrico",
-    dx: "260px",
-    dy: "275px",
-    dr: "8deg",
-    gx: "45px",
-    gy: "40px",
-    delay: "360ms",
-    floatX: "-7px",
-    floatY: "-7px",
-    floatR: "1deg",
+    label: "troppi numeri di telefono...",
+    position: { right: "24%", top: "1%" },
+    rotate: "-6deg",
+    delay: "270ms",
+    color: "giallo",
+    minVisibleWidth: 601,
+  },
+  {
+    label: "e se sbaglio impresa?",
+    position: { right: "3%", top: "5%" },
+    rotate: "9deg",
+    delay: "380ms",
+    color: "carta",
+  },
+  {
+    label: "quanti preventivi chiedo???",
+    position: { right: "1%", top: "36%" },
+    rotate: "-5deg",
+    delay: "490ms",
+    color: "giallo",
+    minVisibleWidth: 861,
   },
 ];
 
 export const featuredWorks: FeaturedWork[] = [
   {
-    idx: "01 - Bagno",
     title: "Ristrutturazione bagno",
     description:
       "Dal rifacimento completo alla sostituzione di sanitari e rivestimenti: una richiesta chiara per partire con il piede giusto.",
@@ -90,10 +92,8 @@ export const featuredWorks: FeaturedWork[] = [
     imageSrc: "/assets/images/rifare-bagno.webp",
     imageAlt: "Bagno ristrutturato con rivestimenti chiari e sanitari moderni",
     fallbackLabel: "Foto ristrutturazione bagno",
-    tone: "terra",
   },
   {
-    idx: "02 - Tetto",
     title: "Rifacimento tetto",
     description:
       "Coperture, infiltrazioni, isolamento e manutenzioni importanti: raccogli i dettagli e raggiungi imprese adatte al lavoro.",
@@ -102,11 +102,8 @@ export const featuredWorks: FeaturedWork[] = [
     imageSrc: "/assets/images/rifacimento-tetto.webp",
     imageAlt: "Operaio al lavoro su un tetto con tegole",
     fallbackLabel: "Foto rifacimento tetto",
-    tone: "salvia",
-    reverse: true,
   },
   {
-    idx: "03 - Impianti",
     title: "Impianto elettrico",
     description:
       "Adeguamenti, rifacimenti e nuove linee domestiche: trasformi un bisogno tecnico in una richiesta comprensibile.",
@@ -115,10 +112,8 @@ export const featuredWorks: FeaturedWork[] = [
     imageSrc: "/assets/images/impianto-elettrico.webp",
     imageAlt: "Quadro elettrico domestico durante un intervento tecnico",
     fallbackLabel: "Foto impianto elettrico",
-    tone: "cotto",
   },
   {
-    idx: "04 - Energia",
     title: "Fotovoltaico",
     description:
       "Impianti solari, sopralluoghi e configurazioni iniziali: parti dai dati utili e confronti proposte coerenti.",
@@ -127,11 +122,8 @@ export const featuredWorks: FeaturedWork[] = [
     imageSrc: "/assets/images/installazione-fotovoltaico.webp",
     imageAlt: "Pannelli fotovoltaici installati sul tetto di una casa",
     fallbackLabel: "Foto installazione fotovoltaico",
-    tone: "salvia",
-    reverse: true,
   },
   {
-    idx: "05 - Clima",
     title: "Climatizzazione",
     description:
       "Installazione o sostituzione del climatizzatore: descrivi ambienti, tempi e necessita senza perdere informazioni.",
@@ -140,6 +132,5 @@ export const featuredWorks: FeaturedWork[] = [
     imageSrc: "/assets/images/climatizzazione.webp",
     imageAlt: "Climatizzatore installato in un ambiente domestico",
     fallbackLabel: "Foto climatizzazione",
-    tone: "cotto",
   },
 ];

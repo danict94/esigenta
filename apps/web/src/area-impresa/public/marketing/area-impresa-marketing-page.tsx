@@ -51,12 +51,13 @@ export async function AreaImpresaMarketingPage() {
       <div className="eg-page eg-page-bg">
         <Grain />
 
-        <ProHero />
-        <ProSelector
-          categories={categories}
-          hasDeactivatedCompany={hasDeactivatedCompany}
-          reactivateAction={reactivateAccountAction}
-        />
+        <ProHero>
+          <ProSelector
+            categories={categories}
+            hasDeactivatedCompany={hasDeactivatedCompany}
+            reactivateAction={reactivateAccountAction}
+          />
+        </ProHero>
         <ProAdvantages />
         <ProFlow />
         <ProGuarantee />

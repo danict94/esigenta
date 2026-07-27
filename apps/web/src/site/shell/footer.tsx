@@ -48,18 +48,18 @@ const footerGroups: readonly FooterGroup[] = [
 
 export function Footer() {
   return (
-    <footer className="eg-footer relative z-[1] bg-eg-ink px-[22px] py-[30px] min-[861px]:px-12 min-[861px]:py-[34px]">
-      <div className="grid grid-cols-1 gap-8 min-[861px]:grid-cols-3 min-[861px]:gap-10">
+    <footer className="eg-footer relative z-1 border-t border-eg-border bg-eg-surface px-5.5 pt-16 pb-8 min-[861px]:px-12">
+      <div className="grid grid-cols-1 gap-8 pb-11 min-[861px]:grid-cols-3 min-[861px]:gap-10">
         {footerGroups.map((group) => (
           <nav key={group.title} aria-label={group.title}>
-            <p className="eg-eyebrow text-eg-on-brand">{group.title}</p>
+            <p className="eg-eyebrow font-(family-name:--eg-font-brand)">{group.title}</p>
             <ul className="mt-4 flex flex-col gap-2.5">
               {group.links.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="eg-nav-link inline-block py-0.5 text-eg-on-brand hover:text-eg-accent"
+                    className="eg-nav-link inline-block py-0.5"
                   >
                     {link.label}
                   </Link>
@@ -70,9 +70,9 @@ export function Footer() {
         ))}
       </div>
 
-      <div className="mt-10 flex flex-col justify-between gap-6 border-t border-eg-on-brand-border pt-6 text-eg-on-brand-muted min-[861px]:flex-row min-[861px]:items-center">
+      <div className="flex flex-col justify-between gap-6 border-t border-eg-border pt-6 text-eg-text-muted min-[861px]:flex-row min-[861px]:items-center">
         <div className="flex items-center gap-4">
-          <EsigentaLogo tone="inverse" decorative className="h-5 w-auto shrink-0" />
+          <EsigentaLogo decorative className="h-5 w-auto shrink-0" />
           <p>&copy; 2026 esigenta</p>
         </div>
 
@@ -82,13 +82,13 @@ export function Footer() {
               key={link.href}
               href={link.href}
               prefetch={false}
-              className="text-inherit hover:text-eg-accent"
+              className="text-inherit hover:text-eg-brand-strong"
             >
               {link.label}
             </Link>
           ))}
 
-          <CookiePreferencesButton className="border-0 bg-transparent text-left font-[inherit] uppercase tracking-[inherit] text-inherit hover:text-eg-accent" />
+          <CookiePreferencesButton className="border-0 bg-transparent text-left font-[inherit] uppercase tracking-[inherit] text-inherit hover:text-eg-brand-strong" />
         </nav>
       </div>
     </footer>

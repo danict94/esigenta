@@ -15,7 +15,6 @@ type HomeExperienceProps = {
 export function HomeExperience({ heroBoundaryId }: HomeExperienceProps) {
   return (
     <main className="eg-page eg-page-bg">
-      <div className="eg-thread" />
       <HomeHero />
       {/* Sentinel muto: nessun numero stimato, solo il confine reale tra
           l'hero e il resto della pagina. */}

@@ -1,4 +1,4 @@
-import { Reveal } from "../../../site/home/reveal";
+import { Reveal } from "../../../site/shared/reveal";
 
 import { RequestGlyph, UnlockGlyph, ZoneGlyph } from "./marketing-glyphs";
 import { RequestCard, type RequestCardData } from "./request-card";
