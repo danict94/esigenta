@@ -4,11 +4,12 @@ import type { FormEvent } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { isGeoPlace, type GeoPlace } from "@esigenta/shared";
 import { cn } from "@esigenta/ui";
 
+import { blueprintEyebrowClassName } from "../../../site/shared/section-header";
 import { CityAutocomplete } from "../../../ui/location/city-autocomplete";
 
 type CompanyLeadCategoryOption = {
@@ -20,8 +21,6 @@ type CompanyLeadFormProps = {
   categories: CompanyLeadCategoryOption[];
 };
 
-const popularCityQueries = ["Milano", "Roma", "Torino", "Napoli", "Bologna", "Firenze"] as const;
-
 function getLocationLabel(location: GeoPlace | null) {
   if (!location) {
     return null;
@@ -32,7 +31,6 @@ function getLocationLabel(location: GeoPlace | null) {
 
 export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   const router = useRouter();
-  const cityInputRef = useRef<HTMLInputElement | null>(null);
   const [categorySlug, setCategorySlug] = useState("");
   const [cityQuery, setCityQuery] = useState("");
   const [location, setLocation] = useState<GeoPlace | null>(null);
@@ -44,17 +42,6 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   );
   const locationLabel = getLocationLabel(location);
   const canContinue = Boolean(selectedCategory && isGeoPlace(location));
-
-  function handleCityShortcut(city: string) {
-    setCityQuery(city);
-    setLocation(null);
-    setError(null);
-
-    window.setTimeout(() => {
-      cityInputRef.current?.focus();
-      cityInputRef.current?.select();
-    }, 0);
-  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -74,23 +61,23 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-eg-border bg-eg-surface">
-      <div className="eg-panel-header flex items-center justify-between gap-4 border-b border-eg-border px-5 py-3.5">
-        <span>Configura il tuo profilo</span>
-        <span>2 passi</span>
+    <form onSubmit={handleSubmit} className="border border-eg-border bg-eg-surface shadow-eg-slab">
+      <div className="flex items-center justify-between gap-4 border-b border-eg-border px-6.5 py-5.5">
+        <span className={blueprintEyebrowClassName}>Configura il tuo profilo</span>
+        <span className="font-(family-name:--eg-font-brand) text-xs text-eg-text-muted">2 passi</span>
       </div>
 
       <div className="px-[26px] py-7 max-[860px]:px-5">
         <fieldset>
-          <legend className="eg-step-label flex items-center gap-2 text-eg-ink">
-            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-accent text-[10px] text-eg-ink">
+          <legend className="mb-3 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[11.5px] font-bold uppercase text-eg-accent">
+            <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-eg-accent text-[10.5px] font-bold text-eg-on-brand">
               1
             </span>
             Che professionista sei?
           </legend>
 
           {categories.length > 0 ? (
-            <div className="mt-3.5 flex flex-wrap gap-2" aria-label="Categorie professionali">
+            <div className="flex flex-wrap gap-2" aria-label="Categorie professionali">
               {categories.map((category) => {
                 const isSelected = category.slug === categorySlug;
 
@@ -101,7 +88,6 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
                     aria-pressed={isSelected}
                     className={cn(
                       "border px-[15px] py-2 text-sm transition-colors",
-                      "rounded-full",
                       isSelected
                         ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
                         : "border-eg-border bg-eg-surface text-eg-ink hover:border-eg-brand",
@@ -126,21 +112,20 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
         <div className="mt-7">
           <label
             htmlFor="company-city"
-            className="eg-step-label flex items-center gap-2 text-eg-ink"
+            className="mb-3 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[11.5px] font-bold uppercase text-eg-accent"
           >
-            <span className="inline-flex size-[18px] items-center justify-center rounded-full border border-eg-accent text-[10px] text-eg-ink">
+            <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-eg-accent text-[10.5px] font-bold text-eg-on-brand">
               2
             </span>
             Dove operi?
           </label>
 
-          <div className="mt-3.5">
+          <div>
             <CityAutocomplete
               id="company-city"
               value={location}
               query={cityQuery}
               onQueryChange={setCityQuery}
-              inputRef={cityInputRef}
               onChange={(nextLocation) => {
                 setLocation(nextLocation);
                 if (nextLocation) {
@@ -151,22 +136,6 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
               placeholder="Citta o provincia - es. Torino"
               className="text-[15px]"
             />
-          </div>
-
-          <div className="mt-2.5 flex flex-wrap gap-1.5 font-(family-name:--eg-font-ui)" aria-label="Citta popolari">
-            {popularCityQueries.map((city) => (
-              <button
-                key={city}
-                type="button"
-                className="rounded-full border border-eg-border bg-eg-surface px-2.5 py-1 text-[11px] text-eg-ink transition-colors hover:border-eg-brand hover:bg-eg-brand-soft hover:text-eg-brand-strong"
-                aria-label={`Usa ${city} come ricerca`}
-                onClick={() => {
-                  handleCityShortcut(city);
-                }}
-              >
-                {city}
-              </button>
-            ))}
           </div>
         </div>
 
