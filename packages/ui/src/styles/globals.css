@@ -1,84 +1,43 @@
 /*
- * ESIGENTA — PALETTE ATTIVA
- * Questo blocco descrive i valori realmente in uso in :root, sotto.
- * docs/color-system.md è disallineato con questa palette (hex diversi,
- * nessun token accent/error/success/warning, e riporta ancora lo status
- * "proposta da approvare prima della migrazione") — non è stato
- * aggiornato in questa fase perché appartiene a un flusso di
- * pianificazione parallelo, non toccato senza indicazione esplicita.
+ * ESIGENTA — PALETTE UFFICIALE (direzione "cianotipo/blueprint")
+ * Fonte visiva: docs/index.md. UNA sola verità: i ruoli semantici sotto
+ * SONO la palette. Nessun token parallelo/duplicato (niente carta, grafite,
+ * action, matita-chiara: fusi qui dentro). Non introdurre nuovi colori
+ * senza dargli un ruolo semantico qui.
  *
- * Identitari
- * Page:          #FFF8F0
- * Ink:           #202B2E
- * Brand:         #0A7F82
+ * Superfici
+ * Page:          #F1F4F3  (carta: canvas dominante, griglia tecnica sopra)
+ * App:           #F1F4F3  (canvas dell'area applicativa privata — stesso
+ *                tono di Page, MAI la griglia tecnica; token indipendente,
+ *                ritoccabile senza intaccare le pagine pubbliche, stesso
+ *                pattern di Accent/Action)
+ * Surface:       #FFFFFF  (carta-forte: card/pannelli)
+ * Surface muted: #DCE3E4  (grafite-30 su carta: bande tenui, raro)
  *
- * Strutturali
- * Surface:       #FFFFFF
- * Surface muted: #F3ECE3
- * Text muted:    #67706E
- * Border:        #DED5CA
+ * Testi e bordi
+ * Ink:           #12181C  (inchiostro: testo, superfici profonde, logo)
+ * Text muted:    #676D70  (inchiostro depotenziato)
+ * Border:        #B7C4C8  (grafite: bordi, divisori, griglia)
  *
- * Derivati brand
- * Brand strong:  #075A60
- * Brand soft:    #DDF3F0
+ * Brand (cianotipo)
+ * Brand:         #2C7DA0  (cianotipo chiaro: focus, accento blu)
+ * Brand strong:  #16385A  (cianotipo: titoli, link, outline, superfici scure)
+ * Brand soft:    #DEE8EF  (tinta blu tenue)
  * On brand:      #FFFFFF
  *
- * Accento (uso puntuale — vedi regola sotto)
- * Accent:        #D7F45B
+ * Accent / Action (matita — stesso valore #C8402A, DUE ruoli distinti)
+ * Accent:        #C8402A  (segni caldi decorativi: frecce, pallini, numeri, enfasi)
+ * Action:        #C8402A  (pulsanti/CTA — ritoccabile indipendentemente da Accent)
+ *
+ * Post-it (solo Hero — colori di marca senza equivalente semantico)
+ * Nota giallo:   #F3E3A0    Nota carta: #FBF8F0
  *
  * Feedback (testo/icona — vedi *-soft/*-border in :root per sfondo/bordo)
- * Error:         #8F3328
- * Success:       #285E45
- * Warning:       #8A5A12
+ * Error:         #8F3328    Success: #285E45    Warning: #8A5A12
  *
- * Non introdurre nuovi colori senza verificarne il ruolo qui.
- *
- * DISTRIBUZIONE VISIVA INDICATIVA
- *
- * Page:                    55–65%
- * Surface:                 20–25%
- * Surface muted:            5–10%
- * Ink, testi e bordi:       8–12%
- * Intera famiglia Brand:    3–5% massimo
- *
- * Le percentuali indicano la presenza visiva percepita,
- * non una misurazione matematica del DOM.
- *
- * Brand, Brand strong e Brand soft appartengono
- * alla stessa quota complessiva.
- *
- * Brand soft non è una superficie neutra.
- * Page deve restare dominante.
- * Surface va usato solo per superfici reali.
- * Surface muted deve restare raro.
- * I contenitori strutturali devono restare trasparenti.
- *
- * REGOLA ACCENT
- *
- * Su superfici scure con contrasto adeguato (es. Brand strong) l'Accent
- * può essere usato come testo. Su superfici chiare va usato solo come
- * piccolo riempimento o segno grafico, oppure accompagnato da testo Ink
- * — mai come colore di testo esteso e leggibile su Page o Surface.
- *
- * ECCEZIONE IDENTITARIA — HERO
- *
- * La Hero della home è l'unica grande superficie identitaria
- * colorata prevista nel sito.
- *
- * Sfondo Hero:               Brand strong (#075A60)
- * Testo principale su Hero:  On brand (#FFFFFF)
- * Testo secondario su Hero:  On brand muted (rgba(255, 255, 255, 0.76))
- * Bordi/separatori su Hero:  On brand border (rgba(255, 255, 255, 0.22))
- * Form e pannelli su Hero:   Surface
- * Azione principale nel form: Brand
- *
- * Il limite "Intera famiglia Brand: 3–5% massimo" riguarda l'uso
- * del Brand come accento nelle superfici neutre, non la Hero.
- *
- * La Hero è un'eccezione identitaria controllata: non autorizza
- * altre sezioni, card o contenitori colorati di verde/petrolio.
- *
- * Il resto della home deve restare prevalentemente Page e Surface.
+ * DISTRIBUZIONE: Page+Surface dominano; Ink per testi/superfici profonde;
+ * Brand (cianotipo) e Accent (matita) restano puntuali. La Hero è una
+ * superficie identitaria (cianotipo o carta+griglia) con i post-it.
  */
 
 :root {
@@ -88,29 +47,51 @@
    * senza aggiornare il documento.
    * ============================================================ */
 
-  /* Superfici */
-  --eg-color-page: #fcfcfc;
+  /* Superfici — carta (page) + carta-forte (surface) */
+  --eg-color-page: #f1f4f3;
+  /* Canvas dell'area applicativa privata (Area Impresa): stesso tono di
+   * Page ma token semantico indipendente, senza la griglia tecnica — mai
+   * usare --eg-bg-grid-image sopra questo colore. Ritoccabile senza
+   * intaccare le pagine pubbliche/marketing. */
+  --eg-color-app: #f1f4f3;
   --eg-color-surface: #ffffff;
-  --eg-color-surface-muted: #f6f5f4;
+  --eg-color-surface-muted: #dce3e4;
 
-  /* Testi e bordi */
-  --eg-color-ink: #202b2e;
-  --eg-color-text-muted: #67706e;
-  --eg-color-border: #ded5ca;
+  /* Testi e bordi — inchiostro + grafite */
+  --eg-color-ink: #12181c;
+  --eg-color-text-muted: #676d70;
+  --eg-color-border: #b7c4c8;
 
-  /* Brand */
-  --eg-color-brand: #0a7f82;
-  --eg-color-brand-strong: #075a60;
-  --eg-color-brand-soft: #ddf3f0;
+  /* Brand — cianotipo (cianografia): brand = blu chiaro (focus, accento blu),
+   * brand-strong = blu profondo (titoli, link, pulsanti outline, superfici). */
+  --eg-color-brand: #2c7da0;
+  --eg-color-brand-strong: #16385a;
+  --eg-color-brand-soft: #dee8ef;
+  /* Variante chiara di Brand per testo/accenti (eyebrow, link) su superfici
+   * scure Brand strong: li' il Brand normale non ha contrasto sufficiente. */
+  --eg-color-brand-on-dark: #9fd3e8;
 
-  /* Contenuti on-brand: testo/bordi sopra superfici Brand (es. Hero) */
+  /* Contenuti on-brand: testo/bordi sopra superfici scure (cianotipo/inchiostro) */
   --eg-color-on-brand: #ffffff;
   --eg-color-on-brand-muted: rgba(255, 255, 255, 0.76);
   --eg-color-on-brand-border: rgba(255, 255, 255, 0.22);
 
-  /* Accent: dettagli puntuali già selezionati nei componenti che lo
-   * consumano. Mai come default di massa (CTA, fill estesi, stati). */
-  --eg-color-accent: #d7f45b;
+  /* Accent — matita (rosso pastello): segni caldi DECORATIVI (frecce, pallini,
+   * numeri di passo, enfasi del titolo, hover). NON i pulsanti (vedi Action). */
+  --eg-color-accent: #c8402a;
+
+  /* Action — colore dei PULSANTI/CTA. Oggi = Accent (stessa matita), ma ruolo
+   * distinto: si ritocca indipendentemente dai segni decorativi. */
+  --eg-color-action: #c8402a;
+
+  /* Emphasis warm — corallo approvato per parole evidenziate/accenti
+   * tipografici (es. .eg-h1 strong). Ruolo distinto da Action: mai sui
+   * pulsanti/CTA, che restano sul rosso Action. */
+  --eg-color-emphasis-warm: #ff8a6e;
+
+  /* Post-it (Hero) — colori di marca senza equivalente semantico. */
+  --eg-color-nota-giallo: #f3e3a0;
+  --eg-color-nota-carta: #fbf8f0;
 
   /* Feedback: error, success, warning.
    * Ruoli: colore pieno per testo/icona; *-soft per lo sfondo;
@@ -138,6 +119,12 @@
     0 6px 14px -8px rgba(23, 21, 17, 0.18);
   --eg-shadow-elevation-lg:
     0 2px 4px rgba(23, 21, 17, 0.06), 0 24px 48px rgba(23, 21, 17, 0.12);
+  /* Ombra dei post-it nella Hero (docs/esigenta-brand). */
+  --eg-shadow-note: 0 14px 28px -10px rgba(4, 16, 28, 0.5);
+  /* Ombra hover delle card "step" (docs/index.md .step:hover): tight+dark,
+   * forma distinta dalle elevation ambientali sopra — non forzarla in
+   * quelle esistenti. */
+  --eg-shadow-step: 0 18px 34px -22px rgba(18, 24, 28, 0.35);
 
   --eg-radius-sm: 2px;
   --eg-radius-md: 6px;
@@ -146,15 +133,38 @@
   --eg-text-display: clamp(34px, 5.2vw, 60px);
   --eg-text-heading: clamp(28px, 3.6vw, 42px);
 
+  /* Curva di movimento del brand (docs/index.md --ease): riusata per ogni
+   * transizione/animazione in stile blueprint (post-it, hover card, ecc).
+   * Un solo valore, mai duplicato come magic string nei singoli componenti. */
+  --eg-ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Griglia tecnica ambiente (docs/index.md): un solo valore, riusato sia
+   * da body sia da .eg-page-bg, il wrapper opaco che quasi ogni pagina usa
+   * sopra body (altrimenti lo coprirebbe, rendendo la griglia invisibile
+   * ovunque tranne che nella Hero, che ha il proprio strato dedicato).
+   * Colore derivato dal token Border via color-mix: nessun valore duplicato. */
+  --eg-bg-grid-image: linear-gradient(
+      color-mix(in srgb, var(--eg-color-border) 35%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--eg-color-border) 35%, transparent) 1px,
+      transparent 1px
+    );
+  --eg-bg-grid-size: 32px 32px;
+
   --eg-font-brand: var(--font-brand), sans-serif;
   --eg-font-ui: var(--font-ui), sans-serif;
+  /* Grafia "a penna": solo post-it della Hero (docs/esigenta-brand). */
+  --eg-font-script: var(--font-script), "Comic Sans MS", cursive;
 
   --eg-nav-height: 72px;
   --eg-nav-clear: calc(var(--eg-nav-height) + 1.5rem);
 }
 
 @theme inline {
-  --font-sans: var(--eg-font-brand);
+  --font-sans: var(--eg-font-ui);
 
   /* ============================================================
    * SISTEMA COLORI SEMANTICO
@@ -164,6 +174,7 @@
 
   /* Superfici */
   --color-eg-page: var(--eg-color-page);
+  --color-eg-app: var(--eg-color-app);
   --color-eg-surface: var(--eg-color-surface);
   --color-eg-surface-muted: var(--eg-color-surface-muted);
 
@@ -176,14 +187,21 @@
   --color-eg-brand: var(--eg-color-brand);
   --color-eg-brand-strong: var(--eg-color-brand-strong);
   --color-eg-brand-soft: var(--eg-color-brand-soft);
+  --color-eg-brand-on-dark: var(--eg-color-brand-on-dark);
+
+  /* Post-it (Hero) */
+  --color-eg-nota-giallo: var(--eg-color-nota-giallo);
+  --color-eg-nota-carta: var(--eg-color-nota-carta);
 
   /* Contenuti on-brand */
   --color-eg-on-brand: var(--eg-color-on-brand);
   --color-eg-on-brand-muted: var(--eg-color-on-brand-muted);
   --color-eg-on-brand-border: var(--eg-color-on-brand-border);
 
-  /* Accent */
+  /* Accent (segni decorativi) + Action (pulsanti/CTA) */
   --color-eg-accent: var(--eg-color-accent);
+  --color-eg-action: var(--eg-color-action);
+  --color-eg-emphasis-warm: var(--eg-color-emphasis-warm);
 
   /* Feedback: testo/icona, sfondo, bordo. */
   --color-eg-error: var(--eg-color-error);
@@ -203,10 +221,14 @@
   --shadow-eg-elevation: var(--eg-shadow-elevation);
   --shadow-eg-slab: var(--eg-shadow-slab);
   --shadow-eg-elevation-lg: var(--eg-shadow-elevation-lg);
+  --shadow-eg-note: var(--eg-shadow-note);
+  --shadow-eg-step: var(--eg-shadow-step);
 
   --radius-eg-sm: var(--eg-radius-sm);
   --radius-eg-md: var(--eg-radius-md);
   --radius-eg-lg: var(--eg-radius-lg);
+
+  --ease-eg-brand: var(--eg-ease-brand);
 }
 
 html {
@@ -215,8 +237,19 @@ html {
 
 body {
   background: var(--eg-color-page);
+  /* Griglia tecnica ambiente (docs/index.md): mostra ovunque non ci sia una
+   * superficie opaca sopra. La Hero ha una propria griglia locale che la
+   * copre (superficie opaca + backgroundImage dedicato): nessun conflitto,
+   * stesso layering del riferimento. Vedi anche .eg-page-bg sotto, che
+   * riusa lo stesso --eg-bg-grid-image: quasi ogni pagina lo mette SOPRA
+   * body, quindi la griglia deve stare li' per essere davvero visibile. */
+  background-image: var(--eg-bg-grid-image);
+  background-size: var(--eg-bg-grid-size);
   color: var(--eg-color-ink);
-  font-family: var(--eg-font-brand);
+  /* Default = UI/sans (leggibile per il corpo del testo). Brand/mono e'
+   * riservato a titoli/eyebrow/CTA, mai al testo lungo (vedi .eg-h1/h2/h3
+   * sotto, che lo dichiarano esplicitamente). */
+  font-family: var(--eg-font-ui);
 }
 
 @layer components {
@@ -230,23 +263,11 @@ body {
 
   .eg-page-bg {
     background: var(--eg-color-page);
-  }
-
-  .eg-thread {
-    pointer-events: none;
-    position: absolute;
-    inset-block: 0;
-    left: 50%;
-    z-index: 0;
-    width: 1px;
-    transform: translateX(-0.5px);
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      var(--eg-color-border) 9%,
-      var(--eg-color-border) 92%,
-      transparent
-    );
+    /* Stessa griglia di body (vedi sopra): quasi ogni pagina avvolge il
+     * proprio contenuto in .eg-page-bg, che altrimenti coprirebbe la
+     * griglia di body con un riempimento pieno senza pattern. */
+    background-image: var(--eg-bg-grid-image);
+    background-size: var(--eg-bg-grid-size);
   }
 
   .eg-section,
@@ -329,6 +350,7 @@ body {
   }
 
   .eg-h1 {
+    font-family: var(--eg-font-brand);
     font-size: var(--eg-text-display);
     font-weight: 400;
     line-height: 1.1;
@@ -336,11 +358,15 @@ body {
   }
 
   .eg-h1 strong {
-    color: var(--eg-color-ink);
+    /* --eg-heading-emphasis, se dichiarata da un antenato (la Hero), vince:
+     * consente un override locale. Altrove ricade sul corallo approvato
+     * (Emphasis warm), il colore predefinito per gli emphasis tipografici. */
+    color: var(--eg-heading-emphasis, var(--eg-color-emphasis-warm));
     font-weight: 600;
   }
 
   .eg-h2 {
+    font-family: var(--eg-font-brand);
     font-size: var(--eg-text-heading);
     font-weight: 400;
     line-height: 1.15;
@@ -348,6 +374,7 @@ body {
   }
 
   .eg-h3 {
+    font-family: var(--eg-font-brand);
     font-size: 25px;
     font-weight: 500;
     line-height: 1.2;
@@ -382,29 +409,29 @@ body {
     transition:
       color 220ms ease,
       background-color 220ms ease,
-      border-color 220ms ease;
+      border-color 220ms ease,
+      filter 220ms ease;
   }
 
   .eg-button-primary {
-    border: 1px solid var(--eg-color-brand-strong);
-    background: var(--eg-color-brand-strong);
+    border: 1px solid var(--eg-color-action);
+    background: var(--eg-color-action);
     color: var(--eg-color-on-brand);
   }
 
   .eg-button-primary:hover {
-    border-color: var(--eg-color-brand);
-    background: var(--eg-color-brand);
+    filter: brightness(0.9);
   }
 
   .eg-button-ghost {
-    border: 1px solid var(--eg-color-brand-strong);
+    border: 1px solid var(--eg-color-action);
     background: transparent;
-    color: var(--eg-color-brand-strong);
+    color: var(--eg-color-action);
   }
 
   .eg-button-ghost:hover {
-    border-color: var(--eg-color-brand-strong);
-    background: var(--eg-color-brand-strong);
+    border-color: var(--eg-color-action);
+    background: var(--eg-color-action);
     color: var(--eg-color-on-brand);
   }
 
@@ -528,10 +555,6 @@ body {
 }
 
 @media (max-width: 860px) {
-  .eg-thread {
-    display: none;
-  }
-
   .eg-section {
     padding-block: 72px;
   }

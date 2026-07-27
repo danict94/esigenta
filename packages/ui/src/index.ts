@@ -13,3 +13,4 @@ export * from "./components/textarea";
 export * from "./components/checkbox";
 export * from "./components/select";
 export * from "./components/esigenta-logo";
+export * from "./components/esigenta-mark";

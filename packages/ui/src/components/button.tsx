@@ -15,15 +15,15 @@ type ButtonSize =
   | "lg"
 
 export const buttonBase =
-  "inline-flex items-center justify-center gap-2 border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong disabled:pointer-events-none disabled:opacity-60"
+  "inline-flex items-center justify-center gap-2 border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em] transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong disabled:pointer-events-none disabled:opacity-60"
 
 export const buttonRadius = "rounded-eg-sm"
 
 export const buttonVariants = {
   primary:
-    "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand hover:border-eg-brand hover:bg-eg-brand",
+    "border-eg-action bg-eg-action text-eg-on-brand hover:brightness-90",
   ghost:
-    "border-eg-brand-strong bg-transparent text-eg-brand-strong hover:bg-eg-brand-strong hover:text-eg-on-brand",
+    "border-eg-action bg-transparent text-eg-action hover:bg-eg-action hover:text-eg-on-brand",
 } as const
 
 export const buttonSizes = {
