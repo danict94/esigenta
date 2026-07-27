@@ -225,6 +225,11 @@ export function CityAutocomplete({
   const onChangeRef =
     useRef(onChange)
 
+  const setInputValueRef =
+    useRef<(nextValue: string) => void>(
+      () => {},
+    )
+
   const listenerRef =
     useRef<GoogleAutocompleteListener | null>(
       null,
@@ -266,6 +271,10 @@ export function CityAutocomplete({
   useEffect(() => {
     onChangeRef.current = onChange
   }, [onChange])
+
+  useEffect(() => {
+    setInputValueRef.current = setInputValue
+  }, [setInputValue])
 
   useEffect(() => {
     function syncFunctionalConsent() {
@@ -405,7 +414,7 @@ export function CityAutocomplete({
                   ),
                 )
 
-              setInputValue(
+              setInputValueRef.current(
                 resolved?.formattedAddress ??
                   autocompleteInputRef.current?.value ??
                   '',
@@ -441,7 +450,7 @@ export function CityAutocomplete({
       listenerRef.current?.remove()
       listenerRef.current = null
     }
-  }, [hasFunctionalConsent, setInputValue])
+  }, [hasFunctionalConsent])
 
   return (
     <div className="grid gap-2">
