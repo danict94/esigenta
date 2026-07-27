@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Button, Card, cn, useDismissableMenu } from "@esigenta/ui";
+import { Button, buttonClassName, Card, cn, useDismissableMenu } from "@esigenta/ui";
 
 import { authClient } from "../../../auth/client";
 import {
@@ -152,7 +152,10 @@ function CreditBalanceChip({
         href="/area-impresa/crediti"
         onClick={onClick}
         prefetch={false}
-        className="rounded-full bg-eg-brand px-[13px] py-[7px] text-[11px] text-eg-on-brand transition-colors hover:bg-eg-brand-strong"
+        className={buttonClassName({
+          variant: "primary",
+          className: "h-auto rounded-full px-[13px] py-[7px]",
+        })}
       >
         Ricarica
       </Link>

@@ -103,7 +103,7 @@ export async function PurchasedRequestsPage({
             Dashboard impresa
           </p>
 
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-eg-ink">
+          <h1 className="eg-h1 mt-1 text-xl font-semibold tracking-tight text-eg-ink">
             Richieste acquistate
           </h1>
 

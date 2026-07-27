@@ -635,7 +635,7 @@ export function CategoryInterventionsSelector({
       <section className="space-y-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-base font-semibold text-eg-ink">
+            <h3 className="eg-h3 text-base font-semibold text-eg-ink">
               Identità: fino a 6 categorie
             </h3>
 
@@ -689,7 +689,7 @@ export function CategoryInterventionsSelector({
 
       <section className="space-y-3 border-t border-eg-border pt-6">
         <div>
-          <h3 className="text-base font-semibold text-eg-ink">
+          <h3 className="eg-h3 text-base font-semibold text-eg-ink">
             Operativo: interventi
           </h3>
 

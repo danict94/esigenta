@@ -88,7 +88,7 @@ export async function ServicesConfigurationPage({
         <Card className="p-8">
           <Badge variant="warning">Profilo non disponibile</Badge>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
+          <h1 className="eg-h1 mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
             Non troviamo il tuo profilo impresa
           </h1>
 
@@ -107,7 +107,7 @@ export async function ServicesConfigurationPage({
         <Card className="p-8">
           <Badge variant="warning">Categorie non disponibili</Badge>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
+          <h1 className="eg-h1 mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
             Configurazione servizi non disponibile
           </h1>
 
@@ -166,7 +166,7 @@ export async function ServicesConfigurationPage({
   return (
     <PageShell size="lg">
       <div className="max-w-4xl">
-        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-eg-ink">
+        <h1 className="eg-h1 mt-5 text-3xl font-semibold tracking-tight text-eg-ink">
           Configura categorie e interventi
         </h1>
 
@@ -182,7 +182,7 @@ export async function ServicesConfigurationPage({
                 Profilo impresa
               </p>
 
-              <h2 className="mt-1 text-xl font-semibold text-eg-ink">
+              <h2 className="eg-h2 mt-1 text-xl font-semibold text-eg-ink">
                 {company.name}
               </h2>
             </div>

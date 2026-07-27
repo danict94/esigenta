@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import {
   Button,
+  buttonClassName,
   Card,
 } from "@esigenta/ui";
 
@@ -624,7 +625,7 @@ export function RequestDetailCard({
             <span className="mt-2 h-20 w-1 shrink-0 rounded-full bg-eg-brand-strong" />
 
             <div>
-              <h1 className="max-w-4xl text-3xl font-semibold tracking-tight text-eg-ink md:text-4xl">
+              <h1 className="eg-h1 max-w-4xl text-3xl font-semibold tracking-tight text-eg-ink md:text-4xl">
                 {title}
               </h1>
 
@@ -636,7 +637,7 @@ export function RequestDetailCard({
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
+          <h2 className="eg-h2 text-lg font-semibold tracking-tight text-eg-ink">
             {"Attivit\u00e0 su questa richiesta"}
           </h2>
 
@@ -650,7 +651,7 @@ export function RequestDetailCard({
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
+          <h2 className="eg-h2 text-lg font-semibold tracking-tight text-eg-ink">
             Descrizione
           </h2>
 
@@ -668,7 +669,7 @@ export function RequestDetailCard({
 
         {photos.length > 0 ? (
           <section className="mt-10">
-            <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 text-lg font-semibold tracking-tight text-eg-ink">
               Foto allegate
             </h2>
 
@@ -700,7 +701,7 @@ export function RequestDetailCard({
         ) : null}
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold tracking-tight text-eg-ink">
+          <h2 className="eg-h2 text-lg font-semibold tracking-tight text-eg-ink">
             Dettagli richiesta
           </h2>
 
@@ -825,7 +826,11 @@ export function RequestDetailCard({
                       </p>
                       <Link
                         href="/area-impresa/crediti"
-                        className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-md border border-eg-brand-strong bg-eg-brand-strong px-4 text-sm font-medium text-eg-on-brand transition-colors hover:border-eg-brand hover:bg-eg-brand"
+                        className={buttonClassName({
+                          variant: "primary",
+                          size: "sm",
+                          className: "mt-3 w-full",
+                        })}
                         prefetch={false}
                       >
                         Acquista crediti
@@ -966,7 +971,11 @@ export function RequestDetailCard({
         ) : showInsufficientCreditsRecovery ? (
           <Link
             href="/area-impresa/crediti"
-            className="flex h-10 w-full items-center justify-center rounded-md border border-eg-brand-strong bg-eg-brand-strong px-4 text-sm font-medium text-eg-on-brand transition-colors hover:border-eg-brand hover:bg-eg-brand"
+            className={buttonClassName({
+              variant: "primary",
+              size: "sm",
+              className: "w-full",
+            })}
             prefetch={false}
           >
             Acquista crediti

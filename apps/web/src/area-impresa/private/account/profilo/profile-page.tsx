@@ -135,7 +135,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
       <PageShell size="lg">
         <Card className="p-8">
           <Badge variant="warning">Profilo non disponibile</Badge>
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
+          <h1 className="eg-h1 mt-5 text-2xl font-semibold tracking-tight text-eg-ink">
             Non troviamo il tuo profilo impresa
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
@@ -159,7 +159,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
       <section className="space-y-6">
         <header className="border-b border-eg-border pb-7">
           <Badge>Profilo impresa</Badge>
-          <h1 className="mt-5 text-3xl font-semibold tracking-tight text-eg-ink">
+          <h1 className="eg-h1 mt-5 text-3xl font-semibold tracking-tight text-eg-ink">
             Profilo impresa
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
@@ -188,7 +188,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
         <Card className="p-6">
           <div className="border-b border-eg-border pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 text-xl font-semibold tracking-tight text-eg-ink">
               Dati aziendali
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
@@ -257,7 +257,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
         <Card className="p-6">
           <div className="border-b border-eg-border pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 text-xl font-semibold tracking-tight text-eg-ink">
               Dati pubblici futuri
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
@@ -338,7 +338,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
         <Card className="p-6">
           <div className="border-b border-eg-border pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 text-xl font-semibold tracking-tight text-eg-ink">
               Sede operativa
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
@@ -383,7 +383,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
         <Card className="p-6">
           <div className="flex flex-col gap-4 border-b border-eg-border pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <h2 className="text-xl font-semibold tracking-tight text-eg-ink">
+              <h2 className="eg-h2 text-xl font-semibold tracking-tight text-eg-ink">
                 Categorie e interventi
               </h2>
               <p className="mt-2 text-sm leading-6 text-eg-text-muted">
@@ -441,7 +441,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
         <Card className="p-6">
           <div className="border-b border-eg-border pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 text-xl font-semibold tracking-tight text-eg-ink">
               Checklist completamento profilo
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
@@ -470,7 +470,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
 
         <Card className="p-6">
           <div className="border-b border-eg-border pb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 text-xl font-semibold tracking-tight text-eg-ink">
               Documenti impresa
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
@@ -515,7 +515,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
             <Badge variant="danger" size="sm">
               Area critica
             </Badge>
-            <h2 className="mt-4 text-xl font-semibold tracking-tight text-eg-ink">
+            <h2 className="eg-h2 mt-4 text-xl font-semibold tracking-tight text-eg-ink">
               Elimina account
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">

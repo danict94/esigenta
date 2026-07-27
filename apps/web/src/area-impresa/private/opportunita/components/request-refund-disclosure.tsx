@@ -72,7 +72,7 @@ export function RequestRefundDisclosure({
         />
 
         <div>
-          <h3 className="text-sm font-semibold text-eg-ink">
+          <h3 className="eg-h3 text-sm font-semibold text-eg-ink">
             Segnala un problema con il contatto
           </h3>
           <p className="mt-1.5 text-xs leading-5 text-eg-text-muted">

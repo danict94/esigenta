@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { cn } from "@esigenta/ui";
+import { buttonClassName, cn } from "@esigenta/ui";
 
 import type {
   RefundRequestDetail,
@@ -183,7 +183,7 @@ export function RequestDetailPanel({
         {requestCode ? `Richiesta ${requestCode}` : "Richiesta"} &middot; {createdAt}
       </p>
 
-      <h2 className="mb-[18px] mt-[10px] text-[24px] font-semibold leading-tight tracking-[-0.01em] text-eg-ink">
+      <h2 className="eg-h3 mb-[18px] mt-[10px] text-[24px] font-semibold leading-tight tracking-[-0.01em] text-eg-ink">
         {title}
       </h2>
 
@@ -385,7 +385,11 @@ export function RequestDetailPanel({
                   </p>
                   <Link
                     href="/area-impresa/crediti"
-                    className="inline-flex h-11 w-full items-center justify-center rounded-[2px] border border-eg-brand-strong bg-eg-brand-strong px-4 font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.06em] text-eg-on-brand transition-colors hover:border-eg-brand hover:bg-eg-brand"
+                    className={buttonClassName({
+                      variant: "primary",
+                      size: "md",
+                      className: "w-full px-4",
+                    })}
                     prefetch={false}
                   >
                     Acquista crediti

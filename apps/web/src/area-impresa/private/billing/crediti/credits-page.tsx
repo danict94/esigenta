@@ -226,7 +226,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
         <header className="border-b border-eg-border pb-7">
           <p className="text-sm font-medium text-eg-text-muted">Crediti impresa</p>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
+          <h1 className="eg-h1 mt-2 text-3xl font-semibold tracking-tight text-eg-ink">
             Acquista pacchetti crediti
           </h1>
 
@@ -350,7 +350,7 @@ export async function CreditsPage({ searchParams }: CreditsPageProps) {
                     {packageTierCopy[tier].label}
                   </p>
 
-                  <h2 className="mt-1 text-xl font-semibold tracking-tight text-eg-ink">
+                  <h2 className="eg-h3 mt-1 text-xl font-semibold tracking-tight text-eg-ink">
                     {creditPackage.name}
                   </h2>
 
