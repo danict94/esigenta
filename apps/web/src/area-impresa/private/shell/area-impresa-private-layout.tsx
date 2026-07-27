@@ -76,7 +76,7 @@ export async function AreaImpresaPrivateLayout({
   const statusNotice = getCompanyStatusNotice(companyStatus);
 
   return (
-    <div className="min-h-screen bg-white text-eg-ink">
+    <div className="min-h-screen bg-eg-app text-eg-ink">
       <ImpresaHeader
         accountLabel={accountLabel}
         unreadNotificationCount={counts.unreadNotificationCount}
