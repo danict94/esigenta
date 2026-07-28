@@ -59,6 +59,26 @@ export function resolveInterventionHrefForCostGuide(
   return landing ? `/interventi/${interventionSeoSlug}` : null;
 }
 
+/**
+ * Risoluzione a cascata per un intervento richiamato fuori dal proprio
+ * contesto (es. il blocco "Interventi specifici" di una guida costi che
+ * rimanda a un lavoro diverso): guida costi reale → landing intervento
+ * reale → funnel diretto. Il funnel esiste sempre per uno slug taxonomy
+ * reale, quindi questa funzione ritorna sempre un href valido — mai null,
+ * a differenza dei resolver sopra che possono nascondere il link.
+ */
+export function resolveBestHrefForIntervention(slug: string): string {
+  if (getCostGuideBySlug(slug)) {
+    return `/costi/${slug}`;
+  }
+
+  if (getSeoInterventionLandingBySlug(slug)) {
+    return `/interventi/${slug}`;
+  }
+
+  return `/richiesta/${slug}`;
+}
+
 export type InterventionCostSectionPriceData = {
   priceRange: string;
   priceRows: readonly CostGuide["priceRows"][number][];

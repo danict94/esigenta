@@ -1,3 +1,5 @@
+import { frozenTaxonomySource } from "@esigenta/taxonomy";
+
 import { getCityBySlug } from "../geo/cities";
 import { getCitySupport } from "../geo/supported-cities";
 import { buildCanonicalPath } from "./canonical";
@@ -9,6 +11,15 @@ import type {
   CostGuideBaseContent,
   CostGuideCityPage,
 } from "../pages/costi/types";
+
+// Server-only (stesso vincolo del barrel @esigenta/taxonomy in
+// related-funnel-work.tsx): mai importare questo modulo da un Client
+// Component o dalla home.
+const taxonomyInterventionSlugs = new Set(
+  frozenTaxonomySource.projectGroups.flatMap((projectGroup) =>
+    projectGroup.interventions.map((intervention) => intervention.slug),
+  ),
+);
 
 export type ComposeCostGuideInput = {
   base: CostGuideBaseContent;
@@ -39,6 +50,16 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
       `Cost guide "${base.slug}" has an empty price table in market-data: ` +
         `a cost page must never be published without real price rows`,
     );
+  }
+
+  for (const item of base.relatedWork ?? []) {
+    if (!taxonomyInterventionSlugs.has(item.slug)) {
+      throw new Error(
+        `Cost guide "${base.slug}" declares relatedWork slug "${item.slug}" ` +
+          `which does not exist in @esigenta/taxonomy. Only real frozen ` +
+          `Intervention slugs are allowed; never a Category or ProjectGroup slug.`,
+      );
+    }
   }
 
   const cityPages: CostGuideCityPage[] = localOverrides.map((override) => {
@@ -134,5 +155,7 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     factors: base.factors,
     savingTips: base.savingTips,
     faq,
+    relatedWork: base.relatedWork,
+    priceTableNote: base.priceTableNote,
   };
 }

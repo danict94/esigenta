@@ -8,6 +8,17 @@
  */
 export type PriceRowConfidence = "alta" | "media";
 
+/**
+ * Manodopera/fornitura/a corpo: SOLO quando includes/excludes lo rendono
+ * inequivocabile (es. excludes "fornitura" → manodopera; excludes
+ * "montaggio" → fornitura). Se il pacchetto mescola lavoro e materiali senza
+ * un include/excludes che lo separi con certezza, resta "corpo" (pacchetto
+ * misto) invece di forzare una scelta. Le righe "Panoramica generale" e le
+ * righe qualitative (categoria "Da valutare...") non hanno mai questo campo:
+ * sono scenari aggregati o troppo variabili per un singolo tipo.
+ */
+export type PriceRowType = "manodopera" | "fornitura" | "corpo";
+
 export type PriceRow = {
   label: string;
   /**
@@ -26,9 +37,16 @@ export type PriceRow = {
   excludes?: string;
   /** Presente solo sulle righe con numeri; le righe qualitative non ce l'hanno. */
   confidence?: PriceRowConfidence;
+  priceType?: PriceRowType;
 };
 
-export type SizeExample = { label: string; range: string; note: string };
+export type SizeExample = {
+  label: string;
+  range: string;
+  note: string;
+  /** Solo dove abbiamo un riferimento reale (oggi solo ristrutturare-bagno). */
+  sizeRange?: string;
+};
 
 export type BasePriceRange = {
   nationalRange: string;
@@ -94,6 +112,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "rimozione di pavimento, rivestimenti e vecchi sanitari",
         excludes: "smaltimento delle macerie",
         confidence: "media",
+        priceType: "manodopera",
       },
       {
         label: "Smaltimento macerie",
@@ -102,6 +121,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         range: "da 300 € a 800 €",
         note: "un bagno standard produce circa 1-2 mc di macerie; incidono volume, accesso al cantiere e distanza dalla discarica autorizzata",
         confidence: "media",
+        priceType: "manodopera",
       },
       {
         label: "Impianto idraulico bagno",
@@ -112,6 +132,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "distribuzione acqua e scarichi interni al bagno",
         excludes: "opere murarie estese e colonne condominiali",
         confidence: "media",
+        priceType: "corpo",
       },
       {
         label: "Punto acqua semplice",
@@ -121,6 +142,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "singola adduzione (es. lavatrice) o punto già predisposto, con poca muratura da aprire",
         includes: "attacco di carico o scarico del singolo elemento",
         confidence: "media",
+        priceType: "corpo",
       },
       {
         label: "Punto acqua completo",
@@ -130,6 +152,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "carico acqua calda e fredda più scarico per lo stesso elemento (lavabo, wc, bidet, doccia), con tracce e posa",
         includes: "carico caldo/freddo, scarico e opere murarie localizzate per il punto",
         confidence: "alta",
+        priceType: "corpo",
       },
       {
         label: "Spostamento scarichi",
@@ -138,6 +161,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         range: "da 200 € a 800 €",
         note: "il range è ampio perché dipende dalla distanza dalla posizione originale: uno spostamento minimo resta nella parte bassa, un nuovo tracciato esteso su pavimento o muratura sale verso la parte alta",
         confidence: "media",
+        priceType: "corpo",
       },
       {
         label: "Posa piastrelle e rivestimenti",
@@ -148,6 +172,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "sola posa in opera",
         excludes: "fornitura delle piastrelle",
         confidence: "alta",
+        priceType: "manodopera",
       },
       {
         label: "Montaggio sanitari",
@@ -158,6 +183,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "solo montaggio e allaccio del singolo elemento agli attacchi già predisposti",
         excludes: "fornitura del sanitario, opere di predisposizione del punto acqua",
         confidence: "media",
+        priceType: "manodopera",
       },
       {
         label: "Trasformazione vasca in doccia",
@@ -168,6 +194,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "rimozione vasca, piatto doccia standard e opere idrauliche localizzate",
         excludes: "box doccia di design e rivestimenti estesi",
         confidence: "media",
+        priceType: "corpo",
       },
       {
         label: "Box doccia (fornitura)",
@@ -177,6 +204,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "scorrevoli base in fascia bassa, cristallo temperato in fascia media, walk-in in fascia alta",
         excludes: "montaggio",
         confidence: "media",
+        priceType: "fornitura",
       },
       {
         label: "Rubinetteria",
@@ -196,16 +224,19 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Bagno piccolo",
         range: "da 3.000 € a 6.000 €",
         note: "intervento compatto con scelte standard e impianti in buono stato",
+        sizeRange: "3-5 mq",
       },
       {
         label: "Bagno medio",
         range: "da 4.500 € a 9.000 €",
         note: "caso frequente con rifacimento completo e nuove finiture",
+        sizeRange: "6-8 mq",
       },
       {
         label: "Bagno grande o premium",
         range: "da 7.000 € a 12.000 € e oltre",
         note: "materiali ricercati, arredo su misura o lavorazioni più complesse",
+        sizeRange: "9 mq e oltre",
       },
     ],
   },
@@ -217,42 +248,55 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       {
         label: "Rifacimento parziale tetto",
         category: "Panoramica generale",
+        unit: "a corpo",
         range: "da 2.500 € a 8.000 €",
         note: "ripristino localizzato di una porzione di copertura",
+        includes: "intervento sulla porzione interessata: rimozione, guaina e posa del nuovo manto",
+        excludes: "isolamento esteso e lattoneria, se non concordati",
       },
       {
         label: "Rifacimento completo tetto",
         category: "Panoramica generale",
+        unit: "a corpo",
         range: "da 8.000 € a 25.000 €",
         note: "rimozione vecchia copertura, struttura, isolamento e nuovo manto",
+        includes: "rimozione della vecchia copertura, verifica della struttura, guaina e nuovo manto",
+        excludes: "isolamento di fascia alta, lucernari e lattoneria di design",
       },
       {
         label: "Costo indicativo al mq",
         category: "Panoramica generale",
+        unit: "al mq",
         range: "da 120 € a 300 € al mq",
         note: "varia per materiale, isolamento, pendenza e accessibilità",
+        includes: "rimozione, struttura, guaina e posa con materiali di fascia media",
       },
+      // Nessuna di queste 4 voci ha un numero verificato da fonti di
+      // settore (a differenza del bagno): restano tutte qualitative sotto
+      // "Da valutare", stesso pattern delle righe non quotabili del bagno
+      // (Rubinetteria, Adeguamento elettrico) — mai un numero inventato.
       {
         label: "Smaltimento vecchia copertura",
-        category: "Demolizione e smaltimento",
+        category: "Da valutare con il professionista",
         range: "variabile in base al cantiere",
         note: "incide la quantità di materiale, l'accesso e l'eventuale bonifica di materiali datati",
       },
       {
         label: "Isolamento termico tetto",
-        category: "Lavorazioni",
+        category: "Da valutare con il professionista",
         range: "da valutare con sopralluogo",
         note: "aumenta se si interviene su coibentazione e ventilazione della copertura",
       },
       {
         label: "Grondaie e lattoneria",
-        category: "Lavorazioni",
+        category: "Da valutare con il professionista",
+        unit: "al metro lineare",
         range: "variabile per metro lineare",
         note: "dipende da materiale, sviluppo lineare e complessità dei raccordi",
       },
       {
         label: "Ponteggi e accessibilità cantiere",
-        category: "Cantiere",
+        category: "Da valutare con il professionista",
         range: "variabile in base all'edificio",
         note: "incidono altezza, accesso e durata prevista dei lavori",
       },
@@ -272,6 +316,108 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Tetto grande o complesso",
         range: "da 18.000 € a 25.000 € e oltre",
         note: "superfici ampie, falde multiple o accesso difficoltoso",
+      },
+    ],
+  },
+  // Struttura "perimetro del preventivo" (luglio 2026): 4 fasce indicate
+  // direttamente per questa revisione, non da una nuova ricerca multi-fonte
+  // indipendente in questo passaggio (a differenza del resto del file:
+  // nessun campo confidence su queste 4 righe, per non dichiarare una
+  // verifica multi-fonte che non è stata rifatta qui). Sostituiscono la
+  // precedente suddivisione per tipo di materiale (bituminosa/liquida): le
+  // fasce sono alternative in base a cosa comprende il preventivo, non
+  // cumulabili tra loro. "Cicli complessi" resta senza limite superiore e
+  // volutamente qualitativo, non una fascia chiusa.
+  "costGuide:impermeabilizzare-tetto": {
+    nationalRange:
+      "Costo complessivo: indicativamente da 3.800 € a 6.000 € (fornitura e posa su circa 100 mq)",
+    pricePerSquareMeter:
+      "Costo al mq: da 18 € a 60 € al mq e oltre, secondo il perimetro del preventivo",
+    sourceLabel: "Dati indicativi elaborati da più fonti di settore",
+    sourceYear: "2026",
+    priceRows: [
+      {
+        label: "Sola posa indicativa",
+        category: "Panoramica generale",
+        unit: "al mq",
+        range: "da 18 € a 24 € al mq",
+        note: "stima operativa indicativa, variabile in base a superficie, accessibilità e complessità dei dettagli",
+        includes: "manodopera per la posa su un supporto già idoneo e preparato",
+        excludes: "guaina o membrana, primer e altri materiali, rimozione del vecchio strato, ripristino del supporto, ponteggi, smaltimento, raccordi complessi",
+        priceType: "manodopera",
+      },
+      {
+        label: "Fornitura e posa — ciclo semplice",
+        category: "Panoramica generale",
+        unit: "al mq",
+        range: "da 38 € a 40 € al mq",
+        note: "il prezzo può cambiare in base a tipo e qualità della guaina, numero di strati, primer, sovrapposizioni, risvolti e raccordi, condizioni della superficie",
+        includes: "fornitura dei materiali e posa di un ciclo impermeabilizzante standard su supporto in condizioni adeguate, senza armatura continua in tessuto non tessuto",
+        priceType: "corpo",
+      },
+      {
+        label: "Fornitura e posa — ciclo rinforzato",
+        category: "Panoramica generale",
+        unit: "al mq",
+        range: "da 40 € a 60 € al mq",
+        note: "il tessuto non tessuto non è un semplice accessorio: indica un ciclo più completo, con maggior consumo di materiali e più lavorazioni",
+        includes: "ciclo impermeabilizzante rinforzato con tessuto non tessuto o armatura equivalente, materiali e posa compresi",
+        priceType: "corpo",
+      },
+      {
+        label: "Cicli complessi",
+        category: "Panoramica generale",
+        unit: "al mq",
+        range: "oltre 60 € al mq",
+        note: "indicazione qualitativa, non una fascia chiusa: può riguardare più mani o più strati, primer specifici, supporto degradato, ripristini preliminari, numerosi raccordi, bocchettoni, comignoli, lucernari e risvolti, superfici difficili o poco accessibili",
+      },
+      {
+        label: "Rimozione della vecchia guaina",
+        category: "Costi aggiuntivi che possono incidere sul preventivo",
+        range: "da valutare con sopralluogo",
+        note: "le fonti consultate concordano che aumenta il costo rispetto alla sola posa; una fonte indica un ordine di grandezza di circa 5-7 € al mq per rimozione e smaltimento, non confermato da una seconda fonte indipendente",
+      },
+      {
+        label: "Preparazione o ripristino del supporto",
+        category: "Costi aggiuntivi che possono incidere sul preventivo",
+        range: "variabile in base alle condizioni del supporto",
+        note: "pulizia e trattamento delle parti ammalorate incidono sul costo ma non risultano quotati separatamente dalle fonti consultate",
+      },
+      {
+        label: "Ponteggi",
+        category: "Costi aggiuntivi che possono incidere sul preventivo",
+        range: "variabile in base ad altezza e accessibilità",
+        note: "necessari solo quando la copertura non è raggiungibile in sicurezza in altro modo; nessuna fonte consultata offre una fascia affidabile e generalizzabile",
+      },
+      {
+        label: "Accessibilità",
+        category: "Costi aggiuntivi che possono incidere sul preventivo",
+        range: "variabile in base al cantiere",
+        note: "un accesso complesso incide sui tempi e sul costo della manodopera, senza una fascia generalizzabile",
+      },
+      {
+        label: "Raccordi, scarichi, comignoli e lucernari",
+        category: "Costi aggiuntivi che possono incidere sul preventivo",
+        range: "variabile per numero e complessità dei punti critici",
+        note: "ogni punto singolare richiede una lavorazione dedicata: nessuna fonte consultata quota questi elementi separatamente",
+      },
+      {
+        label: "Smaltimento e trasporto",
+        category: "Costi aggiuntivi che possono incidere sul preventivo",
+        range: "variabile in base al volume e alla distanza dalla discarica",
+        note: "incidono la quantità di materiale rimosso e la distanza dal sito di conferimento autorizzato",
+      },
+    ],
+    sizeExamples: [
+      {
+        label: "Ciclo semplice (100 mq)",
+        range: "da 3.800 € a 4.000 €",
+        note: "calcolo indicativo sulla fascia fornitura e posa — ciclo semplice (38-40 €/mq) per una superficie di riferimento di 100 mq; superfici diverse cambiano il totale in proporzione",
+      },
+      {
+        label: "Ciclo rinforzato (100 mq)",
+        range: "da 4.000 € a 6.000 €",
+        note: "calcolo indicativo sulla fascia fornitura e posa — ciclo rinforzato (40-60 €/mq) per una superficie di riferimento di 100 mq; superfici diverse cambiano il totale in proporzione",
       },
     ],
   },

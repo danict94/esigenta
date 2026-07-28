@@ -1,5 +1,6 @@
 import { ristrutturareBagnoGuide } from "./ristrutturare-bagno/content";
 import { rifareTettoGuide } from "./rifare-tetto/content";
+import { impermeabilizzareTettoGuide } from "./impermeabilizzare-tetto/content";
 import type { CostGuide, CostGuideCityPage } from "./types";
 import { isIndexableCityPage } from "../../engine/geo-policy";
 
@@ -10,7 +11,11 @@ export { isIndexableCityPage } from "../../engine/geo-policy";
 export const costGuidePriceNote =
   "I prezzi sono indicativi e variano in base a metratura, stato degli impianti, materiali, città, accessibilità del cantiere e sopralluogo.";
 
-const all: readonly CostGuide[] = [ristrutturareBagnoGuide, rifareTettoGuide];
+const all: readonly CostGuide[] = [
+  ristrutturareBagnoGuide,
+  rifareTettoGuide,
+  impermeabilizzareTettoGuide,
+];
 
 const bySlug: ReadonlyMap<string, CostGuide> = new Map(
   all.map((guide) => [guide.slug, guide]),

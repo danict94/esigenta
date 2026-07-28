@@ -1,3 +1,8 @@
+import { cn } from "@esigenta/ui";
+
+import { blueprintEyebrowClassName } from "../../shared/section-header";
+import { sectionTitleClassName } from "./seo-section-title";
+
 export type SeoFaqItem = {
   question: string;
   answer: string;
@@ -5,33 +10,44 @@ export type SeoFaqItem = {
 
 export type SeoFaqProps = {
   faq: readonly SeoFaqItem[];
+  /** Solo la guida costi apre la prima voce di default (docs/costi.html). */
+  defaultOpenFirst?: boolean;
 };
 
-export function SeoFaq({ faq }: SeoFaqProps) {
+export function SeoFaq({ faq, defaultOpenFirst = false }: SeoFaqProps) {
   if (faq.length === 0) {
     return null;
   }
 
   return (
-    <section aria-labelledby="seo-faq-title" className="space-y-8">
-      <div className="mx-auto max-w-[760px] text-center">
-        <p className="eg-eyebrow">FAQ</p>
+    <section aria-labelledby="seo-faq-title">
+      <div className="mb-9 max-w-160">
+        <p className={blueprintEyebrowClassName}>FAQ</p>
 
-        <h2 id="seo-faq-title" className="eg-h2 mt-4">
+        <h2 id="seo-faq-title" className={cn(sectionTitleClassName, "mt-3")}>
           Domande frequenti
         </h2>
       </div>
 
-      <div className="border-y border-eg-border">
-        {faq.map((item) => (
-          <article
+      <div className="max-w-190 border-t border-eg-border">
+        {faq.map((item, index) => (
+          <details
             key={item.question}
-            className="grid gap-4 border-b border-eg-border py-6 last:border-b-0 md:grid-cols-[0.42fr_1fr] md:gap-10"
+            open={defaultOpenFirst && index === 0}
+            className="group border-b border-eg-border"
           >
-            <h3 className="eg-h3 text-[22px]">{item.question}</h3>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-(family-name:--eg-font-brand) text-[14.5px] font-semibold text-eg-ink marker:content-none [&::-webkit-details-marker]:hidden">
+              {item.question}
+              <span
+                aria-hidden="true"
+                className="shrink-0 text-lg font-normal text-eg-accent transition-transform duration-250 ease-(--eg-ease-brand) group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
 
-            <p className="eg-body-muted">{item.answer}</p>
-          </article>
+            <p className="max-w-165 pb-5 text-[14px] leading-[1.6] text-eg-ink">{item.answer}</p>
+          </details>
         ))}
       </div>
     </section>

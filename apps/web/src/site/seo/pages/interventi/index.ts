@@ -2,6 +2,7 @@ import { ristrutturareBagnoLanding } from "./ristrutturare-bagno/content";
 import { rifareImpiantoElettricoLanding } from "./rifare-impianto-elettrico/content";
 import { installareFotovoltaicoLanding } from "./installare-fotovoltaico/content";
 import { rifareTettoLanding } from "./rifare-tetto/content";
+import { impermeabilizzareTettoLanding } from "./impermeabilizzare-tetto/content";
 import { installareClimatizzatoreLanding } from "./installare-climatizzatore/content";
 import type { SeoInterventionLanding } from "./types";
 
@@ -12,6 +13,7 @@ const all: readonly SeoInterventionLanding[] = [
   rifareImpiantoElettricoLanding,
   installareFotovoltaicoLanding,
   rifareTettoLanding,
+  impermeabilizzareTettoLanding,
   installareClimatizzatoreLanding,
 ];
 

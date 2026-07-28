@@ -8,7 +8,7 @@ import {
   getSeoInterventionLandingBySlug,
   type SeoInterventionLanding,
 } from "../pages/interventi";
-import { getCostGuideBySlug } from "../pages/costi";
+import { getCostGuideBySlug, type CostGuide } from "../pages/costi";
 import { resolveCostGuideHrefForIntervention } from "./resolve-seo-page";
 import { buildCanonicalPath } from "./canonical";
 
@@ -52,6 +52,23 @@ export function resolveGroupBreadcrumbForIntervention(
     name: groupLanding.title,
     href: buildCanonicalPath({ family: "groupHub", slug: groupLanding.slug }),
   };
+}
+
+/**
+ * Stesso breadcrumb di gruppo, risolto per una guida costi invece che per una
+ * landing intervento. Nessuna relazione nuova da mantenere: riusa
+ * interventionSeoSlug (già obbligatorio su CostGuide) per trovare la landing
+ * intervento reale, poi la stessa risoluzione fail-fast di sopra. Ritorna
+ * null (mai un errore) se quella landing non esiste ancora o non dichiara
+ * groupSlug — stesso pattern soft-fail di resolveCostGuideHrefForIntervention.
+ */
+export function resolveGroupBreadcrumbForCostGuide(
+  guide: CostGuide,
+): { name: string; href: string } | null {
+  const landing = getSeoInterventionLandingBySlug(guide.interventionSeoSlug);
+  if (!landing) return null;
+
+  return resolveGroupBreadcrumbForIntervention(landing);
 }
 
 export type GroupInterventionItem = {

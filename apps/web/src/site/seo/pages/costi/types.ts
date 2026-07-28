@@ -1,4 +1,4 @@
-import type { PriceRow } from "../../market-data/base-price-ranges";
+import type { PriceRow, SizeExample } from "../../market-data/base-price-ranges";
 
 export type CityPageQualityStatus = "draft" | "ready";
 export type CityPageUniquenessLevel = "thin" | "acceptable" | "strong";
@@ -55,6 +55,19 @@ export type CostGuideHubCategory = {
 };
 
 /**
+ * Richiamo a un intervento specifico (taxonomy) spesso confuso con questa
+ * guida, mostrato nel blocco "Interventi specifici" — mai i dettagli
+ * completi, solo titolo/descrizione editoriali e lo slug reale da cui si
+ * risolve la destinazione (guida costi → landing intervento → funnel).
+ * `slug` è validato contro la frozen taxonomy dal composer, a build-time.
+ */
+export type CostGuideRelatedWorkItem = {
+  slug: string;
+  title: string;
+  description: string;
+};
+
+/**
  * Contenuto NAZIONALE di una famiglia (il base.ts della cartella): solo
  * editoriale, mai numeri (i prezzi vivono in market-data e vengono agganciati
  * dal composer via familyKey derivata dallo slug: "costGuide:<slug>").
@@ -73,6 +86,15 @@ export type CostGuideBaseContent = {
   summary: string;
   factors: string[];
   savingTips: string[];
+  /** Opzionale: solo per le guide che vogliono il blocco "Interventi specifici". */
+  relatedWork?: readonly CostGuideRelatedWorkItem[];
+  /**
+   * Nota editoriale opzionale mostrata sotto la tabella prezzi, in aggiunta
+   * al paragrafo condiviso già presente per tutte le guide (es. per
+   * chiarire che più fasce della stessa tabella sono alternative e non
+   * cumulabili). Nessun effetto sulle guide che non la impostano.
+   */
+  priceTableNote?: string;
 };
 
 export type CostGuide = {
@@ -106,7 +128,7 @@ export type CostGuide = {
   /** Base dati mostrata sotto la tabella (da market-data, se dichiarata). */
   sourceLabel?: string;
   sourceYear?: string;
-  sizeExamples: { label: string; range: string; note: string }[];
+  sizeExamples: SizeExample[];
   citySections: {
     city: string;
     title: string;
@@ -119,4 +141,6 @@ export type CostGuide = {
   factors: string[];
   savingTips: string[];
   faq: { question: string; answer: string }[];
+  relatedWork?: readonly CostGuideRelatedWorkItem[];
+  priceTableNote?: string;
 };

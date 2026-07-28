@@ -1,15 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { cn } from "@esigenta/ui";
+
 import { getCostGuidePriceNote, type CostGuide } from "../pages/costi";
-import { resolveInterventionHrefForCostGuide } from "../engine/resolve-seo-page";
+import type { PriceRowType } from "../market-data/base-price-ranges";
+import {
+  resolveBestHrefForIntervention,
+  resolveInterventionHrefForCostGuide,
+} from "../engine/resolve-seo-page";
+import { resolveGroupBreadcrumbForCostGuide } from "../engine/resolve-group-page";
 import {
   buildBreadcrumbJsonLd,
+  buildFaqJsonLd,
   serializeJsonLd,
 } from "../engine/schema-builder";
 import { PublicShell } from "../../shell/public-shell";
-import { RequestCtaPanel } from "./request-cta-panel";
+import { FrameMarks } from "../../shared/frame-marks";
+import { blueprintEyebrowClassName } from "../../shared/section-header";
 import { SeoFaq } from "./seo-faq";
+import { sectionTitleClassName } from "./seo-section-title";
 
 export type CostGuidePageProps = {
   guide: CostGuide;
@@ -37,12 +47,15 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
     guide.interventionSeoSlug,
   );
   const priceNote = getCostGuidePriceNote();
+  const groupCrumb = resolveGroupBreadcrumbForCostGuide(guide);
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
     { name: "Costi", path: "/costi" },
+    ...(groupCrumb ? [{ name: groupCrumb.name, path: groupCrumb.href }] : []),
     { name: guide.h1, path: guide.canonicalPath },
   ]);
+  const faqJsonLd = buildFaqJsonLd(guide.faq);
 
   return (
     <PublicShell>
@@ -50,51 +63,71 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
+      {faqJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
+        />
+      ) : null}
       <div className="eg-page eg-page-bg">
-        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+        <section className="pt-[calc(var(--eg-nav-clear)+12px)] pb-10">
           <div className="eg-container">
-            <div className="grid items-start gap-[clamp(42px,6vw,82px)] lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
-              <div className="max-w-[720px] max-lg:max-w-none">
-                <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
-                  <Link href="/" prefetch={false}>
-                    Home
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-4.5 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
+            >
+              <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
+                Home
+              </Link>
+              <span aria-hidden="true">/</span>
+              <Link href="/costi" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
+                Costi
+              </Link>
+              <span aria-hidden="true">/</span>
+              {groupCrumb ? (
+                <>
+                  <Link href={groupCrumb.href} prefetch={false} className="transition-colors hover:text-eg-brand-strong">
+                    {groupCrumb.name}
                   </Link>
-                  <span aria-hidden="true" className="mx-3 text-eg-text-muted">
-                    /
-                  </span>
-                  <Link href="/costi" prefetch={false}>
-                    Costi
-                  </Link>
-                </nav>
+                  <span aria-hidden="true">/</span>
+                </>
+              ) : null}
+              <span className="text-eg-ink">{guide.title}</span>
+            </nav>
 
-                <p className="eg-eyebrow">Guida costi</p>
+            <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+              <div>
+                <p className={blueprintEyebrowClassName}>Guida costi</p>
 
-                <h1 className="eg-h1 mt-5">{guide.h1}</h1>
+                <h1 className="mt-4 mb-4 max-w-190 font-(family-name:--eg-font-brand) text-[clamp(26px,3.6vw,40px)] font-semibold leading-[1.2] tracking-[-0.01em]">
+                  {guide.h1}
+                </h1>
 
-                <p className="eg-body-muted mt-6 max-w-[54ch] text-[17px] leading-8">
+                <p className="mb-6.5 max-w-160 text-base leading-[1.6] text-eg-ink">
                   {guide.summary}
                 </p>
 
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <Link href={requestHref} className="eg-button-primary w-full sm:w-auto">
+                <div className="flex flex-wrap gap-3">
+                  <Link href={requestHref} className="eg-button-primary">
                     Richiedi preventivi
                   </Link>
 
                   {interventionHref ? (
-                    <Link href={interventionHref} className="eg-button-ghost w-full sm:w-auto">
-                      Landing intervento
+                    <Link href={interventionHref} className="eg-button-ghost">
+                      Vedi la pagina del servizio
                     </Link>
                   ) : null}
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
+              <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
+                <FrameMarks />
                 <Image
                   src={guide.heroImage.src}
                   alt={guide.heroImage.alt}
                   fill
                   priority
-                  sizes="(min-width: 1280px) 420px, (min-width: 1024px) 36vw, calc(100vw - 44px)"
+                  sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
                   className="object-cover"
                 />
               </div>
@@ -102,38 +135,47 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="sintesi-costo-title" className="eg-section bg-eg-surface-muted">
+        <section aria-labelledby="sintesi-costo-title" className="border-t border-eg-border py-14">
           <div className="eg-container">
-            <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.36fr)] lg:items-start">
+            <div className="mb-8 max-w-170">
+              <p className={blueprintEyebrowClassName}>Sintesi costo</p>
+
+              <h2 id="sintesi-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
+                Range indicativi per {guide.topicLabel}
+              </h2>
+            </div>
+
+            <div className="mb-5 grid grid-cols-1 gap-px border border-eg-border bg-eg-border sm:grid-cols-2">
+              <CostHighlight label="Costo complessivo" value={guide.nationalRange} />
+              <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter} />
+            </div>
+
+            <p className="mb-6 max-w-155 text-[13px] leading-[1.6] text-eg-ink">{priceNote}</p>
+
+            <div className="flex flex-wrap items-center justify-between gap-5 border border-eg-border bg-eg-surface px-6 py-5.5">
               <div>
-                <p className="eg-eyebrow">Sintesi costo</p>
+                <h3 className="font-(family-name:--eg-font-brand) text-[15px] font-semibold">
+                  Trova professionisti nella tua zona
+                </h3>
 
-                <h2 id="sintesi-costo-title" className="eg-h2 mt-4">
-                  Range indicativi per {guide.topicLabel}
-                </h2>
-
-                <div className="mt-7 grid gap-4 md:grid-cols-2">
-                  <CostHighlight label="Costo complessivo" value={guide.nationalRange} />
-                  <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter} />
-                </div>
-
-                <p className="eg-form-help mt-5 max-w-[58ch]">{priceNote}</p>
+                <p className="mt-1 max-w-100 text-[13.5px] leading-normal text-eg-text-muted">
+                  Il comune lo indichi durante la richiesta: bastano pochi passaggi.
+                </p>
               </div>
 
-              <RequestCtaPanel
-                requestHref={requestHref}
-                ctaLabel={`Richiedi preventivi per ${guide.topicLabel}`}
-              />
+              <Link href={requestHref} className="eg-button-primary">
+                Richiedi preventivi
+              </Link>
             </div>
           </div>
         </section>
 
-        <section aria-labelledby="tabella-prezzi-title" className="eg-section">
+        <section aria-labelledby="tabella-prezzi-title" className="border-t border-eg-border py-14">
           <div className="eg-container">
-            <div className="mx-auto max-w-[760px] text-center">
-              <p className="eg-eyebrow">Tabella prezzi</p>
+            <div className="mb-8 max-w-170">
+              <p className={blueprintEyebrowClassName}>Tabella prezzi</p>
 
-              <h2 id="tabella-prezzi-title" className="eg-h2 mt-4">
+              <h2 id="tabella-prezzi-title" className={cn(sectionTitleClassName, "mt-3")}>
                 Voci che compongono il preventivo
               </h2>
             </div>
@@ -143,129 +185,237 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               sourceLabel={guide.sourceLabel}
               sourceYear={guide.sourceYear}
             />
+
+            <p className="mt-6 max-w-170 text-[13.5px] leading-[1.6] text-eg-ink">
+              Alcune lavorazioni sono comprese di norma nel rifacimento, altre
+              dipendono dal capitolato o costituiscono interventi separati.
+              Controlla le voci Incluso ed Escluso e, se ti serve solo un
+              lavoro specifico, selezionalo qui sotto.
+            </p>
+
+            {guide.priceTableNote ? (
+              <p className="mt-3 max-w-170 text-[13.5px] leading-[1.6] text-eg-text-muted">
+                {guide.priceTableNote}
+              </p>
+            ) : null}
           </div>
         </section>
 
-        <section aria-labelledby="dimensioni-bagno-title" className="eg-section bg-eg-surface-muted">
-          <div className="eg-container">
-            <div className="mx-auto max-w-[760px] text-center">
-              <p className="eg-eyebrow">Esempi</p>
+        {guide.relatedWork && guide.relatedWork.length > 0 ? (
+          <section aria-labelledby="interventi-specifici-title" className="border-t border-eg-border py-14">
+            <div className="eg-container">
+              <div className="mb-8 max-w-170">
+                <p className={blueprintEyebrowClassName}>Interventi specifici</p>
 
-              <h2 id="dimensioni-bagno-title" className="eg-h2 mt-4">
+                <h2 id="interventi-specifici-title" className={cn(sectionTitleClassName, "mt-3")}>
+                  Ti serve solo una parte del lavoro?
+                </h2>
+              </div>
+
+              <div className="border-t border-eg-border">
+                {guide.relatedWork.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={resolveBestHrefForIntervention(item.slug)}
+                    prefetch={false}
+                    className="group flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-eg-border py-4.5 no-underline transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-(family-name:--eg-font-brand) text-[15px] font-semibold text-eg-ink">
+                        {item.title}
+                      </p>
+                      <p className="mt-1 text-[13px] leading-normal text-eg-text-muted">{item.description}</p>
+                    </div>
+
+                    <span className="shrink-0 whitespace-nowrap font-(family-name:--eg-font-brand) text-xs font-semibold text-eg-brand-strong transition-transform duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-accent">
+                      Richiedi questo intervento <span aria-hidden="true">&rarr;</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        <section aria-labelledby="esempi-costo-title" className="border-t border-eg-border py-14">
+          <div className="eg-container">
+            <div className="mb-8 max-w-170">
+              <p className={blueprintEyebrowClassName}>Esempi</p>
+
+              <h2 id="esempi-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
                 Esempi per dimensione e livello di finitura
               </h2>
             </div>
 
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-3">
               {guide.sizeExamples.map((example) => (
-                <article key={example.label} className="eg-panel p-5">
-                  <h3 className="eg-h3 text-[22px]">{example.label}</h3>
+                <article key={example.label} className="border border-eg-border bg-eg-surface px-5.5 py-6">
+                  {example.sizeRange ? (
+                    <span className="mb-2.5 inline-block bg-eg-brand-soft px-2.5 py-1 font-(family-name:--eg-font-brand) text-[11px] font-bold uppercase tracking-[0.04em] text-eg-brand-strong">
+                      {example.sizeRange}
+                    </span>
+                  ) : null}
 
-                  <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">
+                  <p className="mb-2.5 font-(family-name:--eg-font-brand) text-[19px] font-bold leading-tight text-eg-accent">
                     {example.range}
                   </p>
 
-                  <p className="eg-body-muted mt-3">{example.note}</p>
+                  <h3 className="mb-2 font-(family-name:--eg-font-brand) text-[15px] font-semibold">
+                    {example.label}
+                  </h3>
+
+                  <p className="text-[13px] leading-normal text-eg-text-muted">{example.note}</p>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section aria-labelledby="fattori-costo-title" className="eg-section">
+        <section aria-labelledby="fattori-costo-title" className="border-t border-eg-border py-14">
           <div className="eg-container">
-            <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
-              <div className="max-w-2xl">
-                <p className="eg-eyebrow">Fattori costo</p>
+            <div className="mb-8 max-w-170">
+              <p className={blueprintEyebrowClassName}>Cosa incide sul prezzo</p>
 
-                <h2 id="fattori-costo-title" className="eg-h2 mt-4">
-                  Cosa incide davvero sul prezzo
-                </h2>
+              <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
+                Fattori generali e fattori legati alla zona
+              </h2>
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
+                  Il lavoro in s&eacute;
+                </p>
+
+                <ul>
+                  {guide.factors.map((factor) => (
+                    <li key={factor} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-normal text-eg-ink">
+                      <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-brand" />
+                      <span>{factor}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              <ul className="eg-panel grid gap-4 p-5 md:grid-cols-2 md:p-6">
-                {guide.factors.map((factor) => (
-                  <li key={factor} className="flex gap-3 text-sm leading-6 text-eg-text-muted">
-                    <Dot />
-                    <span>{factor}</span>
-                  </li>
-                ))}
+              <div>
+                <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
+                  La tua zona e il tuo edificio
+                </p>
+
+                <p className="mb-4.5 max-w-160 text-[13.5px] leading-[1.6] text-eg-ink">
+                  Le fasce di questa guida sono nazionali: {guide.topicLabel} nella
+                  tua zona pu&ograve; costare diversamente in base a fattori
+                  locali, non a un prezzo di citt&agrave; che oggi non abbiamo.
+                </p>
+
+                <ul>
+                  {cityInfluenceFactors.map((factor) => (
+                    <li key={factor} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-normal text-eg-ink">
+                      <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-brand" />
+                      <span>{factor}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="agevolazioni-fiscali-title" className="border-t border-eg-border py-14">
+          <div className="eg-container">
+            <div className="border border-eg-border bg-eg-surface px-6.5 py-7">
+              <p className={blueprintEyebrowClassName}>Agevolazioni fiscali</p>
+
+              <h2 id="agevolazioni-fiscali-title" className={cn(sectionTitleClassName, "mt-3")}>
+                Verifica se il tuo intervento rientra in un bonus attivo
+              </h2>
+
+              <p className="mt-3.5 max-w-170 text-[14.5px] leading-[1.6] text-eg-ink">
+                Alcuni interventi sul tetto possono rientrare nelle
+                agevolazioni fiscali previste per le ristrutturazioni edilizie
+                o per la riqualificazione energetica. Percentuali, limiti,
+                requisiti e adempimenti possono cambiare e dipendono
+                dall&apos;immobile e dal tipo di lavoro: verifica sempre le
+                condizioni aggiornate sui canali ufficiali prima di
+                pianificare la spesa.
+              </p>
+
+              <ul className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-7">
+                <li>
+                  <a
+                    href="https://www.agenziaentrate.gov.it/portale/aree-tematiche/casa/agevolazioni/agevolazioni-per-le-ristrutturazioni-edilizie"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-accent"
+                  >
+                    Agevolazioni per le ristrutturazioni &mdash; Agenzia delle Entrate
+                    <ExternalLinkGlyph className="size-3 shrink-0" />
+                    <span className="sr-only">(apre in una nuova scheda)</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    href="https://www.efficienzaenergetica.enea.it/detrazioni-fiscali.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-accent"
+                  >
+                    Detrazioni fiscali per l&apos;efficienza energetica &mdash; ENEA
+                    <ExternalLinkGlyph className="size-3 shrink-0" />
+                    <span className="sr-only">(apre in una nuova scheda)</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
         </section>
 
-        <section aria-labelledby="citta-preventivo-title" className="eg-section bg-eg-surface-muted">
+        <section aria-labelledby="risparmiare-title" className="border-t border-eg-border py-14">
           <div className="eg-container">
-            <div className="mx-auto max-w-[720px] text-center">
-              <p className="eg-eyebrow">Citt&agrave;</p>
+            <div className="mb-8 max-w-170">
+              <p className={blueprintEyebrowClassName}>Consigli</p>
 
-              <h2 id="citta-preventivo-title" className="eg-h2 mt-4">
-                La citt&agrave; pu&ograve; incidere sul preventivo?
+              <h2 id="risparmiare-title" className={cn(sectionTitleClassName, "mt-3")}>
+                Come risparmiare senza perdere qualit&agrave;
               </h2>
-
-              <p className="eg-body-muted mx-auto mt-5 max-w-[62ch]">
-                Le fasce di questa guida sono nazionali: {guide.topicLabel} nella
-                tua zona pu&ograve; costare diversamente in base a fattori
-                locali, non a un prezzo di citt&agrave; che oggi non abbiamo.
-              </p>
             </div>
 
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {cityInfluenceFactors.map((factor) => (
-                <li
-                  key={factor}
-                  className="eg-panel flex gap-3 p-4 text-sm leading-6 text-eg-text-muted"
-                >
-                  <Dot />
-                  <span>{factor}</span>
+            <ul className="max-w-170">
+              {guide.savingTips.map((tip, index) => (
+                <li key={tip} className="flex items-start gap-3 border-b border-eg-border py-3.25 text-[14.5px] leading-[1.55] text-eg-ink">
+                  <span className="mt-px shrink-0 font-(family-name:--eg-font-brand) text-[13px] font-bold text-eg-accent">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span>{tip}</span>
                 </li>
               ))}
             </ul>
           </div>
         </section>
 
-        <section aria-labelledby="risparmiare-title" className="eg-section">
+        <section className="border-t border-eg-border py-14">
           <div className="eg-container">
-            <div className="eg-panel p-5 md:p-7">
-              <div className="max-w-3xl">
-                <p className="eg-eyebrow">Consigli</p>
-
-                <h2 id="risparmiare-title" className="eg-h2 mt-4">
-                  Come risparmiare senza perdere qualit&agrave;
-                </h2>
-              </div>
-
-              <ul className="mt-7 grid gap-4 md:grid-cols-2">
-                {guide.savingTips.map((tip) => (
-                  <li key={tip} className="flex gap-3 text-sm leading-6 text-eg-text-muted">
-                    <Dot />
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <SeoFaq faq={guide.faq} defaultOpenFirst />
           </div>
         </section>
 
-        <section className="eg-section bg-eg-surface-muted">
-          <div className="eg-container">
-            <SeoFaq faq={guide.faq} />
-          </div>
-        </section>
-
-        <section className="eg-section-large bg-eg-brand-strong text-eg-on-brand">
+        <section className="border-t border-eg-border bg-eg-brand-strong py-16 text-eg-on-brand">
           <div className="eg-container-narrow text-center">
-            <p className="eg-eyebrow text-eg-on-brand-muted">Prossimo passo</p>
+            <p className="flex items-center justify-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-[#9fd3e8] before:inline-block before:h-px before:w-5.5 before:bg-[#9fd3e8] before:content-['']">
+              Prossimo passo
+            </p>
 
-            <h2 className="eg-h2 mt-4">Racconta il lavoro e confronta i preventivi</h2>
+            <h2 className={cn(sectionTitleClassName, "mt-3.5")}>
+              Racconta il lavoro e confronta i preventivi
+            </h2>
 
-            <p className="mt-5 text-[15px] leading-7 text-eg-on-brand-muted">
+            <p className="mt-3 text-[14.5px] leading-[1.6] text-eg-on-brand-muted">
               Continua nella richiesta dedicata e indica dettagli, tempi e zona
               dell&apos;intervento.
             </p>
 
-            <Link href={requestHref} className="eg-button-primary mt-8 w-full sm:w-auto">
+            <Link href={requestHref} className="eg-button-primary mt-6">
               Vai alla richiesta
             </Link>
           </div>
@@ -275,17 +425,38 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
   );
 }
 
+function ExternalLinkGlyph({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" className={className}>
+      <path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" />
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+    </svg>
+  );
+}
+
 function CostHighlight({ label, value }: { label: string; value: string }) {
   return (
-    <div className="eg-panel p-5">
-      <p className="eg-metric-label">{label}</p>
-      <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">{value}</p>
+    <div className="bg-eg-surface px-6.5 py-7">
+      <p className="font-(family-name:--eg-font-brand) text-[clamp(24px,3vw,32px)] font-bold leading-[1.15] text-eg-brand-strong">
+        {value}
+      </p>
+
+      <p className="mt-2 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-wider text-eg-text-muted">
+        {label}
+      </p>
     </div>
   );
 }
 
 const priceTableGridCols =
-  "md:grid-cols-[minmax(0,1.15fr)_minmax(4.5rem,0.45fr)_minmax(8rem,0.6fr)_minmax(0,1.35fr)]";
+  "md:grid-cols-[minmax(0,1.3fr)_minmax(5rem,0.7fr)_minmax(6rem,0.6fr)_minmax(0,2.4fr)]";
+
+const priceTypeLabel: Record<PriceRowType, string> = {
+  manodopera: "Manodopera",
+  fornitura: "Fornitura",
+  corpo: "Pacchetto a corpo",
+};
 
 type PriceRowGroup = { category: string; rows: CostGuide["priceRows"] };
 
@@ -322,33 +493,33 @@ function PriceTable({
 
   return (
     <>
-      <div className="eg-panel mt-12 overflow-hidden">
-        <div
-          className={`hidden border-b border-eg-border px-5 py-4 text-sm font-medium text-eg-ink md:grid ${priceTableGridCols}`}
-        >
-          <span>Voce</span>
-          <span>Unit&agrave;</span>
-          <span>Fascia indicativa</span>
-          <span>Note</span>
-        </div>
-
-        {groups.map((group) => (
-          <div key={group.category}>
-            <div className="border-b border-eg-border bg-eg-ink/5 px-5 py-2.5">
-              <p className="eg-table-label">{group.category}</p>
-            </div>
-
-            <div className="divide-y divide-eg-border">
-              {group.rows.map((row) => (
-                <PriceTableRow key={row.label} row={row} />
-              ))}
-            </div>
-          </div>
-        ))}
+      <div
+        className={`hidden border-b border-eg-border px-0 pb-2.5 font-(family-name:--eg-font-brand) text-[11px] uppercase tracking-wider text-eg-text-muted md:grid ${priceTableGridCols}`}
+      >
+        <span>Voce</span>
+        <span>Fascia indicativa</span>
+        <span>Tipo</span>
+        <span>Note</span>
       </div>
 
+      {groups.map((group, index) => (
+        <div key={group.category} className={index === 0 ? "mt-0" : "mt-2"}>
+          <p
+            className={`font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-[0.08em] text-eg-text-muted ${index === 0 ? "pt-0" : "pt-5.5"} pb-2.5`}
+          >
+            {group.category}
+          </p>
+
+          <div className="bg-eg-surface">
+            {group.rows.map((row) => (
+              <PriceTableRow key={row.label} row={row} />
+            ))}
+          </div>
+        </div>
+      ))}
+
       {sourceLabel ? (
-        <p className="eg-form-help mt-4 text-center">
+        <p className="mt-4.5 text-center font-(family-name:--eg-font-brand) text-[12.5px] text-eg-ink">
           {sourceLabel}
           {sourceYear ? `, aggiornati ${sourceYear}` : null}. Le fasce non
           sono un preventivo: il prezzo reale dipende dal sopralluogo.
@@ -359,58 +530,61 @@ function PriceTable({
 }
 
 function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
+  // Righe "Da valutare con il professionista" (bagno, tetto) o "Costi
+  // aggiuntivi che possono incidere sul preventivo" (impermeabilizzare
+  // tetto) non hanno un numero reale — la Fascia deve leggersi diversamente
+  // da un prezzo vero, non con lo stesso trattamento bold/mono. Nessuna
+  // colonna Tipo vuota mostra più un trattino: resta semplicemente assente.
+  const isQualitative =
+    row.category === "Da valutare con il professionista" ||
+    row.category === "Costi aggiuntivi che possono incidere sul preventivo";
+
   return (
     <div
-      className={`grid gap-4 px-5 py-5 text-sm leading-6 md:grid ${priceTableGridCols}`}
+      className={`grid gap-x-4 gap-y-1 border-b border-eg-border px-3.5 py-3.5 text-sm leading-6 transition-colors hover:bg-eg-page md:grid md:items-start md:gap-y-0 ${priceTableGridCols}`}
     >
       <div>
-        <p className="eg-table-label md:hidden">Voce</p>
-        <p className="mt-1 font-medium text-eg-ink md:mt-0">{row.label}</p>
-      </div>
-
-      <div>
-        <p className="eg-table-label md:hidden">Unit&agrave;</p>
-        <p className="mt-1 text-eg-text-muted md:mt-0">{row.unit ?? "—"}</p>
-      </div>
-
-      <div>
-        <p className="eg-table-label md:hidden">Fascia</p>
-        <p className="mt-1 font-medium text-eg-ink [font-variant-numeric:tabular-nums] md:mt-0">
-          {row.range}
-        </p>
-      </div>
-
-      <div>
-        <p className="eg-table-label md:hidden">Note</p>
-        <p className="mt-1 text-eg-text-muted md:mt-0">{row.note}</p>
-
-        {row.includes || row.excludes ? (
-          <div className="mt-2 grid gap-1">
-            {row.includes ? (
-              <p className="text-[12.5px] leading-5 text-eg-text-muted">
-                <span className="eg-scope-tag mr-1.5 text-eg-brand-strong">Include</span>
-                {row.includes}
-              </p>
-            ) : null}
-
-            {row.excludes ? (
-              <p className="text-[12.5px] leading-5 text-eg-text-muted">
-                <span className="eg-scope-tag mr-1.5">Escluso</span>
-                {row.excludes}
-              </p>
-            ) : null}
-          </div>
+        <p className="font-semibold text-eg-ink">{row.label}</p>
+        {row.unit ? (
+          <p className="mt-0.5 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">{row.unit}</p>
         ) : null}
       </div>
-    </div>
-  );
-}
 
-function Dot() {
-  return (
-    <span
-      aria-hidden="true"
-      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-eg-brand-strong"
-    />
+      {isQualitative ? (
+        <p className="text-[13px] font-medium italic leading-normal text-eg-text-muted">{row.range}</p>
+      ) : (
+        <p className="font-(family-name:--eg-font-brand) font-bold text-eg-ink [font-variant-numeric:tabular-nums]">
+          {row.range}
+        </p>
+      )}
+
+      {row.priceType ? (
+        <p>
+          <span className="inline-block border border-eg-border px-2 py-0.5 font-(family-name:--eg-font-brand) text-[10.5px] font-semibold uppercase tracking-wide text-eg-text-muted">
+            {priceTypeLabel[row.priceType]}
+          </span>
+        </p>
+      ) : (
+        <p aria-hidden="true" />
+      )}
+
+      <div>
+        <p className="max-w-80 text-[13px] leading-normal text-eg-text-muted">
+          {row.note}
+          {row.includes ? (
+            <>
+              {" "}
+              <span className="font-semibold text-eg-success">Incluso</span> {row.includes}.
+            </>
+          ) : null}
+          {row.excludes ? (
+            <>
+              {" "}
+              <span className="font-semibold text-eg-accent">Escluso</span> {row.excludes}.
+            </>
+          ) : null}
+        </p>
+      </div>
+    </div>
   );
 }

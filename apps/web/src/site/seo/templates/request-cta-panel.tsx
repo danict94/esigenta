@@ -12,16 +12,18 @@ export type RequestCtaPanelProps = {
 
 export function RequestCtaPanel({ requestHref, ctaLabel }: RequestCtaPanelProps) {
   return (
-    <div className="eg-panel space-y-5 p-5">
+    <div className="space-y-5 border border-eg-border bg-eg-surface p-6.5 shadow-eg-slab">
       <div>
-        <h3 className="eg-h3 text-[22px]">Trova professionisti nella tua zona</h3>
+        <h3 className="font-(family-name:--eg-font-brand) text-[17px] font-semibold leading-[1.3]">
+          Trova professionisti nella tua zona
+        </h3>
 
-        <p className="eg-body-muted mt-2">
+        <p className="eg-body-muted mt-2 text-[13.5px]">
           Il comune lo indichi durante la richiesta: bastano pochi passaggi.
         </p>
       </div>
 
-      <Link href={requestHref} className="eg-button-primary w-full">
+      <Link href={requestHref} className="eg-button-primary w-full justify-center">
         {ctaLabel}
       </Link>
 
