@@ -10,6 +10,7 @@ export const installareFotovoltaicoLanding: SeoInterventionLanding = {
   metaDescription:
     "Vuoi installare un impianto fotovoltaico? Scopri cosa valutare e confronta preventivi da professionisti per pannelli solari domestici.",
   funnelSlug: "installare-fotovoltaico",
+  groupSlug: "fotovoltaico",
   image: {
     src: "/assets/images/installazione-fotovoltaico.webp",
     alt: "Installazione di pannelli fotovoltaici su abitazione",

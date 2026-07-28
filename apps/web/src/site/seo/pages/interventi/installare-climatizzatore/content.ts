@@ -10,6 +10,7 @@ export const installareClimatizzatoreLanding: SeoInterventionLanding = {
   metaDescription:
     "Devi installare o sostituire un climatizzatore? Scopri cosa valutare e richiedi preventivi da tecnici qualificati nella tua zona.",
   funnelSlug: "installare-climatizzatore",
+  groupSlug: "climatizzazione",
   image: {
     src: "/assets/images/climatizzazione.webp",
     alt: "Installazione climatizzatore in abitazione",
