@@ -2,15 +2,9 @@ import Link from "next/link";
 
 import { featuredWorks } from "./home-content";
 import { HomeImage } from "./home-image";
+import { FrameMarks } from "../shared/frame-marks";
 import { Reveal } from "../shared/reveal";
 import { blueprintEyebrowClassName, blueprintTitleClassName, SectionHeader } from "../shared/section-header";
-
-// Segni di registrazione agli angoli della foto (docs/esigenta-brand
-// ServiceCard): una "prova fotografica" allegata alla tavola tecnica, non
-// un'immagine lifestyle. Base condivisa, ogni angolo aggiunge solo
-// posizione e lato del bordo a L.
-const FRAME_MARK_BASE_CLASSNAME =
-  "absolute size-3 border-solid border-eg-brand-strong transition-colors duration-250 ease-(--eg-ease-brand) group-hover:border-eg-accent";
 
 export function FeaturedWorkSection() {
   return (
@@ -36,10 +30,7 @@ export function FeaturedWorkSection() {
               className="group relative flex flex-col bg-eg-surface px-6 pt-6.5 pb-6 no-underline transition-shadow duration-250 ease-(--eg-ease-brand) hover:z-2 hover:shadow-eg-step"
             >
               <div className="relative isolate aspect-4/3 overflow-hidden">
-                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -top-px -left-px border-t-2 border-l-2`} />
-                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -top-px -right-px border-t-2 border-r-2`} />
-                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -bottom-px -left-px border-b-2 border-l-2`} />
-                <span aria-hidden="true" className={`${FRAME_MARK_BASE_CLASSNAME} -bottom-px -right-px border-b-2 border-r-2`} />
+                <FrameMarks />
                 <HomeImage
                   src={work.imageSrc}
                   alt={work.imageAlt}
