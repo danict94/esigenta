@@ -237,39 +237,41 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </section>
         ) : null}
 
-        <section aria-labelledby="esempi-costo-title" className="border-t border-eg-border py-14">
-          <div className="eg-container">
-            <div className="mb-8 max-w-170">
-              <p className={blueprintEyebrowClassName}>Esempi</p>
+        {guide.sizeExamples.length > 0 ? (
+          <section aria-labelledby="esempi-costo-title" className="border-t border-eg-border py-14">
+            <div className="eg-container">
+              <div className="mb-8 max-w-170">
+                <p className={blueprintEyebrowClassName}>Esempi</p>
 
-              <h2 id="esempi-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
-                Esempi per dimensione e livello di finitura
-              </h2>
+                <h2 id="esempi-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
+                  Esempi per dimensione e livello di finitura
+                </h2>
+              </div>
+
+              <div className="grid gap-5 md:grid-cols-3">
+                {guide.sizeExamples.map((example) => (
+                  <article key={example.label} className="border border-eg-border bg-eg-surface px-5.5 py-6">
+                    {example.sizeRange ? (
+                      <span className="mb-2.5 inline-block bg-eg-brand-soft px-2.5 py-1 font-(family-name:--eg-font-brand) text-[11px] font-bold uppercase tracking-[0.04em] text-eg-brand-strong">
+                        {example.sizeRange}
+                      </span>
+                    ) : null}
+
+                    <p className="mb-2.5 font-(family-name:--eg-font-brand) text-[19px] font-bold leading-tight text-eg-accent">
+                      {example.range}
+                    </p>
+
+                    <h3 className="mb-2 font-(family-name:--eg-font-brand) text-[15px] font-semibold">
+                      {example.label}
+                    </h3>
+
+                    <p className="text-[13px] leading-normal text-eg-text-muted">{example.note}</p>
+                  </article>
+                ))}
+              </div>
             </div>
-
-            <div className="grid gap-5 md:grid-cols-3">
-              {guide.sizeExamples.map((example) => (
-                <article key={example.label} className="border border-eg-border bg-eg-surface px-5.5 py-6">
-                  {example.sizeRange ? (
-                    <span className="mb-2.5 inline-block bg-eg-brand-soft px-2.5 py-1 font-(family-name:--eg-font-brand) text-[11px] font-bold uppercase tracking-[0.04em] text-eg-brand-strong">
-                      {example.sizeRange}
-                    </span>
-                  ) : null}
-
-                  <p className="mb-2.5 font-(family-name:--eg-font-brand) text-[19px] font-bold leading-tight text-eg-accent">
-                    {example.range}
-                  </p>
-
-                  <h3 className="mb-2 font-(family-name:--eg-font-brand) text-[15px] font-semibold">
-                    {example.label}
-                  </h3>
-
-                  <p className="text-[13px] leading-normal text-eg-text-muted">{example.note}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         <section aria-labelledby="fattori-costo-title" className="border-t border-eg-border py-14">
           <div className="eg-container">

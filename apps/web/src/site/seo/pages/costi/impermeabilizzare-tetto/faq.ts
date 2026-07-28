@@ -2,17 +2,17 @@ export const impermeabilizzareTettoFaq = [
   {
     question: "Quanto costa impermeabilizzare un tetto al mq?",
     answer:
-      "Dipende dal perimetro del preventivo. Orientativamente: da 18 € a 24 € al mq per la sola posa su un supporto già pronto, con materiali esclusi; da 38 € a 40 € al mq per fornitura e posa di un ciclo semplice; da 40 € a 60 € al mq per un ciclo rinforzato con tessuto non tessuto. Cicli più complessi possono superare i 60 € al mq. Sono fasce alternative riferite a contenuti diversi del preventivo, non si sommano tra loro.",
+      "Dipende dalla lavorazione: i prezzari regionali ufficiali quotano voci diverse, dalla guaina bituminosa liscia (27,43 €/m² nel prezzario Friuli Venezia Giulia 2025) alla doppia membrana con protezione in rame (fino a 81,36 €/m²). Sono prezzi ufficiali di capitolati tecnici specifici, non un preventivo: ogni voce descrive una lavorazione diversa e non si sommano tra loro.",
   },
   {
     question: "Il prezzo comprende anche la rimozione della vecchia guaina?",
     answer:
-      "Di norma no: le fasce indicative riguardano la posa su un supporto già pronto. Se la guaina esistente è deteriorata e va rimossa prima della nuova posa, è un lavoro aggiuntivo da chiedere come voce separata nel preventivo: una fonte indica un ordine di grandezza di circa 5-7 € al mq per la sola rimozione, ma non è una fascia confermata da più fonti indipendenti.",
+      "I prezzari ufficiali citati in questa guida non includono una voce per la rimozione del vecchio manto: comprendono invece il conferimento in impianto della guaina bituminosa già rimossa, quotato a parte (19,53 € ogni 100 kg nel prezzario Lombardia 1/2026). La rimozione vera e propria va verificata come voce separata nel preventivo.",
   },
   {
     question: "Quanto incidono raccordi, bordi e punti critici sul costo totale?",
     answer:
-      "Ogni punto singolare, come un bordo, un comignolo, uno scarico o un lucernario, richiede una lavorazione dedicata che si somma alla superficie trattata. Non esiste una fascia affidabile per questi elementi: il numero e la complessità dei punti critici vanno valutati con un sopralluogo.",
+      "I prezzari ufficiali citati in questa guida non quotano separatamente raccordi, bordi, comignoli o lucernari: sono elementi che un capitolato tecnico reale può trattare in modo diverso da cantiere a cantiere. Chiedi al professionista come vengono conteggiati nel tuo preventivo.",
   },
   {
     question: "Se rifaccio tutto il tetto, pago la guaina separatamente?",
@@ -22,6 +22,6 @@ export const impermeabilizzareTettoFaq = [
   {
     question: "Quando conviene un intervento localizzato invece di rifare tutta la guaina?",
     answer:
-      "Quando il problema riguarda un punto o un'area limitata, ad esempio un raccordo o un bordo, un intervento mirato può bastare. Se i segni di infiltrazione sono diffusi su più punti della copertura, rifare l'intera guaina è spesso la scelta più affidabile nel tempo.",
+      "Se il problema è un manto fessurato in un punto preciso o un'infiltrazione isolata, i prezzari ufficiali prevedono voci dedicate alla riparazione puntuale, distinte dalla posa di una nuova impermeabilizzazione su tutta la superficie. Il professionista valuta quale lavorazione è più adatta in base allo stato reale della copertura.",
   },
 ];

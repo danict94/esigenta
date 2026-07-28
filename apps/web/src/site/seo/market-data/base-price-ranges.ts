@@ -319,107 +319,129 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
-  // Struttura "perimetro del preventivo" (luglio 2026): 4 fasce indicate
-  // direttamente per questa revisione, non da una nuova ricerca multi-fonte
-  // indipendente in questo passaggio (a differenza del resto del file:
-  // nessun campo confidence su queste 4 righe, per non dichiarare una
-  // verifica multi-fonte che non è stata rifatta qui). Sostituiscono la
-  // precedente suddivisione per tipo di materiale (bituminosa/liquida): le
-  // fasce sono alternative in base a cosa comprende il preventivo, non
-  // cumulabili tra loro. "Cicli complessi" resta senza limite superiore e
-  // volutamente qualitativo, non una fascia chiusa.
+  // Prezzi ufficiali da prezzari regionali dei lavori pubblici (luglio 2026),
+  // forniti direttamente per questa revisione: Prezzario Regione Friuli
+  // Venezia Giulia 2025 (voci "Nuova impermeabilizzazione") e Prezzario
+  // Regione Lombardia 1/2026 (voci "Riparazioni e preparazione" +
+  // "Smaltimento"). Nessun codice di capitolato disponibile per queste voci,
+  // non ne è stato riportato nessuno inventato. Sostituisce la precedente
+  // struttura a fasce per perimetro del preventivo (18-24/38-40/40-60/oltre
+  // 60 €/mq): qui ogni riga è un prezzo puntuale ufficiale di una specifica
+  // voce di capitolato tecnico, non una fascia di mercato — mai fuse in una
+  // fascia né sommate tra loro. Nessun campo confidence: non è verifica
+  // multi-fonte di mercato, è il prezzo pubblicato dal prezzario stesso.
+  // Nessun sizeExample: qualunque "100 mq = X €" rischierebbe di leggersi
+  // come un preventivo per un cliente privato, esattamente ciò che queste
+  // voci non sono.
   "costGuide:impermeabilizzare-tetto": {
     nationalRange:
-      "Costo complessivo: indicativamente da 3.800 € a 6.000 € (fornitura e posa su circa 100 mq)",
+      "Nessun totale complessivo: le voci sono prezzi ufficiali puntuali, non cumulabili automaticamente",
     pricePerSquareMeter:
-      "Costo al mq: da 18 € a 60 € al mq e oltre, secondo il perimetro del preventivo",
-    sourceLabel: "Dati indicativi elaborati da più fonti di settore",
-    sourceYear: "2026",
+      "Varia per lavorazione: consulta la tabella ufficiale sotto per ogni voce",
+    sourceLabel: "Prezzari ufficiali delle Regioni Friuli Venezia Giulia e Lombardia",
+    sourceYear: "2025–2026",
     priceRows: [
       {
-        label: "Sola posa indicativa",
-        category: "Panoramica generale",
+        label: "Guaina bituminosa liscia",
+        category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "da 18 € a 24 € al mq",
-        note: "stima operativa indicativa, variabile in base a superficie, accessibilità e complessità dei dettagli",
-        includes: "manodopera per la posa su un supporto già idoneo e preparato",
-        excludes: "guaina o membrana, primer e altri materiali, rimozione del vecchio strato, ripristino del supporto, ponteggi, smaltimento, raccordi complessi",
-        priceType: "manodopera",
-      },
-      {
-        label: "Fornitura e posa — ciclo semplice",
-        category: "Panoramica generale",
-        unit: "al mq",
-        range: "da 38 € a 40 € al mq",
-        note: "il prezzo può cambiare in base a tipo e qualità della guaina, numero di strati, primer, sovrapposizioni, risvolti e raccordi, condizioni della superficie",
-        includes: "fornitura dei materiali e posa di un ciclo impermeabilizzante standard su supporto in condizioni adeguate, senza armatura continua in tessuto non tessuto",
+        range: "27,43 € al mq",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025. Manto bituminoso liscio, senza finitura superficiale specifica.",
+        includes: "fornitura e posa in opera secondo la voce di capitolato",
+        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
         priceType: "corpo",
       },
       {
-        label: "Fornitura e posa — ciclo rinforzato",
-        category: "Panoramica generale",
+        label: "Guaina bituminosa ardesiata",
+        category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "da 40 € a 60 € al mq",
-        note: "il tessuto non tessuto non è un semplice accessorio: indica un ciclo più completo, con maggior consumo di materiali e più lavorazioni",
-        includes: "ciclo impermeabilizzante rinforzato con tessuto non tessuto o armatura equivalente, materiali e posa compresi",
+        range: "29,10 € al mq",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025. Finitura superficiale in scaglie di ardesia, voce distinta dalla guaina liscia.",
+        includes: "fornitura e posa in opera secondo la voce di capitolato",
+        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
         priceType: "corpo",
       },
       {
-        label: "Cicli complessi",
-        category: "Panoramica generale",
+        label: "Membrana bituminosa standard",
+        category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "oltre 60 € al mq",
-        note: "indicazione qualitativa, non una fascia chiusa: può riguardare più mani o più strati, primer specifici, supporto degradato, ripristini preliminari, numerosi raccordi, bocchettoni, comignoli, lucernari e risvolti, superfici difficili o poco accessibili",
+        range: "35,32 € al mq",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025. Voce di impermeabilizzazione con membrana bituminosa, distinta dalla guaina liscia o ardesiata.",
+        includes: "fornitura e posa in opera secondo la voce di capitolato",
+        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
+        priceType: "corpo",
       },
       {
-        label: "Rimozione della vecchia guaina",
-        category: "Costi aggiuntivi che possono incidere sul preventivo",
-        range: "da valutare con sopralluogo",
-        note: "le fonti consultate concordano che aumenta il costo rispetto alla sola posa; una fonte indica un ordine di grandezza di circa 5-7 € al mq per rimozione e smaltimento, non confermato da una seconda fonte indipendente",
+        label: "Doppia membrana con finitura in alluminio",
+        category: "Nuova impermeabilizzazione",
+        unit: "al mq",
+        range: "44,40 € al mq",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025. Sistema a doppio strato autoprotetto, finitura riflettente in alluminio.",
+        includes: "fornitura e posa in opera secondo la voce di capitolato",
+        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
+        priceType: "corpo",
       },
       {
-        label: "Preparazione o ripristino del supporto",
-        category: "Costi aggiuntivi che possono incidere sul preventivo",
-        range: "variabile in base alle condizioni del supporto",
-        note: "pulizia e trattamento delle parti ammalorate incidono sul costo ma non risultano quotati separatamente dalle fonti consultate",
+        label: "Doppia membrana con protezione in rame (4 kg/m²)",
+        category: "Nuova impermeabilizzazione",
+        unit: "al mq",
+        range: "79,24 € al mq",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025. Sistema a doppio strato con lamina di rame da 4 kg/m², voce distinta dalla variante da 4,5 kg/m².",
+        includes: "fornitura e posa in opera secondo la voce di capitolato",
+        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
+        priceType: "corpo",
       },
       {
-        label: "Ponteggi",
-        category: "Costi aggiuntivi che possono incidere sul preventivo",
-        range: "variabile in base ad altezza e accessibilità",
-        note: "necessari solo quando la copertura non è raggiungibile in sicurezza in altro modo; nessuna fonte consultata offre una fascia affidabile e generalizzabile",
+        label: "Doppia membrana con protezione in rame (4,5 kg/m²)",
+        category: "Nuova impermeabilizzazione",
+        unit: "al mq",
+        range: "81,36 € al mq",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025. Stessa tipologia della voce precedente, con maggiore grammatura del rame.",
+        includes: "fornitura e posa in opera secondo la voce di capitolato",
+        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
+        priceType: "corpo",
       },
       {
-        label: "Accessibilità",
-        category: "Costi aggiuntivi che possono incidere sul preventivo",
-        range: "variabile in base al cantiere",
-        note: "un accesso complesso incide sui tempi e sul costo della manodopera, senza una fascia generalizzabile",
+        label: "Riparazione di manto bituminoso fessurato",
+        category: "Riparazioni e preparazione",
+        unit: "al mq",
+        range: "56,56 € al mq",
+        note: "Prezzario Regione Lombardia 1/2026. Intervento localizzato su un manto esistente danneggiato, non una nuova posa su tutta la superficie.",
+        includes: "intervento di riparazione secondo la voce di capitolato",
+        excludes: "ponteggi, smaltimento del materiale rimosso",
+        priceType: "corpo",
       },
       {
-        label: "Raccordi, scarichi, comignoli e lucernari",
-        category: "Costi aggiuntivi che possono incidere sul preventivo",
-        range: "variabile per numero e complessità dei punti critici",
-        note: "ogni punto singolare richiede una lavorazione dedicata: nessuna fonte consultata quota questi elementi separatamente",
+        label: "Ricerca e riparazione di infiltrazione isolata",
+        category: "Riparazioni e preparazione",
+        unit: "cadauna",
+        range: "82,63 € cadauna",
+        note: "Prezzario Regione Lombardia 1/2026. Prezzo per intervento puntuale, non al mq.",
+        includes: "ricerca del punto di infiltrazione ed eliminazione, secondo la voce di capitolato",
+        excludes: "ponteggi, interventi estesi oltre il punto individuato",
+        priceType: "corpo",
       },
       {
-        label: "Smaltimento e trasporto",
-        category: "Costi aggiuntivi che possono incidere sul preventivo",
-        range: "variabile in base al volume e alla distanza dalla discarica",
-        note: "incidono la quantità di materiale rimosso e la distanza dal sito di conferimento autorizzato",
+        label: "Lisciatura del piano di posa",
+        category: "Riparazioni e preparazione",
+        unit: "al mq",
+        range: "13,22 € al mq",
+        note: "Prezzario Regione Lombardia 1/2026. Preparazione del supporto dopo demolizione del manto esistente: presuppone che la demolizione sia già avvenuta.",
+        includes: "lisciatura del piano di posa secondo la voce di capitolato",
+        excludes: "la demolizione del manto, ponteggi",
+        priceType: "corpo",
+      },
+      {
+        label: "Conferimento in impianto della guaina bituminosa",
+        category: "Smaltimento",
+        unit: "ogni 100 kg",
+        range: "19,53 € ogni 100 kg",
+        note: "Prezzario Regione Lombardia 1/2026. Prezzo a peso, non a superficie: il totale dipende dal peso del materiale rimosso, non dai mq trattati.",
+        includes: "conferimento del materiale a impianto autorizzato secondo la voce di capitolato",
+        excludes: "la rimozione del materiale dal cantiere",
       },
     ],
-    sizeExamples: [
-      {
-        label: "Ciclo semplice (100 mq)",
-        range: "da 3.800 € a 4.000 €",
-        note: "calcolo indicativo sulla fascia fornitura e posa — ciclo semplice (38-40 €/mq) per una superficie di riferimento di 100 mq; superfici diverse cambiano il totale in proporzione",
-      },
-      {
-        label: "Ciclo rinforzato (100 mq)",
-        range: "da 4.000 € a 6.000 €",
-        note: "calcolo indicativo sulla fascia fornitura e posa — ciclo rinforzato (40-60 €/mq) per una superficie di riferimento di 100 mq; superfici diverse cambiano il totale in proporzione",
-      },
-    ],
+    sizeExamples: [],
   },
 };
 

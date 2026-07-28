@@ -16,19 +16,18 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
   hubCategory: { slug: "tetti-e-facciate", name: "Tetti e facciate" },
   topicLabel: "impermeabilizzare un tetto",
   summary:
-    "Il costo di impermeabilizzare un tetto dipende soprattutto da cosa comprende il preventivo: dalla sola posa su un supporto già pronto fino a un ciclo completo, con o senza armatura rinforzata. Le fasce di questa guida sono indicative e non cumulabili: ogni preventivo ha un perimetro diverso e va confrontato voce per voce. Se stai già valutando un rifacimento completo, controlla il preventivo: l'impermeabilizzazione può essere già compresa e non va sommata come costo separato.",
+    "I prezzi di questa guida provengono da prezzari regionali ufficiali dei lavori pubblici e descrivono voci di capitolato tecnico specifiche, non un preventivo per lavori privati: ogni voce ha un prezzo puntuale, che non va sommato alle altre né trasformato in una fascia. Se stai già valutando un rifacimento completo, controlla il preventivo: l'impermeabilizzazione può essere già compresa e non va conteggiata come costo separato.",
   factors: [
-    "perimetro del preventivo: sola posa o fornitura e posa",
-    "tipo e qualità della guaina o membrana",
-    "numero di strati e presenza di armatura in tessuto non tessuto",
-    "primer e preparazione del supporto richiesta",
-    "sovrapposizioni, risvolti e raccordi",
-    "estensione dell'area e accessibilità della copertura",
+    "tipo di lavorazione richiesta: nuova impermeabilizzazione, riparazione o sola preparazione",
+    "tipo di manto o membrana scelta",
+    "stato del supporto esistente",
+    "estensione dell'area interessata",
+    "accessibilità della copertura e necessità di ponteggi",
     "numero di punti critici: bocchettoni, comignoli, lucernari",
-    "necessità di ponteggi",
+    "eventuale smaltimento del materiale rimosso",
   ],
   savingTips: [
-    "Chiedi sempre cosa comprende il preventivo (sola posa o fornitura e posa, ciclo semplice o rinforzato): il perimetro cambia molto il prezzo finale, non solo il materiale.",
+    "Chiedi sempre quale lavorazione tecnica è prevista nel preventivo (nuova posa, riparazione, sola preparazione): voci diverse hanno prezzi molto diversi e non sono intercambiabili.",
     "Descrivi con precisione il problema: infiltrazione localizzata, guaina diffusamente deteriorata o entrambe.",
     "Allega foto delle zone interessate, anche scattate dall'interno.",
     "Indica una superficie approssimativa dell'area da trattare.",
@@ -37,7 +36,7 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
     "Se hai già chiesto un preventivo per il rifacimento completo, chiedi se include l'impermeabilizzazione, per evitare di pagarla due volte.",
   ],
   priceTableNote:
-    "Le fasce sono indicative e servono a distinguere il perimetro del preventivo. Il costo effettivo dipende dai materiali utilizzati, dallo stato del supporto, dalla superficie, dall'accessibilità e dalla quantità di punti critici. Rimozione della vecchia impermeabilizzazione, smaltimento, ponteggi, ripristini importanti, isolamento termico e lavorazioni strutturali possono essere conteggiati separatamente.",
+    "I valori riportati derivano da prezzari regionali dei lavori pubblici 2025–2026 e si riferiscono a lavorazioni tecniche specifiche. Non costituiscono un tariffario nazionale né un preventivo per lavori privati. Il costo reale può variare in base alla regione, allo stato del supporto, alla superficie, all'accessibilità, ai dettagli costruttivi e alle opere escluse dal capitolato.",
   // Collegamento obbligatorio con rifare-tetto (confine editoriale: le due
   // guide si richiamano a vicenda) + il confine più diretto (riparare-tetto).
   // Risolti da resolveBestHrefForIntervention: "rifare-tetto" va alla sua
