@@ -95,6 +95,16 @@ export type CostGuideBaseContent = {
    * cumulabili). Nessun effetto sulle guide che non la impostano.
    */
   priceTableNote?: string;
+  /**
+   * Quando presente, la guida non ha ancora prezzi verificati su prezzari
+   * ufficiali: il composer salta del tutto la lookup in market-data (nessuna
+   * voce richiesta lì) e produce priceRows/sizeExamples vuoti e
+   * nationalRange/pricePerSquareMeter assenti. Il template mostra questo
+   * testo al posto di Sintesi numerica e Tabella prezzi (sezione tabella non
+   * renderizzata, mai vuota). Guide senza questo campo passano dallo stesso
+   * identico percorso di sempre.
+   */
+  pricingTeaser?: string;
 };
 
 export type CostGuide = {
@@ -121,9 +131,10 @@ export type CostGuide = {
    */
   topicLabel: string;
   summary: string;
-  nationalRange: string;
-  pricePerSquareMeter: string;
-  /** Righe tecniche da market-data (stessa shape, mai ridefinita qui). */
+  /** Assente quando la guida è in modalità pricingTeaser (nessun prezzo ancora). */
+  nationalRange?: string;
+  pricePerSquareMeter?: string;
+  /** Righe tecniche da market-data (stessa shape, mai ridefinita qui). Vuoto se pricingTeaser è presente. */
   priceRows: PriceRow[];
   /** Base dati mostrata sotto la tabella (da market-data, se dichiarata). */
   sourceLabel?: string;
@@ -143,4 +154,5 @@ export type CostGuide = {
   faq: { question: string; answer: string }[];
   relatedWork?: readonly CostGuideRelatedWorkItem[];
   priceTableNote?: string;
+  pricingTeaser?: string;
 };

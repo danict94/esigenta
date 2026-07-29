@@ -1,6 +1,7 @@
 import { ristrutturareBagnoGuide } from "./ristrutturare-bagno/content";
 import { rifareTettoGuide } from "./rifare-tetto/content";
 import { impermeabilizzareTettoGuide } from "./impermeabilizzare-tetto/content";
+import { rifareImpiantoElettricoGuide } from "./rifare-impianto-elettrico/content";
 import type { CostGuide, CostGuideCityPage } from "./types";
 import { isIndexableCityPage } from "../../engine/geo-policy";
 
@@ -15,6 +16,7 @@ const all: readonly CostGuide[] = [
   ristrutturareBagnoGuide,
   rifareTettoGuide,
   impermeabilizzareTettoGuide,
+  rifareImpiantoElettricoGuide,
 ];
 
 const bySlug: ReadonlyMap<string, CostGuide> = new Map(

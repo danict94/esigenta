@@ -79,8 +79,8 @@ export function CityCostGuidePage({
           <div className="eg-container">
             <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
               <div className="grid gap-4">
-                <CostHighlight label="Range nazionale" value={guide.nationalRange} />
-                <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter} />
+                <CostHighlight label="Range nazionale" value={guide.nationalRange ?? ""} />
+                <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter ?? ""} />
               </div>
 
               <div>

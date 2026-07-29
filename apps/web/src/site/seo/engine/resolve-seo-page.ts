@@ -102,6 +102,10 @@ export function resolveInterventionCostSectionPriceData(
   const guide = getCostGuideBySlug(landing.costSlug);
   if (!guide) return null;
 
+  // Guida in modalità pricingTeaser (nessun prezzo ancora verificato): mai
+  // mostrare un blocco prezzo sulla landing intervento in questo caso.
+  if (guide.pricingTeaser || !guide.nationalRange) return null;
+
   const priceRowLabels = landing.costSection?.priceRowLabels ?? [];
 
   const priceRows = priceRowLabels.map((label) => {

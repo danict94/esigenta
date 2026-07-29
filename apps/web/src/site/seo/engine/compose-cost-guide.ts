@@ -39,18 +39,43 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
   const { base, faq, localOverrides } = input;
   const familyKey = `costGuide:${base.slug}`;
 
-  const basePriceRange = resolveFamilyPriceRange(familyKey);
+  // pricingTeaser: guida deliberatamente senza prezzi ancora (in attesa di
+  // verifica su prezzari ufficiali). Nessuna lookup in market-data, nessuna
+  // voce richiesta lì — il template mostra il teaser al posto di Sintesi
+  // numerica e Tabella prezzi. Guide senza questo campo (bagno, rifare-tetto,
+  // impermeabilizzare-tetto) passano dal ramo esistente sotto, invariato.
+  const pricing = base.pricingTeaser
+    ? {
+        nationalRange: undefined,
+        pricePerSquareMeter: undefined,
+        priceRows: [],
+        sourceLabel: undefined,
+        sourceYear: undefined,
+        sizeExamples: [],
+      }
+    : (() => {
+        const basePriceRange = resolveFamilyPriceRange(familyKey);
 
-  if (!basePriceRange) {
-    throw new Error(`Missing base price range for family "${familyKey}"`);
-  }
+        if (!basePriceRange) {
+          throw new Error(`Missing base price range for family "${familyKey}"`);
+        }
 
-  if (basePriceRange.priceRows.length === 0) {
-    throw new Error(
-      `Cost guide "${base.slug}" has an empty price table in market-data: ` +
-        `a cost page must never be published without real price rows`,
-    );
-  }
+        if (basePriceRange.priceRows.length === 0) {
+          throw new Error(
+            `Cost guide "${base.slug}" has an empty price table in market-data: ` +
+              `a cost page must never be published without real price rows`,
+          );
+        }
+
+        return {
+          nationalRange: basePriceRange.nationalRange,
+          pricePerSquareMeter: basePriceRange.pricePerSquareMeter,
+          priceRows: [...basePriceRange.priceRows],
+          sourceLabel: basePriceRange.sourceLabel,
+          sourceYear: basePriceRange.sourceYear,
+          sizeExamples: [...basePriceRange.sizeExamples],
+        };
+      })();
 
   for (const item of base.relatedWork ?? []) {
     if (!taxonomyInterventionSlugs.has(item.slug)) {
@@ -137,12 +162,7 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     hubCategory: base.hubCategory,
     topicLabel: base.topicLabel,
     summary: base.summary,
-    nationalRange: basePriceRange.nationalRange,
-    pricePerSquareMeter: basePriceRange.pricePerSquareMeter,
-    priceRows: [...basePriceRange.priceRows],
-    sourceLabel: basePriceRange.sourceLabel,
-    sourceYear: basePriceRange.sourceYear,
-    sizeExamples: [...basePriceRange.sizeExamples],
+    ...pricing,
     citySections: cityPages.map((cityPage) => ({
       city: cityPage.city,
       title: cityPage.h1,
@@ -157,5 +177,6 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     faq,
     relatedWork: base.relatedWork,
     priceTableNote: base.priceTableNote,
+    pricingTeaser: base.pricingTeaser,
   };
 }

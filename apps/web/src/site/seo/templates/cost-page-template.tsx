@@ -145,12 +145,20 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               </h2>
             </div>
 
-            <div className="mb-5 grid grid-cols-1 gap-px border border-eg-border bg-eg-border sm:grid-cols-2">
-              <CostHighlight label="Costo complessivo" value={guide.nationalRange} />
-              <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter} />
-            </div>
+            {guide.pricingTeaser ? (
+              <div className="mb-6 max-w-170 border border-eg-border bg-eg-surface px-6.5 py-7">
+                <p className="text-[14.5px] leading-[1.6] text-eg-ink">{guide.pricingTeaser}</p>
+              </div>
+            ) : (
+              <>
+                <div className="mb-5 grid grid-cols-1 gap-px border border-eg-border bg-eg-border sm:grid-cols-2">
+                  <CostHighlight label="Costo complessivo" value={guide.nationalRange ?? ""} />
+                  <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter ?? ""} />
+                </div>
 
-            <p className="mb-6 max-w-155 text-[13px] leading-[1.6] text-eg-ink">{priceNote}</p>
+                <p className="mb-6 max-w-155 text-[13px] leading-[1.6] text-eg-ink">{priceNote}</p>
+              </>
+            )}
 
             <div className="flex flex-wrap items-center justify-between gap-5 border border-eg-border bg-eg-surface px-6 py-5.5">
               <div>
@@ -170,36 +178,38 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="tabella-prezzi-title" className="border-t border-eg-border py-14">
-          <div className="eg-container">
-            <div className="mb-8 max-w-170">
-              <p className={blueprintEyebrowClassName}>Tabella prezzi</p>
+        {guide.priceRows.length > 0 ? (
+          <section aria-labelledby="tabella-prezzi-title" className="border-t border-eg-border py-14">
+            <div className="eg-container">
+              <div className="mb-8 max-w-170">
+                <p className={blueprintEyebrowClassName}>Tabella prezzi</p>
 
-              <h2 id="tabella-prezzi-title" className={cn(sectionTitleClassName, "mt-3")}>
-                Voci che compongono il preventivo
-              </h2>
-            </div>
+                <h2 id="tabella-prezzi-title" className={cn(sectionTitleClassName, "mt-3")}>
+                  Voci che compongono il preventivo
+                </h2>
+              </div>
 
-            <PriceTable
-              rows={guide.priceRows}
-              sourceLabel={guide.sourceLabel}
-              sourceYear={guide.sourceYear}
-            />
+              <PriceTable
+                rows={guide.priceRows}
+                sourceLabel={guide.sourceLabel}
+                sourceYear={guide.sourceYear}
+              />
 
-            <p className="mt-6 max-w-170 text-[13.5px] leading-[1.6] text-eg-ink">
-              Alcune lavorazioni sono comprese di norma nel rifacimento, altre
-              dipendono dal capitolato o costituiscono interventi separati.
-              Controlla le voci Incluso ed Escluso e, se ti serve solo un
-              lavoro specifico, selezionalo qui sotto.
-            </p>
-
-            {guide.priceTableNote ? (
-              <p className="mt-3 max-w-170 text-[13.5px] leading-[1.6] text-eg-text-muted">
-                {guide.priceTableNote}
+              <p className="mt-6 max-w-170 text-[13.5px] leading-[1.6] text-eg-ink">
+                Alcune lavorazioni sono comprese di norma nel rifacimento, altre
+                dipendono dal capitolato o costituiscono interventi separati.
+                Controlla le voci Incluso ed Escluso e, se ti serve solo un
+                lavoro specifico, selezionalo qui sotto.
               </p>
-            ) : null}
-          </div>
-        </section>
+
+              {guide.priceTableNote ? (
+                <p className="mt-3 max-w-170 text-[13.5px] leading-[1.6] text-eg-text-muted">
+                  {guide.priceTableNote}
+                </p>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
 
         {guide.relatedWork && guide.relatedWork.length > 0 ? (
           <section aria-labelledby="interventi-specifici-title" className="border-t border-eg-border py-14">
