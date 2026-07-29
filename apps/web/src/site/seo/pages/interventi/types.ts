@@ -1,3 +1,22 @@
+/**
+ * Blocco editoriale di approfondimento (Fase 2 pilota:
+ * rifare-impianto-elettrico). Nessun campo per prezzi, tempi o numeri
+ * normativi: solo testo esplicativo per argomenti che le liste esistenti
+ * (scopeIncluded/scopeExcluded/variants/preparationItems) non coprono a
+ * sufficienza. Generico e riutilizzabile da qualunque intervento, senza
+ * dipendenze specifiche da un dominio.
+ */
+export type SeoInterventionDetailSection = {
+  /** Slug della sezione, usato come id per l'ancora e l'heading. */
+  id: string;
+  title: string;
+  intro?: string;
+  paragraphs?: readonly string[];
+  items?: readonly string[];
+  /** Nota prudente sotto la sezione (es. una precisazione o un limite). */
+  note?: string;
+};
+
 export type SeoInterventionLanding = {
   slug: string;
   title: string;
@@ -24,6 +43,13 @@ export type SeoInterventionLanding = {
     summary: string;
   };
   relatedInterventionSlugs: readonly string[];
+  /**
+   * Titolo opzionale per la sezione che elenca relatedInterventionSlugs
+   * (default "Interventi più ampi", invariato per le landing che non lo
+   * impostano). Corregge l'etichetta quando gli interventi collegati non
+   * sono effettivamente più ampi, senza toccare le altre pagine.
+   */
+  relatedInterventionsTitle?: string;
   professionalCategorySlugs: readonly string[];
   /**
    * Slug di TaxonomyIntervention reali (Phase 19.8) — lavori specifici
@@ -51,6 +77,8 @@ export type SeoInterventionLanding = {
   variants?: readonly { title: string; summary: string }[];
   /** Checklist di cosa preparare prima della richiesta (orientata al funnel). */
   preparationItems?: readonly string[];
+  /** Fase 2 — approfondimenti editoriali opzionali, vedi SeoInterventionDetailSection. */
+  detailSections?: readonly SeoInterventionDetailSection[];
   costSection?: {
     title: string;
     summary: string;

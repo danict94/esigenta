@@ -285,6 +285,63 @@ export function InterventionLandingPage({
           </section>
         ) : null}
 
+        {landing.detailSections?.length ? (
+          <section aria-labelledby="approfondimento-title" className="border-t border-eg-border py-16">
+            <div className="eg-container">
+              <div className="mb-9 max-w-160">
+                <p className={blueprintEyebrowClassName}>Come funziona nel dettaglio</p>
+
+                <h2 id="approfondimento-title" className={cn(sectionTitleClassName, "mt-3")}>
+                  Tutto quello che c&apos;&egrave; da sapere prima di iniziare
+                </h2>
+              </div>
+
+              <div className="grid max-w-160 gap-10">
+                {landing.detailSections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    id={section.id}
+                    className={index === 0 ? undefined : "border-t border-eg-border pt-10"}
+                  >
+                    <h3 className="font-(family-name:--eg-font-brand) text-lg font-semibold leading-[1.3]">
+                      {section.title}
+                    </h3>
+
+                    {section.intro ? (
+                      <p className="mt-2.5 text-[14.5px] leading-[1.6] text-eg-ink">{section.intro}</p>
+                    ) : null}
+
+                    {section.paragraphs?.length ? (
+                      <div className="mt-2.5 grid gap-3">
+                        {section.paragraphs.map((paragraph) => (
+                          <p key={paragraph} className="text-[14.5px] leading-[1.6] text-eg-ink">
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {section.items?.length ? (
+                      <ul className="mt-3.5 grid gap-x-6 sm:grid-cols-2">
+                        {section.items.map((item) => (
+                          <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-normal text-eg-ink">
+                            <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-accent" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+
+                    {section.note ? (
+                      <p className="mt-3.5 text-[13.5px] leading-[1.6] text-eg-text-muted">{section.note}</p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         {(landing.relatedInterventionSlugs.length > 0 || (landing.relatedFunnelWork?.length ?? 0) > 0) ? (
           <section aria-labelledby="lavori-collegati-title" className="border-t border-eg-border py-16">
             <div className="eg-container">
@@ -300,7 +357,7 @@ export function InterventionLandingPage({
                 {landing.relatedInterventionSlugs.length > 0 ? (
                   <div>
                     <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
-                      Interventi pi&ugrave; ampi
+                      {landing.relatedInterventionsTitle ?? "Interventi più ampi"}
                     </p>
 
                     <RelatedLinkList items={landing.relatedInterventionSlugs.map(resolveRelatedInterventionLink)} />
@@ -350,7 +407,7 @@ export function InterventionLandingPage({
               <div className="grid gap-x-8 sm:grid-cols-2">
                 <ul>
                   {landing.preparationItems.slice(0, Math.ceil(landing.preparationItems.length / 2)).map((item) => (
-                    <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-[1.5] text-eg-ink">
+                    <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-normal text-eg-ink">
                       <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-brand" />
                       <span>{item}</span>
                     </li>
@@ -359,7 +416,7 @@ export function InterventionLandingPage({
 
                 <ul>
                   {landing.preparationItems.slice(Math.ceil(landing.preparationItems.length / 2)).map((item) => (
-                    <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-[1.5] text-eg-ink">
+                    <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-normal text-eg-ink">
                       <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-brand" />
                       <span>{item}</span>
                     </li>
