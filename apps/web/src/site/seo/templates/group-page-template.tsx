@@ -10,7 +10,9 @@ import {
   serializeJsonLd,
 } from "../engine/schema-builder";
 import { getCostGuidePriceNote } from "../pages/costi";
+import { blueprintEyebrowClassName } from "../../shared/section-header";
 import { HowItWorks } from "./how-it-works";
+import { sectionTitleClassName } from "./seo-section-title";
 import { PublicShell } from "../../shell/public-shell";
 
 export type GroupLandingPageProps = {
@@ -36,41 +38,42 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <div className="eg-page eg-page-bg">
-        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
-          <div className="eg-container-narrow text-center">
-            <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
-              <Link href="/" prefetch={false}>
+        <section className="pt-[calc(var(--eg-nav-clear)+12px)] pb-14">
+          <div className="eg-container">
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-4.5 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
+            >
+              <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
                 Home
               </Link>
-              <span aria-hidden="true" className="mx-3 text-eg-text-muted">
-                /
-              </span>
-              <Link href="/servizi" prefetch={false}>
+              <span aria-hidden="true">/</span>
+              <Link href="/servizi" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
                 Servizi
               </Link>
-              <span aria-hidden="true" className="mx-3 text-eg-text-muted">
-                /
-              </span>
+              <span aria-hidden="true">/</span>
               <span className="text-eg-ink">{content.title}</span>
             </nav>
 
-            <p className="eg-eyebrow">Ambito</p>
+            <p className={blueprintEyebrowClassName}>Ambito</p>
 
-            <h1 className="eg-h1 mt-5">{content.h1}</h1>
+            <h1 className="mt-4 mb-4 max-w-175 font-(family-name:--eg-font-brand) text-[clamp(27px,3.6vw,40px)] font-semibold leading-[1.2] tracking-[-0.01em]">
+              {content.h1}
+            </h1>
 
-            <p className="mx-auto mt-[22px] max-w-[48ch] text-base leading-[1.65] text-eg-text-muted">
+            <p className="mb-6.5 max-w-150 text-base leading-[1.6] text-eg-ink">
               {content.description}
             </p>
 
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mb-4 flex flex-wrap gap-3">
               <Link href="#interventi" className="eg-button-primary">
                 Scegli l&apos;intervento <span aria-hidden="true">&darr;</span>
               </Link>
             </div>
 
-            <p className="eg-form-help mx-auto mt-4 max-w-[54ch]">
-              Gratis, senza impegno. Preventivi da professionisti qualificati
-              nella tua zona.
+            <p className="font-(family-name:--eg-font-brand) text-[13px] text-eg-ink">
+              &mdash; Gratis, senza impegno. Preventivi da professionisti
+              qualificati nella tua zona.
             </p>
           </div>
         </section>
@@ -82,9 +85,9 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
           <div className="eg-container">
             <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
               <div>
-                <p className="eg-eyebrow">Percorso in evidenza</p>
+                <p className={blueprintEyebrowClassName}>Percorso in evidenza</p>
 
-                <h2 id="percorso-in-evidenza-title" className="eg-h2 mt-4">
+                <h2 id="percorso-in-evidenza-title" className={`${sectionTitleClassName} mt-4`}>
                   {featured.name}
                 </h2>
 
@@ -148,22 +151,22 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
           className="eg-section"
         >
           <div className="eg-container">
-            <div className="mx-auto max-w-[760px] text-center">
-              <p className="eg-eyebrow">Interventi</p>
+            <div className="max-w-160">
+              <p className={blueprintEyebrowClassName}>Interventi</p>
 
-              <h2 id="interventi-gruppo-title" className="eg-h2 mt-4">
+              <h2 id="interventi-gruppo-title" className={`${sectionTitleClassName} mt-4`}>
                 {content.interventionsTitle}
               </h2>
 
-              <p className="eg-body-muted mx-auto mt-5 max-w-[46ch]">
+              <p className="eg-body-muted mt-5 max-w-[46ch]">
                 Ogni intervento ha una richiesta dedicata. Approfondisci dove
                 disponibile, oppure parti subito dal preventivo.
               </p>
             </div>
 
-            <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
+            <ul className="mt-13.5 grid gap-5 max-[860px]:mt-9.5 min-[761px]:grid-cols-2">
               {interventions.map((item, index) => (
-                <GroupInterventionRow
+                <GroupInterventionCard
                   key={item.slug}
                   index={index + 1}
                   item={item}
@@ -188,7 +191,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
             <div className="eg-container">
               <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
                 <div>
-                  <p className="eg-eyebrow">Professionisti</p>
+                  <p className={blueprintEyebrowClassName}>Professionisti</p>
 
                   <h2 id="professionisti-gruppo-title" className="eg-h3 mt-4">
                     Chi realizza questi lavori
@@ -250,7 +253,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
   );
 }
 
-function GroupInterventionRow({
+function GroupInterventionCard({
   index,
   item,
 }: {
@@ -258,60 +261,58 @@ function GroupInterventionRow({
   item: GroupInterventionItem;
 }) {
   return (
-    <li className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-start gap-6 border-b border-eg-border py-6 max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px]">
+    <li className="flex flex-col rounded-none border border-eg-border bg-eg-surface p-6.5 shadow-none transition-[transform,box-shadow] duration-200 ease-(--eg-ease-brand) hover:-translate-y-1 hover:shadow-eg-slab">
       <span
         aria-hidden="true"
         data-nosnippet=""
-        className="eg-list-index pt-1.5"
+        className="eg-list-index text-eg-accent"
       >
         {String(index).padStart(2, "0")}
       </span>
-      {" "}
-      <div>
-        <h3 className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] text-eg-ink">
-          {item.name}
-        </h3>
 
-        <p className="mt-2.5 max-w-[54ch] text-[15px] leading-[1.55] text-eg-text-muted">
-          {item.summary}
+      <h3 className="mt-3 text-[19px] font-semibold leading-[1.2] tracking-[-0.01em] text-eg-ink">
+        {item.name}
+      </h3>
+
+      <p className="mt-2.5 flex-1 text-[14px] leading-[1.55] text-eg-text-muted">
+        {item.summary}
+      </p>
+
+      {item.costRange ? (
+        <p className="mt-4 border border-dashed border-eg-border bg-eg-page px-3.5 py-3 text-[13px] leading-normal text-eg-text-muted">
+          <span className="font-medium text-eg-ink">{item.costRange}</span>
+          {item.costGuideHref ? (
+            <>
+              {" — "}
+              <Link
+                href={item.costGuideHref}
+                prefetch={false}
+                className="font-(family-name:--eg-font-brand) font-semibold text-eg-accent transition-colors hover:underline"
+              >
+                guida ai costi
+              </Link>
+            </>
+          ) : null}
         </p>
+      ) : null}
 
-        {item.costRange ? (
-          <p className="mt-2.5 text-[14px] leading-[1.55] text-eg-text-muted">
-            <span className="font-medium text-eg-ink">{item.costRange}</span>
-            {item.costGuideHref ? (
-              <>
-                {" — "}
-                <Link
-                  href={item.costGuideHref}
-                  prefetch={false}
-                  className="underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-brand-strong"
-                >
-                  guida ai costi
-                </Link>
-              </>
-            ) : null}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="flex flex-col items-end gap-2.5 pt-1.5 max-[860px]:col-start-2 max-[860px]:mt-2 max-[860px]:flex-row max-[860px]:flex-wrap max-[860px]:items-start">
+      <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-eg-border pt-4">
         {item.landingHref ? (
           <Link
             href={item.landingHref}
             prefetch={false}
-            className="eg-list-status whitespace-nowrap transition-colors hover:text-eg-brand-strong"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap border border-eg-brand-strong px-3.5 py-1.5 font-(family-name:--eg-font-brand) text-[12px] font-semibold text-eg-brand-strong transition-colors hover:bg-eg-brand-strong hover:text-eg-on-brand"
           >
-            Approfondisci &rarr;
+            Approfondisci <span aria-hidden="true">&rarr;</span>
           </Link>
         ) : null}
 
         <Link
           href={item.requestHref}
           prefetch={false}
-          className="eg-list-status text-eg-brand-strong whitespace-nowrap transition-colors hover:text-eg-ink"
+          className="inline-flex items-center gap-1.5 whitespace-nowrap font-(family-name:--eg-font-brand) text-[12.5px] font-semibold text-eg-accent transition-[gap] duration-200 hover:gap-2.5"
         >
-          Richiedi &rarr;
+          Richiedi preventivi <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
     </li>
