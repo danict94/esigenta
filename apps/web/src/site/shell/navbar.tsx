@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useId } from "react";
 
-import { buttonClassName, cn, EsigentaMark, useDismissableMenu } from "@esigenta/ui";
+import { buttonClassName, cn, EsigentaLogo, useDismissableMenu } from "@esigenta/ui";
 
 import {
   headerGutterClassName,
@@ -28,10 +29,16 @@ type NavItem = {
 
 const defaultNavItems: NavItem[] = [
   { href: "/servizi", label: "Servizi" },
+  { href: "/costi", label: "Costi" },
   { href: "/richieste/accesso", label: "Le mie richieste" },
   { href: "/area-impresa/accedi", label: "Accedi" },
   { href: "/area-impresa", label: "Sei un professionista?", variant: "cta" },
 ];
+
+/** Stesso criterio di area-impresa/private/shell/impresa-header.tsx (isActivePath). */
+function isActivePath(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 const funnelNavItems: NavItem[] = [
   { href: "/richieste/accesso", label: "Le mie richieste" },
@@ -54,6 +61,7 @@ const ctaLinkClassName = buttonClassName({
 export function Navbar({ variant = "default" }: NavbarProps) {
   const navItems = variant === "funnel" ? funnelNavItems : defaultNavItems;
   const navId = useId();
+  const pathname = usePathname();
   const { isOpen, containerRef, toggle, close } = useDismissableMenu();
 
   return (
@@ -78,10 +86,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           prefetch={false}
           aria-label="Esigenta home"
         >
-          <EsigentaMark decorative className="block size-6 shrink-0" />
-          <span className="font-(family-name:--eg-font-brand) text-lg font-bold text-eg-ink">
-            esigenta
-          </span>
+          <EsigentaLogo decorative className="h-6 w-auto shrink-0" />
         </Link>
 
         <button
@@ -106,29 +111,39 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           aria-label="Navigazione principale"
         >
           <div className="min-h-0 flex flex-col items-stretch overflow-hidden min-[861px]:flex-row min-[861px]:items-center min-[861px]:gap-6 min-[861px]:overflow-visible">
-            {navItems.map((item) =>
-              item.variant === "cta" ? (
+            {navItems.map((item) => {
+              if (item.variant === "cta") {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    prefetch={false}
+                    className={cn(ctaLinkClassName, "mx-4.5 my-3 min-[861px]:m-0")}
+                    onClick={close}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+
+              const active = isActivePath(pathname, item.href);
+
+              return (
                 <Link
                   key={item.href}
                   href={item.href}
                   prefetch={false}
-                  className={cn(ctaLinkClassName, "mx-4.5 my-3 min-[861px]:m-0")}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "eg-nav-link whitespace-nowrap border-b border-eg-border px-4.5 py-4 last:border-b-0 min-[861px]:border-0 min-[861px]:p-0",
+                    active ? "text-eg-brand-strong" : "text-eg-ink hover:text-eg-brand-strong",
+                  )}
                   onClick={close}
                 >
                   {item.label}
                 </Link>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  prefetch={false}
-                  className="eg-nav-link whitespace-nowrap border-b border-eg-border px-4.5 py-4 text-eg-ink last:border-b-0 hover:text-eg-brand-strong min-[861px]:border-0 min-[861px]:p-0"
-                  onClick={close}
-                >
-                  {item.label}
-                </Link>
-              ),
-            )}
+              );
+            })}
           </div>
         </nav>
       </div>
