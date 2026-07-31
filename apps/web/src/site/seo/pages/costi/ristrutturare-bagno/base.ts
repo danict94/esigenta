@@ -14,6 +14,9 @@ export const ristrutturareBagnoBase: CostGuideBaseContent = {
     alt: "Ristrutturazione bagno con sanitari e rivestimenti moderni",
   },
   hubCategory: { slug: "ristrutturazioni", name: "Ristrutturazioni" },
+  hubOrder: 10,
+  hubDescription:
+    "Prezzi delle lavorazioni principali, opere comprese ed elementi che possono cambiare il preventivo.",
   topicLabel: "ristrutturare un bagno",
   summary:
     "Ristrutturare un bagno significa coordinare demolizioni, impianto idraulico, rivestimenti, sanitari, rubinetteria e finiture. Il preventivo cambia soprattutto in base a metratura, stato di partenza, materiali scelti e complessità del cantiere.",

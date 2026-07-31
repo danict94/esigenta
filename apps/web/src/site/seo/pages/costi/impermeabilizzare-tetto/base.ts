@@ -14,6 +14,9 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
     alt: "Impermeabilizzazione e guaina di una copertura",
   },
   hubCategory: { slug: "tetti-e-facciate", name: "Tetti e facciate" },
+  hubOrder: 20,
+  hubDescription:
+    "Prezzi ufficiali per membrane, guaine, riparazioni e preparazione del supporto.",
   topicLabel: "impermeabilizzare un tetto",
   summary:
     "I prezzi di questa guida provengono da prezzari regionali ufficiali dei lavori pubblici e descrivono voci di capitolato tecnico specifiche, non un preventivo per lavori privati: ogni voce ha un prezzo puntuale, che non va sommato alle altre né trasformato in una fascia. Se stai già valutando un rifacimento completo, controlla il preventivo: l'impermeabilizzazione può essere già compresa e non va conteggiata come costo separato.",

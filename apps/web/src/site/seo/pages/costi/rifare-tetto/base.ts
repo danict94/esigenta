@@ -14,6 +14,9 @@ export const rifareTettoBase: CostGuideBaseContent = {
     alt: "Rifacimento tetto e copertura",
   },
   hubCategory: { slug: "tetti-e-facciate", name: "Tetti e facciate" },
+  hubOrder: 10,
+  hubDescription:
+    "Guida ai costi delle principali lavorazioni sul tetto, con voci tecniche e fattori che incidono sul preventivo.",
   topicLabel: "rifare un tetto",
   summary:
     "Rifare un tetto significa intervenire su struttura, isolamento, copertura e lattoneria. Il preventivo cambia soprattutto in base a superficie, materiali, stato della struttura e accessibilità del cantiere.",

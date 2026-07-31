@@ -71,9 +71,9 @@ export function buildGroupLandingMetadata(slug: string): Metadata {
 }
 
 export function buildCostHubMetadata(): Metadata {
-  const title = "Guide ai costi";
+  const title = "Costi dei lavori per la casa: guide e prezzi | Esigenta";
   const description =
-    "Guide ai costi pubblicate da Esigenta: range di prezzo indicativi, fattori che incidono sul preventivo e domande utili prima di richiedere un intervento.";
+    "Guide ai costi con prezzi, fonti e voci di incluso/escluso per i principali lavori in casa: non un tariffario nazionale, ma un punto di partenza per confrontare i preventivi.";
   const canonicalPath = "/costi";
 
   return {
