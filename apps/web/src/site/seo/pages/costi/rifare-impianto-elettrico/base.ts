@@ -14,6 +14,9 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
     alt: "Intervento su impianto elettrico domestico",
   },
   hubCategory: { slug: "impianti-e-manutenzioni-elettriche", name: "Impianti e manutenzioni elettriche" },
+  hubOrder: 10,
+  hubDescription:
+    "Costi di punti luce, prese, linee, componenti del quadro e opere murarie, spiegati in linguaggio semplice.",
   topicLabel: "rifare un impianto elettrico",
   summary:
     "Rifare un impianto elettrico comprende punti luce, punti presa, distribuzione interna, quadro elettrico e opere murarie: sono lavorazioni diverse, ciascuna con un proprio prezzo ufficiale, che non si sommano automaticamente in un costo unico. La tabella sotto riporta i prezzi puntuali dei prezzari regionali dei lavori pubblici: usali per confrontare le singole voci di un preventivo, non per stimare un totale.",
@@ -33,6 +36,9 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
     "Fai indicare separatamente i componenti del quadro elettrico (magnetotermici, differenziali, carpenteria) dal loro cablaggio.",
     "Chiedi quali prove e quali documenti tecnici sono compresi nel preventivo: non sono sempre inclusi allo stesso modo.",
   ],
+  nationalRangeLabel: "Come si compone il costo",
+  priceTableIntro:
+    "Le voci non sono sempre cumulative: alcune descrivono lavorazioni complete, altre singoli componenti o opere accessorie. Il costo finale non si ottiene sommando automaticamente tutte le righe.",
   priceTableNote:
     "I valori riportati derivano dai prezzari regionali dei lavori pubblici Emilia-Romagna 2025 e Friuli Venezia Giulia 2025: non sono un tariffario nazionale né un preventivo per lavori privati, e le voci di categorie diverse (punti elettrici, distribuzione, componenti del quadro, opere murarie) non vanno sommate tra loro. Nei prezzari consultati non è stata individuata una voce autonoma e omogenea per dichiarazione di conformità, verifiche finali, progetto o collaudo: il preventivo che ricevi deve indicare esplicitamente quali prove e quali documenti sono compresi.",
   relatedWork: [

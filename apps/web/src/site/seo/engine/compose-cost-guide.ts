@@ -177,6 +177,12 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     faq,
     relatedWork: base.relatedWork,
     priceTableNote: base.priceTableNote,
+    priceTableIntro: base.priceTableIntro,
+    nationalRangeLabel: base.nationalRangeLabel,
     pricingTeaser: base.pricingTeaser,
+    hubDescription: base.hubDescription,
+    hubOrder: base.hubOrder,
+    hubExcluded: base.hubExcluded,
+    hubBadge: base.hubBadge,
   };
 }

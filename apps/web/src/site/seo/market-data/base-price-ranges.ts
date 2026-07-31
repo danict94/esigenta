@@ -29,6 +29,14 @@ export type PriceRow = {
   category: string;
   /** Unità/criterio: "a corpo", "al mq", "a punto acqua", "a elemento"... */
   unit?: string;
+  /**
+   * Traduzione editoriale di `unit` in linguaggio cliente (es. "per punto"
+   * per "cadauno", "per circuito" per una dorsale). Mostrata ACCANTO a
+   * `unit`, mai al suo posto: l'unità ufficiale resta sempre visibile.
+   * Opzionale — le righe che non la impostano mostrano solo `unit`, come
+   * sempre.
+   */
+  unitLabel?: string;
   range: string;
   note: string;
   /** Cosa il range di solito comprende — solo se le fonti lo permettono. */
@@ -38,6 +46,35 @@ export type PriceRow = {
   /** Presente solo sulle righe con numeri; le righe qualitative non ce l'hanno. */
   confidence?: PriceRowConfidence;
   priceType?: PriceRowType;
+  /**
+   * Nome comprensibile per un lettore senza competenze tecniche, mostrato
+   * come titolo della riga al posto di `label` quando presente. `label`
+   * resta la denominazione tecnica ufficiale e torna visibile in una riga
+   * secondaria quando differisce da `simpleLabel`. Opzionale e generico:
+   * nessun effetto sulle righe che non lo impostano.
+   */
+  simpleLabel?: string;
+  /**
+   * Spiegazione pratica di una o due frasi (cosa comprende/non comprende in
+   * linguaggio corrente), mostrata sotto il nome cliente. Non sostituisce
+   * `note`, che resta il dettaglio tecnico/fonte. Opzionale.
+   */
+  plainExplanation?: string;
+  /**
+   * Codice di capitolato isolato come dato strutturato invece che annegato
+   * nel testo libero di `note`. Mostrato come dettaglio secondario, mai come
+   * titolo. Assente quando il codice non è attribuibile con certezza dalla
+   * fonte — mai un codice inventato.
+   */
+  technicalCode?: string;
+  /**
+   * Nota mostrata una sola volta sopra le righe della categoria a cui questa
+   * riga appartiene (es. per chiarire che varianti di una stessa linea non
+   * sono fasce di prezzo alternative). Basta impostarla su una riga della
+   * categoria: il template la mostra una volta sola, alla prima apparizione
+   * della categoria. Opzionale, generica, riutilizzabile da qualunque guida.
+   */
+  categoryNote?: string;
 };
 
 export type SizeExample = {
@@ -466,8 +503,12 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     priceRows: [
       {
         label: "Punto luce incassato singolo",
+        simpleLabel: "Nuovo punto luce a incasso",
+        plainExplanation: "Punto luce realizzato sotto traccia. Comprende gli elementi indicati dal capitolato; non comprende le opere murarie e la linea principale a monte.",
+        technicalCode: "D01.001.005",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "26,85 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo. Misurato a partire dalla scatola di derivazione in dorsale, questa esclusa.",
         includes: "tubazione, cavi, scatola da incasso, supporto, apparecchio e placca",
@@ -476,8 +517,12 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Punto luce incassato doppio",
+        simpleLabel: "Due punti luce nello stesso collegamento",
+        plainExplanation: "Permette di collegare due punti luce dalla stessa derivazione. Le opere murarie restano escluse quando non indicate.",
+        technicalCode: "D01.001.010.a",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "28,96 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo.",
         includes: "tubazione, cavi, scatola da incasso, supporto, doppio apparecchio e placca",
@@ -486,8 +531,11 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Punto luce a vista, grado di protezione IP40",
+        simpleLabel: "Nuovo punto luce con tubazione esterna",
+        plainExplanation: "Il cablaggio viene posato a vista, senza incassarlo nel muro. IP40 resta un dettaglio tecnico della voce ufficiale, non una protezione contro l'acqua.",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "31,88 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico. Codice di capitolato non attribuibile con certezza dal documento ufficiale: prezzo e descrizione riportati, codice volutamente omesso.",
         includes: "tubazione rigida a vista, cavi, supporti e apparecchio IP40",
@@ -496,8 +544,12 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Punto presa incassato 2P+T 10A",
+        simpleLabel: "Nuova presa elettrica da 10 A",
+        plainExplanation: "Presa completa per usi domestici comuni, secondo il capitolato ufficiale. Le tracce e i ripristini murari non sono compresi.",
+        technicalCode: "D01.001.020",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "49,72 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo.",
         includes: "tubazione, cavi, scatola da incasso, supporto, apparecchio e placca",
@@ -506,8 +558,12 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Punto presa incassato 2P+T 16A",
+        simpleLabel: "Nuova presa elettrica da 16 A",
+        plainExplanation: "Presa completa con portata nominale maggiore rispetto alla voce da 10 A. Non attribuire automaticamente usi specifici senza un progetto.",
+        technicalCode: "D01.001.020",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "56,07 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo.",
         includes: "tubazione, cavi, scatola da incasso, supporto, apparecchio e placca",
@@ -516,18 +572,26 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Punto comando deviato",
+        simpleLabel: "Comando per accendere una luce da due punti",
+        plainExplanation: "Consente di comandare la stessa luce da due posizioni diverse.",
+        technicalCode: "E.04.12.01.024",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "53,63 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo analitico serie civile (E.04.12.01.024): capitolato diverso e più dettagliato delle altre voci di questo blocco, con collaudo compreso nella voce stessa.",
+        note: "Prezzario Regione Emilia-Romagna 2025, metodo analitico serie civile: capitolato diverso e più dettagliato delle altre voci di questo blocco, con collaudo compreso nella voce stessa.",
         includes: "tubo corrugato, conduttori con protezione, morsetti, scatola portafrutto, apparecchio, placca e collaudo",
         excludes: "opere murarie (traccia, apertura e chiusura)",
         priceType: "corpo",
       },
       {
         label: "Collegamento equipotenziale per vano",
+        simpleLabel: "Collegamenti di sicurezza del locale",
+        plainExplanation: "Collega tra loro le parti conduttrici previste nel locale. Non è una presa, un punto luce o il rifacimento completo della messa a terra.",
+        technicalCode: "D01.001.025",
         category: "Lavorazioni complete",
         unit: "cadauno",
+        unitLabel: "per collegamento",
         range: "188,81 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), per vano con masse metalliche da collegare (es. bagno).",
         includes: "conduttore di protezione, collegamenti e morsettiera equipotenziale del vano",
@@ -536,58 +600,83 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Dorsale interna 2 x 1,5 mmq + T",
+        simpleLabel: "Linea dal quadro alla stanza",
+        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
+        technicalCode: "D01.001.030",
+        categoryNote: "Le righe seguenti rappresentano configurazioni alternative della stessa tipologia di linea. Non devono essere sommate tra loro.",
         category: "Distribuzione e linee",
         unit: "cadauna",
+        unitLabel: "per circuito",
         range: "200,14 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025 (D01.001.030), unità abitativa tipo. Misurata dal centralino di appartamento: non è il montante contatore-centralino.",
+        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo. Misurata dal centralino di appartamento: non è il montante contatore-centralino.",
         includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
         excludes: "opere murarie e montante a monte del centralino",
         priceType: "corpo",
       },
       {
         label: "Dorsale interna 2 x 2,5 mmq + T",
+        simpleLabel: "Linea dal quadro alla stanza",
+        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
+        technicalCode: "D01.001.030",
         category: "Distribuzione e linee",
         unit: "cadauna",
+        unitLabel: "per circuito",
         range: "205,09 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025 (D01.001.030), unità abitativa tipo.",
+        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo.",
         includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
         excludes: "opere murarie e montante a monte del centralino",
         priceType: "corpo",
       },
       {
         label: "Dorsale interna 2 x 4 mmq + T",
+        simpleLabel: "Linea dal quadro alla stanza",
+        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
+        technicalCode: "D01.001.030",
         category: "Distribuzione e linee",
         unit: "cadauna",
+        unitLabel: "per circuito",
         range: "218,75 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025 (D01.001.030), unità abitativa tipo.",
+        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo.",
         includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
         excludes: "opere murarie e montante a monte del centralino",
         priceType: "corpo",
       },
       {
         label: "Dorsale interna 2 x 6 mmq + T",
+        simpleLabel: "Linea dal quadro alla stanza",
+        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
+        technicalCode: "D01.001.030",
         category: "Distribuzione e linee",
         unit: "cadauna",
+        unitLabel: "per circuito",
         range: "253,05 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025 (D01.001.030), unità abitativa tipo.",
+        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo.",
         includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
         excludes: "opere murarie e montante a monte del centralino",
         priceType: "corpo",
       },
       {
         label: "Dorsale interna 2 x 10 mmq + T",
+        simpleLabel: "Linea dal quadro alla stanza",
+        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
+        technicalCode: "D01.001.030",
         category: "Distribuzione e linee",
         unit: "cadauna",
+        unitLabel: "per circuito",
         range: "361,86 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025 (D01.001.030), unità abitativa tipo. Sezione maggiore, tipicamente per linee dedicate a carichi specifici.",
+        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo. Sezione maggiore, tipicamente per linee dedicate a carichi specifici.",
         includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
         excludes: "opere murarie e montante a monte del centralino",
         priceType: "corpo",
       },
       {
         label: "Punto luce a vista, grado di protezione IP54",
+        simpleLabel: "Punto luce a vista con maggiore protezione",
+        plainExplanation: "Voce FVG con grado IP54, che indica una maggiore protezione contro ingresso di polvere e spruzzi. Non implica automaticamente idoneità a qualsiasi ambiente.",
+        categoryNote: "Questi prezzi non sono alternative equivalenti alla tabella principale: cambiano regione, capitolato e contenuto della lavorazione.",
         category: "Esempi da un altro prezzario regionale (Friuli Venezia Giulia)",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "40,55 € cad",
         note: "Prezzario Regione Friuli Venezia Giulia 2025. Non è una media nazionale: il capitolato di questa regione può differire da quello Emilia-Romagna, e il grado di protezione IP54 non è confrontabile con la voce IP40 del blocco principale.",
         includes: "tubazione a vista, cavi, supporti e apparecchio IP54",
@@ -596,8 +685,11 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Punto presa 2P+T 10A",
+        simpleLabel: "Presa completa in una specifica modalità di posa",
+        plainExplanation: "Il prezzo riguarda il particolare sistema di posa descritto dal prezzario FVG e non è direttamente equivalente alla presa Emilia-Romagna.",
         category: "Esempi da un altro prezzario regionale (Friuli Venezia Giulia)",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "79,12 € cad",
         note: "Prezzario Regione Friuli Venezia Giulia 2025. Voce con una modalità di posa specifica di questo prezzario: non confrontare direttamente con il punto presa Emilia-Romagna senza verificare il capitolato.",
         includes: "tubazione, cavi, scatola, supporto, apparecchio e placca secondo il capitolato FVG",
@@ -606,8 +698,11 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Sola posa di presa in scatola predisposta",
+        simpleLabel: "Solo montaggio della presa",
+        plainExplanation: "Comprende la sola installazione in una scatola già predisposta. Materiali, tubazioni, scatola e linee devono essere già presenti.",
         category: "Esempi da un altro prezzario regionale (Friuli Venezia Giulia)",
         unit: "cadauno",
+        unitLabel: "per punto",
         range: "15,18 € cad",
         note: "Prezzario Regione Friuli Venezia Giulia 2025. Voce di sola posa: non include materiali, tubo o scatola, già presenti. Non va fusa con la voce di punto presa completo qui sopra.",
         includes: "montaggio dell'apparecchio in una scatola già predisposta",
@@ -616,18 +711,26 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Magnetotermico differenziale",
-        category: "Componenti del quadro elettrico",
+        simpleLabel: "Singolo interruttore di protezione",
+        plainExplanation: "È un dispositivo installato dentro il quadro. Non comprende l'intero quadro, gli altri interruttori, il cablaggio o la configurazione.",
+        categoryNote: "Questi valori riguardano singoli componenti o carpenterie e non rappresentano il costo di un quadro elettrico completo, cablato e configurato.",
+        category: "Singoli componenti del quadro, non quadro completo",
         unit: "cadauno",
+        unitLabel: "per dispositivo",
         range: "173,32 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025. Componente da installare nel quadro, non un quadro completo: il costo del quadro dipende dal numero di componenti, dalla carpenteria e dal cablaggio.",
+        note: "Prezzario Regione Emilia-Romagna 2025.",
         includes: "fornitura e posa in opera del dispositivo nel quadro",
         excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
         priceType: "corpo",
       },
       {
         label: "Centralino da incasso vuoto, 6 moduli",
-        category: "Componenti del quadro elettrico",
+        simpleLabel: "Contenitore vuoto del quadro elettrico (6 posti)",
+        plainExplanation: "È la sola scatola che ospita i dispositivi. Non comprende magnetotermici, differenziali, cablaggio e configurazione.",
+        technicalCode: "E.02.13.20.001",
+        category: "Singoli componenti del quadro, non quadro completo",
         unit: "cadauno",
+        unitLabel: "per contenitore",
         range: "66,61 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025. Involucro vuoto, non un quadro cablato: il prezzo del centralino comprende le verifiche dell'involucro stesso, non del quadro completato.",
         includes: "fornitura e posa dell'involucro da incasso",
@@ -636,8 +739,11 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Centralino da incasso vuoto, 12 moduli",
-        category: "Componenti del quadro elettrico",
+        simpleLabel: "Contenitore vuoto del quadro elettrico (12 posti)",
+        plainExplanation: "È la sola scatola che ospita i dispositivi. Non comprende magnetotermici, differenziali, cablaggio e configurazione.",
+        category: "Singoli componenti del quadro, non quadro completo",
         unit: "cadauno",
+        unitLabel: "per contenitore",
         range: "85,57 € cad",
         note: "Prezzario Regione Emilia-Romagna 2025. Involucro vuoto, non un quadro cablato.",
         includes: "fornitura e posa dell'involucro da incasso",
@@ -646,38 +752,51 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Blocco differenziale, configurazione base",
-        category: "Componenti del quadro elettrico",
+        simpleLabel: "Componente di protezione differenziale",
+        plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
+        category: "Singoli componenti del quadro, non quadro completo",
         unit: "cadauno",
+        unitLabel: "per dispositivo",
         range: "151,66 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Componente, non un quadro completo.",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025.",
         includes: "fornitura e posa in opera del blocco differenziale",
         excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
         priceType: "corpo",
       },
       {
         label: "Blocco differenziale, configurazione intermedia",
-        category: "Componenti del quadro elettrico",
+        simpleLabel: "Componente di protezione differenziale",
+        plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
+        category: "Singoli componenti del quadro, non quadro completo",
         unit: "cadauno",
+        unitLabel: "per dispositivo",
         range: "184,87 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Componente, non un quadro completo.",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025.",
         includes: "fornitura e posa in opera del blocco differenziale",
         excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
         priceType: "corpo",
       },
       {
         label: "Blocco differenziale, configurazione maggiorata",
-        category: "Componenti del quadro elettrico",
+        simpleLabel: "Componente di protezione differenziale",
+        plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
+        category: "Singoli componenti del quadro, non quadro completo",
         unit: "cadauno",
+        unitLabel: "per dispositivo",
         range: "281,37 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Componente, non un quadro completo.",
+        note: "Prezzario Regione Friuli Venezia Giulia 2025.",
         includes: "fornitura e posa in opera del blocco differenziale",
         excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
         priceType: "corpo",
       },
       {
         label: "Traccia su muratura in mattoni forati",
+        simpleLabel: "Apertura e chiusura del muro per i cavi — mattoni forati",
+        plainExplanation: "Prezzo per metro di traccia. Può aggiungersi alle lavorazioni elettriche quando occorre aprire il muro: a differenza delle varianti di dorsale, questa voce è complementare e si somma ai punti a cui serve.",
+        technicalCode: "B01.013",
         category: "Opere murarie",
         unit: "al metro",
+        unitLabel: "per metro di traccia",
         range: "15,92 € al metro",
         note: "Prezzario Regione Emilia-Romagna 2025, capitolato generale edilizia (non specifico dell'impiantistica elettrica), fino a 100 cmq di sezione.",
         includes: "apertura, chiusura e avvicinamento delle macerie, quando previsto",
@@ -686,8 +805,12 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
       {
         label: "Traccia su muratura in mattoni pieni",
+        simpleLabel: "Apertura e chiusura del muro per i cavi — mattoni pieni",
+        plainExplanation: "Prezzo per metro di traccia su una muratura più impegnativa da lavorare.",
+        technicalCode: "B01.010.020",
         category: "Opere murarie",
         unit: "al metro",
+        unitLabel: "per metro di traccia",
         range: "20,61 € al metro",
         note: "Prezzario Regione Emilia-Romagna 2025, capitolato generale edilizia (non specifico dell'impiantistica elettrica), fino a 100 cmq di sezione.",
         includes: "apertura, chiusura e avvicinamento delle macerie, quando previsto",

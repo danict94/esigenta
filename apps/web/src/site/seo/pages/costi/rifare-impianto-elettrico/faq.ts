@@ -1,42 +1,42 @@
 export const rifareImpiantoElettricoFaq = [
   {
-    question: "Perché la guida non mostra un costo totale per rifare l'impianto?",
+    question: "Quanto costa realizzare un nuovo punto luce?",
     answer:
-      "Perché i prezzi ufficiali disponibili sono voci puntuali di prezzario (per punto luce, per punto presa, per metro di traccia, per componente del quadro) e non un pacchetto unico: sommarle in un totale nazionale significherebbe inventare un numero che nessun prezzario ufficiale certifica. Il totale del tuo impianto dipende da quanti punti servono, da come sono distribuiti e dal tipo di posa.",
+      "Dipende dal tipo di posa: un punto luce sotto traccia costa 26,85 € se singolo o 28,96 € se doppio (due punti luce dalla stessa derivazione), mentre un punto luce con tubazione a vista, senza incassarlo nel muro, costa 31,88 €. Sono prezzi ufficiali del prezzario Emilia-Romagna 2025 e non comprendono l'apertura del muro.",
   },
   {
-    question: "Un punto luce a vista costa come un punto luce incassato?",
+    question: "Quanto costa aggiungere una nuova presa elettrica?",
     answer:
-      "No. Nei prezzari ufficiali sono voci distinte: il punto luce incassato ha un prezzo diverso da quello a vista, perché cambiano la posa e i materiali (tubazione rigida a vista invece che sotto traccia). Verifica sempre nel preventivo quale tipo di posa è previsto per ogni punto.",
+      "Una presa completa costa 49,72 € nella versione da 10 A, adatta agli usi comuni, o 56,07 € nella versione da 16 A, con portata maggiore. Sono prezzi ufficiali del prezzario Emilia-Romagna 2025; l'uso specifico della presa va comunque stabilito con il professionista, non dedotto automaticamente dall'amperaggio.",
   },
   {
-    question: "Cosa cambia tra un punto presa 10A e uno 16A?",
+    question: "Cosa comprende il prezzo di una presa completa?",
     answer:
-      "La sezione dei cavi e la portata dell'apparecchio: nei prezzari ufficiali sono voci con prezzi diversi. Un impianto con più prese da 16A, tipiche per elettrodomestici a maggior assorbimento, costa di più di uno con sole prese da 10A a parità di numero di punti.",
+      "Comprende tubazione, cavi, scatola da incasso, supporto, apparecchio e placca, secondo il capitolato ufficiale. Non comprende l'apertura e la chiusura del muro (la traccia), che è una voce a parte, prezzata al metro.",
   },
   {
-    question: "Cosa comprende il prezzo di un punto elettrico e cosa resta escluso?",
+    question: "Cosa significa 'solo montaggio' in un preventivo?",
     answer:
-      "Le voci ufficiali di punto luce e punto presa comprendono di norma tubazione, cavi, scatola, supporto, apparecchio e placca, ma escludono le opere murarie: apertura e chiusura della traccia sono prezzate a parte, al metro lineare. Controlla sempre nel preventivo se le tracce sono incluse o quotate separatamente.",
+      "Significa che il prezzo copre solo l'installazione dell'apparecchio in una scatola già predisposta, senza materiali, tubazione, scatola o cavi: per esempio, il prezzario Friuli Venezia Giulia 2025 quota questo solo montaggio 15,18 €, contro i 79,12 € di una presa completa nello stesso prezzario. Le due voci non vanno confuse.",
   },
   {
-    question: "La distribuzione interna (dorsale) è la stessa cosa del montante contatore-centralino?",
+    question: "Perché non è indicato un prezzo unico per il quadro completo?",
     answer:
-      "No, sono due lavorazioni diverse. La dorsale interna collega il centralino di appartamento ai punti elettrici ed è prezzata a corpo per sezione di cavo. Il montante, che collega il contatore al centralino, è una voce distinta: in questa guida non è pubblicato un prezzo ufficiale perché il codice di capitolato non è attribuibile con certezza dal documento regionale consultato.",
+      "Perché i prezzi ufficiali disponibili riguardano i singoli componenti del quadro (un interruttore di protezione, il contenitore vuoto, un gruppo di protezione differenziale), non un quadro finito. Il costo del quadro completo dipende anche da cablaggio, configurazione e progettazione, voci che nessun prezzario consultato quota come pacchetto unico: vanno chieste separatamente nel preventivo.",
   },
   {
-    question: "I componenti del quadro elettrico (magnetotermici, differenziali) coprono tutto il costo del quadro?",
+    question: "Le tracce nel muro sono comprese nel prezzo dei punti elettrici?",
     answer:
-      "No. I prezzi ufficiali disponibili riguardano i singoli componenti (magnetotermico, differenziale, involucro vuoto), non un quadro completo e cablato. Il costo del quadro finito dipende dal numero di componenti necessari, dalla carpenteria scelta, dal cablaggio e dalla progettazione, voci che vanno chieste separatamente nel preventivo.",
+      "No. Le voci di punto luce, punto presa e comando non comprendono l'apertura e la chiusura del muro: la traccia è una lavorazione a parte, prezzata al metro (15,92 € su mattoni forati, 20,61 € su mattoni pieni) e si aggiunge al prezzo del punto elettrico quando serve aprire la parete.",
   },
   {
-    question: "Le tracce murarie comprendono anche intonaco e tinteggiatura?",
+    question: "Cosa sono le linee che collegano il quadro alle stanze?",
     answer:
-      "No. Le voci ufficiali di traccia comprendono apertura, chiusura e avvicinamento delle macerie quando previsto, ma escludono intonaco, rasatura, tinteggiatura, trasporto e smaltimento. Chiedi sempre se queste fasi di finitura sono incluse nel preventivo o a parte.",
+      "Sono i cavi che portano la corrente dal quadro elettrico dell'appartamento fino alla zona dove si trovano i punti luce e le prese, prima di arrivare ai singoli apparecchi: nel prezzario sono chiamate tecnicamente 'dorsale interna' e sono prezzate a parte rispetto ai singoli punti elettrici.",
   },
   {
-    question: "Perché nella guida compaiono prezzi di due regioni diverse?",
+    question: "Posso sommare tutte le voci per ottenere il totale?",
     answer:
-      "La tabella principale usa i prezzi ufficiali del prezzario Emilia-Romagna 2025. Il blocco 'Esempi da un altro prezzario regionale' riporta alcune voci del prezzario Friuli Venezia Giulia 2025 a titolo di confronto, ma non sono una media nazionale: il capitolato può differire tra regioni, quindi non vanno sommate o fuse con le voci Emilia-Romagna.",
+      "No. Alcune voci sono lavorazioni complete (un punto luce, una presa), altre sono singoli componenti che da soli non fanno un lavoro finito (un interruttore del quadro), altre ancora sono opere accessorie che si aggiungono solo quando servono (le tracce murarie). Il costo del tuo impianto dipende da quali voci ti servono davvero, non da una somma automatica di tutte le righe della tabella.",
   },
 ];

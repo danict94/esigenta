@@ -96,6 +96,21 @@ export type CostGuideBaseContent = {
    */
   priceTableNote?: string;
   /**
+   * Messaggio opzionale mostrato PRIMA della tabella prezzi, in posizione
+   * immediatamente visibile (es. avviso che le voci non sono sempre
+   * cumulative). Assente = nessun paragrafo aggiuntivo, stesso comportamento
+   * di sempre. Complementare a `priceTableNote`, che resta dopo la tabella.
+   */
+  priceTableIntro?: string;
+  /**
+   * Etichetta alternativa per l'highlight "Costo complessivo" in Sintesi.
+   * Usala quando quel testo fisso genererebbe una contraddizione con
+   * `nationalRange` (es. prezzi puntuali non cumulabili, senza un vero
+   * totale). Assente = "Costo complessivo" come sempre, nessun effetto sulle
+   * guide che non la impostano.
+   */
+  nationalRangeLabel?: string;
+  /**
    * Quando presente, la guida non ha ancora prezzi verificati su prezzari
    * ufficiali: il composer salta del tutto la lookup in market-data (nessuna
    * voce richiesta lì) e produce priceRows/sizeExamples vuoti e
@@ -105,6 +120,32 @@ export type CostGuideBaseContent = {
    * identico percorso di sempre.
    */
   pricingTeaser?: string;
+  /**
+   * Descrizione breve dedicata alla card di /costi, distinta da `summary`
+   * (che resta il paragrafo hero della pagina intera della guida). Opzionale:
+   * quando assente, la card di /costi ricade su `summary` — nessun effetto
+   * sulle guide che non la impostano.
+   */
+  hubDescription?: string;
+  /**
+   * Ordine di comparsa nella categoria dell'hub /costi, crescente. Opzionale:
+   * le guide senza questo campo vanno in fondo alla loro categoria, ordinate
+   * per titolo poi slug (mai per ordine di import). Nessun effetto sulla
+   * pagina della guida stessa.
+   */
+  hubOrder?: number;
+  /**
+   * Esclude la guida dall'hub /costi pur restando pubblicata e raggiungibile
+   * al proprio URL. Default false: nessuna guida è esclusa a meno di
+   * impostarlo esplicitamente.
+   */
+  hubExcluded?: boolean;
+  /**
+   * Etichetta breve opzionale mostrata sulla card dell'hub (es. "Nuovo").
+   * Da valorizzare solo con un criterio editoriale reale, mai per riempire
+   * lo spazio — assente per la maggior parte delle guide.
+   */
+  hubBadge?: string;
 };
 
 export type CostGuide = {
@@ -154,5 +195,11 @@ export type CostGuide = {
   faq: { question: string; answer: string }[];
   relatedWork?: readonly CostGuideRelatedWorkItem[];
   priceTableNote?: string;
+  priceTableIntro?: string;
+  nationalRangeLabel?: string;
   pricingTeaser?: string;
+  hubDescription?: string;
+  hubOrder?: number;
+  hubExcluded?: boolean;
+  hubBadge?: string;
 };

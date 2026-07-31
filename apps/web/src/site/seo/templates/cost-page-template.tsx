@@ -152,7 +152,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             ) : (
               <>
                 <div className="mb-5 grid grid-cols-1 gap-px border border-eg-border bg-eg-border sm:grid-cols-2">
-                  <CostHighlight label="Costo complessivo" value={guide.nationalRange ?? ""} />
+                  <CostHighlight label={guide.nationalRangeLabel ?? "Costo complessivo"} value={guide.nationalRange ?? ""} />
                   <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter ?? ""} />
                 </div>
 
@@ -188,6 +188,12 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                   Voci che compongono il preventivo
                 </h2>
               </div>
+
+              {guide.priceTableIntro ? (
+                <p className="mb-6 max-w-170 border border-eg-border bg-eg-surface px-5 py-4 text-[13.5px] leading-[1.6] text-eg-ink">
+                  {guide.priceTableIntro}
+                </p>
+              ) : null}
 
               <PriceTable
                 rows={guide.priceRows}
@@ -514,21 +520,29 @@ function PriceTable({
         <span>Note</span>
       </div>
 
-      {groups.map((group, index) => (
-        <div key={group.category} className={index === 0 ? "mt-0" : "mt-2"}>
-          <p
-            className={`font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-[0.08em] text-eg-text-muted ${index === 0 ? "pt-0" : "pt-5.5"} pb-2.5`}
-          >
-            {group.category}
-          </p>
+      {groups.map((group, index) => {
+        const categoryNote = group.rows.find((row) => row.categoryNote)?.categoryNote;
 
-          <div className="bg-eg-surface">
-            {group.rows.map((row) => (
-              <PriceTableRow key={row.label} row={row} />
-            ))}
+        return (
+          <div key={group.category} className={index === 0 ? "mt-0" : "mt-2"}>
+            <p
+              className={`font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-[0.08em] text-eg-text-muted ${index === 0 ? "pt-0" : "pt-5.5"} pb-2.5`}
+            >
+              {group.category}
+            </p>
+
+            {categoryNote ? (
+              <p className="mb-2.5 text-[12.5px] leading-normal text-eg-text-muted">{categoryNote}</p>
+            ) : null}
+
+            <div className="bg-eg-surface">
+              {group.rows.map((row) => (
+                <PriceTableRow key={row.label} row={row} />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {sourceLabel ? (
         <p className="mt-4.5 text-center font-(family-name:--eg-font-brand) text-[12.5px] text-eg-ink">
@@ -556,9 +570,25 @@ function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
       className={`grid gap-x-4 gap-y-1 border-b border-eg-border px-3.5 py-3.5 text-sm leading-6 transition-colors hover:bg-eg-page md:grid md:items-start md:gap-y-0 ${priceTableGridCols}`}
     >
       <div>
-        <p className="font-semibold text-eg-ink">{row.label}</p>
+        <p className="font-semibold text-eg-ink">{row.simpleLabel ?? row.label}</p>
+
+        {row.plainExplanation ? (
+          <p className="mt-1 text-[12.5px] leading-normal text-eg-text-muted">{row.plainExplanation}</p>
+        ) : null}
+
+        {row.simpleLabel && row.simpleLabel !== row.label ? (
+          <p className="mt-1 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">
+            {row.label}
+            {row.technicalCode ? ` — ${row.technicalCode}` : null}
+          </p>
+        ) : row.technicalCode ? (
+          <p className="mt-1 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">{row.technicalCode}</p>
+        ) : null}
+
         {row.unit ? (
-          <p className="mt-0.5 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">{row.unit}</p>
+          <p className="mt-0.5 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">
+            {row.unitLabel ? `${row.unitLabel} (${row.unit})` : row.unit}
+          </p>
         ) : null}
       </div>
 
