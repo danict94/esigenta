@@ -48,12 +48,12 @@
    * ============================================================ */
 
   /* Superfici — carta (page) + carta-forte (surface) */
-  --eg-color-page: #f1f4f3;
+  --eg-color-page: #fcfcfc;
   /* Canvas dell'area applicativa privata (Area Impresa): stesso tono di
    * Page ma token semantico indipendente, senza la griglia tecnica — mai
    * usare --eg-bg-grid-image sopra questo colore. Ritoccabile senza
    * intaccare le pagine pubbliche/marketing. */
-  --eg-color-app: #f1f4f3;
+  --eg-color-app: #fcfcfc;
   --eg-color-surface: #ffffff;
   --eg-color-surface-muted: #dce3e4;
 
