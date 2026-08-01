@@ -1,12 +1,16 @@
 import { PublicShell } from "../../site/shell/public-shell";
 import { RequestFlowShell } from "./components/request-flow-shell";
 
+import type { JsonRuntimeFunnelPayload } from "./runtime-payload";
+
 type RequestFlowPageProps = {
   interventionSlug: string;
+  initialRuntime: JsonRuntimeFunnelPayload;
 };
 
 export function RequestFlowPage({
   interventionSlug,
+  initialRuntime,
 }: RequestFlowPageProps) {
   return (
     <PublicShell navbarVariant="funnel" showFooter={false}>
@@ -21,7 +25,10 @@ export function RequestFlowPage({
                 </p>
               </header>
 
-              <RequestFlowShell interventionSlug={interventionSlug} />
+              <RequestFlowShell
+                interventionSlug={interventionSlug}
+                initialRuntime={initialRuntime}
+              />
             </div>
           </div>
         </section>

@@ -3,10 +3,8 @@
 import { useRef, useState } from "react";
 
 import type {
-  RequestDraft,
   RuntimeAnswers,
   RuntimeStepId,
-  RuntimeFunnelPayload,
 } from "@esigenta/funnel";
 
 import {
@@ -17,19 +15,12 @@ import {
 
 import { trackGenerateLead } from "../../../site/analytics/ga4-events";
 import { RequestStepUI } from "./request-step-ui";
+import type {
+  JsonRequestDraft,
+  JsonRuntimeFunnelPayload,
+} from "../runtime-payload";
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-
-type JsonRequestDraft = Omit<RequestDraft, "createdAt"> & {
-  createdAt: string;
-};
-
-export type JsonRuntimeFunnelPayload = Omit<
-  RuntimeFunnelPayload,
-  "requestDraft"
-> & {
-  requestDraft: JsonRequestDraft;
-};
 
 type RequestStepperProps = {
   payload: JsonRuntimeFunnelPayload;

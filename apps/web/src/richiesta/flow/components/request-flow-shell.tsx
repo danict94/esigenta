@@ -1,106 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { resolveFunnelQuery } from "./resolve-funnel-query";
 import { RequestStepper } from "./request-stepper";
 
-import type { JsonRuntimeFunnelPayload } from "./request-stepper";
+import type { JsonRuntimeFunnelPayload } from "../runtime-payload";
 
 type RequestFlowShellProps = {
   interventionSlug: string;
+  initialRuntime: JsonRuntimeFunnelPayload;
 };
 
 export function RequestFlowShell({
   interventionSlug,
+  initialRuntime,
 }: RequestFlowShellProps) {
   const router = useRouter();
-  const [runtimePayload, setRuntimePayload] =
-    useState<JsonRuntimeFunnelPayload | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [resolvedQuery] = useState<string | undefined>(() =>
-    resolveFunnelQuery(interventionSlug),
-  );
 
-  useEffect(() => {
-    let cancelled = false;
+  // originalQuery only ever exists in sessionStorage (home-hero.tsx never
+  // puts it in the URL, on purpose — see resolve-funnel-query.ts), so the
+  // server-built initialRuntime can't carry it. It doesn't affect steps or
+  // branching (see build-request-draft.ts), so attaching it here is a plain
+  // synchronous merge, not a rebuild of runtime state.
+  const [runtimePayload] = useState<JsonRuntimeFunnelPayload>(() => {
+    const resolvedQuery = resolveFunnelQuery(interventionSlug);
 
-    async function loadRuntimeFunnel() {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch("/api/funnel/runtime", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            interventionSlug,
-            query: resolvedQuery,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error();
-        }
-
-        const payload = (await response.json()) as JsonRuntimeFunnelPayload;
-
-        if (!cancelled) {
-          setRuntimePayload(payload);
-        }
-      } catch {
-        if (!cancelled) {
-          setError(
-            "Non siamo riusciti ad aprire il percorso guidato. Riprova tra poco.",
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    void loadRuntimeFunnel();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [interventionSlug, resolvedQuery]);
-
-  if (isLoading) {
-    return (
-      <div className="eg-panel mt-8 p-5 text-sm text-eg-text-muted md:p-6">
-        Prepariamo il percorso guidato...
-      </div>
-    );
-  }
-
-  if (error || !runtimePayload) {
-    return (
-      <div className="eg-panel mt-8 p-5 md:p-6">
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-eg-error">
-            {error ?? "Percorso guidato non disponibile."}
-          </p>
-
-          <button
-            type="button"
-            className="eg-button-ghost w-full sm:w-fit"
-            onClick={() => {
-              router.push("/");
-            }}
-          >
-            Torna alla ricerca
-          </button>
-        </div>
-      </div>
-    );
-  }
+    return resolvedQuery
+      ? { ...initialRuntime, originalQuery: resolvedQuery }
+      : initialRuntime;
+  });
 
   return (
     <RequestStepper

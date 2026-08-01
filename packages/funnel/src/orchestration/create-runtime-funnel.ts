@@ -34,9 +34,18 @@ export type FunnelSelectedIntervention = {
   description: string | null
 }
 
-export type CreateRuntimeFunnelInput = {
+/**
+ * A caller either already resolved the intervention (e.g. the funnel page,
+ * which needs the record for notFound() handling before it can render
+ * anything, so the lookup must not be repeated) or only has the slug (e.g.
+ * the runtime API route). Both resolve to the same FunnelResolution below.
+ */
+export type FunnelInterventionSource =
+  | { interventionSlug: string; intervention?: undefined }
+  | { intervention: FunnelSelectedIntervention; interventionSlug?: undefined }
+
+export type CreateRuntimeFunnelInput = FunnelInterventionSource & {
   query?: string
-  interventionSlug: string
 }
 
 export type RuntimeFunnelPayload = {
@@ -67,10 +76,21 @@ function normalizeOptionalText(
   return trimmed ? trimmed : undefined
 }
 
-async function resolveInterventionForFunnel(
-  interventionSlug: string,
+function isResolvedInterventionSource(
+  source: FunnelInterventionSource,
+): source is {
+  intervention: FunnelSelectedIntervention
+  interventionSlug?: undefined
+} {
+  return source.intervention !== undefined
+}
+
+async function resolveFunnelIntervention(
+  source: FunnelInterventionSource,
 ): Promise<FunnelResolution | null> {
-  const data = await findInterventionForFunnel(interventionSlug)
+  const data = isResolvedInterventionSource(source)
+    ? source.intervention
+    : await findInterventionForFunnel(source.interventionSlug)
 
   if (!data) return null
 
@@ -123,14 +143,14 @@ function buildProfile(
 
 export async function createRuntimeFunnel({
   query,
-  interventionSlug,
+  ...source
 }: CreateRuntimeFunnelInput): Promise<RuntimeFunnelPayload | null> {
   const normalizedQuery =
     normalizeOptionalText(query)
 
   const resolution =
-    await resolveInterventionForFunnel(
-      interventionSlug,
+    await resolveFunnelIntervention(
+      source,
     )
 
   if (!resolution) {
@@ -191,8 +211,8 @@ export async function buildRuntimeRequestDraft({
     )
 
   const resolution =
-    await resolveInterventionForFunnel(
-      interventionSlug,
+    await resolveFunnelIntervention(
+      { interventionSlug },
     )
 
   if (!resolution) {

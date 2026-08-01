@@ -46,6 +46,12 @@ export function HomeHero() {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  // Ref = guardia sincrona letta dentro selectResult (mousedown e click dello
+  // stesso click fisico arrivano come due eventi nativi separati; una guardia
+  // via useState non è garantita committata tra l'uno e l'altro). Lo state
+  // gemello serve solo a far ri-renderizzare il bottone con "Apertura...".
+  const pendingResultSlugRef = useRef<string | null>(null);
+  const [pendingResultSlug, setPendingResultSlug] = useState<string | null>(null);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -149,9 +155,34 @@ export function HomeHero() {
     inputRef.current?.focus();
   }
 
+  // Handler centrale per mouse (onMouseDown), touch (mousedown sintetico) e
+  // tastiera (onClick da Enter/Space su un button focalizzato): un solo
+  // punto che decide se la navigazione parte. La guardia sul ref blocca sia
+  // il doppio invio dello stesso click fisico (mousedown poi click sullo
+  // stesso bottone) sia click concorrenti su risultati diversi durante una
+  // navigazione già in corso.
   function selectResult(result: SearchResult) {
+    if (pendingResultSlugRef.current) {
+      return;
+    }
+
+    pendingResultSlugRef.current = result.slug;
+    setPendingResultSlug(result.slug);
     setValidationError(null);
-    goToResult(result);
+
+    try {
+      goToResult(result);
+    } catch {
+      // router.push (o storeFunnelQuery) ha lanciato in modo sincrono prima
+      // che una navigazione fosse davvero iniziata: sblocca subito, non
+      // lasciare la search bloccata in attesa di una navigazione che non
+      // partirà mai. router.push non espone una Promise (Next 16: `push():
+      // void`), quindi non c'è un segnale asincrono di completamento da
+      // attendere qui — il caso di successo si risolve da sé quando questo
+      // componente viene smontato dal cambio di route.
+      pendingResultSlugRef.current = null;
+      setPendingResultSlug(null);
+    }
   }
 
   function submitSearch() {
@@ -332,6 +363,7 @@ export function HomeHero() {
                 searchError={searchError}
                 hasSearched={hasSearched}
                 results={displayedResults}
+                pendingResultSlug={pendingResultSlug}
                 onSelect={selectResult}
               />
             </ul>
@@ -393,6 +425,7 @@ function SearchMenuContent({
   searchError,
   hasSearched,
   results,
+  pendingResultSlug,
   onSelect,
 }: {
   hasQuery: boolean;
@@ -400,6 +433,7 @@ function SearchMenuContent({
   searchError: string | null;
   hasSearched: boolean;
   results: SearchResult[];
+  pendingResultSlug: string | null;
   onSelect: (result: SearchResult) => void;
 }) {
   if (hasQuery && isLoading) {
@@ -411,17 +445,31 @@ function SearchMenuContent({
   }
 
   if (results.length > 0) {
-    return results.map((result) => (
-      <li key={result.id} className="border-b border-eg-border last:border-b-0">
-        <button
-          type="button"
-          className="block w-full border-0 bg-transparent px-[15px] py-3 text-left font-sans text-sm text-eg-text-muted transition-colors hover:bg-eg-surface-muted hover:text-eg-ink"
-          onMouseDown={() => onSelect(result)}
-        >
-          {result.name}
-        </button>
-      </li>
-    ));
+    return results.map((result) => {
+      const isPending = result.slug === pendingResultSlug;
+
+      return (
+        <li key={result.id} className="border-b border-eg-border last:border-b-0">
+          <button
+            type="button"
+            aria-disabled={isPending ? true : undefined}
+            className="block w-full border-0 bg-transparent px-[15px] py-3 text-left font-sans text-sm text-eg-text-muted transition-colors hover:bg-eg-surface-muted hover:text-eg-ink"
+            onMouseDown={(event) => {
+              // Solo il pulsante sinistro deve avviare la navigazione: il
+              // browser invia mousedown anche per destro/centrale (menu
+              // contestuale, apertura in nuova scheda via rotellina), che
+              // non devono innescare selectResult.
+              if (event.button !== 0) return;
+              onSelect(result);
+            }}
+            onClick={() => onSelect(result)}
+          >
+            {result.name}
+            {isPending ? <span className="ml-2 text-xs">Apertura...</span> : null}
+          </button>
+        </li>
+      );
+    });
   }
 
   if (hasQuery && hasSearched) {
