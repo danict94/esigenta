@@ -79,8 +79,24 @@ export function resolveBestHrefForIntervention(slug: string): string {
   return `/richiesta/${slug}`;
 }
 
+/**
+ * Fallback condiviso della didascalia sotto il prezzo nel modulo Costi di
+ * /interventi/[slug] (geo-cost-module.tsx): usato da ogni guida che non
+ * imposta `interventionRangeLabel`, così il comportamento attuale resta
+ * invariato per tutte le guide che mostrano davvero un totale complessivo.
+ */
+export const DEFAULT_INTERVENTION_RANGE_LABEL = "RANGE INDICATIVO COMPLESSIVO";
+
 export type InterventionCostSectionPriceData = {
   priceRange: string;
+  /**
+   * Didascalia da mostrare sotto `priceRange` nel modulo Costi della landing
+   * intervento. Risolta qui (guide.interventionRangeLabel, con fallback a
+   * DEFAULT_INTERVENTION_RANGE_LABEL) invece che nel componente, così
+   * geo-cost-module.tsx resta un renderer puro: nessuno slug o testo del
+   * prezzo da interpretare, solo una stringa già decisa dai dati della guida.
+   */
+  priceRangeLabel: string;
   priceRows: readonly CostGuide["priceRows"][number][];
 } | null;
 
@@ -121,5 +137,9 @@ export function resolveInterventionCostSectionPriceData(
     return row;
   });
 
-  return { priceRange: guide.nationalRange, priceRows };
+  return {
+    priceRange: guide.nationalRange,
+    priceRangeLabel: guide.interventionRangeLabel ?? DEFAULT_INTERVENTION_RANGE_LABEL,
+    priceRows,
+  };
 }

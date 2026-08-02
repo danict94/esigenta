@@ -156,6 +156,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                   <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter ?? ""} />
                 </div>
 
+                {guide.nationalRangeNote ? (
+                  <p className="mb-3 max-w-155 text-[14px] leading-[1.6] text-eg-ink">{guide.nationalRangeNote}</p>
+                ) : null}
+
                 <p className="mb-6 max-w-155 text-[13px] leading-[1.6] text-eg-ink">{priceNote}</p>
               </>
             )}
@@ -263,6 +267,12 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                   Esempi per dimensione e livello di finitura
                 </h2>
               </div>
+
+              {guide.sizeExamplesIntro ? (
+                <p className="mb-6 max-w-170 border border-eg-border bg-eg-surface px-5 py-4 text-[13.5px] leading-[1.6] text-eg-ink">
+                  {guide.sizeExamplesIntro}
+                </p>
+              ) : null}
 
               <div className="grid gap-5 md:grid-cols-3">
                 {guide.sizeExamples.map((example) => (

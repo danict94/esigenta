@@ -277,41 +277,51 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
+  // Revisione 2026-08: il precedente "range complessivo" (8.000-25.000 €) e
+  // "Rifacimento parziale tetto" (2.500-8.000 €) erano fasce assolute senza
+  // una superficie associata e senza fonte esterna tracciabile (verificato
+  // via audit + ricognizione Git). Sostituiti con un'unica fascia al mq
+  // (120-300 €/mq, invariata) applicata a tre scenari espliciti — solo
+  // manto / rifacimento senza struttura / rifacimento con struttura — così
+  // il lettore vede da cosa dipende il totale invece di un numero assoluto
+  // non riconducibile a una metratura. sourceLabel/sourceYear dichiarano
+  // esplicitamente che è una stima multi-fonte (prezzari regionali per le
+  // singole lavorazioni + fasce di mercato nazionale), mai un prezzo
+  // ufficiale unico di una singola Regione per il pacchetto completo.
   "costGuide:rifare-tetto": {
-    nationalRange: "Costo complessivo: indicativamente da 8.000 € a 25.000 €",
-    pricePerSquareMeter:
-      "Costo al mq: indicativamente da 120 € a 300 € al mq",
+    nationalRange: "120–300 € al mq",
+    pricePerSquareMeter: "da 120 € a 300 € al mq",
+    sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
+    sourceYear: "2025–2026",
     priceRows: [
       {
-        label: "Rifacimento parziale tetto",
-        category: "Panoramica generale",
-        unit: "a corpo",
-        range: "da 2.500 € a 8.000 €",
-        note: "ripristino localizzato di una porzione di copertura",
-        includes: "intervento sulla porzione interessata: rimozione, guaina e posa del nuovo manto",
-        excludes: "isolamento esteso e lattoneria, se non concordati",
-      },
-      {
-        label: "Rifacimento completo tetto",
-        category: "Panoramica generale",
-        unit: "a corpo",
-        range: "da 8.000 € a 25.000 €",
-        note: "rimozione vecchia copertura, struttura, isolamento e nuovo manto",
-        includes: "rimozione della vecchia copertura, verifica della struttura, guaina e nuovo manto",
-        excludes: "isolamento di fascia alta, lucernari e lattoneria di design",
-      },
-      {
-        label: "Costo indicativo al mq",
-        category: "Panoramica generale",
+        label: "Rifacimento della copertura, senza interventi sulla struttura",
+        category: "Rifacimento della copertura",
         unit: "al mq",
         range: "da 120 € a 300 € al mq",
-        note: "varia per materiale, isolamento, pendenza e accessibilità",
-        includes: "rimozione, struttura, guaina e posa con materiali di fascia media",
+        note: "Stima elaborata confrontando singole lavorazioni quotate nei prezzari regionali ufficiali 2025–2026 con fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per il rifacimento completo del tetto.",
+        includes: "rimozione del vecchio manto, preparazione del supporto, impermeabilizzazione, eventuale isolamento e posa del nuovo manto, secondo il capitolato scelto",
+        excludes: "interventi sulla struttura portante, ponteggi complessi, accessibilità difficile, lattonerie particolari, lucernari, materiali di pregio, pratiche edilizie e progettazione, smaltimenti eccezionali e lavorazioni impreviste emerse dopo la rimozione",
+        confidence: "media",
+        priceType: "corpo",
       },
-      // Nessuna di queste 4 voci ha un numero verificato da fonti di
-      // settore (a differenza del bagno): restano tutte qualitative sotto
-      // "Da valutare", stesso pattern delle righe non quotabili del bagno
-      // (Rubinetteria, Adeguamento elettrico) — mai un numero inventato.
+      // Scenario A e C non hanno un numero verificato da fonti di settore
+      // (a differenza della riga sopra): restano qualitative sotto "Da
+      // valutare", stesso pattern delle righe non quotabili del bagno — mai
+      // un numero o un tetto massimo inventato (vedi anche categoryNote).
+      {
+        label: "Sostituzione del solo manto",
+        category: "Da valutare con il professionista",
+        categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: comprendono sia interventi più semplici della fascia principale qui sopra (solo manto) sia interventi più complessi (struttura), oltre a fattori che dipendono dal singolo cantiere.",
+        range: "da valutare con il professionista",
+        note: "Può comprendere rimozione di tegole o coppi, un controllo limitato del supporto esistente, posa del nuovo manto e piccole integrazioni: il perimetro esatto va definito con un sopralluogo, senza una fascia in euro affidabile qui.",
+      },
+      {
+        label: "Rifacimento con intervento sulla struttura o alta complessità",
+        category: "Da valutare con il professionista",
+        range: "oltre 300 € al mq, senza un massimo definito",
+        note: "Può comprendere consolidamento o sostituzione di travi e orditura, nuova stratigrafia, isolamento o ventilazione, impermeabilizzazione, nuovo manto e opere accessorie: la struttura sposta il lavoro fuori dalla fascia 120–300 €/mq.",
+      },
       {
         label: "Smaltimento vecchia copertura",
         category: "Da valutare con il professionista",
@@ -319,10 +329,10 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "incide la quantità di materiale, l'accesso e l'eventuale bonifica di materiali datati",
       },
       {
-        label: "Isolamento termico tetto",
+        label: "Isolamento o coibentazione del tetto",
         category: "Da valutare con il professionista",
         range: "da valutare con sopralluogo",
-        note: "aumenta se si interviene su coibentazione e ventilazione della copertura",
+        note: "Il prezzo dipende da materiale, spessore, prestazione termica richiesta, stratigrafia, posa dall'interno o dall'esterno e dalla necessità di intervenire anche sul manto: un isolamento standard può già rientrare nella fascia 120–300 €/mq, una coibentazione con prestazioni specifiche va valutata a parte.",
       },
       {
         label: "Grondaie e lattoneria",
@@ -340,19 +350,28 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     ],
     sizeExamples: [
       {
-        label: "Tetto piccolo (villetta)",
-        range: "da 6.000 € a 12.000 €",
-        note: "intervento compatto, accesso semplice, materiali standard",
+        label: "Tetto da 70 mq",
+        sizeRange: "70 mq",
+        range: "da 8.400 € a 21.000 €",
+        note: "Calcolo: 70 mq × 120–300 €/mq.",
       },
       {
-        label: "Tetto medio",
-        range: "da 10.000 € a 18.000 €",
-        note: "caso frequente con rifacimento completo e isolamento",
+        label: "Tetto da 100 mq",
+        sizeRange: "100 mq",
+        range: "da 12.000 € a 30.000 €",
+        note: "Calcolo: 100 mq × 120–300 €/mq.",
       },
       {
-        label: "Tetto grande o complesso",
-        range: "da 18.000 € a 25.000 € e oltre",
-        note: "superfici ampie, falde multiple o accesso difficoltoso",
+        label: "Tetto da 150 mq",
+        sizeRange: "150 mq",
+        range: "da 18.000 € a 45.000 €",
+        note: "Calcolo: 150 mq × 120–300 €/mq.",
+      },
+      {
+        label: "Tetto da 200 mq",
+        sizeRange: "200 mq",
+        range: "da 24.000 € a 60.000 €",
+        note: "Calcolo: 200 mq × 120–300 €/mq.",
       },
     ],
   },

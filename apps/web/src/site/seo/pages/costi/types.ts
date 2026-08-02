@@ -111,6 +111,33 @@ export type CostGuideBaseContent = {
    */
   nationalRangeLabel?: string;
   /**
+   * Etichetta alternativa alla didascalia fissa "RANGE INDICATIVO
+   * COMPLESSIVO" mostrata nel modulo Costi di /interventi/[slug]
+   * (geo-cost-module.tsx), quando `nationalRange` non è un totale
+   * complessivo (es. una fascia al mq). Distinta da `nationalRangeLabel`,
+   * che vale solo per il box Sintesi della guida costi stessa: i due moduli
+   * vivono su pagine diverse e possono avere esigenze di etichetta diverse.
+   * Assente = didascalia fissa invariata, nessun effetto sulle guide che non
+   * la impostano.
+   */
+  interventionRangeLabel?: string;
+  /**
+   * Paragrafo opzionale mostrato in Sintesi costo, subito sotto i due box
+   * (nationalRange/pricePerSquareMeter), per spiegare in prosa cosa comprende
+   * la fascia indicativa e cosa può farla salire — utile quando i due numeri
+   * da soli non bastano a comunicarlo (es. una fascia al mq senza un totale
+   * assoluto). Assente = nessun paragrafo aggiuntivo, stesso comportamento di
+   * sempre.
+   */
+  nationalRangeNote?: string;
+  /**
+   * Paragrafo opzionale mostrato sopra la griglia "Esempi per dimensione",
+   * per spiegare come sono calcolati gli esempi e i loro limiti (es. calcolo
+   * superficie × fascia al mq, non un preventivo). Assente = nessun paragrafo
+   * aggiuntivo, stesso comportamento di sempre.
+   */
+  sizeExamplesIntro?: string;
+  /**
    * Quando presente, la guida non ha ancora prezzi verificati su prezzari
    * ufficiali: il composer salta del tutto la lookup in market-data (nessuna
    * voce richiesta lì) e produce priceRows/sizeExamples vuoti e
@@ -197,6 +224,9 @@ export type CostGuide = {
   priceTableNote?: string;
   priceTableIntro?: string;
   nationalRangeLabel?: string;
+  interventionRangeLabel?: string;
+  nationalRangeNote?: string;
+  sizeExamplesIntro?: string;
   pricingTeaser?: string;
   hubDescription?: string;
   hubOrder?: number;

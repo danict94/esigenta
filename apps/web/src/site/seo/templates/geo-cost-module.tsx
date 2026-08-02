@@ -89,7 +89,7 @@ export function GeoCostModule({
               </p>
 
               <p className="mt-1.5 font-(family-name:--eg-font-brand) text-[11.5px] tracking-[0.03em] text-eg-on-brand-muted">
-                RANGE INDICATIVO COMPLESSIVO
+                {priceData.priceRangeLabel}
               </p>
 
               {costGuideHref ? (

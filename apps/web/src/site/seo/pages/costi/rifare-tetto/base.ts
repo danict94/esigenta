@@ -35,6 +35,31 @@ export const rifareTettoBase: CostGuideBaseContent = {
     "Pianifica i lavori in un periodo con clima stabile per ridurre rischi e tempi.",
     "Confronta imprese disponibili nella tua zona prima di fissare il sopralluogo.",
   ],
+  // Revisione 2026-08 (audit + ricognizione Git): il "Costo complessivo"
+  // fisso non aveva più senso una volta rimosso il totale assoluto
+  // 8.000-25.000 € (nessuna fonte esterna tracciabile, nessuna superficie
+  // associata). nationalRangeNote spiega in prosa, nel primo box economico,
+  // da cosa dipende il totale — cosa che i due soli numeri di Sintesi non
+  // comunicano da soli su questa guida.
+  nationalRangeLabel: "Fascia orientativa",
+  // Micro-rifinitura 2026-08 (problema 2): "RANGE INDICATIVO COMPLESSIVO" nel
+  // modulo Costi di /interventi/rifare-tetto è una didascalia pensata per un
+  // totale, non per una fascia al mq. nationalRangeLabel resta per il box
+  // Sintesi di questa pagina ("Fascia orientativa", accanto al box "Costo al
+  // mq" che già disambigua); nel modulo isolato della landing intervento,
+  // senza quel secondo box a fianco, la didascalia deve dirlo da sola.
+  interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
+  nationalRangeNote:
+    "Indicativamente 120–300 € al mq per rifare una copertura. Il totale dipende dalla superficie, dalla stratigrafia da ricostruire e dalle lavorazioni incluse. Interventi strutturali, ponteggi complessi, accessibilità difficile e materiali particolari possono portare il costo oltre questa fascia.",
+  priceTableIntro:
+    "La tabella distingue tre scenari: sostituzione del solo manto, rifacimento senza interventi sulla struttura (la fascia orientativa 120–300 €/mq) e rifacimento con intervento sulla struttura o alta complessità.",
+  // Micro-rifinitura 2026-08 (problema 1): non ripete più fonte/anno, già
+  // detti da sourceLabel/sourceYear appena sotto la tabella — resta solo il
+  // perché una fascia e non un prezzo puntuale unico.
+  priceTableNote:
+    "Le fasce sono elaborazioni orientative: i prezzari pubblici quotano le singole lavorazioni e non un pacchetto standard unico per il rifacimento completo del tetto.",
+  sizeExamplesIntro:
+    "Ogni valore nasce da un calcolo — superficie del tetto moltiplicata per la fascia 120–300 €/mq — non da un preventivo: la superficie del tetto può differire da quella calpestabile dell'abitazione, e pendenza, forma, accessibilità e lavorazioni escluse possono cambiare il totale. Un intervento sulla struttura può superare questa fascia.",
   // Interventi specifici spesso confusi con un rifacimento completo: slug
   // reali del gruppo taxonomy "tetti" (verificati contro
   // project-groups/tetti.ts), nessuno ha oggi una landing o guida propria —
