@@ -279,10 +279,16 @@ export function HomeHero() {
       </div>
 
       <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[22px] min-[861px]:px-12">
-        <div className="w-full max-w-[720px] text-left [animation:eg-home-fade-up_900ms_ease_180ms_both]">
+        <div className="w-full max-w-[720px] text-left">
+          {/* H1 fuori dal wrapper animato: e' il testo piu' grande sopra la
+              piega (candidato LCP) e non deve dipendere da opacity:0 ne' da
+              un animation-delay per essere dipinto. Paragrafo e form restano
+              nel blocco che si anima. */}
           <h1 id="home-title" className="eg-h1 text-balance text-[clamp(32px,5vw,54px)] font-semibold">
             Trasformiamo il caos di casa in <strong className="inline-block whitespace-nowrap font-semibold">un percorso</strong> chiaro e affidabile.
           </h1>
+
+          <div className="[animation:eg-home-fade-up_900ms_ease_180ms_both]">
           <p className="mt-[22px] max-w-[44ch] text-balance text-lg leading-[1.6] text-eg-on-brand-muted">
             Descrivi il lavoro, ricevi e confronta proposte da professionisti qualificati.
           </p>
@@ -378,6 +384,7 @@ export function HomeHero() {
                 </li>
               ))}
             </ul>
+          </div>
           </div>
         </div>
       </div>

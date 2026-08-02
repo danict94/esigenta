@@ -61,15 +61,15 @@ export function HomeTrustSection() {
 
         <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-eg-on-brand-border pt-6 font-(family-name:--eg-font-brand) text-[13.5px] text-eg-on-brand-muted">
           <span>Guide ai costi già pubblicate:</span>
-          <Link href="/costi/ristrutturare-bagno" prefetch={false} className="text-eg-brand hover:underline">
+          <Link href="/costi/ristrutturare-bagno" prefetch={false} className="text-eg-brand-on-dark hover:underline">
             ristrutturare bagno
           </Link>
           <span aria-hidden="true" className="opacity-40">·</span>
-          <Link href="/costi/rifare-tetto" prefetch={false} className="text-eg-brand hover:underline">
+          <Link href="/costi/rifare-tetto" prefetch={false} className="text-eg-brand-on-dark hover:underline">
             rifare tetto
           </Link>
           <span aria-hidden="true" className="opacity-40">|</span>
-          <Link href="/privacy" prefetch={false} className="text-eg-brand hover:underline">
+          <Link href="/privacy" prefetch={false} className="text-eg-brand-on-dark hover:underline">
             Come trattiamo i tuoi dati &rarr;
           </Link>
         </div>
