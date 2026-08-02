@@ -56,7 +56,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: page.category.name,
-    description: page.category.description ?? buildProfessionMetaDescription(page),
+    // Sempre il generatore conciso: category.description è l'introduzione
+    // editoriale visibile in pagina, non va riusata integralmente qui
+    // (og/twitter ereditano description quando non dichiarati a parte).
+    description: buildProfessionMetaDescription(page),
     alternates: {
       canonical: buildCanonicalPath({ family: "profession", slug: categorySlug }),
     },

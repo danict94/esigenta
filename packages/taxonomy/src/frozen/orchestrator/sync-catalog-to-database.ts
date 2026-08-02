@@ -173,6 +173,8 @@ async function syncCatalogToDatabase(
         slug: category.slug,
       },
       data: {
+        name: category.name,
+        description: category.description ?? null,
         projectGroupIds,
       },
     })
