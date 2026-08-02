@@ -49,7 +49,11 @@ export function buildWebsiteJsonLd(): object {
   };
 }
 
-/** Stesso vincolo di buildWebsiteJsonLd: solo sulla home. */
+/**
+ * Stesso vincolo di buildWebsiteJsonLd: solo sulla home. sameAs: stessi URL
+ * usati nei link social del footer (site/shell/footer.tsx) — mai due fonti
+ * separate per gli stessi profili.
+ */
 export function buildOrganizationJsonLd(): object {
   return {
     "@context": "https://schema.org",
@@ -60,6 +64,10 @@ export function buildOrganizationJsonLd(): object {
     logo: toAbsoluteUrl("/icon.png"),
     description:
       "Esigenta gestisce una piattaforma online italiana che mette in contatto clienti, imprese e professionisti per lavori di ristrutturazione, manutenzione e impiantistica.",
+    sameAs: [
+      "https://www.instagram.com/esigenta.team/",
+      "https://www.tiktok.com/@esigenta",
+    ],
   };
 }
 

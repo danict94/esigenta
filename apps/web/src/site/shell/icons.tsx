@@ -62,3 +62,27 @@ export function CreditCoinIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function InstagramIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16.8" cy="7.2" r="0.9" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function TiktokIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M21 7.917v4.034a9.948 9.948 0 0 1-5-1.951v6.5a6.5 6.5 0 1 1-8-6.326v4.326a2.5 2.5 0 1 0 4 2v-14.5h4.083a6.005 6.005 0 0 0 4.917 5.917z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

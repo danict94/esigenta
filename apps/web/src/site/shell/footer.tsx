@@ -3,11 +3,19 @@ import Link from "next/link";
 import { EsigentaLogo } from "@esigenta/ui";
 
 import { CookiePreferencesButton } from "./cookie-preferences-button";
+import { InstagramIcon, TiktokIcon } from "./icons";
 
 const legalLinks = [
   { href: "/privacy", label: "Privacy" },
   { href: "/cookie-policy", label: "Cookie" },
   { href: "/termini", label: "Termini" },
+] as const;
+
+// Stessi URL usati in Organization.sameAs (site/seo/engine/schema-builder.ts):
+// footer e JSON-LD devono restare identici, mai due fonti separate.
+const socialLinks = [
+  { href: "https://www.instagram.com/esigenta.team/", label: "Esigenta su Instagram", Icon: InstagramIcon },
+  { href: "https://www.tiktok.com/@esigenta", label: "Esigenta su TikTok", Icon: TiktokIcon },
 ] as const;
 
 type FooterLink = {
@@ -76,20 +84,37 @@ export function Footer() {
           <p>&copy; 2026 esigenta</p>
         </div>
 
-        <nav aria-label="Legale" className="flex flex-wrap gap-[18px]">
-          {legalLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              prefetch={false}
-              className="text-inherit hover:text-eg-brand-strong"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+          <nav aria-label="Legale" className="flex flex-wrap gap-[18px]">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                prefetch={false}
+                className="text-inherit hover:text-eg-brand-strong"
+              >
+                {link.label}
+              </Link>
+            ))}
 
-          <CookiePreferencesButton className="border-0 bg-transparent text-left font-[inherit] uppercase tracking-[inherit] text-inherit hover:text-eg-brand-strong" />
-        </nav>
+            <CookiePreferencesButton className="border-0 bg-transparent text-left font-[inherit] uppercase tracking-[inherit] text-inherit hover:text-eg-brand-strong" />
+          </nav>
+
+          <nav aria-label="Social" className="flex items-center gap-3">
+            {socialLinks.map(({ href, label, Icon }) => (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="inline-flex size-8 items-center justify-center rounded-full text-eg-text-muted transition-colors hover:text-eg-brand-strong focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong"
+              >
+                <Icon className="size-4.5" />
+              </a>
+            ))}
+          </nav>
+        </div>
       </div>
     </footer>
   );
