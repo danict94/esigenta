@@ -4,6 +4,10 @@ import { frozenTaxonomySource } from "@esigenta/taxonomy";
 
 import { getSeoGroupLandingBySlug } from "../seo/pages/gruppi";
 import { buildCanonicalPath } from "../seo/engine/canonical";
+import {
+  buildBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "../seo/engine/schema-builder";
 import { PublicShell } from "../shell/public-shell";
 import { Reveal } from "../shared/reveal";
 import { blueprintEyebrowClassName, blueprintTitleClassName, SectionHeader } from "../shared/section-header";
@@ -41,8 +45,17 @@ export function ServicesHubPage() {
     }))
     .filter((family) => family.entries.length > 0);
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Servizi", path: "/servizi" },
+  ]);
+
   return (
     <PublicShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="eg-page eg-page-bg">
         <div className="eg-container pt-[calc(var(--eg-nav-height)+20px)] pb-5">
           <nav
