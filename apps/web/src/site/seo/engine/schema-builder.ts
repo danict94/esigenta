@@ -39,8 +39,11 @@ export function buildWebsiteJsonLd(): object {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": toAbsoluteUrl("/#website"),
     name: "Esigenta",
     url: toAbsoluteUrl("/"),
+    description:
+      "Esigenta è una piattaforma italiana gratuita per richiedere e confrontare preventivi da imprese e professionisti qualificati per lavori della casa.",
     inLanguage: "it-IT",
     publisher: { "@id": toAbsoluteUrl("/#organization") },
   };
@@ -55,6 +58,8 @@ export function buildOrganizationJsonLd(): object {
     name: "Esigenta",
     url: toAbsoluteUrl("/"),
     logo: toAbsoluteUrl("/icon.png"),
+    description:
+      "Esigenta gestisce una piattaforma online italiana che mette in contatto clienti, imprese e professionisti per lavori di ristrutturazione, manutenzione e impiantistica.",
   };
 }
 
