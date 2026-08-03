@@ -104,39 +104,69 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // (PreventivONE, PGCasa) — split delle due voci in sottocasi per evitare
   // range che fondevano unità o casi diversi (es. "solo demolizione" vs
   // "demolizione+smaltimento" espressi entrambi come €/mq).
+  // Revisione 2026-08: il precedente "Ristrutturazione completa" unico
+  // (3.500-12.000 €, confidence "alta") fondeva scenari molto diversi in un
+  // solo numero, senza collegarlo a una metratura. Sostituito da tre scenari
+  // espliciti — rinnovo leggero / ristrutturazione completa standard 5-6 mq
+  // / ristrutturazione complessa o di fascia alta — con la fascia principale
+  // (4.500-8.000 €) riferita chiaramente al bagno standard. Prezzo al mq
+  // ristretto a 800-1.200 €/mq (era 800-1.500) e ridotto a riferimento
+  // secondario: il costo del bagno non cresce linearmente con i mq, perché
+  // sanitari, scarichi e collegamenti pesano quasi allo stesso modo a
+  // qualunque metratura (vedi note delle righe sotto). confidence "alta"
+  // riservata alle sole voci puntuali con unità e perimetro documentati
+  // (punto acqua completo, posa piastrelle): le fasce complessive e gli
+  // esempi dimensionali restano "media", elaborazioni multi-fonte.
   "costGuide:ristrutturare-bagno": {
-    nationalRange: "Costo complessivo: indicativamente da 3.000 € a 12.000 €",
-    pricePerSquareMeter:
-      "Costo al mq: indicativamente da 800 € a 1.500 € al mq",
-    sourceLabel: "Dati indicativi elaborati da più fonti di settore",
-    sourceYear: "2024–2026",
+    nationalRange: "da 4.500 € a 8.000 €",
+    pricePerSquareMeter: "da 800 € a 1.200 € al mq",
+    sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
+    sourceYear: "2025–2026",
     priceRows: [
       {
         label: "Rinnovo leggero bagno",
-        category: "Panoramica generale",
+        category: "Rinnovo leggero",
         unit: "a corpo",
         range: "da 1.500 € a 4.000 €",
-        note: "sostituzioni mirate senza rifacimento completo, con impianti in buono stato",
-        includes: "smontaggio, montaggio e finiture delle parti sostituite",
-        excludes: "sanitari, rubinetteria e materiali di fascia alta",
+        plainExplanation: "È un intervento senza demolire e rifare tutto il bagno. Può comprendere la sostituzione di alcuni sanitari, della rubinetteria, del mobile o del box doccia, insieme alla posa e a piccoli ripristini: non sono mai tutti compresi insieme, il totale dipende dal numero e dalla qualità degli elementi scelti.",
+        note: "Utile quando impianti e struttura sono già in buono stato e serve solo rinnovare l'aspetto o sostituire pochi elementi.",
+        includes: "secondo gli elementi scelti nel preventivo: sostituzione di alcuni sanitari, della rubinetteria, nuovo mobile bagno, box doccia standard, tinteggiatura, posa e collegamenti ordinari, piccoli ripristini",
+        excludes: "demolizione completa del bagno, nuovo pavimento e nuovi rivestimenti completi, rifacimento dell'impianto idrico, spostamento degli scarichi, doccia a filo pavimento e materiali o arredi di fascia alta",
         confidence: "media",
+        priceType: "corpo",
       },
       {
         label: "Ristrutturazione completa",
-        category: "Panoramica generale",
+        category: "Ristrutturazione completa standard (circa 5–6 mq)",
         unit: "a corpo",
-        range: "da 3.500 € a 12.000 €",
-        note: "il caso più frequente per bagni datati o con nuova disposizione",
-        includes: "demolizione, impianti, posa, sanitari standard e manodopera",
-        excludes: "arredo bagno e materiali oltre il capitolato concordato",
-        confidence: "alta",
+        range: "da 4.500 € a 8.000 €",
+        note: "Perimetro tipico di una ristrutturazione completa su un bagno di circa 5–6 mq: le voci scelte nel preventivo possono spostare il totale verso l'alto o verso il basso.",
+        includes: "rimozione dei sanitari esistenti, demolizione ordinaria di pavimento e rivestimenti, rimozione o ripristino del sottofondo (lo strato sotto le piastrelle che crea una base piana e stabile), adeguamento ordinario delle tubazioni dell'acqua e degli scarichi, impermeabilizzazione nelle zone necessarie, nuovo pavimento e rivestimenti di fascia standard, posa, sanitari standard, collegamenti elettrici essenziali, finiture finali e, quando previsti dal preventivo, trasporto e smaltimento ordinari",
+        excludes: "spostamento importante degli scarichi, modifica della colonna condominiale, tubazioni fuori dal bagno, mobile bagno, specchio, illuminazione decorativa, box doccia, rubinetteria di fascia alta, piastrelle pregiate o di grande formato, nicchie, mobili su misura, doccia a filo pavimento complessa, sanitari sospesi con telai e opere murarie, modifiche strutturali, pratiche tecniche e problemi emersi dopo la demolizione",
+        confidence: "media",
+        priceType: "corpo",
+      },
+      {
+        label: "Bagno più grande o più complesso",
+        category: "Ristrutturazione complessa o di fascia alta",
+        unit: "a corpo",
+        range: "da 8.000 € a 12.000 €",
+        note: "Bagni oltre i 5–6 mq standard, con più sanitari, più punti acqua o una disposizione più articolata.",
+        confidence: "media",
+        priceType: "corpo",
+      },
+      {
+        label: "Forniture pregiate, modifiche importanti o imprevisti",
+        category: "Ristrutturazione complessa o di fascia alta",
+        range: "oltre 12.000 €, senza un massimo definito",
+        note: "Può comprendere spostamento importante degli scarichi, doccia a filo pavimento complessa, sanitari sospesi con telai incassati, nicchie, piastrelle di grande formato, arredi su misura, materiali di pregio, modifiche distributive, impianti deteriorati da rifare o imprevisti scoperti dopo la demolizione.",
       },
       {
         label: "Costo indicativo al mq",
-        category: "Panoramica generale",
+        category: "Prezzo al mq (riferimento secondario)",
         unit: "al mq",
-        range: "da 800 € a 1.500 € al mq",
-        note: "riferimento per confrontare preventivi completi tra loro",
+        range: "da 800 € a 1.200 € al mq",
+        note: "Riferimento secondario, utile solo per confrontare preventivi già ricevuti: in un bagno piccolo il costo al mq può essere più alto, perché sanitari, scarichi e collegamenti pesano quasi allo stesso modo indipendentemente dalla metratura. Il totale non è una semplice moltiplicazione tra superficie e questo valore.",
         includes: "demolizioni, impianti, posa e manodopera con materiali di fascia media",
         confidence: "media",
       },
@@ -156,7 +186,8 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         category: "Demolizione e smaltimento",
         unit: "a corpo",
         range: "da 300 € a 800 €",
-        note: "un bagno standard produce circa 1-2 mc di macerie; incidono volume, accesso al cantiere e distanza dalla discarica autorizzata",
+        plainExplanation: "È il trasporto e lo smaltimento autorizzato dei materiali demoliti in un impianto apposito (il conferimento in discarica).",
+        note: "un bagno standard produce circa 1-2 metri cubi di macerie; incidono volume, accesso al cantiere e distanza dalla discarica autorizzata",
         confidence: "media",
         priceType: "manodopera",
       },
@@ -176,6 +207,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         category: "Impianti",
         unit: "a punto",
         range: "da 75 € a 150 €",
+        plainExplanation: "È l'allaccio di un singolo elemento, per esempio la lavatrice, alla tubazione che porta l'acqua (l'adduzione) e allo scarico, quando il punto è già pronto e serve poca opera muraria.",
         note: "singola adduzione (es. lavatrice) o punto già predisposto, con poca muratura da aprire",
         includes: "attacco di carico o scarico del singolo elemento",
         confidence: "media",
@@ -186,6 +218,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         category: "Impianti",
         unit: "a punto",
         range: "da 150 € a 280 €",
+        plainExplanation: "È l'allaccio completo di un sanitario — lavabo, WC, bidet o doccia — all'acqua calda e fredda e allo scarico, comprese le aperture nel muro o nel pavimento necessarie per far passare i tubi.",
         note: "carico acqua calda e fredda più scarico per lo stesso elemento (lavabo, wc, bidet, doccia), con tracce e posa",
         includes: "carico caldo/freddo, scarico e opere murarie localizzate per il punto",
         confidence: "alta",
@@ -227,9 +260,10 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         category: "Posa e finiture",
         unit: "a corpo",
         range: "da 1.000 € a 3.500 €",
-        note: "piatti filo pavimento, su misura o soluzioni di design possono superare la fascia. Se lo scarico va spostato in una posizione diversa da quella della vasca, aggiungi la riga \"spostamento scarichi\" qui sopra",
-        includes: "rimozione vasca, piatto doccia standard e opere idrauliche localizzate",
-        excludes: "box doccia di design e rivestimenti estesi",
+        plainExplanation: "La fascia riguarda la sostituzione ordinaria della vasca con un piatto doccia e gli adattamenti locali necessari. Una doccia a filo pavimento può richiedere demolizioni, nuove pendenze, impermeabilizzazione e modifica dello scarico, quindi può superare questa fascia.",
+        note: "Se lo scarico va spostato in modo importante rispetto alla posizione della vasca, aggiungi anche la voce \"Spostamento scarichi\" qui sopra.",
+        includes: "rimozione della vasca, piatto doccia standard, adattamento localizzato degli scarichi e dei collegamenti, ripristino limitato dei rivestimenti e posa",
+        excludes: "box doccia di fascia alta, rifacimento esteso dei rivestimenti, spostamento importante dello scarico, demolizione estesa del pavimento e doccia a filo pavimento complessa",
         confidence: "media",
         priceType: "corpo",
       },
@@ -258,22 +292,28 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     ],
     sizeExamples: [
       {
-        label: "Bagno piccolo",
-        range: "da 3.000 € a 6.000 €",
-        note: "intervento compatto con scelte standard e impianti in buono stato",
-        sizeRange: "3-5 mq",
+        label: "Bagno da 4 mq",
+        sizeRange: "4 mq",
+        range: "da 3.200 € a 5.000 €",
+        note: "Bagno piccolo: WC, lavabo e doccia pesano quasi come in un bagno più grande, per questo il costo al mq resta alto.",
       },
       {
-        label: "Bagno medio",
-        range: "da 4.500 € a 9.000 €",
-        note: "caso frequente con rifacimento completo e nuove finiture",
-        sizeRange: "6-8 mq",
+        label: "Bagno da 6 mq",
+        sizeRange: "6 mq",
+        range: "da 4.500 € a 8.000 €",
+        note: "La metratura più comune per un bagno completo: coincide con la fascia standard di questa guida.",
       },
       {
-        label: "Bagno grande o premium",
-        range: "da 7.000 € a 12.000 € e oltre",
-        note: "materiali ricercati, arredo su misura o lavorazioni più complesse",
-        sizeRange: "9 mq e oltre",
+        label: "Bagno da 8 mq",
+        sizeRange: "8 mq",
+        range: "da 6.000 € a 10.000 €",
+        note: "Più spazio per rivestimenti e finiture, ma sanitari e impianti restano lo stesso costo di base visto nei bagni più piccoli.",
+      },
+      {
+        label: "Bagno da 10 mq",
+        sizeRange: "10 mq",
+        range: "da 7.500 € a 12.000 €",
+        note: "Bagno grande: la superficie in più incide meno del previsto, perché il costo resta guidato soprattutto da sanitari, impianti e finiture.",
       },
     ],
   },
