@@ -67,6 +67,11 @@ export async function getProfessionPage(
             name: true,
             description: true,
             interventions: {
+              // Publication gate: a draft intervention must not appear on
+              // a profession's list of "what you can offer/be found for",
+              // for either the customer-facing side or company onboarding
+              // (both read this same query — see ProfessionPage usages).
+              where: { publicationStatus: "PUBLISHED" },
               select: {
                 id: true,
                 slug: true,

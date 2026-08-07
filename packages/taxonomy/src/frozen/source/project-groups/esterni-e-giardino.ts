@@ -14,6 +14,7 @@ export const esterniEGiardino: FrozenProjectGroup = {
       id: "realizzare-o-sistemare-giardino",
       slug: "realizzare-o-sistemare-giardino",
       name: "Realizzare o sistemare giardino",
+      publicationStatus: "published",
       aliases: [
         "realizzare giardino",
         "sistemare giardino",
@@ -33,6 +34,7 @@ export const esterniEGiardino: FrozenProjectGroup = {
       id: "installare-impianto-irrigazione",
       slug: "installare-impianto-irrigazione",
       name: "Installare impianto di irrigazione",
+      publicationStatus: "published",
       // Irrigazione giardino/esterni. Idraulica interna → idraulica.
       aliases: [
         "impianto di irrigazione",
@@ -51,6 +53,7 @@ export const esterniEGiardino: FrozenProjectGroup = {
       id: "posare-pavimentazione-esterna",
       slug: "posare-pavimentazione-esterna",
       name: "Posare pavimentazione esterna",
+      publicationStatus: "published",
       // Autobloccanti/porfido/vialetti/cortili. Pavimento interno → pavimentazioni.
       aliases: [
         "pavimentazione esterna",
@@ -71,6 +74,7 @@ export const esterniEGiardino: FrozenProjectGroup = {
       id: "costruire-muretto-o-recinzione",
       slug: "costruire-muretto-o-recinzione",
       name: "Costruire muretto o recinzione",
+      publicationStatus: "published",
       // Muretti/recinzioni da giardino (assorbe backlog opere-murarie). Cancello
       // metallico → fabbro; muratura interna/strutturale → opere-murarie.
       aliases: [
@@ -92,6 +96,7 @@ export const esterniEGiardino: FrozenProjectGroup = {
       id: "potare-e-curare-il-verde",
       slug: "potare-e-curare-il-verde",
       name: "Potare e curare il verde",
+      publicationStatus: "published",
       // Potatura (skilled) + manutenzione ricorrente. Non il taglio-erba una tantum.
       aliases: [
         "potatura alberi",

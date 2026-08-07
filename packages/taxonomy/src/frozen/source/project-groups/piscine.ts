@@ -17,6 +17,7 @@ export const piscine: FrozenProjectGroup = {
       id: "costruire-piscina",
       slug: "costruire-piscina",
       name: "Costruire piscina",
+      publicationStatus: "published",
       // Nuova piscina: interrata, seminterrata o fuori terra STRUTTURATA. NON
       // gonfiabile/rimovibile (prodotto). Copy funnel prudente sul permesso
       // (interrata = permesso di costruire). Niente alias spa/idromassaggio/
@@ -37,6 +38,7 @@ export const piscine: FrozenProjectGroup = {
       id: "ristrutturare-piscina",
       slug: "ristrutturare-piscina",
       name: "Ristrutturare piscina",
+      publicationStatus: "published",
       // Rinnovo di una piscina esistente: rivestimento, bordo, struttura,
       // impianto o intervento complessivo. NON manutenzione ordinaria/pulizia
       // occasionale (→ futuro fare-manutenzione-piscina). Niente alias
@@ -57,6 +59,7 @@ export const piscine: FrozenProjectGroup = {
       id: "fare-manutenzione-piscina",
       slug: "fare-manutenzione-piscina",
       name: "Fare manutenzione piscina",
+      publicationStatus: "published",
       // Servizio PROFESSIONALE di manutenzione di una piscina esistente:
       // stagionale (apertura/chiusura), ricorrente, straordinaria o tecnica
       // (controllo/impianto/trattamento acqua). Confine STRETTO: NON pulizia
@@ -80,6 +83,7 @@ export const piscine: FrozenProjectGroup = {
       id: "installare-copertura-piscina",
       slug: "installare-copertura-piscina",
       name: "Installare copertura piscina",
+      publicationStatus: "published",
       // Installazione di una copertura TECNICA o STRUTTURATA per piscina
       // (telescopica, automatica, bassa/alta, isotermica professionale, di
       // sicurezza/tapparella). Confine STRETTO: NON telo generico/economico, NON

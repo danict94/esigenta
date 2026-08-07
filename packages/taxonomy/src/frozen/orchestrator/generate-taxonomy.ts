@@ -50,6 +50,7 @@ type GeneratedIntervention = {
   id: string
   slug: string
   name: string
+  publicationStatus: FrozenIntervention["publicationStatus"]
   description?: string
   projectGroupSlug: string
   aliases?: string[]
@@ -105,6 +106,7 @@ function cleanIntervention(
     id: intervention.id,
     slug: intervention.slug,
     name: intervention.name,
+    publicationStatus: intervention.publicationStatus,
     projectGroupSlug,
   }
 

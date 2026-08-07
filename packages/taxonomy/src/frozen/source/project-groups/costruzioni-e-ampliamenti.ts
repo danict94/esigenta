@@ -19,6 +19,7 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
       id: "costruire-casa",
       slug: "costruire-casa",
       name: "Costruire casa",
+      publicationStatus: "published",
       // Nuova costruzione (casa/villetta) da zero. NIENTE alias "ristrutturare"/
       // "rifare casa" (→ ristrutturazioni) né "impresa edile" nudo (categoria).
       aliases: [
@@ -38,6 +39,7 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
       id: "ampliare-casa",
       slug: "ampliare-casa",
       name: "Ampliare casa",
+      publicationStatus: "published",
       // Nuovo volume aggiunto a un edificio esistente (estensione). Distinto da
       // ristrutturazione (rifà l'esistente) e da sopraelevazione (aggiunge un
       // piano — intervento a sé, batch successivo).
@@ -58,6 +60,7 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
       id: "fare-sopraelevazione",
       slug: "fare-sopraelevazione",
       name: "Fare una sopraelevazione",
+      publicationStatus: "published",
       // Aggiungere un piano a un edificio esistente: opera strutturale
       // big-ticket. Distinta da ampliamento (nuovo volume in pianta) e da tetti
       // (niente "rifare tetto"). Caso il più feasibility-sensitive del gruppo
@@ -81,6 +84,7 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
       id: "costruire-garage-o-deposito",
       slug: "costruire-garage-o-deposito",
       name: "Costruire garage o deposito",
+      publicationStatus: "published",
       // Costruzione di un volume accessorio STABILE (garage/box/autorimessa/
       // deposito/magazzino), muratura o prefabbricato stabile. Garage e deposito
       // insieme: stessa famiglia/professionista, il funnel distingue il tipo.
@@ -105,6 +109,7 @@ export const costruzioniEAmpliamenti: FrozenProjectGroup = {
       id: "costruire-dependance-o-annesso",
       slug: "costruire-dependance-o-annesso",
       name: "Costruire dependance o annesso",
+      publicationStatus: "published",
       // Edificio accessorio ABITABILE standalone (dependance/annesso/monolocale
       // esterno). Confini: NON abitabile utility (garage/deposito) → costruire-
       // garage-o-deposito; estensione CONNESSA della casa → ampliare-casa;

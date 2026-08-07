@@ -128,7 +128,12 @@ export async function getCompanyServicesConfigurationPage(
           '[]'::json
         ) AS interventions
       FROM "ProjectGroup" pg
-      LEFT JOIN "Intervention" iv ON iv."projectGroupId" = pg."id"
+      -- Publication gate: a draft Intervention must not appear as a
+      -- selectable service in company onboarding/configuration, same rule
+      -- as the customer-facing surfaces (search, /richiesta, /servizi).
+      LEFT JOIN "Intervention" iv
+        ON iv."projectGroupId" = pg."id"
+        AND iv."publicationStatus" = 'PUBLISHED'
       GROUP BY pg."id", pg."slug", pg."name"
       ORDER BY pg."name"
     `,

@@ -318,6 +318,79 @@ const impermeabilizzareBalconeBallatoio: InterventionFunnelModel = {
   ],
 }
 
+// Impermeabilizzazione mirata del terrazzo: modello bespoke, non copiato dal
+// balcone. Bucket di superficie in mq (non lo scaleStep piccola/media/grande
+// del balcone: il prodotto ha chiesto fasce numeriche esplicite qui) sugli
+// id/token registrati in runtime/resolve-request-signals.ts. "Situazione
+// attuale" e "problema principale" guidano la valutazione del professionista
+// senza chiedere al cliente una diagnosi tecnica; "preferenza di lavorazione"
+// resta un'indicazione, mai una promessa (vedi description dello step).
+const impermeabilizzareTerrazzo: InterventionFunnelModel = {
+  interventionSlug: "impermeabilizzare-terrazzo",
+  steps: [
+    locationCapability,
+    {
+      id: "facciate-e-balconi:superficie",
+      type: "single_select",
+      question: "Quanto è grande circa il terrazzo?",
+      description: "Una stima approssimativa è sufficiente.",
+      options: [
+        { value: "under_20", label: "Meno di 20 mq" },
+        { value: "twenty_to_fifty", label: "20–50 mq" },
+        { value: "fifty_to_onehundred", label: "50–100 mq" },
+        { value: "over_onehundred", label: "Oltre 100 mq" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: true,
+    },
+    {
+      id: "facciate-e-balconi:impermeabilizzazione-terrazzo:situazione",
+      type: "single_select",
+      question: "Qual è la situazione attuale del terrazzo?",
+      options: [
+        { value: "paved_floor", label: "Terrazzo pavimentato" },
+        { value: "exposed_membrane", label: "Guaina a vista, senza pavimento sopra" },
+        { value: "bare_screed", label: "Massetto o superficie grezza, senza pavimento" },
+        { value: "not_sure", label: "Non lo so" },
+      ],
+      optional: true,
+    },
+    {
+      id: "facciate-e-balconi:impermeabilizzazione-terrazzo:problema",
+      type: "single_select",
+      question: "Qual è il problema principale?",
+      options: [
+        { value: "infiltration_below", label: "Infiltrazioni nel locale sottostante" },
+        { value: "deteriorated_membrane", label: "Guaina deteriorata" },
+        { value: "standing_water", label: "Ristagni d’acqua" },
+        { value: "drain_issues", label: "Problemi vicino a scarichi o bocchettoni" },
+        { value: "preventive", label: "Voglio impermeabilizzare preventivamente" },
+        { value: "other_not_sure", label: "Altro / non lo so" },
+      ],
+      optional: false,
+    },
+    {
+      id: "facciate-e-balconi:impermeabilizzazione-terrazzo:preferenza-lavorazione",
+      type: "single_select",
+      question: "Hai una preferenza sul tipo di intervento?",
+      description:
+        "È solo un’indicazione: la soluzione tecnica più adatta resta una valutazione del professionista dopo il sopralluogo.",
+      options: [
+        { value: "avoid_removing_floor", label: "Vorrei evitare di rimuovere il pavimento" },
+        { value: "can_remove_floor", label: "Posso rimuovere il pavimento" },
+        { value: "redo_membrane", label: "Voglio rifare la guaina" },
+        { value: "professional_assessment", label: "Deve valutarlo il professionista" },
+      ],
+      optional: true,
+    },
+    accessInQuotaStep(true),
+    photosCapability,
+    noteStep(),
+    timingCapability,
+    contactCapability,
+  ],
+}
+
 export const facciateEBalconiModels: InterventionFunnelModel[] = [
   rifareFacciata,
   realizzareCappottoTermicoFacciata,
@@ -325,4 +398,5 @@ export const facciateEBalconiModels: InterventionFunnelModel[] = [
   ripristinoFrontalino,
   rifarePavimentazioneBalconeBallatoio,
   impermeabilizzareBalconeBallatoio,
+  impermeabilizzareTerrazzo,
 ]

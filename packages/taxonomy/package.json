@@ -8,6 +8,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test src/frozen/publication-status.test.ts",
+    "test:lifecycle-db": "node --import tsx --test src/queries/publication-lifecycle.integration.test.ts",
     "taxonomy:frozen:build": "tsx src/frozen/orchestrator/build-taxonomy.ts",
     "taxonomy:frozen:generate": "tsx src/frozen/orchestrator/generate-taxonomy.ts",
     "taxonomy:frozen:sync-db": "tsx src/frozen/orchestrator/sync-catalog-to-database.ts"

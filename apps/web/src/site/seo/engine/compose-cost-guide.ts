@@ -1,4 +1,4 @@
-import { frozenTaxonomySource } from "@esigenta/taxonomy";
+import { frozenTaxonomySource, isInterventionPublished } from "@esigenta/taxonomy";
 
 import { getCityBySlug } from "../geo/cities";
 import { getCitySupport } from "../geo/supported-cities";
@@ -83,6 +83,19 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
         `Cost guide "${base.slug}" declares relatedWork slug "${item.slug}" ` +
           `which does not exist in @esigenta/taxonomy. Only real frozen ` +
           `Intervention slugs are allowed; never a Category or ProjectGroup slug.`,
+      );
+    }
+
+    // Publication gate, fail-fast at build time (same philosophy as the
+    // existence check above): resolveBestHrefForIntervention has no safe
+    // fallback for a draft target once /costi, /interventi and /richiesta
+    // are all gated, so a relatedWork pointing at a draft must never reach
+    // that resolver in the first place.
+    if (!isInterventionPublished(item.slug)) {
+      throw new Error(
+        `Cost guide "${base.slug}" declares relatedWork slug "${item.slug}" ` +
+          `which is not published yet (publicationStatus "draft"). Remove it ` +
+          `from relatedWork until that intervention is published.`,
       );
     }
   }

@@ -9,6 +9,7 @@ export const ristrutturazioni: FrozenProjectGroup = {
       id: "ristrutturare-bagno",
       slug: "ristrutturare-bagno",
       name: "Ristrutturare bagno",
+      publicationStatus: "published",
       // Ristrutturazione bagno completa/parziale (progetto edile), distinta da
       // idraulica (rifare-impianto-idraulico-bagno / sostituire-box-doccia).
       aliases: [
@@ -25,6 +26,7 @@ export const ristrutturazioni: FrozenProjectGroup = {
       id: "ristrutturare-cucina",
       slug: "ristrutturare-cucina",
       name: "Ristrutturare cucina",
+      publicationStatus: "published",
       aliases: [
         "rifare la cucina",
         "ristrutturazione cucina",
@@ -38,6 +40,7 @@ export const ristrutturazioni: FrozenProjectGroup = {
       id: "ristrutturare-casa",
       slug: "ristrutturare-casa",
       name: "Ristrutturare casa",
+      publicationStatus: "published",
       // Casa indipendente/villa/villetta + "casa intera" (spostato qui da
       // appartamento: "casa intera" = tutta la casa, non il condominio).
       aliases: [
@@ -56,6 +59,7 @@ export const ristrutturazioni: FrozenProjectGroup = {
       id: "ristrutturare-appartamento",
       slug: "ristrutturare-appartamento",
       name: "Ristrutturare appartamento",
+      publicationStatus: "published",
       // Appartamento in condominio. "ristrutturare casa intera" NON sta qui
       // (rimandato a ristrutturare-casa).
       aliases: [

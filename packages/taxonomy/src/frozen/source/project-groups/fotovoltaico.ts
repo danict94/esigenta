@@ -18,6 +18,7 @@ export const fotovoltaico: FrozenProjectGroup = {
       id: "installare-fotovoltaico",
       slug: "installare-fotovoltaico",
       name: "Installare fotovoltaico",
+      publicationStatus: "published",
       aliases: [
         "impianto fotovoltaico",
         "pannelli solari",
@@ -33,6 +34,7 @@ export const fotovoltaico: FrozenProjectGroup = {
       id: "modificare-o-potenziare-impianto-fotovoltaico",
       slug: "modificare-o-potenziare-impianto-fotovoltaico",
       name: "Ampliare o modificare impianto fotovoltaico",
+      publicationStatus: "published",
       aliases: [
         "ampliare impianto fotovoltaico",
         "ampliare fotovoltaico",
@@ -51,6 +53,7 @@ export const fotovoltaico: FrozenProjectGroup = {
       id: "riparare-o-fare-manutenzione-fotovoltaico",
       slug: "riparare-o-fare-manutenzione-fotovoltaico",
       name: "Riparare o fare manutenzione al fotovoltaico",
+      publicationStatus: "published",
       aliases: [
         "manutenzione fotovoltaico",
         "riparazione fotovoltaico",

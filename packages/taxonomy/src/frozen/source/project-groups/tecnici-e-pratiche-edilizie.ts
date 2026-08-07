@@ -17,6 +17,7 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
       id: "fare-cila-o-scia",
       slug: "fare-cila-o-scia",
       name: "Fare una CILA o SCIA",
+      publicationStatus: "published",
       // Pratica edilizia per lavori: CILA (manutenzione straordinaria non
       // strutturale) o SCIA (opere strutturali). NIENTE alias generici
       // "ristrutturazione"/"ristrutturare casa" (→ gruppo ristrutturazioni).
@@ -37,6 +38,7 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
       id: "fare-ape",
       slug: "fare-ape",
       name: "Fare un APE (certificato energetico)",
+      publicationStatus: "published",
       // Certificazione/documento (Attestato di Prestazione Energetica) emesso
       // dal tecnico abilitato. NON è un intervento energetico: niente alias
       // "fotovoltaico"/"pompa di calore"/"cappotto"/"riqualificazione
@@ -56,6 +58,7 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
       id: "fare-variazione-catastale",
       slug: "fare-variazione-catastale",
       name: "Fare una variazione catastale",
+      publicationStatus: "published",
       // Pratica catastale (DOCFA): aggiornamento dei dati dell'immobile,
       // accatastamento, variazione. Servizio tecnico/documentale, non un lavoro
       // edile. Niente alias generici "casa"/"lavori casa"/"ristrutturazione".
@@ -76,6 +79,7 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
       id: "fare-sanatoria-edilizia",
       slug: "fare-sanatoria-edilizia",
       name: "Fare una sanatoria edilizia",
+      publicationStatus: "published",
       // Pratica/valutazione tecnica per regolarizzare difformità (accertamento
       // di conformità). Copy PRUDENTE, mai promessa di esito: il tecnico
       // valuta/verifica/prepara la pratica e regolarizza SE possibile — niente
@@ -98,6 +102,7 @@ export const tecniciEPraticheEdilizie: FrozenProjectGroup = {
       id: "fare-progetto-ristrutturazione",
       slug: "fare-progetto-ristrutturazione",
       name: "Fare progetto di ristrutturazione",
+      publicationStatus: "published",
       // Servizio tecnico per PROGETTARE/organizzare una ristrutturazione prima
       // dell'esecuzione: progetto, distribuzione spazi, supporto tecnico,
       // direzione lavori (opzione) e computo metrico (eventuale supporto). NON

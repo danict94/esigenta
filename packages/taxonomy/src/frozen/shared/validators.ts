@@ -86,6 +86,21 @@ function validateEntityAliases(
   }
 }
 
+function validateInterventionPublicationStatus(
+  intervention: FrozenIntervention,
+) {
+  const owner = `intervention:${intervention.slug}`
+
+  invariant(
+    intervention.publicationStatus === "draft" ||
+      intervention.publicationStatus === "published",
+    `[${owner}] publicationStatus must be "draft" or "published" (got: ${String(
+      intervention.publicationStatus,
+    )}). Every Intervention needs an explicit, deterministic publication ` +
+      `status — there is no implicit default.`,
+  )
+}
+
 function validateIntervention(intervention: FrozenIntervention) {
   assertNonEmptyString(intervention.slug, "[intervention] slug")
   assertNonEmptyString(
@@ -93,6 +108,7 @@ function validateIntervention(intervention: FrozenIntervention) {
     `[intervention:${intervention.slug}] name`,
   )
 
+  validateInterventionPublicationStatus(intervention)
   validateEntityAliases(intervention, `intervention:${intervention.slug}`)
 }
 

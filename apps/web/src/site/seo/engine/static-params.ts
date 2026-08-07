@@ -1,3 +1,5 @@
+import { isInterventionPublished } from "@esigenta/taxonomy";
+
 import { listSeoInterventionLandings } from "../pages/interventi";
 import { listCostGuides } from "../pages/costi";
 import { listSeoGroupLandings } from "../pages/gruppi";
@@ -8,16 +10,29 @@ export function getGroupLandingStaticParams(): { groupSlug: string }[] {
   }));
 }
 
+/**
+ * Publication gate: with `dynamicParams = false` on the /interventi and
+ * /costi routes (see their page.tsx), excluding a slug here is enough on
+ * its own to make it both absent from the static build AND a guaranteed
+ * 404 at request time — no DB query, frozen taxonomy only. A
+ * SeoInterventionLanding/CostGuide can be fully registered while its
+ * Intervention is still draft; it just doesn't produce a reachable page
+ * until frozen taxonomy says publicationStatus "published".
+ */
 export function getInterventionStaticParams(): { interventoSlug: string }[] {
-  return listSeoInterventionLandings().map((landing) => ({
-    interventoSlug: landing.slug,
-  }));
+  return listSeoInterventionLandings()
+    .filter((landing) => isInterventionPublished(landing.slug))
+    .map((landing) => ({
+      interventoSlug: landing.slug,
+    }));
 }
 
 export function getCostGuideStaticParams(): { costSlug: string }[] {
-  return listCostGuides().map((guide) => ({
-    costSlug: guide.slug,
-  }));
+  return listCostGuides()
+    .filter((guide) => isInterventionPublished(guide.interventionSeoSlug))
+    .map((guide) => ({
+      costSlug: guide.slug,
+    }));
 }
 
 /**

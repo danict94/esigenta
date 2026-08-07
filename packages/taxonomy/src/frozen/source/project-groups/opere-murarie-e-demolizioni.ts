@@ -17,6 +17,7 @@ export const opereMurarieEDemolizioni: FrozenProjectGroup = {
       id: "aprire-o-chiudere-vano",
       slug: "aprire-o-chiudere-vano",
       name: "Aprire o chiudere un vano",
+      publicationStatus: "published",
       // "cerchiatura muro portante" resta alias/sotto-caso (delicato/normativo),
       // NON intervento separato: sarà un branch prudente nel funnel.
       aliases: [
@@ -36,6 +37,7 @@ export const opereMurarieEDemolizioni: FrozenProjectGroup = {
       id: "demolire-parete-o-tramezzo",
       slug: "demolire-parete-o-tramezzo",
       name: "Demolire parete o tramezzo",
+      publicationStatus: "published",
       aliases: [
         "demolire tramezzo",
         "demolizione tramezzi",
@@ -53,6 +55,7 @@ export const opereMurarieEDemolizioni: FrozenProjectGroup = {
       id: "costruire-parete-o-tramezzo",
       slug: "costruire-parete-o-tramezzo",
       name: "Costruire parete o tramezzo in muratura",
+      publicationStatus: "published",
       // Muratura vera (mattoni/forati). "tramezzo/parete cartongesso" NON stanno
       // qui: restano nel gruppo `cartongesso`.
       aliases: [
@@ -72,6 +75,7 @@ export const opereMurarieEDemolizioni: FrozenProjectGroup = {
       id: "demolizioni-interne",
       slug: "demolizioni-interne",
       name: "Demolizioni interne",
+      publicationStatus: "published",
       // "demolizioni interne" NON è alias: normalizzato coincide con slug e name
       // (vietato dal validator), già coperto dalla ricerca via slug.
       aliases: [
@@ -87,6 +91,7 @@ export const opereMurarieEDemolizioni: FrozenProjectGroup = {
       id: "piccole-opere-murarie",
       slug: "piccole-opere-murarie",
       name: "Piccole opere murarie e assistenze",
+      publicationStatus: "published",
       aliases: [
         "assistenza muraria",
         "assistenze murarie",

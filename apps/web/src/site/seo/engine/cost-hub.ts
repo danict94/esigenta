@@ -1,3 +1,5 @@
+import { isInterventionPublished } from "@esigenta/taxonomy";
+
 import { listCostGuides } from "../pages/costi";
 import type { CostGuide } from "../pages/costi";
 import { getSeoInterventionLandingBySlug } from "../pages/interventi";
@@ -12,7 +14,10 @@ export type CostHubCategoryGroup = {
  * Una guida compare nell'hub solo se: è registrata (garantito da
  * listCostGuides()), non ha `pricingTeaser` (prezzi non ancora verificati),
  * ha un `summary` reale, il suo `interventionSeoSlug` risolve a una landing
- * Intervento davvero registrata (mai un link a una pagina fantasma), e non è
+ * Intervento davvero registrata (mai un link a una pagina fantasma), quella
+ * landing è publicationStatus "published" (gate del lifecycle: una guida può
+ * essere scritta e registrata mentre l'Intervention è ancora draft, senza
+ * comparire qui né produrre un link a /costi/[slug], che 404erebbe), e non è
  * esclusa esplicitamente via `hubExcluded`. Mai `priceRows.length > 0` da
  * solo: una guida futura potrebbe avere una struttura economica diversa da
  * quella odierna.
@@ -21,6 +26,7 @@ function isPublishableInHub(guide: CostGuide): boolean {
   if (guide.pricingTeaser !== undefined) return false;
   if (guide.summary.trim().length === 0) return false;
   if (!getSeoInterventionLandingBySlug(guide.interventionSeoSlug)) return false;
+  if (!isInterventionPublished(guide.interventionSeoSlug)) return false;
   if (guide.hubExcluded === true) return false;
   return true;
 }

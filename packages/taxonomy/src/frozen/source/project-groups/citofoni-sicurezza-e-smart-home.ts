@@ -14,6 +14,7 @@ export const citofoniSicurezzaESmartHome: FrozenProjectGroup = {
       id: "installare-o-sostituire-citofono-videocitofono",
       slug: "installare-o-sostituire-citofono-videocitofono",
       name: "Installare o sostituire citofono/videocitofono",
+      publicationStatus: "published",
       aliases: [
         "installare citofono",
         "sostituire citofono",
@@ -32,6 +33,7 @@ export const citofoniSicurezzaESmartHome: FrozenProjectGroup = {
       id: "installare-impianto-allarme",
       slug: "installare-impianto-allarme",
       name: "Installare impianto allarme",
+      publicationStatus: "published",
       aliases: [
         "installare allarme",
         "impianto allarme",
@@ -49,6 +51,7 @@ export const citofoniSicurezzaESmartHome: FrozenProjectGroup = {
       id: "installare-videosorveglianza",
       slug: "installare-videosorveglianza",
       name: "Installare videosorveglianza",
+      publicationStatus: "published",
       aliases: [
         "installare telecamere",
         "installare telecamere sicurezza",
@@ -66,6 +69,7 @@ export const citofoniSicurezzaESmartHome: FrozenProjectGroup = {
       id: "automatizzare-cancello",
       slug: "automatizzare-cancello",
       name: "Automatizzare cancello",
+      publicationStatus: "published",
       // "automatizzare cancello" NON è alias: normalizzato coincide con slug e
       // name (vietato dal validator), già coperto dalla ricerca via slug.
       aliases: [
@@ -84,6 +88,7 @@ export const citofoniSicurezzaESmartHome: FrozenProjectGroup = {
       id: "installare-domotica-smart-home",
       slug: "installare-domotica-smart-home",
       name: "Installare domotica e smart home",
+      publicationStatus: "published",
       aliases: [
         "installare domotica",
         "domotica casa",

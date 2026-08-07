@@ -9,6 +9,7 @@ export const pavimentazioni: FrozenProjectGroup = {
       id: "fare-massetto",
       slug: "fare-massetto",
       name: "Realizzare o rifare massetto",
+      publicationStatus: "published",
       // Alias mirati sul massetto/sottofondo. "fare massetto" NON è alias:
       // normalizzato coincide con lo slug (vietato dal validator) ed è già
       // coperto dalla ricerca via slug. Niente alias larghi tipo "rifare
@@ -28,6 +29,7 @@ export const pavimentazioni: FrozenProjectGroup = {
       id: "posare-o-rifare-pavimento-interno",
       slug: "posare-o-rifare-pavimento-interno",
       name: "Posare o rifare pavimento interno",
+      publicationStatus: "published",
       // Intervento madre: posa/sostituzione/rifacimento pavimenti interni.
       // Materiali (piastrelle/gres/laminato/pvc/vinilico/spc/lvt/click) sono
       // opzioni di funnel + alias, NON interventi separati. Lista curata a 20
@@ -60,6 +62,7 @@ export const pavimentazioni: FrozenProjectGroup = {
       id: "posare-levigare-o-ripristinare-parquet",
       slug: "posare-levigare-o-ripristinare-parquet",
       name: "Posare, levigare o ripristinare parquet",
+      publicationStatus: "published",
       // Intervento dedicato al legno: posa nuova, levigatura/lucidatura,
       // ripristino. laminato/PVC/SPC/LVT restano su `posare-o-rifare-pavimento-
       // interno` (non parquet). Niente alias larghi tipo "pavimento in legno".
@@ -88,6 +91,7 @@ export const pavimentazioni: FrozenProjectGroup = {
       // Name cliente-friendly: la domanda reale arriva via "piastrella rotta" &
       // simili, non dal verbo astratto "riparare pavimento". Slug invariato.
       name: "Riparare piastrelle o pavimento rotto",
+      publicationStatus: "published",
       // Riparazione puntuale: piastrelle rotte/sollevate, fughe, piccole zone.
       // "riparare pavimento" NON è alias: normalizzato coincide con lo slug
       // (vietato dal validator), già coperto via slug. Il parquet resta nel suo

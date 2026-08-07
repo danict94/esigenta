@@ -17,10 +17,19 @@ export async function resolveInterventionForFunnel(
       slug: true,
       name: true,
       description: true,
+      publicationStatus: true,
     },
   })
 
-  if (!intervention) return null
+  // Publication gate: a draft behaves exactly like a non-existent
+  // intervention on this path — no separate "not public yet" response,
+  // same notFound() the customer-facing route already uses for a truly
+  // unknown slug. No query-plan change: same findUnique on the unique
+  // slug index, just an extra in-memory check on the field already
+  // selected above.
+  if (!intervention || intervention.publicationStatus !== "PUBLISHED") {
+    return null
+  }
 
   return {
     id: intervention.id,

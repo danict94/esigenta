@@ -38,15 +38,24 @@ export type RuntimeRequestSignals = {
 
 const SMALL_TOKENS = new Set<string>([
   "one", "small", "short", "one_room", "up_to_50",
+  // impermeabilizzare-terrazzo :superficie bucket ("meno di 20 mq").
+  "under_20",
 ])
 const MEDIUM_TOKENS = new Set<string>([
   "some", "medium", "two_four", "two_three", "part_house",
   "fifty_to_onehundred",
+  // impermeabilizzare-terrazzo :superficie bucket ("20–50 mq"). Reuses
+  // "fifty_to_onehundred" as-is for its own 50-100mq bucket, above.
+  "twenty_to_fifty",
 ])
 const LARGE_TOKENS = new Set<string>([
   "whole_house", "whole_apartment", "large", "long", "five_plus",
   "four_plus", "four_six", "five_eight", "over_twohundred",
   "onehundred_to_twohundred", "whole_garden",
+  // impermeabilizzare-terrazzo :superficie bucket ("oltre 100 mq"). Distinct
+  // from over_twohundred/onehundred_to_twohundred (different boundary, no
+  // existing token matches "over 100" precisely).
+  "over_onehundred",
 ])
 const WHOLE_HOME_TOKENS = new Set<string>(["whole_house", "whole_apartment"])
 

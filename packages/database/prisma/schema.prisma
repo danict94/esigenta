@@ -104,6 +104,11 @@ model ProjectGroupAlias {
 // CUSTOMER INTENT LAYER
 ///////////////////////////////////////////////////////////
 
+enum InterventionPublicationStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model Intervention {
   id          String  @id @default(cuid())
   slug        String  @unique
@@ -120,6 +125,26 @@ model Intervention {
    * Intervention is NOT:
    * - operational capability
    */
+
+  /**
+   * Single canonical publication gate, mirrored 1:1 from the frozen SSOT's
+   * `publicationStatus` on every sync (frozen always wins — no drift, no
+   * one-way-only transition). DRAFT rows exist fully (aliases, projectGroup,
+   * funnel/content in development) but must never surface on a public,
+   * unauthenticated read path: search, /richiesta, group landing cards,
+   * professionisti/onboarding listings, or a public /interventi or /costi
+   * page.
+   * @default(DRAFT) is a fail-safe, not a source of truth: any row ever
+   * created without an explicit value (a manual insert, a future migration,
+   * a bug) is invisible by default rather than accidentally public. Sync
+   * never relies on this default — it always writes publicationStatus
+   * explicitly from frozen on both create and update — so this default only
+   * ever matters for a write that bypasses sync entirely. The 100
+   * pre-existing rows were backfilled to PUBLISHED explicitly by a one-time
+   * UPDATE in the migration itself, not by this default (see
+   * prisma/migrations/20260807220000_add_intervention_publication_status).
+   */
+  publicationStatus InterventionPublicationStatus @default(DRAFT)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -204,7 +229,6 @@ enum GeoSource {
  * FK (geoLocationId) — this is the only table in the schema with
  * address/city/postalCode/province/latitude/longitude columns. There is no
  * parallel copy of any of these fields anywhere else.
- *
  * placeId is nullable at the schema level only to allow LEGACY_BACKFILL
  * rows whose original Google Place was never captured (see
  * docs/archive-legacy/refoundation/geo-refoundation/02_BACKFILL_AUDIT.md) — every row written through
@@ -284,7 +308,7 @@ model Company {
    * Request's archivedByAdminUserId/archiveReason.
    */
   statusChangedByAdminUserId String?
-  statusChangedByAdminUser   User?     @relation("CompanyStatusChangeActor", fields: [statusChangedByAdminUserId], references: [id], onDelete: SetNull)
+  statusChangedByAdminUser   User?   @relation("CompanyStatusChangeActor", fields: [statusChangedByAdminUserId], references: [id], onDelete: SetNull)
   statusChangeReason         String?
 
   /**
@@ -298,12 +322,12 @@ model Company {
    * under a unique constraint, so companies without a slug yet don't
    * collide with each other.
    */
-  publicName              String?
-  publicSlug              String?   @unique
-  shortDescription        String?
-  fullDescription         String?
-  yearsOfExperience       Int?
-  publicProfileConsentAt  DateTime?
+  publicName             String?
+  publicSlug             String?   @unique
+  shortDescription       String?
+  fullDescription        String?
+  yearsOfExperience      Int?
+  publicProfileConsentAt DateTime?
 
   /**
    * ONBOARDING CONTEXT ONLY
@@ -326,9 +350,9 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  categories  CompanyCategory[]
+  categories    CompanyCategory[]
   interventions CompanyIntervention[]
-  memberships CompanyMembership[]
+  memberships   CompanyMembership[]
 
   creditAccount            CompanyCreditAccount?
   creditOrders             CreditOrder[]
@@ -1072,8 +1096,8 @@ model CompanyCreditTransaction {
 
   createdAt DateTime @default(now())
 
-  unlockChargeFor      RequestUnlock?        @relation("RequestUnlockCharge")
-  unlockRefundFor      RequestUnlock?        @relation("RequestUnlockRefund")
+  unlockChargeFor      RequestUnlock?         @relation("RequestUnlockCharge")
+  unlockRefundFor      RequestUnlock?         @relation("RequestUnlockRefund")
   creditRefundRequests CreditRefundRequest[]
   lotConsumptions      CreditLotConsumption[]
 
@@ -1378,7 +1402,6 @@ enum CompanyDocumentStatus {
  * PENDING_REVIEW) rather than creating a second row. NOT_UPLOADED is never
  * stored here — it is the absence of a row for a required type, derived
  * by deriveCompanyDocumentsStatus, never a status value on this model.
- *
  * objectKey points at a private Cloudflare R2 object (see
  * @esigenta/uploads/r2) — never a public URL. Display/download always
  * goes through a short-lived signed URL generated on demand, never
@@ -1454,8 +1477,8 @@ model Conversation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  participants ConversationParticipant[]
-  messages     Message[]
+  participants         ConversationParticipant[]
+  messages             Message[]
   companyNotifications CompanyNotification[]
 
   @@index([type, createdAt])

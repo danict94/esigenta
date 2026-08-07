@@ -1,16 +1,29 @@
 import path from "node:path"
 
 import { config } from "dotenv"
-import type { PrismaClient } from "@prisma/client"
+import type { InterventionPublicationStatus, PrismaClient } from "@prisma/client"
 
 import { frozenTaxonomySource } from "../source"
 import { validateFrozenTaxonomySource } from "../shared/validators"
+import type { InterventionPublicationStatus as FrozenPublicationStatus } from "../source/types/intervention"
 
 const packageDir = path.resolve(import.meta.dirname, "../../..")
 
 config({
   path: path.resolve(packageDir, "../../.env"),
 })
+
+/**
+ * Frozen uses lowercase string literals ("draft"/"published", TS-domain
+ * convention); the DB enum uses UPPER_CASE (Prisma-domain convention,
+ * matching every other Status enum in schema.prisma). Sync is the one
+ * place that crosses the boundary — no other code should need this map.
+ */
+function toDbPublicationStatus(
+  status: FrozenPublicationStatus,
+): InterventionPublicationStatus {
+  return status === "published" ? "PUBLISHED" : "DRAFT"
+}
 
 type SyncReport = {
   projectGroupsUpserted: number
@@ -71,7 +84,14 @@ async function replaceInterventionAliases(
   })
 }
 
-async function syncCatalogToDatabase(
+/**
+ * Exported (only change from a private function) so
+ * publication-lifecycle.integration.test.ts can call the real sync logic
+ * directly against a test DATABASE_URL, instead of re-implementing it or
+ * spawning this file as a subprocess. Behavior is unchanged: the bottom-of
+ * -file script entry point below still calls this the same way.
+ */
+export async function syncCatalogToDatabase(
   prisma: PrismaClient,
 ): Promise<SyncReport> {
   validateFrozenTaxonomySource(frozenTaxonomySource)
@@ -110,8 +130,12 @@ async function syncCatalogToDatabase(
   // (Phase 15B — see docs/archive-legacy/refoundation/taxonomy-refoundation/15B_FINAL_CONSUMERS_REPORT.md
   // §D). name/description on an EXISTING row stay owned by whichever
   // pipeline first created it (legacy seed-taxonomy.ts, for every row
-  // seeded before this phase) — update only ever touches projectGroupId.
-  // create supplies name/description because a brand new row has no other owner.
+  // seeded before this phase) — update only touches projectGroupId for
+  // those two fields. publicationStatus is different: it is a genuine
+  // frozen-owned operational field (the publication gate), not editorial
+  // content — frozen always wins here, on create AND on every update, in
+  // both directions (published -> draft is a normal, expected transition,
+  // never a special case).
   let interventionsUpserted = 0
   const interventionsCreated: string[] = []
 
@@ -123,6 +147,10 @@ async function syncCatalogToDatabase(
     }
 
     for (const intervention of projectGroup.interventions) {
+      const publicationStatus = toDbPublicationStatus(
+        intervention.publicationStatus,
+      )
+
       const record = await prisma.intervention.upsert({
         where: {
           slug: intervention.slug,
@@ -132,9 +160,11 @@ async function syncCatalogToDatabase(
           name: intervention.name,
           description: intervention.description ?? null,
           projectGroupId,
+          publicationStatus,
         },
         update: {
           projectGroupId,
+          publicationStatus,
         },
       })
 

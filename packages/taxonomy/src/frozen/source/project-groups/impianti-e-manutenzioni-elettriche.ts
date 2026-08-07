@@ -9,18 +9,21 @@ export const impiantiEManutenzioniElettriche: FrozenProjectGroup = {
       id: "fare-impianto-elettrico-nuovo",
       slug: "fare-impianto-elettrico-nuovo",
       name: "Fare impianto elettrico nuovo",
+      publicationStatus: "published",
       aliases: ["impianto elettrico da zero", "nuovo impianto elettrico", "impianto elettrico nuovo"],
     },
     {
       id: "rifare-impianto-elettrico",
       slug: "rifare-impianto-elettrico",
       name: "Rifare impianto elettrico",
+      publicationStatus: "published",
       aliases: ["adeguare impianto elettrico", "ammodernare impianto elettrico", "rifacimento impianto elettrico"],
     },
     {
       id: "riparare-guasto-elettrico",
       slug: "riparare-guasto-elettrico",
       name: "Riparare guasto elettrico",
+      publicationStatus: "published",
       aliases: ["guasto elettrico", "saltata la corrente", "salvavita che scatta", "riparazione guasti elettrici", "salvavita"],
     },
     {
@@ -28,12 +31,14 @@ export const impiantiEManutenzioniElettriche: FrozenProjectGroup = {
       slug: "riparare-quadro-elettrico",
       // Name allargato lato cliente (riparare/sostituire/adeguare); slug invariato.
       name: "Sistemare o sostituire quadro elettrico",
+      publicationStatus: "published",
       aliases: ["sostituire quadro elettrico", "quadro elettrico"],
     },
     {
       id: "installare-illuminazione",
       slug: "installare-illuminazione",
       name: "Installare illuminazione",
+      publicationStatus: "published",
       // "punti luce" spostato su `installare-prese-interruttori-punti-luce`:
       // in gergo elettrico è il punto cablato, non la plafoniera.
       aliases: ["installare faretti led", "montare lampadario", "faretti led", "installazione illuminazione", "strisce led", "applique"],
@@ -42,6 +47,7 @@ export const impiantiEManutenzioniElettriche: FrozenProjectGroup = {
       id: "installare-prese-interruttori-punti-luce",
       slug: "installare-prese-interruttori-punti-luce",
       name: "Installare prese, interruttori o punti luce",
+      publicationStatus: "published",
       // Lavori piccoli/medi su punti elettrici: aggiungere/spostare/sostituire
       // prese, interruttori, punti luce, prese TV/dati. NON è un guasto (quello
       // è `riparare-guasto-elettrico`) né un intero impianto.

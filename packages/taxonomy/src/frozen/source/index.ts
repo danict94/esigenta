@@ -86,6 +86,7 @@ export type {
 
 export type {
   FrozenIntervention,
+  InterventionPublicationStatus,
 } from "./types/intervention"
 
 export type {

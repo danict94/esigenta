@@ -5,12 +5,18 @@ export type {
 
 export { frozenTaxonomySource } from "./frozen"
 
+export {
+  getInterventionPublicationStatus,
+  isInterventionPublished,
+} from "./frozen"
+
 export type {
   FrozenCategory,
   FrozenIntervention,
   FrozenProjectGroup,
   FrozenAlias,
   FrozenTaxonomySource,
+  InterventionPublicationStatus,
 } from "./frozen"
 
 export {

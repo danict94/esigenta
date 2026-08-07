@@ -16,6 +16,7 @@ export const riscaldamento: FrozenProjectGroup = {
       id: "installare-o-sostituire-caldaia",
       slug: "installare-o-sostituire-caldaia",
       name: "Installare o sostituire caldaia",
+      publicationStatus: "published",
       // "rifare/nuovo impianto di riscaldamento" vive qui come alias, non come
       // intervento a sé.
       aliases: [
@@ -37,6 +38,7 @@ export const riscaldamento: FrozenProjectGroup = {
       id: "installare-pompa-di-calore",
       slug: "installare-pompa-di-calore",
       name: "Installare pompa di calore",
+      publicationStatus: "published",
       // Aria-acqua per riscaldamento/ACS. Aria-aria (split) resta in
       // `climatizzazione`. "installare pompa di calore" NON è alias (== slug).
       aliases: [
@@ -56,6 +58,7 @@ export const riscaldamento: FrozenProjectGroup = {
       id: "installare-o-sostituire-termosifoni",
       slug: "installare-o-sostituire-termosifoni",
       name: "Installare o sostituire termosifoni",
+      publicationStatus: "published",
       aliases: [
         "installare termosifoni",
         "sostituire termosifoni",
@@ -75,6 +78,7 @@ export const riscaldamento: FrozenProjectGroup = {
       id: "installare-riscaldamento-a-pavimento",
       slug: "installare-riscaldamento-a-pavimento",
       name: "Installare riscaldamento a pavimento",
+      publicationStatus: "published",
       // "installare riscaldamento a pavimento" NON è alias (== slug/name).
       aliases: [
         "riscaldamento a pavimento",
@@ -91,6 +95,7 @@ export const riscaldamento: FrozenProjectGroup = {
       id: "installare-o-sostituire-scaldabagno",
       slug: "installare-o-sostituire-scaldabagno",
       name: "Installare o sostituire scaldabagno",
+      publicationStatus: "published",
       // Apparecchio termico per ACS: sta qui, non in idraulica.
       aliases: [
         "scaldabagno",
@@ -111,6 +116,7 @@ export const riscaldamento: FrozenProjectGroup = {
       id: "fare-manutenzione-caldaia",
       slug: "fare-manutenzione-caldaia",
       name: "Fare manutenzione caldaia",
+      publicationStatus: "published",
       // Ricorrente e obbligatoria (controllo fumi/bollino). "fare manutenzione
       // caldaia" NON è alias (== slug/name).
       aliases: [

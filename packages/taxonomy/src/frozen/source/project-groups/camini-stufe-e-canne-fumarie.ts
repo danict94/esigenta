@@ -14,6 +14,7 @@ export const caminiStufeECanneFumarie: FrozenProjectGroup = {
       id: "installare-o-sostituire-stufa",
       slug: "installare-o-sostituire-stufa",
       name: "Installare o sostituire stufa",
+      publicationStatus: "published",
       // Pellet/legna (tipo nel funnel). Caldaia → riscaldamento.
       aliases: [
         "installare stufa",
@@ -34,6 +35,7 @@ export const caminiStufeECanneFumarie: FrozenProjectGroup = {
       id: "installare-caminetto-o-inserto",
       slug: "installare-caminetto-o-inserto",
       name: "Installare caminetto o inserto",
+      publicationStatus: "published",
       aliases: [
         "installare caminetto",
         "sostituire caminetto",
@@ -53,6 +55,7 @@ export const caminiStufeECanneFumarie: FrozenProjectGroup = {
       id: "installare-o-adeguare-canna-fumaria",
       slug: "installare-o-adeguare-canna-fumaria",
       name: "Installare o adeguare canna fumaria",
+      publicationStatus: "published",
       // Installazione/adeguamento. Infiltrazione comignolo/canna fumaria → tetti.
       aliases: [
         "installare canna fumaria",
@@ -73,6 +76,7 @@ export const caminiStufeECanneFumarie: FrozenProjectGroup = {
       id: "pulire-canna-fumaria",
       slug: "pulire-canna-fumaria",
       name: "Pulire canna fumaria",
+      publicationStatus: "published",
       // Spazzacamino: ricorrente/obbligatoria (UNI/assicurazione). "pulire canna
       // fumaria" NON è alias (== slug/name).
       aliases: [

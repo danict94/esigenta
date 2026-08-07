@@ -39,6 +39,17 @@ export function RelatedFunnelWork({
       );
     }
 
+    // Publication gate, fail-fast: this list links straight to
+    // /richiesta/[slug], which now 404s for a draft — a draft must never
+    // be reachable through this list in the first place.
+    if (intervention.publicationStatus !== "published") {
+      throw new Error(
+        `RelatedFunnelWork: taxonomyInterventionSlug "${slug}" is not published ` +
+          `yet (publicationStatus "draft"). Remove it from this list until that ` +
+          `intervention is published.`,
+      );
+    }
+
     return { key: slug, label: intervention.name, href: `/richiesta/${slug}` };
   });
 

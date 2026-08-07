@@ -15,6 +15,7 @@ export const fabbroSerrandeECancelli: FrozenProjectGroup = {
       id: "cambiare-o-riparare-serratura",
       slug: "cambiare-o-riparare-serratura",
       name: "Cambiare o riparare serratura",
+      publicationStatus: "published",
       // Serratura/cilindro/meccanismo, anche di una blindata. Il prodotto porta
       // blindata resta in serramenti-e-infissi.
       aliases: [
@@ -36,6 +37,7 @@ export const fabbroSerrandeECancelli: FrozenProjectGroup = {
       id: "aprire-porta-bloccata",
       slug: "aprire-porta-bloccata",
       name: "Aprire porta bloccata",
+      publicationStatus: "published",
       // Lead premium/urgenza. Nessuna promessa di pronto intervento 24h o tempi
       // garantiti (qui e nel futuro funnel). "aprire porta bloccata" NON è alias
       // (== slug/name).
@@ -55,6 +57,7 @@ export const fabbroSerrandeECancelli: FrozenProjectGroup = {
       id: "riparare-o-sostituire-serranda",
       slug: "riparare-o-sostituire-serranda",
       name: "Riparare o sostituire serranda",
+      publicationStatus: "published",
       // Serrande metalliche/garage/negozio. Tapparelle domestiche → serramenti.
       aliases: [
         "riparare serranda",
@@ -75,6 +78,7 @@ export const fabbroSerrandeECancelli: FrozenProjectGroup = {
       id: "installare-inferriate-o-grate",
       slug: "installare-inferriate-o-grate",
       name: "Installare inferriate o grate di sicurezza",
+      publicationStatus: "published",
       // Bonus/detrazioni NON promessi: il professionista valuta requisiti.
       aliases: [
         "installare inferriate",
@@ -95,6 +99,7 @@ export const fabbroSerrandeECancelli: FrozenProjectGroup = {
       id: "installare-ringhiere",
       slug: "installare-ringhiere",
       name: "Installare ringhiere",
+      publicationStatus: "published",
       // Ringhiere/parapetti metallici. Ripristino frontalini/balconi/strutture →
       // facciate-e-balconi. "installare ringhiere" NON è alias (== slug/name).
       aliases: [
@@ -115,6 +120,7 @@ export const fabbroSerrandeECancelli: FrozenProjectGroup = {
       id: "installare-o-riparare-cancello",
       slug: "installare-o-riparare-cancello",
       name: "Installare o riparare cancello",
+      publicationStatus: "published",
       // Cancello fisico/metallico. NIENTE alias di automazione: motore/
       // motorizzare/automazione/telecomando/cancello automatico → citofoni.
       aliases: [

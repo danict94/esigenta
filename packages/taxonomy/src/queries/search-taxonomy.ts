@@ -533,6 +533,9 @@ export async function getPopularInterventions(): Promise<
       slug: {
         in: [...POPULAR_INTERVENTION_SLUGS],
       },
+      // Publication gate: a draft must never surface here, even if someone
+      // adds its slug to the curated popular list ahead of launch.
+      publicationStatus: "PUBLISHED",
     },
     select: {
       id: true,
@@ -630,6 +633,10 @@ export async function searchTaxonomy({
               },
             },
           ],
+          // Publication gate: a draft's aliases stay fully searchable
+          // internally (they exist, they're valid taxonomy data) but must
+          // never resolve to a public search result.
+          publicationStatus: "PUBLISHED",
         },
         select: {
           id: true,
@@ -849,6 +856,10 @@ export async function searchTaxonomy({
             projectGroupId: {
               in: allMatchedProjectGroupIds,
             },
+            // Publication gate: category/projectGroup expansion must not
+            // leak a draft intervention that merely shares a group with
+            // published ones.
+            publicationStatus: "PUBLISHED",
           },
           select: {
             id: true,

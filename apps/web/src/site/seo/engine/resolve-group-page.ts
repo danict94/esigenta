@@ -133,15 +133,25 @@ export function resolveGroupLandingPage(
     }
   }
 
-  const interventions: GroupInterventionItem[] = group.interventions.map(
+  // Publication gate: a draft intervention may already have code registered
+  // for it (summary, funnel, even a SeoInterventionLanding/CostGuide) while
+  // it is being built — none of that becomes a public card until frozen
+  // taxonomy says publicationStatus "published". A summary written ahead of
+  // time for a still-draft intervention is allowed to exist (checked above),
+  // it just never reaches this point.
+  const publishedGroupInterventions = group.interventions.filter(
+    (intervention) => intervention.publicationStatus === "published",
+  );
+
+  const interventions: GroupInterventionItem[] = publishedGroupInterventions.map(
     (intervention) => {
       const summary = content.interventionSummaries[intervention.slug];
 
       if (!summary) {
         throw new Error(
           `SeoGroupLanding "${content.slug}" is missing an interventionSummaries ` +
-            `entry for "${intervention.slug}": every intervention of the group ` +
-            `needs a real orientation summary, never an empty row`,
+            `entry for "${intervention.slug}": every PUBLISHED intervention of ` +
+            `the group needs a real orientation summary, never an empty row`,
         );
       }
 

@@ -14,6 +14,8 @@ export const facciateBalconiGroupLanding: SeoGroupLanding = {
   interventionSummaries: {
     "impermeabilizzare-balcone-ballatoio":
       "Usa questo percorso se un balcone o ballatoio presenta infiltrazioni e va impermeabilizzato per evitare danni nel tempo.",
+    "impermeabilizzare-terrazzo":
+      "Usa questo percorso se un terrazzo o una terrazza calpestabile ha infiltrazioni o una guaina da rifare, senza necessariamente rifare tutta la pavimentazione.",
     "realizzare-cappotto-termico-facciata":
       "Il percorso giusto per isolare la facciata dell'edificio con un cappotto termico, migliorando efficienza energetica e comfort.",
     "rifare-facciata":

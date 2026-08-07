@@ -21,6 +21,7 @@ export const finiture: FrozenProjectGroup = {
       id: "tinteggiare-interni",
       slug: "tinteggiare-interni",
       name: "Tinteggiare interni",
+      publicationStatus: "published",
 
       aliases: [
         "imbiancare casa",
@@ -34,6 +35,7 @@ export const finiture: FrozenProjectGroup = {
       id: "tinteggiare-esterni",
       slug: "tinteggiare-esterni",
       name: "Tinteggiare esterni",
+      publicationStatus: "published",
 
       aliases: [
         "imbiancare facciata",
@@ -47,6 +49,7 @@ export const finiture: FrozenProjectGroup = {
       id: "intonacare-pareti",
       slug: "intonacare-pareti",
       name: "Intonacare pareti",
+      publicationStatus: "published",
 
       aliases: [
         "intonaco interno",
@@ -59,6 +62,7 @@ export const finiture: FrozenProjectGroup = {
       id: "ripristinare-intonaco",
       slug: "ripristinare-intonaco",
       name: "Ripristinare intonaco",
+      publicationStatus: "published",
 
       aliases: [
         "riparazione intonaco",
@@ -70,6 +74,7 @@ export const finiture: FrozenProjectGroup = {
       id: "applicare-stucco-decorativo",
       slug: "applicare-stucco-decorativo",
       name: "Applicare stucco decorativo",
+      publicationStatus: "published",
 
       aliases: [
         "stucco veneziano",
@@ -82,6 +87,7 @@ export const finiture: FrozenProjectGroup = {
       id: "rasare-pareti",
       slug: "rasare-pareti",
       name: "Rasare pareti",
+      publicationStatus: "published",
 
       aliases: [
         "rasatura pareti",

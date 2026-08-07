@@ -1,3 +1,5 @@
+import { isInterventionPublished } from "@esigenta/taxonomy";
+
 import {
   getSeoInterventionLandingBySlug,
   type SeoInterventionLanding,
@@ -11,14 +13,30 @@ import {
 
 export type { SeoInterventionLanding, CostGuide, CostGuideCityPage };
 
+/**
+ * Publication gate, build-time only (frozen taxonomy lookup, no DB query):
+ * a SeoInterventionLanding/CostGuide can be fully written and registered
+ * while its Intervention is still draft — that's the whole point of the
+ * lifecycle — but it must never resolve to a real page until frozen
+ * taxonomy says publicationStatus "published". Both /interventi/[slug] and
+ * /costi/[slug] already run with `dynamicParams = false`: combined with the
+ * same filter in static-params.ts, a draft's page is both absent from the
+ * static build AND a guaranteed 404 for any other slug Next.js is asked
+ * for — this check here is the defense-in-depth layer for any other
+ * caller of these two resolvers (metadata, sitemap, etc.).
+ */
 export function resolveInterventionPage(
   slug: string,
 ): SeoInterventionLanding | null {
-  return getSeoInterventionLandingBySlug(slug);
+  const landing = getSeoInterventionLandingBySlug(slug);
+  if (!landing) return null;
+  return isInterventionPublished(landing.slug) ? landing : null;
 }
 
 export function resolveCostGuidePage(slug: string): CostGuide | null {
-  return getCostGuideBySlug(slug);
+  const guide = getCostGuideBySlug(slug);
+  if (!guide) return null;
+  return isInterventionPublished(guide.interventionSeoSlug) ? guide : null;
 }
 
 export function resolveCostGuideCityPage(

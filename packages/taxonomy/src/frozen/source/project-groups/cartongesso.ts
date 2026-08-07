@@ -17,6 +17,7 @@ export const cartongesso: FrozenProjectGroup = {
       id: "realizzare-parete-cartongesso",
       slug: "realizzare-parete-cartongesso",
       name: "Realizzare parete in cartongesso",
+      publicationStatus: "published",
 
       aliases: [
         "parete in cartongesso",
@@ -29,6 +30,7 @@ export const cartongesso: FrozenProjectGroup = {
       id: "realizzare-controsoffitto",
       slug: "realizzare-controsoffitto",
       name: "Realizzare controsoffitto",
+      publicationStatus: "published",
 
       aliases: [
         "controsoffitto in cartongesso",
@@ -41,6 +43,7 @@ export const cartongesso: FrozenProjectGroup = {
       id: "realizzare-controparete",
       slug: "realizzare-controparete",
       name: "Realizzare controparete",
+      publicationStatus: "published",
 
       aliases: [
         "controparete in cartongesso",
@@ -52,6 +55,7 @@ export const cartongesso: FrozenProjectGroup = {
       id: "realizzare-struttura-in-cartongesso-su-misura",
       slug: "realizzare-struttura-in-cartongesso-su-misura",
       name: "Realizzare una struttura in cartongesso su misura",
+      publicationStatus: "published",
 
       aliases: [
         "parete tv in cartongesso",
@@ -68,6 +72,7 @@ export const cartongesso: FrozenProjectGroup = {
       id: "riparare-o-modificare-cartongesso",
       slug: "riparare-o-modificare-cartongesso",
       name: "Riparare o modificare cartongesso",
+      publicationStatus: "published",
 
       aliases: [
         "riparazione cartongesso",

@@ -9,6 +9,7 @@ export const tetti: FrozenProjectGroup = {
       id: "rifare-tetto",
       slug: "rifare-tetto",
       name: "Rifare tetto",
+      publicationStatus: "published",
       aliases: [
         "rifacimento tetto",
         "sostituire il tetto",
@@ -24,6 +25,7 @@ export const tetti: FrozenProjectGroup = {
       id: "riparare-tetto",
       slug: "riparare-tetto",
       name: "Riparare tetto",
+      publicationStatus: "published",
       // "ripasso tegole/tetto" NON è intervento separato: sta qui. Anche le
       // infiltrazioni vicino a comignolo/canna fumaria stanno qui (è acqua dal
       // tetto: faldali/scossaline/sigillature), NON un intervento canna-fumaria.
@@ -52,6 +54,7 @@ export const tetti: FrozenProjectGroup = {
       id: "sistemare-grondaie",
       slug: "sistemare-grondaie",
       name: "Sistemare grondaie",
+      publicationStatus: "published",
       aliases: [
         "grondaie rotte",
         "lattoniere",
@@ -72,6 +75,7 @@ export const tetti: FrozenProjectGroup = {
       id: "impermeabilizzare-tetto",
       slug: "impermeabilizzare-tetto",
       name: "Impermeabilizzare tetto",
+      publicationStatus: "published",
       // Impermeabilizzazione/guaina/manto: distinto da rifare (strutturale) e
       // riparare (puntuale). Niente alias larghi (rifare/riparare/infiltrazioni
       // tetto restano ai loro interventi); niente terrazzo/balcone.
@@ -91,6 +95,7 @@ export const tetti: FrozenProjectGroup = {
       id: "isolare-o-coibentare-tetto",
       slug: "isolare-o-coibentare-tetto",
       name: "Isolare o coibentare tetto",
+      publicationStatus: "published",
       // Isolamento/coibentazione/tetto ventilato/sottotetto. Distinto da rifare
       // e da impermeabilizzare; niente cappotto facciata/fotovoltaico.
       aliases: [
@@ -110,6 +115,7 @@ export const tetti: FrozenProjectGroup = {
       id: "bonificare-amianto-eternit-tetto",
       slug: "bonificare-amianto-eternit-tetto",
       name: "Bonificare tetto in amianto o eternit",
+      publicationStatus: "published",
       // Intervento dedicato ma delicato: la bonifica dell'amianto va eseguita
       // solo da imprese abilitate (Albo Gestori Ambientali cat. 10, D.Lgs.
       // 81/2008). Il funnel raccoglie e instrada, non spiega né promette esiti.
@@ -132,6 +138,7 @@ export const tetti: FrozenProjectGroup = {
       id: "installare-o-sostituire-lucernario",
       slug: "installare-o-sostituire-lucernario",
       name: "Installare o sostituire lucernario",
+      publicationStatus: "published",
       // Lucernario / finestra da tetto / Velux: installazione, sostituzione,
       // riparazione della finestra da tetto. "velux" (brand molto cercato) tenuto
       // come alias. Distinto da riparare-tetto (perdita dal tetto, non dal serramento).
@@ -154,6 +161,7 @@ export const tetti: FrozenProjectGroup = {
       id: "installare-linea-vita",
       slug: "installare-linea-vita",
       name: "Installare linea vita sul tetto",
+      publicationStatus: "published",
       // Sistema anticaduta/ancoraggi per lavori in quota. Tecnico ma legato al
       // tetto. Prudenza: gli obblighi variano per edificio/intervento/territorio.
       // "installare linea vita" NON è alias (normalizzato == slug, già coperto).

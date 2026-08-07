@@ -3,6 +3,7 @@
     "id": "ampliare-casa",
     "slug": "ampliare-casa",
     "name": "Ampliare casa",
+    "publicationStatus": "published",
     "projectGroupSlug": "costruzioni-e-ampliamenti",
     "aliases": [
       "aggiungere stanza",
@@ -21,6 +22,7 @@
     "id": "applicare-stucco-decorativo",
     "slug": "applicare-stucco-decorativo",
     "name": "Applicare stucco decorativo",
+    "publicationStatus": "published",
     "projectGroupSlug": "finiture",
     "aliases": [
       "finitura decorativa",
@@ -32,6 +34,7 @@
     "id": "aprire-o-chiudere-vano",
     "slug": "aprire-o-chiudere-vano",
     "name": "Aprire o chiudere un vano",
+    "publicationStatus": "published",
     "projectGroupSlug": "opere-murarie-e-demolizioni",
     "aliases": [
       "apertura vano",
@@ -50,6 +53,7 @@
     "id": "aprire-porta-bloccata",
     "slug": "aprire-porta-bloccata",
     "name": "Aprire porta bloccata",
+    "publicationStatus": "published",
     "projectGroupSlug": "fabbro-serrande-e-cancelli",
     "aliases": [
       "apertura porta",
@@ -67,6 +71,7 @@
     "id": "automatizzare-cancello",
     "slug": "automatizzare-cancello",
     "name": "Automatizzare cancello",
+    "publicationStatus": "published",
     "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
     "aliases": [
       "automazione cancello",
@@ -84,6 +89,7 @@
     "id": "bonificare-amianto-eternit-tetto",
     "slug": "bonificare-amianto-eternit-tetto",
     "name": "Bonificare tetto in amianto o eternit",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "bonifica amianto tetto",
@@ -104,6 +110,7 @@
     "id": "cambiare-o-riparare-serratura",
     "slug": "cambiare-o-riparare-serratura",
     "name": "Cambiare o riparare serratura",
+    "publicationStatus": "published",
     "projectGroupSlug": "fabbro-serrande-e-cancelli",
     "aliases": [
       "cambiare cilindro",
@@ -124,6 +131,7 @@
     "id": "costruire-casa",
     "slug": "costruire-casa",
     "name": "Costruire casa",
+    "publicationStatus": "published",
     "projectGroupSlug": "costruzioni-e-ampliamenti",
     "aliases": [
       "costruire abitazione",
@@ -142,6 +150,7 @@
     "id": "costruire-dependance-o-annesso",
     "slug": "costruire-dependance-o-annesso",
     "name": "Costruire dependance o annesso",
+    "publicationStatus": "published",
     "projectGroupSlug": "costruzioni-e-ampliamenti",
     "aliases": [
       "annesso abitativo",
@@ -160,6 +169,7 @@
     "id": "costruire-garage-o-deposito",
     "slug": "costruire-garage-o-deposito",
     "name": "Costruire garage o deposito",
+    "publicationStatus": "published",
     "projectGroupSlug": "costruzioni-e-ampliamenti",
     "aliases": [
       "costruire autorimessa",
@@ -178,6 +188,7 @@
     "id": "costruire-muretto-o-recinzione",
     "slug": "costruire-muretto-o-recinzione",
     "name": "Costruire muretto o recinzione",
+    "publicationStatus": "published",
     "projectGroupSlug": "esterni-e-giardino",
     "aliases": [
       "cordoli giardino",
@@ -198,6 +209,7 @@
     "id": "costruire-parete-o-tramezzo",
     "slug": "costruire-parete-o-tramezzo",
     "name": "Costruire parete o tramezzo in muratura",
+    "publicationStatus": "published",
     "projectGroupSlug": "opere-murarie-e-demolizioni",
     "aliases": [
       "alzare un muro",
@@ -216,6 +228,7 @@
     "id": "costruire-piscina",
     "slug": "costruire-piscina",
     "name": "Costruire piscina",
+    "publicationStatus": "published",
     "projectGroupSlug": "piscine",
     "aliases": [
       "costruire piscina interrata",
@@ -233,6 +246,7 @@
     "id": "demolire-parete-o-tramezzo",
     "slug": "demolire-parete-o-tramezzo",
     "name": "Demolire parete o tramezzo",
+    "publicationStatus": "published",
     "projectGroupSlug": "opere-murarie-e-demolizioni",
     "aliases": [
       "abbattere un muro",
@@ -251,6 +265,7 @@
     "id": "demolizioni-interne",
     "slug": "demolizioni-interne",
     "name": "Demolizioni interne",
+    "publicationStatus": "published",
     "projectGroupSlug": "opere-murarie-e-demolizioni",
     "aliases": [
       "demolire per ristrutturare",
@@ -265,6 +280,7 @@
     "id": "disostruire-scarichi",
     "slug": "disostruire-scarichi",
     "name": "Disostruire scarichi",
+    "publicationStatus": "published",
     "projectGroupSlug": "idraulica",
     "aliases": [
       "disostruzione scarichi",
@@ -276,6 +292,7 @@
     "id": "fare-ape",
     "slug": "fare-ape",
     "name": "Fare un APE (certificato energetico)",
+    "publicationStatus": "published",
     "projectGroupSlug": "tecnici-e-pratiche-edilizie",
     "aliases": [
       "ape",
@@ -292,6 +309,7 @@
     "id": "fare-cila-o-scia",
     "slug": "fare-cila-o-scia",
     "name": "Fare una CILA o SCIA",
+    "publicationStatus": "published",
     "projectGroupSlug": "tecnici-e-pratiche-edilizie",
     "aliases": [
       "cila",
@@ -310,6 +328,7 @@
     "id": "fare-impianto-elettrico-nuovo",
     "slug": "fare-impianto-elettrico-nuovo",
     "name": "Fare impianto elettrico nuovo",
+    "publicationStatus": "published",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "impianto elettrico da zero",
@@ -321,6 +340,7 @@
     "id": "fare-manutenzione-caldaia",
     "slug": "fare-manutenzione-caldaia",
     "name": "Fare manutenzione caldaia",
+    "publicationStatus": "published",
     "projectGroupSlug": "riscaldamento",
     "aliases": [
       "assistenza caldaia",
@@ -338,6 +358,7 @@
     "id": "fare-manutenzione-climatizzatore",
     "slug": "fare-manutenzione-climatizzatore",
     "name": "Fare manutenzione climatizzatore",
+    "publicationStatus": "published",
     "projectGroupSlug": "climatizzazione",
     "aliases": [
       "manutenzione climatizzatore",
@@ -349,6 +370,7 @@
     "id": "fare-manutenzione-piscina",
     "slug": "fare-manutenzione-piscina",
     "name": "Fare manutenzione piscina",
+    "publicationStatus": "published",
     "projectGroupSlug": "piscine",
     "aliases": [
       "apertura piscina",
@@ -367,6 +389,7 @@
     "id": "fare-massetto",
     "slug": "fare-massetto",
     "name": "Realizzare o rifare massetto",
+    "publicationStatus": "published",
     "projectGroupSlug": "pavimentazioni",
     "aliases": [
       "gettare massetto",
@@ -383,6 +406,7 @@
     "id": "fare-progetto-ristrutturazione",
     "slug": "fare-progetto-ristrutturazione",
     "name": "Fare progetto di ristrutturazione",
+    "publicationStatus": "published",
     "projectGroupSlug": "tecnici-e-pratiche-edilizie",
     "aliases": [
       "architetto progetto ristrutturazione",
@@ -399,6 +423,7 @@
     "id": "fare-sanatoria-edilizia",
     "slug": "fare-sanatoria-edilizia",
     "name": "Fare una sanatoria edilizia",
+    "publicationStatus": "published",
     "projectGroupSlug": "tecnici-e-pratiche-edilizie",
     "aliases": [
       "accertamento di conformità",
@@ -417,6 +442,7 @@
     "id": "fare-sopraelevazione",
     "slug": "fare-sopraelevazione",
     "name": "Fare una sopraelevazione",
+    "publicationStatus": "published",
     "projectGroupSlug": "costruzioni-e-ampliamenti",
     "aliases": [
       "aggiungere un piano",
@@ -435,6 +461,7 @@
     "id": "fare-variazione-catastale",
     "slug": "fare-variazione-catastale",
     "name": "Fare una variazione catastale",
+    "publicationStatus": "published",
     "projectGroupSlug": "tecnici-e-pratiche-edilizie",
     "aliases": [
       "accatastamento",
@@ -453,6 +480,7 @@
     "id": "impermeabilizzare-balcone-ballatoio",
     "slug": "impermeabilizzare-balcone-ballatoio",
     "name": "Impermeabilizzare balcone o ballatoio",
+    "publicationStatus": "published",
     "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
       "acqua sotto balcone",
@@ -468,9 +496,30 @@
     ]
   },
   {
+    "id": "impermeabilizzare-terrazzo",
+    "slug": "impermeabilizzare-terrazzo",
+    "name": "Impermeabilizzare terrazzo",
+    "publicationStatus": "draft",
+    "projectGroupSlug": "facciate-e-balconi",
+    "aliases": [
+      "guaina terrazzo",
+      "impermeabilizzare il terrazzo",
+      "impermeabilizzare pavimento terrazzo",
+      "impermeabilizzare terrazza",
+      "impermeabilizzazione terrazza",
+      "impermeabilizzazione terrazzo",
+      "infiltrazione terrazzo",
+      "infiltrazioni terrazzo",
+      "perdita acqua terrazzo",
+      "rifare guaina terrazzo",
+      "terrazzo con infiltrazioni"
+    ]
+  },
+  {
     "id": "impermeabilizzare-tetto",
     "slug": "impermeabilizzare-tetto",
     "name": "Impermeabilizzare tetto",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "guaina bituminosa tetto",
@@ -488,6 +537,7 @@
     "id": "installare-caminetto-o-inserto",
     "slug": "installare-caminetto-o-inserto",
     "name": "Installare caminetto o inserto",
+    "publicationStatus": "published",
     "projectGroupSlug": "camini-stufe-e-canne-fumarie",
     "aliases": [
       "caminetto",
@@ -508,6 +558,7 @@
     "id": "installare-climatizzatore",
     "slug": "installare-climatizzatore",
     "name": "Installare climatizzatore",
+    "publicationStatus": "published",
     "projectGroupSlug": "climatizzazione",
     "aliases": [
       "installare aria condizionata",
@@ -519,6 +570,7 @@
     "id": "installare-copertura-piscina",
     "slug": "installare-copertura-piscina",
     "name": "Installare copertura piscina",
+    "publicationStatus": "published",
     "projectGroupSlug": "piscine",
     "aliases": [
       "copertura alta piscina",
@@ -536,6 +588,7 @@
     "id": "installare-domotica-smart-home",
     "slug": "installare-domotica-smart-home",
     "name": "Installare domotica e smart home",
+    "publicationStatus": "published",
     "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
     "aliases": [
       "automazione casa",
@@ -554,6 +607,7 @@
     "id": "installare-fotovoltaico",
     "slug": "installare-fotovoltaico",
     "name": "Installare fotovoltaico",
+    "publicationStatus": "published",
     "projectGroupSlug": "fotovoltaico",
     "aliases": [
       "fotovoltaico con accumulo",
@@ -570,6 +624,7 @@
     "id": "installare-illuminazione",
     "slug": "installare-illuminazione",
     "name": "Installare illuminazione",
+    "publicationStatus": "published",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "applique",
@@ -584,6 +639,7 @@
     "id": "installare-impianto-allarme",
     "slug": "installare-impianto-allarme",
     "name": "Installare impianto allarme",
+    "publicationStatus": "published",
     "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
     "aliases": [
       "allarme casa",
@@ -602,6 +658,7 @@
     "id": "installare-impianto-irrigazione",
     "slug": "installare-impianto-irrigazione",
     "name": "Installare impianto di irrigazione",
+    "publicationStatus": "published",
     "projectGroupSlug": "esterni-e-giardino",
     "aliases": [
       "centralina irrigazione",
@@ -620,6 +677,7 @@
     "id": "installare-inferriate-o-grate",
     "slug": "installare-inferriate-o-grate",
     "name": "Installare inferriate o grate di sicurezza",
+    "publicationStatus": "published",
     "projectGroupSlug": "fabbro-serrande-e-cancelli",
     "aliases": [
       "grate antintrusione",
@@ -640,6 +698,7 @@
     "id": "installare-linea-vita",
     "slug": "installare-linea-vita",
     "name": "Installare linea vita sul tetto",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "ancoraggi tetto",
@@ -657,6 +716,7 @@
     "id": "installare-o-adeguare-canna-fumaria",
     "slug": "installare-o-adeguare-canna-fumaria",
     "name": "Installare o adeguare canna fumaria",
+    "publicationStatus": "published",
     "projectGroupSlug": "camini-stufe-e-canne-fumarie",
     "aliases": [
       "adeguamento canna fumaria",
@@ -677,6 +737,7 @@
     "id": "installare-o-riparare-cancello",
     "slug": "installare-o-riparare-cancello",
     "name": "Installare o riparare cancello",
+    "publicationStatus": "published",
     "projectGroupSlug": "fabbro-serrande-e-cancelli",
     "aliases": [
       "cancello a battente",
@@ -697,6 +758,7 @@
     "id": "installare-o-sostituire-caldaia",
     "slug": "installare-o-sostituire-caldaia",
     "name": "Installare o sostituire caldaia",
+    "publicationStatus": "published",
     "projectGroupSlug": "riscaldamento",
     "aliases": [
       "caldaia a condensazione",
@@ -717,6 +779,7 @@
     "id": "installare-o-sostituire-citofono-videocitofono",
     "slug": "installare-o-sostituire-citofono-videocitofono",
     "name": "Installare o sostituire citofono/videocitofono",
+    "publicationStatus": "published",
     "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
     "aliases": [
       "campanello smart",
@@ -736,6 +799,7 @@
     "id": "installare-o-sostituire-finestre-infissi",
     "slug": "installare-o-sostituire-finestre-infissi",
     "name": "Installare o sostituire finestre e infissi",
+    "publicationStatus": "published",
     "projectGroupSlug": "serramenti-e-infissi",
     "aliases": [
       "cambiare finestre",
@@ -759,6 +823,7 @@
     "id": "installare-o-sostituire-lucernario",
     "slug": "installare-o-sostituire-lucernario",
     "name": "Installare o sostituire lucernario",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "cambiare lucernario",
@@ -779,6 +844,7 @@
     "id": "installare-o-sostituire-scaldabagno",
     "slug": "installare-o-sostituire-scaldabagno",
     "name": "Installare o sostituire scaldabagno",
+    "publicationStatus": "published",
     "projectGroupSlug": "riscaldamento",
     "aliases": [
       "boiler",
@@ -799,6 +865,7 @@
     "id": "installare-o-sostituire-stufa",
     "slug": "installare-o-sostituire-stufa",
     "name": "Installare o sostituire stufa",
+    "publicationStatus": "published",
     "projectGroupSlug": "camini-stufe-e-canne-fumarie",
     "aliases": [
       "cambiare stufa",
@@ -819,6 +886,7 @@
     "id": "installare-o-sostituire-termosifoni",
     "slug": "installare-o-sostituire-termosifoni",
     "name": "Installare o sostituire termosifoni",
+    "publicationStatus": "published",
     "projectGroupSlug": "riscaldamento",
     "aliases": [
       "aggiungere termosifoni",
@@ -839,6 +907,7 @@
     "id": "installare-persiane-o-scuri",
     "slug": "installare-persiane-o-scuri",
     "name": "Installare persiane o scuri",
+    "publicationStatus": "published",
     "projectGroupSlug": "serramenti-e-infissi",
     "aliases": [
       "ante oscuranti",
@@ -859,6 +928,7 @@
     "id": "installare-pompa-di-calore",
     "slug": "installare-pompa-di-calore",
     "name": "Installare pompa di calore",
+    "publicationStatus": "published",
     "projectGroupSlug": "riscaldamento",
     "aliases": [
       "impianto a pompa di calore",
@@ -877,6 +947,7 @@
     "id": "installare-porta-blindata",
     "slug": "installare-porta-blindata",
     "name": "Installare porta blindata",
+    "publicationStatus": "published",
     "projectGroupSlug": "serramenti-e-infissi",
     "aliases": [
       "cambiare porta blindata",
@@ -894,6 +965,7 @@
     "id": "installare-porte-interne",
     "slug": "installare-porte-interne",
     "name": "Installare porte interne",
+    "publicationStatus": "published",
     "projectGroupSlug": "serramenti-e-infissi",
     "aliases": [
       "cambiare porte interne",
@@ -912,6 +984,7 @@
     "id": "installare-prese-interruttori-punti-luce",
     "slug": "installare-prese-interruttori-punti-luce",
     "name": "Installare prese, interruttori o punti luce",
+    "publicationStatus": "published",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "aggiungere presa elettrica",
@@ -932,6 +1005,7 @@
     "id": "installare-ringhiere",
     "slug": "installare-ringhiere",
     "name": "Installare ringhiere",
+    "publicationStatus": "published",
     "projectGroupSlug": "fabbro-serrande-e-cancelli",
     "aliases": [
       "carpenteria metallica ringhiere",
@@ -951,6 +1025,7 @@
     "id": "installare-riscaldamento-a-pavimento",
     "slug": "installare-riscaldamento-a-pavimento",
     "name": "Installare riscaldamento a pavimento",
+    "publicationStatus": "published",
     "projectGroupSlug": "riscaldamento",
     "aliases": [
       "impianto a pavimento",
@@ -967,6 +1042,7 @@
     "id": "installare-sanitari",
     "slug": "installare-sanitari",
     "name": "Installare sanitari",
+    "publicationStatus": "published",
     "projectGroupSlug": "idraulica",
     "aliases": [
       "installazione sanitari",
@@ -978,6 +1054,7 @@
     "id": "installare-videosorveglianza",
     "slug": "installare-videosorveglianza",
     "name": "Installare videosorveglianza",
+    "publicationStatus": "published",
     "projectGroupSlug": "citofoni-sicurezza-e-smart-home",
     "aliases": [
       "impianto videosorveglianza",
@@ -996,6 +1073,7 @@
     "id": "installare-zanzariere",
     "slug": "installare-zanzariere",
     "name": "Installare zanzariere",
+    "publicationStatus": "published",
     "projectGroupSlug": "serramenti-e-infissi",
     "aliases": [
       "cambiare rete zanzariera",
@@ -1014,6 +1092,7 @@
     "id": "intonacare-pareti",
     "slug": "intonacare-pareti",
     "name": "Intonacare pareti",
+    "publicationStatus": "published",
     "projectGroupSlug": "finiture",
     "aliases": [
       "intonacatura pareti",
@@ -1025,6 +1104,7 @@
     "id": "isolare-o-coibentare-tetto",
     "slug": "isolare-o-coibentare-tetto",
     "name": "Isolare o coibentare tetto",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "coibentare sottotetto",
@@ -1043,6 +1123,7 @@
     "id": "modificare-o-potenziare-impianto-fotovoltaico",
     "slug": "modificare-o-potenziare-impianto-fotovoltaico",
     "name": "Ampliare o modificare impianto fotovoltaico",
+    "publicationStatus": "published",
     "projectGroupSlug": "fotovoltaico",
     "aliases": [
       "aggiungere accumulo a impianto esistente",
@@ -1062,6 +1143,7 @@
     "id": "piccole-opere-murarie",
     "slug": "piccole-opere-murarie",
     "name": "Piccole opere murarie e assistenze",
+    "publicationStatus": "published",
     "projectGroupSlug": "opere-murarie-e-demolizioni",
     "aliases": [
       "assistenza muraria",
@@ -1080,6 +1162,7 @@
     "id": "posare-levigare-o-ripristinare-parquet",
     "slug": "posare-levigare-o-ripristinare-parquet",
     "name": "Posare, levigare o ripristinare parquet",
+    "publicationStatus": "published",
     "projectGroupSlug": "pavimentazioni",
     "aliases": [
       "installare parquet",
@@ -1104,6 +1187,7 @@
     "id": "posare-o-rifare-pavimento-interno",
     "slug": "posare-o-rifare-pavimento-interno",
     "name": "Posare o rifare pavimento interno",
+    "publicationStatus": "published",
     "projectGroupSlug": "pavimentazioni",
     "aliases": [
       "cambiare pavimento",
@@ -1132,6 +1216,7 @@
     "id": "posare-pavimentazione-esterna",
     "slug": "posare-pavimentazione-esterna",
     "name": "Posare pavimentazione esterna",
+    "publicationStatus": "published",
     "projectGroupSlug": "esterni-e-giardino",
     "aliases": [
       "autobloccanti",
@@ -1152,6 +1237,7 @@
     "id": "potare-e-curare-il-verde",
     "slug": "potare-e-curare-il-verde",
     "name": "Potare e curare il verde",
+    "publicationStatus": "published",
     "projectGroupSlug": "esterni-e-giardino",
     "aliases": [
       "abbattimento albero",
@@ -1172,6 +1258,7 @@
     "id": "pulire-canna-fumaria",
     "slug": "pulire-canna-fumaria",
     "name": "Pulire canna fumaria",
+    "publicationStatus": "published",
     "projectGroupSlug": "camini-stufe-e-canne-fumarie",
     "aliases": [
       "controllo canna fumaria",
@@ -1190,6 +1277,7 @@
     "id": "rasare-pareti",
     "slug": "rasare-pareti",
     "name": "Rasare pareti",
+    "publicationStatus": "published",
     "projectGroupSlug": "finiture",
     "aliases": [
       "rasare muro",
@@ -1202,6 +1290,7 @@
     "id": "realizzare-cappotto-termico-facciata",
     "slug": "realizzare-cappotto-termico-facciata",
     "name": "Realizzare cappotto termico facciata",
+    "publicationStatus": "published",
     "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
       "cappotto condominio",
@@ -1219,6 +1308,7 @@
     "id": "realizzare-controparete",
     "slug": "realizzare-controparete",
     "name": "Realizzare controparete",
+    "publicationStatus": "published",
     "projectGroupSlug": "cartongesso",
     "aliases": [
       "controparete in cartongesso",
@@ -1229,6 +1319,7 @@
     "id": "realizzare-controsoffitto",
     "slug": "realizzare-controsoffitto",
     "name": "Realizzare controsoffitto",
+    "publicationStatus": "published",
     "projectGroupSlug": "cartongesso",
     "aliases": [
       "abbassamento soffitto",
@@ -1240,6 +1331,7 @@
     "id": "realizzare-o-sistemare-giardino",
     "slug": "realizzare-o-sistemare-giardino",
     "name": "Realizzare o sistemare giardino",
+    "publicationStatus": "published",
     "projectGroupSlug": "esterni-e-giardino",
     "aliases": [
       "creare giardino",
@@ -1260,6 +1352,7 @@
     "id": "realizzare-parete-cartongesso",
     "slug": "realizzare-parete-cartongesso",
     "name": "Realizzare parete in cartongesso",
+    "publicationStatus": "published",
     "projectGroupSlug": "cartongesso",
     "aliases": [
       "divisorio in cartongesso",
@@ -1271,6 +1364,7 @@
     "id": "realizzare-struttura-in-cartongesso-su-misura",
     "slug": "realizzare-struttura-in-cartongesso-su-misura",
     "name": "Realizzare una struttura in cartongesso su misura",
+    "publicationStatus": "published",
     "projectGroupSlug": "cartongesso",
     "aliases": [
       "cabina armadio in cartongesso",
@@ -1286,6 +1380,7 @@
     "id": "rifare-facciata",
     "slug": "rifare-facciata",
     "name": "Rifare facciata",
+    "publicationStatus": "published",
     "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
       "finitura ai silicati facciata",
@@ -1308,6 +1403,7 @@
     "id": "rifare-impianto-elettrico",
     "slug": "rifare-impianto-elettrico",
     "name": "Rifare impianto elettrico",
+    "publicationStatus": "published",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "adeguare impianto elettrico",
@@ -1319,6 +1415,7 @@
     "id": "rifare-impianto-idraulico-bagno",
     "slug": "rifare-impianto-idraulico-bagno",
     "name": "Rifare impianto idraulico bagno",
+    "publicationStatus": "published",
     "projectGroupSlug": "idraulica",
     "aliases": [
       "rifacimento impianto idraulico bagno",
@@ -1329,6 +1426,7 @@
     "id": "rifare-pavimentazione-balcone-ballatoio",
     "slug": "rifare-pavimentazione-balcone-ballatoio",
     "name": "Rifare pavimentazione balcone o ballatoio",
+    "publicationStatus": "published",
     "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
       "pavimentazione balcone",
@@ -1346,6 +1444,7 @@
     "id": "rifare-tetto",
     "slug": "rifare-tetto",
     "name": "Rifare tetto",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "nuovo tetto",
@@ -1362,6 +1461,7 @@
     "id": "riparare-guasto-elettrico",
     "slug": "riparare-guasto-elettrico",
     "name": "Riparare guasto elettrico",
+    "publicationStatus": "published",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "guasto elettrico",
@@ -1375,6 +1475,7 @@
     "id": "riparare-o-fare-manutenzione-fotovoltaico",
     "slug": "riparare-o-fare-manutenzione-fotovoltaico",
     "name": "Riparare o fare manutenzione al fotovoltaico",
+    "publicationStatus": "published",
     "projectGroupSlug": "fotovoltaico",
     "aliases": [
       "assistenza fotovoltaico",
@@ -1395,6 +1496,7 @@
     "id": "riparare-o-modificare-cartongesso",
     "slug": "riparare-o-modificare-cartongesso",
     "name": "Riparare o modificare cartongesso",
+    "publicationStatus": "published",
     "projectGroupSlug": "cartongesso",
     "aliases": [
       "buchi nel cartongesso",
@@ -1408,6 +1510,7 @@
     "id": "riparare-o-sostituire-serranda",
     "slug": "riparare-o-sostituire-serranda",
     "name": "Riparare o sostituire serranda",
+    "publicationStatus": "published",
     "projectGroupSlug": "fabbro-serrande-e-cancelli",
     "aliases": [
       "motore serranda",
@@ -1428,6 +1531,7 @@
     "id": "riparare-o-sostituire-tapparelle",
     "slug": "riparare-o-sostituire-tapparelle",
     "name": "Riparare o sostituire tapparelle",
+    "publicationStatus": "published",
     "projectGroupSlug": "serramenti-e-infissi",
     "aliases": [
       "avvolgibili",
@@ -1450,6 +1554,7 @@
     "id": "riparare-pavimento",
     "slug": "riparare-pavimento",
     "name": "Riparare piastrelle o pavimento rotto",
+    "publicationStatus": "published",
     "projectGroupSlug": "pavimentazioni",
     "aliases": [
       "fughe rovinate",
@@ -1473,6 +1578,7 @@
     "id": "riparare-perdita-acqua",
     "slug": "riparare-perdita-acqua",
     "name": "Riparare perdita acqua",
+    "publicationStatus": "published",
     "projectGroupSlug": "idraulica",
     "aliases": [
       "perdita acqua",
@@ -1484,6 +1590,7 @@
     "id": "riparare-quadro-elettrico",
     "slug": "riparare-quadro-elettrico",
     "name": "Sistemare o sostituire quadro elettrico",
+    "publicationStatus": "published",
     "projectGroupSlug": "impianti-e-manutenzioni-elettriche",
     "aliases": [
       "quadro elettrico",
@@ -1494,6 +1601,7 @@
     "id": "riparare-tetto",
     "slug": "riparare-tetto",
     "name": "Riparare tetto",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "comignolo che perde",
@@ -1520,6 +1628,7 @@
     "id": "ripristinare-balconi-e-ballatoi",
     "slug": "ripristinare-balconi-e-ballatoi",
     "name": "Ripristinare balconi e ballatoi",
+    "publicationStatus": "published",
     "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
       "balcone ammalorato",
@@ -1539,6 +1648,7 @@
     "id": "ripristinare-intonaco",
     "slug": "ripristinare-intonaco",
     "name": "Ripristinare intonaco",
+    "publicationStatus": "published",
     "projectGroupSlug": "finiture",
     "aliases": [
       "rifacimento intonaco",
@@ -1549,6 +1659,7 @@
     "id": "ripristino-frontalino",
     "slug": "ripristino-frontalino",
     "name": "Ripristinare frontalino balcone",
+    "publicationStatus": "published",
     "projectGroupSlug": "facciate-e-balconi",
     "aliases": [
       "cemento frontalino balcone",
@@ -1564,6 +1675,7 @@
     "id": "ristrutturare-appartamento",
     "slug": "ristrutturare-appartamento",
     "name": "Ristrutturare appartamento",
+    "publicationStatus": "published",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
       "rifare appartamento",
@@ -1577,6 +1689,7 @@
     "id": "ristrutturare-bagno",
     "slug": "ristrutturare-bagno",
     "name": "Ristrutturare bagno",
+    "publicationStatus": "published",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
       "rifacimento bagno",
@@ -1592,6 +1705,7 @@
     "id": "ristrutturare-casa",
     "slug": "ristrutturare-casa",
     "name": "Ristrutturare casa",
+    "publicationStatus": "published",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
       "ristrutturare casa indipendente",
@@ -1609,6 +1723,7 @@
     "id": "ristrutturare-cucina",
     "slug": "ristrutturare-cucina",
     "name": "Ristrutturare cucina",
+    "publicationStatus": "published",
     "projectGroupSlug": "ristrutturazioni",
     "aliases": [
       "rifacimento cucina",
@@ -1623,6 +1738,7 @@
     "id": "ristrutturare-piscina",
     "slug": "ristrutturare-piscina",
     "name": "Ristrutturare piscina",
+    "publicationStatus": "published",
     "projectGroupSlug": "piscine",
     "aliases": [
       "cambiare rivestimento piscina",
@@ -1640,6 +1756,7 @@
     "id": "sistemare-grondaie",
     "slug": "sistemare-grondaie",
     "name": "Sistemare grondaie",
+    "publicationStatus": "published",
     "projectGroupSlug": "tetti",
     "aliases": [
       "grondaie",
@@ -1661,6 +1778,7 @@
     "id": "sostituire-box-doccia",
     "slug": "sostituire-box-doccia",
     "name": "Sostituire box doccia",
+    "publicationStatus": "published",
     "projectGroupSlug": "idraulica",
     "aliases": [
       "cambiare box doccia",
@@ -1675,6 +1793,7 @@
     "id": "tinteggiare-esterni",
     "slug": "tinteggiare-esterni",
     "name": "Tinteggiare esterni",
+    "publicationStatus": "published",
     "projectGroupSlug": "finiture",
     "aliases": [
       "imbiancare facciata",
@@ -1687,6 +1806,7 @@
     "id": "tinteggiare-interni",
     "slug": "tinteggiare-interni",
     "name": "Tinteggiare interni",
+    "publicationStatus": "published",
     "projectGroupSlug": "finiture",
     "aliases": [
       "imbiancare appartamento",

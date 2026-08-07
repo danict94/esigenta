@@ -15,6 +15,7 @@ export const serramentiEInfissi: FrozenProjectGroup = {
       id: "installare-o-sostituire-finestre-infissi",
       slug: "installare-o-sostituire-finestre-infissi",
       name: "Installare o sostituire finestre e infissi",
+      publicationStatus: "published",
       // Lucernario / finestra da tetto / velux NON stanno qui: restano in `tetti`.
       aliases: [
         "installare infissi",
@@ -38,6 +39,7 @@ export const serramentiEInfissi: FrozenProjectGroup = {
       id: "installare-porte-interne",
       slug: "installare-porte-interne",
       name: "Installare porte interne",
+      publicationStatus: "published",
       // "installare porte interne" NON è alias: normalizzato == slug/name.
       aliases: [
         "porte interne",
@@ -56,6 +58,7 @@ export const serramentiEInfissi: FrozenProjectGroup = {
       id: "installare-porta-blindata",
       slug: "installare-porta-blindata",
       name: "Installare porta blindata",
+      publicationStatus: "published",
       // La blindata sta qui come prodotto/serramento. Serratura/cilindro/apertura
       // porta bloccata → futuro `Fabbro, serrande e cancelli`.
       // "installare porta blindata" NON è alias: normalizzato == slug/name.
@@ -75,6 +78,7 @@ export const serramentiEInfissi: FrozenProjectGroup = {
       id: "riparare-o-sostituire-tapparelle",
       slug: "riparare-o-sostituire-tapparelle",
       name: "Riparare o sostituire tapparelle",
+      publicationStatus: "published",
       // Tapparelle/avvolgibili domestici. Serrande commerciali/garage/metalliche
       // → futuro `Fabbro, serrande e cancelli`.
       aliases: [
@@ -98,6 +102,7 @@ export const serramentiEInfissi: FrozenProjectGroup = {
       id: "installare-zanzariere",
       slug: "installare-zanzariere",
       name: "Installare zanzariere",
+      publicationStatus: "published",
       // "installare zanzariere" NON è alias: normalizzato == slug/name.
       aliases: [
         "zanzariere",
@@ -116,6 +121,7 @@ export const serramentiEInfissi: FrozenProjectGroup = {
       id: "installare-persiane-o-scuri",
       slug: "installare-persiane-o-scuri",
       name: "Installare persiane o scuri",
+      publicationStatus: "published",
       aliases: [
         "installare persiane",
         "sostituire persiane",
