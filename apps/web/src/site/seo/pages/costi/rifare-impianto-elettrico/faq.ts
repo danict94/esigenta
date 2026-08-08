@@ -1,5 +1,20 @@
 export const rifareImpiantoElettricoFaq = [
   {
+    question: "Quanto costa rifare un impianto elettrico al mq?",
+    answer:
+      "Indicativamente da 45 € a 80 € al mq per il rifacimento completo di un impianto elettrico residenziale esistente, con configurazione ordinaria, senza domotica avanzata e senza ripristini murari eccezionalmente estesi. È una fascia editoriale elaborata confrontando i prezzari regionali ufficiali con il mercato nazionale, non il prezzo di un singolo prezzario: il preventivo reale dipende soprattutto dal numero e dal tipo di punti, linee, quadro elettrico, opere murarie e dalle condizioni dell'impianto esistente.",
+  },
+  {
+    question: "Quanto costa rifare l'impianto elettrico di un appartamento da 50, 100 o 150 mq?",
+    answer:
+      "Applicando la fascia 45–80 €/mq alla superficie: un appartamento da 50 mq indicativamente 2.250–4.000 €, da 80 mq 3.600–6.400 €, da 100 mq 4.500–8.000 € e da 150 mq 6.750–12.000 €. Sono calcoli — superficie moltiplicata per la fascia orientativa — non quattro rilevazioni di mercato indipendenti: negli appartamenti più piccoli il costo al mq può risultare più alto, perché quadro, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie.",
+  },
+  {
+    question: "Quanto costa rifare l'impianto elettrico di una casa vecchia?",
+    answer:
+      "Una casa vecchia può superare la fascia standard quando servono, per esempio, nuove tracce, la sostituzione delle tubazioni esistenti, nuove linee, il rifacimento o l'ampliamento del quadro, l'adeguamento dei collegamenti di protezione, un aumento consistente dei punti, ripristini murari più estesi o difficoltà a riutilizzare il percorso dell'impianto esistente. \"Casa vecchia\" non significa però automaticamente rifacimento totale: va sempre verificato lo stato reale dell'impianto con un sopralluogo.",
+  },
+  {
     question: "Quanto costa realizzare un nuovo punto luce?",
     answer:
       "Dipende dal tipo di posa: un punto luce sotto traccia costa 26,85 € se singolo o 28,96 € se doppio (due punti luce dalla stessa derivazione), mentre un punto luce con tubazione a vista, senza incassarlo nel muro, costa 31,88 €. Sono prezzi ufficiali del prezzario Emilia-Romagna 2025 e non comprendono l'apertura del muro.",

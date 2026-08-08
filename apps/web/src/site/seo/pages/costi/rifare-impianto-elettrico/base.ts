@@ -18,15 +18,21 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
   hubDescription:
     "Costi di punti luce, prese, linee, componenti del quadro e opere murarie, spiegati in linguaggio semplice.",
   topicLabel: "rifare un impianto elettrico",
+  // Revisione 2026-08: prima diceva "usali... non per stimare un totale",
+  // in contraddizione diretta con la nuova fascia 45–80 €/mq qui sotto.
   summary:
-    "Rifare un impianto elettrico comprende punti luce, punti presa, distribuzione interna, quadro elettrico e opere murarie: sono lavorazioni diverse, ciascuna con un proprio prezzo ufficiale, che non si sommano automaticamente in un costo unico. La tabella sotto riporta i prezzi puntuali dei prezzari regionali dei lavori pubblici: usali per confrontare le singole voci di un preventivo, non per stimare un totale.",
+    "Rifare un impianto elettrico costa indicativamente da 45 € a 80 € al mq per un rifacimento completo standard, ma il preventivo reale dipende soprattutto da punti luce, punti presa, distribuzione interna, quadro elettrico e opere murarie: la tabella più sotto riporta i prezzi ufficiali di ogni singola lavorazione, utile per verificare nel dettaglio cosa comprende un preventivo.",
   factors: [
+    "superficie e numero di stanze dell'abitazione",
     "numero di punti luce, punti presa e punti comando richiesti",
+    "numero e tipo di circuiti dedicati (es. cucina, climatizzazione, ricarica veicolo)",
+    "quadro elettrico e dispositivi di protezione necessari",
+    "stato dell'impianto esistente e possibilità di riutilizzare le tubazioni già presenti",
+    "necessità di nuove tracce murarie e dei relativi ripristini",
     "tipo di posa: incassata, a vista, o sola posa su predisposizione esistente",
-    "sezione dei cavi e configurazione della distribuzione interna",
-    "componenti del quadro elettrico necessari (magnetotermici, differenziali, carpenteria)",
-    "estensione delle opere murarie (tracce) e tipo di muratura",
-    "stato dell'impianto esistente e necessità di adeguamenti",
+    "serie civile e materiali scelti (placche, apparecchi, componenti del quadro)",
+    "accessibilità dell'abitazione e del cantiere",
+    "eventuali dotazioni aggiuntive, come predisposizioni per usi futuri",
     "necessità di adeguamenti o nuova documentazione tecnica",
   ],
   savingTips: [
@@ -36,18 +42,20 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
     "Fai indicare separatamente i componenti del quadro elettrico (magnetotermici, differenziali, carpenteria) dal loro cablaggio.",
     "Chiedi quali prove e quali documenti tecnici sono compresi nel preventivo: non sono sempre inclusi allo stesso modo.",
   ],
-  nationalRangeLabel: "Come si compone il costo",
-  // Audit 2026-08: senza questa etichetta il modulo Costi di
-  // /interventi/rifare-impianto-elettrico ricadeva sul default "RANGE
-  // INDICATIVO COMPLESSIVO" — in contraddizione diretta con nationalRange,
-  // che dichiara esplicitamente "Nessun totale complessivo". Stessa
-  // correzione applicata a impermeabilizzare-tetto (stesso tipo di guida:
-  // prezzi ufficiali puntuali, non una fascia).
-  interventionRangeLabel: "PREZZI PER SINGOLA LAVORAZIONE",
+  // Revisione 2026-08: prima "Come si compone il costo" +
+  // "PREZZI PER SINGOLA LAVORAZIONE" (guida senza totale). Ora esiste una
+  // vera fascia editoriale complessiva: le etichette lo riflettono, stesso
+  // pattern testuale di rifare-tetto/impermeabilizzare-terrazzo.
+  nationalRangeLabel: "Fascia orientativa al mq",
+  interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
+  nationalRangeNote:
+    "Indicativamente 45–80 € al mq per il rifacimento completo di un impianto elettrico residenziale esistente, con configurazione ordinaria, senza domotica avanzata e senza ripristini murari eccezionalmente estesi. Il preventivo reale dipende soprattutto dal numero e dal tipo di punti, linee, quadro elettrico, opere murarie e dalle condizioni dell'impianto esistente da sostituire.",
   priceTableIntro:
-    "Le voci non sono sempre cumulative: alcune descrivono lavorazioni complete, altre singoli componenti o opere accessorie. Il costo finale non si ottiene sommando automaticamente tutte le righe.",
+    "La prima riga della tabella riporta la fascia 45–80 €/mq come stima complessiva; le righe successive sono invece i prezzi ufficiali di ogni singola lavorazione (punti elettrici, distribuzione, componenti del quadro, opere murarie), utili per capire nel dettaglio cosa contiene un preventivo e cosa può farlo salire oltre la fascia standard — per esempio in una casa vecchia che richiede più tracce, più linee o un quadro più esteso.",
   priceTableNote:
-    "I valori riportati derivano dai prezzari regionali dei lavori pubblici Emilia-Romagna 2025 e Friuli Venezia Giulia 2025: non sono un tariffario nazionale né un preventivo per lavori privati, e le voci di categorie diverse (punti elettrici, distribuzione, componenti del quadro, opere murarie) non vanno sommate tra loro. Nei prezzari consultati non è stata individuata una voce autonoma e omogenea per dichiarazione di conformità, verifiche finali, progetto o collaudo: il preventivo che ricevi deve indicare esplicitamente quali prove e quali documenti sono compresi.",
+    "I valori delle singole lavorazioni derivano dai prezzari regionali dei lavori pubblici Emilia-Romagna 2025 e Friuli Venezia Giulia 2025: non sono un tariffario nazionale né un preventivo per lavori privati, e le voci di categorie diverse (punti elettrici, distribuzione, componenti del quadro, opere murarie) non vanno sommate tra loro né aggiunte alla fascia 45–80 €/mq, che è già una stima complessiva alternativa. Nei prezzari consultati non è stata individuata una voce autonoma e omogenea per dichiarazione di conformità, verifiche finali, progetto o collaudo: il preventivo che ricevi deve indicare esplicitamente quali prove e quali documenti sono compresi.",
+  sizeExamplesIntro:
+    "Ogni valore nasce da un calcolo — superficie dell'abitazione moltiplicata per la fascia 45–80 €/mq — non da quattro rilevazioni di mercato indipendenti: su appartamenti piccoli il costo al mq può risultare più alto, perché quadro elettrico, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie. Un impianto con domotica avanzata, molti ripristini murari o condizioni di partenza complesse può superare questa fascia.",
   relatedWork: [
     {
       slug: "riparare-guasto-elettrico",

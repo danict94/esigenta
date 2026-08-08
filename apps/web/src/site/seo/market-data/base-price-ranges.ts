@@ -647,20 +647,34 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // del prezzario 2026 non è stata ricostruita con sufficienza certezza.
   // "Colonna montante" esclusa: prezzo e descrizione leggibili, ma nessun
   // codice di capitolato attribuibile con certezza in due estrazioni
-  // indipendenti del PDF ufficiale — mai un codice inventato. Nessun campo
-  // confidence: prezzo puntuale da un singolo prezzario ufficiale, non
-  // convergenza multi-fonte di mercato. Nessun sizeExample e nessun totale
-  // complessivo: le voci di categorie diverse (punti, distribuzione,
-  // componenti quadro, opere murarie) non vanno mai sommate tra loro.
+  // indipendenti del PDF ufficiale — mai un codice inventato.
+  // Revisione 2026-08: l'H1 ("Quanto costa rifare un impianto elettrico?")
+  // otteneva solo "Nessun totale complessivo" — mismatch tra intento e
+  // risposta. Aggiunta una fascia editoriale 45–80 €/mq per il rifacimento
+  // completo standard (prima riga di priceRows, confidence "media",
+  // sourceType ora "mixed", stesso pattern di rifare-tetto/ristrutturare-
+  // bagno/impermeabilizzare-terrazzo). Le righe ufficiali sottostanti
+  // restano prezzi puntuali invariati, senza confidence: continuano a non
+  // dover mai essere sommate tra loro né aggiunte alla fascia, che è già una
+  // stima complessiva alternativa, non cumulativa.
   "costGuide:rifare-impianto-elettrico": {
-    nationalRange:
-      "Nessun totale complessivo: le voci sono prezzi ufficiali puntuali, non cumulabili automaticamente",
-    pricePerSquareMeter:
-      "Varia per lavorazione: consulta la tabella ufficiale sotto per ogni voce",
-    sourceLabel: "Prezzari ufficiali delle Regioni Emilia-Romagna e Friuli Venezia Giulia",
-    sourceYear: "2025",
-    sourceType: "official",
+    nationalRange: "45–80 € al mq",
+    pricePerSquareMeter: "da 45 € a 80 € al mq",
+    sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
+    sourceYear: "2025–2026",
+    sourceType: "mixed",
     priceRows: [
+      {
+        label: "Rifacimento completo, fascia standard",
+        category: "Rifacimento completo",
+        unit: "al mq",
+        range: "da 45 € a 80 € al mq",
+        note: "Stima elaborata confrontando le voci di impianto elettrico dei prezzari regionali ufficiali 2025–2026 con le fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per il rifacimento completo di un impianto. Vale per un impianto residenziale esistente, con configurazione ordinaria, senza domotica avanzata e senza ripristini murari eccezionalmente estesi.",
+        includes: "punti luce, punti presa e punti comando, distribuzione interna, quadro elettrico e dispositivi di protezione, opere murarie ordinarie, verifiche finali",
+        excludes: "domotica avanzata, ripristini murari eccezionalmente estesi, aumento della potenza contrattuale, progettazioni specialistiche e documentazione tecnica ulteriore rispetto a quella ordinaria",
+        confidence: "media",
+        priceType: "corpo",
+      },
       {
         label: "Punto luce incassato singolo",
         simpleLabel: "Nuovo punto luce a incasso",
@@ -978,7 +992,32 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "manodopera",
       },
     ],
-    sizeExamples: [],
+    sizeExamples: [
+      {
+        label: "Impianto per 50 mq",
+        sizeRange: "50 mq",
+        range: "da 2.250 € a 4.000 €",
+        note: "Calcolo: 50 mq × 45–80 €/mq. Su un appartamento piccolo il costo al mq può risultare più alto: quadro, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie.",
+      },
+      {
+        label: "Impianto per 80 mq",
+        sizeRange: "80 mq",
+        range: "da 3.600 € a 6.400 €",
+        note: "Calcolo: 80 mq × 45–80 €/mq.",
+      },
+      {
+        label: "Impianto per 100 mq",
+        sizeRange: "100 mq",
+        range: "da 4.500 € a 8.000 €",
+        note: "Calcolo: 100 mq × 45–80 €/mq.",
+      },
+      {
+        label: "Impianto per 150 mq",
+        sizeRange: "150 mq",
+        range: "da 6.750 € a 12.000 €",
+        note: "Calcolo: 150 mq × 45–80 €/mq.",
+      },
+    ],
   },
 };
 
