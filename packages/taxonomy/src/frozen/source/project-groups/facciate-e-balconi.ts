@@ -138,7 +138,7 @@ export const facciateEBalconi: FrozenProjectGroup = {
       id: "impermeabilizzare-terrazzo",
       slug: "impermeabilizzare-terrazzo",
       name: "Impermeabilizzare terrazzo",
-      publicationStatus: "draft",
+      publicationStatus: "published",
 
       // Impermeabilizzazione mirata di terrazzi/terrazze calpestabili:
       // guaina, raccordi perimetrali, scarichi/bocchettoni collegati
