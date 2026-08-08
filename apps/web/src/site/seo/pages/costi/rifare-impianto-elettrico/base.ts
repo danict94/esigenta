@@ -7,6 +7,10 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
   title: "Costi impianto elettrico",
   h1: "Quanto costa rifare un impianto elettrico?",
   metaTitle: "Quanto costa rifare un impianto elettrico? Guida ai costi",
+  // Data reale dell'ultima revisione editoriale sostanziale (commit
+  // d3a9d81, fascia 45–80 €/mq per il rifacimento completo), non del
+  // deploy: vedi engine/editorial-date.ts.
+  lastModified: "2026-08-09",
   metaDescription:
     "Prezzi ufficiali da prezzari regionali per punti luce, punti presa, distribuzione, componenti del quadro e opere murarie di un impianto elettrico.",
   heroImage: {

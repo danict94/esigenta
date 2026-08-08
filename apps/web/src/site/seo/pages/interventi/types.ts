@@ -24,6 +24,13 @@ export type SeoInterventionLanding = {
   description: string;
   metaTitle: string;
   metaDescription: string;
+  /**
+   * Data (YYYY-MM-DD) dell'ultima modifica editoriale significativa di
+   * QUESTA pagina — mai la data di build/deploy. Opzionale: assente = nessun
+   * `<lastmod>` in sitemap per questa pagina, mai un fallback inventato.
+   * Validata da engine/editorial-date.ts (regola di quando aggiornarla lì).
+   */
+  lastModified?: string;
   funnelSlug: string;
   /**
    * ProjectGroup taxonomy di appartenenza (Fase 5). Il breadcrumb linka

@@ -7,6 +7,10 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
   title: "Costi impermeabilizzazione tetto",
   h1: "Quanto costa impermeabilizzare un tetto?",
   metaTitle: "Quanto costa impermeabilizzare un tetto? Prezzi indicativi",
+  // Data reale dell'ultima revisione editoriale sostanziale (commit 30c4090,
+  // aggiunta nationalRangeLabel/interventionRangeLabel che correggeva una
+  // contraddizione reale), non del deploy: vedi engine/editorial-date.ts.
+  lastModified: "2026-08-08",
   metaDescription:
     "Scopri quanto costa impermeabilizzare un tetto: prezzo al mq, cosa comprende l'intervento e quando è già incluso in un rifacimento completo.",
   heroImage: {

@@ -85,6 +85,16 @@ export type CostGuideBaseContent = {
   metaTitle: string;
   metaDescription: string;
   /**
+   * Data (YYYY-MM-DD) dell'ultima modifica editoriale significativa di
+   * QUESTA guida — mai la data di build/deploy. Opzionale: assente = nessun
+   * `<lastmod>` in sitemap per questa guida, mai un fallback inventato.
+   * Validata da engine/editorial-date.ts, che documenta anche la regola di
+   * quando aggiornarla (contenuto/prezzi/FAQ sostanziali sì, formattazione/
+   * refactor/build no) — stesso campo/stessa regola su SeoInterventionLanding
+   * e SeoGroupLanding.
+   */
+  lastModified?: string;
+  /**
    * Opzionale: una guida senza foto reale coerente renderizza senza il
    * blocco immagine invece di usare un path fittizio o un fallback
    * incoerente (stesso principio di SeoInterventionLanding.image). Vedi
@@ -195,6 +205,8 @@ export type CostGuide = {
   metaTitle: string;
   metaDescription: string;
   canonicalPath: string;
+  /** Passato invariato da CostGuideBaseContent.lastModified — vedi lì. */
+  lastModified?: string;
   /**
    * Categoria pubblica per il raggruppamento in /costi (Phase 20.2). Concetto
    * editoriale che vive solo qui: non importare da site/services né dalla taxonomy,

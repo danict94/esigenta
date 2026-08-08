@@ -20,6 +20,9 @@ export const impermeabilizzareTerrazzoBase: CostGuideBaseContent = {
   title: "Costi impermeabilizzazione terrazzo",
   h1: "Quanto costa impermeabilizzare un terrazzo?",
   metaTitle: "Costo impermeabilizzazione terrazzo: prezzi al mq",
+  // Data reale dell'ultima revisione editoriale sostanziale (commit 30c4090,
+  // creazione della guida), non del deploy: vedi engine/editorial-date.ts.
+  lastModified: "2026-08-08",
   metaDescription:
     "Quanto costa impermeabilizzare un terrazzo? Fasce orientative al mq, sistemi disponibili, cosa incide sul prezzo e cosa comprende il preventivo.",
   // Audit 2026-08: hubCategory NON deriva dalla taxonomy (deliberatamente

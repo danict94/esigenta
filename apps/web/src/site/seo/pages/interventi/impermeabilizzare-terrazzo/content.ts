@@ -19,6 +19,9 @@ export const impermeabilizzareTerrazzoLanding: SeoInterventionLanding = {
   description:
     "Impermeabilizzare un terrazzo non significa solo applicare un prodotto impermeabile: prima vanno valutati supporto, pendenze, scarichi e raccordi per capire se basta un intervento mirato o serve rifare il sistema impermeabilizzante. Confronta professionisti qualificati per il tuo intervento.",
   metaTitle: "Impermeabilizzare terrazzo: preventivi per infiltrazioni",
+  // Data reale dell'ultima revisione editoriale sostanziale (commit 30c4090,
+  // creazione della landing), non del deploy: vedi engine/editorial-date.ts.
+  lastModified: "2026-08-08",
   metaDescription:
     "Hai infiltrazioni dal terrazzo o la guaina è deteriorata? Scopri cosa comprende l'impermeabilizzazione e confronta preventivi da professionisti qualificati.",
   funnelSlug: "impermeabilizzare-terrazzo",

@@ -20,6 +20,15 @@ export const rifareImpiantoElettricoLanding: SeoInterventionLanding = {
   description:
     "Rifare l'impianto elettrico permette di aumentare sicurezza, affidabilità e conformità dell'abitazione. Descrivi il lavoro e confronta preventivi da elettricisti qualificati.",
   metaTitle: "Rifare impianto elettrico: preventivi elettricista",
+  // Correzione concettuale: lastModified deve riflettere l'ultima modifica
+  // significativa della PAGINA RENDERIZZATA, non solo di questo file. Il
+  // modulo Costi di questa landing legge guide.nationalRange e
+  // guide.interventionRangeLabel (resolveInterventionCostSectionPriceData,
+  // costSlug "rifare-impianto-elettrico"): il commit d3a9d81 (fascia
+  // 45–80 €/mq + "FASCIA ORIENTATIVA AL MQ") cambia quindi anche l'output
+  // pubblico di QUESTA pagina, pur non toccando questo file. È più recente
+  // di 9b40e23 (detailSections + DM 37/2008): vince d3a9d81.
+  lastModified: "2026-08-09",
   metaDescription:
     "Devi rifare o adeguare l'impianto elettrico? Scopri cosa incide sul costo e richiedi preventivi da elettricisti qualificati.",
   funnelSlug: "rifare-impianto-elettrico",

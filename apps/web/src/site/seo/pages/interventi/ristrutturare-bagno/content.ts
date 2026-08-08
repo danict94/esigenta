@@ -7,6 +7,16 @@ export const ristrutturareBagnoLanding: SeoInterventionLanding = {
   description:
     "Ristrutturare un bagno significa coordinare demolizioni, impianti, sanitari, rivestimenti e finiture. Confronta professionisti adatti al lavoro e ricevi preventivi per il tuo intervento.",
   metaTitle: "Ristrutturare bagno: preventivi da professionisti",
+  // Correzione concettuale: lastModified deve riflettere l'ultima modifica
+  // significativa della PAGINA RENDERIZZATA, non solo di questo file. Il
+  // modulo Costi legge guide.nationalRange, guide.interventionRangeLabel e
+  // i priceRows selezionati da priceRowLabels qui sotto (costSlug
+  // "ristrutturare-bagno"): il commit 30c4090 (aggiunta di
+  // interventionRangeLabel "RANGE INDICATIVO, BAGNO STANDARD 5–6 MQ" sulla
+  // CostGuide) cambia quindi anche l'output pubblico di QUESTA pagina, pur
+  // non toccando questo file. È più recente di 509c5e7 (cambio
+  // priceRowLabels) ed ee5afc1 (rework prezzi): vince 30c4090.
+  lastModified: "2026-08-08",
   metaDescription:
     "Devi ristrutturare un bagno? Scopri cosa comprende il lavoro, da cosa dipende il costo e confronta preventivi da professionisti qualificati.",
   funnelSlug: "ristrutturare-bagno",

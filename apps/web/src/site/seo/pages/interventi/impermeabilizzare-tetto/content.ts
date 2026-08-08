@@ -7,6 +7,15 @@ export const impermeabilizzareTettoLanding: SeoInterventionLanding = {
   description:
     "Impermeabilizzare un tetto significa intervenire su guaina, membrane e punti critici della copertura per fermare infiltrazioni e ripristinare la tenuta all'acqua, senza necessariamente rifare tutto il manto. Confronta imprese qualificate per il tuo intervento.",
   metaTitle: "Impermeabilizzare tetto: preventivi guaina e infiltrazioni",
+  // Correzione concettuale: lastModified deve riflettere l'ultima modifica
+  // significativa della PAGINA RENDERIZZATA, non solo di questo file. Il
+  // modulo Costi legge guide.nationalRange/guide.interventionRangeLabel
+  // (costSlug "impermeabilizzare-tetto"): il commit 30c4090 (aggiunta di
+  // interventionRangeLabel "PREZZI PER SINGOLA LAVORAZIONE" sulla
+  // CostGuide, che correggeva una contraddizione reale) cambia quindi
+  // anche l'output pubblico di QUESTA pagina, pur non toccando questo
+  // file. È più recente di b130ae0 (creazione): vince 30c4090.
+  lastModified: "2026-08-08",
   metaDescription:
     "Devi impermeabilizzare il tetto per infiltrazioni o guaina deteriorata? Scopri cosa comprende l'intervento e confronta preventivi da imprese qualificate.",
   funnelSlug: "impermeabilizzare-tetto",

@@ -7,6 +7,10 @@ export const ristrutturareBagnoBase: CostGuideBaseContent = {
   title: "Costi ristrutturazione bagno",
   h1: "Quanto costa ristrutturare un bagno?",
   metaTitle: "Quanto costa ristrutturare un bagno? Prezzi indicativi",
+  // Data reale dell'ultima revisione editoriale sostanziale (commit 30c4090,
+  // aggiunta interventionRangeLabel per il contesto "5-6 mq"), non del
+  // deploy: vedi engine/editorial-date.ts.
+  lastModified: "2026-08-08",
   metaDescription:
     "Scopri quanto costa ristrutturare un bagno, con range indicativi, costo al mq, esempi per dimensione, fattori di prezzo e preventivi.",
   heroImage: {

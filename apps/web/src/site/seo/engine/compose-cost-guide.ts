@@ -173,6 +173,10 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
       family: "costGuide",
       slug: base.slug,
     }),
+    // Passthrough puro: la validazione del formato avviene in un solo punto
+    // centralizzato, engine/sitemap.ts, dove tutte e tre le fonti editoriali
+    // (CostGuide, SeoInterventionLanding, SeoGroupLanding) confluiscono.
+    lastModified: base.lastModified,
     heroImage: base.heroImage,
     hubCategory: base.hubCategory,
     topicLabel: base.topicLabel,

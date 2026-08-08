@@ -12,6 +12,14 @@ export type SeoGroupLanding = {
   description: string;
   metaTitle: string;
   metaDescription: string;
+  /**
+   * Data (YYYY-MM-DD) dell'ultima modifica editoriale significativa di
+   * QUESTA landing — mai la data di build/deploy. Opzionale: assente =
+   * nessun `<lastmod>` in sitemap per questa pagina. Stesso campo/stessa
+   * regola di SeoInterventionLanding.lastModified, validata da
+   * engine/editorial-date.ts.
+   */
+  lastModified?: string;
   /** Titolo della sezione interventi (es. "Cosa puoi ristrutturare"): il tema del gruppo non va hardcodato nel template. */
   interventionsTitle: string;
   /**

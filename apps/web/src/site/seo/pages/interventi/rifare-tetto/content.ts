@@ -7,6 +7,15 @@ export const rifareTettoLanding: SeoInterventionLanding = {
   description:
     "Rifare un tetto può includere rimozione della vecchia copertura, isolamento, posa dei nuovi materiali, grondaie e lattoneria. Confronta imprese qualificate per il tuo intervento.",
   metaTitle: "Rifare tetto: preventivi per copertura casa",
+  // Correzione concettuale: lastModified deve riflettere l'ultima modifica
+  // significativa della PAGINA RENDERIZZATA, non solo di questo file. Il
+  // modulo Costi legge guide.nationalRange/guide.interventionRangeLabel
+  // (costSlug "rifare-tetto"): il commit e08733b ha introdotto proprio
+  // nationalRangeLabel/interventionRangeLabel "FASCIA ORIENTATIVA AL MQ"
+  // citando esplicitamente /interventi/rifare-tetto nel suo stesso commento
+  // — cambia quindi l'output pubblico di QUESTA pagina, pur non toccando
+  // questo file. È più recente di b130ae0 (creazione): vince e08733b.
+  lastModified: "2026-08-02",
   metaDescription:
     "Devi rifare il tetto? Scopri cosa incide sul costo, quali lavori puoi richiedere e confronta preventivi da imprese qualificate.",
   funnelSlug: "rifare-tetto",
