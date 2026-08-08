@@ -51,6 +51,7 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
         priceRows: [],
         sourceLabel: undefined,
         sourceYear: undefined,
+        sourceType: undefined,
         sizeExamples: [],
       }
     : (() => {
@@ -73,6 +74,7 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
           priceRows: [...basePriceRange.priceRows],
           sourceLabel: basePriceRange.sourceLabel,
           sourceYear: basePriceRange.sourceYear,
+          sourceType: basePriceRange.sourceType,
           sizeExamples: [...basePriceRange.sizeExamples],
         };
       })();

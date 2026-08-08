@@ -40,6 +40,15 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
   ],
   priceTableNote:
     "I valori riportati derivano da prezzari regionali dei lavori pubblici 2025–2026 e si riferiscono a lavorazioni tecniche specifiche. Non costituiscono un tariffario nazionale né un preventivo per lavori privati. Il costo reale può variare in base alla regione, allo stato del supporto, alla superficie, all'accessibilità, ai dettagli costruttivi e alle opere escluse dal capitolato.",
+  // Audit 2026-08: senza queste due etichette il box Sintesi (qui) e il
+  // modulo Costi di /interventi/impermeabilizzare-tetto (interventionRangeLabel)
+  // ricadevano sui default "Costo complessivo"/"RANGE INDICATIVO COMPLESSIVO"
+  // — in contraddizione diretta con nationalRange, che dichiara esplicitamente
+  // "Nessun totale complessivo". Stesso problema di rifare-impianto-elettrico,
+  // stessa correzione: un'etichetta che descrive davvero il dato (prezzi
+  // ufficiali puntuali, non una fascia).
+  nationalRangeLabel: "Prezzi per singola lavorazione",
+  interventionRangeLabel: "PREZZI PER SINGOLA LAVORAZIONE",
   // Collegamento obbligatorio con rifare-tetto (confine editoriale: le due
   // guide si richiamano a vicenda) + il confine più diretto (riparare-tetto).
   // Risolti da resolveBestHrefForIntervention: "rifare-tetto" va alla sua

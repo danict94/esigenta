@@ -95,7 +95,13 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               <span className="text-eg-ink">{guide.title}</span>
             </nav>
 
-            <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+            <div
+              className={
+                guide.heroImage
+                  ? "grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]"
+                  : "grid"
+              }
+            >
               <div>
                 <p className={blueprintEyebrowClassName}>Guida costi</p>
 
@@ -120,17 +126,19 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 </div>
               </div>
 
-              <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
-                <FrameMarks />
-                <Image
-                  src={guide.heroImage.src}
-                  alt={guide.heroImage.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
-                  className="object-cover"
-                />
-              </div>
+              {guide.heroImage ? (
+                <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
+                  <FrameMarks />
+                  <Image
+                    src={guide.heroImage.src}
+                    alt={guide.heroImage.alt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </section>
@@ -331,9 +339,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 </p>
 
                 <p className="mb-4.5 max-w-160 text-[13.5px] leading-[1.6] text-eg-ink">
-                  Le fasce di questa guida sono nazionali: {guide.topicLabel} nella
-                  tua zona pu&ograve; costare diversamente in base a fattori
-                  locali, non a un prezzo di citt&agrave; che oggi non abbiamo.
+                  {/* Stringa unica via template literal: JSX collassa lo spazio tra
+                      {guide.topicLabel} e il testo successivo quando sono su righe
+                      diverse, producendo "tettonella tua zona" invece di "tetto
+                      nella tua zona" — bug shared, un solo fix qui. */}
+                  {`Le fasce di questa guida sono nazionali: ${guide.topicLabel} nella tua zona può costare diversamente in base a fattori locali, non a un prezzo di città che oggi non abbiamo.`}
                 </p>
 
                 <ul>
@@ -358,14 +368,17 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 Verifica se il tuo intervento rientra in un bonus attivo
               </h2>
 
+              {/* Audit 2026-08: era "Alcuni interventi sul tetto possono...",
+                  fisso in questo template shared e quindi mostrato anche su
+                  bagno, impianto elettrico e terrazzo — testo neutro e
+                  davvero universale, nessuna aliquota o norma nuova. */}
               <p className="mt-3.5 max-w-170 text-[14.5px] leading-[1.6] text-eg-ink">
-                Alcuni interventi sul tetto possono rientrare nelle
-                agevolazioni fiscali previste per le ristrutturazioni edilizie
-                o per la riqualificazione energetica. Percentuali, limiti,
-                requisiti e adempimenti possono cambiare e dipendono
-                dall&apos;immobile e dal tipo di lavoro: verifica sempre le
-                condizioni aggiornate sui canali ufficiali prima di
-                pianificare la spesa.
+                Alcuni interventi possono rientrare nelle agevolazioni fiscali
+                previste per le ristrutturazioni edilizie o per la
+                riqualificazione energetica. Percentuali, limiti, requisiti e
+                adempimenti possono cambiare e dipendono dall&apos;immobile e
+                dal tipo di lavoro: verifica sempre le condizioni aggiornate
+                sui canali ufficiali prima di pianificare la spesa.
               </p>
 
               <ul className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-7">
@@ -480,10 +493,22 @@ function CostHighlight({ label, value }: { label: string; value: string }) {
 const priceTableGridCols =
   "md:grid-cols-[minmax(0,1.3fr)_minmax(5rem,0.7fr)_minmax(6rem,0.6fr)_minmax(0,2.4fr)]";
 
+// Rifinitura 2026-08: "Pacchetto a corpo" accanto a un prezzo "al mq" (es. le
+// voci ufficiali di impermeabilizzare-tetto) era una contraddizione solo
+// terminologica — priceType "corpo" significa "manodopera e fornitura non
+// separabili con certezza dalle fonti, quotate come un'unica voce" (vedi
+// PriceRowType in market-data/base-price-ranges.ts), non "prezzo a corpo"
+// nel senso edile di "forfait, non a misura". La riga era già classificata
+// correttamente: serviva solo un'etichetta che non riusasse la parola
+// "corpo" con un significato diverso da quello del gergo di cantiere.
+// "Lavorazione completa" descrive esattamente questo: la voce comprende in
+// un'unica quotazione tutto ciò che serve per quel lavoro (es. "fornitura e
+// posa in opera"), a prescindere dall'unità mostrata accanto (al mq, cad,
+// a punto, a corpo...).
 const priceTypeLabel: Record<PriceRowType, string> = {
   manodopera: "Manodopera",
   fornitura: "Fornitura",
-  corpo: "Pacchetto a corpo",
+  corpo: "Lavorazione completa",
 };
 
 type PriceRowGroup = { category: string; rows: CostGuide["priceRows"] };

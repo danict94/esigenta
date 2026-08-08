@@ -1,4 +1,8 @@
-import type { PriceRow, SizeExample } from "../../market-data/base-price-ranges";
+import type {
+  CostGuideSourceType,
+  PriceRow,
+  SizeExample,
+} from "../../market-data/base-price-ranges";
 
 export type CityPageQualityStatus = "draft" | "ready";
 export type CityPageUniquenessLevel = "thin" | "acceptable" | "strong";
@@ -80,7 +84,14 @@ export type CostGuideBaseContent = {
   h1: string;
   metaTitle: string;
   metaDescription: string;
-  heroImage: { src: string; alt: string };
+  /**
+   * Opzionale: una guida senza foto reale coerente renderizza senza il
+   * blocco immagine invece di usare un path fittizio o un fallback
+   * incoerente (stesso principio di SeoInterventionLanding.image). Vedi
+   * templates/cost-page-template.tsx ed engine/metadata.ts, gli unici punti
+   * che leggono questo campo.
+   */
+  heroImage?: { src: string; alt: string };
   hubCategory: CostGuideHubCategory;
   topicLabel: string;
   summary: string;
@@ -190,8 +201,11 @@ export type CostGuide = {
    * per non accoppiare il raggruppamento delle guide costo al dominio dei servizi.
    */
   hubCategory: CostGuideHubCategory;
-  /** Immagine hero/OG della guida — mai un'immagine fissa condivisa tra guide diverse. */
-  heroImage: { src: string; alt: string };
+  /**
+   * Immagine hero/OG della guida — mai un'immagine fissa condivisa tra
+   * guide diverse. Opzionale: vedi il commento su CostGuideBaseContent.
+   */
+  heroImage?: { src: string; alt: string };
   /**
    * Frase breve minuscola usata per generalizzare i titoli di sezione del
    * template (es. "ristrutturare un bagno", "rifare un tetto"). Evita di
@@ -207,6 +221,14 @@ export type CostGuide = {
   /** Base dati mostrata sotto la tabella (da market-data, se dichiarata). */
   sourceLabel?: string;
   sourceYear?: string;
+  /**
+   * Provenienza esplicita dei numeri (da market-data, mai da string-match
+   * su sourceLabel né da PriceRowConfidence): "official" solo se ogni riga
+   * è un prezzo ufficiale puntuale, "mixed" per una fascia editoriale
+   * multi-fonte. Assente quando la guida è in modalità pricingTeaser. Unica
+   * fonte del badge in cost-hub-template.tsx.
+   */
+  sourceType?: CostGuideSourceType;
   sizeExamples: SizeExample[];
   citySections: {
     city: string;

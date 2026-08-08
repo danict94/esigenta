@@ -61,16 +61,18 @@ export function CityCostGuidePage({
                 </p>
               </div>
 
-              <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
-                <Image
-                  src={guide.heroImage.src}
-                  alt={guide.heroImage.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1280px) 420px, (min-width: 1024px) 36vw, calc(100vw - 44px)"
-                  className="object-cover"
-                />
-              </div>
+              {guide.heroImage ? (
+                <div className="relative overflow-hidden rounded-eg-lg shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] aspect-[4/3] md:aspect-[720/520]">
+                  <Image
+                    src={guide.heroImage.src}
+                    alt={guide.heroImage.alt}
+                    fill
+                    priority
+                    sizes="(min-width: 1280px) 420px, (min-width: 1024px) 36vw, calc(100vw - 44px)"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </section>

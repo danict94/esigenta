@@ -119,7 +119,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
               <div className="grid gap-4">
                 {featured.costRange ? (
                   <div className="eg-panel p-5">
-                    <p className="eg-metric-label">Range indicativo</p>
+                    <p className="eg-metric-label">{featured.costRangeLabel ?? "Range indicativo"}</p>
 
                     <p className="mt-3 text-2xl font-medium leading-tight text-eg-ink">
                       {featured.costRange}

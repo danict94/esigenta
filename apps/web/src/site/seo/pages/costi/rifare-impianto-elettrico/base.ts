@@ -37,6 +37,13 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
     "Chiedi quali prove e quali documenti tecnici sono compresi nel preventivo: non sono sempre inclusi allo stesso modo.",
   ],
   nationalRangeLabel: "Come si compone il costo",
+  // Audit 2026-08: senza questa etichetta il modulo Costi di
+  // /interventi/rifare-impianto-elettrico ricadeva sul default "RANGE
+  // INDICATIVO COMPLESSIVO" — in contraddizione diretta con nationalRange,
+  // che dichiara esplicitamente "Nessun totale complessivo". Stessa
+  // correzione applicata a impermeabilizzare-tetto (stesso tipo di guida:
+  // prezzi ufficiali puntuali, non una fascia).
+  interventionRangeLabel: "PREZZI PER SINGOLA LAVORAZIONE",
   priceTableIntro:
     "Le voci non sono sempre cumulative: alcune descrivono lavorazioni complete, altre singoli componenti o opere accessorie. Il costo finale non si ottiene sommando automaticamente tutte le righe.",
   priceTableNote:

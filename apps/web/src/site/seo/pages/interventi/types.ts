@@ -34,7 +34,14 @@ export type SeoInterventionLanding = {
   groupSlug?: string;
   /** Label CTA verso il funnel: mai generica sulla pilota (es. "Richiedi preventivi per il bagno"). */
   requestCtaLabel?: string;
-  image: {
+  /**
+   * Opzionale: una landing senza foto reale coerente (es. un intervento
+   * appena introdotto) renderizza senza il blocco immagine invece di usare
+   * un path fittizio o un fallback incoerente. Vedi
+   * templates/intervention-page-template.tsx ed engine/metadata.ts, i due
+   * unici punti che leggono questo campo.
+   */
+  image?: {
     src: string;
     alt: string;
   };

@@ -102,7 +102,13 @@ export function InterventionLandingPage({
               )}
             </nav>
 
-            <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+            <div
+              className={
+                landing.image
+                  ? "grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]"
+                  : "grid"
+              }
+            >
               <div>
                 <p className={blueprintEyebrowClassName}>Intervento</p>
 
@@ -136,17 +142,19 @@ export function InterventionLandingPage({
                 </p>
               </div>
 
-              <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
-                <FrameMarks />
-                <Image
-                  src={landing.image.src}
-                  alt={landing.image.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
-                  className="object-cover"
-                />
-              </div>
+              {landing.image ? (
+                <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
+                  <FrameMarks />
+                  <Image
+                    src={landing.image.src}
+                    alt={landing.image.alt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </section>

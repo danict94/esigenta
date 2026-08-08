@@ -39,10 +39,19 @@ export const ristrutturareBagnoBase: CostGuideBaseContent = {
   // diceva a quale bagno si riferisse. nationalRangeLabel lo lega subito
   // alla metratura standard; nationalRangeNote spiega, nel primo box
   // economico, da dove parte un intervento essenziale e quando si supera la
-  // fascia — nessuna riga di interventionRangeLabel: il valore resta un vero
-  // totale complessivo anche nel modulo di /interventi/ristrutturare-bagno,
-  // la didascalia fissa "RANGE INDICATIVO COMPLESSIVO" resta corretta.
+  // fascia. Audit 2026-08 (vedi interventionRangeLabel qui sotto): lo stesso
+  // riferimento alla metratura serve anche fuori da questa pagina, dove il
+  // numero riappare senza nationalRangeNote a fianco.
   nationalRangeLabel: "Standard, 5–6 mq",
+  // Audit 2026-08: senza questa riga il modulo Costi di
+  // /interventi/ristrutturare-bagno (e la card in evidenza di
+  // /servizi/ristrutturazioni, via resolve-group-page.ts) mostravano il solo
+  // numero 4.500–8.000 € con la didascalia generica "RANGE INDICATIVO
+  // COMPLESSIVO"/"Range indicativo", perdendo il riferimento al bagno
+  // standard 5–6 mq già esplicitato in nationalRangeLabel qui sopra — un
+  // lettore con un bagno molto più grande o piccolo poteva leggerlo come
+  // universale. Stessa informazione, non un nuovo dato.
+  interventionRangeLabel: "RANGE INDICATIVO, BAGNO STANDARD 5–6 MQ",
   nationalRangeNote:
     "Per ristrutturare completamente un bagno standard di circa 5–6 mq, considera orientativamente 4.500–8.000 €. Un intervento essenziale può partire da circa 3.000 €, mentre spostamento degli scarichi, doccia a filo pavimento, materiali di pregio e problemi nascosti possono portare il costo oltre 10.000–12.000 €.",
   priceTableIntro:

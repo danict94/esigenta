@@ -85,6 +85,22 @@ export type SizeExample = {
   sizeRange?: string;
 };
 
+/**
+ * Provenienza dei numeri della guida, esplicita e indipendente da
+ * PriceRowConfidence: confidence descrive quanto è solida UNA riga
+ * editoriale ("alta"/"media", multi-fonte), sourceType descrive cosa SONO i
+ * numeri della guida nel suo complesso.
+ * - "official": ogni riga è un prezzo ufficiale puntuale copiato da un
+ *   prezzario regionale (impermeabilizzare-tetto, rifare-impianto-elettrico)
+ *   — nessuna riga ha confidence, per costruzione.
+ * - "mixed": fascia editoriale elaborata confrontando prezzari ufficiali con
+ *   il mercato nazionale (rifare-tetto, ristrutturare-bagno,
+ *   impermeabilizzare-terrazzo) — le righe quotabili hanno confidence.
+ * Il Cost Hub deriva il badge SOLO da questo campo (mai da confidence, mai
+ * da sourceLabel): vedi templates/cost-hub-template.tsx.
+ */
+export type CostGuideSourceType = "official" | "mixed";
+
 export type BasePriceRange = {
   nationalRange: string;
   pricePerSquareMeter: string;
@@ -94,6 +110,8 @@ export type BasePriceRange = {
   sourceLabel?: string;
   /** Es. "2024–2026". */
   sourceYear?: string;
+  /** Obbligatorio: ogni famiglia con prezzi reali dichiara esplicitamente la propria provenienza. */
+  sourceType: CostGuideSourceType;
 };
 
 const basePriceRangesByFamily: Record<string, BasePriceRange> = {
@@ -122,6 +140,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     pricePerSquareMeter: "da 800 € a 1.200 € al mq",
     sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
     sourceYear: "2025–2026",
+    sourceType: "mixed",
     priceRows: [
       {
         label: "Rinnovo leggero bagno",
@@ -333,6 +352,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     pricePerSquareMeter: "da 120 € a 300 € al mq",
     sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
     sourceYear: "2025–2026",
+    sourceType: "mixed",
     priceRows: [
       {
         label: "Rifacimento della copertura, senza interventi sulla struttura",
@@ -436,6 +456,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       "Varia per lavorazione: consulta la tabella ufficiale sotto per ogni voce",
     sourceLabel: "Prezzari ufficiali delle Regioni Friuli Venezia Giulia e Lombardia",
     sourceYear: "2025–2026",
+    sourceType: "official",
     priceRows: [
       {
         label: "Guaina bituminosa liscia",
@@ -539,6 +560,85 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     ],
     sizeExamples: [],
   },
+  // Fase terrazzo (2026-08): impermeabilizzare-terrazzo resta
+  // publicationStatus "draft" — questa guida è registrata e compilabile ma
+  // non pubblica finché il lifecycle non cambia stato (vedi
+  // pages/costi/impermeabilizzare-terrazzo). Ricognizione dati: nessun dato
+  // economico preesisteva per impermeabilizzare-balcone-ballatoio o concetti
+  // equivalenti in market-data, pagine o funnel (verificato read-only prima
+  // di questa guida) — nessuna base da riusare, fascia costruita ex novo.
+  // Fonti confrontate: prezzari regionali ufficiali 2025–2026 (Emilia-
+  // Romagna 2026, Friuli Venezia Giulia, Sicilia vigente) e mercato
+  // nazionale (Instapro, Edilnet, Homedeal, altre fonti tecniche). I
+  // prezzari mostrano valori molto differenti in base al sistema, da
+  // lavorazioni semplici nell'ordine di circa 20–40 €/mq fino a sistemi
+  // specialistici oltre 70–90 €/mq: nessuna singola voce ufficiale è
+  // attribuibile come prezzo universale. La fascia 30–70 €/mq è
+  // un'elaborazione editoriale multi-fonte (confidence "media"), non il
+  // prezzo puntuale di un singolo prezzario — a differenza del blocco
+  // impermeabilizzare-tetto qui sopra, che riporta prezzi ufficiali puntuali
+  // senza fascia. NON è il range 120–300 €/mq di rifare-tetto: quella fascia
+  // riguarda il rifacimento completo (demolizione, massetto, nuova
+  // pavimentazione), fuori perimetro da questa guida per esplicita decisione
+  // editoriale — vedi priceRows sotto ed exclusion nella riga principale.
+  "costGuide:impermeabilizzare-terrazzo": {
+    nationalRange: "30–70 € al mq",
+    pricePerSquareMeter: "da 30 € a 70 € al mq",
+    sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
+    sourceYear: "2025–2026",
+    sourceType: "mixed",
+    priceRows: [
+      {
+        label: "Impermeabilizzazione standard della superficie",
+        category: "Impermeabilizzazione della superficie",
+        unit: "al mq",
+        range: "da 30 € a 70 € al mq",
+        note: "Stima elaborata confrontando le voci di impermeabilizzazione dei prezzari regionali ufficiali 2025–2026 con le fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per impermeabilizzare un terrazzo, dalla preparazione del supporto (la superficie su cui viene applicato il sistema) alla posa del sistema scelto.",
+        includes: "sopralluogo e valutazione del supporto, preparazione della superficie, trattamento di raccordi perimetrali, soglie, scarichi e bocchettoni (il punto in cui l'acqua del terrazzo entra nello scarico), applicazione del sistema impermeabilizzante scelto, verifica finale della tenuta",
+        excludes: "demolizione completa, ricostruzione del massetto (lo strato sotto le piastrelle che crea la base e di norma le pendenze), rifacimento generale delle pendenze, nuova pavimentazione completa, opere strutturali e, più in generale, il rifacimento completo del terrazzo",
+        confidence: "media",
+        priceType: "corpo",
+      },
+      // Scenario A e C non hanno un numero verificato da fonti di settore
+      // (a differenza della riga sopra): restano qualitative sotto "Da
+      // valutare", stesso pattern delle righe non quotabili di bagno e
+      // tetto — mai un numero o un tetto massimo inventato (vedi anche
+      // categoryNote).
+      {
+        label: "Riparazione o impermeabilizzazione localizzata",
+        category: "Da valutare con il professionista",
+        categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: comprendono sia interventi più mirati della fascia principale qui sopra (riparazioni localizzate) sia interventi più complessi (sistemi ad alte prestazioni), oltre a fattori che dipendono dal singolo cantiere.",
+        range: "da valutare con il professionista",
+        note: "Può riguardare uno scarico, un bocchettone, una soglia, un raccordo, un giunto o una piccola zona deteriorata. Per lavori di questo tipo il prezzo al mq è poco significativo: esistono costi minimi di intervento, preparazione e manodopera che non scendono sotto una certa soglia anche per superfici piccole.",
+      },
+      {
+        label: "Sistema complesso o ad alte prestazioni",
+        category: "Da valutare con il professionista",
+        range: "oltre 70 € al mq, senza un massimo definito",
+        note: "Può riguardare sistemi impermeabilizzanti multistrato o specialistici, un supporto molto deteriorato che richiede una preparazione importante, molti raccordi o scarichi complessi, oppure la correzione delle pendenze: lavorazioni preliminari rilevanti che spostano il lavoro fuori dalla fascia 30–70 €/mq.",
+      },
+    ],
+    sizeExamples: [
+      {
+        label: "Terrazzo da 20 mq",
+        sizeRange: "20 mq",
+        range: "da 600 € a 1.400 €",
+        note: "Calcolo: 20 mq × 30–70 €/mq. Nei terrazzi piccoli il costo al mq può risultare più alto: preparazione, accesso, raccordi, scarichi e i costi minimi di cantiere non diminuiscono proporzionalmente alla superficie.",
+      },
+      {
+        label: "Terrazzo da 50 mq",
+        sizeRange: "50 mq",
+        range: "da 1.500 € a 3.500 €",
+        note: "Calcolo: 50 mq × 30–70 €/mq.",
+      },
+      {
+        label: "Terrazzo da 100 mq",
+        sizeRange: "100 mq",
+        range: "da 3.000 € a 7.000 €",
+        note: "Calcolo: 100 mq × 30–70 €/mq.",
+      },
+    ],
+  },
   // Prezzi ufficiali da prezzari regionali dei lavori pubblici, forniti
   // direttamente per questa revisione: Prezzario Regione Emilia-Romagna 2025
   // (fonte principale) e Prezzario Regione Friuli Venezia Giulia 2025 (solo
@@ -559,6 +659,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       "Varia per lavorazione: consulta la tabella ufficiale sotto per ogni voce",
     sourceLabel: "Prezzari ufficiali delle Regioni Emilia-Romagna e Friuli Venezia Giulia",
     sourceYear: "2025",
+    sourceType: "official",
     priceRows: [
       {
         label: "Punto luce incassato singolo",

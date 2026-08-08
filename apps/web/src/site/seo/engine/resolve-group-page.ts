@@ -81,6 +81,15 @@ export type GroupInterventionItem = {
   costGuideHref: string | null;
   /** nationalRange della CostGuide reale (market-data), mai una stringa scritta qui. */
   costRange: string | null;
+  /**
+   * Audit 2026-08: nationalRangeLabel della stessa CostGuide, quando la
+   * imposta (es. "Standard, 5–6 mq" per ristrutturare-bagno) — senza questo
+   * campo il template ricadeva su una didascalia generica fissa
+   * ("Range indicativo"), perdendo il contesto che nationalRange da solo non
+   * comunica (a quale scenario/metratura si riferisce il numero). null per
+   * le guide che non impostano nationalRangeLabel: comportamento invariato.
+   */
+  costRangeLabel: string | null;
 };
 
 export type GroupLandingPageData = {
@@ -172,6 +181,7 @@ export function resolveGroupLandingPage(
         requestHref: `/richiesta/${intervention.slug}`,
         costGuideHref,
         costRange: guide?.nationalRange ?? null,
+        costRangeLabel: guide?.nationalRangeLabel ?? null,
       };
     },
   );

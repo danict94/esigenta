@@ -30,16 +30,21 @@ export function buildInterventionMetadata(slug: string): Metadata {
       type: "website",
       url: canonicalPath,
       siteName: "Esigenta",
-      images: [
-        {
-          // Immagine propria della landing, mai una fissa condivisa tra
-          // interventi diversi (stessa regola delle guide costi).
-          url: landing.image.src,
-          width: 1200,
-          height: 630,
-          alt: landing.image.alt,
-        },
-      ],
+      // Immagine propria della landing, mai una fissa condivisa tra
+      // interventi diversi (stessa regola delle guide costi). Senza image
+      // si omette la chiave: mai un URL fittizio in OpenGraph.
+      ...(landing.image
+        ? {
+            images: [
+              {
+                url: landing.image.src,
+                width: 1200,
+                height: 630,
+                alt: landing.image.alt,
+              },
+            ],
+          }
+        : {}),
     },
   };
 }
@@ -107,14 +112,20 @@ export function buildCostGuideMetadata(slug: string): Metadata {
       type: "website",
       url: guide.canonicalPath,
       siteName: "Esigenta",
-      images: [
-        {
-          url: guide.heroImage.src,
-          width: 1200,
-          height: 630,
-          alt: guide.heroImage.alt,
-        },
-      ],
+      // Senza heroImage si omette la chiave: mai un URL fittizio in
+      // OpenGraph (stessa regola di buildInterventionMetadata).
+      ...(guide.heroImage
+        ? {
+            images: [
+              {
+                url: guide.heroImage.src,
+                width: 1200,
+                height: 630,
+                alt: guide.heroImage.alt,
+              },
+            ],
+          }
+        : {}),
     },
   };
 }
@@ -145,14 +156,18 @@ export function buildCostGuideCityMetadata(
       type: "website",
       url: cityPage.canonicalPath,
       siteName: "Esigenta",
-      images: [
-        {
-          url: guide.heroImage.src,
-          width: 1200,
-          height: 630,
-          alt: guide.heroImage.alt,
-        },
-      ],
+      ...(guide.heroImage
+        ? {
+            images: [
+              {
+                url: guide.heroImage.src,
+                width: 1200,
+                height: 630,
+                alt: guide.heroImage.alt,
+              },
+            ],
+          }
+        : {}),
     },
   };
 }

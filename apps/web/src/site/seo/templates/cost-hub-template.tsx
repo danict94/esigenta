@@ -227,12 +227,14 @@ export function CostHubPage({ categories }: CostHubPageProps) {
 }
 
 function CostGuideCard({ index, guide }: { index: number; guide: CostGuide }) {
-  // Derivato dal testo reale di sourceLabel, mai un'etichetta scelta a mano
-  // guida per guida: bagno ha un sourceLabel ("Dati indicativi elaborati da
-  // più fonti di settore") che NON è un prezzario ufficiale, a differenza di
-  // impermeabilizzare-tetto/elettrico ("Prezzari ufficiali delle Regioni
-  // ..."). Boolean(sourceLabel) da solo confonderebbe le due cose.
-  const isOfficial = guide.sourceLabel?.toLowerCase().includes("ufficial") ?? false;
+  // Rifinitura 2026-08: sourceType (market-data/base-price-ranges.ts) è un
+  // dato esplicito e dedicato, dichiarato per guida — non un'inferenza da
+  // PriceRowConfidence (concetto diverso: quanto è solida una riga
+  // editoriale, non cosa sono i numeri nel complesso) né uno string-match su
+  // sourceLabel (rotto: "ufficiali" compare in tutti i sourceLabel, anche
+  // quelli di fasce editoriali multi-fonte). Nessun if per slug: un solo
+  // confronto sul dato.
+  const isOfficial = guide.sourceType === "official";
 
   return (
     <li>
@@ -261,7 +263,7 @@ function CostGuideCard({ index, guide }: { index: number; guide: CostGuide }) {
             aria-hidden="true"
             className={`size-1.25 shrink-0 rounded-full ${isOfficial ? "bg-eg-accent" : "bg-eg-brand"}`}
           />
-          {isOfficial ? "Prezzario ufficiale" : "Range indicativo"}
+          {isOfficial ? "Prezzario ufficiale" : "Fascia orientativa"}
         </span>
 
         <h3 className="text-[16.5px] font-semibold leading-[1.3] text-eg-ink">
