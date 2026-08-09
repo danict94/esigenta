@@ -13,7 +13,10 @@ import {
   NOTE_STEP_ID,
 } from "@esigenta/funnel";
 
-import { trackGenerateLead } from "../../../site/analytics/ga4-events";
+import {
+  trackGenerateLead,
+  trackGoogleAdsLeadConversion,
+} from "../../../site/analytics/ga4-events";
 import { RequestStepUI } from "./request-step-ui";
 import type {
   JsonRequestDraft,
@@ -21,6 +24,10 @@ import type {
 } from "../runtime-payload";
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GOOGLE_ADS_CONVERSION_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
+const GOOGLE_ADS_CONVERSION_LABEL =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL;
 
 type RequestStepperProps = {
   payload: JsonRuntimeFunnelPayload;
@@ -130,6 +137,7 @@ export function RequestStepper({
   const [leadQualityHintDismissed, setLeadQualityHintDismissed] =
     useState(false);
   const generateLeadFiredRef = useRef(false);
+  const googleAdsConversionFiredRef = useRef(false);
 
   const capabilities = payload.orderedCapabilities;
   const currentCapability = capabilities[stepIndex];
@@ -233,6 +241,21 @@ export function RequestStepper({
           leadType: "customer_request",
           serviceGroup: submitted.request.serviceGroupSlug,
           intervention: submitted.request.interventionSlug,
+        });
+      }
+
+      // Stessa garanzia del generate_lead sopra (ref impostato prima della
+      // chiamata Analytics, non dopo), guardia indipendente perché il
+      // consenso marketing (Ads) e analytics (GA4) possono differire: al
+      // massimo una conversione Ads per questa risposta già committata dal
+      // server, cioè al massimo una per requestId in questo browser.
+      if (!googleAdsConversionFiredRef.current) {
+        googleAdsConversionFiredRef.current = true;
+
+        trackGoogleAdsLeadConversion({
+          conversionId: GOOGLE_ADS_CONVERSION_ID,
+          conversionLabel: GOOGLE_ADS_CONVERSION_LABEL,
+          requestId: submitted.request.requestId,
         });
       }
     } catch (error) {

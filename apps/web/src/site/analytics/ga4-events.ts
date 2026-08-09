@@ -44,3 +44,49 @@ export function trackGenerateLead(
     send_to: measurementId,
   })
 }
+
+export type TrackGoogleAdsLeadConversionParams = {
+  /** NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID, formato AW-XXXXXXXXX. undefined se non configurata in questo ambiente. */
+  conversionId: string | undefined
+  /** NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL della specifica azione di conversione. undefined se non configurata. */
+  conversionLabel: string | undefined
+  /** Request.id (cuid) della richiesta già committata sul server. Unico identificatore inviato — un token tecnico opaco, non PII. */
+  requestId: string
+}
+
+/**
+ * conversion Google Ads per una richiesta cliente realmente acquisita
+ * (stessa transazione già committata di trackGenerateLead — chiamata dallo
+ * stesso punto in request-stepper.tsx). No-op silenzioso — mai un throw —
+ * se conversionId/conversionLabel non sono configurate in questo ambiente,
+ * se il consenso MARKETING (non analytics: le due preferenze sono
+ * indipendenti, vedi consent-signals.ts) non è concesso nelle preferenze
+ * CORRENTI, o se window.gtag non è ancora inizializzato. Non inizializza
+ * mai gtag da sé — usa soltanto un gtag già esistente (caricato da
+ * Ga4MinimalLoader). Il payload contiene solo send_to e transaction_id:
+ * nessuna email/telefono/nome/indirizzo/testo libero.
+ */
+export function trackGoogleAdsLeadConversion(
+  params: TrackGoogleAdsLeadConversionParams,
+): void {
+  const { conversionId, conversionLabel, requestId } = params
+
+  if (!conversionId || !conversionLabel) {
+    return
+  }
+
+  if (readCookieConsentPreferences()?.marketing !== true) {
+    return
+  }
+
+  const gtag = (window as GtagWindow).gtag
+
+  if (!gtag) {
+    return
+  }
+
+  gtag("event", "conversion", {
+    send_to: `${conversionId}/${conversionLabel}`,
+    transaction_id: requestId,
+  })
+}

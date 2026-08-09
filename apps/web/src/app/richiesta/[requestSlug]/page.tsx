@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { resolveInterventionForFunnel } from "@esigenta/taxonomy";
 import { createRuntimeFunnel } from "@esigenta/funnel/server";
 
+import { buildLegacyQueryRedirectTarget } from "../../../richiesta/flow/build-legacy-query-redirect-target";
 import { RequestFlowPage } from "../../../richiesta/flow/request-flow-page";
 
 import type { JsonRuntimeFunnelPayload } from "../../../richiesta/flow/runtime-payload";
@@ -19,20 +20,27 @@ export const metadata: Metadata = {
 
 type Props = {
   params: Promise<{ requestSlug: string }>;
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function Page({ params, searchParams }: Props) {
   const { requestSlug } = await params;
-  const { q } = await searchParams;
+  const resolvedSearchParams = await searchParams;
 
   // ?q= è un residuo di link vecchi (home-hero.tsx non lo genera più): va
   // eliminato lato server, prima che qualunque codice client (incluso un
   // eventuale Analytics futuro sul funnel) possa vedere l'URL con il testo
   // libero. Nessun tentativo di recuperarlo: per i rarissimi link legacy si
   // accetta di scartarlo piuttosto che rischiare di inviarlo ad Analytics.
-  if (q) {
-    redirect(`/richiesta/${encodeURIComponent(requestSlug)}`);
+  // Gli altri parametri (es. un gclid di una campagna Google Ads) vengono
+  // invece preservati nel redirect — vedi build-legacy-query-redirect-target.ts.
+  const legacyQueryRedirectTarget = buildLegacyQueryRedirectTarget({
+    requestSlug,
+    searchParams: resolvedSearchParams,
+  });
+
+  if (legacyQueryRedirectTarget) {
+    redirect(legacyQueryRedirectTarget);
   }
 
   const intervention = await resolveInterventionForFunnel(requestSlug);
