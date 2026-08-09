@@ -1019,6 +1019,96 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
+  // Fascia 60–120 €/mq: elaborazione orientativa da confronto di mercato
+  // nazionale 2026 (stesso metodo di rifare-tetto/ristrutturare-bagno), NON
+  // una voce di un prezzario. Prezzario Regione Siciliana 2024 (vigente fino
+  // al 31/12/2026) autorizzato come fonte SOLO per singole lavorazioni
+  // realmente verificabili: il PDF ufficiale (regione.sicilia.it, sia
+  // "Prezzario 2024.pdf" sia "prezzario 2024 definitivo.pdf") ha risposto
+  // 404 a ogni tentativo di download in questa sessione (verificato anche
+  // dalla pagina "prezziario-vigente" stessa, che lo linka con lo stesso URL
+  // non raggiungibile): nessuna voce di quel prezzario è quindi citata qui,
+  // per non rischiare un codice o un prezzo inventato. sourceType "mixed"
+  // come rifare-tetto: nessuna riga è un prezzo ufficiale puntuale verificato.
+  "costGuide:rifare-facciata": {
+    nationalRange: "60–120 € al mq",
+    pricePerSquareMeter: "da 60 € a 120 € al mq",
+    // Etichetta onesta sulla natura del dato: il range 60–120 €/mq nasce da
+    // un confronto di mercato nazionale, non da una voce del Prezzario
+    // Sicilia (vedi commento sopra) — non deve leggersi come un prezzo
+    // ufficiale di capitolato.
+    sourceLabel: "Confronto di mercato nazionale",
+    sourceYear: "2026",
+    sourceType: "mixed",
+    priceRows: [
+      {
+        label: "Rifacimento ordinario della facciata, senza cappotto né interventi strutturali",
+        category: "Rifacimento ordinario della facciata",
+        unit: "al mq",
+        range: "da 60 € a 120 € al mq",
+        note: "Stima elaborata da confronto di mercato nazionale 2026: nessun prezzario pubblico quota un pacchetto unico per il rifacimento ordinario della facciata.",
+        includes: "rimozione delle parti di intonaco ammalorato, preparazione del supporto, ripristino dell'intonaco nelle zone rimosse, rasatura, finitura e tinteggiatura",
+        excludes: "ponteggio, cappotto termico, consolidamenti strutturali importanti, restauro specialistico o storico, ripristino di balconi, ballatoi e frontalini",
+        confidence: "media",
+        priceType: "corpo",
+      },
+      // Nessuna di queste voci ha un numero verificato da fonti di settore
+      // (a differenza della riga sopra): restano qualitative sotto "Da
+      // valutare", stesso pattern delle righe non quotabili di rifare-tetto —
+      // mai un numero o un tetto massimo inventato.
+      {
+        label: "Ponteggio",
+        category: "Da valutare con il professionista",
+        categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: sono lavorazioni diverse dal rifacimento ordinario qui sopra, o fattori che dipendono dal singolo cantiere.",
+        range: "variabile in base ad altezza, accesso e durata del cantiere",
+        note: "Non è compreso nella fascia 60–120 €/mq: viene spesso quotato come voce separata nel preventivo.",
+      },
+      {
+        label: "Cappotto termico della facciata",
+        category: "Da valutare con il professionista",
+        range: "da valutare con il professionista",
+        note: "Intervento di isolamento termico, distinto dal rifacimento ordinario: comporta lavorazioni, spessori e costi propri.",
+      },
+      {
+        label: "Consolidamento strutturale della facciata",
+        category: "Da valutare con il professionista",
+        range: "da valutare con il professionista",
+        note: "Necessario quando ci sono problemi strutturali importanti, non un semplice ripristino di intonaco e finitura.",
+      },
+      {
+        label: "Restauro specialistico o facciata storica/vincolata",
+        category: "Da valutare con il professionista",
+        range: "da valutare con il professionista",
+        note: "Richiede tecniche e materiali specifici, spesso con vincoli della soprintendenza: non rientra nella fascia ordinaria.",
+      },
+      {
+        label: "Ripristino di balconi, ballatoi e frontalini",
+        category: "Da valutare con il professionista",
+        range: "da valutare con il professionista",
+        note: "Interventi distinti sulla struttura di balconi, ballatoi e frontalini, non compresi nella fascia facciata.",
+      },
+    ],
+    sizeExamples: [
+      {
+        label: "Facciata da 100 mq",
+        sizeRange: "100 mq",
+        range: "da 6.000 € a 12.000 €",
+        note: "Calcolo: 100 mq × 60–120 €/mq.",
+      },
+      {
+        label: "Facciata da 200 mq",
+        sizeRange: "200 mq",
+        range: "da 12.000 € a 24.000 €",
+        note: "Calcolo: 200 mq × 60–120 €/mq.",
+      },
+      {
+        label: "Facciata da 300 mq",
+        sizeRange: "300 mq",
+        range: "da 18.000 € a 36.000 €",
+        note: "Calcolo: 300 mq × 60–120 €/mq.",
+      },
+    ],
+  },
 };
 
 export function getBasePriceRange(familyKey: string): BasePriceRange | null {
