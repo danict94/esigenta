@@ -1,9 +1,13 @@
 "use client";
 
+import ReactDOM from "react-dom";
+
 import { FeaturedWorkSection } from "./featured-work-section";
 import { HomeHero } from "./home-hero";
 import { HomeTrustSection } from "./home-trust-section";
 import { ProcessSteps } from "./process-steps";
+
+const HOME_HERO_IMAGE_SRC = "/assets/images/home/hero.webp";
 
 type HomeExperienceProps = {
   // Id del sentinel muto renderizzato subito dopo l'hero: il contratto e'
@@ -13,6 +17,11 @@ type HomeExperienceProps = {
 };
 
 export function HomeExperience({ heroBoundaryId }: HomeExperienceProps) {
+  ReactDOM.preload(HOME_HERO_IMAGE_SRC, {
+    as: "image",
+    fetchPriority: "high",
+  });
+
   return (
     <main className="eg-page eg-page-bg">
       <HomeHero />
