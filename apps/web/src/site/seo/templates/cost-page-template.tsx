@@ -18,6 +18,9 @@ import {
 import { PublicShell } from "../../shell/public-shell";
 import { FrameMarks } from "../../shared/frame-marks";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
+import { InternalPageIntro } from "../../shared/internal-page-intro";
+import { MarketingFinalCta } from "../../shared/marketing-final-cta";
+import { CostHighlight } from "./cost-highlight";
 import { SeoFaq } from "./seo-faq";
 import { sectionTitleClassName } from "./seo-section-title";
 
@@ -70,51 +73,18 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         />
       ) : null}
       <div className="eg-page eg-page-bg">
-        <section className="pt-[calc(var(--eg-nav-clear)+12px)] pb-10">
-          <div className="eg-container">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-4.5 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
-            >
-              <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                Home
-              </Link>
-              <span aria-hidden="true">/</span>
-              <Link href="/costi" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                Costi
-              </Link>
-              <span aria-hidden="true">/</span>
-              {groupCrumb ? (
-                <>
-                  <Link href={groupCrumb.href} prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                    {groupCrumb.name}
-                  </Link>
-                  <span aria-hidden="true">/</span>
-                </>
-              ) : null}
-              <span className="text-eg-ink">{guide.title}</span>
-            </nav>
-
-            <div
-              className={
-                guide.heroImage
-                  ? "grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]"
-                  : "grid"
-              }
-            >
-              <div>
-                <p className={blueprintEyebrowClassName}>Guida costi</p>
-
-                <h1 className="mt-4 mb-4 max-w-190 font-(family-name:--eg-font-brand) text-[clamp(26px,3.6vw,40px)] font-semibold leading-[1.2] tracking-[-0.01em]">
-                  {guide.h1}
-                </h1>
-
-                <p className="mb-6.5 max-w-160 text-base leading-[1.6] text-eg-ink">
-                  {guide.summary}
-                </p>
-
-                <div className="flex flex-wrap gap-3">
-                  <Link href={requestHref} className="eg-button-primary">
+        <InternalPageIntro
+          breadcrumbs={[
+            { label: "Home", href: "/" },
+            { label: "Costi", href: "/costi" },
+            ...(groupCrumb ? [{ label: groupCrumb.name, href: groupCrumb.href }] : []),
+            { label: guide.title },
+          ]}
+          title={guide.h1}
+          description={guide.summary}
+          actions={
+            <>
+                  <Link href={requestHref} className="eg-button-primary eg-button-arrow">
                     Richiedi preventivi
                   </Link>
 
@@ -123,11 +93,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                       Vedi la pagina del servizio
                     </Link>
                   ) : null}
-                </div>
-              </div>
-
-              {guide.heroImage ? (
-                <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
+            </>
+          }
+          aside={
+            guide.heroImage ? (
+              <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
                   <FrameMarks />
                   <Image
                     src={guide.heroImage.src}
@@ -137,13 +107,12 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
                     className="object-cover"
                   />
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </section>
+              </div>
+            ) : undefined
+          }
+        />
 
-        <section aria-labelledby="sintesi-costo-title" className="border-t border-eg-border py-14">
+        <section aria-labelledby="sintesi-costo-title" className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <div className="mb-8 max-w-170">
               <p className={blueprintEyebrowClassName}>Sintesi costo</p>
@@ -159,7 +128,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               </div>
             ) : (
               <>
-                <div className="mb-5 grid grid-cols-1 gap-px border border-eg-border bg-eg-border sm:grid-cols-2">
+                <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <CostHighlight label={guide.nationalRangeLabel ?? "Costo complessivo"} value={guide.nationalRange ?? ""} />
                   <CostHighlight label="Costo al mq" value={guide.pricePerSquareMeter ?? ""} />
                 </div>
@@ -174,7 +143,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
             <div className="flex flex-wrap items-center justify-between gap-5 border border-eg-border bg-eg-surface px-6 py-5.5">
               <div>
-                <h3 className="font-(family-name:--eg-font-brand) text-[15px] font-semibold">
+                <h3 className="font-(family-name:--eg-font-primary) text-[15px] font-semibold">
                   Trova professionisti nella tua zona
                 </h3>
 
@@ -183,7 +152,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 </p>
               </div>
 
-              <Link href={requestHref} className="eg-button-primary">
+              <Link href={requestHref} className="eg-button-primary eg-button-arrow">
                 Richiedi preventivi
               </Link>
             </div>
@@ -191,7 +160,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         </section>
 
         {guide.priceRows.length > 0 ? (
-          <section aria-labelledby="tabella-prezzi-title" className="border-t border-eg-border py-14">
+          <section aria-labelledby="tabella-prezzi-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-8 max-w-170">
                 <p className={blueprintEyebrowClassName}>Tabella prezzi</p>
@@ -230,7 +199,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         ) : null}
 
         {guide.relatedWork && guide.relatedWork.length > 0 ? (
-          <section aria-labelledby="interventi-specifici-title" className="border-t border-eg-border py-14">
+          <section aria-labelledby="interventi-specifici-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-8 max-w-170">
                 <p className={blueprintEyebrowClassName}>Interventi specifici</p>
@@ -249,13 +218,13 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     className="group flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-eg-border py-4.5 no-underline transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2"
                   >
                     <div className="min-w-0">
-                      <p className="font-(family-name:--eg-font-brand) text-[15px] font-semibold text-eg-ink">
+                      <p className="font-(family-name:--eg-font-primary) text-[15px] font-semibold text-eg-ink">
                         {item.title}
                       </p>
                       <p className="mt-1 text-[13px] leading-normal text-eg-text-muted">{item.description}</p>
                     </div>
 
-                    <span className="shrink-0 whitespace-nowrap font-(family-name:--eg-font-brand) text-xs font-semibold text-eg-brand-strong transition-transform duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-accent">
+                    <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-eg-brand-strong transition-[transform,color] duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-brand-hover">
                       Richiedi questo intervento <span aria-hidden="true">&rarr;</span>
                     </span>
                   </Link>
@@ -266,7 +235,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         ) : null}
 
         {guide.sizeExamples.length > 0 ? (
-          <section aria-labelledby="esempi-costo-title" className="border-t border-eg-border py-14">
+          <section aria-labelledby="esempi-costo-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-8 max-w-170">
                 <p className={blueprintEyebrowClassName}>Esempi</p>
@@ -286,16 +255,16 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                 {guide.sizeExamples.map((example) => (
                   <article key={example.label} className="border border-eg-border bg-eg-surface px-5.5 py-6">
                     {example.sizeRange ? (
-                      <span className="mb-2.5 inline-block bg-eg-brand-soft px-2.5 py-1 font-(family-name:--eg-font-brand) text-[11px] font-bold uppercase tracking-[0.04em] text-eg-brand-strong">
+                      <span className="mb-2.5 inline-block bg-eg-brand-soft px-2.5 py-1 font-(family-name:--eg-font-mono) text-[11px] font-bold uppercase tracking-[0.04em] text-eg-brand-strong">
                         {example.sizeRange}
                       </span>
                     ) : null}
 
-                    <p className="mb-2.5 font-(family-name:--eg-font-brand) text-[19px] font-bold leading-tight text-eg-accent">
+                    <p className="mb-2.5 text-[19px] font-bold leading-tight text-eg-brand-strong">
                       {example.range}
                     </p>
 
-                    <h3 className="mb-2 font-(family-name:--eg-font-brand) text-[15px] font-semibold">
+                    <h3 className="mb-2 font-(family-name:--eg-font-primary) text-[15px] font-semibold">
                       {example.label}
                     </h3>
 
@@ -307,7 +276,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </section>
         ) : null}
 
-        <section aria-labelledby="fattori-costo-title" className="border-t border-eg-border py-14">
+        <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <div className="mb-8 max-w-170">
               <p className={blueprintEyebrowClassName}>Cosa incide sul prezzo</p>
@@ -319,7 +288,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
             <div className="grid gap-8 md:grid-cols-2">
               <div>
-                <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
+                <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
                   Il lavoro in s&eacute;
                 </p>
 
@@ -334,7 +303,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               </div>
 
               <div>
-                <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
+                <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
                   La tua zona e il tuo edificio
                 </p>
 
@@ -359,7 +328,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="agevolazioni-fiscali-title" className="border-t border-eg-border py-14">
+        <section aria-labelledby="agevolazioni-fiscali-title" className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <div className="border border-eg-border bg-eg-surface px-6.5 py-7">
               <p className={blueprintEyebrowClassName}>Agevolazioni fiscali</p>
@@ -387,7 +356,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     href="https://www.agenziaentrate.gov.it/portale/aree-tematiche/casa/agevolazioni/agevolazioni-per-le-ristrutturazioni-edilizie"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-accent"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-brand-hover"
                   >
                     Agevolazioni per le ristrutturazioni &mdash; Agenzia delle Entrate
                     <ExternalLinkGlyph className="size-3 shrink-0" />
@@ -400,7 +369,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     href="https://www.efficienzaenergetica.enea.it/detrazioni-fiscali.html"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-accent"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-brand-hover"
                   >
                     Detrazioni fiscali per l&apos;efficienza energetica &mdash; ENEA
                     <ExternalLinkGlyph className="size-3 shrink-0" />
@@ -412,7 +381,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section aria-labelledby="risparmiare-title" className="border-t border-eg-border py-14">
+        <section aria-labelledby="risparmiare-title" className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <div className="mb-8 max-w-170">
               <p className={blueprintEyebrowClassName}>Consigli</p>
@@ -425,7 +394,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             <ul className="max-w-170">
               {guide.savingTips.map((tip, index) => (
                 <li key={tip} className="flex items-start gap-3 border-b border-eg-border py-3.25 text-[14.5px] leading-[1.55] text-eg-ink">
-                  <span className="mt-px shrink-0 font-(family-name:--eg-font-brand) text-[13px] font-bold text-eg-accent">
+                  <span className="eg-list-index mt-px shrink-0 font-bold text-eg-brand-strong">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>{tip}</span>
@@ -435,32 +404,18 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section className="border-t border-eg-border py-14">
+        <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <SeoFaq faq={guide.faq} defaultOpenFirst />
           </div>
         </section>
 
-        <section className="border-t border-eg-border bg-eg-brand-strong py-16 text-eg-on-brand">
-          <div className="eg-container-narrow text-center">
-            <p className="flex items-center justify-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-[#9fd3e8] before:inline-block before:h-px before:w-5.5 before:bg-[#9fd3e8] before:content-['']">
-              Prossimo passo
-            </p>
-
-            <h2 className={cn(sectionTitleClassName, "mt-3.5")}>
-              Racconta il lavoro e confronta i preventivi
-            </h2>
-
-            <p className="mt-3 text-[14.5px] leading-[1.6] text-eg-on-brand-muted">
-              Continua nella richiesta dedicata e indica dettagli, tempi e zona
-              dell&apos;intervento.
-            </p>
-
-            <Link href={requestHref} className="eg-button-primary mt-6">
-              Vai alla richiesta
-            </Link>
-          </div>
-        </section>
+        <MarketingFinalCta
+          title="Racconta il lavoro e confronta i preventivi"
+          description="Continua nella richiesta dedicata e indica dettagli, tempi e zona dell'intervento."
+          href={requestHref}
+          ctaLabel="Vai alla richiesta"
+        />
       </div>
     </PublicShell>
   );
@@ -473,20 +428,6 @@ function ExternalLinkGlyph({ className }: { className?: string }) {
       <path d="M15 3h6v6" />
       <path d="M10 14 21 3" />
     </svg>
-  );
-}
-
-function CostHighlight({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-eg-surface px-6.5 py-7">
-      <p className="font-(family-name:--eg-font-brand) text-[clamp(24px,3vw,32px)] font-bold leading-[1.15] text-eg-brand-strong">
-        {value}
-      </p>
-
-      <p className="mt-2 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-wider text-eg-text-muted">
-        {label}
-      </p>
-    </div>
   );
 }
 
@@ -547,7 +488,7 @@ function PriceTable({
   return (
     <>
       <div
-        className={`hidden border-b border-eg-border px-0 pb-2.5 font-(family-name:--eg-font-brand) text-[11px] uppercase tracking-wider text-eg-text-muted md:grid ${priceTableGridCols}`}
+        className={`hidden border-b border-eg-border px-0 pb-2.5 font-(family-name:--eg-font-mono) text-[11px] uppercase tracking-wider text-eg-text-muted md:grid ${priceTableGridCols}`}
       >
         <span>Voce</span>
         <span>Fascia indicativa</span>
@@ -561,7 +502,7 @@ function PriceTable({
         return (
           <div key={group.category} className={index === 0 ? "mt-0" : "mt-2"}>
             <p
-              className={`font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-[0.08em] text-eg-text-muted ${index === 0 ? "pt-0" : "pt-5.5"} pb-2.5`}
+              className={`font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-[0.08em] text-eg-text-muted ${index === 0 ? "pt-0" : "pt-5.5"} pb-2.5`}
             >
               {group.category}
             </p>
@@ -580,7 +521,7 @@ function PriceTable({
       })}
 
       {sourceLabel ? (
-        <p className="mt-4.5 text-center font-(family-name:--eg-font-brand) text-[12.5px] text-eg-ink">
+        <p className="mt-4.5 text-center font-(family-name:--eg-font-primary) text-[12.5px] text-eg-ink">
           {sourceLabel}
           {sourceYear ? `, aggiornati ${sourceYear}` : null}. Le fasce non
           sono un preventivo: il prezzo reale dipende dal sopralluogo.
@@ -612,32 +553,32 @@ function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
         ) : null}
 
         {row.simpleLabel && row.simpleLabel !== row.label ? (
-          <p className="mt-1 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">
+          <p className="mt-1 font-(family-name:--eg-font-mono) text-[11px] text-eg-text-muted">
             {row.label}
             {row.technicalCode ? ` — ${row.technicalCode}` : null}
           </p>
         ) : row.technicalCode ? (
-          <p className="mt-1 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">{row.technicalCode}</p>
+          <p className="mt-1 font-(family-name:--eg-font-mono) text-[11px] text-eg-text-muted">{row.technicalCode}</p>
         ) : null}
 
         {row.unit ? (
-          <p className="mt-0.5 font-(family-name:--eg-font-brand) text-[11px] text-eg-text-muted">
+          <p className="mt-0.5 font-(family-name:--eg-font-mono) text-[11px] text-eg-text-muted">
             {row.unitLabel ? `${row.unitLabel} (${row.unit})` : row.unit}
           </p>
         ) : null}
       </div>
 
       {isQualitative ? (
-        <p className="text-[13px] font-medium italic leading-normal text-eg-text-muted">{row.range}</p>
+        <p className="text-[13px] font-medium leading-normal text-eg-text-muted">{row.range}</p>
       ) : (
-        <p className="font-(family-name:--eg-font-brand) font-bold text-eg-ink [font-variant-numeric:tabular-nums]">
+        <p className="font-(family-name:--eg-font-primary) font-bold text-eg-ink [font-variant-numeric:tabular-nums]">
           {row.range}
         </p>
       )}
 
       {row.priceType ? (
         <p>
-          <span className="inline-block border border-eg-border px-2 py-0.5 font-(family-name:--eg-font-brand) text-[10.5px] font-semibold uppercase tracking-wide text-eg-text-muted">
+          <span className="inline-block border border-eg-border px-2 py-0.5 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-wide text-eg-text-muted">
             {priceTypeLabel[row.priceType]}
           </span>
         </p>
@@ -657,7 +598,7 @@ function PriceTableRow({ row }: { row: CostGuide["priceRows"][number] }) {
           {row.excludes ? (
             <>
               {" "}
-              <span className="font-semibold text-eg-accent">Escluso</span> {row.excludes}.
+              <span className="font-semibold text-eg-error">Escluso</span> {row.excludes}.
             </>
           ) : null}
         </p>

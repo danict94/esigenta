@@ -1,38 +1,12 @@
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { storeFunnelQuery } from "../../richiesta/flow/components/resolve-funnel-query";
-import {
-  preloadedResults,
-  scatterTags,
-  type SearchResult,
-} from "./home-content";
+import { preloadedResults, type SearchResult } from "./home-content";
 
 const MIN_SEARCH_QUERY_LENGTH = 3;
 const SEARCH_ERROR_MESSAGE = "Non riesco a caricare i risultati ora";
 const SEARCH_VALIDATION_MESSAGE_ID = "home-search-validation";
-
-// Aspetto dei post-it (font a penna, ombra, nastro, animazione pin): estratto
-// per leggibilita' del JSX, un solo punto dove ritoccarlo.
-const NOTE_BASE_CLASSNAME =
-  "absolute text-center font-bold leading-[1.15] font-(family-name:--eg-font-script) text-eg-ink shadow-eg-note opacity-0 will-change-transform [animation:eg-note-pin_550ms_var(--eg-ease-brand)_both] [animation-delay:var(--delay,0ms)] before:absolute before:-top-[9px] before:left-1/2 before:h-[14px] before:w-[38px] before:-translate-x-1/2 before:-rotate-2 before:bg-white/60 before:content-['']";
-
-// Sotto la soglia indicata da ScatterTag.minVisibleWidth il post-it e'
-// nascosto (replica le regole responsive del riferimento): solo 2 post-it
-// non hanno soglia e restano visibili anche sul telefono piu' stretto.
-const NOTE_VISIBILITY_CLASSNAME: Record<601 | 861, string> = {
-  601: "hidden min-[601px]:block",
-  861: "hidden min-[861px]:block",
-};
-
-type ScatterStyle = CSSProperties & Record<"--rot" | "--delay", string>;
-
-// Knob LOCALI della Hero (non token canonici): controllano colore, alone e
-// griglia della sola Hero. Cambiare --hero-surface ricolora SOLO la Hero,
-// nessun token globale toccato. --eg-heading-emphasis e' l'override locale
-// letto da .eg-h1 strong (globals.css); qui vale il corallo Emphasis warm.
-type HeroStyle = CSSProperties &
-  Record<"--hero-surface" | "--hero-glow" | "--hero-grid" | "--eg-heading-emphasis", string>;
 
 export function HomeHero() {
   const router = useRouter();
@@ -215,80 +189,37 @@ export function HomeHero() {
 
   return (
     <section
-      className="relative z-10 min-h-[700px] pt-[132px] pb-[86px] text-eg-on-brand min-[861px]:min-h-[760px] min-[861px]:pt-[152px] min-[861px]:pb-[104px]"
+      className="eg-theme-hero relative z-10 pt-[132px] pb-[60px] text-eg-on-brand min-[861px]:pt-[152px] min-[861px]:pb-[80px]"
       style={
         {
-          // Superficie Hero isolata dal resto della pagina: per ricolorare
-          // la Hero basta cambiare --hero-surface qui, senza toccare token
-          // globali ne' altre sezioni. Riproduzione 1:1 di docs/index.md:
-          // Brand strong (cianotipo) — gia' il nostro token, zero colori
-          // nuovi introdotti.
-          "--hero-surface": "var(--eg-color-brand-strong)",
-          // Alone luminoso in stile blueprint, col NOSTRO blu (token Brand
-          // chiaro esistente).
-          "--hero-glow": "var(--eg-color-brand)",
-          // Griglia sottile: sul fondo scuro serve bianco a bassissima
-          // opacita' (come il riferimento), non piu' grafite.
-          "--hero-grid": "rgba(255, 255, 255, 0.06)",
-          // Corallo Emphasis warm: leggibile sopra il cianotipo scuro (il
-          // rosso Action/Accent normale vi si spegnerebbe). Letto da
-          // .eg-h1 strong e dai marker della lista sotto.
-          "--eg-heading-emphasis": "var(--eg-color-emphasis-warm)",
-          backgroundColor: "var(--hero-surface)",
-          backgroundImage:
-            "radial-gradient(ellipse at 78% 18%, color-mix(in srgb, var(--hero-glow) 45%, transparent), transparent 55%), linear-gradient(var(--hero-grid) 1px, transparent 1px), linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px)",
-          backgroundSize: "100% 100%, 32px 32px, 32px 32px",
-          backgroundRepeat: "no-repeat, repeat, repeat",
-        } as HeroStyle
+          backgroundColor: "var(--eg-color-brand-strong)",
+          backgroundImage: "url('/assets/images/home/hero.webp')",
+          backgroundPosition: "center bottom",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }
       }
       aria-labelledby="home-title"
     >
-      {/* Post-it: un solo rendering a tutte le larghezze (come il
-          riferimento). Ogni post-it decide da solo la propria soglia di
-          visibilita' via minVisibleWidth: sotto i 601px ne restano visibili
-          solo 2, sempre in alto, mai sotto il titolo.
-          L'header e' fixed (fuori dal flusso, sovrapposto): il layer parte
-          da --eg-nav-height, non dal bordo reale della sezione, altrimenti
-          i post-it con top vicino a 0% finiscono sotto l'header (z-index
-          piu' basso). --eg-nav-height e' il token esistente dell'header,
-          nessun valore nuovo. */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 top-(--eg-nav-height) z-[1] overflow-hidden"
-        aria-hidden="true"
-      >
-        {scatterTags.map((tag) => (
-          <span
-            key={tag.label}
-            className={[
-              "w-[clamp(92px,15vw,148px)] px-[clamp(10px,1.8vw,15px)] pt-[clamp(9px,1.6vw,14px)] pb-[clamp(11px,2vw,16px)] text-[clamp(13px,1.9vw,17.5px)]",
-              NOTE_BASE_CLASSNAME,
-              tag.color === "giallo" ? "bg-eg-nota-giallo" : "bg-eg-nota-carta",
-              tag.minVisibleWidth ? NOTE_VISIBILITY_CLASSNAME[tag.minVisibleWidth] : "",
-            ].join(" ")}
-            style={
-              {
-                ...tag.position,
-                "--rot": tag.rotate,
-                "--delay": tag.delay,
-              } as ScatterStyle
-            }
-          >
-            {tag.label}
-          </span>
-        ))}
-      </div>
-
       <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[22px] min-[861px]:px-12">
-        <div className="w-full max-w-[720px] text-left">
+        <div className="relative isolate w-full max-w-[800px] text-left">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-y-10 -left-[22px] right-[-22px] z-0 min-[861px]:-left-10 min-[861px]:right-[-2rem]"
+            style={{
+              background:
+                "radial-gradient(ellipse at 28% 48%, color-mix(in srgb, var(--eg-color-ink) 66%, transparent) 0%, color-mix(in srgb, var(--eg-color-ink) 42%, transparent) 52%, transparent 78%)",
+            }}
+          />
           {/* H1 fuori dal wrapper animato: e' il testo piu' grande sopra la
               piega (candidato LCP) e non deve dipendere da opacity:0 ne' da
               un animation-delay per essere dipinto. Paragrafo e form restano
               nel blocco che si anima. */}
-          <h1 id="home-title" className="eg-h1 text-balance text-[clamp(32px,5vw,54px)] font-semibold">
-            Trasformiamo il caos di casa in <strong className="inline-block whitespace-nowrap font-semibold">un percorso</strong> chiaro e affidabile.
+          <h1 id="home-title" className="eg-h1 relative z-1 max-w-[18ch] text-balance text-[clamp(32px,5vw,54px)] leading-[1.1] tracking-[-0.02em]">
+            Trasformiamo il caos di casa in <strong className="eg-hero-emphasis inline-block whitespace-nowrap">un percorso</strong> chiaro e affidabile.
           </h1>
 
-          <div className="[animation:eg-home-fade-up_900ms_ease_180ms_both]">
+          <div className="relative z-1 [animation:eg-home-fade-up_900ms_ease_180ms_both]">
           <p className="mt-[22px] max-w-[44ch] text-balance text-lg leading-[1.6] text-eg-on-brand-muted">
             Descrivi il lavoro, ricevi e confronta proposte da professionisti qualificati.
           </p>
@@ -340,10 +271,9 @@ export function HomeHero() {
             />
             <button
               type="submit"
-              className="inline-flex shrink-0 min-h-11 items-center justify-center gap-2 rounded-eg-sm border-0 bg-eg-action px-4 font-(family-name:--eg-font-brand) text-[13px] font-semibold uppercase tracking-[0.16em] text-eg-on-brand transition hover:brightness-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-action min-[601px]:px-5 max-[340px]:w-full max-[860px]:text-[11px] max-[860px]:tracking-[0.12em]"
+              className="eg-button-primary eg-button-arrow shrink-0 max-[340px]:w-full"
             >
-              <span>CERCA</span>
-              <span aria-hidden="true">&rarr;</span>
+              Cerca
             </button>
           </form>
 
@@ -376,14 +306,9 @@ export function HomeHero() {
           ) : null}
             </div>
 
-            <ul className="eg-form-help mt-4 flex flex-wrap items-center justify-start gap-x-9 gap-y-2 text-eg-on-brand-muted">
-              {["Gratuita", "Senza impegno", "Decidi tu"].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <span aria-hidden="true" className="size-2 shrink-0 bg-(--eg-heading-emphasis)" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <p className="eg-form-help mt-4 max-w-[52ch] text-left text-eg-on-brand-muted">
+              Richiedere &egrave; gratuito e senza impegno. Decidi tu se e con chi proseguire.
+            </p>
           </div>
           </div>
         </div>
@@ -398,18 +323,6 @@ function HomeHeroMotion() {
   return (
     <style>
       {`
-        @keyframes eg-note-pin {
-          from {
-            opacity: 0;
-            transform: scale(0.85) rotate(var(--rot, 0deg));
-          }
-
-          to {
-            opacity: 1;
-            transform: scale(1) rotate(var(--rot, 0deg));
-          }
-        }
-
         @keyframes eg-home-fade-up {
           from {
             opacity: 0;

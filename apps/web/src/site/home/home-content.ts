@@ -4,20 +4,6 @@ export type SearchResult = {
   slug: string;
 };
 
-export type ScatterTag = {
-  label: string;
-  // Posizione ai margini (percentuali sul riquadro Hero), sempre ancorata
-  // in ALTO (replica 1:1 docs/index.md: nessun post-it e' ancorato in
-  // basso — vivono tutti nella fascia sopra il titolo).
-  position: { left?: string; right?: string; top: string };
-  rotate: string;
-  delay: string;
-  color: "giallo" | "carta";
-  // Sotto questa soglia il post-it e' nascosto (replica le regole
-  // responsive del riferimento): assente = sempre visibile.
-  minVisibleWidth?: 601 | 861;
-};
-
 export type FeaturedWork = {
   title: string;
   description: string;
@@ -35,50 +21,6 @@ export const preloadedResults: SearchResult[] = [
     id: "preload-3",
     name: "Installare fotovoltaico",
     slug: "installare-fotovoltaico",
-  },
-];
-
-// Posizioni/rotazioni/ritardi presi 1:1 da docs/index.md (i 5 post-it della
-// tavola). Solo 2 restano sempre visibili (repliche esatte n1/n4): sono gli
-// unici che compaiono anche nella fascia mobile piu' stretta.
-export const scatterTags: ScatterTag[] = [
-  {
-    label: "chi chiamo per il tetto?!",
-    position: { left: "4%", top: "4%" },
-    rotate: "-8deg",
-    delay: "50ms",
-    color: "giallo",
-  },
-  {
-    label: "urgente! perde ancora",
-    position: { left: "29%", top: "0%" },
-    rotate: "5deg",
-    delay: "160ms",
-    color: "carta",
-    minVisibleWidth: 601,
-  },
-  {
-    label: "troppi numeri di telefono...",
-    position: { right: "24%", top: "1%" },
-    rotate: "-6deg",
-    delay: "270ms",
-    color: "giallo",
-    minVisibleWidth: 601,
-  },
-  {
-    label: "e se sbaglio impresa?",
-    position: { right: "3%", top: "5%" },
-    rotate: "9deg",
-    delay: "380ms",
-    color: "carta",
-  },
-  {
-    label: "quanti preventivi chiedo???",
-    position: { right: "1%", top: "36%" },
-    rotate: "-5deg",
-    delay: "490ms",
-    color: "giallo",
-    minVisibleWidth: 861,
   },
 ];
 

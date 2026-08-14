@@ -1,4 +1,5 @@
 import { escapeHtml } from "../html-escape"
+import { EMAIL_ROOT_STYLE } from "../template-styles"
 
 export type NewCompanyAdminEmailInput = {
   companyId: string
@@ -40,7 +41,7 @@ export function newCompanyAdminEmail({
   ].join("\n")
 
   const html = `
-    <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
+    <div style="${EMAIL_ROOT_STYLE}">
       <p>Una nuova impresa si &egrave; registrata ed &egrave; in attesa di verifica.</p>
       <ul>
         ${details.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}

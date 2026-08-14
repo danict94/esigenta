@@ -209,7 +209,7 @@ export default async function AdminResetPasswordPage({
               </p>
               <Link
                 href="/admin/recupera-password"
-                className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
+                className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
               >
                 Richiedi nuovo link
               </Link>

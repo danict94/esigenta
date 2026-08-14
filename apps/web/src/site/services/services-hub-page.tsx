@@ -9,8 +9,12 @@ import {
   serializeJsonLd,
 } from "../seo/engine/schema-builder";
 import { PublicShell } from "../shell/public-shell";
+import { InternalPageIntro } from "../shared/internal-page-intro";
 import { Reveal } from "../shared/reveal";
-import { blueprintEyebrowClassName, blueprintTitleClassName, SectionHeader } from "../shared/section-header";
+import {
+  blueprintEyebrowOnDarkClassName,
+  blueprintTitleClassName,
+} from "../shared/section-header";
 import { ServiceGroupIcon } from "./service-group-icons";
 import { serviceGroupFamilies } from "./service-group-families";
 
@@ -31,7 +35,7 @@ export function ServicesHubPage() {
   );
 
   const groupsBySlug = new Map(
-    groupServices.map((group, position) => [group.slug, { group, index: position + 1 }]),
+    groupServices.map((group) => [group.slug, group]),
   );
 
   const families = serviceGroupFamilies
@@ -39,9 +43,7 @@ export function ServicesHubPage() {
       title: family.title,
       entries: family.groupSlugs
         .map((slug) => groupsBySlug.get(slug))
-        .filter((entry): entry is { group: (typeof groupServices)[number]; index: number } =>
-          Boolean(entry),
-        ),
+        .filter((group): group is (typeof groupServices)[number] => Boolean(group)),
     }))
     .filter((family) => family.entries.length > 0);
 
@@ -57,88 +59,34 @@ export function ServicesHubPage() {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <div className="eg-page eg-page-bg">
-        <div className="eg-container pt-[calc(var(--eg-nav-height)+20px)] pb-5">
-          <nav
-            aria-label="Breadcrumb"
-            className="flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
-          >
-            <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-              Home
+        <InternalPageIntro
+          id="catalogo-servizi"
+          titleId="catalog-title"
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "Servizi" }]}
+          title="Tutti i servizi per la casa, organizzati per ambito."
+          description="Ogni ambito raccoglie interventi affini: scegli il punto di partenza, poi il funnel entra nel dettaglio del lavoro."
+          actions={
+            <Link href="/" prefetch={false} className="eg-button-primary eg-button-arrow">
+              Racconta il lavoro
             </Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-eg-ink">Servizi</span>
-          </nav>
-        </div>
+          }
+        />
 
-        <section
-          className="relative overflow-hidden bg-eg-brand-strong pt-14 pb-16 text-eg-on-brand"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at 82% 12%, color-mix(in srgb, var(--eg-color-brand) 42%, transparent), transparent 55%), linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px)",
-            backgroundSize: "100% 100%, 32px 32px, 32px 32px",
-            backgroundRepeat: "no-repeat, repeat, repeat",
-          }}
-        >
-          <div className="eg-container relative max-w-175">
-            <p className="flex items-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-eg-brand-on-dark before:inline-block before:h-px before:w-5.5 before:bg-eg-brand-on-dark before:content-['']">
-              Esplora per ambito
-            </p>
-            <h1 className="mt-4.5 mb-4 text-balance font-(family-name:--eg-font-brand) text-[clamp(28px,4.4vw,46px)] font-semibold leading-[1.15] tracking-[-0.01em]">
-              Tutti i servizi, <strong className="font-semibold text-eg-emphasis-warm">un solo metodo</strong>.
-            </h1>
-            <p className="max-w-120 text-[16.5px] leading-[1.6] text-eg-on-brand-muted">
-              Parti dall&apos;ambito della casa e arriva a una richiesta leggibile:
-              pochi passaggi, dati ordinati, professionisti piu adatti al lavoro.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/"
-                prefetch={false}
-                className="inline-flex items-center gap-2 bg-eg-action px-5.5 py-3.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold uppercase tracking-[0.04em] text-eg-on-brand transition hover:brightness-90"
-              >
-                Racconta il lavoro <span aria-hidden="true">&rarr;</span>
-              </Link>
-              <Link
-                href="#catalogo-servizi"
-                className="inline-flex items-center gap-2 border border-eg-on-brand-border px-5.5 py-3.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold uppercase tracking-[0.04em] text-eg-on-brand transition hover:border-eg-on-brand hover:bg-white/8"
-              >
-                Vedi gli ambiti <span aria-hidden="true">&darr;</span>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section id="catalogo-servizi" className="py-20" aria-labelledby="catalog-title">
+        <section className="pb-20" aria-labelledby="catalog-title">
           <div className="eg-container">
-            <Reveal>
-              <SectionHeader
-                eyebrow="Catalogo operativo"
-                title="Ambiti chiari prima del preventivo."
-                id="catalog-title"
-                className="max-w-160 text-left mb-3.5"
-                eyebrowClassName={blueprintEyebrowClassName}
-                titleClassName={blueprintTitleClassName}
-              />
-              <p className="max-w-140 text-[15px] leading-[1.6] text-eg-text-muted">
-                Ogni ambito raccoglie interventi affini: scegli il punto di
-                partenza, poi il funnel entra nel dettaglio del lavoro.
-              </p>
-            </Reveal>
-
             {families.length > 0 ? (
-              <Reveal className="mt-11">
+              <Reveal>
                 {families.map((family) => (
                   <div key={family.title} className="mb-10 last:mb-0">
-                    <h3 className="mb-3 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
+                    <h3 className="mb-3 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
                       {family.title}
                     </h3>
                     <div className="grid grid-cols-1 border-t border-eg-border min-[861px]:grid-cols-2">
-                      {family.entries.map(({ group, index }) => (
+                      {family.entries.map((group) => (
                         <ServiceGroupRow
                           key={group.slug}
                           slug={group.slug}
                           name={group.name}
-                          index={index}
                           href={resolveGroupHref(group.slug)}
                           interventionsCount={group.interventions.length}
                         />
@@ -155,7 +103,7 @@ export function ServicesHubPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden bg-eg-ink py-16 text-eg-on-brand min-[861px]:py-20" aria-labelledby="services-cta-title">
+        <section className="eg-theme-dark relative overflow-hidden bg-eg-ink py-16 text-eg-on-brand min-[861px]:py-20" aria-labelledby="services-cta-title">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -top-55 -right-30 size-120 rounded-full"
@@ -165,7 +113,7 @@ export function ServicesHubPage() {
             }}
           />
           <Reveal className="eg-container relative max-w-155">
-            <p className={blueprintEyebrowClassName}>Non trovi il tuo lavoro?</p>
+            <p className={blueprintEyebrowOnDarkClassName}>Non trovi il tuo lavoro?</p>
             <h2 id="services-cta-title" className={`${blueprintTitleClassName} mt-4 text-eg-on-brand`}>
               Raccontalo comunque: lo traduciamo in una richiesta chiara.
             </h2>
@@ -177,9 +125,9 @@ export function ServicesHubPage() {
             <Link
               href="/"
               prefetch={false}
-              className="mt-7 inline-flex items-center gap-2 bg-eg-action px-5.5 py-3.5 font-(family-name:--eg-font-brand) text-[13px] font-semibold uppercase tracking-[0.04em] text-eg-on-brand transition hover:brightness-90"
+              className="eg-button-primary eg-button-arrow mt-7"
             >
-              Inizia dalla home <span aria-hidden="true">&rarr;</span>
+              Inizia dalla home
             </Link>
           </Reveal>
         </section>
@@ -191,7 +139,7 @@ export function ServicesHubPage() {
               <StatCell value={interventionCount} label="Interventi disponibili dentro i funnel" />
               <StatCell value={1} label="Metodo unico, dalla richiesta alla scelta" />
             </div>
-            <p className="mt-4.5 font-(family-name:--eg-font-brand) text-[13px] text-eg-text-muted">
+            <p className="mt-4.5 font-(family-name:--eg-font-primary) text-[13px] text-eg-text-muted">
               &#10003; Ogni voce del catalogo porta a un funnel attivo — nessun percorso segnaposto.
             </p>
           </Reveal>
@@ -204,7 +152,7 @@ export function ServicesHubPage() {
 function StatCell({ value, label }: { value: number; label: string }) {
   return (
     <div className="bg-eg-surface px-6 py-8">
-      <p className="font-(family-name:--eg-font-brand) text-[clamp(32px,4vw,44px)] font-bold leading-none text-eg-brand-strong">
+      <p className="font-(family-name:--eg-font-mono) text-[clamp(32px,4vw,44px)] font-bold leading-none text-eg-brand-strong">
         {value}
       </p>
       <p className="mt-2.5 max-w-45 leading-normal text-[12.5px] text-eg-text-muted">{label}</p>
@@ -215,13 +163,11 @@ function StatCell({ value, label }: { value: number; label: string }) {
 function ServiceGroupRow({
   slug,
   name,
-  index,
   href,
   interventionsCount,
 }: {
   slug: string;
   name: string;
-  index: number;
   href: string | null;
   interventionsCount: number;
 }) {
@@ -231,18 +177,15 @@ function ServiceGroupRow({
         slug={slug}
         className="size-7.5 shrink-0 text-eg-brand-strong transition-transform duration-250 ease-(--eg-ease-brand) group-hover:scale-105 group-hover:-rotate-2 group-hover:text-eg-accent"
       />
-      <span className="shrink-0 font-(family-name:--eg-font-brand) text-xs font-bold text-eg-text-muted">
-        {String(index).padStart(2, "0")}
-      </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-(family-name:--eg-font-brand) text-[15px] font-semibold text-eg-ink">
+        <span className="block font-(family-name:--eg-font-primary) text-[15px] font-semibold text-eg-ink">
           {name}
         </span>
         <span className="mt-0.5 block truncate text-[12.5px] text-eg-text-muted max-[860px]:hidden">
           Ambito pronto per raccogliere richieste e dettagli del lavoro.
         </span>
       </span>
-      <span className="shrink-0 whitespace-nowrap font-(family-name:--eg-font-brand) text-xs font-semibold text-eg-brand-strong transition-transform duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-accent">
+      <span className="shrink-0 whitespace-nowrap font-(family-name:--eg-font-primary) text-xs font-semibold text-eg-brand-strong transition-transform duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-accent">
         {href ? (
           <span className="inline-flex items-center gap-1">
             APRI

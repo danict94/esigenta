@@ -18,9 +18,9 @@ export function SelezionaImpresaPage() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             href="/area-impresa/richieste"
-            className="eg-button-primary"
+            className="eg-button-primary eg-button-arrow"
           >
-            Vai all&apos;area impresa <span aria-hidden="true">&rarr;</span>
+            Vai all&apos;area impresa
           </Link>
 
           <Link

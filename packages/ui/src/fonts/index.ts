@@ -1,7 +1,6 @@
-import { brandFont } from "./brand-font"
-import { scriptFont } from "./script-font"
-import { uiFont } from "./ui-font"
+import { monoFont } from "./mono-font"
+import { primaryFont } from "./primary-font"
 
-export { brandFont, scriptFont, uiFont }
+export { monoFont, primaryFont }
 
-export const fontVariables = `${brandFont.variable} ${uiFont.variable} ${scriptFont.variable}`
+export const fontVariables = `${primaryFont.variable} ${monoFont.variable}`

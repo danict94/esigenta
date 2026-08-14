@@ -14,7 +14,7 @@ function SendMessageSubmitButton({ submitLabel }: { submitLabel: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="eg-button-primary w-full disabled:pointer-events-none disabled:opacity-50 sm:w-fit"
+      className="eg-button-primary w-full sm:w-fit"
     >
       {pending ? "Invio in corso..." : submitLabel}
     </button>

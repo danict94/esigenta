@@ -2,7 +2,11 @@ import type { ReactNode } from "react";
 
 import { cn } from "@esigenta/ui";
 
-import { blueprintEyebrowClassName, blueprintTitleClassName } from "../../../site/shared/section-header";
+import {
+  blueprintEyebrowClassName,
+  blueprintEyebrowOnDarkClassName,
+  blueprintTitleClassName,
+} from "../../../site/shared/section-header";
 
 type ProEyebrowProps = {
   children: ReactNode;
@@ -10,19 +14,11 @@ type ProEyebrowProps = {
   className?: string;
 };
 
-// Su sfondo cianotipo pieno (Hero) il brand-blue di blueprintEyebrowClassName
-// non ha abbastanza contrasto: tone="light" replica l'azzurro chiaro gia'
-// usato per lo stesso caso in Servizi (hero scura). Su ink (Guarantee) e su
-// superfici chiare il brand-blue di default funziona gia' bene, invariato.
+// Su sfondo cianotipo pieno (Hero) usa la variante chiara condivisa.
 export function ProEyebrow({ children, tone = "default", className }: ProEyebrowProps) {
   if (tone === "light") {
     return (
-      <p
-        className={cn(
-          "flex items-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-eg-brand-on-dark before:inline-block before:h-px before:w-5.5 before:bg-eg-brand-on-dark before:content-['']",
-          className,
-        )}
-      >
+      <p className={cn(blueprintEyebrowOnDarkClassName, className)}>
         {children}
       </p>
     );
@@ -47,7 +43,7 @@ export function ProSectionHeader({
   return (
     <header className={cn("mb-12 max-w-155", className)}>
       <ProEyebrow>{eyebrow}</ProEyebrow>
-      <h2 id={titleId} className={cn(blueprintTitleClassName, "mt-3.5")}>
+      <h2 id={titleId} className={cn("eg-h2 mt-3.5", blueprintTitleClassName)}>
         {title}
       </h2>
     </header>

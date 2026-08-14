@@ -478,7 +478,7 @@ function StatusRow({
               \u00b7{" "}
               <Link
                 href={href}
-                className="text-eg-brand-strong hover:text-eg-brand"
+                className="text-eg-brand-strong hover:text-eg-brand-hover"
                 prefetch={false}
               >
                 {detail}

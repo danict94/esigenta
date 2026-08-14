@@ -47,7 +47,7 @@ export async function AreaImpresaLoginPage({
           Non hai ancora un profilo?{" "}
           <Link
             href="/area-impresa"
-            className="font-medium text-eg-brand-strong hover:text-eg-brand"
+            className="font-medium text-eg-brand-strong hover:text-eg-brand-hover"
           >
             Inizia da qui
           </Link>

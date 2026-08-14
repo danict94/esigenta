@@ -31,7 +31,7 @@ const advantages: Advantage[] = [
 
 export function ProAdvantages() {
   return (
-    <section className="relative z-2 py-22" aria-labelledby="pro-advantages-title">
+    <section className="eg-section" aria-labelledby="pro-advantages-title">
       <div className="eg-container">
         <ProSectionHeader
           eyebrow="Perche Esigenta"
@@ -51,13 +51,13 @@ export function ProAdvantages() {
               key={index}
               className="relative bg-eg-surface px-6.5 py-7.5 transition-shadow duration-250 ease-(--eg-ease-brand) hover:z-1 hover:shadow-eg-step"
             >
-              <span className="mb-4 block font-(family-name:--eg-font-brand) text-xs font-bold text-eg-accent">
+              <span className="eg-list-index mb-4 block font-bold text-eg-brand-strong">
                 {index}
               </span>
-              <h3 className="font-(family-name:--eg-font-brand) text-[15.5px] font-semibold leading-[1.3]">
+              <h3 className="text-base font-semibold leading-[1.35]">
                 {title}
               </h3>
-              <p className="mt-2.5 text-[13.5px] leading-[1.55] text-eg-text-muted">{body}</p>
+              <p className="eg-body-muted mt-2.5 text-sm leading-[1.55]">{body}</p>
             </article>
           ))}
         </div>

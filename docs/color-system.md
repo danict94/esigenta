@@ -30,19 +30,24 @@ Sono vietati:
 
 | Token | Valore | Ruolo |
 |---|---:|---|
-| `--eg-color-page` | `#FFF8F0` | Canvas generale della pagina |
+| `--eg-color-page` | `#FCFCFC` | Canvas generale della pagina |
+| `--eg-color-app` | `#FCFCFC` | Canvas dell'area applicativa privata |
 | `--eg-color-surface` | `#FFFFFF` | Card, pannelli e campi reali |
-| `--eg-color-surface-muted` | `#F3ECE3` | Superfici secondarie, hover, stati neutri |
-| `--eg-color-ink` | `#202B2E` | Testo primario, gerarchia testuale principale |
-| `--eg-color-text-muted` | `#67706E` | Testo secondario, gerarchia testuale subordinata |
-| `--eg-color-border` | `#DED5CA` | Bordi e separatori ordinari |
-| `--eg-color-brand` | `#0A7F82` | Hover e interazioni |
-| `--eg-color-brand-strong` | `#075A60` | Colore principale di CTA e superfici identitarie |
-| `--eg-color-brand-soft` | `#DDF3F0` | Selezioni e superfici brand leggere |
+| `--eg-color-surface-muted` | `#DCE3E4` | Superfici secondarie, hover, stati neutri |
+| `--eg-color-ink` | `#12181C` | Testo primario, gerarchia testuale principale |
+| `--eg-color-text-muted` | `#676D70` | Testo secondario, gerarchia testuale subordinata |
+| `--eg-color-border` | `#B7C4C8` | Bordi e separatori ordinari |
+| `--eg-color-brand` | `#9FD3E8` | Dettagli, superfici e CTA Brand |
+| `--eg-color-brand-hover` | `#2C7DA0` | Hover e testo Brand leggibile su superfici chiare |
+| `--eg-color-brand-strong` | `#16385A` | Superfici identitarie e azioni ad alta enfasi |
+| `--eg-color-brand-soft` | `#DEE8EF` | Selezioni e superfici brand leggere |
+| `--eg-color-brand-on-dark` | `var(--eg-color-brand)` | Accenti leggibili sopra superfici scure |
 | `--eg-color-on-brand` | `#FFFFFF` | Testo e icone sopra superfici Brand scure |
 | `--eg-color-on-brand-muted` | `rgba(255, 255, 255, 0.76)` | Testo secondario sopra superfici Brand scure |
 | `--eg-color-on-brand-border` | `rgba(255, 255, 255, 0.22)` | Bordi/separatori sopra superfici Brand scure |
-| `--eg-color-accent` | `#D7F45B` | Dettaglio distintivo puntuale — vedi regola dedicata |
+| `--eg-color-accent` | `#C8402A` | Dettaglio caldo distintivo e puntuale |
+| `--eg-color-action` | `var(--eg-color-brand)` | Pulsanti e CTA standard |
+| `--eg-color-hero-emphasis` | `var(--eg-color-brand)` | Enfasi breve esclusivamente su superfici scure |
 
 ### Ruoli in dettaglio
 
@@ -57,10 +62,14 @@ Sono vietati:
 - **Ink** e **Text muted** gestiscono la gerarchia testuale: Ink per
   testo primario e titoli, Text muted per testo secondario e metadati.
   Text muted non va usato per contenuti essenziali o azioni principali.
-- **Brand strong** è il colore principale di CTA e superfici identitarie
-  (bottone primario di default, sfondo Hero, link enfatizzati).
-- **Brand** è usato soprattutto per hover e interazioni (stato hover di
-  CTA e link il cui stato di riposo è Brand strong).
+- **Brand strong** è il blu profondo delle superfici identitarie e del testo
+  sopra CTA Brand chiare.
+- Sulle superfici scure il contesto `eg-theme-dark` inverte la recipe: CTA
+  chiara con testo Brand strong, senza cambiare il token globale Action.
+- Nella Hero il contesto `eg-theme-hero` usa Brand per l'azione della ricerca:
+  ciano più luminoso, appoggiato sul pannello Surface del form.
+- **Brand** è il ciano chiaro delle CTA e dei dettagli. Il precedente Brand,
+  ora `Brand hover`, governa gli hover e il testo Brand su superfici chiare.
 - **Brand soft** è riservato a selezioni e superfici brand leggere (chip
   selezionati, badge, sfondi di stato attivo tenue), sempre abbinato a
   testo Brand strong.
@@ -94,13 +103,13 @@ o avviso.
 
 ## 4. Regola Accent
 
-`--eg-color-accent: #D7F45B` — un citron elettrico usato **solo** come
-dettaglio distintivo puntuale.
+`--eg-color-accent: #C8402A` — un rosso caldo usato **solo** come dettaglio
+distintivo puntuale.
 
-- Può essere colore di **testo** esclusivamente sopra superfici scure
-  Brand (es. `--eg-color-brand-strong`), dove il contrasto è adeguato.
-- Su Page, Surface o Surface muted può essere soltanto **bordo, marker o
-  piccolo riempimento grafico** — mai testo esteso e leggibile.
+- Può essere colore di **testo** solo per micro-titoli e dettagli brevi sopra
+  Page o Surface; mai per testo esteso.
+- Sopra superfici scure si usa `--eg-color-brand-on-dark`, non Accent.
+- Può inoltre essere usato come bordo, marker o piccolo riempimento grafico.
 - Non va mai usato per CTA, paragrafi, o per rappresentare errori,
   successi o warning.
 
@@ -113,12 +122,12 @@ prevista nel sito.
 
 | Ruolo | Token | Valore |
 |---|---|---|
-| Sfondo Hero | `--eg-color-brand-strong` | `#075A60` |
+| Sfondo Hero | `--eg-color-brand-strong` | `#16385A` |
 | Testo principale su Hero | `--eg-color-on-brand` | `#FFFFFF` |
 | Testo secondario su Hero | `--eg-color-on-brand-muted` | `rgba(255, 255, 255, 0.76)` |
 | Bordi e separatori su Hero | `--eg-color-on-brand-border` | `rgba(255, 255, 255, 0.22)` |
 | Form e pannelli sopra la Hero | `--eg-color-surface` | `#FFFFFF` |
-| Azione principale nel form | `--eg-color-brand` | `#0A7F82` |
+| Azione principale nel form | `--eg-color-brand` | `#9FD3E8` |
 
 Regole:
 

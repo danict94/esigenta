@@ -9,6 +9,7 @@ import {
 } from "../seo/engine/schema-builder";
 import { getSeoInterventionLandingBySlug } from "../seo/pages/interventi";
 import { PublicShell } from "../shell/public-shell";
+import { InternalPageIntro } from "../shared/internal-page-intro";
 
 export type ProfessionPageTemplateProps = {
   page: ProfessionPage;
@@ -38,41 +39,32 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <div className="eg-page eg-page-bg">
-        <section className="eg-section-large pt-[calc(var(--eg-nav-clear)+48px)]">
+        <InternalPageIntro
+          breadcrumbs={[
+            { label: "Home", href: "/" },
+            { label: "Professionisti" },
+            { label: category.name },
+          ]}
+          title={category.name}
+          description={category.description}
+        />
+
+        <section className="pb-16">
           <div className="eg-container">
-            <div className="mx-auto max-w-[760px] text-center">
-              <nav aria-label="Breadcrumb" className="eg-nav-link mb-10">
-                <Link href="/" prefetch={false}>
-                  Home
-                </Link>
-                <span aria-hidden="true" className="mx-3 text-eg-text-muted">
-                  /
-                </span>
-                <span className="text-eg-ink">Professionisti</span>
-              </nav>
-
-              <p className="eg-eyebrow">Professione</p>
-              <h1 className="eg-h1 mt-5">{category.name}</h1>
-              {category.description ? (
-                <p className="mx-auto mt-[22px] max-w-[44ch] text-base leading-[1.65] text-eg-text-muted">{category.description}</p>
-              ) : null}
-            </div>
-
             {projectGroups.length === 0 ? (
-              <p className="eg-body-muted mx-auto mt-12 max-w-[46ch] text-center">
+              <p className="eg-body-muted max-w-[46ch]">
                 Nessuna area di lavoro disponibile per questa professione.
               </p>
             ) : (
-              <div className="mt-16 grid gap-14">
+              <div className="grid gap-14">
                 {projectGroups.map((projectGroup) => (
                   <section key={projectGroup.id} aria-labelledby={`profession-group-${projectGroup.id}`}>
-                    <div className="mx-auto max-w-[760px] text-center">
-                      <p className="eg-eyebrow">Ambito</p>
-                      <h2 id={`profession-group-${projectGroup.id}`} className="eg-h2 mt-4">
+                    <div className="max-w-[760px]">
+                      <h2 id={`profession-group-${projectGroup.id}`} className="eg-h2">
                         {projectGroup.name}
                       </h2>
                       {projectGroup.description ? (
-                        <p className="eg-body-muted mx-auto mt-5 max-w-[46ch]">
+                        <p className="eg-body-muted mt-5 max-w-[46ch]">
                           {projectGroup.description}
                         </p>
                       ) : null}

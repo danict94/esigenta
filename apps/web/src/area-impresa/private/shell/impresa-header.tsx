@@ -127,7 +127,7 @@ function Avatar({ label }: { label: string }) {
 
 function NavBadge({ value }: { value: string }) {
   return (
-    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-eg-brand px-1 text-[11px] font-semibold leading-none text-eg-on-brand">
+    <span className="ml-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-eg-brand px-1 text-[11px] font-semibold leading-none text-eg-brand-strong">
       {value}
     </span>
   );
@@ -141,7 +141,7 @@ function CreditBalanceChip({
   onClick?: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-full border border-eg-border bg-eg-surface-muted py-[7px] pr-[7px] pl-4 font-(family-name:--eg-font-ui)">
+    <div className="flex items-center gap-2.5 rounded-full border border-eg-border bg-eg-surface-muted py-[7px] pr-[7px] pl-4 font-(family-name:--eg-font-primary)">
       <span className="text-[10px] uppercase tracking-[0.08em] text-eg-text-muted">
         Credito
       </span>

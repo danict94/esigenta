@@ -60,7 +60,7 @@ export function Footer() {
       <div className="grid grid-cols-1 gap-8 pb-11 min-[861px]:grid-cols-3 min-[861px]:gap-10">
         {footerGroups.map((group) => (
           <nav key={group.title} aria-label={group.title}>
-            <p className="eg-eyebrow font-(family-name:--eg-font-brand)">{group.title}</p>
+            <p className="eg-eyebrow">{group.title}</p>
             <ul className="mt-4 flex flex-col gap-2.5">
               {group.links.map((link) => (
                 <li key={link.href}>

@@ -350,7 +350,7 @@ export function RequestFiltersPanel({
             <PendingRequestLink
               href="/area-impresa/richieste"
               pendingChildren="Reset in corso..."
-              className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
+              className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
             >
               Reset filtri
             </PendingRequestLink>

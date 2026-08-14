@@ -231,7 +231,7 @@ export function NotificationCard({
         {primaryHref ? (
           <Link
             href={primaryHref}
-            className="inline-flex text-sm font-medium text-eg-brand-strong transition-colors hover:text-eg-brand"
+            className="inline-flex text-sm font-medium text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
             prefetch={false}
           >
             {primaryActionLabel}

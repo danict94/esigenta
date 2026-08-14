@@ -4,7 +4,10 @@ import { cn } from "@esigenta/ui";
 
 import type { SeoInterventionLanding } from "../pages/interventi";
 import type { InterventionCostSectionPriceData } from "../engine/resolve-seo-page";
-import { blueprintEyebrowClassName } from "../../shared/section-header";
+import {
+  blueprintEyebrowClassName,
+  blueprintEyebrowOnDarkClassName,
+} from "../../shared/section-header";
 import { RequestCtaPanel } from "./request-cta-panel";
 import { sectionTitleClassName } from "./seo-section-title";
 
@@ -55,7 +58,7 @@ export function GeoCostModule({
       <section
         id="quanto-costa"
         aria-labelledby="quanto-costa-title"
-        className="relative overflow-hidden bg-eg-brand-strong px-6.5 py-9 text-eg-on-brand md:px-8"
+        className="eg-theme-ink relative overflow-hidden px-6.5 py-9 md:px-8"
       >
         <div
           aria-hidden="true"
@@ -68,11 +71,11 @@ export function GeoCostModule({
 
         <div className="relative grid gap-8 md:grid-cols-[1.3fr_0.7fr] md:items-center">
           <div>
-            <p className="flex items-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-[#9fd3e8] before:inline-block before:h-px before:w-5.5 before:bg-[#9fd3e8] before:content-['']">
+            <p className={blueprintEyebrowOnDarkClassName}>
               Costi
             </p>
 
-            <h2 id="quanto-costa-title" className="mt-3.5 font-(family-name:--eg-font-brand) text-[clamp(20px,2.6vw,26px)] font-semibold leading-[1.25]">
+            <h2 id="quanto-costa-title" className="mt-3.5 font-(family-name:--eg-font-primary) text-[clamp(20px,2.6vw,26px)] font-semibold leading-[1.25]">
               {costSection?.title ?? "Quanto costa questo intervento?"}
             </h2>
 
@@ -84,11 +87,11 @@ export function GeoCostModule({
 
           {priceData ? (
             <div className="border border-eg-on-brand-border bg-white/8 px-6 py-5.5 text-center">
-              <p className="font-(family-name:--eg-font-brand) text-[clamp(22px,2.6vw,28px)] font-bold leading-tight">
+              <p className="font-(family-name:--eg-font-primary) text-[clamp(22px,2.6vw,28px)] font-bold leading-tight">
                 {priceData.priceRange}
               </p>
 
-              <p className="mt-1.5 font-(family-name:--eg-font-brand) text-[11.5px] tracking-[0.03em] text-eg-on-brand-muted">
+              <p className="mt-1.5 font-(family-name:--eg-font-mono) text-[11.5px] tracking-[0.03em] text-eg-on-brand-muted">
                 {priceData.priceRangeLabel}
               </p>
 
@@ -96,7 +99,7 @@ export function GeoCostModule({
                 <Link
                   href={costGuideHref}
                   prefetch={false}
-                  className="eg-button-primary mt-4 w-full justify-center"
+                  className="eg-button-primary eg-button-arrow mt-4 w-full justify-center"
                 >
                   Guida completa ai costi
                 </Link>

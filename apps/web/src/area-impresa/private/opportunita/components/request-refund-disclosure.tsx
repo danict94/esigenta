@@ -53,7 +53,7 @@ export function RequestRefundDisclosure({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-1 text-xs font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
+          className="mt-1 text-xs font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
         >
           Segnala un problema
         </button>

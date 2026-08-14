@@ -15,21 +15,17 @@ type ButtonSize =
   | "lg"
 
 export const buttonBase =
-  "inline-flex items-center justify-center gap-2 border font-(family-name:--eg-font-ui) font-medium uppercase tracking-[0.06em] transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-eg-brand-strong disabled:pointer-events-none disabled:opacity-60"
-
-export const buttonRadius = "rounded-eg-sm"
+  "eg-button"
 
 export const buttonVariants = {
-  primary:
-    "border-eg-action bg-eg-action text-eg-on-brand hover:brightness-90",
-  ghost:
-    "border-eg-action bg-transparent text-eg-action hover:bg-eg-action hover:text-eg-on-brand",
+  primary: "eg-button-primary",
+  ghost: "eg-button-ghost",
 } as const
 
 export const buttonSizes = {
-  sm: "h-10 px-4 text-xs",
-  md: "h-11 px-5 text-xs",
-  lg: "h-12 px-6 text-xs",
+  sm: "min-h-10 px-4 text-[13px]",
+  md: "",
+  lg: "min-h-13 px-6 text-[15px]",
 } as const
 
 export type { ButtonVariant, ButtonSize }
@@ -49,7 +45,6 @@ export function buttonClassName({
 } = {}): string {
   return cn(
     buttonBase,
-    buttonRadius,
     buttonSizes[size],
     buttonVariants[variant],
     className,

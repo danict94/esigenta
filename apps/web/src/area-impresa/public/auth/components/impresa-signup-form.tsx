@@ -297,11 +297,11 @@ export function ImpresaSignupForm({
             />
             <span>
               Ho letto l&apos;
-              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
                 informativa privacy
               </Link>{" "}
               e accetto i{" "}
-              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
                 termini del servizio
               </Link>
               .
@@ -315,10 +315,10 @@ export function ImpresaSignupForm({
       {step === "company" ? (
         <button
           type="button"
-          className="eg-button-primary w-full"
+          className="eg-button-primary eg-button-arrow w-full"
           onClick={handleContinue}
         >
-          Continua <span aria-hidden="true">&rarr;</span>
+          Continua
         </button>
       ) : (
         <div className="flex flex-col gap-3">
@@ -361,7 +361,7 @@ function StepLabel({
         className={cn(
           "flex size-7 items-center justify-center rounded-full border text-[12px] font-medium transition-colors",
           active
-            ? "border-eg-brand bg-eg-brand text-eg-on-brand"
+            ? "border-eg-brand bg-eg-brand text-eg-brand-strong"
             : "border-eg-border text-eg-text-muted",
         )}
       >

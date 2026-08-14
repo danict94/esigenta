@@ -1,7 +1,11 @@
 import Link from "next/link";
 
 import { Reveal } from "../shared/reveal";
-import { blueprintEyebrowClassName, blueprintTitleClassName, SectionHeader } from "../shared/section-header";
+import {
+  blueprintEyebrowOnDarkClassName,
+  blueprintTitleClassName,
+  SectionHeader,
+} from "../shared/section-header";
 
 type TrustItem = {
   question: string;
@@ -38,9 +42,10 @@ export function HomeTrustSection() {
           <SectionHeader
             eyebrow="Prima di iniziare"
             title="Cosa succede quando scrivi una richiesta."
+            align="left"
             id="trust-title"
-            className="max-w-160 text-left mb-14"
-            eyebrowClassName={blueprintEyebrowClassName}
+            className="mb-14 max-w-160"
+            eyebrowClassName={blueprintEyebrowOnDarkClassName}
             titleClassName={`${blueprintTitleClassName} text-eg-on-brand`}
           />
         </Reveal>
@@ -52,14 +57,14 @@ export function HomeTrustSection() {
                 key={item.question}
                 className="bg-eg-ink px-8 py-7.5 transition-colors duration-250 ease-(--eg-ease-brand) hover:bg-[color-mix(in_srgb,var(--eg-color-ink)_88%,white)]"
               >
-                <dt className="eg-h3 text-[15.5px] font-semibold text-eg-on-brand">{item.question}</dt>
+                <dt className="eg-h3 text-[15.5px] text-eg-on-brand">{item.question}</dt>
                 <dd className="eg-body-muted mt-2.5 text-[14.5px] text-eg-on-brand-muted">{item.answer}</dd>
               </div>
             ))}
           </dl>
         </Reveal>
 
-        <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-eg-on-brand-border pt-6 font-(family-name:--eg-font-brand) text-[13.5px] text-eg-on-brand-muted">
+        <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-eg-on-brand-border pt-6 font-(family-name:--eg-font-primary) text-[13.5px] text-eg-on-brand-muted">
           <span>Guide ai costi già pubblicate:</span>
           <Link href="/costi/ristrutturare-bagno" prefetch={false} className="text-eg-brand-on-dark hover:underline">
             ristrutturare bagno

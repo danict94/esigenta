@@ -221,7 +221,7 @@ function InlineCta({
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
     >
       <span>{children}</span>
       <span aria-hidden="true">-&gt;</span>

@@ -21,7 +21,11 @@ import {
 import { PublicShell } from "../../shell/public-shell";
 import { FrameMarks } from "../../shared/frame-marks";
 import { RelatedLinkList, type RelatedLinkItem } from "../../shared/related-link-list";
-import { blueprintEyebrowClassName } from "../../shared/section-header";
+import {
+  blueprintEyebrowClassName,
+} from "../../shared/section-header";
+import { InternalPageIntro } from "../../shared/internal-page-intro";
+import { MarketingFinalCta } from "../../shared/marketing-final-cta";
 import { GeoCostModule } from "./geo-cost-module";
 import { HowItWorks } from "./how-it-works";
 import { RelatedFunnelWork } from "./related-funnel-work";
@@ -79,49 +83,21 @@ export function InterventionLandingPage({
       ) : null}
 
       <div className="eg-page eg-page-bg">
-        <section className="pt-[calc(var(--eg-nav-clear)+12px)] pb-14">
-          <div className="eg-container">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-4.5 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
-            >
-              <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                Home
-              </Link>
-              <span aria-hidden="true">/</span>
-              {groupCrumb ? (
-                <>
-                  <Link href={groupCrumb.href} prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                    {groupCrumb.name}
-                  </Link>
-                  <span aria-hidden="true">/</span>
-                  <span className="text-eg-ink">{landing.title}</span>
-                </>
-              ) : (
-                <span className="text-eg-ink">Interventi</span>
-              )}
-            </nav>
-
-            <div
-              className={
-                landing.image
-                  ? "grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]"
-                  : "grid"
-              }
-            >
-              <div>
-                <p className={blueprintEyebrowClassName}>Intervento</p>
-
-                <h1 className="mt-4 mb-4 font-(family-name:--eg-font-brand) text-[clamp(28px,3.8vw,42px)] font-semibold leading-[1.18] tracking-[-0.01em]">
-                  {landing.h1}
-                </h1>
-
-                <p className="mb-6.5 max-w-130 text-base leading-[1.6] text-eg-ink">
-                  {landing.description}
-                </p>
-
-                <div className="mb-4 flex flex-wrap gap-3">
-                  <Link href={requestHref} className="eg-button-primary">
+        <InternalPageIntro
+          breadcrumbs={[
+            { label: "Home", href: "/" },
+            ...(groupCrumb
+              ? [
+                  { label: groupCrumb.name, href: groupCrumb.href },
+                  { label: landing.title },
+                ]
+              : [{ label: "Interventi" }]),
+          ]}
+          title={landing.h1}
+          description={landing.description}
+          actions={
+            <>
+                  <Link href={requestHref} className="eg-button-primary eg-button-arrow">
                     {requestCtaLabel}
                   </Link>
 
@@ -134,16 +110,12 @@ export function InterventionLandingPage({
                       Vedi i costi
                     </Link>
                   )}
-                </div>
-
-                <p className="font-(family-name:--eg-font-brand) text-[13px] text-eg-ink">
-                  &mdash; Gratis, senza impegno. Preventivi da professionisti
-                  qualificati nella tua zona.
-                </p>
-              </div>
-
-              {landing.image ? (
-                <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
+            </>
+          }
+          note="Gratis, senza impegno. Preventivi da professionisti qualificati nella tua zona."
+          aside={
+            landing.image ? (
+              <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
                   <FrameMarks />
                   <Image
                     src={landing.image.src}
@@ -153,13 +125,12 @@ export function InterventionLandingPage({
                     sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
                     className="object-cover"
                   />
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </section>
+              </div>
+            ) : undefined
+          }
+        />
 
-        <section aria-labelledby="cosa-puoi-richiedere-title" className="border-t border-eg-border py-16">
+        <section aria-labelledby="cosa-puoi-richiedere-title" className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <div className="mb-9 max-w-160">
               <p className={blueprintEyebrowClassName}>Cosa puoi richiedere</p>
@@ -180,7 +151,7 @@ export function InterventionLandingPage({
                   key={item}
                   className="flex gap-2.5 border-b border-eg-border py-3 text-[14.5px] leading-normal text-eg-ink"
                 >
-                  <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-accent" />
+                  <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-brand" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -189,7 +160,7 @@ export function InterventionLandingPage({
         </section>
 
         {landing.scopeIncluded?.length || landing.scopeExcluded?.length ? (
-          <section aria-labelledby="perimetro-lavoro-title" className="border-t border-eg-border py-16">
+          <section aria-labelledby="perimetro-lavoro-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Perimetro del lavoro</p>
@@ -202,7 +173,7 @@ export function InterventionLandingPage({
               <div className="grid grid-cols-1 gap-px border border-eg-border bg-eg-border md:grid-cols-2">
                 {landing.scopeIncluded?.length ? (
                   <div className="bg-eg-surface px-6.5 py-7">
-                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-brand) text-[13px] font-bold uppercase tracking-[0.04em] text-eg-success">
+                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-mono) text-[13px] font-bold uppercase tracking-[0.04em] text-eg-success">
                       <CheckGlyph className="size-3.5" />
                       Cosa pu&ograve; comprendere
                     </h3>
@@ -220,7 +191,7 @@ export function InterventionLandingPage({
 
                 {landing.scopeExcluded?.length ? (
                   <div className="bg-eg-surface px-6.5 py-7">
-                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-brand) text-[13px] font-bold uppercase tracking-[0.04em] text-eg-accent">
+                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-mono) text-[13px] font-bold uppercase tracking-[0.04em] text-eg-error">
                       <XGlyph className="size-3.5" />
                       Cosa spesso resta fuori
                     </h3>
@@ -228,7 +199,7 @@ export function InterventionLandingPage({
                     <ul className="mt-4">
                       {landing.scopeExcluded.map((item) => (
                         <li key={item} className="flex gap-2.5 pb-2.75 text-sm leading-[1.5] text-eg-text-muted">
-                          <XGlyph className="mt-0.5 size-3.75 shrink-0 text-eg-accent" />
+                          <XGlyph className="mt-0.5 size-3.75 shrink-0 text-eg-error" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -243,7 +214,7 @@ export function InterventionLandingPage({
 
               {landing.professionalCategorySlugs.length > 0 ? (
                 <div className="mt-6 flex flex-wrap items-center gap-3.5 border-t border-dashed border-eg-border pt-5">
-                  <span className="font-(family-name:--eg-font-brand) text-xs text-eg-ink">
+                  <span className="font-(family-name:--eg-font-mono) text-xs text-eg-ink">
                     Professionisti coinvolti:
                   </span>
 
@@ -257,7 +228,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {landing.variants?.length ? (
-          <section aria-labelledby="varianti-title" className="border-t border-eg-border py-16">
+          <section aria-labelledby="varianti-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Livelli di intervento</p>
@@ -279,7 +250,7 @@ export function InterventionLandingPage({
                     key={variant.title}
                     className="border border-eg-border bg-eg-surface px-5.5 py-6 transition-shadow duration-250 ease-(--eg-ease-brand) hover:shadow-eg-step"
                   >
-                    <h3 className="font-(family-name:--eg-font-brand) text-base font-semibold leading-[1.3]">
+                    <h3 className="font-(family-name:--eg-font-primary) text-base font-semibold leading-[1.3]">
                       {variant.title}
                     </h3>
 
@@ -294,7 +265,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {landing.detailSections?.length ? (
-          <section aria-labelledby="approfondimento-title" className="border-t border-eg-border py-16">
+          <section aria-labelledby="approfondimento-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Come funziona nel dettaglio</p>
@@ -311,7 +282,7 @@ export function InterventionLandingPage({
                     id={section.id}
                     className={index === 0 ? undefined : "border-t border-eg-border pt-10"}
                   >
-                    <h3 className="font-(family-name:--eg-font-brand) text-lg font-semibold leading-[1.3]">
+                    <h3 className="font-(family-name:--eg-font-primary) text-lg font-semibold leading-[1.3]">
                       {section.title}
                     </h3>
 
@@ -333,7 +304,7 @@ export function InterventionLandingPage({
                       <ul className="mt-3.5 grid gap-x-6 sm:grid-cols-2">
                         {section.items.map((item) => (
                           <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.25 text-sm leading-normal text-eg-ink">
-                            <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-accent" />
+                            <span aria-hidden="true" className="mt-1.75 size-1.5 shrink-0 bg-eg-brand" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -351,7 +322,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {(landing.relatedInterventionSlugs.length > 0 || (landing.relatedFunnelWork?.length ?? 0) > 0) ? (
-          <section aria-labelledby="lavori-collegati-title" className="border-t border-eg-border py-16">
+          <section aria-labelledby="lavori-collegati-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Lavori collegati</p>
@@ -364,7 +335,7 @@ export function InterventionLandingPage({
               <div className="grid gap-8 md:grid-cols-2">
                 {landing.relatedInterventionSlugs.length > 0 ? (
                   <div>
-                    <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-brand) text-[11.5px] uppercase tracking-widest text-eg-brand">
+                    <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
                       {landing.relatedInterventionsTitle ?? "Interventi più ampi"}
                     </p>
 
@@ -383,7 +354,7 @@ export function InterventionLandingPage({
           </section>
         ) : null}
 
-        <section className="border-t border-eg-border py-16">
+        <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <GeoCostModule
               geoSection={landing.geoSection}
@@ -397,7 +368,7 @@ export function InterventionLandingPage({
         </section>
 
         {landing.preparationItems?.length ? (
-          <section aria-labelledby="prepara-richiesta-title" className="border-t border-eg-border py-16">
+          <section aria-labelledby="prepara-richiesta-title" className="eg-section-editorial border-t border-eg-border">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Prima della richiesta</p>
@@ -432,43 +403,29 @@ export function InterventionLandingPage({
                 </ul>
               </div>
 
-              <Link href={requestHref} className="eg-button-primary mt-7">
+              <Link href={requestHref} className="eg-button-primary eg-button-arrow mt-7">
                 {requestCtaLabel}
               </Link>
             </div>
           </section>
         ) : null}
 
-        <section aria-labelledby="come-funziona-title" className="border-t border-eg-border py-16">
+        <section aria-labelledby="come-funziona-title" className="eg-section-editorial border-t border-eg-border">
           <HowItWorks />
         </section>
 
-        <section className="border-t border-eg-border py-16">
+        <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <SeoFaq faq={landing.faq} />
           </div>
         </section>
 
-        <section className="border-t border-eg-border bg-eg-brand-strong py-16 text-eg-on-brand">
-          <div className="eg-container-narrow text-center">
-            <p className="flex items-center justify-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-[#9fd3e8] before:inline-block before:h-px before:w-5.5 before:bg-[#9fd3e8] before:content-['']">
-              Prossimo passo
-            </p>
-
-            <h2 className={cn(sectionTitleClassName, "mt-3.5")}>
-              Racconta il lavoro e confronta i preventivi
-            </h2>
-
-            <p className="mt-3 text-[14.5px] leading-[1.6] text-eg-on-brand-muted">
-              Continua nella richiesta dedicata e indica dettagli, tempi e zona
-              dell&apos;intervento.
-            </p>
-
-            <Link href={requestHref} className="eg-button-primary mt-6">
-              {requestCtaLabel}
-            </Link>
-          </div>
-        </section>
+        <MarketingFinalCta
+          title="Racconta il lavoro e confronta i preventivi"
+          description="Continua nella richiesta dedicata e indica dettagli, tempi e zona dell'intervento."
+          href={requestHref}
+          ctaLabel={requestCtaLabel}
+        />
       </div>
     </PublicShell>
   );
@@ -492,7 +449,7 @@ function resolveRelatedInterventionLink(slug: string): RelatedLinkItem {
 function ProfessionalCategoryChip({ slug }: { slug: string }) {
   const category = taxonomyCategoriesBySlug.get(slug);
   const className =
-    "border border-eg-brand-strong px-3 py-1.5 font-(family-name:--eg-font-brand) text-xs font-semibold text-eg-brand-strong transition-colors hover:bg-eg-brand-strong hover:text-eg-on-brand";
+    "border border-eg-brand-strong px-3 py-1.5 font-(family-name:--eg-font-primary) text-xs font-semibold text-eg-brand-strong transition-colors hover:bg-eg-brand-strong hover:text-eg-on-brand";
 
   // Le pagine /professionisti/[categorySlug] esistono per ogni categoria
   // taxonomy: link reale con il nome vero, mai una label derivata dallo slug.

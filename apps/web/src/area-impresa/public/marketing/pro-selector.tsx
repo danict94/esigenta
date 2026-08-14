@@ -22,7 +22,7 @@ export function ProSelector({
       <div className="border border-eg-border bg-eg-surface shadow-eg-slab">
         <div className="flex items-center justify-between gap-4 border-b border-eg-border px-6.5 py-5.5">
           <span className={blueprintEyebrowClassName}>Profilo trovato</span>
-          <span className="font-(family-name:--eg-font-brand) text-xs text-eg-text-muted">
+          <span className="font-(family-name:--eg-font-mono) text-xs text-eg-text-muted">
             riattiva
           </span>
         </div>
@@ -34,8 +34,8 @@ export function ProSelector({
             Puoi riattivarlo mantenendo storico, richieste e configurazione.
           </p>
           <form action={reactivateAction} className="mt-6">
-            <button type="submit" className="eg-button-primary">
-              Riattiva account <span aria-hidden="true">&rarr;</span>
+            <button type="submit" className="eg-button-primary eg-button-arrow">
+              Riattiva account
             </button>
           </form>
         </div>

@@ -67,18 +67,18 @@ export async function CompanyForgotPasswordPage({
 
             <button
               type="submit"
-              className="eg-button-primary w-full"
+              className="eg-button-primary eg-button-arrow w-full"
             >
-              Invia link di reset <span aria-hidden="true">&rarr;</span>
+              Invia link di reset
             </button>
 
             <p className="eg-form-help text-center">
               Per maggiori informazioni leggi l&apos;
-              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
                 informativa privacy
               </Link>{" "}
               e i{" "}
-              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
                 termini del servizio
               </Link>
               .
@@ -88,7 +88,7 @@ export async function CompanyForgotPasswordPage({
 
         <p className="text-center text-sm text-eg-text-muted">
           Hai ricordato la password?{" "}
-          <Link href="/area-impresa/accedi" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+          <Link href="/area-impresa/accedi" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
             Torna all&apos;accesso
           </Link>
         </p>

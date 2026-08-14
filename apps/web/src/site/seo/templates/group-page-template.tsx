@@ -11,6 +11,8 @@ import {
 } from "../engine/schema-builder";
 import { getCostGuidePriceNote } from "../pages/costi";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
+import { InternalPageIntro } from "../../shared/internal-page-intro";
+import { MarketingFinalCta } from "../../shared/marketing-final-cta";
 import { HowItWorks } from "./how-it-works";
 import { sectionTitleClassName } from "./seo-section-title";
 import { PublicShell } from "../../shell/public-shell";
@@ -38,49 +40,25 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <div className="eg-page eg-page-bg">
-        <section className="pt-[calc(var(--eg-nav-clear)+12px)] pb-14">
-          <div className="eg-container">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-4.5 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
-            >
-              <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                Home
-              </Link>
-              <span aria-hidden="true">/</span>
-              <Link href="/servizi" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                Servizi
-              </Link>
-              <span aria-hidden="true">/</span>
-              <span className="text-eg-ink">{content.title}</span>
-            </nav>
-
-            <p className={blueprintEyebrowClassName}>Ambito</p>
-
-            <h1 className="mt-4 mb-4 max-w-175 font-(family-name:--eg-font-brand) text-[clamp(27px,3.6vw,40px)] font-semibold leading-[1.2] tracking-[-0.01em]">
-              {content.h1}
-            </h1>
-
-            <p className="mb-6.5 max-w-150 text-base leading-[1.6] text-eg-ink">
-              {content.description}
-            </p>
-
-            <div className="mb-4 flex flex-wrap gap-3">
-              <Link href="#interventi" className="eg-button-primary">
-                Scegli l&apos;intervento <span aria-hidden="true">&darr;</span>
-              </Link>
-            </div>
-
-            <p className="font-(family-name:--eg-font-brand) text-[13px] text-eg-ink">
-              &mdash; Gratis, senza impegno. Preventivi da professionisti
-              qualificati nella tua zona.
-            </p>
-          </div>
-        </section>
+        <InternalPageIntro
+          breadcrumbs={[
+            { label: "Home", href: "/" },
+            { label: "Servizi", href: "/servizi" },
+            { label: content.title },
+          ]}
+          title={content.h1}
+          description={content.description}
+          actions={
+            <Link href="#interventi" className="eg-button-primary eg-button-arrow">
+              Scegli l&apos;intervento
+            </Link>
+          }
+          note="Gratis, senza impegno. Preventivi da professionisti qualificati nella tua zona."
+        />
 
         <section
           aria-labelledby="percorso-in-evidenza-title"
-          className="eg-section bg-eg-surface-muted"
+          className="eg-section-editorial bg-eg-surface-muted"
         >
           <div className="eg-container">
             <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
@@ -99,7 +77,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
                   <Link
                     href={featured.requestHref}
                     prefetch={false}
-                    className="eg-button-primary w-full sm:w-auto"
+                    className="eg-button-primary eg-button-arrow w-full sm:w-auto"
                   >
                     Richiedi preventivi
                   </Link>
@@ -148,7 +126,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
         <section
           id="interventi"
           aria-labelledby="interventi-gruppo-title"
-          className="eg-section"
+          className="eg-section-editorial"
         >
           <div className="eg-container">
             <div className="max-w-160">
@@ -165,10 +143,9 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
             </div>
 
             <ul className="mt-13.5 grid gap-5 max-[860px]:mt-9.5 min-[761px]:grid-cols-2">
-              {interventions.map((item, index) => (
+              {interventions.map((item) => (
                 <GroupInterventionCard
                   key={item.slug}
-                  index={index + 1}
                   item={item}
                 />
               ))}
@@ -178,7 +155,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
 
         <section
           aria-labelledby="come-funziona-title"
-          className="eg-section bg-eg-surface-muted"
+          className="eg-section-editorial bg-eg-surface-muted"
         >
           <HowItWorks />
         </section>
@@ -186,7 +163,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
         {professionalCategories.length > 0 ? (
           <section
             aria-labelledby="professionisti-gruppo-title"
-            className="eg-section"
+            className="eg-section-editorial"
           >
             <div className="eg-container">
               <div className="grid gap-10 border-y border-eg-border py-10 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
@@ -220,57 +197,26 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
           </section>
         ) : null}
 
-        <section className="eg-section-large bg-eg-brand-strong text-eg-on-brand">
-          <div className="eg-container-narrow text-center">
-            <p className="eg-eyebrow text-eg-on-brand-muted">Prossimo passo</p>
-
-            <h2 className="eg-h2 mt-4">
-              Racconta il lavoro e confronta i preventivi
-            </h2>
-
-            <p className="mt-5 text-[15px] leading-7 text-eg-on-brand-muted">
-              Scegli l&apos;intervento pi&ugrave; vicino al tuo lavoro e
-              continua nella richiesta dedicata: dettagli, tempi e zona.
-            </p>
-
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="#interventi" className="eg-button-primary w-full sm:w-auto">
-                Scegli l&apos;intervento
-              </Link>
-
-              <Link
-                href="/servizi"
-                prefetch={false}
-                className="eg-button-ghost w-full sm:w-auto"
-              >
-                Tutti i servizi
-              </Link>
-            </div>
-          </div>
-        </section>
+        <MarketingFinalCta
+          title="Racconta il lavoro e confronta i preventivi"
+          description="Scegli l'intervento piu vicino al tuo lavoro e continua nella richiesta dedicata: dettagli, tempi e zona."
+          href="#interventi"
+          ctaLabel="Scegli l'intervento"
+          secondaryAction={{ href: "/servizi", label: "Tutti i servizi" }}
+        />
       </div>
     </PublicShell>
   );
 }
 
 function GroupInterventionCard({
-  index,
   item,
 }: {
-  index: number;
   item: GroupInterventionItem;
 }) {
   return (
     <li className="flex flex-col rounded-none border border-eg-border bg-eg-surface p-6.5 shadow-none transition-[transform,box-shadow] duration-200 ease-(--eg-ease-brand) hover:-translate-y-1 hover:shadow-eg-slab">
-      <span
-        aria-hidden="true"
-        data-nosnippet=""
-        className="eg-list-index text-eg-accent"
-      >
-        {String(index).padStart(2, "0")}
-      </span>
-
-      <h3 className="mt-3 text-[19px] font-semibold leading-[1.2] tracking-[-0.01em] text-eg-ink">
+      <h3 className="text-[19px] font-semibold leading-[1.2] tracking-[-0.01em] text-eg-ink">
         {item.name}
       </h3>
 
@@ -287,7 +233,7 @@ function GroupInterventionCard({
               <Link
                 href={item.costGuideHref}
                 prefetch={false}
-                className="font-(family-name:--eg-font-brand) font-semibold text-eg-accent transition-colors hover:underline"
+                className="font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover hover:underline"
               >
                 guida ai costi
               </Link>
@@ -301,18 +247,18 @@ function GroupInterventionCard({
           <Link
             href={item.landingHref}
             prefetch={false}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap border border-eg-brand-strong px-3.5 py-1.5 font-(family-name:--eg-font-brand) text-[12px] font-semibold text-eg-brand-strong transition-colors hover:bg-eg-brand-strong hover:text-eg-on-brand"
+            className="eg-button-ghost min-h-10 px-3.5 text-xs"
           >
-            Approfondisci <span aria-hidden="true">&rarr;</span>
+            Approfondisci
           </Link>
         ) : null}
 
         <Link
           href={item.requestHref}
           prefetch={false}
-          className="inline-flex items-center gap-1.5 whitespace-nowrap font-(family-name:--eg-font-brand) text-[12.5px] font-semibold text-eg-accent transition-[gap] duration-200 hover:gap-2.5"
+          className="eg-button-primary eg-button-arrow min-h-10 px-3.5 text-xs"
         >
-          Richiedi preventivi <span aria-hidden="true">&rarr;</span>
+          Richiedi preventivi
         </Link>
       </div>
     </li>

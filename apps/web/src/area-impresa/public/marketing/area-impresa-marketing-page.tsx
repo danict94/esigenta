@@ -12,7 +12,6 @@ import { Grain } from "../../../site/home/grain";
 import { PublicShell } from "../../../site/shell/public-shell";
 
 import { ProAdvantages } from "./pro-advantages";
-import { ProFinalCta } from "./pro-final-cta";
 import { ProFlow } from "./pro-flow";
 import { ProGuarantee } from "./pro-guarantee";
 import { ProHeader } from "./pro-header";
@@ -47,7 +46,7 @@ export async function AreaImpresaMarketingPage() {
     });
 
   return (
-    <PublicShell header={<ProHeader />} showFooter={false}>
+    <PublicShell header={<ProHeader />}>
       <div className="eg-page eg-page-bg">
         <Grain />
 
@@ -61,7 +60,6 @@ export async function AreaImpresaMarketingPage() {
         <ProAdvantages />
         <ProFlow />
         <ProGuarantee />
-        <ProFinalCta />
       </div>
     </PublicShell>
   );

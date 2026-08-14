@@ -7,8 +7,9 @@ import {
   buildFaqJsonLd,
   serializeJsonLd,
 } from "../engine/schema-builder";
-import { blueprintEyebrowClassName } from "../../shared/section-header";
 import { PublicShell } from "../../shell/public-shell";
+import { InternalPageIntro } from "../../shared/internal-page-intro";
+import { MarketingFinalCta } from "../../shared/marketing-final-cta";
 import { SeoFaq } from "./seo-faq";
 import { sectionTitleClassName } from "./seo-section-title";
 
@@ -92,33 +93,13 @@ export function CostHubPage({ categories }: CostHubPageProps) {
         />
       ) : null}
       <div className="eg-page eg-page-bg">
-        <section className="pt-[calc(var(--eg-nav-clear)+12px)] pb-4">
-          <div className="eg-container">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-4.5 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[12.5px] text-eg-text-muted"
-            >
-              <Link href="/" prefetch={false} className="transition-colors hover:text-eg-brand-strong">
-                Home
-              </Link>
-              <span aria-hidden="true">/</span>
-              <span className="text-eg-ink">Guide ai costi</span>
-            </nav>
+        <InternalPageIntro
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "Guide ai costi" }]}
+          title="Costi dei lavori per la casa"
+          description="Range indicativi, fattori che cambiano il prezzo e domande utili da fare prima di raccontare il lavoro."
+        />
 
-            <p className={blueprintEyebrowClassName}>Guide ai costi</p>
-
-            <h1 className="mt-4 mb-4 max-w-175 font-(family-name:--eg-font-brand) text-[clamp(27px,3.6vw,40px)] font-semibold leading-[1.2] tracking-[-0.01em]">
-              Costi dei lavori per la casa
-            </h1>
-
-            <p className="max-w-150 text-base leading-[1.6] text-eg-ink">
-              Range indicativi, fattori che cambiano il prezzo e domande utili
-              da fare prima di raccontare il lavoro.
-            </p>
-          </div>
-        </section>
-
-        <section className="eg-section pt-8">
+        <section className="eg-section-editorial pt-0">
           <div className="eg-container">
             {categories.length > 0 ? (
               <div className="grid gap-11">
@@ -128,15 +109,14 @@ export function CostHubPage({ categories }: CostHubPageProps) {
                     aria-labelledby={`categoria-costi-${category.slug}`}
                   >
                     <div className="mb-5">
-                      <p className={blueprintEyebrowClassName}>Categoria</p>
-                      <h2 id={`categoria-costi-${category.slug}`} className={`${sectionTitleClassName} mt-2.5`}>
+                      <h2 id={`categoria-costi-${category.slug}`} className={sectionTitleClassName}>
                         {category.name}
                       </h2>
                     </div>
 
                     <ul className="grid gap-4.5 min-[701px]:grid-cols-2">
-                      {category.guides.map((guide, index) => (
-                        <CostGuideCard key={guide.slug} index={index + 1} guide={guide} />
+                      {category.guides.map((guide) => (
+                        <CostGuideCard key={guide.slug} guide={guide} />
                       ))}
                     </ul>
                   </section>
@@ -150,11 +130,10 @@ export function CostHubPage({ categories }: CostHubPageProps) {
           </div>
         </section>
 
-        <section className="border-t border-eg-border py-14">
+        <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container grid gap-12 min-[861px]:grid-cols-2">
             <div>
-              <p className={blueprintEyebrowClassName}>Come leggere le guide</p>
-              <h2 className={`${sectionTitleClassName} mt-2.5`}>Come leggere le guide ai costi</h2>
+              <h2 className={sectionTitleClassName}>Come leggere le guide ai costi</h2>
               <ul className="mt-6">
                 {readingGuideItems.map((item) => (
                   <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.5 text-sm leading-normal text-eg-ink">
@@ -166,8 +145,7 @@ export function CostHubPage({ categories }: CostHubPageProps) {
             </div>
 
             <div>
-              <p className={blueprintEyebrowClassName}>Prezzo e preventivo</p>
-              <h2 className={`${sectionTitleClassName} mt-2.5`}>Prezzo unitario e preventivo completo</h2>
+              <h2 className={sectionTitleClassName}>Prezzo unitario e preventivo completo</h2>
               <ul className="mt-6">
                 {unitVsQuoteItems.map((item) => (
                   <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.5 text-sm leading-normal text-eg-ink">
@@ -180,11 +158,10 @@ export function CostHubPage({ categories }: CostHubPageProps) {
           </div>
         </section>
 
-        <section className="border-t border-eg-border py-14">
+        <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <div className="max-w-160">
-              <p className={blueprintEyebrowClassName}>Fonti</p>
-              <h2 className={`${sectionTitleClassName} mt-2.5`}>Fonti utilizzate</h2>
+              <h2 className={sectionTitleClassName}>Fonti utilizzate</h2>
               <ul className="mt-6">
                 {sourcesItems.map((item) => (
                   <li key={item} className="flex gap-2.5 border-b border-eg-border py-2.5 text-sm leading-normal text-eg-ink">
@@ -197,36 +174,24 @@ export function CostHubPage({ categories }: CostHubPageProps) {
           </div>
         </section>
 
-        <section className="border-t border-eg-border py-14">
+        <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
             <SeoFaq faq={costHubFaq} />
           </div>
         </section>
 
-        <section className="border-t border-eg-border bg-eg-brand-strong py-16 text-eg-on-brand">
-          <div className="eg-container-narrow text-center">
-            <p className="flex items-center justify-center gap-2.5 font-(family-name:--eg-font-brand) text-xs uppercase tracking-[0.14em] text-[#9fd3e8] before:inline-block before:h-px before:w-5.5 before:bg-[#9fd3e8] before:content-['']">
-              Prossimo passo
-            </p>
-
-            <h2 className="eg-h2 mt-3.5">Racconta il lavoro e confronta i preventivi</h2>
-
-            <p className="mt-3 text-[14.5px] leading-[1.6] text-eg-on-brand-muted">
-              Descrivi cosa devi fare: ti aiutiamo a tradurlo in una richiesta
-              chiara verso i professionisti giusti.
-            </p>
-
-            <Link href="/" prefetch={false} className="eg-button-primary mt-6">
-              Racconta il lavoro
-            </Link>
-          </div>
-        </section>
+        <MarketingFinalCta
+          title="Racconta il lavoro e confronta i preventivi"
+          description="Descrivi cosa devi fare: ti aiutiamo a tradurlo in una richiesta chiara verso i professionisti giusti."
+          href="/"
+          ctaLabel="Racconta il lavoro"
+        />
       </div>
     </PublicShell>
   );
 }
 
-function CostGuideCard({ index, guide }: { index: number; guide: CostGuide }) {
+function CostGuideCard({ guide }: { guide: CostGuide }) {
   // Rifinitura 2026-08: sourceType (market-data/base-price-ranges.ts) è un
   // dato esplicito e dedicato, dichiarato per guida — non un'inferenza da
   // PriceRowConfidence (concetto diverso: quanto è solida una riga
@@ -242,26 +207,18 @@ function CostGuideCard({ index, guide }: { index: number; guide: CostGuide }) {
         href={guide.canonicalPath}
         className="group flex h-full flex-col rounded-none border border-eg-border bg-eg-surface p-6 shadow-none transition-[transform,box-shadow] duration-200 ease-(--eg-ease-brand) hover:-translate-y-1 hover:shadow-eg-slab"
       >
-        <div className="flex flex-wrap items-center gap-2.5">
-          <span
-            aria-hidden="true"
-            data-nosnippet=""
-            className="font-(family-name:--eg-font-ui) text-[11.5px] font-semibold text-eg-text-muted"
-          >
-            {String(index).padStart(2, "0")}
-          </span>
-
-          {guide.hubBadge ? (
-            <span className="inline-block bg-eg-brand-soft px-2 py-0.5 font-(family-name:--eg-font-ui) text-[10.5px] font-semibold uppercase tracking-[0.08em] text-eg-brand-strong">
+        {guide.hubBadge ? (
+          <div className="mb-2.5">
+            <span className="inline-block bg-eg-brand-soft px-2 py-0.5 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.08em] text-eg-brand-strong">
               {guide.hubBadge}
             </span>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
 
-        <span className="mb-3 mt-2.5 inline-flex w-fit items-center gap-1.5 border border-eg-border px-2.25 py-1 font-(family-name:--eg-font-ui) text-[10px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
+        <span className="mb-3 inline-flex w-fit items-center gap-1.5 border border-eg-border px-2.25 py-1 font-(family-name:--eg-font-mono) text-[10px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
           <span
             aria-hidden="true"
-            className={`size-1.25 shrink-0 rounded-full ${isOfficial ? "bg-eg-accent" : "bg-eg-brand"}`}
+            className={`size-1.25 shrink-0 rounded-full ${isOfficial ? "bg-eg-success" : "bg-eg-brand"}`}
           />
           {isOfficial ? "Prezzario ufficiale" : "Fascia orientativa"}
         </span>
@@ -274,7 +231,7 @@ function CostGuideCard({ index, guide }: { index: number; guide: CostGuide }) {
           {guide.hubDescription ?? guide.summary}
         </p>
 
-        <span className="mt-4.5 inline-flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[12.5px] font-semibold text-eg-accent transition-[gap] duration-200 group-hover:gap-2.5">
+        <span className="mt-4.5 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-eg-brand-strong transition-[gap,color] duration-200 group-hover:gap-2.5 group-hover:text-eg-brand-hover">
           Apri <span aria-hidden="true">&rarr;</span>
         </span>
       </Link>

@@ -14,8 +14,9 @@ export function FeaturedWorkSection() {
           <SectionHeader
             eyebrow="Lavori piu richiesti"
             title="Le richieste che partono piu spesso da casa."
+            align="left"
             id="works-title"
-            className="max-w-160 text-left mb-14"
+            className="mb-14 max-w-160"
             eyebrowClassName={blueprintEyebrowClassName}
             titleClassName={blueprintTitleClassName}
           />
@@ -41,9 +42,9 @@ export function FeaturedWorkSection() {
                 />
               </div>
 
-              <h3 className="eg-h3 mt-4 mb-2 text-base font-semibold">{work.title}</h3>
+              <h3 className="eg-h3 mt-4 mb-2 text-base">{work.title}</h3>
               <p className="eg-body-muted mb-4 flex-1 text-[13px] leading-[1.55]">{work.description}</p>
-              <span className="flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[11.5px] font-semibold text-eg-accent">
+              <span className="flex items-center gap-1.5 font-(family-name:--eg-font-primary) text-[11.5px] font-semibold text-eg-accent">
                 {work.cta}
                 <svg
                   aria-hidden="true"
@@ -68,14 +69,14 @@ export function FeaturedWorkSection() {
             prefetch={false}
             className="group relative flex flex-col justify-center bg-eg-surface px-6 py-6 no-underline transition-shadow duration-250 ease-(--eg-ease-brand) hover:z-2 hover:shadow-eg-step"
           >
-            <span className="mb-2.5 block font-(family-name:--eg-font-brand) text-[10.5px] uppercase tracking-[0.07em] text-eg-text-muted">
+            <span className="mb-2.5 block font-(family-name:--eg-font-mono) text-[10.5px] uppercase tracking-[0.07em] text-eg-text-muted">
               Altri servizi
             </span>
-            <h3 className="eg-h3 mb-2 text-base font-semibold">Non trovi il lavoro che ti serve tra questi?</h3>
+            <h3 className="eg-h3 mb-2 text-base">Non trovi il lavoro che ti serve tra questi?</h3>
             <p className="eg-body-muted mb-4 text-[13px] leading-[1.55]">
               Il catalogo comprende decine di interventi diversi, dalle piccole manutenzioni ai lavori piu complessi: sfoglia tutte le categorie e trova quella adatta.
             </p>
-            <span className="flex items-center gap-1.5 font-(family-name:--eg-font-brand) text-[11.5px] font-semibold text-eg-accent">
+            <span className="flex items-center gap-1.5 font-(family-name:--eg-font-primary) text-[11.5px] font-semibold text-eg-accent">
               Scopri tutti i servizi
               <svg
                 aria-hidden="true"

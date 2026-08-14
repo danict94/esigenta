@@ -14,7 +14,7 @@ export function RequestCtaPanel({ requestHref, ctaLabel }: RequestCtaPanelProps)
   return (
     <div className="space-y-5 border border-eg-border bg-eg-surface p-6.5 shadow-eg-slab">
       <div>
-        <h3 className="font-(family-name:--eg-font-brand) text-[17px] font-semibold leading-[1.3]">
+        <h3 className="font-(family-name:--eg-font-primary) text-[17px] font-semibold leading-[1.3]">
           Trova professionisti nella tua zona
         </h3>
 
@@ -23,7 +23,7 @@ export function RequestCtaPanel({ requestHref, ctaLabel }: RequestCtaPanelProps)
         </p>
       </div>
 
-      <Link href={requestHref} className="eg-button-primary w-full justify-center">
+      <Link href={requestHref} className="eg-button-primary eg-button-arrow w-full justify-center">
         {ctaLabel}
       </Link>
 

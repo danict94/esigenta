@@ -65,7 +65,7 @@ const MAX_PANEL_PHOTOS = 3;
 
 function Chip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-eg-border bg-eg-surface px-[9px] py-1 font-(family-name:--eg-font-ui) text-[11px] leading-none text-eg-text-muted">
+    <span className="inline-flex items-center rounded-full border border-eg-border bg-eg-surface px-[9px] py-1 font-(family-name:--eg-font-mono) text-[11px] leading-none text-eg-text-muted">
       {children}
     </span>
   );
@@ -83,7 +83,7 @@ function ActionButton({
     <button
       {...props}
       className={cn(
-        "flex-1 rounded-[2px] border px-3 py-3 text-center font-(family-name:--eg-font-ui) text-[11px] tracking-[0.02em] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+        "flex-1 rounded-[2px] border px-3 py-3 text-center font-(family-name:--eg-font-primary) text-[11px] tracking-[0.02em] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
         tone === "refund"
           ? "border-eg-brand/40 bg-eg-surface text-eg-brand-strong hover:bg-eg-brand-soft"
           : "border-eg-border bg-eg-surface text-eg-ink hover:border-eg-brand",
@@ -179,7 +179,7 @@ export function RequestDetailPanel({
 
   return (
     <div className="px-8 pb-24 pt-[26px] min-[900px]:pb-[30px]">
-      <p className="font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.08em] text-eg-text-muted">
+      <p className="font-(family-name:--eg-font-mono) text-[11px] uppercase tracking-[0.08em] text-eg-text-muted">
         {requestCode ? `Richiesta ${requestCode}` : "Richiesta"} &middot; {createdAt}
       </p>
 
@@ -194,7 +194,7 @@ export function RequestDetailPanel({
         {fullDetailHref ? (
           <a
             href={fullDetailHref}
-            className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-eg-brand-strong transition-colors hover:text-eg-brand"
+            className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
           >
             Apri dettaglio completo &rarr;
           </a>
@@ -246,7 +246,7 @@ export function RequestDetailPanel({
         <div className="mb-[26px] grid grid-cols-2 gap-4">
           {formDetails.slice(0, 6).map((detail) => (
             <div key={`${detail.label}-${detail.value}`}>
-              <p className="mb-[5px] font-(family-name:--eg-font-ui) text-[10px] uppercase tracking-[0.06em] text-eg-text-muted">
+              <p className="mb-[5px] font-(family-name:--eg-font-mono) text-[10px] uppercase tracking-[0.06em] text-eg-text-muted">
                 {detail.label}
               </p>
               <p className="text-[15px] font-medium text-eg-ink">
@@ -294,7 +294,7 @@ export function RequestDetailPanel({
                 {customerContact?.phone ? (
                   <a
                     href={`tel:${customerContact.phone}`}
-                    className="ml-auto shrink-0 rounded-full border border-eg-border px-3 py-[7px] font-(family-name:--eg-font-ui) text-[11px] text-eg-brand-strong transition-colors hover:border-eg-brand"
+                    className="ml-auto shrink-0 rounded-full border border-eg-border px-3 py-[7px] font-(family-name:--eg-font-primary) text-[11px] text-eg-brand-strong transition-colors hover:border-eg-brand"
                   >
                     CHIAMA &rarr;
                   </a>

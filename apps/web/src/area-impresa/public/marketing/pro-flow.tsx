@@ -25,7 +25,7 @@ const steps = [
 
 export function ProFlow() {
   return (
-    <section className="relative z-2 py-22" aria-labelledby="pro-flow-title">
+    <section className="eg-section" aria-labelledby="pro-flow-title">
       <div className="eg-container">
         <ProSectionHeader
           eyebrow="Come funziona per te"
@@ -44,13 +44,13 @@ export function ProFlow() {
           />
           {steps.map((step) => (
             <li key={step.number} className="relative px-4 text-left">
-              <span className="relative z-1 mb-4.5 flex size-9.5 items-center justify-center rounded-full border-2 border-eg-brand-strong bg-eg-surface font-(family-name:--eg-font-brand) text-sm font-bold text-eg-brand-strong">
+              <span className="eg-list-index relative z-1 mb-4.5 flex size-9.5 items-center justify-center rounded-full border-2 border-eg-brand bg-eg-surface font-bold text-eg-brand-strong">
                 {step.number}
               </span>
-              <h3 className="font-(family-name:--eg-font-brand) text-[15px] font-semibold leading-[1.3]">
+              <h3 className="text-base font-semibold leading-[1.35]">
                 {step.title}
               </h3>
-              <p className="mt-2 text-[13.5px] leading-[1.55] text-eg-text-muted">{step.body}</p>
+              <p className="eg-body-muted mt-2 text-sm leading-[1.55]">{step.body}</p>
             </li>
           ))}
         </ol>

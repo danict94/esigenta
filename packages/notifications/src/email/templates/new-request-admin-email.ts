@@ -1,4 +1,5 @@
 import { escapeHtml } from "../html-escape"
+import { EMAIL_ROOT_STYLE } from "../template-styles"
 
 export type NewRequestAdminEmailInput = {
   requestId: string
@@ -54,7 +55,7 @@ export function newRequestAdminEmail({
   ].join("\n")
 
   const html = `
-    <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
+    <div style="${EMAIL_ROOT_STYLE}">
       <p>Una nuova richiesta &egrave; pronta per la revisione.</p>
       <ul>
         ${details.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}

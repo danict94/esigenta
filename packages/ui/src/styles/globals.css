@@ -1,14 +1,14 @@
 /*
  * ESIGENTA — PALETTE UFFICIALE (direzione "cianotipo/blueprint")
- * Fonte visiva: docs/index.md. UNA sola verità: i ruoli semantici sotto
+ * Fonte documentale: docs/color-system.md. UNA sola verità: i ruoli semantici sotto
  * SONO la palette. Nessun token parallelo/duplicato (niente carta, grafite,
  * action, matita-chiara: fusi qui dentro). Non introdurre nuovi colori
  * senza dargli un ruolo semantico qui.
  *
  * Superfici
- * Page:          #F1F4F3  (carta: canvas dominante, griglia tecnica sopra)
- * App:           #F1F4F3  (canvas dell'area applicativa privata — stesso
- *                tono di Page, MAI la griglia tecnica; token indipendente,
+ * Page:          #FCFCFC  (canvas dominante)
+ * App:           #FCFCFC  (canvas dell'area applicativa privata — stesso
+ *                tono di Page; token indipendente,
  *                ritoccabile senza intaccare le pagine pubbliche, stesso
  *                pattern di Accent/Action)
  * Surface:       #FFFFFF  (carta-forte: card/pannelli)
@@ -17,27 +17,26 @@
  * Testi e bordi
  * Ink:           #12181C  (inchiostro: testo, superfici profonde, logo)
  * Text muted:    #676D70  (inchiostro depotenziato)
- * Border:        #B7C4C8  (grafite: bordi, divisori, griglia)
+ * Border:        #B7C4C8  (grafite: bordi e divisori)
  *
  * Brand (cianotipo)
- * Brand:         #2C7DA0  (cianotipo chiaro: focus, accento blu)
- * Brand strong:  #16385A  (cianotipo: titoli, link, outline, superfici scure)
+ * Brand:         #9FD3E8  (ciano chiaro: dettagli, superfici e CTA)
+ * Brand hover:   #2C7DA0  (interazioni e testo Brand su superfici chiare)
+ * Brand strong:  #16385A  (navy: titoli, testo CTA, superfici scure)
  * Brand soft:    #DEE8EF  (tinta blu tenue)
  * On brand:      #FFFFFF
  *
- * Accent / Action (matita — stesso valore #C8402A, DUE ruoli distinti)
+ * Accent / Action (due ruoli cromatici distinti)
  * Accent:        #C8402A  (segni caldi decorativi: frecce, pallini, numeri, enfasi)
- * Action:        #C8402A  (pulsanti/CTA — ritoccabile indipendentemente da Accent)
- *
- * Post-it (solo Hero — colori di marca senza equivalente semantico)
- * Nota giallo:   #F3E3A0    Nota carta: #FBF8F0
+ * Action:        #9FD3E8  (pulsanti/CTA con testo Brand strong)
+ * Hero emphasis: #9FD3E8  (Brand chiaro sulle superfici scure)
  *
  * Feedback (testo/icona — vedi *-soft/*-border in :root per sfondo/bordo)
  * Error:         #8F3328    Success: #285E45    Warning: #8A5A12
  *
  * DISTRIBUZIONE: Page+Surface dominano; Ink per testi/superfici profonde;
  * Brand (cianotipo) e Accent (matita) restano puntuali. La Hero è una
- * superficie identitaria (cianotipo o carta+griglia) con i post-it.
+ * superficie identitaria in cianotipo.
  */
 
 :root {
@@ -50,9 +49,8 @@
   /* Superfici — carta (page) + carta-forte (surface) */
   --eg-color-page: #fcfcfc;
   /* Canvas dell'area applicativa privata (Area Impresa): stesso tono di
-   * Page ma token semantico indipendente, senza la griglia tecnica — mai
-   * usare --eg-bg-grid-image sopra questo colore. Ritoccabile senza
-   * intaccare le pagine pubbliche/marketing. */
+   * Page ma token semantico indipendente. Ritoccabile senza intaccare le
+   * pagine pubbliche/marketing. */
   --eg-color-app: #fcfcfc;
   --eg-color-surface: #ffffff;
   --eg-color-surface-muted: #dce3e4;
@@ -62,14 +60,15 @@
   --eg-color-text-muted: #676d70;
   --eg-color-border: #b7c4c8;
 
-  /* Brand — cianotipo (cianografia): brand = blu chiaro (focus, accento blu),
-   * brand-strong = blu profondo (titoli, link, pulsanti outline, superfici). */
-  --eg-color-brand: #2c7da0;
+  /* Brand chiaro per dettagli, superfici e CTA. Il precedente Brand resta
+   * come stato interattivo leggibile; Brand strong governa il testo su Brand. */
+  --eg-color-brand: #9fd3e8;
+  --eg-color-brand-hover: #2c7da0;
   --eg-color-brand-strong: #16385a;
   --eg-color-brand-soft: #dee8ef;
   /* Variante chiara di Brand per testo/accenti (eyebrow, link) su superfici
    * scure Brand strong: li' il Brand normale non ha contrasto sufficiente. */
-  --eg-color-brand-on-dark: #9fd3e8;
+  --eg-color-brand-on-dark: var(--eg-color-brand);
 
   /* Contenuti on-brand: testo/bordi sopra superfici scure (cianotipo/inchiostro) */
   --eg-color-on-brand: #ffffff;
@@ -80,18 +79,11 @@
    * numeri di passo, enfasi del titolo, hover). NON i pulsanti (vedi Action). */
   --eg-color-accent: #c8402a;
 
-  /* Action — colore dei PULSANTI/CTA. Oggi = Accent (stessa matita), ma ruolo
-   * distinto: si ritocca indipendentemente dai segni decorativi. */
-  --eg-color-action: #c8402a;
+  /* Action — CTA chiare con testo navy; in hover torna il Brand precedente. */
+  --eg-color-action: var(--eg-color-brand);
 
-  /* Emphasis warm — corallo approvato per parole evidenziate/accenti
-   * tipografici (es. .eg-h1 strong). Ruolo distinto da Action: mai sui
-   * pulsanti/CTA, che restano sul rosso Action. */
-  --eg-color-emphasis-warm: #ff8a6e;
-
-  /* Post-it (Hero) — colori di marca senza equivalente semantico. */
-  --eg-color-nota-giallo: #f3e3a0;
-  --eg-color-nota-carta: #fbf8f0;
+  /* Hero emphasis — usa lo stesso Brand chiaro sulle superfici scure. */
+  --eg-color-hero-emphasis: var(--eg-color-brand);
 
   /* Feedback: error, success, warning.
    * Ruoli: colore pieno per testo/icona; *-soft per lo sfondo;
@@ -119,8 +111,6 @@
     0 6px 14px -8px rgba(23, 21, 17, 0.18);
   --eg-shadow-elevation-lg:
     0 2px 4px rgba(23, 21, 17, 0.06), 0 24px 48px rgba(23, 21, 17, 0.12);
-  /* Ombra dei post-it nella Hero (docs/esigenta-brand). */
-  --eg-shadow-note: 0 14px 28px -10px rgba(4, 16, 28, 0.5);
   /* Ombra hover delle card "step" (docs/index.md .step:hover): tight+dark,
    * forma distinta dalle elevation ambientali sopra — non forzarla in
    * quelle esistenti. */
@@ -130,7 +120,7 @@
   --eg-radius-md: 6px;
   --eg-radius-lg: 8px;
 
-  --eg-text-display: clamp(34px, 5.2vw, 60px);
+  --eg-text-page-title: clamp(28px, 3.8vw, 42px);
   --eg-text-heading: clamp(28px, 3.6vw, 42px);
 
   /* Curva di movimento del brand (docs/index.md --ease): riusata per ogni
@@ -138,33 +128,13 @@
    * Un solo valore, mai duplicato come magic string nei singoli componenti. */
   --eg-ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Griglia tecnica ambiente (docs/index.md): un solo valore, riusato sia
-   * da body sia da .eg-page-bg, il wrapper opaco che quasi ogni pagina usa
-   * sopra body (altrimenti lo coprirebbe, rendendo la griglia invisibile
-   * ovunque tranne che nella Hero, che ha il proprio strato dedicato).
-   * Colore derivato dal token Border via color-mix: nessun valore duplicato. */
-  --eg-bg-grid-image: linear-gradient(
-      color-mix(in srgb, var(--eg-color-border) 35%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--eg-color-border) 35%, transparent) 1px,
-      transparent 1px
-    );
-  --eg-bg-grid-size: 32px 32px;
-
-  --eg-font-brand: var(--font-brand), sans-serif;
-  --eg-font-ui: var(--font-ui), sans-serif;
-  /* Grafia "a penna": solo post-it della Hero (docs/esigenta-brand). */
-  --eg-font-script: var(--font-script), "Comic Sans MS", cursive;
-
   --eg-nav-height: 72px;
   --eg-nav-clear: calc(var(--eg-nav-height) + 1.5rem);
 }
 
 @theme inline {
-  --font-sans: var(--eg-font-ui);
+  --font-sans: var(--eg-font-primary), sans-serif;
+  --font-mono: var(--eg-font-mono), monospace;
 
   /* ============================================================
    * SISTEMA COLORI SEMANTICO
@@ -185,13 +155,10 @@
 
   /* Brand */
   --color-eg-brand: var(--eg-color-brand);
+  --color-eg-brand-hover: var(--eg-color-brand-hover);
   --color-eg-brand-strong: var(--eg-color-brand-strong);
   --color-eg-brand-soft: var(--eg-color-brand-soft);
   --color-eg-brand-on-dark: var(--eg-color-brand-on-dark);
-
-  /* Post-it (Hero) */
-  --color-eg-nota-giallo: var(--eg-color-nota-giallo);
-  --color-eg-nota-carta: var(--eg-color-nota-carta);
 
   /* Contenuti on-brand */
   --color-eg-on-brand: var(--eg-color-on-brand);
@@ -201,7 +168,7 @@
   /* Accent (segni decorativi) + Action (pulsanti/CTA) */
   --color-eg-accent: var(--eg-color-accent);
   --color-eg-action: var(--eg-color-action);
-  --color-eg-emphasis-warm: var(--eg-color-emphasis-warm);
+  --color-eg-hero-emphasis: var(--eg-color-hero-emphasis);
 
   /* Feedback: testo/icona, sfondo, bordo. */
   --color-eg-error: var(--eg-color-error);
@@ -221,7 +188,6 @@
   --shadow-eg-elevation: var(--eg-shadow-elevation);
   --shadow-eg-slab: var(--eg-shadow-slab);
   --shadow-eg-elevation-lg: var(--eg-shadow-elevation-lg);
-  --shadow-eg-note: var(--eg-shadow-note);
   --shadow-eg-step: var(--eg-shadow-step);
 
   --radius-eg-sm: var(--eg-radius-sm);
@@ -237,19 +203,9 @@ html {
 
 body {
   background: var(--eg-color-page);
-  /* Griglia tecnica ambiente (docs/index.md): mostra ovunque non ci sia una
-   * superficie opaca sopra. La Hero ha una propria griglia locale che la
-   * copre (superficie opaca + backgroundImage dedicato): nessun conflitto,
-   * stesso layering del riferimento. Vedi anche .eg-page-bg sotto, che
-   * riusa lo stesso --eg-bg-grid-image: quasi ogni pagina lo mette SOPRA
-   * body, quindi la griglia deve stare li' per essere davvero visibile. */
-  background-image: var(--eg-bg-grid-image);
-  background-size: var(--eg-bg-grid-size);
   color: var(--eg-color-ink);
-  /* Default = UI/sans (leggibile per il corpo del testo). Brand/mono e'
-   * riservato a titoli/eyebrow/CTA, mai al testo lungo (vedi .eg-h1/h2/h3
-   * sotto, che lo dichiarano esplicitamente). */
-  font-family: var(--eg-font-ui);
+  /* IBM Plex Sans e' la voce principale: contenuti, titoli e UI. */
+  font-family: var(--eg-font-primary), sans-serif;
 }
 
 @layer components {
@@ -263,15 +219,11 @@ body {
 
   .eg-page-bg {
     background: var(--eg-color-page);
-    /* Stessa griglia di body (vedi sopra): quasi ogni pagina avvolge il
-     * proprio contenuto in .eg-page-bg, che altrimenti coprirebbe la
-     * griglia di body con un riempimento pieno senza pattern. */
-    background-image: var(--eg-bg-grid-image);
-    background-size: var(--eg-bg-grid-size);
   }
 
   .eg-section,
-  .eg-section-large {
+  .eg-section-large,
+  .eg-section-editorial {
     position: relative;
     z-index: 1;
   }
@@ -282,6 +234,11 @@ body {
 
   .eg-section-large {
     padding-block: 128px;
+  }
+
+  /* Ritmo unico per pagine SEO lunghe: servizi, interventi e costi. */
+  .eg-section-editorial {
+    padding-block: 64px;
   }
 
   .eg-container,
@@ -299,9 +256,17 @@ body {
     max-width: 760px;
   }
 
+  .eg-internal-header {
+    padding-block: calc(var(--eg-nav-clear) + 12px) 48px;
+  }
+
+  .eg-page-lede {
+    color: var(--eg-color-ink);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
   .eg-eyebrow,
-  .eg-nav-link,
-  .eg-action-link,
   .eg-divider-label,
   .eg-metric-label,
   .eg-table-label,
@@ -309,10 +274,16 @@ body {
   .eg-list-index,
   .eg-list-status,
   .eg-doc-meta,
-  .eg-shell-nav-link,
   .eg-status-label,
   .eg-form-eyebrow {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
+    text-transform: uppercase;
+  }
+
+  .eg-nav-link,
+  .eg-action-link,
+  .eg-shell-nav-link {
+    font-family: var(--eg-font-primary), sans-serif;
     text-transform: uppercase;
   }
 
@@ -350,33 +321,33 @@ body {
   }
 
   .eg-h1 {
-    font-family: var(--eg-font-brand);
-    font-size: var(--eg-text-display);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-family: var(--eg-font-primary), sans-serif;
+    font-size: var(--eg-text-page-title);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
   }
 
   .eg-h1 strong {
-    /* --eg-heading-emphasis, se dichiarata da un antenato (la Hero), vince:
-     * consente un override locale. Altrove ricade sul corallo approvato
-     * (Emphasis warm), il colore predefinito per gli emphasis tipografici. */
-    color: var(--eg-heading-emphasis, var(--eg-color-emphasis-warm));
     font-weight: 600;
   }
 
+  .eg-hero-emphasis {
+    color: var(--eg-color-hero-emphasis);
+  }
+
   .eg-h2 {
-    font-family: var(--eg-font-brand);
+    font-family: var(--eg-font-primary), sans-serif;
     font-size: var(--eg-text-heading);
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.01em;
   }
 
   .eg-h3 {
-    font-family: var(--eg-font-brand);
+    font-family: var(--eg-font-primary), sans-serif;
     font-size: 25px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.2;
     letter-spacing: -0.01em;
   }
@@ -392,46 +363,145 @@ body {
     line-height: 1.65;
   }
 
+  .eg-button,
   .eg-button-primary,
   .eg-button-ghost {
     display: inline-flex;
-    min-height: 44px;
+    min-height: 48px;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 14px;
+    cursor: pointer;
     border-radius: var(--eg-radius-sm);
-    padding: 0 22px;
-    font-family: var(--eg-font-ui);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    padding: 0 20px;
+    font-family: var(--eg-font-primary), sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    text-decoration: none;
     transition:
+      transform 220ms var(--eg-ease-brand),
       color 220ms ease,
       background-color 220ms ease,
-      border-color 220ms ease,
-      filter 220ms ease;
+      border-color 220ms ease;
+  }
+
+  .eg-button:focus-visible,
+  .eg-button-primary:focus-visible,
+  .eg-button-ghost:focus-visible {
+    outline: 2px solid var(--eg-color-brand-hover);
+    outline-offset: 3px;
+  }
+
+  .eg-button:disabled,
+  .eg-button-primary:disabled,
+  .eg-button-ghost:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .eg-button-arrow::after {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    background-color: currentColor;
+    content: "";
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+    transition: transform 220ms var(--eg-ease-brand);
+  }
+
+  .eg-button-arrow:hover::after {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eg-button,
+    .eg-button-primary,
+    .eg-button-ghost,
+    .eg-button-arrow::after {
+      transition-duration: 0.01ms;
+    }
   }
 
   .eg-button-primary {
     border: 1px solid var(--eg-color-action);
     background: var(--eg-color-action);
-    color: var(--eg-color-on-brand);
+    color: var(--eg-color-brand-strong);
   }
 
   .eg-button-primary:hover {
-    filter: brightness(0.9);
+    border-color: var(--eg-color-brand-hover);
+    background: var(--eg-color-brand-hover);
+    color: var(--eg-color-on-brand);
+  }
+
+  /* La Hero scura contiene la ricerca su pannello bianco: qui il ciano Brand
+   * distingue l'azione senza perdere contrasto o confondersi con lo sfondo. */
+  .eg-theme-ink {
+    background: var(--eg-color-ink);
+    color: var(--eg-color-on-brand);
+  }
+
+  .eg-theme-hero .eg-button-primary,
+  .eg-theme-ink .eg-button-primary {
+    border-color: var(--eg-color-brand);
+    background: var(--eg-color-brand);
+    color: var(--eg-color-brand-strong);
+  }
+
+  .eg-theme-hero .eg-button-primary:hover,
+  .eg-theme-ink .eg-button-primary:hover {
+    border-color: var(--eg-color-brand-hover);
+    background: var(--eg-color-brand-hover);
+    color: var(--eg-color-on-brand);
+  }
+
+  /* Tema contestuale per CTA sopra superfici scure. Il contenitore dichiara
+   * il contesto una sola volta; i pulsanti non ricevono override locali. */
+  .eg-theme-dark .eg-button-primary {
+    border-color: var(--eg-color-surface);
+    background: var(--eg-color-surface);
+    color: var(--eg-color-brand-strong);
+  }
+
+  .eg-theme-dark .eg-button-primary:hover {
+    border-color: var(--eg-color-brand-soft);
+    background: var(--eg-color-brand-soft);
   }
 
   .eg-button-ghost {
-    border: 1px solid var(--eg-color-action);
+    border: 1px solid var(--eg-color-brand-hover);
     background: transparent;
-    color: var(--eg-color-action);
+    color: var(--eg-color-brand-hover);
   }
 
   .eg-button-ghost:hover {
-    border-color: var(--eg-color-action);
-    background: var(--eg-color-action);
+    border-color: var(--eg-color-brand-hover);
+    background: var(--eg-color-brand-hover);
+    color: var(--eg-color-on-brand);
+  }
+
+  .eg-theme-dark .eg-button-ghost {
+    border-color: var(--eg-color-on-brand-border);
+    color: var(--eg-color-on-brand);
+  }
+
+  .eg-theme-dark .eg-button-ghost:hover {
+    border-color: var(--eg-color-surface);
+    background: var(--eg-color-surface);
+    color: var(--eg-color-brand-strong);
+  }
+
+  .eg-theme-ink .eg-button-ghost {
+    border-color: var(--eg-color-brand-on-dark);
+    color: var(--eg-color-brand-on-dark);
+  }
+
+  .eg-theme-ink .eg-button-ghost:hover {
+    border-color: var(--eg-color-brand-hover);
+    background: var(--eg-color-brand-hover);
     color: var(--eg-color-on-brand);
   }
 
@@ -450,7 +520,7 @@ body {
   }
 
   .eg-footer {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-primary), sans-serif;
     text-transform: uppercase;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -477,7 +547,7 @@ body {
   }
 
   .eg-step-label {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     text-transform: uppercase;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -487,38 +557,42 @@ body {
 
   .eg-index-tag,
   .eg-field-caption {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     color: var(--eg-color-text-muted);
   }
 
   .eg-stat-value {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     font-size: 26px;
     letter-spacing: 0.02em;
     color: var(--eg-color-ink);
   }
 
   .eg-chip-text {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     font-size: 11px;
     line-height: 1;
   }
 
-  .eg-ui-muted,
+  .eg-ui-muted {
+    font-family: var(--eg-font-primary), sans-serif;
+    color: var(--eg-color-text-muted);
+  }
+
   .eg-metadata {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     color: var(--eg-color-text-muted);
   }
 
   .eg-kpi-value {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     font-size: 28px;
     font-weight: 500;
     line-height: 1.25;
   }
 
   .eg-panel-header {
-    font-family: var(--eg-font-ui);
+    font-family: var(--eg-font-mono), monospace;
     text-transform: uppercase;
     font-size: 11px;
     letter-spacing: 0.1em;
@@ -561,6 +635,10 @@ body {
 
   .eg-section-large {
     padding-block: 88px;
+  }
+
+  .eg-section-editorial {
+    padding-block: 56px;
   }
 
   .eg-container,

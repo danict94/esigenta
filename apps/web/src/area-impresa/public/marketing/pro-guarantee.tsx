@@ -1,6 +1,7 @@
 import { cn } from "@esigenta/ui";
 
 import { blueprintTitleClassName } from "../../../site/shared/section-header";
+import { ProFinalCta } from "./pro-final-cta";
 import { ProCheckIcon } from "./pro-icons";
 import { ProEyebrow } from "./pro-primitives";
 
@@ -37,7 +38,7 @@ function CheckMark() {
 export function ProGuarantee() {
   return (
     <section
-      className="relative z-2 overflow-hidden bg-eg-ink py-22 text-eg-on-brand"
+      className="eg-section eg-theme-ink overflow-hidden"
       aria-labelledby="pro-guarantee-title"
     >
       <div
@@ -51,11 +52,11 @@ export function ProGuarantee() {
 
       <div className="eg-container relative">
         <div className="mb-12 max-w-155">
-          <ProEyebrow>La garanzia sul credito</ProEyebrow>
-          <h2 id="pro-guarantee-title" className={cn(blueprintTitleClassName, "mt-3.5 text-eg-on-brand")}>
+          <ProEyebrow tone="light">La garanzia sul credito</ProEyebrow>
+          <h2 id="pro-guarantee-title" className={cn("eg-h2 mt-3.5", blueprintTitleClassName)}>
             Se il contatto non e valido, il credito torna tuo.
           </h2>
-          <p className="mt-3.5 max-w-140 text-[15px] leading-[1.6] text-eg-on-brand-muted">
+          <p className="eg-body mt-3.5 max-w-140 text-eg-on-brand-muted">
             Il costo del lead e un rischio che ci prendiamo insieme a te, non
             che scarichiamo su di te. Ecco cosa copre la restituzione del
             credito dopo verifica.
@@ -70,14 +71,16 @@ export function ProGuarantee() {
             >
               <CheckMark />
               <div>
-                <h3 className="font-(family-name:--eg-font-brand) text-[14.5px] font-semibold leading-[1.35]">
+                <h3 className="text-base font-semibold leading-[1.35]">
                   {item.title}
                 </h3>
-                <p className="mt-1.5 text-[13.5px] leading-normal text-eg-on-brand-muted">{item.body}</p>
+                <p className="eg-body mt-1.5 text-sm leading-[1.55] text-eg-on-brand-muted">{item.body}</p>
               </div>
             </div>
           ))}
         </div>
+
+        <ProFinalCta />
       </div>
     </section>
   );

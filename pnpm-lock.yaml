@@ -333,6 +333,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      next:
+        specifier: 16.2.5
+        version: 16.2.5(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -346,9 +349,6 @@ importers:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
-      next:
-        specifier: 16.2.5
-        version: 16.2.5(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

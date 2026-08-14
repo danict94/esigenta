@@ -94,18 +94,18 @@ export async function CompanyResetPasswordPage({
 
             <button
               type="submit"
-              className="eg-button-primary w-full"
+              className="eg-button-primary eg-button-arrow w-full"
             >
-              Salva nuova password <span aria-hidden="true">&rarr;</span>
+              Salva nuova password
             </button>
 
             <p className="eg-form-help text-center">
               Per maggiori informazioni leggi l&apos;
-              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+              <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
                 informativa privacy
               </Link>{" "}
               e i{" "}
-              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+              <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
                 termini del servizio
               </Link>
               .
@@ -116,9 +116,9 @@ export async function CompanyResetPasswordPage({
             <p className="eg-body-muted">Richiedi un nuovo link per continuare.</p>
             <Link
               href="/area-impresa/recupera-password"
-              className="eg-button-ghost w-full"
+              className="eg-button-ghost eg-button-arrow w-full"
             >
-              Richiedi nuovo link <span aria-hidden="true">&rarr;</span>
+              Richiedi nuovo link
             </Link>
           </div>
         )}

@@ -64,13 +64,13 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
     <form onSubmit={handleSubmit} className="border border-eg-border bg-eg-surface shadow-eg-slab">
       <div className="flex items-center justify-between gap-4 border-b border-eg-border px-6.5 py-5.5">
         <span className={blueprintEyebrowClassName}>Configura il tuo profilo</span>
-        <span className="font-(family-name:--eg-font-brand) text-xs text-eg-text-muted">2 passi</span>
+        <span className="font-(family-name:--eg-font-mono) text-xs text-eg-text-muted">2 passi</span>
       </div>
 
       <div className="px-[26px] py-7 max-[860px]:px-5">
         <fieldset>
-          <legend className="mb-3 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[11.5px] font-bold uppercase text-eg-accent">
-            <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-eg-accent text-[10.5px] font-bold text-eg-on-brand">
+          <legend className="eg-form-eyebrow mb-3 flex items-center gap-2 font-bold text-eg-brand-strong">
+            <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-eg-brand text-[10.5px] font-bold text-eg-brand-strong">
               1
             </span>
             Che professionista sei?
@@ -89,7 +89,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
                     className={cn(
                       "border px-[15px] py-2 text-sm transition-colors",
                       isSelected
-                        ? "border-eg-brand-strong bg-eg-brand-strong text-eg-on-brand"
+                        ? "border-eg-brand bg-eg-brand text-eg-brand-strong"
                         : "border-eg-border bg-eg-surface text-eg-ink hover:border-eg-brand",
                     )}
                     onClick={() => {
@@ -112,9 +112,9 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
         <div className="mt-7">
           <label
             htmlFor="company-city"
-            className="mb-3 flex items-center gap-2 font-(family-name:--eg-font-brand) text-[11.5px] font-bold uppercase text-eg-accent"
+            className="eg-form-eyebrow mb-3 flex items-center gap-2 font-bold text-eg-brand-strong"
           >
-            <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-eg-accent text-[10.5px] font-bold text-eg-on-brand">
+            <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-eg-brand text-[10.5px] font-bold text-eg-brand-strong">
               2
             </span>
             Dove operi?
@@ -150,33 +150,33 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
         aria-live="polite"
       >
         <div className="flex flex-wrap items-center justify-between gap-5 px-[26px] py-6 max-[860px]:px-5">
-          <p className="max-w-[46ch] text-base leading-[1.5] text-eg-ink">
+          <p className="max-w-[46ch] text-base leading-[1.55] text-eg-ink">
             Profilo per{" "}
-            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-brand-strong">
+            <b className="font-semibold text-eg-brand-strong">
               {selectedCategory?.name ?? "-"}
             </b>{" "}
             in{" "}
-            <b className="font-(family-name:--eg-font-ui) text-[21px] font-medium text-eg-brand-strong">
+            <b className="font-semibold text-eg-brand-strong">
               {locationLabel ?? "-"}
             </b>
             . Completa l&apos;attivazione gratuita.
-            <span className="mt-1.5 block font-(family-name:--eg-font-ui) text-[13px] text-eg-text-muted">
+            <span className="mt-1.5 block text-sm text-eg-text-muted">
               Configuri tu zona e categorie nel profilo.
             </span>
           </p>
 
           <button
             type="submit"
-            className="eg-button-primary whitespace-nowrap"
+            className="eg-button-primary eg-button-arrow whitespace-nowrap"
           >
-            Attiva il profilo <span aria-hidden="true">&rarr;</span>
+            Attiva il profilo
           </button>
         </div>
       </div>
 
       <p className="px-[26px] pb-5 text-[13px] leading-[1.55] text-eg-text-muted max-[860px]:px-5">
         I dati saranno usati per preparare il profilo e ricontattarti. Leggi l&apos;
-        <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+        <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
           informativa privacy
         </Link>
         .

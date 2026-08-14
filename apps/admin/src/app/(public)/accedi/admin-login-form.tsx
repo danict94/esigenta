@@ -118,7 +118,7 @@ export function AdminLoginForm() {
       <div className="flex justify-end">
         <Link
           href="/admin/recupera-password"
-          className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
+          className="text-sm font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
         >
           Recupera password
         </Link>

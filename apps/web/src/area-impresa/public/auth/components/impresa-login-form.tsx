@@ -87,7 +87,7 @@ export function ImpresaLoginForm() {
       <div className="flex justify-end">
         <Link
           href="/area-impresa/recupera-password"
-          className="text-sm font-medium text-eg-brand-strong hover:text-eg-brand"
+          className="text-sm font-medium text-eg-brand-strong hover:text-eg-brand-hover"
         >
           Recupera password
         </Link>
@@ -105,11 +105,11 @@ export function ImpresaLoginForm() {
 
       <p className="eg-form-help text-center">
         Usando l&apos;area impresa confermi di aver letto l&apos;
-        <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+        <Link href="/privacy" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
           informativa privacy
         </Link>{" "}
         e i{" "}
-        <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand">
+        <Link href="/termini" className="font-medium text-eg-brand-strong hover:text-eg-brand-hover">
           termini del servizio
         </Link>
         .

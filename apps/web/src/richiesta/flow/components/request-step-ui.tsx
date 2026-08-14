@@ -483,7 +483,7 @@ export function RequestStepUI({
           type="button"
           onClick={onBack}
           disabled={isPhotoUploading}
-          className="eg-button-ghost min-w-40 disabled:pointer-events-none disabled:opacity-50"
+          className="eg-button-ghost min-w-40"
         >
           Indietro
         </button>
@@ -492,7 +492,7 @@ export function RequestStepUI({
           type="button"
           onClick={onNext}
           disabled={isSubmitting || isPhotoUploading}
-          className="eg-button-primary min-w-40 disabled:pointer-events-none disabled:opacity-50"
+          className="eg-button-primary min-w-40"
         >
           {isLastStep
             ? isSubmitting

@@ -1,3 +1,5 @@
+import { EMAIL_ROOT_STYLE } from "../template-styles"
+
 export type ConversationMessageEmailInput = {
   accessUrl: string
   recipientLabel?: string | null | undefined
@@ -40,7 +42,7 @@ export function conversationMessageEmail({
   ].join("\n")
 
   const html = `
-    <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
+    <div style="${EMAIL_ROOT_STYLE}">
       <p>${escapeHtml(greeting)}</p>
       <p>${escapeHtml(senderLabel)} ha inviato un nuovo messaggio per ${escapeHtml(requestTitle)}.</p>
       <blockquote style="margin: 16px 0; padding: 12px 16px; border-left: 3px solid #111827; background: #f9fafb;">

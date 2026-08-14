@@ -14,7 +14,7 @@ function AdminBrandContent() {
   return (
     <>
     <EsigentaLogo decorative className="block h-6 w-auto" />
-    <span className="font-(family-name:--eg-font-ui) text-xs font-medium uppercase tracking-widest text-eg-brand-strong">
+    <span className="font-(family-name:--eg-font-mono) text-xs font-medium uppercase tracking-widest text-eg-brand-strong">
       / admin
     </span>
     </>

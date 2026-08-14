@@ -139,7 +139,7 @@ export async function CustomerRequestsPage({ token }: CustomerRequestsPageProps)
                         })}
                         className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
                       >
-                        <span className="font-(family-name:--eg-font-ui) text-xs uppercase tracking-[0.12em] text-eg-brand-strong">
+                        <span className="font-(family-name:--eg-font-mono) text-xs uppercase tracking-[0.12em] text-eg-brand-strong">
                           {String(index + 1).padStart(2, "0")}
                         </span>
 
@@ -156,7 +156,7 @@ export async function CustomerRequestsPage({ token }: CustomerRequestsPageProps)
                           </span>
                         </span>
 
-                        <span className="justify-self-end whitespace-nowrap font-(family-name:--eg-font-ui) text-[11px] uppercase tracking-[0.12em] text-eg-text-muted max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
+                        <span className="justify-self-end whitespace-nowrap font-(family-name:--eg-font-mono) text-[11px] uppercase tracking-[0.12em] text-eg-text-muted max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">
                           {formatStatus(request.status)}
                         </span>
                       </Link>

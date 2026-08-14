@@ -494,7 +494,7 @@ export function RequestPhotoUpload({
 
                 <button
                   type="button"
-                  className="eg-button-ghost min-h-9 px-3 disabled:pointer-events-none disabled:opacity-50"
+                  className="eg-button-ghost min-h-9 px-3"
                   disabled={isUploading}
                   onClick={() => {
                     removeItem(item);

@@ -87,7 +87,7 @@ export async function AreaImpresaSignupPage({
 
         <Link
           href="/area-impresa"
-          className="eg-action-link inline-flex w-fit items-center gap-2 text-eg-brand-strong hover:text-eg-brand"
+          className="eg-action-link inline-flex w-fit items-center gap-2 text-eg-brand-strong hover:text-eg-brand-hover"
         >
           <span aria-hidden="true">&larr;</span> Torna alla pagina professionisti
         </Link>

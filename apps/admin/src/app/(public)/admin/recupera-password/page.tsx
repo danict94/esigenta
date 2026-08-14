@@ -126,7 +126,7 @@ export default async function AdminForgotPasswordPage({
             Hai ricordato la password?{" "}
             <Link
               href="/accedi"
-              className="font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand"
+              className="font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover"
             >
               Torna all'accesso
             </Link>

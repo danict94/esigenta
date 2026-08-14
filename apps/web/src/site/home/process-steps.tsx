@@ -14,8 +14,9 @@ export function ProcessSteps() {
           <SectionHeader
             eyebrow="Dal bisogno al lavoro"
             title="Un filo chiaro, dall'idea alla scelta."
+            align="left"
             id="process-title"
-            className="max-w-[640px] text-left mb-14"
+            className="mb-14 max-w-[640px]"
             eyebrowClassName={blueprintEyebrowClassName}
             titleClassName={blueprintTitleClassName}
           />
@@ -27,10 +28,10 @@ export function ProcessSteps() {
               key={step.title}
               className="relative bg-eg-page px-7.5 pt-9 pb-8.5 transition-[background-color,box-shadow] duration-250 ease-(--eg-ease-brand) hover:z-2 hover:bg-eg-surface hover:shadow-eg-step"
             >
-              <span className="mb-4.5 block font-(family-name:--eg-font-brand) text-[13px] font-bold text-eg-accent">
+              <span className="mb-4.5 block font-(family-name:--eg-font-mono) text-[13px] font-bold text-eg-accent">
                 {step.verified ? "OK" : step.marker.padStart(2, "0")}
               </span>
-              <h3 className="eg-h3 mb-2.5 text-[17px] font-semibold">{step.title}</h3>
+              <h3 className="eg-h3 mb-2.5 text-[17px]">{step.title}</h3>
               <p className="eg-body-muted text-[14.5px] leading-[1.55]">{step.description}</p>
             </article>
           ))}

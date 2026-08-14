@@ -1,3 +1,5 @@
+import { EMAIL_ROOT_STYLE } from "../template-styles"
+
 export type RequestVerificationEmailInput = {
   verificationUrl: string
 }
@@ -18,7 +20,7 @@ export function requestVerificationEmail({
   ].join("\n")
 
   const html = `
-    <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
+    <div style="${EMAIL_ROOT_STYLE}">
       <p>Ciao,</p>
       <p>conferma la tua richiesta Esigenta per inviarla ai professionisti giusti.</p>
       <p>
