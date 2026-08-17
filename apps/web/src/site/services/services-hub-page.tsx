@@ -75,26 +75,29 @@ export function ServicesHubPage() {
         <section className="pb-20" aria-labelledby="catalog-title">
           <div className="eg-container">
             {families.length > 0 ? (
-              <Reveal>
-                {families.map((family) => (
-                  <div key={family.title} className="mb-10 last:mb-0">
-                    <h3 className="mb-3 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
-                      {family.title}
-                    </h3>
-                    <div className="grid grid-cols-1 border-t border-eg-border min-[861px]:grid-cols-2">
-                      {family.entries.map((group) => (
-                        <ServiceGroupRow
-                          key={group.slug}
-                          slug={group.slug}
-                          name={group.name}
-                          href={resolveGroupHref(group.slug)}
-                          interventionsCount={group.interventions.length}
-                        />
-                      ))}
-                    </div>
+              // Niente Reveal qui: e' il contenuto primario della pagina,
+              // deve essere visibile subito. Un Reveal unico su un blocco
+              // cosi' alto (5 famiglie x N ambiti) non raggiunge mai la
+              // soglia di intersezione senza scroll profondo, ed e' proprio
+              // quello che causava la pagina "vuota" al primo render.
+              families.map((family) => (
+                <div key={family.title} className="mb-10 last:mb-0">
+                  <h3 className="mb-3 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
+                    {family.title}
+                  </h3>
+                  <div className="grid grid-cols-1 border-t border-eg-border min-[861px]:grid-cols-2">
+                    {family.entries.map((group) => (
+                      <ServiceGroupRow
+                        key={group.slug}
+                        slug={group.slug}
+                        name={group.name}
+                        href={resolveGroupHref(group.slug)}
+                        interventionsCount={group.interventions.length}
+                      />
+                    ))}
                   </div>
-                ))}
-              </Reveal>
+                </div>
+              ))
             ) : (
               <p className="eg-body-muted mx-auto mt-12 max-w-[46ch] text-center">
                 Il catalogo servizi e in preparazione. Torna a trovarci presto.
