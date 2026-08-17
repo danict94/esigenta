@@ -9,6 +9,8 @@ type InternalBreadcrumbItem = {
 type InternalPageIntroProps = {
   breadcrumbs: readonly InternalBreadcrumbItem[];
   title: ReactNode;
+  /** Contenuto opzionale renderizzato SUBITO dopo l'H1, prima di description/actions — per quando qualcosa (es. il prezzo di una Cost Guide) deve leggersi come risposta diretta al titolo, non come blocco separato più in basso. Nessun impatto sugli altri usi di questo componente quando omesso. */
+  afterTitle?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
   note?: ReactNode;
@@ -20,6 +22,7 @@ type InternalPageIntroProps = {
 export function InternalPageIntro({
   breadcrumbs,
   title,
+  afterTitle,
   description,
   actions,
   note,
@@ -43,6 +46,8 @@ export function InternalPageIntro({
             <h1 id={titleId} className="eg-h1 text-balance">
               {title}
             </h1>
+
+            {afterTitle}
 
             {description ? <p className="eg-page-lede mt-4 max-w-160">{description}</p> : null}
 
