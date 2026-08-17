@@ -10,6 +10,8 @@ import {
 import type { BasePriceRange, PriceRow } from "./base-price-ranges"
 
 import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/content"
+import { rifareTettoGuide } from "../pages/costi/rifare-tetto/content"
+import { classifyPriceRows } from "../templates/cost-guide-price-model"
 
 // Scope 1C — infrastruttura del nuovo contratto PriceRow (id, costType, role,
 // priceStatus, relations). Fixture minime e sintetiche: mai i dati reali
@@ -611,4 +613,174 @@ test("Chiusura Scope 3: bagno-spostamento-scarichi è \"Spostamento di uno scari
   assert.equal(trasformazione?.range, "da 500 € a 1.000 €")
   assert.match(trasformazione?.note ?? "", /Spostamento di uno scarico/)
   assert.doesNotMatch(trasformazione?.note ?? "", /"Spostamento scarichi"/)
+})
+
+// Revisione 2026-08 di rifare-tetto — dati REALI (rifareTettoGuide composta),
+// non fixture sintetiche: la guida passa da una riga quotata + sei voci "da
+// valutare" a 4 scenari di rifacimento + 4 lavorazioni specifiche, tutte con
+// una fascia reale.
+
+test("rifare-tetto: esattamente 8 PriceRow, tutte con un id univoco reale", () => {
+  assert.equal(rifareTettoGuide.priceRows.length, 8)
+  assert.equal(new Set(rifareTettoGuide.priceRows.map((r) => r.id)).size, 8)
+})
+
+test("rifare-tetto: scenario standard 120-180 €/mq, è la riga primary con costType complete", () => {
+  const standard = rifareTettoGuide.priceRows.find((r) => r.id === "tetto-rifacimento-copertura")
+
+  assert.equal(standard?.range, "da 120 € a 180 € al mq")
+  assert.equal(standard?.unit, "al mq")
+  assert.equal(standard?.costType, "complete")
+  assert.equal(standard?.role, "primary")
+})
+
+test("rifare-tetto: nationalRange/pricePerSquareMeter/sizeExamples sono coerenti con lo scenario standard (120-180 €/mq), non più 120-300", () => {
+  assert.equal(rifareTettoGuide.nationalRange, "120–180 € al mq")
+  assert.equal(rifareTettoGuide.pricePerSquareMeter, "da 120 € a 180 € al mq")
+
+  assert.doesNotMatch(rifareTettoGuide.nationalRangeNote ?? "", /120–300/)
+  assert.doesNotMatch(rifareTettoGuide.sizeExamplesIntro ?? "", /120–300/)
+
+  const bySize = new Map(rifareTettoGuide.sizeExamples.map((example) => [example.sizeRange, example]))
+  assert.equal(bySize.get("70 mq")?.range, "da 8.400 € a 12.600 €") // 70 × 120 / 70 × 180
+  assert.equal(bySize.get("100 mq")?.range, "da 12.000 € a 18.000 €")
+  assert.equal(bySize.get("150 mq")?.range, "da 18.000 € a 27.000 €")
+  assert.equal(bySize.get("200 mq")?.range, "da 24.000 € a 36.000 €")
+
+  for (const example of rifareTettoGuide.sizeExamples) {
+    assert.match(
+      example.note,
+      /rifacimento standard/,
+      `sizeExample "${example.label}" deve specificare che rappresenta il rifacimento standard`,
+    )
+  }
+})
+
+test("rifare-tetto: i 4 scenari di rifacimento hanno le fasce e la classificazione (role/costType) approvate", () => {
+  const rows = rifareTettoGuide.priceRows
+  const byId = (id: string) => rows.find((r) => r.id === id)
+
+  const soloManto = byId("tetto-sostituzione-manto")
+  assert.equal(soloManto?.range, "da 60 € a 120 € al mq")
+  assert.equal(soloManto?.costType, "complete")
+  assert.equal(soloManto?.role, "scenario")
+
+  const conIsolamento = byId("tetto-rifacimento-isolamento-ventilazione")
+  assert.equal(conIsolamento?.range, "da 180 € a 300 € al mq")
+  assert.equal(conIsolamento?.costType, "complete")
+  assert.equal(conIsolamento?.role, "scenario")
+
+  const strutturale = byId("tetto-rifacimento-struttura")
+  assert.equal(strutturale?.range, "da 280 € a 500 € al mq")
+  assert.equal(strutturale?.costType, "complete")
+  assert.equal(strutturale?.role, "scenario")
+
+  // Formulazione vaga "oltre 300 €/mq senza massimo" non deve più essere
+  // l'informazione principale di questo scenario (può restare come nota
+  // sui casi eccezionali, non come range).
+  assert.doesNotMatch(strutturale?.range ?? "", /senza un massimo/)
+})
+
+test("rifare-tetto: BLOCKER noto — classifyPriceRows non riconosce oggi gli scenari al mq (isGuideScenarioRow richiede unit \"a corpo\")", () => {
+  // Questo test documenta lo stato REALE, non quello desiderato: la
+  // classificazione (role/costType) dei dati è corretta (verificato nei test
+  // sopra), ma isGuideScenarioRow — logica condivisa in
+  // templates/cost-guide-price-model.ts, esplicitamente FUORI perimetro in
+  // questa revisione (solo dati/contenuti di rifare-tetto) — riconosce uno
+  // scenario/primary solo con `unit === "a corpo"`. rifare-tetto usa "al mq"
+  // (l'unico corretto per un tetto: il prezzo scala sempre con la
+  // superficie). Risultato: le sezioni "Scenari"/"Cosa comprende" del
+  // template NON si attivano oggi, tutte le righe restano nel breakdown. Se
+  // in futuro isGuideScenarioRow viene generalizzato per accettare anche
+  // "al mq", questo assert andrà aggiornato di conseguenza — è il segnale
+  // voluto per accorgersene.
+  const classification = classifyPriceRows(rifareTettoGuide.priceRows)
+
+  assert.equal(classification.primary, null)
+  assert.equal(classification.scenarios.length, 0)
+  assert.equal(classification.scenarioCards.length, 0)
+  assert.equal(classification.breakdown.length, 8)
+})
+
+test("rifare-tetto: isolamento termico 50-120 €/mq, lavorazione autonoma (non scenario)", () => {
+  const isolamento = rifareTettoGuide.priceRows.find((r) => r.id === "tetto-isolamento-coibentazione")
+
+  assert.equal(isolamento?.label, "Isolamento termico del tetto")
+  assert.equal(isolamento?.range, "da 50 € a 120 € al mq")
+  assert.equal(isolamento?.costType, "complete")
+  assert.notEqual(isolamento?.role, "scenario")
+  assert.match(isolamento?.plainExplanation ?? "", /coibentazione/i) // termine tecnico mantenuto come sinonimo
+})
+
+test("rifare-tetto: rimozione e smaltimento 15-30 €/mq, includedIn il rifacimento standard, amianto/eternit escluso ed esplicitamente non prezzato", () => {
+  const rows = rifareTettoGuide.priceRows
+  const smaltimento = rows.find((r) => r.id === "tetto-smaltimento-copertura")
+
+  assert.equal(smaltimento?.label, "Rimozione e smaltimento del vecchio manto")
+  assert.equal(smaltimento?.range, "da 15 € a 30 € al mq")
+  assert.equal(smaltimento?.costType, "work")
+  assert.deepEqual(smaltimento?.relations, [
+    { type: "includedIn", target: "tetto-rifacimento-copertura" },
+  ])
+  // L'id target esiste davvero nella stessa famiglia (oltre alla verifica
+  // globale già fatta da validatePriceRowIntegrity al caricamento del modulo).
+  assert.ok(rows.some((r) => r.id === smaltimento?.relations?.[0]?.target))
+
+  // Amianto/eternit citato come ESCLUSO, mai con un prezzo o un range.
+  assert.match(smaltimento?.excludes ?? "", /amianto/i)
+  assert.match(smaltimento?.note ?? "", /amianto/i)
+})
+
+test("rifare-tetto: nessuna riga della guida assegna un prezzo/range ad amianto, eternit o danni strutturali eccezionali", () => {
+  for (const row of rifareTettoGuide.priceRows) {
+    assert.doesNotMatch(
+      row.label,
+      /amianto|eternit/i,
+      `"${row.id}" non deve essere una PriceRow dedicata ad amianto/eternit`,
+    )
+  }
+})
+
+test("rifare-tetto: grondaie 40-120 €/ml, fornitura e posa", () => {
+  const grondaie = rifareTettoGuide.priceRows.find((r) => r.id === "tetto-grondaie-lattoneria")
+
+  assert.equal(grondaie?.label, "Grondaie — fornitura e posa")
+  assert.equal(grondaie?.unit, "al metro lineare")
+  assert.equal(grondaie?.range, "da 40 € a 120 € al metro lineare")
+  assert.equal(grondaie?.costType, "complete")
+})
+
+test("rifare-tetto: ponteggio 15-30 €/mq DI FACCIATA (non dei mq del tetto), accessibilità resta un fattore e non una PriceRow", () => {
+  const ponteggio = rifareTettoGuide.priceRows.find((r) => r.id === "tetto-ponteggi-accessibilita")
+
+  assert.equal(ponteggio?.label, "Ponteggio standard")
+  assert.equal(ponteggio?.unit, "al mq di facciata")
+  assert.equal(ponteggio?.range, "da 15 € a 30 € al mq di facciata")
+  assert.equal(ponteggio?.costType, "work")
+
+  // Nessuna riga a sé per "accessibilità": resta un fattore qualitativo.
+  assert.ok(!rifareTettoGuide.priceRows.some((r) => /^accessibilit/i.test(r.label)))
+  assert.ok(rifareTettoGuide.factors.some((f) => /accessibilit/i.test(f)))
+})
+
+test("rifare-tetto: nessuna relation rotta — ogni target esiste nella stessa famiglia (ridondante rispetto a validatePriceRowIntegrity, verificato di nuovo qui sui dati composti reali)", () => {
+  const rows = rifareTettoGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  for (const row of rows) {
+    for (const relation of row.relations ?? []) {
+      assert.ok(
+        ids.has(relation.target),
+        `"${row.id}" -> relation "${relation.type}" punta a un id inesistente "${relation.target}"`,
+      )
+    }
+  }
+})
+
+test("altre Cost Guide: nessuna modifica — ristrutturareBagnoGuide resta a 18 priceRows con gli stessi id/range già verificati sopra", () => {
+  assert.equal(ristrutturareBagnoGuide.priceRows.length, 18)
+  assert.equal(
+    ristrutturareBagnoGuide.priceRows.find((r) => r.id === "bagno-ristrutturazione-completa")?.range,
+    "da 4.500 € a 8.000 €",
+  )
 })

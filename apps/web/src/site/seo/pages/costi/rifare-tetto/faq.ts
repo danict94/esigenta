@@ -2,22 +2,22 @@ export const rifareTettoFaq = [
   {
     question: "Quanto costa rifare un tetto al mq?",
     answer:
-      "Indicativamente da 120 € a 300 € al mq, secondo le lavorazioni incluse nel pacchetto: rimozione del vecchio manto, preparazione del supporto, impermeabilizzazione, eventuale isolamento e posa del nuovo manto. È una stima elaborata confrontando le singole lavorazioni dei prezzari regionali ufficiali con le fasce di mercato nazionale, non una voce unica di un prezzario.",
+      "Dipende soprattutto dal tipo di intervento. La fascia principale è quella del rifacimento standard, indicativamente da 120 € a 180 € al mq: rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione e posa del nuovo manto, senza interventi importanti sulla struttura. La sola sostituzione del manto, quando la struttura è già utilizzabile, scende a 60–120 €/mq; un rifacimento con isolamento termico o tetto ventilato sale a 180–300 €/mq; un rifacimento con interventi sulla struttura (travi, orditura, solaio) sale ulteriormente a 280–500 €/mq. Sono stime elaborate confrontando le singole lavorazioni dei prezzari regionali ufficiali con le fasce di mercato nazionale, non una voce unica di un prezzario.",
   },
   {
     question: "Quanto può costare un tetto da 70, 100, 150 o 200 mq?",
     answer:
-      "Applicando la fascia 120–300 €/mq alla superficie: un tetto da 70 mq indicativamente 8.400–21.000 €, da 100 mq 12.000–30.000 €, da 150 mq 18.000–45.000 € e da 200 mq 24.000–60.000 €. Sono calcoli, non preventivi: la superficie del tetto può differire da quella calpestabile dell'abitazione, e pendenza, forma, accessibilità e lavorazioni escluse cambiano il totale.",
+      "Applicando la fascia del rifacimento standard (120–180 €/mq) alla superficie: un tetto da 70 mq indicativamente 8.400–12.600 €, da 100 mq 12.000–18.000 €, da 150 mq 18.000–27.000 € e da 200 mq 24.000–36.000 €. Sono calcoli per il rifacimento standard, non un preventivo e non tutti i possibili scenari: la sola sostituzione del manto costa meno, mentre isolamento/ventilazione o interventi sulla struttura costano di più (vedi gli scenari nella tabella qui sopra).",
   },
   {
     question: "Cosa comprende normalmente il rifacimento e cosa può restare escluso?",
     answer:
-      "Comprende di norma rimozione del vecchio manto, preparazione del supporto, impermeabilizzazione, eventuale isolamento e posa del nuovo manto. Restano spesso esclusi, o possono far salire il costo: interventi sulla struttura portante, ponteggi complessi, accessibilità difficile, lattonerie particolari, lucernari, materiali di pregio, pratiche edilizie e progettazione, smaltimenti eccezionali e lavorazioni impreviste emerse dopo la rimozione del vecchio manto.",
+      "Il rifacimento standard comprende di norma rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione e posa del nuovo manto. Isolamento termico, tetto ventilato e interventi sulla struttura portante hanno fasce proprie più alte (vedi gli altri scenari), non sono compresi automaticamente nella fascia standard. Grondaie e ponteggio hanno anch'essi un prezzo indicativo a parte in questa guida. Restano invece da valutare con un professionista: amianto o eternit (richiedono una bonifica specifica), danni strutturali eccezionali, edifici storici o vincolati, lucernari particolari, pratiche edilizie e progettazione, e lavorazioni impreviste emerse dopo la rimozione del vecchio manto.",
   },
   {
     question: "Quando basta rifare il manto e quando servono interventi sulla struttura?",
     answer:
-      "Se il problema riguarda solo il manto — tegole o coppi da sostituire, con il supporto sottostante in condizioni accettabili — spesso basta una sostituzione del manto, non quotabile con una fascia affidabile senza un sopralluogo. Quando servono anche consolidamento o sostituzione di travi e orditura, una nuova stratigrafia o un isolamento esteso, il lavoro rientra in un rifacimento con intervento sulla struttura, che supera indicativamente la fascia 120–300 €/mq: qui il professionista definisce il perimetro con una valutazione tecnica.",
+      "Se il problema riguarda solo il manto — tegole o coppi da sostituire, con il supporto sottostante in condizioni accettabili — la sola sostituzione del manto ha una fascia indicativa di 60–120 €/mq. Quando servono anche consolidamento o sostituzione di travi e orditura, o un intervento più esteso sul solaio, il lavoro rientra nello scenario con interventi strutturali, indicativamente 280–500 €/mq: qui il professionista definisce il perimetro con una valutazione tecnica, e danni particolarmente importanti possono superare anche questa fascia.",
   },
   {
     question: "Conviene riparare o rifare completamente il tetto?",

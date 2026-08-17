@@ -766,98 +766,178 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // esplicitamente che è una stima multi-fonte (prezzari regionali per le
   // singole lavorazioni + fasce di mercato nazionale), mai un prezzo
   // ufficiale unico di una singola Regione per il pacchetto completo.
+  // Revisione 2026-08 (richiesta editoriale esplicita): la guida aveva UNA
+  // sola riga quotata (120-300 €/mq, nessuna distinzione di scenario) e sei
+  // righe qualitative "da valutare" — troppo vaga per rispondere a "quanto
+  // costa rifare un tetto e perché due tetti della stessa superficie possono
+  // avere costi molto diversi?". Sostituita con 4 scenari di rifacimento
+  // (solo manto 60-120, standard 120-180 come fascia principale, con
+  // isolamento/ventilazione 180-300, con interventi strutturali 280-500) +
+  // 4 lavorazioni specifiche quotate autonomamente (isolamento termico
+  // 50-120, rimozione e smaltimento del vecchio manto 15-30 con includedIn
+  // verso lo scenario standard, grondaie fornitura+posa 40-120 al metro
+  // lineare, ponteggio 15-30 AL MQ DI FACCIATA — non del tetto, per non
+  // confonderlo con l'unità degli scenari). Fasce editoriali già approvate,
+  // non ricercate ex novo in questa revisione. Amianto/eternit, danni
+  // strutturali eccezionali, edifici vincolati e lucernari particolari
+  // restano deliberatamente non prezzati (nessuna fascia affidabile senza
+  // sopralluogo/bonifica specifica) — citati nelle note delle righe
+  // pertinenti, mai con un numero inventato.
+  //
+  // LIMITE NOTO (da non correggere in questo Scope, solo dati/contenuti):
+  // isGuideScenarioRow in templates/cost-guide-price-model.ts riconosce uno
+  // scenario/primary SOLO con `unit === "a corpo"`. Qui l'unità corretta per
+  // uno scenario di rifacimento tetto è "al mq" — un tetto non ha una
+  // "metratura standard" come il bagno (5-6 mq): il prezzo scala sempre con
+  // la superficie, un "a corpo" sarebbe un numero inventato. Risultato: le
+  // sezioni "Scenari"/"Cosa comprende" del template condiviso NON si
+  // attivano oggi per questa guida nonostante role/costType corretti — le 8
+  // righe restano tutte nel Breakdown, raggruppate per category (da qui i
+  // due categoryNote qui sotto, pensati apposta per compensare in prosa
+  // l'assenza delle card Scenario).
   "costGuide:rifare-tetto": {
-    nationalRange: "120–300 € al mq",
-    pricePerSquareMeter: "da 120 € a 300 € al mq",
+    nationalRange: "120–180 € al mq",
+    pricePerSquareMeter: "da 120 € a 180 € al mq",
     sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
     sourceYear: "2025–2026",
     sourceType: "mixed",
     priceRows: [
       {
-        id: "tetto-rifacimento-copertura",
-        label: "Rifacimento della copertura, senza interventi sulla struttura",
-        category: "Rifacimento della copertura",
-        unit: "al mq",
-        range: "da 120 € a 300 € al mq",
-        note: "Stima elaborata confrontando singole lavorazioni quotate nei prezzari regionali ufficiali 2025–2026 con fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per il rifacimento completo del tetto.",
-        includes: "rimozione del vecchio manto, preparazione del supporto, impermeabilizzazione, eventuale isolamento e posa del nuovo manto, secondo il capitolato scelto",
-        excludes: "interventi sulla struttura portante, ponteggi complessi, accessibilità difficile, lattonerie particolari, lucernari, materiali di pregio, pratiche edilizie e progettazione, smaltimenti eccezionali e lavorazioni impreviste emerse dopo la rimozione",
-        confidence: "media",
-        priceType: "corpo",
-      },
-      // Scenario A e C non hanno un numero verificato da fonti di settore
-      // (a differenza della riga sopra): restano qualitative sotto "Da
-      // valutare", stesso pattern delle righe non quotabili del bagno — mai
-      // un numero o un tetto massimo inventato (vedi anche categoryNote).
-      {
         id: "tetto-sostituzione-manto",
         label: "Sostituzione del solo manto",
-        category: "Da valutare con il professionista",
-        categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: comprendono sia interventi più semplici della fascia principale qui sopra (solo manto) sia interventi più complessi (struttura), oltre a fattori che dipendono dal singolo cantiere.",
-        range: "da valutare con il professionista",
-        note: "Può comprendere rimozione di tegole o coppi, un controllo limitato del supporto esistente, posa del nuovo manto e piccole integrazioni: il perimetro esatto va definito con un sopralluogo, senza una fascia in euro affidabile qui.",
+        category: "Scenari di rifacimento",
+        categoryNote: "Questi quattro scenari rappresentano modi diversi di rifare un tetto, in ordine di ampiezza dell'intervento: scegli quello più vicino al tuo caso, non sommare le fasce tra loro.",
+        unit: "al mq",
+        range: "da 60 € a 120 € al mq",
+        plainExplanation: "È la sola sostituzione della copertura esterna — tegole, coppi o un altro manto standard — quando la struttura sottostante (travi, orditura, solaio) è ancora in buone condizioni e non serve intervenire su di essa.",
+        note: "Fascia più bassa tra gli scenari di questa guida: si applica solo quando il supporto esistente è già utilizzabile. Non comprende automaticamente rifacimento strutturale, isolamento termico completo, tetto ventilato o interventi importanti su travi e solaio — quando servono anche questi interventi, il lavoro rientra negli altri scenari di questa guida.",
+        includes: "rimozione del vecchio manto, posa del nuovo manto (tegole, coppi o copertura equivalente) secondo il capitolato scelto",
+        excludes: "rifacimento strutturale, isolamento termico completo, tetto ventilato, interventi importanti su travi o solaio",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
+      },
+      {
+        id: "tetto-rifacimento-copertura",
+        label: "Rifacimento standard della copertura",
+        category: "Scenari di rifacimento",
+        unit: "al mq",
+        range: "da 120 € a 180 € al mq",
+        plainExplanation: "È il rifacimento completo della copertura — rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione e posa del nuovo manto — quando non servono interventi sulla struttura portante né un nuovo isolamento termico completo.",
+        note: "È la fascia principale di questa guida: rappresenta il modo più comune di rifare un tetto, con lavorazioni ordinarie e senza interventi importanti sulla struttura. Non comprende automaticamente un nuovo isolamento termico completo (vedi lo scenario con isolamento/ventilazione) né interventi su travi, orditura o solaio (vedi lo scenario con interventi strutturali). Stima elaborata confrontando singole lavorazioni quotate nei prezzari regionali ufficiali 2025–2026 con fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per il rifacimento completo del tetto.",
+        includes: "rimozione e smaltimento del vecchio manto, preparazione ordinaria del supporto, impermeabilizzazione, nuovo manto e posa, secondo il capitolato scelto",
+        excludes: "isolamento termico completo, tetto ventilato o stratigrafie più evolute, interventi sulla struttura portante (travi, orditura, solaio), grondaie, ponteggio",
+        confidence: "media",
+        costType: "complete",
+        role: "primary",
+      },
+      {
+        id: "tetto-rifacimento-isolamento-ventilazione",
+        label: "Rifacimento con isolamento o ventilazione",
+        category: "Scenari di rifacimento",
+        unit: "al mq",
+        range: "da 180 € a 300 € al mq",
+        plainExplanation: "È il nucleo del rifacimento standard con in più un isolamento termico e/o una stratigrafia più evoluta, come un tetto ventilato.",
+        note: "Rappresenta uno scenario più completo del rifacimento standard: un isolamento relativamente semplice tende alla parte bassa della fascia, mentre un tetto ventilato o una stratigrafia più articolata tende alla parte alta.",
+        includes: "lo stesso nucleo del rifacimento standard (rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione, nuovo manto e posa) più isolamento termico e/o una stratigrafia più evoluta",
+        excludes: "interventi sulla struttura portante (travi, orditura, solaio), grondaie, ponteggio",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
       },
       {
         id: "tetto-rifacimento-struttura",
-        label: "Rifacimento con intervento sulla struttura o alta complessità",
-        category: "Da valutare con il professionista",
-        range: "oltre 300 € al mq, senza un massimo definito",
-        note: "Può comprendere consolidamento o sostituzione di travi e orditura, nuova stratigrafia, isolamento o ventilazione, impermeabilizzazione, nuovo manto e opere accessorie: la struttura sposta il lavoro fuori dalla fascia 120–300 €/mq.",
-      },
-      {
-        id: "tetto-smaltimento-copertura",
-        label: "Smaltimento vecchia copertura",
-        category: "Da valutare con il professionista",
-        range: "variabile in base al cantiere",
-        note: "incide la quantità di materiale, l'accesso e l'eventuale bonifica di materiali datati",
+        label: "Rifacimento con interventi strutturali",
+        category: "Scenari di rifacimento",
+        unit: "al mq",
+        range: "da 280 € a 500 € al mq",
+        plainExplanation: "Rappresenta i casi in cui non si interviene solo sulla copertura ma anche su elementi strutturali come travi, orditura o solaio.",
+        note: "Fascia più alta tra gli scenari di questa guida: si applica quando la struttura portante richiede consolidamento o sostituzione, non solo la copertura esterna. Danni strutturali particolarmente importanti possono richiedere una valutazione tecnica specifica e superare anche questa fascia.",
+        includes: "lo stesso nucleo del rifacimento standard più consolidamento o sostituzione di travi, orditura o solaio e le opere accessorie collegate",
+        excludes: "grondaie, ponteggio, progettazione strutturale, pratiche tecniche, casi eccezionali da valutare con un professionista",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
       },
       {
         id: "tetto-isolamento-coibentazione",
-        label: "Isolamento o coibentazione del tetto",
-        category: "Da valutare con il professionista",
-        range: "da valutare con sopralluogo",
-        note: "Il prezzo dipende da materiale, spessore, prestazione termica richiesta, stratigrafia, posa dall'interno o dall'esterno e dalla necessità di intervenire anche sul manto: un isolamento standard può già rientrare nella fascia 120–300 €/mq, una coibentazione con prestazioni specifiche va valutata a parte.",
+        label: "Isolamento termico del tetto",
+        category: "Lavorazioni specifiche",
+        categoryNote: "Queste voci sono lavorazioni autonome, richiedibili anche da sole: quando una lavorazione è già compresa in uno degli scenari di rifacimento qui sopra, la riga lo indica esplicitamente.",
+        unit: "al mq",
+        range: "da 50 € a 120 € al mq",
+        plainExplanation: "È la lavorazione di isolamento termico (coibentazione) come intervento a sé, comprensiva di materiale isolante e posa — non l'intero rifacimento della copertura.",
+        note: "Il costo cambia soprattutto in base a materiale, spessore, sistema di posa, intervento dall'interno o dall'esterno e necessità di rimuovere la copertura esistente per posarlo. Se stai già valutando un rifacimento completo, guarda invece lo scenario \"Rifacimento con isolamento o ventilazione\" qui sopra, che comprende questo lavoro nel pacchetto.",
+        includes: "fornitura del materiale isolante e posa, secondo il sistema scelto",
+        excludes: "rimozione e posa del manto di copertura, interventi sulla struttura portante",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "tetto-smaltimento-copertura",
+        label: "Rimozione e smaltimento del vecchio manto",
+        category: "Lavorazioni specifiche",
+        unit: "al mq",
+        range: "da 15 € a 30 € al mq",
+        plainExplanation: "È la sola rimozione della vecchia copertura (tegole, coppi o manto ordinario) e il suo conferimento/smaltimento, come lavorazione a sé — non la posa del nuovo manto.",
+        note: "Comprende movimentazione ordinaria, trasporto e conferimento/smaltimento del vecchio manto. Non comprende amianto o eternit: la rimozione di coperture in amianto/eternit richiede una bonifica specifica con procedure e costi propri, non quotabile con questa fascia — serve una valutazione dedicata con un professionista specializzato.",
+        includes: "rimozione di tegole, coppi o copertura ordinaria, movimentazione ordinaria, trasporto, conferimento/smaltimento",
+        excludes: "amianto o eternit (richiedono una bonifica specifica, non quotabile qui), posa del nuovo manto",
+        confidence: "media",
+        costType: "work",
+        relations: [{ type: "includedIn", target: "tetto-rifacimento-copertura" }],
       },
       {
         id: "tetto-grondaie-lattoneria",
-        label: "Grondaie e lattoneria",
-        category: "Da valutare con il professionista",
+        label: "Grondaie — fornitura e posa",
+        category: "Lavorazioni specifiche",
         unit: "al metro lineare",
-        range: "variabile per metro lineare",
-        note: "dipende da materiale, sviluppo lineare e complessità dei raccordi",
+        range: "da 40 € a 120 € al metro lineare",
+        plainExplanation: "È la fornitura e posa delle grondaie in una configurazione ordinaria, non l'intera lattoneria del tetto.",
+        note: "Il costo cambia soprattutto in base a materiale, dimensioni, altezza/accessibilità e complessità del percorso. Converse, scossaline o lattonerie molto particolari non rientrano in questo range e vanno valutate separatamente con il professionista.",
+        includes: "fornitura e posa delle grondaie in una configurazione ordinaria",
+        excludes: "converse, scossaline e lattonerie particolari (da valutare separatamente), pluviali con percorsi complessi",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "tetto-ponteggi-accessibilita",
-        label: "Ponteggi e accessibilità cantiere",
-        category: "Da valutare con il professionista",
-        range: "variabile in base all'edificio",
-        note: "incidono altezza, accesso e durata prevista dei lavori",
+        label: "Ponteggio standard",
+        category: "Lavorazioni specifiche",
+        unit: "al mq di facciata",
+        range: "da 15 € a 30 € al mq di facciata",
+        plainExplanation: "È il costo del ponteggio necessario per lavorare in sicurezza sul tetto, calcolato sulla superficie della facciata da ponteggiare — non sui mq del tetto.",
+        note: "Il costo può aumentare con maggiore altezza dell'edificio, durata del cantiere, occupazione di suolo pubblico e geometrie complesse. L'accessibilità difficile del cantiere resta un fattore che può far salire il costo complessivo del lavoro, non una voce di prezzo a sé in questa tabella.",
+        includes: "montaggio, nolo per la durata del cantiere e smontaggio del ponteggio standard",
+        excludes: "occupazione di suolo pubblico e pratiche collegate, geometrie complesse, altezze eccezionali",
+        confidence: "media",
+        costType: "work",
       },
     ],
     sizeExamples: [
       {
         label: "Tetto da 70 mq",
         sizeRange: "70 mq",
-        range: "da 8.400 € a 21.000 €",
-        note: "Calcolo: 70 mq × 120–300 €/mq.",
+        range: "da 8.400 € a 12.600 €",
+        note: "Calcolo per il rifacimento standard: 70 mq × 120–180 €/mq.",
       },
       {
         label: "Tetto da 100 mq",
         sizeRange: "100 mq",
-        range: "da 12.000 € a 30.000 €",
-        note: "Calcolo: 100 mq × 120–300 €/mq.",
+        range: "da 12.000 € a 18.000 €",
+        note: "Calcolo per il rifacimento standard: 100 mq × 120–180 €/mq.",
       },
       {
         label: "Tetto da 150 mq",
         sizeRange: "150 mq",
-        range: "da 18.000 € a 45.000 €",
-        note: "Calcolo: 150 mq × 120–300 €/mq.",
+        range: "da 18.000 € a 27.000 €",
+        note: "Calcolo per il rifacimento standard: 150 mq × 120–180 €/mq.",
       },
       {
         label: "Tetto da 200 mq",
         sizeRange: "200 mq",
-        range: "da 24.000 € a 60.000 €",
-        note: "Calcolo: 200 mq × 120–300 €/mq.",
+        range: "da 24.000 € a 36.000 €",
+        note: "Calcolo per il rifacimento standard: 200 mq × 120–180 €/mq.",
       },
     ],
   },

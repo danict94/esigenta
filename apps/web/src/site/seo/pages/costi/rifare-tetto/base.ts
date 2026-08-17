@@ -7,10 +7,13 @@ export const rifareTettoBase: CostGuideBaseContent = {
   title: "Costi rifacimento tetto",
   h1: "Quanto costa rifare un tetto?",
   metaTitle: "Quanto costa rifare un tetto? Prezzi indicativi",
-  // Data reale dell'ultima revisione editoriale sostanziale (commit
-  // e08733b, rimozione prezzo non tracciabile e fascia 120–300 €/mq), non
-  // del deploy: vedi engine/editorial-date.ts.
-  lastModified: "2026-08-02",
+  // Data reale dell'ultima revisione editoriale sostanziale (revisione
+  // 2026-08: 4 scenari di rifacimento con fasce concrete + 4 lavorazioni
+  // specifiche quotate, sostituiscono la vecchia riga unica 120–300 €/mq e
+  // le sei voci "da valutare" — vedi il commento dettagliato sopra
+  // "costGuide:rifare-tetto" in market-data/base-price-ranges.ts), non del
+  // deploy: vedi engine/editorial-date.ts.
+  lastModified: "2026-08-18",
   metaDescription:
     "Scopri quanto costa rifare un tetto, con range indicativi, costo al mq, esempi e fattori di prezzo per la tua copertura.",
   heroImage: {
@@ -22,8 +25,17 @@ export const rifareTettoBase: CostGuideBaseContent = {
   hubDescription:
     "Guida ai costi delle principali lavorazioni sul tetto, con voci tecniche e fattori che incidono sul preventivo.",
   topicLabel: "rifare un tetto",
+  // Revisione 2026-08 (SEO, dati reali Search Console — query dominanti su
+  // "quanto costa/costo rifacimento tetto/prezzo al mq"): prima non arrivava
+  // al costo nel testo, solo "dipende da...". Ora apre subito con la fascia
+  // standard in €/mq (stessa risposta immediata dell'H1/meta, già coerenti
+  // e non toccati) e spiega SUBITO perché due tetti della stessa superficie
+  // possono costare cifre molto diverse — il tipo di intervento, non la sola
+  // superficie — coerente con i 4 scenari qui sotto. Nessuna keyword forzata:
+  // "sostituzione del manto"/"isolamento termico"/"interventi sulla
+  // struttura" sono gli stessi termini già usati dagli scenari, non aggiunte.
   summary:
-    "Rifare un tetto significa intervenire su struttura, isolamento, copertura e lattoneria. Il preventivo cambia soprattutto in base a superficie, materiali, stato della struttura e accessibilità del cantiere.",
+    "Rifare un tetto costa indicativamente da 120 a 180 € al mq per il rifacimento standard, ma il prezzo cambia molto in base al tipo di intervento: dalla sola sostituzione del manto, più economica, al rifacimento con isolamento termico o con interventi sulla struttura, più costoso. Il preventivo dipende anche da superficie, materiali e accessibilità del cantiere.",
   factors: [
     "superficie e pendenza della copertura",
     "materiale scelto per il manto (tegole, lamiera, altro)",
@@ -53,17 +65,24 @@ export const rifareTettoBase: CostGuideBaseContent = {
   // mq" che già disambigua); nel modulo isolato della landing intervento,
   // senza quel secondo box a fianco, la didascalia deve dirlo da sola.
   interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
+  // Revisione 2026-08: 120–180 €/mq è ORA la fascia del solo rifacimento
+  // standard (non più "rifare una copertura" in generale), con un rimando
+  // esplicito agli altri scenari — coerente con la richiesta che l'Hero
+  // chiarisca che isolamento/ventilazione e struttura hanno fasce proprie.
   nationalRangeNote:
-    "Indicativamente 120–300 € al mq per rifare una copertura. Il totale dipende dalla superficie, dalla stratigrafia da ricostruire e dalle lavorazioni incluse. Interventi strutturali, ponteggi complessi, accessibilità difficile e materiali particolari possono portare il costo oltre questa fascia.",
+    "Indicativamente 120–180 € al mq per un rifacimento standard della copertura, senza interventi importanti sulla struttura. Isolamento termico, tetto ventilato o interventi sulla struttura portante hanno fasce proprie più alte (vedi gli scenari qui sotto): il totale dipende soprattutto dal tipo di intervento, non solo dalla superficie.",
+  // priceTableIntro/priceTableNote: campi non più letti da
+  // cost-page-template.tsx (sostituito dal nuovo template condiviso, che non
+  // ha un'intro dedicata alla tabella prezzi) — restano nel tipo
+  // CostGuideBaseContent per le altre guide che potrebbero ancora usarli.
+  // Aggiornati comunque per non lasciare un riferimento a "tre scenari" e
+  // "120–300 €/mq" ormai sbagliato nel sorgente, anche se oggi non renderizzato.
   priceTableIntro:
-    "La tabella distingue tre scenari: sostituzione del solo manto, rifacimento senza interventi sulla struttura (la fascia orientativa 120–300 €/mq) e rifacimento con intervento sulla struttura o alta complessità.",
-  // Micro-rifinitura 2026-08 (problema 1): non ripete più fonte/anno, già
-  // detti da sourceLabel/sourceYear appena sotto la tabella — resta solo il
-  // perché una fascia e non un prezzo puntuale unico.
+    "La tabella distingue quattro scenari di rifacimento — solo manto, standard, con isolamento o ventilazione, con interventi sulla struttura — più le lavorazioni specifiche richiedibili separatamente: isolamento termico, rimozione e smaltimento del vecchio manto, grondaie e ponteggio.",
   priceTableNote:
     "Le fasce sono elaborazioni orientative: i prezzari pubblici quotano le singole lavorazioni e non un pacchetto standard unico per il rifacimento completo del tetto.",
   sizeExamplesIntro:
-    "Ogni valore nasce da un calcolo — superficie del tetto moltiplicata per la fascia 120–300 €/mq — non da un preventivo: la superficie del tetto può differire da quella calpestabile dell'abitazione, e pendenza, forma, accessibilità e lavorazioni escluse possono cambiare il totale. Un intervento sulla struttura può superare questa fascia.",
+    "Ogni valore nasce da un calcolo per il rifacimento standard — superficie del tetto moltiplicata per la fascia 120–180 €/mq — non da un preventivo: la superficie del tetto può differire da quella calpestabile dell'abitazione, e pendenza, forma, accessibilità e lavorazioni escluse possono cambiare il totale. La sola sostituzione del manto costa meno, isolamento/ventilazione o interventi sulla struttura costano di più: vedi gli altri scenari nella tabella qui sopra.",
   // Interventi specifici spesso confusi con un rifacimento completo: slug
   // reali del gruppo taxonomy "tetti" (verificati contro
   // project-groups/tetti.ts), nessuno ha oggi una landing o guida propria —
