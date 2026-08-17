@@ -19,7 +19,112 @@ export type PriceRowConfidence = "alta" | "media";
  */
 export type PriceRowType = "manodopera" | "fornitura" | "corpo";
 
+/**
+ * Identificatore stabile di una PriceRow (Scope 1C, audit Scope 1A/1B su
+ * /costi/ristrutturare-bagno). Kebab-case, namespace-izzato per famiglia
+ * (es. "bagno-punto-acqua-completo", "elettrico-punto-presa-incassato-10a")
+ * ma univoco sull'INTERA SSOT, non solo dentro la propria famiglia — vedi
+ * validatePriceRowIntegrity più sotto, che lo impone a livello globale.
+ * Assegnato una volta e mai più cambiato: è la chiave con cui `relations`
+ * riferisce un'altra riga (sempre della stessa famiglia). Deliberatamente
+ * NON deriva da `label` né lo sostituisce: `label` resta testo editoriale
+ * libero di essere riscritto senza rompere alcun riferimento — motivo per
+ * cui l'audit Scope 1B ha scartato sia `label` sia `technicalCode` (sparso,
+ * presente solo sulle righe con un codice di capitolato ufficiale) come
+ * identificatore.
+ */
+export type PriceRowId = string;
+
+/**
+ * Cosa comprende economicamente il prezzo (asse "Composizione", Scope 1B).
+ * Distinto da `unit`, che descrive COME si quantifica il prezzo ("a corpo",
+ * "al mq", "a punto"...), e distinto dal vecchio `priceType` qui sotto, che
+ * mescolava i due assi — vedi il commento di deprecazione su `priceType`.
+ * - "complete": prezzo della lavorazione comprensivo delle componenti
+ *   necessarie previste dal suo perimetro (manodopera+materiali non
+ *   scorporati con certezza dalle fonti).
+ * - "work": prestazione/servizio senza la fornitura del prodotto finale.
+ *   Può comprendere manodopera, posa, demolizione, trasporto, conferimento
+ *   e oneri operativi analoghi — NON va letto come "sola manodopera fisica".
+ * - "supply": sola fornitura/materiale/componente, posa esclusa.
+ * Opzionale in questo Scope: nessuna riga esistente viene riclassificata
+ * automaticamente (la migrazione da `priceType` resta un audit successivo,
+ * riga per riga, per famiglia).
+ */
+export type PriceRowCostType = "complete" | "work" | "supply";
+
+/**
+ * Ruolo della voce rispetto al preventivo (asse "Ruolo", Scope 1B).
+ * - "primary": prezzo autonomo/principale — default logico quando il campo
+ *   è assente, non va impostato esplicitamente solo per dichiararlo.
+ * - "scenario": stesso tipo di lavoro (es. una ristrutturazione completa) ma
+ *   con un'estensione/configurazione diversa da "primary" — non lo stesso
+ *   lavoro calcolato con un metodo di prezzo diverso (quello è
+ *   "alternative"), ma un intervento a sé con perimetro proprio, dello
+ *   stesso genere del pacchetto principale. Aggiunto in Scope 2B.4 per non
+ *   sovraccaricare "alternative" con due significati diversi (vedi sotto).
+ * - "extra": costo che si aggiunge solo quando una condizione si verifica.
+ *   Se la riga dichiara `relations`, almeno una deve essere "addsTo" (vedi
+ *   validatePriceRowIntegrity).
+ * - "alternative": modo alternativo di CALCOLARE/rappresentare lo STESSO
+ *   lavoro di un'altra riga (es. impianto idraulico a corpo vs punto acqua)
+ *   — non va mai sommata a quella riga. Non usarlo per scenari di ampiezza
+ *   diversa dello stesso tipo di intervento: quello è "scenario".
+ * - "reference": valore informativo/di confronto, mai una voce sommabile in
+ *   un totale.
+ * Opzionale in questo Scope, stesso motivo di PriceRowCostType.
+ */
+export type PriceRowRole = "primary" | "scenario" | "extra" | "alternative" | "reference";
+
+/**
+ * Stato del prezzo (asse separato da `role`, Scope 1B): una voce può essere
+ * primaria/extra/alternativa/di riferimento indipendentemente dal fatto che
+ * abbia o meno un numero affidabile da mostrare. NON sostituisce, in questo
+ * Scope, il riconoscimento attuale delle righe qualitative (categoria "Da
+ * valutare con il professionista", oggi risolto dal template via string-match
+ * su `category` — vedi cost-page-template.tsx): il campo viene introdotto ma
+ * nessuna riga legacy viene migrata qui né per string-match automatico.
+ * - "priced": la riga ha un prezzo affidabile mostrabile — default logico
+ *   quando il campo è assente.
+ * - "quoteRequired": la riga richiede valutazione/sopralluogo, nessun
+ *   prezzo affidabile disponibile.
+ */
+export type PriceRowPriceStatus = "priced" | "quoteRequired";
+
+/**
+ * Tipo di relazione strutturata fra due PriceRow della stessa famiglia (asse
+ * "Relazione", Scope 1B). Tutte direzionali A -> B ECCETTO "alternativeTo",
+ * che il sistema interpreta come simmetrica per costruzione: dichiarare
+ * `{ type: "alternativeTo", target: B }` su A basta, NON serve duplicare
+ * anche `{ type: "alternativeTo", target: A }` su B — vedi isAlternativeTo
+ * più sotto, l'unico modo corretto per interrogare la relazione (mai
+ * assumere che l'assenza della dichiarazione inversa significhi "non
+ * alternative").
+ * - "includedIn": questa riga ha un proprio prezzo autonomo ma è già
+ *   compresa nel target quando si considera quel pacchetto — non implica da
+ *   sola che la riga vada nascosta o riclassificata, solo che sommarla al
+ *   target rischia un doppio conteggio.
+ * - "alternativeTo": stesso lavoro, modo alternativo di calcolarlo/
+ *   rappresentarlo rispetto al target — non sommabile al target.
+ * - "addsTo": questa riga è un extra che può aggiungersi al target quando
+ *   applicabile (condizione descritta in prosa da `note`/`plainExplanation`,
+ *   non ancora modellata come dato strutturato in questo Scope).
+ */
+export type PriceRowRelationType = "includedIn" | "alternativeTo" | "addsTo";
+
+export type PriceRowRelation = {
+  type: PriceRowRelationType;
+  /** Id di un'altra PriceRow, sempre della stessa famiglia — vedi validatePriceRowIntegrity. */
+  target: PriceRowId;
+};
+
 export type PriceRow = {
+  /**
+   * Identificatore stabile — vedi PriceRowId. Obbligatorio da Scope 1C in
+   * poi per ogni riga (migrazione meccanica di identità, non semantica: non
+   * implica alcuna riclassificazione dei campi esistenti).
+   */
+  id: PriceRowId;
   label: string;
   /**
    * Raggruppamento della tabella prezzi (es. "Impianti", "Posa e finiture").
@@ -45,7 +150,43 @@ export type PriceRow = {
   excludes?: string;
   /** Presente solo sulle righe con numeri; le righe qualitative non ce l'hanno. */
   confidence?: PriceRowConfidence;
+  /**
+   * @deprecated Transitorio (Scope 1C, audit Scope 1A/1B). Mescola due assi
+   * che ora sono separati: "manodopera"/"fornitura" descrivevano la
+   * composizione economica (vedi `costType`), "corpo" descriveva invece una
+   * modalità di quantificazione già vicina a `unit`. Inoltre "corpo" oggi
+   * copre casi semanticamente diversi nella stessa SSOT (un pacchetto
+   * completo come "Ristrutturazione completa" E un prezzo a punto come
+   * "Punto acqua completo", letto con lo stesso priceType) e NON è
+   * migrabile automaticamente a `costType`: richiede audit editoriale riga
+   * per riga, in uno Scope successivo. Il campo resta attivo e letto dal
+   * template (cost-page-template.tsx): non rimuoverlo né riclassificarlo
+   * qui.
+   */
   priceType?: PriceRowType;
+  /**
+   * Cosa comprende economicamente il prezzo — vedi PriceRowCostType.
+   * Opzionale: le righe legacy non lo impostano finché non sono riclassificate
+   * (nessuna migrazione automatica da `priceType` in questo Scope).
+   */
+  costType?: PriceRowCostType;
+  /**
+   * Ruolo della voce nel preventivo — vedi PriceRowRole. Opzionale, assente
+   * = "primary" (le righe primarie non devono impostarlo esplicitamente).
+   */
+  role?: PriceRowRole;
+  /**
+   * Stato del prezzo — vedi PriceRowPriceStatus. Opzionale, assente =
+   * "priced". Nessuna migrazione automatica delle righe qualitative
+   * esistenti in questo Scope.
+   */
+  priceStatus?: PriceRowPriceStatus;
+  /**
+   * Relazioni strutturate con altre righe della stessa famiglia — vedi
+   * PriceRowRelation. Opzionale: assente o vuoto = nessuna relazione
+   * dichiarata, stesso comportamento di sempre.
+   */
+  relations?: PriceRowRelation[];
   /**
    * Nome comprensibile per un lettore senza competenze tecniche, mostrato
    * come titolo della riga al posto di `label` quando presente. `label`
@@ -114,7 +255,15 @@ export type BasePriceRange = {
   sourceType: CostGuideSourceType;
 };
 
-const basePriceRangesByFamily: Record<string, BasePriceRange> = {
+/**
+ * Esportata (Scope 1C) solo per permettere a validatePriceRowIntegrity di
+ * essere richiamata sui dati reali (vedi la chiamata subito dopo questa
+ * costante) e per i test di non-regressione dell'SSOT — resta comunque il
+ * punto di accesso ai dati grezzi, non aggirare `getBasePriceRange` per il
+ * codice applicativo, quella resta l'unica API pubblica pensata per i
+ * consumer.
+ */
+export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // Ricerca Fase 5.D (2024–2026): Edilnet, Cronoshare, Bottegadomus,
   // Parmatek, IdeaCasaPlan, EdiliziaService, Idealista, Homedeal, kvstore,
   // Megarestauri. Ogni range numerico è coperto da almeno due fonti coerenti.
@@ -143,6 +292,17 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "mixed",
     priceRows: [
       {
+        // Scope 2B.4: role corretto da "alternative" a "scenario". Rinnovo
+        // leggero e ristrutturazione completa NON sono lo stesso lavoro
+        // calcolato con un metodo di prezzo diverso (quello è "alternative",
+        // riservato a casi come impianto idraulico ↔ punto acqua): sono due
+        // scenari di intervento diversi per ampiezza. Rimossa la relation
+        // alternativeTo per lo stesso motivo — non era una vera alternativa
+        // economica, avrebbe sporcato il significato del modello. "complete"
+        // invariato: il pacchetto mescola elementi opzionali senza separare
+        // manodopera/fornitura per singola voce (coerente con priceType
+        // "corpo").
+        id: "bagno-rinnovo-leggero",
         label: "Rinnovo leggero bagno",
         category: "Rinnovo leggero",
         unit: "a corpo",
@@ -153,34 +313,103 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         excludes: "demolizione completa del bagno, nuovo pavimento e nuovi rivestimenti completi, rifacimento dell'impianto idrico, spostamento degli scarichi, doccia a filo pavimento e materiali o arredi di fascia alta",
         confidence: "media",
         priceType: "corpo",
+        costType: "complete",
+        role: "scenario",
       },
       {
+        // Scope 2B.2 (audit Scope 2A): perimetro chiarito senza toccare
+        // prezzo/range. (1) "quando previsti dal preventivo" era l'unica
+        // clausola condizionale di un elenco altrimenti sempre affermativo,
+        // decisione 2 la rende incondizionata (vedi "Smaltimento macerie"
+        // qui sopra). (2) "adeguamento ordinario delle tubazioni" riformulato
+        // per nominare esplicitamente l'impianto idraulico e allineare il
+        // linguaggio a "Impianto idraulico bagno" qui sopra (decisione 3).
+        // (3) "sanitari standard" reso esplicito come fornitura+installazione
+        // (decisione 6), con "di fascia premium" aggiunto agli esclusi per
+        // coerenza con la stessa logica già usata per rubinetteria/piastrelle
+        // pregiate.
+        // Scope 2B.3: chiude i due blocker lasciati aperti dallo Scope 2B.2.
+        // (1) Rubinetteria: la posa/collegamento ordinario della rubinetteria
+        // scelta dal cliente rientra nella normale lavorazione (nuovo item
+        // negli includes), ma la FORNITURA resta sempre una voce separata,
+        // qualunque sia la fascia — "rubinetteria di fascia alta" sostituito
+        // con "fornitura della rubinetteria (qualunque fascia)" negli
+        // excludes: non è più una questione di fascia economica/alta, è una
+        // questione di fornitura vs posa (vedi "Rubinetteria" qui sotto).
+        // (2) Elettrico: "collegamenti elettrici essenziali" precisato con
+        // un inciso (collegamento di punti/prese previsti, senza modifiche
+        // significative) e aggiunto un item esplicito negli excludes per il
+        // caso opposto — confine ora certo, vedi "Adeguamento elettrico del
+        // bagno" qui sotto.
+        id: "bagno-ristrutturazione-completa",
         label: "Ristrutturazione completa",
         category: "Ristrutturazione completa standard (circa 5–6 mq)",
         unit: "a corpo",
         range: "da 4.500 € a 8.000 €",
-        note: "Perimetro tipico di una ristrutturazione completa su un bagno di circa 5–6 mq: le voci scelte nel preventivo possono spostare il totale verso l'alto o verso il basso.",
-        includes: "rimozione dei sanitari esistenti, demolizione ordinaria di pavimento e rivestimenti, rimozione o ripristino del sottofondo (lo strato sotto le piastrelle che crea una base piana e stabile), adeguamento ordinario delle tubazioni dell'acqua e degli scarichi, impermeabilizzazione nelle zone necessarie, nuovo pavimento e rivestimenti di fascia standard, posa, sanitari standard, collegamenti elettrici essenziali, finiture finali e, quando previsti dal preventivo, trasporto e smaltimento ordinari",
-        excludes: "spostamento importante degli scarichi, modifica della colonna condominiale, tubazioni fuori dal bagno, mobile bagno, specchio, illuminazione decorativa, box doccia, rubinetteria di fascia alta, piastrelle pregiate o di grande formato, nicchie, mobili su misura, doccia a filo pavimento complessa, sanitari sospesi con telai e opere murarie, modifiche strutturali, pratiche tecniche e problemi emersi dopo la demolizione",
+        note: "Perimetro tipico di una ristrutturazione completa su un bagno di circa 5–6 mq: le voci scelte nel preventivo possono spostare il totale verso l'alto o verso il basso. Demolizione, smaltimento macerie, impianto idraulico, posa piastrelle e montaggio sanitari hanno anche un prezzo autonomo più sotto in tabella: sono già compresi in questo pacchetto e non vanno sommati di nuovo. La fornitura della rubinetteria resta sempre una voce a parte (vedi \"Rubinetteria\" qui sotto); per un adeguamento elettrico più esteso dei soli collegamenti essenziali, vedi \"Adeguamento elettrico del bagno\" qui sotto.",
+        includes: "rimozione dei sanitari esistenti, demolizione ordinaria di pavimento e rivestimenti, trasporto e smaltimento ordinari delle macerie, rimozione o ripristino del sottofondo (lo strato sotto le piastrelle che crea una base piana e stabile), impianto idraulico interno ordinario (adeguamento delle linee acqua e degli scarichi del bagno), impermeabilizzazione nelle zone necessarie, nuovo pavimento e rivestimenti di fascia standard con posa, sanitari standard forniti e installati, collegamento e posa ordinaria della rubinetteria fornita a parte, collegamenti elettrici essenziali (collegamento dei punti luce e prese previsti, senza modifiche significative all'impianto esistente), finiture finali",
+        excludes: "spostamento importante degli scarichi, modifica della colonna condominiale, tubazioni fuori dal bagno, opere murarie estese, mobile bagno, specchio, illuminazione decorativa, box doccia, fornitura della rubinetteria (qualunque fascia), piastrelle pregiate o di grande formato, nicchie, mobili su misura, doccia a filo pavimento complessa, sanitari sospesi, con telai o di fascia premium, adeguamento elettrico con nuovi punti, nuove linee o interventi sul quadro, modifiche strutturali, pratiche tecniche e problemi emersi dopo la demolizione",
         confidence: "media",
         priceType: "corpo",
+        costType: "complete",
+        role: "primary",
       },
       {
+        // Scope 2B.3: stessa struttura di "Ristrutturazione completa" (unit
+        // "a corpo", range reale, non un mero riferimento) applicata a un
+        // bagno fuori dallo standard 5–6 mq.
+        // Scope 2B.4: role corretto da "alternative" a "scenario" — non è lo
+        // stesso lavoro della ristrutturazione completa calcolato con un
+        // metodo di prezzo diverso, è la stessa NATURA di intervento
+        // (nucleo identico) su un'estensione/configurazione maggiore.
+        // "alternative" resta riservato alle vere alternative economiche
+        // (impianto idraulico ↔ punto acqua) — relation alternativeTo
+        // rimossa per lo stesso motivo. Perimetro proprio scritto qui sotto:
+        // stesso nucleo di "Ristrutturazione completa" qui sopra (demolizione
+        // → smaltimento → impianto interno → impermeabilizzazione → posa →
+        // sanitari standard installati → finiture), scalato per maggiore
+        // superficie/complessità; restano fuori gli stessi extra già
+        // separati altrove nella tabella (spostamento importante scarichi,
+        // rubinetteria, box doccia, materiali premium, adeguamento elettrico
+        // esteso, opere strutturali, imprevisti) — così lo Scope 3 confronta
+        // lo stesso perimetro della fascia standard, a una scala diversa.
+        id: "bagno-ristrutturazione-complessa",
         label: "Bagno più grande o più complesso",
         category: "Ristrutturazione complessa o di fascia alta",
         unit: "a corpo",
         range: "da 8.000 € a 12.000 €",
-        note: "Bagni oltre i 5–6 mq standard, con più sanitari, più punti acqua o una disposizione più articolata.",
+        note: "Stesso perimetro di lavorazioni della ristrutturazione completa standard qui sopra, applicato a un bagno oltre i 5–6 mq o con una disposizione più articolata (più sanitari, più punti acqua, superficie maggiore): l'incidenza aumenta per la maggiore quantità di pavimento e rivestimenti e per la maggiore complessità della lavorazione, non perché cambi il tipo di intervento.",
+        includes: "lo stesso nucleo della ristrutturazione completa standard, su una superficie maggiore o con una disposizione meno semplice: rimozione dei sanitari esistenti, demolizione ordinaria di pavimento e rivestimenti, trasporto e smaltimento ordinari delle macerie, rimozione o ripristino del sottofondo, impianto idraulico interno ordinario, impermeabilizzazione nelle zone necessarie, maggiore quantità di pavimento e rivestimenti di fascia standard con posa, sanitari standard forniti e installati, collegamento e posa ordinaria della rubinetteria fornita a parte, collegamenti elettrici essenziali, finiture finali",
+        excludes: "spostamento importante degli scarichi, fornitura della rubinetteria (qualunque fascia), box doccia, piastrelle o materiali di fascia premium, adeguamento elettrico con nuovi punti, nuove linee o interventi sul quadro, opere strutturali e imprevisti rilevanti scoperti dopo la demolizione",
         confidence: "media",
         priceType: "corpo",
+        costType: "complete",
+        role: "scenario",
       },
       {
+        // Scope 2B.3: "oltre 12.000 €, senza un massimo definito" non è un
+        // prezzo determinato (né uno scenario a sé, né un extra quantificato
+        // da sommare): è una soglia/avviso su cosa fa salire il costo oltre
+        // la fascia complessa qui sopra. role "reference" — non un totale
+        // alternativo né un extra sommabile. Nessun costType (non descrive
+        // la composizione di UNA lavorazione, coerente con "Costo indicativo
+        // al mq" qui sotto, stesso trattamento). Nessuna relation aggiunta:
+        // la contiguità con la riga precedente è già chiara dalla categoria
+        // condivisa, una relation qui sarebbe ridondante.
+        id: "bagno-forniture-pregiate-imprevisti",
         label: "Forniture pregiate, modifiche importanti o imprevisti",
         category: "Ristrutturazione complessa o di fascia alta",
         range: "oltre 12.000 €, senza un massimo definito",
         note: "Può comprendere spostamento importante degli scarichi, doccia a filo pavimento complessa, sanitari sospesi con telai incassati, nicchie, piastrelle di grande formato, arredi su misura, materiali di pregio, modifiche distributive, impianti deteriorati da rifare o imprevisti scoperti dopo la demolizione.",
+        role: "reference",
       },
       {
+        // Scope 2B.3: già "riferimento secondario" per costruzione (vedi
+        // category e note) — role "reference" lo rende esplicito nel
+        // modello. Nessuna relation alternativeTo preesisteva da correggere.
+        // Nessun costType: non descrive la composizione di una singola
+        // lavorazione ma una lettura aggregata dell'intero progetto al mq.
+        id: "bagno-costo-al-mq",
         label: "Costo indicativo al mq",
         category: "Prezzo al mq (riferimento secondario)",
         unit: "al mq",
@@ -188,40 +417,105 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "Riferimento secondario, utile solo per confrontare preventivi già ricevuti: in un bagno piccolo il costo al mq può essere più alto, perché sanitari, scarichi e collegamenti pesano quasi allo stesso modo indipendentemente dalla metratura. Il totale non è una semplice moltiplicazione tra superficie e questo valore.",
         includes: "demolizioni, impianti, posa e manodopera con materiali di fascia media",
         confidence: "media",
+        role: "reference",
       },
       {
+        // Scope 2B.2: demolizione ordinaria di pavimento/rivestimenti è
+        // esplicitamente compresa negli includes di "Ristrutturazione
+        // completa" qui sotto — includedIn, resta comunque autonoma per
+        // lavori parziali e come riferimento al mq.
+        // Chiusura Scope 3: range corretto a 20-40 €/mq. La tariffa al mq
+        // incorporava anche la rimozione dei vecchi sanitari (un elemento
+        // non areale) sotto la stessa tariffa di pavimento/rivestimenti —
+        // segnalato dall'audit Scope 3A.1 come rischio di confronto con
+        // fonti esterne. La riga copre ora solo pavimenti e rivestimenti:
+        // la rimozione dei sanitari resta dov'era già dichiarata, dentro gli
+        // includes di "Ristrutturazione completa" ("rimozione dei sanitari
+        // esistenti"), non qui — nessuna nuova PriceRow creata. costType,
+        // role e relations invariati.
+        id: "bagno-demolizione-pavimenti-rivestimenti",
         label: "Demolizione pavimenti e rivestimenti",
         category: "Demolizione e smaltimento",
         unit: "al mq",
-        range: "da 35 € a 40 € al mq",
-        note: "sola rimozione, prima del conferimento in discarica (vedi la voce smaltimento qui sotto)",
-        includes: "rimozione di pavimento, rivestimenti e vecchi sanitari",
-        excludes: "smaltimento delle macerie",
+        range: "da 20 € a 40 € al mq",
+        note: "sola rimozione di pavimenti e rivestimenti, prima del conferimento in discarica (vedi la voce smaltimento qui sotto); la rimozione dei sanitari è compresa nella ristrutturazione completa, non in questa tariffa al mq",
+        includes: "rimozione di pavimenti e rivestimenti",
+        excludes: "smaltimento delle macerie, demolizione del massetto quando necessaria, rimozione dei sanitari",
         confidence: "media",
         priceType: "manodopera",
+        costType: "work",
+        role: "primary",
+        relations: [{ type: "includedIn", target: "bagno-ristrutturazione-completa" }],
       },
       {
+        // Scope 2B.2: il precedente "quando previsti dal preventivo" negli
+        // includes della ristrutturazione completa era l'unica clausola
+        // condizionale in un elenco altrimenti sempre affermativo — letta
+        // insieme alla nota della demolizione qui sopra ("prima del
+        // conferimento in discarica", le due righe già presentate come le
+        // due fasi dello stesso processo) risolta come: il trasporto e lo
+        // smaltimento ORDINARI sono compresi nella ristrutturazione
+        // completa, come la demolizione che li precede. includedIn, resta
+        // comunque autonoma per lavori parziali.
+        // Chiusura Scope 3: range corretto a 300-600 € per rappresentare la
+        // situazione ordinaria (1-2 mc, bagno standard); i fattori che
+        // possono farlo salire restano in nota, non nel range. costType,
+        // role e relations invariati.
+        id: "bagno-smaltimento-macerie",
         label: "Smaltimento macerie",
         category: "Demolizione e smaltimento",
         unit: "a corpo",
-        range: "da 300 € a 800 €",
+        range: "da 300 € a 600 €",
         plainExplanation: "È il trasporto e lo smaltimento autorizzato dei materiali demoliti in un impianto apposito (il conferimento in discarica).",
-        note: "un bagno standard produce circa 1-2 metri cubi di macerie; incidono volume, accesso al cantiere e distanza dalla discarica autorizzata",
+        note: "la fascia rappresenta la situazione ordinaria: un bagno standard produce circa 1-2 metri cubi di macerie. Il costo può salire con un volume maggiore, un accesso difficoltoso al cantiere, piani alti o logistica complessa e una maggiore distanza dal centro di conferimento",
         confidence: "media",
         priceType: "manodopera",
+        costType: "work",
+        role: "primary",
+        relations: [{ type: "includedIn", target: "bagno-ristrutturazione-completa" }],
       },
       {
+        // Scope 2B.2: "distribuzione acqua e scarichi interni al bagno" con
+        // "opere murarie estese e colonne condominiali" escluse è la stessa
+        // lavorazione descritta come "impianto idraulico interno ordinario"
+        // negli includes della ristrutturazione completa qui sotto (stesso
+        // confine ordinario/interno vs esteso/condominiale) — includedIn,
+        // resta comunque autonoma per chi rifà solo l'impianto. L'alternativa
+        // di calcolo verso le righe "punto acqua" qui sotto resta dichiarata
+        // solo lì (relazione simmetrica, vedi isAlternativeTo): nessuna
+        // relation ridondante aggiunta qui.
+        // Chiusura Scope 3: nota riformulata. La vecchia formulazione ("due
+        // modi di leggere lo stesso lavoro, a corpo o punto per punto")
+        // poteva far intendere che il prezzo a corpo fosse la somma
+        // matematica dei prezzi a punto — l'audit Scope 3A.1 aveva mostrato
+        // che non torna nemmeno per un bagno minimo (3 punti completi =
+        // 450-840 €, sotto il floor del pacchetto a corpo). Il prezzo a
+        // punto resta utile per interventi puntuali; il prezzo a corpo
+        // resta il riferimento per il rifacimento completo perché comprende
+        // anche la distribuzione complessiva interna, non solo la somma dei
+        // singoli punti. Prezzo, perimetro e relations invariati.
+        id: "bagno-impianto-idraulico",
         label: "Impianto idraulico bagno",
         category: "Impianti",
         unit: "a corpo",
         range: "da 1.000 € a 2.500 €",
-        note: "vale come pacchetto per rifare tutti i punti del bagno insieme: dal bagno piccolo con impianto semplice al bagno grande con più punti. Non sommarla alle righe \"punto acqua\" qui sotto: sono due modi di leggere lo stesso lavoro, a corpo o punto per punto",
+        note: "vale come pacchetto per rifare tutti i punti del bagno insieme, dal bagno piccolo con impianto semplice al bagno grande con più punti. Il prezzo a punto qui sotto è utile per interventi puntuali o per leggere singole voci del preventivo: per il rifacimento completo dell'impianto è più significativo questo prezzo a corpo, che comprende anche la distribuzione complessiva interna e non va sommato punto per punto",
         includes: "distribuzione acqua e scarichi interni al bagno",
         excludes: "opere murarie estese e colonne condominiali",
         confidence: "media",
         priceType: "corpo",
+        costType: "complete",
+        role: "primary",
+        relations: [{ type: "includedIn", target: "bagno-ristrutturazione-completa" }],
       },
       {
+        // Scope 2B.2: alternativeTo dichiarata una sola volta (simmetrica per
+        // costruzione, vedi isAlternativeTo) verso "Impianto idraulico
+        // bagno". Nessun includedIn diretto verso la ristrutturazione
+        // completa: sarebbe ridondante e semanticamente confuso, dato che
+        // "Impianto idraulico bagno" è già includedIn quella riga — modello
+        // minimo, non transitivo automaticamente ma non serve duplicarlo.
+        id: "bagno-punto-acqua-semplice",
         label: "Punto acqua semplice",
         category: "Impianti",
         unit: "a punto",
@@ -231,8 +525,17 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "attacco di carico o scarico del singolo elemento",
         confidence: "media",
         priceType: "corpo",
+        // Scope 2B.3: role assente equivaleva silenziosamente a "primary",
+        // impreciso per una riga che è per definizione un modo alternativo
+        // di leggere lo stesso lavoro di "Impianto idraulico bagno" — non un
+        // prezzo principale a sé stante. relation invariata.
+        role: "alternative",
+        relations: [{ type: "alternativeTo", target: "bagno-impianto-idraulico" }],
       },
       {
+        // Scope 2B.2: alternativeTo verso "Impianto idraulico bagno".
+        // Scope 2B.3: idem correzione di role, vedi commento sopra.
+        id: "bagno-punto-acqua-completo",
         label: "Punto acqua completo",
         category: "Impianti",
         unit: "a punto",
@@ -242,17 +545,41 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         includes: "carico caldo/freddo, scarico e opere murarie localizzate per il punto",
         confidence: "alta",
         priceType: "corpo",
+        role: "alternative",
+        relations: [{ type: "alternativeTo", target: "bagno-impianto-idraulico" }],
       },
       {
-        label: "Spostamento scarichi",
+        // Scope 2B.1: classificata come extra condizionale (role "extra"),
+        // coerente con la nota della trasformazione vasca-doccia qui sotto
+        // ("aggiungi anche questa voce") e con l'esclusione esplicita dello
+        // spostamento importante degli scarichi negli excludes della
+        // ristrutturazione completa più sotto — relations verso entrambe.
+        // Chiusura Scope 3: label e plainExplanation chiariscono che la riga
+        // rappresenta lo spostamento di UN SOLO scarico, non un numero
+        // indefinito. Prezzo, costType, role e relations invariati.
+        id: "bagno-spostamento-scarichi",
+        label: "Spostamento di uno scarico",
         category: "Impianti",
         unit: "a corpo",
         range: "da 200 € a 800 €",
+        plainExplanation: "Riguarda il riposizionamento di un singolo scarico rispetto alla sua posizione originale (per esempio quello della doccia o della vasca), non di più scarichi contemporaneamente.",
         note: "il range è ampio perché dipende dalla distanza dalla posizione originale: uno spostamento minimo resta nella parte bassa, un nuovo tracciato esteso su pavimento o muratura sale verso la parte alta",
         confidence: "media",
         priceType: "corpo",
+        costType: "complete",
+        role: "extra",
+        relations: [
+          { type: "addsTo", target: "bagno-trasformazione-vasca-doccia" },
+          { type: "addsTo", target: "bagno-ristrutturazione-completa" },
+        ],
       },
       {
+        // Scope 2B.2: la posa "di fascia standard" descritta negli includes
+        // della ristrutturazione completa qui sotto è questa stessa
+        // lavorazione — includedIn, resta comunque autonoma per lavori
+        // parziali e come riferimento al mq (invariato). Fornitura piastrelle
+        // resta sempre esclusa ed è un'altra cosa, invariato.
+        id: "bagno-posa-piastrelle-rivestimenti",
         label: "Posa piastrelle e rivestimenti",
         category: "Posa e finiture",
         unit: "al mq",
@@ -262,8 +589,19 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         excludes: "fornitura delle piastrelle",
         confidence: "alta",
         priceType: "manodopera",
+        costType: "work",
+        role: "primary",
+        relations: [{ type: "includedIn", target: "bagno-ristrutturazione-completa" }],
       },
       {
+        // Scope 2B.2: "sanitari standard" nel pacchetto completo qui sotto
+        // significa fornitura E installazione (vedi il commento sulla
+        // ristrutturazione completa) — il montaggio descritto qui è quindi
+        // già compreso quando si tratta di sanitari standard. includedIn,
+        // resta comunque autonoma per sostituzioni/lavori parziali fuori dal
+        // pacchetto. Fornitura sanitario e predisposizione punto acqua
+        // restano sempre escluse, invariato.
+        id: "bagno-montaggio-sanitari",
         label: "Montaggio sanitari",
         category: "Posa e finiture",
         unit: "a elemento",
@@ -273,40 +611,121 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         excludes: "fornitura del sanitario, opere di predisposizione del punto acqua",
         confidence: "media",
         priceType: "manodopera",
+        costType: "work",
+        role: "primary",
+        relations: [{ type: "includedIn", target: "bagno-ristrutturazione-completa" }],
       },
       {
+        // Scope 2B.1 (audit Scope 2A): la fascia precedente (1.000-3.500 €)
+        // mescolava sola lavorazione e fornitura del piatto doccia sotto lo
+        // stesso prezzo — "piatto doccia standard" negli includes lasciava
+        // credere che la fornitura fosse compresa. Ridefinita come SOLA
+        // LAVORAZIONE (fascia e perimetro approvati in sede di decisione
+        // editoriale, non ridiscussi qui): la fornitura del piatto doccia,
+        // del box e della rubinetteria resta sempre a parte. priceType
+        // corretto da "corpo" a "manodopera" applicando la regola già
+        // esistente su PriceRowType qui sopra (excludes "fornitura" ->
+        // manodopera): non una nuova regola, solo un'applicazione corretta
+        // ora che includes/excludes lo rendono inequivocabile.
+        id: "bagno-trasformazione-vasca-doccia",
         label: "Trasformazione vasca in doccia",
         category: "Posa e finiture",
         unit: "a corpo",
-        range: "da 1.000 € a 3.500 €",
-        plainExplanation: "La fascia riguarda la sostituzione ordinaria della vasca con un piatto doccia e gli adattamenti locali necessari. Una doccia a filo pavimento può richiedere demolizioni, nuove pendenze, impermeabilizzazione e modifica dello scarico, quindi può superare questa fascia.",
-        note: "Se lo scarico va spostato in modo importante rispetto alla posizione della vasca, aggiungi anche la voce \"Spostamento scarichi\" qui sopra.",
-        includes: "rimozione della vasca, piatto doccia standard, adattamento localizzato degli scarichi e dei collegamenti, ripristino limitato dei rivestimenti e posa",
-        excludes: "box doccia di fascia alta, rifacimento esteso dei rivestimenti, spostamento importante dello scarico, demolizione estesa del pavimento e doccia a filo pavimento complessa",
+        range: "da 500 € a 1.000 €",
+        plainExplanation: "È la sola lavorazione per sostituire la vasca con un piatto doccia: rimozione della vasca, adattamenti locali e posa del piatto. Il piatto doccia, il box doccia e la rubinetteria sono forniture separate, non comprese in questo prezzo; il montaggio del box doccia ha una voce propria qui sotto.",
+        note: "Se lo scarico va spostato in modo importante rispetto alla posizione della vasca, aggiungi anche la voce \"Spostamento di uno scarico\" qui sopra. Per un rifacimento più esteso dei rivestimenti della zona doccia, vedi la voce \"Posa piastrelle e rivestimenti\". Una doccia a filo pavimento che richiede lavorazione del massetto, nuove pendenze, impermeabilizzazione specifica o una modifica significativa dello scarico non rientra in questa fascia: il prezzo specifico sarà verificato in un audit economico successivo.",
+        includes: "rimozione della vasca esistente, preparazione della zona, adattamento localizzato dei collegamenti idraulici e dello scarico quando resta sostanzialmente nella stessa posizione, posa del piatto doccia fornito a parte, piccoli ripristini localizzati",
+        excludes: "fornitura del piatto doccia, del box doccia, della rubinetteria o colonna doccia e dei rivestimenti o materiali decorativi, montaggio del box doccia, modifica importante della posizione dello scarico, rifacimento esteso dei rivestimenti, demolizioni estese, interventi importanti sul massetto o sul sottofondo e doccia a filo pavimento complessa",
         confidence: "media",
-        priceType: "corpo",
+        priceType: "manodopera",
+        costType: "work",
+        role: "primary",
       },
       {
+        // Scope 2B.1: chiarita esplicitamente come sola fornitura, per
+        // rimuovere l'ambiguità con "piatto doccia standard" che compariva
+        // negli includes della trasformazione vasca-doccia prima di questa
+        // revisione. Range invariato (non oggetto di revisione economica in
+        // questo Scope).
+        id: "bagno-box-doccia-fornitura",
         label: "Box doccia (fornitura)",
         category: "Posa e finiture",
         unit: "a elemento",
         range: "da 250 € a 1.500 €",
+        plainExplanation: "È la sola fornitura del box doccia: il prezzo del box, non compreso nella \"Trasformazione vasca in doccia\" qui sopra. Il montaggio ha una voce propria qui sotto.",
         note: "scorrevoli base in fascia bassa, cristallo temperato in fascia media, walk-in in fascia alta",
         excludes: "montaggio",
         confidence: "media",
         priceType: "fornitura",
+        costType: "supply",
+        role: "primary",
       },
       {
+        // Scope 2B.1: nuova riga, colma il buco individuato nello Scope 2A
+        // ("manca una voce montaggio box doccia" — necessità ALTA). Sola
+        // installazione: fornitura del box, piatto doccia, spostamento
+        // scarichi, rivestimenti e opere murarie estese restano sempre
+        // fuori, così come smontaggio/smaltimento di un vecchio box, mai
+        // dato per incluso di default.
+        id: "bagno-montaggio-box-doccia",
+        label: "Montaggio box doccia",
+        category: "Posa e finiture",
+        unit: "a elemento",
+        range: "da 150 € a 500 €",
+        plainExplanation: "È la sola installazione del box doccia già acquistato, con il piatto doccia già posato e il punto pronto per il montaggio: la fascia bassa riguarda box standard con montaggio semplice, la fascia alta box più grandi, con più lati, vetri pesanti, sistemi complessi o pareti fuori squadra che richiedono adattamenti.",
+        note: "Non comprende la fornitura del box doccia (vedi la voce \"Box doccia\" qui sopra) né il piatto doccia. Lo smontaggio e lo smaltimento di un vecchio box, quando servono, non sono dati per inclusi: vanno verificati a parte.",
+        includes: "montaggio del box su un piatto doccia già posato e un punto già predisposto, regolazioni e fissaggi ordinari",
+        excludes: "fornitura del box doccia, fornitura e posa del piatto doccia, spostamento degli scarichi, rifacimento dei rivestimenti, opere murarie estese, smontaggio e smaltimento di un vecchio box",
+        confidence: "media",
+        priceType: "manodopera",
+        costType: "work",
+        role: "primary",
+      },
+      {
+        // Scope 2B.3: chiude il blocker editoriale lasciato aperto dallo
+        // Scope 2B.2. Decisione applicata: la fornitura della rubinetteria
+        // (qualunque fascia) resta sempre una voce separata dal pacchetto
+        // standard — coerente con l'excludes riformulato di "Ristrutturazione
+        // completa" qui sopra ("fornitura della rubinetteria (qualunque
+        // fascia)", non più "solo di fascia alta"). La posa/collegamento
+        // ordinario, quando la rubinetteria è fornita a parte, rientra
+        // invece nella normale lavorazione (vedi includes della
+        // ristrutturazione completa). category invariata ("Da valutare con
+        // il professionista" è letta dal template per il rendering
+        // qualitativo, cost-page-template.tsx). Nessun range inventato.
+        id: "bagno-rubinetteria",
         label: "Rubinetteria",
         category: "Da valutare con il professionista",
         range: "variabile per marca e finitura",
+        plainExplanation: "Il prezzo riguarda la sola fornitura dei miscelatori e degli accessori scelti: il collegamento e la posa, quando la rubinetteria è fornita a parte, rientrano nella normale lavorazione del pacchetto o della voce di posa.",
         note: "la differenza tra fascia economica e design è troppo ampia per un range affidabile: chiedi la fornitura come voce separata del preventivo",
+        costType: "supply",
+        role: "primary",
+        priceStatus: "quoteRequired",
       },
       {
+        // Scope 2B.3: chiude la relazione lasciata NON DECIDIBILE dallo
+        // Scope 2B.2, riscrivendo il confine (vedi anche l'inciso aggiunto a
+        // "collegamenti elettrici essenziali" negli includes della
+        // ristrutturazione completa qui sopra): questa riga rappresenta
+        // interventi elettrici ulteriori rispetto ai collegamenti essenziali
+        // già compresi nel pacchetto standard — role "extra" + addsTo.
+        // priceStatus "quoteRequired": nessun numero affidabile, invariato
+        // (range qualitativo). costType volutamente NON compilato: il testo
+        // non permette di stabilire se il prezzo di questi interventi sia
+        // "work" (sola posa, materiali già presenti) o "complete" (materiali
+        // e manodopera non scorporabili, es. una nuova linea dedicata che
+        // comprende sia il cavo sia la posa) — nessun includes/excludes lo
+        // separa con certezza, a differenza di altre righe di questo Scope.
+        id: "bagno-adeguamento-elettrico",
         label: "Adeguamento elettrico del bagno",
         category: "Da valutare con il professionista",
         range: "da valutare con sopralluogo",
+        plainExplanation: "Riguarda gli interventi elettrici che vanno oltre i collegamenti essenziali già compresi nella ristrutturazione completa: aggiunta o spostamento di punti luce e prese, nuove linee dedicate, interventi sul quadro o sulle protezioni, o comunque lavori che richiedono una valutazione dedicata.",
         note: "incidono numero di punti luce e prese, stato dell'impianto esistente ed eventuale nuova linea dedicata",
+        role: "extra",
+        priceStatus: "quoteRequired",
+        relations: [{ type: "addsTo", target: "bagno-ristrutturazione-completa" }],
       },
     ],
     sizeExamples: [
@@ -355,6 +774,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "mixed",
     priceRows: [
       {
+        id: "tetto-rifacimento-copertura",
         label: "Rifacimento della copertura, senza interventi sulla struttura",
         category: "Rifacimento della copertura",
         unit: "al mq",
@@ -370,6 +790,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       // valutare", stesso pattern delle righe non quotabili del bagno — mai
       // un numero o un tetto massimo inventato (vedi anche categoryNote).
       {
+        id: "tetto-sostituzione-manto",
         label: "Sostituzione del solo manto",
         category: "Da valutare con il professionista",
         categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: comprendono sia interventi più semplici della fascia principale qui sopra (solo manto) sia interventi più complessi (struttura), oltre a fattori che dipendono dal singolo cantiere.",
@@ -377,24 +798,28 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "Può comprendere rimozione di tegole o coppi, un controllo limitato del supporto esistente, posa del nuovo manto e piccole integrazioni: il perimetro esatto va definito con un sopralluogo, senza una fascia in euro affidabile qui.",
       },
       {
+        id: "tetto-rifacimento-struttura",
         label: "Rifacimento con intervento sulla struttura o alta complessità",
         category: "Da valutare con il professionista",
         range: "oltre 300 € al mq, senza un massimo definito",
         note: "Può comprendere consolidamento o sostituzione di travi e orditura, nuova stratigrafia, isolamento o ventilazione, impermeabilizzazione, nuovo manto e opere accessorie: la struttura sposta il lavoro fuori dalla fascia 120–300 €/mq.",
       },
       {
+        id: "tetto-smaltimento-copertura",
         label: "Smaltimento vecchia copertura",
         category: "Da valutare con il professionista",
         range: "variabile in base al cantiere",
         note: "incide la quantità di materiale, l'accesso e l'eventuale bonifica di materiali datati",
       },
       {
+        id: "tetto-isolamento-coibentazione",
         label: "Isolamento o coibentazione del tetto",
         category: "Da valutare con il professionista",
         range: "da valutare con sopralluogo",
         note: "Il prezzo dipende da materiale, spessore, prestazione termica richiesta, stratigrafia, posa dall'interno o dall'esterno e dalla necessità di intervenire anche sul manto: un isolamento standard può già rientrare nella fascia 120–300 €/mq, una coibentazione con prestazioni specifiche va valutata a parte.",
       },
       {
+        id: "tetto-grondaie-lattoneria",
         label: "Grondaie e lattoneria",
         category: "Da valutare con il professionista",
         unit: "al metro lineare",
@@ -402,6 +827,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "dipende da materiale, sviluppo lineare e complessità dei raccordi",
       },
       {
+        id: "tetto-ponteggi-accessibilita",
         label: "Ponteggi e accessibilità cantiere",
         category: "Da valutare con il professionista",
         range: "variabile in base all'edificio",
@@ -459,6 +885,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "official",
     priceRows: [
       {
+        id: "impermeabilizzare-tetto-guaina-liscia",
         label: "Guaina bituminosa liscia",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
@@ -469,6 +896,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-guaina-ardesiata",
         label: "Guaina bituminosa ardesiata",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
@@ -479,6 +907,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-membrana-standard",
         label: "Membrana bituminosa standard",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
@@ -489,6 +918,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-doppia-membrana-alluminio",
         label: "Doppia membrana con finitura in alluminio",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
@@ -499,6 +929,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-doppia-membrana-rame-4kg",
         label: "Doppia membrana con protezione in rame (4 kg/m²)",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
@@ -509,6 +940,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-doppia-membrana-rame-4-5kg",
         label: "Doppia membrana con protezione in rame (4,5 kg/m²)",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
@@ -519,6 +951,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-riparazione-manto-fessurato",
         label: "Riparazione di manto bituminoso fessurato",
         category: "Riparazioni e preparazione",
         unit: "al mq",
@@ -529,6 +962,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-ricerca-infiltrazione",
         label: "Ricerca e riparazione di infiltrazione isolata",
         category: "Riparazioni e preparazione",
         unit: "cadauna",
@@ -539,6 +973,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-lisciatura-piano-posa",
         label: "Lisciatura del piano di posa",
         category: "Riparazioni e preparazione",
         unit: "al mq",
@@ -549,6 +984,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "impermeabilizzare-tetto-conferimento-guaina",
         label: "Conferimento in impianto della guaina bituminosa",
         category: "Smaltimento",
         unit: "ogni 100 kg",
@@ -589,6 +1025,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "mixed",
     priceRows: [
       {
+        id: "terrazzo-impermeabilizzazione-standard",
         label: "Impermeabilizzazione standard della superficie",
         category: "Impermeabilizzazione della superficie",
         unit: "al mq",
@@ -605,6 +1042,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       // tetto — mai un numero o un tetto massimo inventato (vedi anche
       // categoryNote).
       {
+        id: "terrazzo-riparazione-localizzata",
         label: "Riparazione o impermeabilizzazione localizzata",
         category: "Da valutare con il professionista",
         categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: comprendono sia interventi più mirati della fascia principale qui sopra (riparazioni localizzate) sia interventi più complessi (sistemi ad alte prestazioni), oltre a fattori che dipendono dal singolo cantiere.",
@@ -612,6 +1050,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "Può riguardare uno scarico, un bocchettone, una soglia, un raccordo, un giunto o una piccola zona deteriorata. Per lavori di questo tipo il prezzo al mq è poco significativo: esistono costi minimi di intervento, preparazione e manodopera che non scendono sotto una certa soglia anche per superfici piccole.",
       },
       {
+        id: "terrazzo-sistema-complesso",
         label: "Sistema complesso o ad alte prestazioni",
         category: "Da valutare con il professionista",
         range: "oltre 70 € al mq, senza un massimo definito",
@@ -665,6 +1104,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "mixed",
     priceRows: [
       {
+        id: "elettrico-rifacimento-completo",
         label: "Rifacimento completo, fascia standard",
         category: "Rifacimento completo",
         unit: "al mq",
@@ -676,6 +1116,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-luce-incassato-singolo",
         label: "Punto luce incassato singolo",
         simpleLabel: "Nuovo punto luce a incasso",
         plainExplanation: "Punto luce realizzato sotto traccia. Comprende gli elementi indicati dal capitolato; non comprende le opere murarie e la linea principale a monte.",
@@ -690,6 +1131,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-luce-incassato-doppio",
         label: "Punto luce incassato doppio",
         simpleLabel: "Due punti luce nello stesso collegamento",
         plainExplanation: "Permette di collegare due punti luce dalla stessa derivazione. Le opere murarie restano escluse quando non indicate.",
@@ -704,6 +1146,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-luce-vista-ip40",
         label: "Punto luce a vista, grado di protezione IP40",
         simpleLabel: "Nuovo punto luce con tubazione esterna",
         plainExplanation: "Il cablaggio viene posato a vista, senza incassarlo nel muro. IP40 resta un dettaglio tecnico della voce ufficiale, non una protezione contro l'acqua.",
@@ -717,6 +1160,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-presa-incassato-10a",
         label: "Punto presa incassato 2P+T 10A",
         simpleLabel: "Nuova presa elettrica da 10 A",
         plainExplanation: "Presa completa per usi domestici comuni, secondo il capitolato ufficiale. Le tracce e i ripristini murari non sono compresi.",
@@ -731,6 +1175,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-presa-incassato-16a",
         label: "Punto presa incassato 2P+T 16A",
         simpleLabel: "Nuova presa elettrica da 16 A",
         plainExplanation: "Presa completa con portata nominale maggiore rispetto alla voce da 10 A. Non attribuire automaticamente usi specifici senza un progetto.",
@@ -745,6 +1190,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-comando-deviato",
         label: "Punto comando deviato",
         simpleLabel: "Comando per accendere una luce da due punti",
         plainExplanation: "Consente di comandare la stessa luce da due posizioni diverse.",
@@ -759,6 +1205,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-collegamento-equipotenziale",
         label: "Collegamento equipotenziale per vano",
         simpleLabel: "Collegamenti di sicurezza del locale",
         plainExplanation: "Collega tra loro le parti conduttrici previste nel locale. Non è una presa, un punto luce o il rifacimento completo della messa a terra.",
@@ -773,6 +1220,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-dorsale-1-5mmq",
         label: "Dorsale interna 2 x 1,5 mmq + T",
         simpleLabel: "Linea dal quadro alla stanza",
         plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
@@ -788,6 +1236,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-dorsale-2-5mmq",
         label: "Dorsale interna 2 x 2,5 mmq + T",
         simpleLabel: "Linea dal quadro alla stanza",
         plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
@@ -802,6 +1251,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-dorsale-4mmq",
         label: "Dorsale interna 2 x 4 mmq + T",
         simpleLabel: "Linea dal quadro alla stanza",
         plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
@@ -816,6 +1266,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-dorsale-6mmq",
         label: "Dorsale interna 2 x 6 mmq + T",
         simpleLabel: "Linea dal quadro alla stanza",
         plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
@@ -830,6 +1281,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-dorsale-10mmq",
         label: "Dorsale interna 2 x 10 mmq + T",
         simpleLabel: "Linea dal quadro alla stanza",
         plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
@@ -844,6 +1296,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-luce-vista-ip54-fvg",
         label: "Punto luce a vista, grado di protezione IP54",
         simpleLabel: "Punto luce a vista con maggiore protezione",
         plainExplanation: "Voce FVG con grado IP54, che indica una maggiore protezione contro ingresso di polvere e spruzzi. Non implica automaticamente idoneità a qualsiasi ambiente.",
@@ -858,6 +1311,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-punto-presa-10a-fvg",
         label: "Punto presa 2P+T 10A",
         simpleLabel: "Presa completa in una specifica modalità di posa",
         plainExplanation: "Il prezzo riguarda il particolare sistema di posa descritto dal prezzario FVG e non è direttamente equivalente alla presa Emilia-Romagna.",
@@ -871,6 +1325,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-posa-presa-scatola-predisposta-fvg",
         label: "Sola posa di presa in scatola predisposta",
         simpleLabel: "Solo montaggio della presa",
         plainExplanation: "Comprende la sola installazione in una scatola già predisposta. Materiali, tubazioni, scatola e linee devono essere già presenti.",
@@ -884,6 +1339,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "manodopera",
       },
       {
+        id: "elettrico-magnetotermico-differenziale",
         label: "Magnetotermico differenziale",
         simpleLabel: "Singolo interruttore di protezione",
         plainExplanation: "È un dispositivo installato dentro il quadro. Non comprende l'intero quadro, gli altri interruttori, il cablaggio o la configurazione.",
@@ -898,6 +1354,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-centralino-incasso-6-moduli",
         label: "Centralino da incasso vuoto, 6 moduli",
         simpleLabel: "Contenitore vuoto del quadro elettrico (6 posti)",
         plainExplanation: "È la sola scatola che ospita i dispositivi. Non comprende magnetotermici, differenziali, cablaggio e configurazione.",
@@ -912,6 +1369,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-centralino-incasso-12-moduli",
         label: "Centralino da incasso vuoto, 12 moduli",
         simpleLabel: "Contenitore vuoto del quadro elettrico (12 posti)",
         plainExplanation: "È la sola scatola che ospita i dispositivi. Non comprende magnetotermici, differenziali, cablaggio e configurazione.",
@@ -925,6 +1383,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-blocco-differenziale-base",
         label: "Blocco differenziale, configurazione base",
         simpleLabel: "Componente di protezione differenziale",
         plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
@@ -938,6 +1397,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-blocco-differenziale-intermedia",
         label: "Blocco differenziale, configurazione intermedia",
         simpleLabel: "Componente di protezione differenziale",
         plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
@@ -951,6 +1411,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-blocco-differenziale-maggiorata",
         label: "Blocco differenziale, configurazione maggiorata",
         simpleLabel: "Componente di protezione differenziale",
         plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
@@ -964,6 +1425,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "corpo",
       },
       {
+        id: "elettrico-traccia-muratura-mattoni-forati",
         label: "Traccia su muratura in mattoni forati",
         simpleLabel: "Apertura e chiusura del muro per i cavi — mattoni forati",
         plainExplanation: "Prezzo per metro di traccia. Può aggiungersi alle lavorazioni elettriche quando occorre aprire il muro: a differenza delle varianti di dorsale, questa voce è complementare e si somma ai punti a cui serve.",
@@ -978,6 +1440,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         priceType: "manodopera",
       },
       {
+        id: "elettrico-traccia-muratura-mattoni-pieni",
         label: "Traccia su muratura in mattoni pieni",
         simpleLabel: "Apertura e chiusura del muro per i cavi — mattoni pieni",
         plainExplanation: "Prezzo per metro di traccia su una muratura più impegnativa da lavorare.",
@@ -1042,6 +1505,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "mixed",
     priceRows: [
       {
+        id: "facciata-rifacimento-ordinario",
         label: "Rifacimento ordinario della facciata, senza cappotto né interventi strutturali",
         category: "Rifacimento ordinario della facciata",
         unit: "al mq",
@@ -1057,6 +1521,7 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       // valutare", stesso pattern delle righe non quotabili di rifare-tetto —
       // mai un numero o un tetto massimo inventato.
       {
+        id: "facciata-ponteggio",
         label: "Ponteggio",
         category: "Da valutare con il professionista",
         categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: sono lavorazioni diverse dal rifacimento ordinario qui sopra, o fattori che dipendono dal singolo cantiere.",
@@ -1064,24 +1529,28 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         note: "Non è compreso nella fascia 60–120 €/mq: viene spesso quotato come voce separata nel preventivo.",
       },
       {
+        id: "facciata-cappotto-termico",
         label: "Cappotto termico della facciata",
         category: "Da valutare con il professionista",
         range: "da valutare con il professionista",
         note: "Intervento di isolamento termico, distinto dal rifacimento ordinario: comporta lavorazioni, spessori e costi propri.",
       },
       {
+        id: "facciata-consolidamento-strutturale",
         label: "Consolidamento strutturale della facciata",
         category: "Da valutare con il professionista",
         range: "da valutare con il professionista",
         note: "Necessario quando ci sono problemi strutturali importanti, non un semplice ripristino di intonaco e finitura.",
       },
       {
+        id: "facciata-restauro-specialistico",
         label: "Restauro specialistico o facciata storica/vincolata",
         category: "Da valutare con il professionista",
         range: "da valutare con il professionista",
         note: "Richiede tecniche e materiali specifici, spesso con vincoli della soprintendenza: non rientra nella fascia ordinaria.",
       },
       {
+        id: "facciata-ripristino-balconi",
         label: "Ripristino di balconi, ballatoi e frontalini",
         category: "Da valutare con il professionista",
         range: "da valutare con il professionista",
@@ -1113,4 +1582,132 @@ const basePriceRangesByFamily: Record<string, BasePriceRange> = {
 
 export function getBasePriceRange(familyKey: string): BasePriceRange | null {
   return basePriceRangesByFamily[familyKey] ?? null;
+}
+
+const PRICE_ROW_ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+
+/**
+ * Invarianti strutturali dell'SSOT dei prezzi (Scope 1C). Parametrizzata
+ * (non legge direttamente `basePriceRangesByFamily`) per restare testabile
+ * con fixture sintetiche, senza toccare i dati reali — vedi la chiamata più
+ * sotto, che la esegue una sola volta sui dati di produzione al
+ * caricamento del modulo.
+ *
+ * Verifica SOLO l'infrastruttura introdotta da questo Scope:
+ * - ogni PriceRow ha un `id`, kebab-case, univoco sull'INTERA SSOT (non solo
+ *   dentro la propria famiglia);
+ * - ogni `relations[].target` esiste ed appartiene alla stessa famiglia
+ *   della riga che lo dichiara, nessuna riga punta a se stessa, nessuna
+ *   relation duplicata (stesso type+target) sulla stessa riga;
+ * - una riga con `role: "extra"` che dichiara `relations` ne ha almeno una
+ *   di tipo "addsTo".
+ *
+ * Deliberatamente NON richiede che `costType`/`role`/`priceStatus`/
+ * `relations` siano compilati: la migrazione dei dati legacy resta
+ * progressiva, questo Scope introduce solo l'infrastruttura (vedi il
+ * commento di deprecazione su `priceType` in PriceRow).
+ */
+export function validatePriceRowIntegrity(
+  byFamily: Record<string, BasePriceRange>,
+): void {
+  const idToFamily = new Map<string, string>();
+
+  for (const [familyKey, range] of Object.entries(byFamily)) {
+    for (const row of range.priceRows) {
+      if (!row.id) {
+        throw new Error(
+          `PriceRow "${row.label}" in family "${familyKey}" has no id: every PriceRow must declare a stable id.`,
+        );
+      }
+      if (!PRICE_ROW_ID_PATTERN.test(row.id)) {
+        throw new Error(
+          `PriceRow id "${row.id}" (family "${familyKey}") is not valid kebab-case.`,
+        );
+      }
+
+      const existingFamily = idToFamily.get(row.id);
+      if (existingFamily) {
+        throw new Error(
+          existingFamily === familyKey
+            ? `Duplicate PriceRow id "${row.id}" within family "${familyKey}".`
+            : `PriceRow id "${row.id}" is used in both "${existingFamily}" and "${familyKey}": ids must be globally unique across the whole SSOT.`,
+        );
+      }
+      idToFamily.set(row.id, familyKey);
+    }
+  }
+
+  for (const [familyKey, range] of Object.entries(byFamily)) {
+    for (const row of range.priceRows) {
+      const relations = row.relations ?? [];
+      const seenRelations = new Set<string>();
+
+      for (const relation of relations) {
+        const relationKey = `${relation.type}:${relation.target}`;
+        if (seenRelations.has(relationKey)) {
+          throw new Error(
+            `PriceRow "${row.id}" (family "${familyKey}") declares the relation "${relationKey}" more than once.`,
+          );
+        }
+        seenRelations.add(relationKey);
+
+        if (relation.target === row.id) {
+          throw new Error(
+            `PriceRow "${row.id}" (family "${familyKey}") declares a relation targeting itself.`,
+          );
+        }
+
+        const targetFamily = idToFamily.get(relation.target);
+        if (!targetFamily) {
+          throw new Error(
+            `PriceRow "${row.id}" (family "${familyKey}") declares a relation targeting unknown id "${relation.target}".`,
+          );
+        }
+        if (targetFamily !== familyKey) {
+          throw new Error(
+            `PriceRow "${row.id}" (family "${familyKey}") declares a relation targeting "${relation.target}", which belongs to family "${targetFamily}": relation targets must belong to the same family.`,
+          );
+        }
+      }
+
+      if (row.role === "extra" && relations.length > 0) {
+        const hasAddsTo = relations.some((relation) => relation.type === "addsTo");
+        if (!hasAddsTo) {
+          throw new Error(
+            `PriceRow "${row.id}" (family "${familyKey}") has role "extra" and declares relations, but none is "addsTo".`,
+          );
+        }
+      }
+    }
+  }
+}
+
+// Fail-fast a caricamento del modulo, una sola volta: qualunque pagina che
+// importa questo file (via pricing-resolver.ts -> compose-cost-guide.ts)
+// beneficia della stessa garanzia, senza rivalidare a ogni render.
+validatePriceRowIntegrity(basePriceRangesByFamily);
+
+/**
+ * Interroga la relazione "alternativeTo" trattandola come simmetrica, senza
+ * richiedere che l'SSOT la duplichi in entrambe le direzioni (vedi
+ * PriceRowRelationType): vero se `a` dichiara `alternativeTo` verso `b`, O
+ * se `b` dichiara `alternativeTo` verso `a`. `rows` deve essere l'array
+ * `priceRows` di UNA sola famiglia (le relazioni non attraversano famiglie,
+ * vedi validatePriceRowIntegrity).
+ */
+export function isAlternativeTo(
+  rows: readonly PriceRow[],
+  a: PriceRowId,
+  b: PriceRowId,
+): boolean {
+  const declaresAlternative = (fromId: PriceRowId, toId: PriceRowId): boolean =>
+    rows.some(
+      (row) =>
+        row.id === fromId &&
+        (row.relations ?? []).some(
+          (relation) => relation.type === "alternativeTo" && relation.target === toId,
+        ),
+    );
+
+  return declaresAlternative(a, b) || declaresAlternative(b, a);
 }
