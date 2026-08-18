@@ -1,6 +1,33 @@
 import { frozenTaxonomySource } from "./source"
 
-import type { InterventionPublicationStatus } from "./source"
+import type { FrozenProjectGroup, InterventionPublicationStatus } from "./source"
+
+/**
+ * Test-fix 2026-08: core lookup extracted so the "draft" branch can be unit
+ * tested against a synthetic fixture (see publication-status.test.ts) —
+ * frozen taxonomy currently has zero draft Interventions (the one that used
+ * to be the canonical example, impermeabilizzare-terrazzo, is now
+ * published), so there is no real slug left to exercise this branch with.
+ * Purely additive: the two functions below keep their exact original
+ * signature/behavior for every real caller (always called with the real
+ * frozen data), nothing about runtime behavior changes.
+ */
+export function findInterventionPublicationStatus(
+  projectGroups: readonly FrozenProjectGroup[],
+  slug: string,
+): InterventionPublicationStatus | null {
+  for (const projectGroup of projectGroups) {
+    const intervention = projectGroup.interventions.find(
+      (candidate) => candidate.slug === slug,
+    )
+
+    if (intervention) {
+      return intervention.publicationStatus
+    }
+  }
+
+  return null
+}
 
 /**
  * Single canonical lookup for an Intervention's publicationStatus, read
@@ -17,17 +44,7 @@ import type { InterventionPublicationStatus } from "./source"
 export function getInterventionPublicationStatus(
   slug: string,
 ): InterventionPublicationStatus | null {
-  for (const projectGroup of frozenTaxonomySource.projectGroups) {
-    const intervention = projectGroup.interventions.find(
-      (candidate) => candidate.slug === slug,
-    )
-
-    if (intervention) {
-      return intervention.publicationStatus
-    }
-  }
-
-  return null
+  return findInterventionPublicationStatus(frozenTaxonomySource.projectGroups, slug)
 }
 
 /** Convenience boolean wrapper: true only when the slug exists AND is published. */
