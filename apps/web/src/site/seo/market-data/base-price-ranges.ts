@@ -941,137 +941,210 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
-  // Prezzi ufficiali da prezzari regionali dei lavori pubblici (luglio 2026),
-  // forniti direttamente per questa revisione: Prezzario Regione Friuli
-  // Venezia Giulia 2025 (voci "Nuova impermeabilizzazione") e Prezzario
-  // Regione Lombardia 1/2026 (voci "Riparazioni e preparazione" +
-  // "Smaltimento"). Nessun codice di capitolato disponibile per queste voci,
-  // non ne è stato riportato nessuno inventato. Sostituisce la precedente
-  // struttura a fasce per perimetro del preventivo (18-24/38-40/40-60/oltre
-  // 60 €/mq): qui ogni riga è un prezzo puntuale ufficiale di una specifica
-  // voce di capitolato tecnico, non una fascia di mercato — mai fuse in una
-  // fascia né sommate tra loro. Nessun campo confidence: non è verifica
-  // multi-fonte di mercato, è il prezzo pubblicato dal prezzario stesso.
-  // Nessun sizeExample: qualunque "100 mq = X €" rischierebbe di leggersi
-  // come un preventivo per un cliente privato, esattamente ciò che queste
-  // voci non sono.
+  // Revisione 2026-08 (richiesta editoriale esplicita): la guida era troppo
+  // vicina a un prezzario tecnico (10 voci puntuali "official", nationalRange
+  // "Nessun totale complessivo" come risposta principale) per un lettore che
+  // cerca "quanto costa impermeabilizzare un tetto". Sostituita con 8 righe
+  // orientate al cliente:
+  // - 5 nuove impermeabilizzazioni (guaina liscia 25-40, ardesiata 30-50,
+  //   doppio strato 35-55, alluminio 45-60, rame 75-90 €/mq — tutte
+  //   "materiale + posa", costType "complete"), unificando le due varianti
+  //   di grammatura del rame (4 kg/4,5 kg) in un'unica voce cliente: per un
+  //   proprietario di casa sono due opzioni troppo simili per giustificare
+  //   due prezzi separati, la differenza resta citata in nota come dettaglio
+  //   tecnico.
+  // - Preparazione e livellamento della superficie (10-20 €/mq, ex
+  //   "Lisciatura del piano di posa"): lavorazione autonoma, non un lavoro
+  //   sempre necessario — condizione esplicita nella nota, non promessa come
+  //   automatica.
+  // - Rimozione e smaltimento della vecchia guaina (10-20 €/mq): SOSTITUISCE
+  //   come informazione principale il vecchio "Conferimento in impianto
+  //   della guaina bituminosa" (19,53 €/100 kg, un'unità a peso poco utile
+  //   per stimare un tetto) — id riutilizzato ma RINOMINATO (stessa identità
+  //   evolutiva: "cosa succede alla vecchia copertura", vedi micro-fix sotto),
+  //   perimetro allargato a rimozione+movimentazione+trasporto+smaltimento,
+  //   non solo il conferimento finale. Il valore a peso del prezzario resta
+  //   citato in nota come riferimento tecnico, non più come voce cliente
+  //   principale.
+  // - Ricerca e riparazione di una perdita localizzata: priceStatus
+  //   "quoteRequired", unifica "Riparazione di manto bituminoso fessurato"
+  //   (id rimosso: la nuova label era già praticamente il nome dell'altra
+  //   voce, "Ricerca e riparazione di infiltrazione isolata" — id
+  //   sopravvissuto) — 56,56 €/mq e 82,63 €/cadauna restano citati in nota
+  //   come riferimento tecnico puntuale, mai promessi come prezzo di mercato
+  //   per un intervento privato senza sopralluogo.
+  //
+  // sourceType passa da "official" a "mixed": le righe non riportano più il
+  // prezzo puntuale del prezzario come unico numero mostrato, ma una fascia
+  // editoriale arrotondata attorno a quell'ancora — stesso pattern già usato
+  // per rifare-tetto/ristrutturare-bagno. confidence "media" ovunque
+  // (ancoraggio a un'unica voce ufficiale puntuale per riga, non un
+  // confronto multi-fonte indipendente: "media", non "alta", per non
+  // dichiarare più affidabilità di quella reale). Il valore puntuale del
+  // prezzario resta sempre citato in `note` — mai spacciato per il numero
+  // mostrato al cliente, mai perso.
+  //
+  // Nessun sizeExample aggiunto: fuori perimetro esplicito di questa
+  // revisione (non richiesto, "non ampliare il perimetro").
+  //
+  // Nessuna dipendenza da isGuideScenarioRow qui (a differenza di
+  // rifare-tetto): nessuna riga usa role "scenario"/"primary" in questa
+  // guida, quindi il limite noto su quel classificatore (vedi il commento
+  // sopra "costGuide:rifare-tetto") non si applica — le 5 nuove
+  // impermeabilizzazioni sono semplicemente lavorazioni autonome parallele,
+  // mai pensate per la UI "Scenari".
+  //
+  // Micro-fix 2026-08 (verifica di coerenza sul lavoro sopra, 3 correzioni):
+  // 1) ID rinominati: "-conferimento-guaina" → "-rimozione-smaltimento-guaina"
+  //    (il vecchio nome descriveva solo il conferimento a peso, non il nuovo
+  //    perimetro cliente rimozione+smaltimento); "-doppia-membrana-rame-4kg"
+  //    → "-doppia-membrana-rame" (la riga rappresenta ORA l'intera fascia
+  //    rame unificata, non più la sola variante da 4 kg — tenere "-4kg" nell'id
+  //    avrebbe implicitamente e silenziosamente ristretto il significato).
+  //    Verificato: nessuna dipendenza esterna a market-data/test su nessuno
+  //    dei due vecchi id, rename sicuro.
+  // 2) role "extra" rimosso da "Preparazione e livellamento della superficie":
+  //    ripensandoci, non è un costo che si aggiunge a UN pacchetto specifico
+  //    (a differenza di es. bagno-adeguamento-elettrico, addsTo verso un
+  //    unico target reale) — è una lavorazione autonoma con perimetro proprio
+  //    ("regolarizzazione della superficie prima della posa"), richiedibile
+  //    a sé, esattamente come "Rimozione e smaltimento" qui sotto: entrambe
+  //    condizionali nell'uso reale, entrambe "primary" nel modello. Un
+  //    "extra" senza addsTo era tecnicamente permesso dal validator (leniency
+  //    pensata per la migrazione progressiva di dati legacy, non per
+  //    dichiarare stabilmente una riga nuova) ma non intenzionalmente
+  //    corretto qui: differenziare le due righe analoghe non aveva una
+  //    ragione semantica, solo una differenza di formulazione nella richiesta
+  //    originale. Nessuna relation "addsTo" inventata verso le 5 guaine
+  //    (sarebbe stata una relazione vera ma non informativa, uguale su tutte
+  //    e 5 e quindi priva di segnale reale). Conseguenza: la sezione "Cosa
+  //    può far salire il prezzo" non ha più righe da mostrare per questa
+  //    guida — nessuna sezione Extra renderizzata, la riga si legge nel
+  //    Breakdown come le altre lavorazioni specifiche.
+  // 3) Provenance di "Rimozione e smaltimento" resa esplicita: il prezzario
+  //    ufficiale copre SOLO il conferimento a peso, non la manodopera di
+  //    rimozione — la fascia al mq per l'intero perimetro è una stima
+  //    editoriale (non un secondo valore ufficiale), ora dichiarata come
+  //    tale in nota con un confronto di plausibilità verso la fascia
+  //    analoga di rifare-tetto. Range/confidence invariati (non modificabili
+  //    in questo micro-fix): la fascia 10-20 €/mq resta la stessa decisione
+  //    editoriale già approvata, qui solo meglio documentata.
   "costGuide:impermeabilizzare-tetto": {
-    nationalRange:
-      "Nessun totale complessivo: le voci sono prezzi ufficiali puntuali, non cumulabili automaticamente",
-    pricePerSquareMeter:
-      "Varia per lavorazione: consulta la tabella ufficiale sotto per ogni voce",
-    sourceLabel: "Prezzari ufficiali delle Regioni Friuli Venezia Giulia e Lombardia",
+    nationalRange: "25–60 € al mq",
+    pricePerSquareMeter: "da 25 € a 60 € al mq",
+    sourceLabel: "Prezzari ufficiali delle Regioni Friuli Venezia Giulia e Lombardia, elaborati in fasce di mercato",
     sourceYear: "2025–2026",
-    sourceType: "official",
+    sourceType: "mixed",
     priceRows: [
       {
         id: "impermeabilizzare-tetto-guaina-liscia",
-        label: "Guaina bituminosa liscia",
+        label: "Guaina bituminosa standard (liscia)",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "27,43 € al mq",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Manto bituminoso liscio, senza finitura superficiale specifica.",
-        includes: "fornitura e posa in opera secondo la voce di capitolato",
-        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
-        priceType: "corpo",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation: "È una membrana impermeabilizzante bituminosa con superficie liscia, senza la finitura minerale della guaina ardesiata: la soluzione più diffusa per una nuova impermeabilizzazione, materiale e posa comprese nel prezzo.",
+        note: "Fascia editoriale basata sul prezzo ufficiale del Prezzario Regione Friuli Venezia Giulia 2025 (27,43 €/m² per la voce di capitolato equivalente), allargata per riflettere la variabilità reale del mercato privato: il valore del prezzario resta il riferimento tecnico puntuale, non è il prezzo esatto mostrato qui.",
+        includes: "fornitura della membrana bituminosa e posa in opera",
+        excludes: "rimozione della vecchia guaina, ripristini importanti del supporto, ponteggi, difficoltà particolari di accesso",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "impermeabilizzare-tetto-guaina-ardesiata",
-        label: "Guaina bituminosa ardesiata",
+        label: "Guaina ardesiata per copertura a vista",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "29,10 € al mq",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Finitura superficiale in scaglie di ardesia, voce distinta dalla guaina liscia.",
-        includes: "fornitura e posa in opera secondo la voce di capitolato",
-        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
-        priceType: "corpo",
+        range: "da 30 € a 50 € al mq",
+        plainExplanation: "È una membrana bituminosa (guaina bituminosa ardesiata) con una protezione superficiale in scaglie minerali: si usa quando la copertura resta a vista, perché le scaglie proteggono la membrana dai raggi UV senza bisogno di un manto sopra.",
+        note: "Fascia editoriale basata sul prezzo ufficiale del Prezzario Regione Friuli Venezia Giulia 2025 (29,10 €/m² per la voce di capitolato equivalente, distinta dalla guaina liscia), allargata per riflettere la variabilità reale del mercato privato.",
+        includes: "fornitura della membrana e posa in opera",
+        excludes: "rimozione della vecchia guaina, ripristini importanti del supporto, ponteggi, difficoltà particolari di accesso",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "impermeabilizzare-tetto-membrana-standard",
-        label: "Membrana bituminosa standard",
+        label: "Impermeabilizzazione bituminosa a doppio strato",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "35,32 € al mq",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Voce di impermeabilizzazione con membrana bituminosa, distinta dalla guaina liscia o ardesiata.",
-        includes: "fornitura e posa in opera secondo la voce di capitolato",
-        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
-        priceType: "corpo",
+        range: "da 35 € a 55 € al mq",
+        plainExplanation: "Rispetto a una guaina in un solo strato, qui il sistema prevede due membrane bituminose sovrapposte: una tenuta all'acqua maggiore, utile su coperture più esposte o con pendenze minime.",
+        note: "Fascia editoriale basata sul prezzo ufficiale del Prezzario Regione Friuli Venezia Giulia 2025 (35,32 €/m² per la voce di capitolato equivalente, indicata nel prezzario come \"membrana bituminosa standard\"), allargata per riflettere la variabilità reale del mercato privato.",
+        includes: "fornitura delle due membrane e posa in opera",
+        excludes: "rimozione della vecchia guaina, ripristini importanti del supporto, ponteggi, difficoltà particolari di accesso",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "impermeabilizzare-tetto-doppia-membrana-alluminio",
-        label: "Doppia membrana con finitura in alluminio",
+        label: "Doppia guaina con protezione in alluminio",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "44,40 € al mq",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Sistema a doppio strato autoprotetto, finitura riflettente in alluminio.",
-        includes: "fornitura e posa in opera secondo la voce di capitolato",
-        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
-        priceType: "corpo",
+        range: "da 45 € a 60 € al mq",
+        plainExplanation: "È un sistema a doppio strato autoprotetto, con una finitura metallica riflettente in alluminio che protegge la membrana senza bisogno di un manto sopra: utile quando il tetto resta a vista e serve anche una buona resistenza ai raggi UV.",
+        note: "Fascia editoriale basata sul prezzo ufficiale del Prezzario Regione Friuli Venezia Giulia 2025 (44,40 €/m² per la voce di capitolato equivalente), allargata per riflettere la variabilità reale del mercato privato.",
+        includes: "fornitura del sistema a doppio strato e posa in opera",
+        excludes: "rimozione della vecchia guaina, ripristini importanti del supporto, ponteggi, difficoltà particolari di accesso",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "impermeabilizzare-tetto-doppia-membrana-rame-4kg",
-        label: "Doppia membrana con protezione in rame (4 kg/m²)",
+        id: "impermeabilizzare-tetto-doppia-membrana-rame",
+        label: "Doppia guaina con protezione in rame",
         category: "Nuova impermeabilizzazione",
         unit: "al mq",
-        range: "79,24 € al mq",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Sistema a doppio strato con lamina di rame da 4 kg/m², voce distinta dalla variante da 4,5 kg/m².",
-        includes: "fornitura e posa in opera secondo la voce di capitolato",
-        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
-        priceType: "corpo",
-      },
-      {
-        id: "impermeabilizzare-tetto-doppia-membrana-rame-4-5kg",
-        label: "Doppia membrana con protezione in rame (4,5 kg/m²)",
-        category: "Nuova impermeabilizzazione",
-        unit: "al mq",
-        range: "81,36 € al mq",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Stessa tipologia della voce precedente, con maggiore grammatura del rame.",
-        includes: "fornitura e posa in opera secondo la voce di capitolato",
-        excludes: "rimozione del manto esistente, ponteggi, smaltimento",
-        priceType: "corpo",
-      },
-      {
-        id: "impermeabilizzare-tetto-riparazione-manto-fessurato",
-        label: "Riparazione di manto bituminoso fessurato",
-        category: "Riparazioni e preparazione",
-        unit: "al mq",
-        range: "56,56 € al mq",
-        note: "Prezzario Regione Lombardia 1/2026. Intervento localizzato su un manto esistente danneggiato, non una nuova posa su tutta la superficie.",
-        includes: "intervento di riparazione secondo la voce di capitolato",
-        excludes: "ponteggi, smaltimento del materiale rimosso",
-        priceType: "corpo",
-      },
-      {
-        id: "impermeabilizzare-tetto-ricerca-infiltrazione",
-        label: "Ricerca e riparazione di infiltrazione isolata",
-        category: "Riparazioni e preparazione",
-        unit: "cadauna",
-        range: "82,63 € cadauna",
-        note: "Prezzario Regione Lombardia 1/2026. Prezzo per intervento puntuale, non al mq.",
-        includes: "ricerca del punto di infiltrazione ed eliminazione, secondo la voce di capitolato",
-        excludes: "ponteggi, interventi estesi oltre il punto individuato",
-        priceType: "corpo",
+        range: "da 75 € a 90 € al mq",
+        plainExplanation: "È lo stesso principio della versione in alluminio, ma con una lamina di rame al posto della finitura in alluminio: più costosa, con una resa estetica e una durata nel tempo superiori.",
+        note: "Fascia editoriale che unifica i prezzi ufficiali del Prezzario Regione Friuli Venezia Giulia 2025 per le due varianti di grammatura del rame (4 kg/m²: 79,24 €/m²; 4,5 kg/m²: 81,36 €/m²): per un cliente privato sono due varianti troppo simili per giustificare due voci separate. La grammatura esatta resta un dettaglio da confermare con il professionista, non cambia la fascia mostrata qui.",
+        includes: "fornitura del sistema a doppio strato con lamina di rame e posa in opera",
+        excludes: "rimozione della vecchia guaina, ripristini importanti del supporto, ponteggi, difficoltà particolari di accesso",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "impermeabilizzare-tetto-lisciatura-piano-posa",
-        label: "Lisciatura del piano di posa",
-        category: "Riparazioni e preparazione",
+        label: "Preparazione e livellamento della superficie",
+        category: "Preparazione della superficie",
         unit: "al mq",
-        range: "13,22 € al mq",
-        note: "Prezzario Regione Lombardia 1/2026. Preparazione del supporto dopo demolizione del manto esistente: presuppone che la demolizione sia già avvenuta.",
-        includes: "lisciatura del piano di posa secondo la voce di capitolato",
-        excludes: "la demolizione del manto, ponteggi",
-        priceType: "corpo",
+        range: "da 10 € a 20 € al mq",
+        plainExplanation: "Serve quando la superficie, dopo la rimozione della vecchia impermeabilizzazione, deve essere regolarizzata prima di posare la nuova guaina — non è automaticamente necessaria in ogni intervento: dipende dalle condizioni della superficie esistente.",
+        note: "Tecnicamente è la preparazione del \"piano di posa\". Fascia editoriale basata sul prezzo ufficiale del Prezzario Regione Lombardia 1/2026 (13,22 €/m² per la voce di capitolato equivalente), allargata per riflettere la variabilità reale del mercato privato.",
+        includes: "regolarizzazione della superficie prima della posa della nuova guaina",
+        excludes: "rimozione della vecchia guaina (vedi voce dedicata), ponteggi",
+        confidence: "media",
+        costType: "work",
       },
       {
-        id: "impermeabilizzare-tetto-conferimento-guaina",
-        label: "Conferimento in impianto della guaina bituminosa",
-        category: "Smaltimento",
-        unit: "ogni 100 kg",
-        range: "19,53 € ogni 100 kg",
-        note: "Prezzario Regione Lombardia 1/2026. Prezzo a peso, non a superficie: il totale dipende dal peso del materiale rimosso, non dai mq trattati.",
-        includes: "conferimento del materiale a impianto autorizzato secondo la voce di capitolato",
-        excludes: "la rimozione del materiale dal cantiere",
+        id: "impermeabilizzare-tetto-rimozione-smaltimento-guaina",
+        label: "Rimozione e smaltimento della vecchia guaina",
+        category: "Rimozione e riparazioni mirate",
+        categoryNote: "Queste lavorazioni non sono comprese nel prezzo delle nuove impermeabilizzazioni qui sopra: si aggiungono solo quando il tuo caso lo richiede.",
+        unit: "al mq",
+        range: "da 10 € a 20 € al mq",
+        plainExplanation: "È la rimozione della vecchia guaina e il suo conferimento/smaltimento, come lavorazione a sé: utile per capire quanto incide sul totale quando si rifà l'impermeabilizzazione di un tetto già impermeabilizzato in passato.",
+        note: "Perimetro ordinario: rimozione, movimentazione, trasporto, smaltimento/conferimento. Il prezzario ufficiale di riferimento (Prezzario Regione Lombardia 1/2026) quota SOLO il conferimento a peso del materiale già rimosso (19,53 € ogni 100 kg) — non l'intera rimozione: la manodopera di rimozione della guaina non è direttamente quotata da nessun prezzario ufficiale consultato per questa guida, la fascia al mq qui mostrata è una stima editoriale. Come ordine di grandezza è coerente con la lavorazione analoga sul manto di copertura (rimozione e smaltimento del vecchio manto, 15–30 €/mq, guida \"Quanto costa rifare un tetto\"), proporzionalmente più leggera perché qui si rimuove una membrana sottile, non l'intera copertura in tegole o coppi. Il valore ufficiale a peso resta un riferimento tecnico utile per chi ha già una stima del peso del materiale, non equivalente a questa fascia al mq.",
+        includes: "rimozione della vecchia guaina, movimentazione ordinaria, trasporto, smaltimento/conferimento",
+        // "rifiuti" e non "materiali che richiedono...": la parola "materiali"
+        // fa scattare per costruzione il badge "Materiali esclusi" su
+        // costType "work" (describeCostTypeBadge, cost-guide-price-model.ts)
+        // — corretto quando significa "fornitura esclusa", fuorviante qui
+        // (amianto/eternit sono uno scarto speciale da bonificare, non un
+        // materiale da fornire). Stesso perimetro, parola diversa.
+        excludes: "amianto, eternit o altri rifiuti che richiedono una bonifica specifica (non quotabile qui), ponteggi",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "impermeabilizzare-tetto-ricerca-infiltrazione",
+        label: "Ricerca e riparazione di una perdita localizzata",
+        category: "Rimozione e riparazioni mirate",
+        unit: "a intervento",
+        range: "da valutare con il professionista",
+        plainExplanation: "È l'intervento mirato per trovare e riparare una perdita isolata — un manto fessurato in un punto preciso o un'infiltrazione localizzata — senza rifare tutta l'impermeabilizzazione della copertura.",
+        note: "Il prezzo richiede sempre una valutazione: incidono il tempo necessario per individuare la perdita, l'accessibilità, la quantità di superficie danneggiata, i raccordi/comignoli/bocchettoni coinvolti e l'eventuale necessità di estendere la riparazione oltre il punto individuato. I prezzari ufficiali di riferimento (Prezzario Regione Lombardia 1/2026) quotano voci puntuali per casi specifici — riparazione di un manto fessurato 56,56 €/m², ricerca e riparazione di un'infiltrazione isolata 82,63 € cadauna — utili come riferimento tecnico, ma non promettibili come prezzo di mercato per un intervento privato senza sopralluogo.",
+        includes: "ricerca del punto di perdita ed eliminazione, secondo l'estensione del danno",
+        excludes: "posa di una nuova impermeabilizzazione su tutta la superficie (vedi le voci dedicate qui sopra), ponteggi",
+        priceStatus: "quoteRequired",
       },
     ],
     sizeExamples: [],

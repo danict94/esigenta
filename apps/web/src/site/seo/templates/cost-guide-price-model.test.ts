@@ -130,7 +130,10 @@ test("isGuideScenarioRow (via classifyPriceRows): role \"primary\" NON implica s
 })
 
 test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/reference inventato, tutto nel breakdown (fallback Scope 4B)", () => {
-  for (const guide of [rifareImpiantoElettricoGuide, impermeabilizzareTettoGuide]) {
+  // Revisione 2026-08: impermeabilizzare-tetto NON è più "senza role
+  // compilato" (ha role "extra" su una riga) — rimossa da questo loop,
+  // verificata a parte più sotto con la sua classificazione reale attesa.
+  for (const guide of [rifareImpiantoElettricoGuide]) {
     const classification = classifyPriceRows(guide.priceRows)
 
     assert.equal(classification.primary, null, `${guide.slug}: nessuna riga ha role compilato`)
@@ -144,6 +147,30 @@ test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/r
       `${guide.slug}: il breakdown deve contenere TUTTE le righe, comportamento equivalente alla vecchia tabella`,
     )
   }
+})
+
+test("classifyPriceRows: impermeabilizzare-tetto (dati reali) — nessuno scenario/primary/extra/reference inventato, tutte e 8 le righe nel breakdown", () => {
+  const classification = classifyPriceRows(impermeabilizzareTettoGuide.priceRows)
+
+  // Nessuna riga usa costType "complete" + unit "a corpo": niente
+  // primary/scenario per questa guida, per costruzione dei dati (nessuna
+  // riga è pensata come "scenario complessivo"), non per il limite di
+  // isGuideScenarioRow documentato su rifare-tetto.
+  assert.equal(classification.primary, null)
+  assert.equal(classification.scenarios.length, 0)
+  assert.equal(classification.scenarioCards.length, 0)
+  assert.equal(classification.references.length, 0)
+
+  // Micro-fix: "Preparazione e livellamento della superficie" non è più
+  // role "extra" (era un contratto semantico non intenzionale, corretto —
+  // vedi il commento su cost-guide-price-model.ts in base-price-ranges.ts).
+  // Nessuna riga di questa guida ha role "extra": la sezione Extra non ha
+  // nulla da mostrare, tutte le righe restano nel breakdown normale.
+  assert.equal(classification.extras.length, 0)
+  assert.equal(classification.breakdown.length, impermeabilizzareTettoGuide.priceRows.length)
+  assert.ok(
+    classification.breakdown.some((r) => r.id === "impermeabilizzare-tetto-lisciatura-piano-posa"),
+  )
 })
 
 test("classifyPriceRows: fallback sintetico — riga role \"primary\" ma NON a corpo/complete resta fuori dagli scenari", () => {

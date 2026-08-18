@@ -11,7 +11,8 @@ import type { BasePriceRange, PriceRow } from "./base-price-ranges"
 
 import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/content"
 import { rifareTettoGuide } from "../pages/costi/rifare-tetto/content"
-import { classifyPriceRows } from "../templates/cost-guide-price-model"
+import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
+import { classifyPriceRows, describeCostTypeBadge } from "../templates/cost-guide-price-model"
 
 // Scope 1C — infrastruttura del nuovo contratto PriceRow (id, costType, role,
 // priceStatus, relations). Fixture minime e sintetiche: mai i dati reali
@@ -782,5 +783,180 @@ test("altre Cost Guide: nessuna modifica — ristrutturareBagnoGuide resta a 18 
   assert.equal(
     ristrutturareBagnoGuide.priceRows.find((r) => r.id === "bagno-ristrutturazione-completa")?.range,
     "da 4.500 € a 8.000 €",
+  )
+})
+
+// Revisione 2026-08 di impermeabilizzare-tetto — dati REALI (guida composta),
+// non fixture sintetiche: la guida passa da 10 righe "official" puntuali
+// (nationalRange "nessun totale complessivo") a 8 righe cliente con fasce
+// editoriali "mixed" e una risposta Hero reale (25-60 €/mq).
+
+test("impermeabilizzare-tetto: esattamente 8 PriceRow (da 10), tutte con un id univoco reale", () => {
+  assert.equal(impermeabilizzareTettoGuide.priceRows.length, 8)
+  assert.equal(new Set(impermeabilizzareTettoGuide.priceRows.map((r) => r.id)).size, 8)
+})
+
+test("impermeabilizzare-tetto: Hero 25-60 €/mq, non più \"nessun totale complessivo\"", () => {
+  assert.equal(impermeabilizzareTettoGuide.nationalRange, "25–60 € al mq")
+  assert.equal(impermeabilizzareTettoGuide.pricePerSquareMeter, "da 25 € a 60 € al mq")
+  assert.doesNotMatch(impermeabilizzareTettoGuide.nationalRange ?? "", /nessun totale/i)
+  assert.doesNotMatch(impermeabilizzareTettoGuide.nationalRangeNote ?? "", /consulta la tabella/i)
+})
+
+test("impermeabilizzare-tetto: le 5 nuove impermeabilizzazioni sono tutte materiale + posa (costType complete), fasce approvate", () => {
+  const rows = impermeabilizzareTettoGuide.priceRows
+  const byId = (id: string) => rows.find((r) => r.id === id)
+
+  const liscia = byId("impermeabilizzare-tetto-guaina-liscia")
+  assert.equal(liscia?.label, "Guaina bituminosa standard (liscia)")
+  assert.equal(liscia?.range, "da 25 € a 40 € al mq")
+  assert.equal(liscia?.costType, "complete")
+  assert.match(liscia?.includes ?? "", /posa/i)
+
+  const ardesiata = byId("impermeabilizzare-tetto-guaina-ardesiata")
+  assert.equal(ardesiata?.label, "Guaina ardesiata per copertura a vista")
+  assert.equal(ardesiata?.range, "da 30 € a 50 € al mq")
+  assert.equal(ardesiata?.costType, "complete")
+
+  const doppioStrato = byId("impermeabilizzare-tetto-membrana-standard")
+  assert.equal(doppioStrato?.label, "Impermeabilizzazione bituminosa a doppio strato")
+  assert.equal(doppioStrato?.range, "da 35 € a 55 € al mq")
+  assert.equal(doppioStrato?.costType, "complete")
+
+  const alluminio = byId("impermeabilizzare-tetto-doppia-membrana-alluminio")
+  assert.equal(alluminio?.label, "Doppia guaina con protezione in alluminio")
+  assert.equal(alluminio?.range, "da 45 € a 60 € al mq")
+  assert.equal(alluminio?.costType, "complete")
+
+  const rame = byId("impermeabilizzare-tetto-doppia-membrana-rame")
+  assert.equal(rame?.label, "Doppia guaina con protezione in rame")
+  assert.equal(rame?.range, "da 75 € a 90 € al mq")
+  assert.equal(rame?.costType, "complete")
+
+  // Le 5 righe sopra hanno tutte unit "al mq" e costType "complete": nessuna
+  // riga soddisfa isGuideScenarioRow (richiede unit "a corpo"), ma qui non è
+  // un problema — nessuna di queste è pensata come scenario/primary.
+  for (const id of [
+    "impermeabilizzare-tetto-guaina-liscia",
+    "impermeabilizzare-tetto-guaina-ardesiata",
+    "impermeabilizzare-tetto-membrana-standard",
+    "impermeabilizzare-tetto-doppia-membrana-alluminio",
+    "impermeabilizzare-tetto-doppia-membrana-rame",
+  ]) {
+    const row = byId(id)
+    assert.equal(row?.unit, "al mq")
+    assert.equal(row?.role, undefined, `${id}: role deve restare assente (default primary)`)
+  }
+})
+
+test("impermeabilizzare-tetto: unificazione rame — un solo id cliente sopravvive, l'altro è rimosso senza reference rotte", () => {
+  const rows = impermeabilizzareTettoGuide.priceRows
+
+  // Micro-fix: l'id NON deve più portare la specificità "-4kg" — la riga
+  // rappresenta ora l'intera fascia rame unificata, non solo quella
+  // grammatura (altrimenti l'id ristretto avrebbe silenziosamente mentito
+  // sul perimetro reale della riga).
+  assert.ok(rows.some((r) => r.id === "impermeabilizzare-tetto-doppia-membrana-rame"))
+  assert.ok(!rows.some((r) => r.id === "impermeabilizzare-tetto-doppia-membrana-rame-4kg"))
+  assert.ok(!rows.some((r) => r.id === "impermeabilizzare-tetto-doppia-membrana-rame-4-5kg"))
+
+  // Entrambe le grammature restano citate come riferimento tecnico in nota,
+  // nessuna delle due sparisce dai dati, solo dalla UI come voci separate.
+  const rame = rows.find((r) => r.id === "impermeabilizzare-tetto-doppia-membrana-rame")
+  assert.match(rame?.note ?? "", /4 kg\/m²/)
+  assert.match(rame?.note ?? "", /4,5 kg\/m²/)
+})
+
+test("impermeabilizzare-tetto: preparazione 10-20 €/mq è una lavorazione autonoma (role assente), non \"extra\"", () => {
+  const preparazione = impermeabilizzareTettoGuide.priceRows.find(
+    (r) => r.id === "impermeabilizzare-tetto-lisciatura-piano-posa",
+  )
+
+  assert.equal(preparazione?.label, "Preparazione e livellamento della superficie")
+  assert.equal(preparazione?.range, "da 10 € a 20 € al mq")
+  // Micro-fix: role "extra" rimosso — non è un incremento legato a UN
+  // pacchetto specifico (a differenza di es. bagno-adeguamento-elettrico,
+  // addsTo verso un unico target reale), è una lavorazione autonoma con
+  // perimetro proprio, condizionale nell'uso ma non nel modello — stesso
+  // trattamento di "Rimozione e smaltimento" qui sotto. Nessuna relation
+  // addsTo inventata verso le 5 guaine per "riempire" il ruolo extra.
+  assert.equal(preparazione?.role, undefined)
+  assert.equal(preparazione?.relations, undefined)
+  assert.equal(preparazione?.costType, "work")
+  assert.match(preparazione?.plainExplanation ?? "", /non è automaticamente necessaria/i)
+})
+
+test("impermeabilizzare-tetto: rimozione e smaltimento 10-20 €/mq, id rinominato, sostituisce l'informazione principale del vecchio prezzo a peso", () => {
+  const rows = impermeabilizzareTettoGuide.priceRows
+
+  // Micro-fix: id rinominato — "-conferimento-guaina" descriveva solo il
+  // conferimento a peso, non il nuovo perimetro cliente più ampio
+  // (rimozione+movimentazione+trasporto+smaltimento).
+  assert.ok(!rows.some((r) => r.id === "impermeabilizzare-tetto-conferimento-guaina"))
+  const rimozione = rows.find((r) => r.id === "impermeabilizzare-tetto-rimozione-smaltimento-guaina")
+
+  assert.equal(rimozione?.label, "Rimozione e smaltimento della vecchia guaina")
+  assert.equal(rimozione?.range, "da 10 € a 20 € al mq")
+  assert.equal(rimozione?.unit, "al mq")
+  assert.equal(rimozione?.costType, "work")
+  // Il vecchio prezzo a peso resta come riferimento tecnico in nota, non più
+  // come range/unit principale della riga.
+  assert.match(rimozione?.note ?? "", /19,53/)
+  assert.doesNotMatch(rimozione?.unit ?? "", /100 kg/)
+
+  // Micro-fix: provenance esplicita — il prezzario ufficiale copre SOLO il
+  // conferimento a peso, non la manodopera di rimozione: la fascia al mq è
+  // dichiarata come stima editoriale, non spacciata per un secondo valore
+  // ufficiale, con un confronto di plausibilità verso la fascia analoga di
+  // rifare-tetto.
+  assert.match(rimozione?.note ?? "", /stima editoriale/i)
+  assert.match(rimozione?.note ?? "", /non è direttamente quotata da nessun prezzario/i)
+  assert.match(rimozione?.note ?? "", /15–30 €\/mq/)
+
+  // Regressione trovata in QA visiva: "materiali" dentro excludes fa
+  // scattare per costruzione il badge "Materiali esclusi" su costType
+  // "work" (describeCostTypeBadge) — fuorviante qui, dove il perimetro
+  // escluso è amianto/eternit come RIFIUTO speciale, non fornitura. La
+  // parola scelta in excludes deve restare "rifiuti", non "materiali".
+  assert.doesNotMatch(rimozione?.excludes ?? "", /materiali/i)
+  assert.equal(describeCostTypeBadge(rimozione), null)
+})
+
+test("impermeabilizzare-tetto: perdita localizzata è quoteRequired, unifica le due vecchie voci puntuali senza promettere 56,56/82,63 come prezzo di mercato", () => {
+  const rows = impermeabilizzareTettoGuide.priceRows
+  const perdita = rows.find((r) => r.id === "impermeabilizzare-tetto-ricerca-infiltrazione")
+
+  assert.equal(perdita?.label, "Ricerca e riparazione di una perdita localizzata")
+  assert.equal(perdita?.unit, "a intervento")
+  assert.equal(perdita?.priceStatus, "quoteRequired")
+  assert.doesNotMatch(perdita?.range ?? "", /€/) // range qualitativo, nessun numero promesso come prezzo cliente
+
+  // id della voce unificata/rimossa non deve più esistere.
+  assert.ok(!rows.some((r) => r.id === "impermeabilizzare-tetto-riparazione-manto-fessurato"))
+
+  // I due valori puntuali del prezzario restano citati come riferimento
+  // tecnico in nota, non persi.
+  assert.match(perdita?.note ?? "", /56,56/)
+  assert.match(perdita?.note ?? "", /82,63/)
+})
+
+test("impermeabilizzare-tetto: nessuna relation rotta, sourceType è ora \"mixed\" (fasce editoriali, non più prezzi puntuali \"official\")", () => {
+  const rows = impermeabilizzareTettoGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  for (const row of rows) {
+    for (const relation of row.relations ?? []) {
+      assert.ok(ids.has(relation.target), `"${row.id}" -> relation punta a un id inesistente "${relation.target}"`)
+    }
+  }
+
+  assert.equal(impermeabilizzareTettoGuide.sourceType, "mixed")
+})
+
+test("altre Cost Guide: nessuna modifica — rifareTettoGuide resta a 8 priceRows con lo scenario standard 120-180 €/mq già verificato", () => {
+  assert.equal(rifareTettoGuide.priceRows.length, 8)
+  assert.equal(
+    rifareTettoGuide.priceRows.find((r) => r.id === "tetto-rifacimento-copertura")?.range,
+    "da 120 € a 180 € al mq",
   )
 })

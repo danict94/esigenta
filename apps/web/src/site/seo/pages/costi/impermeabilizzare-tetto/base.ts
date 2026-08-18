@@ -7,10 +7,15 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
   title: "Costi impermeabilizzazione tetto",
   h1: "Quanto costa impermeabilizzare un tetto?",
   metaTitle: "Quanto costa impermeabilizzare un tetto? Prezzi indicativi",
-  // Data reale dell'ultima revisione editoriale sostanziale (commit 30c4090,
-  // aggiunta nationalRangeLabel/interventionRangeLabel che correggeva una
-  // contraddizione reale), non del deploy: vedi engine/editorial-date.ts.
-  lastModified: "2026-08-08",
+  // Revisione 2026-08 (richiesta editoriale esplicita): la guida rispondeva
+  // troppo poco alla domanda "quanto costa impermeabilizzare un tetto?" —
+  // nationalRange diceva letteralmente "nessun totale complessivo", summary
+  // apriva con la metodologia dei prezzari prima ancora di un numero. Ora
+  // nationalRange è una fascia editoriale reale (25–60 €/mq, vedi il
+  // commento dettagliato sopra "costGuide:impermeabilizzare-tetto" in
+  // market-data/base-price-ranges.ts) e summary/nationalRangeNote sono
+  // riorganizzati per rispondere prima, spiegare la metodologia dopo.
+  lastModified: "2026-08-18",
   metaDescription:
     "Scopri quanto costa impermeabilizzare un tetto: prezzo al mq, cosa comprende l'intervento e quando è già incluso in un rifacimento completo.",
   heroImage: {
@@ -22,16 +27,21 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
   hubDescription:
     "Prezzi ufficiali per membrane, guaine, riparazioni e preparazione del supporto.",
   topicLabel: "impermeabilizzare un tetto",
+  // Prima leggeva "i prezzi di questa guida provengono da prezzari
+  // regionali..." — metodologia come primo messaggio. Ora il costo viene
+  // prima (coerente con nationalRangeNote, mostrato subito sopra questo
+  // paragrafo nell'Hero), la metodologia resta ma come garanzia di
+  // attendibilità, non come risposta principale.
   summary:
-    "I prezzi di questa guida provengono da prezzari regionali ufficiali dei lavori pubblici e descrivono voci di capitolato tecnico specifiche, non un preventivo per lavori privati: ogni voce ha un prezzo puntuale, che non va sommato alle altre né trasformato in una fascia. Se stai già valutando un rifacimento completo, controlla il preventivo: l'impermeabilizzazione può essere già compresa e non va conteggiata come costo separato.",
+    "Il costo cambia soprattutto in base al sistema di guaina scelto e alle condizioni della superficie: i prezzi delle principali impermeabilizzazioni di questa guida comprendono materiale e posa. Le fasce sono elaborate a partire dai prezzari regionali ufficiali dei lavori pubblici, usati come riferimento tecnico: non sono un tariffario ufficiale né un preventivo, e il prezzo reale dipende sempre dal cantiere.",
   factors: [
     "tipo di lavorazione richiesta: nuova impermeabilizzazione, riparazione o sola preparazione",
-    "tipo di manto o membrana scelta",
-    "stato del supporto esistente",
+    "tipo di guaina scelta",
+    "condizioni della superficie su cui deve essere posata la nuova guaina",
     "estensione dell'area interessata",
     "accessibilità della copertura e necessità di ponteggi",
     "numero di punti critici: bocchettoni, comignoli, lucernari",
-    "eventuale smaltimento del materiale rimosso",
+    "eventuale rimozione e smaltimento della vecchia guaina",
   ],
   savingTips: [
     "Chiedi sempre quale lavorazione tecnica è prevista nel preventivo (nuova posa, riparazione, sola preparazione): voci diverse hanno prezzi molto diversi e non sono intercambiabili.",
@@ -42,17 +52,25 @@ export const impermeabilizzareTettoBase: CostGuideBaseContent = {
     "Chiedi sempre se il preventivo include la rimozione della guaina esistente.",
     "Se hai già chiesto un preventivo per il rifacimento completo, chiedi se include l'impermeabilizzazione, per evitare di pagarla due volte.",
   ],
+  // priceTableNote: campo non più letto da cost-page-template.tsx (sostituito
+  // dal nuovo template condiviso), aggiornato comunque per non lasciare un
+  // riferimento a "lavorazioni tecniche specifiche" ormai disallineato dalle
+  // fasce editoriali arrotondate, anche se oggi non renderizzato.
   priceTableNote:
-    "I valori riportati derivano da prezzari regionali dei lavori pubblici 2025–2026 e si riferiscono a lavorazioni tecniche specifiche. Non costituiscono un tariffario nazionale né un preventivo per lavori privati. Il costo reale può variare in base alla regione, allo stato del supporto, alla superficie, all'accessibilità, ai dettagli costruttivi e alle opere escluse dal capitolato.",
-  // Audit 2026-08: senza queste due etichette il box Sintesi (qui) e il
-  // modulo Costi di /interventi/impermeabilizzare-tetto (interventionRangeLabel)
-  // ricadevano sui default "Costo complessivo"/"RANGE INDICATIVO COMPLESSIVO"
-  // — in contraddizione diretta con nationalRange, che dichiara esplicitamente
-  // "Nessun totale complessivo". Stesso problema di rifare-impianto-elettrico,
-  // stessa correzione: un'etichetta che descrive davvero il dato (prezzi
-  // ufficiali puntuali, non una fascia).
-  nationalRangeLabel: "Prezzi per singola lavorazione",
-  interventionRangeLabel: "PREZZI PER SINGOLA LAVORAZIONE",
+    "Le fasce sono elaborazioni editoriali a partire da prezzari regionali dei lavori pubblici 2025–2026, arrotondate per il mercato privato. Non costituiscono un tariffario nazionale né un preventivo. Il costo reale può variare in base alla regione, alle condizioni della superficie, all'accessibilità, ai dettagli costruttivi e alle lavorazioni escluse dal sistema scelto.",
+  // Revisione 2026-08: nationalRange ora è una fascia editoriale reale
+  // (25–60 €/mq), non più "nessun totale complessivo" — "Prezzi per singola
+  // lavorazione" era l'etichetta corretta SOLO per quella vecchia
+  // formulazione (stessa correzione di rifare-impianto-elettrico all'epoca).
+  // Allineata a "Fascia orientativa"/"FASCIA ORIENTATIVA AL MQ", stessa
+  // coppia di etichette già usata da rifare-tetto per una fascia al mq.
+  nationalRangeLabel: "Fascia orientativa",
+  interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
+  // Mostrato subito sotto il numero grande dell'Hero (vedi CostGuideHero):
+  // chiarisce perimetro ed esclusioni PRIMA che il lettore arrivi al resto
+  // della pagina — risposta economica prima, dettaglio dopo.
+  nationalRangeNote:
+    "Vale per una normale impermeabilizzazione bituminosa con materiale e posa. Restano spesso a parte: rimozione della vecchia guaina, ripristini importanti della superficie, ponteggi, difficoltà particolari di accesso e lavorazioni aggiuntive non comprese nel sistema scelto.",
   // Collegamento obbligatorio con rifare-tetto (confine editoriale: le due
   // guide si richiamano a vicenda) + il confine più diretto (riparare-tetto).
   // Risolti da resolveBestHrefForIntervention: "rifare-tetto" va alla sua

@@ -2,12 +2,12 @@ export const impermeabilizzareTettoFaq = [
   {
     question: "Quanto costa impermeabilizzare un tetto al mq?",
     answer:
-      "Dipende dalla lavorazione: i prezzari regionali ufficiali quotano voci diverse, dalla guaina bituminosa liscia (27,43 €/m² nel prezzario Friuli Venezia Giulia 2025) alla doppia membrana con protezione in rame (fino a 81,36 €/m²). Sono prezzi ufficiali di capitolati tecnici specifici, non un preventivo: ogni voce descrive una lavorazione diversa e non si sommano tra loro.",
+      "Indicativamente da 25 € a 60 € al mq per una normale impermeabilizzazione bituminosa, materiale e posa comprese: la fascia più bassa riguarda una guaina standard, quella più alta un sistema a doppio strato con protezione in rame. Sistemi speciali o interventi particolari possono costare di più. Sono fasce editoriali elaborate a partire dai prezzari regionali ufficiali, non un tariffario ufficiale né un preventivo: il prezzo reale dipende dal cantiere.",
   },
   {
     question: "Il prezzo comprende anche la rimozione della vecchia guaina?",
     answer:
-      "I prezzari ufficiali citati in questa guida non includono una voce per la rimozione del vecchio manto: comprendono invece il conferimento in impianto della guaina bituminosa già rimossa, quotato a parte (19,53 € ogni 100 kg nel prezzario Lombardia 1/2026). La rimozione vera e propria va verificata come voce separata nel preventivo.",
+      "No: le nuove impermeabilizzazioni di questa guida comprendono materiale e posa, ma non la rimozione della guaina esistente. La rimozione e lo smaltimento della vecchia guaina hanno un prezzo indicativo a parte, da 10 € a 20 € al mq: chiedi sempre al professionista se il tuo preventivo la include già.",
   },
   {
     question: "Quanto incidono raccordi, bordi e punti critici sul costo totale?",
@@ -22,6 +22,6 @@ export const impermeabilizzareTettoFaq = [
   {
     question: "Quando conviene un intervento localizzato invece di rifare tutta la guaina?",
     answer:
-      "Se il problema è un manto fessurato in un punto preciso o un'infiltrazione isolata, i prezzari ufficiali prevedono voci dedicate alla riparazione puntuale, distinte dalla posa di una nuova impermeabilizzazione su tutta la superficie. Il professionista valuta quale lavorazione è più adatta in base allo stato reale della copertura.",
+      "Se il problema è un manto fessurato in un punto preciso o un'infiltrazione isolata, spesso basta una ricerca e riparazione della perdita localizzata, senza rifare tutta l'impermeabilizzazione della copertura: il prezzo richiede sempre una valutazione, perché dipende da accessibilità, estensione del danno e punti critici coinvolti. Il professionista valuta quale lavorazione è più adatta in base allo stato reale della copertura.",
   },
 ];
