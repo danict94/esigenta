@@ -1149,27 +1149,122 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     ],
     sizeExamples: [],
   },
-  // Fase terrazzo (2026-08): impermeabilizzare-terrazzo resta
-  // publicationStatus "draft" — questa guida è registrata e compilabile ma
-  // non pubblica finché il lifecycle non cambia stato (vedi
-  // pages/costi/impermeabilizzare-terrazzo). Ricognizione dati: nessun dato
-  // economico preesisteva per impermeabilizzare-balcone-ballatoio o concetti
-  // equivalenti in market-data, pagine o funnel (verificato read-only prima
-  // di questa guida) — nessuna base da riusare, fascia costruita ex novo.
-  // Fonti confrontate: prezzari regionali ufficiali 2025–2026 (Emilia-
-  // Romagna 2026, Friuli Venezia Giulia, Sicilia vigente) e mercato
-  // nazionale (Instapro, Edilnet, Homedeal, altre fonti tecniche). I
-  // prezzari mostrano valori molto differenti in base al sistema, da
-  // lavorazioni semplici nell'ordine di circa 20–40 €/mq fino a sistemi
-  // specialistici oltre 70–90 €/mq: nessuna singola voce ufficiale è
-  // attribuibile come prezzo universale. La fascia 30–70 €/mq è
-  // un'elaborazione editoriale multi-fonte (confidence "media"), non il
-  // prezzo puntuale di un singolo prezzario — a differenza del blocco
-  // impermeabilizzare-tetto qui sopra, che riporta prezzi ufficiali puntuali
-  // senza fascia. NON è il range 120–300 €/mq di rifare-tetto: quella fascia
-  // riguarda il rifacimento completo (demolizione, massetto, nuova
-  // pavimentazione), fuori perimetro da questa guida per esplicita decisione
-  // editoriale — vedi priceRows sotto ed exclusion nella riga principale.
+  // Micro-fix 2026-08 (verifica esplicita): il commento precedente diceva
+  // "resta publicationStatus 'draft'... non pubblica finché il lifecycle non
+  // cambia stato" — DISALLINEATO dalla realtà. packages/taxonomy/src/frozen/
+  // source/project-groups/facciate-e-balconi.ts dichiara oggi
+  // publicationStatus "published" per "impermeabilizzare-terrazzo" (audit
+  // dedicato già completato in una fase precedente, non in questa
+  // revisione), e getCostGuideStaticParams() la include già correttamente
+  // (verificato direttamente: 6/6 Cost Guide generate, questa inclusa). La
+  // guida è quindi già pubblica — il commento draft era solo testo rimasto
+  // indietro rispetto a quella decisione, mai più aggiornato. Non toccare
+  // publicationStatus da qui: resta un campo della SSOT taxonomy, non di
+  // questo file — qui si corregge solo il commento, nessun comportamento
+  // cambia.
+  //
+  // Nota separata (fuori perimetro di questo micro-fix, non un blocker per
+  // QUESTA guida): packages/taxonomy/src/frozen/publication-status.test.ts e
+  // .../queries/publication-lifecycle.integration.test.ts assumono ancora
+  // "impermeabilizzare-terrazzo" come L'esempio canonico di intervento
+  // draft — 3 test attualmente falliscono contro il dato reale "published".
+  // Pre-esistente, non introdotto da questa revisione (mai toccato
+  // packages/taxonomy in questo lavoro); next build/apps/web non esegue
+  // quella suite, quindi non blocca il build di questo sito, ma resta un
+  // test rosso da sistemare a parte.
+  //
+  // Revisione 2026-08 (richiesta editoriale esplicita): la guida aveva UNA
+  // sola riga quotata (30–70 €/mq, "priceType: corpo", nessun costType/unit
+  // "a corpo" — un pacchetto misto poco realistico chiamato "standard") più
+  // due righe qualitative generiche sotto "Da valutare con il
+  // professionista". Troppo vaga per rispondere a "quale sistema scegliere
+  // per impermeabilizzare un terrazzo e perché i prezzi sono così diversi
+  // tra loro?": un terrazzo può essere impermeabilizzato con sistemi molto
+  // diversi (da ricoprire con un pavimento, da lasciare a vista, pensati per
+  // un traffico leggero o per l'uso pedonale normale), non con un'unica
+  // lavorazione indistinta. Sostituita con 11 righe:
+  // - 8 sistemi di impermeabilizzazione (category "Sistemi di
+  //   impermeabilizzazione"), tutti costType "complete" (materiale + posa
+  //   non scorporati con certezza dalle fonti, stesso criterio delle 5
+  //   guaine di impermeabilizzare-tetto): cementizia sotto pavimento 20–35,
+  //   impermeabilizzante trasparente sopra piastrelle 45–75, resina
+  //   calpestabile a vista 50–90, guaina liquida a vista per traffico
+  //   leggero 35–55, guaina bituminosa ardesiata a vista 25–45, doppia
+  //   guaina bituminosa 35–55, membrana sintetica TPO/PVC 60–100, sistema ad
+  //   alte prestazioni 70–120 €/mq. Nessuna relation tra loro (né
+  //   "scenario", né "alternativeTo"): sono sistemi paralleli che
+  //   differiscono per materiale/tecnologia e calpestabilità, non ampiezze
+  //   diverse dello stesso intervento né modi alternativi di calcolare lo
+  //   stesso lavoro — stesso principio già applicato alle 5 guaine di
+  //   impermeabilizzare-tetto, che restano anch'esse senza role/relations
+  //   tra loro pur essendo evidentemente variazioni dello stesso principio
+  //   bituminoso (guaina ardesiata vs doppia guaina bituminosa qui sotto).
+  // - 1 riparazione mirata (category "Riparazioni mirate", ex "Da valutare
+  //   con il professionista"): "Riparazione localizzata di
+  //   un'infiltrazione", priceStatus "quoteRequired", nessuna fascia in
+  //   euro affidabile senza sopralluogo — stesso pattern già in uso per
+  //   impermeabilizzare-tetto-ricerca-infiltrazione.
+  // - 2 lavorazioni accessorie (category "Lavorazioni accessorie"),
+  //   condizionali e non comprese nei sistemi qui sopra: demolizione e
+  //   smaltimento del pavimento esistente 10–25 €/mq (costType "work":
+  //   rimozione, movimentazione, trasporto, smaltimento, nessuna fornitura)
+  //   e ripristino del massetto o delle pendenze 20–50 €/mq (costType
+  //   "complete"). Nessuna delle due ha role "extra": pur essendo
+  //   condizionali nell'uso reale, non hanno un target PriceRow univoco a
+  //   cui si applicano sempre (possono precedere qualunque dei sistemi
+  //   sotto-pavimento) — stesso principio già applicato dal micro-fix 2026-08
+  //   di impermeabilizzare-tetto a "Preparazione e livellamento della
+  //   superficie", che per lo stesso motivo non ha role "extra".
+  //
+  // sourceType resta "mixed": nessuna ancora ufficiale puntuale per singolo
+  // sistema è stata reperita nel materiale a disposizione per questa
+  // revisione (a differenza della guida gemella impermeabilizzare-tetto, che
+  // ha un valore FVG puntuale per ogni guaina) — le 11 fasce restano
+  // elaborazioni editoriali multi-fonte (confidence "media" ovunque sia
+  // presente un prezzo), calibrate sull'osservazione aggregata già nota per
+  // questa guida (lavorazioni semplici nell'ordine di 20–40 €/mq, sistemi
+  // specialistici anche oltre 70–90 €/mq), non il prezzo puntuale di un
+  // singolo prezzario. Se in futuro emergono ancore ufficiali più specifiche
+  // per singolo sistema, andrebbero citate in nota al posto di questo
+  // riferimento aggregato.
+  //
+  // Micro-fix 2026-08 (verifica esplicita): nationalRange resta 30–70 €/mq
+  // — è la fascia orientativa di un'impermeabilizzazione STANDARD (materiale
+  // + posa, condizioni ragionevoli), NON una media statistica calcolata tra
+  // gli 8 sistemi (nessuna media è stata calcolata). Alcuni sistemi partono
+  // più in basso (cementizia sotto pavimento, 20 €/mq), altri arrivano più
+  // in alto (sistema ad alte prestazioni, fino a 120 €/mq) — il range
+  // completo dei sistemi è leggibile nella tabella priceRows, non nella sola
+  // fascia Hero. NON è il range 120–300 €/mq di rifare-tetto: quella fascia
+  // riguarda il
+  // rifacimento completo (demolizione, massetto, nuova pavimentazione),
+  // fuori perimetro da questa guida per esplicita decisione editoriale.
+  //
+  // LIMITE NOTO isGuideScenarioRow (templates/cost-guide-price-model.ts):
+  // nessuna riga di questa famiglia usa unit "a corpo" (gli 8 sistemi sono
+  // "al mq", la riparazione mirata è "a intervento") — anche volendo
+  // trattare gli 8 sistemi come "scenari" della guida, il classificatore
+  // condiviso non li riconoscerebbe comunque (richiede costType "complete" E
+  // unit "a corpo"), stesso limite già documentato sopra per rifare-tetto.
+  // Qui il limite è comunque moot: la scelta editoriale è di NON assegnare
+  // role "scenario"/"primary" a questi sistemi, perché non sono ampiezze
+  // diverse dello stesso intervento (quello giustificherebbe "scenario") ma
+  // sistemi paralleli per materiale/tecnologia — la sezione "Scenari" del
+  // template non si attiva per questa guida, tutte le righe restano nel
+  // Breakdown raggruppate per category (da qui i due categoryNote sotto).
+  //
+  // id: 2 riusati con il prefisso corto legacy "terrazzo-" (nessun
+  // riferimento esterno secondo il grep di verifica — stessa identità di
+  // riga, solo perimetro/label affinati, non un concetto nuovo):
+  // "terrazzo-sistema-complesso" (da riga qualitativa "oltre 70 €/mq senza
+  // massimo" a riga quotata 70–120 €/mq) e "terrazzo-riparazione-localizzata"
+  // (da riga qualitativa generica a riparazione mirata con perimetro più
+  // preciso). 9 id nuovi con il prefisso completo "impermeabilizzare-
+  // terrazzo-", coerente con la convenzione già in uso su tutte le righe
+  // della guida gemella impermeabilizzare-tetto. 1 id rimosso:
+  // "terrazzo-impermeabilizzazione-standard" (sostituito dagli 8 sistemi
+  // paralleli, nessun riferimento esterno secondo il grep di verifica,
+  // rimozione sicura).
   "costGuide:impermeabilizzare-terrazzo": {
     nationalRange: "30–70 € al mq",
     pricePerSquareMeter: "da 30 € a 70 € al mq",
@@ -1178,36 +1273,162 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
     sourceType: "mixed",
     priceRows: [
       {
-        id: "terrazzo-impermeabilizzazione-standard",
-        label: "Impermeabilizzazione standard della superficie",
-        category: "Impermeabilizzazione della superficie",
+        id: "impermeabilizzare-terrazzo-cementizia-sotto-pavimento",
+        label: "Impermeabilizzazione cementizia sotto pavimento",
+        category: "Sistemi di impermeabilizzazione",
+        categoryNote: "Questi sistemi sono modi alternativi di impermeabilizzare il terrazzo: scegli quello più adatto al tuo caso, non sommare le fasce tra loro. Non tutti sono calpestabili come una vera pavimentazione: alcuni vanno protetti da un pavimento o da un massetto sopra di loro, altri tollerano solo un'ispezione o un traffico leggero, altri ancora sono pensati per il normale utilizzo pedonale del terrazzo — la differenza è spiegata in ogni voce.",
         unit: "al mq",
-        range: "da 30 € a 70 € al mq",
-        note: "Stima elaborata confrontando le voci di impermeabilizzazione dei prezzari regionali ufficiali 2025–2026 con le fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per impermeabilizzare un terrazzo, dalla preparazione del supporto (la superficie su cui viene applicato il sistema) alla posa del sistema scelto.",
-        includes: "sopralluogo e valutazione del supporto, preparazione della superficie, trattamento di raccordi perimetrali, soglie, scarichi e bocchettoni (il punto in cui l'acqua del terrazzo entra nello scarico), applicazione del sistema impermeabilizzante scelto, verifica finale della tenuta",
-        excludes: "demolizione completa, ricostruzione del massetto (lo strato sotto le piastrelle che crea la base e di norma le pendenze), rifacimento generale delle pendenze, nuova pavimentazione completa, opere strutturali e, più in generale, il rifacimento completo del terrazzo",
+        range: "da 20 € a 35 € al mq",
+        plainExplanation: "È un sistema impermeabilizzante cementizio applicato sotto la finitura finale: va steso sul massetto oppure, quando tecnicamente possibile, in sovrapposizione a un pavimento esistente stabile, prima della posa del nuovo rivestimento. Non è pensato per restare a vista né per essere calpestato direttamente.",
+        note: "Fascia editoriale Esigenta elaborata confrontando i prezzari regionali ufficiali 2025–2026 (Emilia-Romagna, Friuli Venezia Giulia, Sicilia) con il mercato nazionale (Instapro, Edilnet, Homedeal e altre fonti tecniche): nessun prezzario pubblico consultato quota un pacchetto specifico per questo sistema, la fascia riflette l'osservazione generale delle fonti su lavorazioni di impermeabilizzazione più semplici (circa 20–40 €/mq), non il prezzo puntuale di una singola fonte.",
+        includes: "fornitura del prodotto cementizio e posa a sistema, compreso il trattamento di raccordi e angoli",
+        excludes: "nuova pavimentazione o rivestimento finale, demolizione del pavimento esistente quando necessaria, ripristino del massetto o correzione delle pendenze quando necessari",
         confidence: "media",
-        priceType: "corpo",
+        costType: "complete",
       },
-      // Scenario A e C non hanno un numero verificato da fonti di settore
-      // (a differenza della riga sopra): restano qualitative sotto "Da
-      // valutare", stesso pattern delle righe non quotabili di bagno e
-      // tetto — mai un numero o un tetto massimo inventato (vedi anche
-      // categoryNote).
       {
-        id: "terrazzo-riparazione-localizzata",
-        label: "Riparazione o impermeabilizzazione localizzata",
-        category: "Da valutare con il professionista",
-        categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: comprendono sia interventi più mirati della fascia principale qui sopra (riparazioni localizzate) sia interventi più complessi (sistemi ad alte prestazioni), oltre a fattori che dipendono dal singolo cantiere.",
-        range: "da valutare con il professionista",
-        note: "Può riguardare uno scarico, un bocchettone, una soglia, un raccordo, un giunto o una piccola zona deteriorata. Per lavori di questo tipo il prezzo al mq è poco significativo: esistono costi minimi di intervento, preparazione e manodopera che non scendono sotto una certa soglia anche per superfici piccole.",
+        id: "impermeabilizzare-terrazzo-trasparente-sopra-piastrelle",
+        label: "Impermeabilizzante trasparente sopra piastrelle",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 45 € a 75 € al mq",
+        plainExplanation: "È una soluzione per terrazzi pavimentati quando le piastrelle esistenti sono stabili e ben ancorate: mantiene visibile il pavimento sottostante e, quando si usa un prodotto progettato per questo impiego, può costituire una superficie pedonabile. Non è applicabile su qualunque pavimento: distacchi, fessure importanti, problemi del massetto o pendenze errate possono richiedere un intervento diverso.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida (prezzari regionali 2025–2026 e mercato nazionale): nessuna fonte quota un prezzo puntuale per questo specifico sistema applicato sopra una pavimentazione esistente, la fascia è un'elaborazione per committenza privata.",
+        includes: "fornitura del prodotto impermeabilizzante trasparente e posa a sistema sopra la pavimentazione esistente",
+        excludes: "rimozione o sostituzione delle piastrelle, ripristino del massetto o correzione delle pendenze quando necessari",
+        confidence: "media",
+        costType: "complete",
+      },
+      // Micro-fix 2026-08 (verifica esplicita): plainExplanation di questa
+      // riga e di "terrazzo-sistema-complesso" più sotto rese esplicitamente
+      // distinte — potendosi sovrapporre economicamente (50–90 vs 70–120
+      // €/mq), il rischio era che la seconda leggesse come "la stessa resina
+      // ma più cara". Ora ciascuna cita esplicitamente l'altra e la
+      // differenza chimica/prestazionale concreta, non solo il prezzo.
+      {
+        id: "impermeabilizzare-terrazzo-resina-calpestabile-vista",
+        label: "Resina impermeabilizzante calpestabile a vista",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 50 € a 90 € al mq",
+        plainExplanation: "È un ciclo resinoso — poliuretanico, PMMA o sistemi equivalenti — progettato espressamente come impermeabilizzazione continua e insieme come finitura finale del terrazzo: pensato per il normale traffico pedonale di un'abitazione, con la possibilità di una finitura antiscivolo quando il sistema la prevede. È una voce distinta sia da una semplice guaina liquida (perimetro più semplice, qui sotto) sia dai sistemi specialistici ad alte prestazioni in poliurea (in tabella più sotto), pensati per esigenze diverse dal normale uso residenziale.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida: nessun prezzario pubblico consultato distingue un sistema resinoso calpestabile a vista come voce a sé, la fascia riflette l'osservazione generale delle fonti sui sistemi più evoluti/specialistici (oltre 70–90 €/mq nella fascia alta), qui estesa verso il basso per coprire anche cicli resinosi più semplici ma comunque calpestabili.",
+        includes: "fornitura del ciclo resinoso e posa, compresa la finitura superficiale (anche antiscivolo, quando prevista dal sistema scelto)",
+        excludes: "ripristino del massetto o correzione delle pendenze quando necessari, demolizione della pavimentazione esistente",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "impermeabilizzare-terrazzo-guaina-liquida-traffico-leggero",
+        label: "Guaina liquida a vista per traffico leggero",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 35 € a 55 € al mq",
+        plainExplanation: "Distingue i rivestimenti impermeabilizzanti esposti che tollerano ispezione, manutenzione o un traffico pedonale leggero dai veri sistemi calpestabili per uso normale (riga sopra): non è una pavimentazione pensata per l'uso quotidiano del terrazzo.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida, posizionata tra i sistemi da ricoprire e i sistemi calpestabili: nessuna fonte quota separatamente una guaina liquida a traffico leggero rispetto a un ciclo calpestabile a uso normale.",
+        includes: "fornitura del rivestimento impermeabilizzante liquido e posa in opera",
+        excludes: "ripristino del massetto o correzione delle pendenze quando necessari, demolizione della pavimentazione esistente",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "impermeabilizzare-terrazzo-guaina-ardesiata-vista",
+        label: "Guaina bituminosa ardesiata a vista",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 25 € a 45 € al mq",
+        plainExplanation: "È una guaina bituminosa con una finitura minerale (ardesiata) che resta a vista: indicata soprattutto per lastrici solari, terrazzi non utilizzati come vero spazio abitabile o superfici destinate principalmente a manutenzione e ispezione — non equivalente a una pavimentazione calpestabile.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida: nessuna delle fonti consultate per l'impermeabilizzazione del terrazzo quota un prezzo puntuale per questo sistema in questo contesto applicativo (a differenza della guida gemella sul tetto, che ha un'ancora ufficiale specifica riferita alla copertura inclinata, non riportata qui perché il contesto applicativo è diverso).",
+        includes: "fornitura della membrana bituminosa ardesiata e posa in opera",
+        excludes: "rimozione della vecchia impermeabilizzazione quando presente, massetto di protezione o pavimentazione sovrastante, ripristino del massetto o correzione delle pendenze quando necessari",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "impermeabilizzare-terrazzo-doppia-guaina-bituminosa",
+        label: "Impermeabilizzazione con doppia guaina bituminosa",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 35 € a 55 € al mq",
+        plainExplanation: "È lo stesso principio della guaina bituminosa ardesiata qui sopra, realizzato con due membrane sovrapposte invece di una, per una tenuta all'acqua maggiore utile su superfici più esposte o con pendenze minime. Anche questo sistema resta a vista e non è una pavimentazione calpestabile per l'uso quotidiano: valgono le stesse indicazioni della guaina ardesiata qui sopra. Un eventuale massetto di protezione, una pavimentazione o altri quadrotti sopra la guaina restano lavorazioni separate, non comprese qui salvo diverso capitolato.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida: il sistema a doppia membrana comporta un maggiore impiego di materiale e tempo di posa rispetto alla guaina ardesiata a singolo strato (riga precedente), da cui la fascia leggermente più alta.",
+        includes: "fornitura delle due membrane bituminose e posa in opera",
+        excludes: "massetto di protezione, pavimentazione, quadrotti o altra finitura pedonabile sovrastante salvo diverso capitolato, ripristino del massetto o correzione delle pendenze quando necessari",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "impermeabilizzare-terrazzo-membrana-sintetica-tpo-pvc",
+        label: "Membrana sintetica TPO/PVC",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 60 € a 100 € al mq",
+        plainExplanation: "È una membrana sintetica (TPO o PVC) termosaldata, la soluzione più tipica su grandi superfici piane, lastrici e terrazze o coperture di questo tipo: rappresenta lo strato impermeabilizzante, non una pavimentazione finale pensata per il normale utilizzo pedonale del terrazzo. Su terrazzi abitabili va di norma protetta da una pavimentazione o da un'altra finitura pedonabile sopra di lei; su lastrici o coperture non abitate può restare esposta.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida: nessuna fonte consultata quota specificamente una membrana sintetica TPO/PVC su terrazzo residenziale, la fascia riflette l'osservazione generale delle fonti sui sistemi più evoluti (oltre 70–90 €/mq nella fascia alta) estesa verso il basso per coprire configurazioni di posa più semplici.",
+        includes: "fornitura della membrana sintetica e posa con saldatura dei giunti",
+        excludes: "pavimentazione o finitura pedonabile sovrastante quando prevista dal caso d'uso, ripristino del massetto o correzione delle pendenze quando necessari",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "terrazzo-sistema-complesso",
-        label: "Sistema complesso o ad alte prestazioni",
-        category: "Da valutare con il professionista",
-        range: "oltre 70 € al mq, senza un massimo definito",
-        note: "Può riguardare sistemi impermeabilizzanti multistrato o specialistici, un supporto molto deteriorato che richiede una preparazione importante, molti raccordi o scarichi complessi, oppure la correzione delle pendenze: lavorazioni preliminari rilevanti che spostano il lavoro fuori dalla fascia 30–70 €/mq.",
+        label: "Sistema impermeabilizzante ad alte prestazioni",
+        category: "Sistemi di impermeabilizzazione",
+        unit: "al mq",
+        range: "da 70 € a 120 € al mq",
+        plainExplanation: "Comprende sistemi in poliurea o resine specialistiche, chimicamente diversi dal ciclo poliuretanico/PMMA della resina calpestabile standard qui sopra: pensati per interventi che richiedono prestazioni superiori, come maggiore resistenza all'usura o agli agenti chimici, tempi di applicazione e indurimento più rapidi, o cicli tecnici più complessi. Non è semplicemente la stessa resina calpestabile a un prezzo più alto: il sistema specifico, la preparazione del fondo e la modalità applicativa incidono molto sul preventivo, e non è una fascia universale valida per qualunque configurazione.",
+        note: "Fascia editoriale Esigenta: la guida originale (2026-08) osservava, confrontando i prezzari regionali ufficiali con il mercato nazionale, che i sistemi specialistici possono superare 70–90 €/mq senza un tetto definito; questa revisione rende quell'osservazione concreta con una fascia superiore definita (70–120 €/mq) invece di lasciarla aperta, restando comunque un'elaborazione editoriale multi-fonte, non il prezzo puntuale di un singolo prezzario.",
+        includes: "fornitura del sistema scelto (poliurea o resina specialistica) e posa a ciclo completo, secondo la preparazione del fondo richiesta",
+        excludes: "ripristino del massetto o correzione delle pendenze quando necessari, pavimentazione finale quando non prevista dal sistema",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "terrazzo-riparazione-localizzata",
+        label: "Riparazione localizzata di un'infiltrazione",
+        category: "Riparazioni mirate",
+        unit: "a intervento",
+        unitLabel: "per intervento",
+        range: "da valutare con il professionista",
+        plainExplanation: "È l'intervento mirato per trovare e riparare una perdita isolata — uno scarico, un bocchettone, una soglia, un giunto, un raccordo o una piccola zona deteriorata — senza rifare l'impermeabilizzazione dell'intera superficie.",
+        note: "Può riguardare uno scarico, un bocchettone, una soglia, un giunto, un raccordo o una piccola zona deteriorata. Per lavori di questo tipo il prezzo al mq è poco significativo: esistono costi minimi di intervento, diagnosi e manodopera che non scendono sotto una certa soglia anche per un danno piccolo.",
+        includes: "ricerca del punto di perdita ed eliminazione, secondo l'estensione del danno",
+        excludes: "impermeabilizzazione dell'intera superficie (vedi i sistemi qui sopra), demolizione o ripristino del pavimento quando l'estensione del danno lo richiede",
+        priceStatus: "quoteRequired",
+      },
+      {
+        id: "impermeabilizzare-terrazzo-demolizione-pavimento-esistente",
+        label: "Demolizione e smaltimento del pavimento esistente",
+        category: "Lavorazioni accessorie",
+        categoryNote: "Queste lavorazioni non sono comprese nei sistemi di impermeabilizzazione qui sopra: si aggiungono solo quando le condizioni del tuo terrazzo lo richiedono, non in ogni intervento.",
+        unit: "al mq",
+        range: "da 10 € a 25 € al mq",
+        plainExplanation: "Serve solo quando il pavimento esistente va rimosso prima di applicare il sistema scelto: non è compresa automaticamente nei sistemi pensati per essere applicati sopra la pavimentazione esistente (impermeabilizzante trasparente, guaina liquida a traffico leggero) elencati qui sopra.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida (prezzari regionali 2025–2026 e mercato nazionale): comprende rimozione, movimentazione, trasporto e smaltimento del pavimento esistente, non un prezzo ufficiale puntuale.",
+        includes: "rimozione della pavimentazione esistente, movimentazione, trasporto e smaltimento del materiale di risulta",
+        // "nuova pavimentazione o impermeabilizzazione" e non "materiali
+        // esclusi": la parola "materiali" fa scattare per costruzione il
+        // badge "Materiali esclusi" su costType "work" (describeCostTypeBadge,
+        // templates/cost-guide-price-model.ts) — corretto quando significa
+        // "fornitura esclusa", fuorviante qui (una demolizione non ha
+        // comunque materiali da fornire). Stesso bug reale già corretto su
+        // impermeabilizzare-tetto-rimozione-smaltimento-guaina.
+        excludes: "ripristino del massetto o correzione delle pendenze quando necessari (vedi voce dedicata), nuova pavimentazione o impermeabilizzazione",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "impermeabilizzare-terrazzo-ripristino-massetto-pendenze",
+        label: "Ripristino del massetto o delle pendenze",
+        category: "Lavorazioni accessorie",
+        unit: "al mq",
+        range: "da 20 € a 50 € al mq",
+        plainExplanation: "Serve quando il massetto sottostante è deteriorato oppure l'acqua non defluisce correttamente verso gli scarichi: non è una lavorazione necessaria in ogni impermeabilizzazione, solo quando le condizioni della superficie esistente lo richiedono.",
+        note: "Fascia editoriale Esigenta elaborata dalle stesse fonti generali di questa guida: il costo cambia molto in base all'estensione dell'intervento (una rasatura localizzata rispetto a una ricostruzione estesa del massetto) e alla correzione delle pendenze necessaria verso gli scarichi.",
+        includes: "ricostruzione o rasatura del massetto e/o correzione delle pendenze verso gli scarichi",
+        excludes: "demolizione del pavimento esistente quando necessaria (vedi voce dedicata), impermeabilizzazione e nuova pavimentazione",
+        confidence: "media",
+        costType: "complete",
       },
     ],
     sizeExamples: [
@@ -1215,19 +1436,19 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Terrazzo da 20 mq",
         sizeRange: "20 mq",
         range: "da 600 € a 1.400 €",
-        note: "Calcolo: 20 mq × 30–70 €/mq. Nei terrazzi piccoli il costo al mq può risultare più alto: preparazione, accesso, raccordi, scarichi e i costi minimi di cantiere non diminuiscono proporzionalmente alla superficie.",
+        note: "Calcolo per un'impermeabilizzazione standard: 20 mq × 30–70 €/mq. Non rappresenta una resina calpestabile, un sistema in poliurea o un rifacimento completo del terrazzo. Nei terrazzi piccoli il costo al mq può risultare più alto: preparazione, accesso, raccordi, scarichi e i costi minimi di cantiere non diminuiscono proporzionalmente alla superficie.",
       },
       {
         label: "Terrazzo da 50 mq",
         sizeRange: "50 mq",
         range: "da 1.500 € a 3.500 €",
-        note: "Calcolo: 50 mq × 30–70 €/mq.",
+        note: "Calcolo per un'impermeabilizzazione standard: 50 mq × 30–70 €/mq. Non rappresenta una resina calpestabile, un sistema in poliurea o un rifacimento completo del terrazzo.",
       },
       {
         label: "Terrazzo da 100 mq",
         sizeRange: "100 mq",
         range: "da 3.000 € a 7.000 €",
-        note: "Calcolo: 100 mq × 30–70 €/mq.",
+        note: "Calcolo per un'impermeabilizzazione standard: 100 mq × 30–70 €/mq. Non rappresenta una resina calpestabile, un sistema in poliurea o un rifacimento completo del terrazzo.",
       },
     ],
   },

@@ -1,6 +1,8 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
+import { isInterventionPublished } from "@esigenta/taxonomy"
+
 import {
   basePriceRangesByFamily,
   isAlternativeTo,
@@ -12,7 +14,9 @@ import type { BasePriceRange, PriceRow } from "./base-price-ranges"
 import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/content"
 import { rifareTettoGuide } from "../pages/costi/rifare-tetto/content"
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
+import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
 import { classifyPriceRows, describeCostTypeBadge } from "../templates/cost-guide-price-model"
+import { getCostGuideStaticParams } from "../engine/static-params"
 
 // Scope 1C — infrastruttura del nuovo contratto PriceRow (id, costType, role,
 // priceStatus, relations). Fixture minime e sintetiche: mai i dati reali
@@ -958,5 +962,195 @@ test("altre Cost Guide: nessuna modifica — rifareTettoGuide resta a 8 priceRow
   assert.equal(
     rifareTettoGuide.priceRows.find((r) => r.id === "tetto-rifacimento-copertura")?.range,
     "da 120 € a 180 € al mq",
+  )
+})
+
+// Revisione 2026-08 di impermeabilizzare-terrazzo — dati REALI (guida
+// composta), non fixture sintetiche: la guida passa da una riga quotata
+// "pacchetto misto" (priceType "corpo") + due righe qualitative generiche a
+// 11 righe: 8 sistemi di impermeabilizzazione paralleli, 1 riparazione
+// mirata quoteRequired, 2 lavorazioni accessorie condizionali.
+
+test("impermeabilizzare-terrazzo: Hero 30-70 €/mq, fascia orientativa di un'impermeabilizzazione standard", () => {
+  assert.equal(impermeabilizzareTerrazzoGuide.nationalRange, "30–70 € al mq")
+  assert.equal(impermeabilizzareTerrazzoGuide.pricePerSquareMeter, "da 30 € a 70 € al mq")
+  assert.equal(impermeabilizzareTerrazzoGuide.sourceType, "mixed")
+})
+
+test("impermeabilizzare-terrazzo: esattamente 11 PriceRow, tutte con un id univoco reale", () => {
+  assert.equal(impermeabilizzareTerrazzoGuide.priceRows.length, 11)
+  assert.equal(new Set(impermeabilizzareTerrazzoGuide.priceRows.map((r) => r.id)).size, 11)
+})
+
+test("impermeabilizzare-terrazzo: gli 8 sistemi di impermeabilizzazione hanno esattamente le fasce approvate", () => {
+  const rows = impermeabilizzareTerrazzoGuide.priceRows
+  const byId = (id: string) => rows.find((r) => r.id === id)
+
+  const expected: [string, string, string][] = [
+    ["impermeabilizzare-terrazzo-cementizia-sotto-pavimento", "Impermeabilizzazione cementizia sotto pavimento", "da 20 € a 35 € al mq"],
+    ["impermeabilizzare-terrazzo-trasparente-sopra-piastrelle", "Impermeabilizzante trasparente sopra piastrelle", "da 45 € a 75 € al mq"],
+    ["impermeabilizzare-terrazzo-resina-calpestabile-vista", "Resina impermeabilizzante calpestabile a vista", "da 50 € a 90 € al mq"],
+    ["impermeabilizzare-terrazzo-guaina-liquida-traffico-leggero", "Guaina liquida a vista per traffico leggero", "da 35 € a 55 € al mq"],
+    ["impermeabilizzare-terrazzo-guaina-ardesiata-vista", "Guaina bituminosa ardesiata a vista", "da 25 € a 45 € al mq"],
+    ["impermeabilizzare-terrazzo-doppia-guaina-bituminosa", "Impermeabilizzazione con doppia guaina bituminosa", "da 35 € a 55 € al mq"],
+    ["impermeabilizzare-terrazzo-membrana-sintetica-tpo-pvc", "Membrana sintetica TPO/PVC", "da 60 € a 100 € al mq"],
+    ["terrazzo-sistema-complesso", "Sistema impermeabilizzante ad alte prestazioni", "da 70 € a 120 € al mq"],
+  ]
+
+  for (const [id, label, range] of expected) {
+    const row = byId(id)
+    assert.ok(row, `riga ${id} deve esistere`)
+    assert.equal(row?.label, label, `${id}: label`)
+    assert.equal(row?.range, range, `${id}: range`)
+    assert.equal(row?.unit, "al mq", `${id}: unit`)
+    assert.equal(row?.costType, "complete", `${id}: costType`)
+    assert.equal(row?.category, "Sistemi di impermeabilizzazione", `${id}: category`)
+    // Nessuna relation tra i sistemi: paralleli per materiale/tecnologia, non
+    // scenari di ampiezza diversa né modi alternativi di calcolare lo stesso
+    // lavoro.
+    assert.equal(row?.relations, undefined, `${id}: nessuna relation`)
+  }
+})
+
+test("impermeabilizzare-terrazzo: riparazione localizzata è quoteRequired, unit \"a intervento\", nessuna fascia in euro", () => {
+  const row = impermeabilizzareTerrazzoGuide.priceRows.find(
+    (r) => r.id === "terrazzo-riparazione-localizzata",
+  )
+
+  assert.ok(row)
+  assert.equal(row?.label, "Riparazione localizzata di un'infiltrazione")
+  assert.equal(row?.category, "Riparazioni mirate")
+  assert.equal(row?.unit, "a intervento")
+  assert.equal(row?.priceStatus, "quoteRequired")
+  assert.doesNotMatch(row?.range ?? "", /€/)
+})
+
+test("impermeabilizzare-terrazzo: le 2 lavorazioni accessorie hanno le fasce approvate, condizionali e non \"extra\"", () => {
+  const rows = impermeabilizzareTerrazzoGuide.priceRows
+  const byId = (id: string) => rows.find((r) => r.id === id)
+
+  const demolizione = byId("impermeabilizzare-terrazzo-demolizione-pavimento-esistente")
+  assert.equal(demolizione?.label, "Demolizione e smaltimento del pavimento esistente")
+  assert.equal(demolizione?.category, "Lavorazioni accessorie")
+  assert.equal(demolizione?.range, "da 10 € a 25 € al mq")
+  assert.equal(demolizione?.costType, "work")
+  assert.equal(demolizione?.role, undefined)
+  assert.equal(demolizione?.relations, undefined)
+
+  const massetto = byId("impermeabilizzare-terrazzo-ripristino-massetto-pendenze")
+  assert.equal(massetto?.label, "Ripristino del massetto o delle pendenze")
+  assert.equal(massetto?.category, "Lavorazioni accessorie")
+  assert.equal(massetto?.range, "da 20 € a 50 € al mq")
+  assert.equal(massetto?.costType, "complete")
+  assert.equal(massetto?.role, undefined)
+  assert.equal(massetto?.relations, undefined)
+})
+
+test("impermeabilizzare-terrazzo: demolizione pavimento esistente è costType \"work\" ma describeCostTypeBadge NON produce \"Materiali esclusi\" (excludes usa \"pavimentazione\", non \"materiali\")", () => {
+  const demolizione = impermeabilizzareTerrazzoGuide.priceRows.find(
+    (r) => r.id === "impermeabilizzare-terrazzo-demolizione-pavimento-esistente",
+  )
+
+  assert.ok(demolizione)
+  assert.equal(demolizione?.costType, "work")
+  assert.doesNotMatch(demolizione?.excludes ?? "", /materiali/i)
+  assert.equal(describeCostTypeBadge(demolizione!), null)
+})
+
+test("impermeabilizzare-terrazzo: sizeExamples sono basati solo sulla fascia 30-70 €/mq (impermeabilizzazione standard), mai su un sistema specialistico", () => {
+  const bySize = new Map(
+    impermeabilizzareTerrazzoGuide.sizeExamples.map((example) => [example.sizeRange, example]),
+  )
+
+  assert.equal(bySize.get("20 mq")?.range, "da 600 € a 1.400 €") // 20 × 30 / 20 × 70
+  assert.equal(bySize.get("50 mq")?.range, "da 1.500 € a 3.500 €")
+  assert.equal(bySize.get("100 mq")?.range, "da 3.000 € a 7.000 €")
+
+  for (const example of impermeabilizzareTerrazzoGuide.sizeExamples) {
+    assert.match(
+      example.note,
+      /impermeabilizzazione standard/,
+      `sizeExample "${example.label}" deve specificare che rappresenta un'impermeabilizzazione standard`,
+    )
+  }
+})
+
+test("impermeabilizzare-terrazzo: nessuna relation rotta — ogni target esiste nella stessa famiglia (ridondante rispetto a validatePriceRowIntegrity, verificato di nuovo qui sui dati composti reali)", () => {
+  const rows = impermeabilizzareTerrazzoGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  for (const row of rows) {
+    for (const relation of row.relations ?? []) {
+      assert.ok(
+        ids.has(relation.target),
+        `"${row.id}" -> relation "${relation.type}" punta a un id inesistente "${relation.target}"`,
+      )
+      assert.equal(row.id.startsWith("terrazzo-") || row.id.startsWith("impermeabilizzare-terrazzo-"), true)
+    }
+  }
+})
+
+test("impermeabilizzare-terrazzo: nessuna PriceRow dedicata a pavimento/gres/isolamento — restano fuori perimetro (citati solo in excludes/note, mai come lavorazione a sé)", () => {
+  for (const row of impermeabilizzareTerrazzoGuide.priceRows) {
+    assert.doesNotMatch(
+      row.label,
+      /gres|isolamento|nuova pavimentazione/i,
+      `"${row.id}" non deve essere una PriceRow dedicata a gres/isolamento/nuova pavimentazione`,
+    )
+  }
+})
+
+test("impermeabilizzare-terrazzo: id rimosso \"terrazzo-impermeabilizzazione-standard\" non esiste più, i 2 id riusati mantengono il prefisso corto legacy", () => {
+  const rows = impermeabilizzareTerrazzoGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  assert.ok(!ids.has("terrazzo-impermeabilizzazione-standard"))
+  assert.ok(ids.has("terrazzo-sistema-complesso"))
+  assert.ok(ids.has("terrazzo-riparazione-localizzata"))
+})
+
+test("impermeabilizzare-terrazzo micro-fix: l'intervention sorgente è PUBLISHED, la guida è già inclusa in getCostGuideStaticParams (non draft, contrariamente a un commento non aggiornato trovato in verifica)", () => {
+  assert.equal(isInterventionPublished(impermeabilizzareTerrazzoGuide.interventionSeoSlug), true)
+
+  const staticParams = getCostGuideStaticParams()
+  assert.ok(
+    staticParams.some((p) => p.costSlug === "impermeabilizzare-terrazzo"),
+    "impermeabilizzare-terrazzo deve comparire tra i costSlug generati staticamente",
+  )
+})
+
+test("impermeabilizzare-terrazzo micro-fix: 30-70 €/mq è presentato come fascia di un intervento STANDARD, mai come media statistica tra i sistemi", () => {
+  assert.doesNotMatch(impermeabilizzareTerrazzoGuide.nationalRangeNote ?? "", /fascia media/i)
+  assert.match(impermeabilizzareTerrazzoGuide.nationalRangeNote ?? "", /non una media statistica/i)
+})
+
+test("impermeabilizzare-terrazzo micro-fix: \"Resina calpestabile\" e \"Sistema ad alte prestazioni\" si distinguono esplicitamente in copy, non solo per prezzo", () => {
+  const rows = impermeabilizzareTerrazzoGuide.priceRows
+  const resina = rows.find((r) => r.id === "impermeabilizzare-terrazzo-resina-calpestabile-vista")
+  const sistemaAltePrestazioni = rows.find((r) => r.id === "terrazzo-sistema-complesso")
+
+  // Ciascuna riga cita esplicitamente l'altra.
+  assert.match(resina?.plainExplanation ?? "", /alte prestazioni/i)
+  assert.match(sistemaAltePrestazioni?.plainExplanation ?? "", /resina calpestabile/i)
+
+  // Il sistema ad alte prestazioni dichiara esplicitamente di NON essere
+  // "la stessa resina più cara" e cita differenziatori concreti, non solo
+  // "maggiori prestazioni" generico.
+  assert.match(sistemaAltePrestazioni?.plainExplanation ?? "", /non è semplicemente la stessa resina/i)
+  assert.match(sistemaAltePrestazioni?.plainExplanation ?? "", /chimicamente diversi/i)
+})
+
+test("altre Cost Guide: nessuna modifica — rifareTettoGuide e impermeabilizzareTettoGuide restano invariate dopo la revisione di impermeabilizzare-terrazzo", () => {
+  assert.equal(rifareTettoGuide.priceRows.length, 8)
+  assert.equal(
+    rifareTettoGuide.priceRows.find((r) => r.id === "tetto-rifacimento-copertura")?.range,
+    "da 120 € a 180 € al mq",
+  )
+
+  assert.equal(impermeabilizzareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTettoGuide.nationalRange, "25–60 € al mq")
+  assert.equal(
+    impermeabilizzareTettoGuide.priceRows.find((r) => r.id === "impermeabilizzare-tetto-guaina-liscia")?.range,
+    "da 25 € a 40 € al mq",
   )
 })
