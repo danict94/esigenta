@@ -21,6 +21,7 @@ import type { PriceRow } from "../market-data/base-price-ranges"
 import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/content"
 import { rifareImpiantoElettricoGuide } from "../pages/costi/rifare-impianto-elettrico/content"
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
+import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
 import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
 
 // Scope 4B — logica di classificazione/traduzione condivisa dalle sezioni
@@ -131,10 +132,18 @@ test("isGuideScenarioRow (via classifyPriceRows): role \"primary\" NON implica s
 })
 
 test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/reference inventato, tutto nel breakdown (fallback Scope 4B)", () => {
-  // Revisione 2026-08: impermeabilizzare-tetto NON è più "senza role
-  // compilato" (ha role "extra" su una riga) — rimossa da questo loop,
-  // verificata a parte più sotto con la sua classificazione reale attesa.
-  for (const guide of [rifareImpiantoElettricoGuide]) {
+  // Revisione 2026-08 (Scope 3 rifare-impianto-elettrico): rifare-impianto-
+  // elettrico è stata rimossa da questo loop — non è più "senza role
+  // compilato" (ora migrata: 1 primary + 2 scenario + 3 extra), verificata a
+  // parte più sotto con la sua classificazione reale attesa. Sostituita con
+  // impermeabilizzare-terrazzo, che oggi non ha ancora alcuna riga con role
+  // compilato (per scelta editoriale: i suoi 8 sistemi sono paralleli per
+  // materiale/tecnologia, non ampiezze diverse dello stesso intervento — vedi
+  // il commento su "costGuide:impermeabilizzare-terrazzo" in
+  // base-price-ranges.ts). impermeabilizzare-tetto è anch'essa oggi senza
+  // alcun role compilato, ma resta fuori da questo loop perché ha già una
+  // propria verifica dedicata più sotto, con le stesse identiche asserzioni.
+  for (const guide of [impermeabilizzareTerrazzoGuide]) {
     const classification = classifyPriceRows(guide.priceRows)
 
     assert.equal(classification.primary, null, `${guide.slug}: nessuna riga ha role compilato`)
@@ -148,6 +157,23 @@ test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/r
       `${guide.slug}: il breakdown deve contenere TUTTE le righe, comportamento equivalente alla vecchia tabella`,
     )
   }
+})
+
+test("classifyPriceRows: rifare-impianto-elettrico (dati reali, Scope 3) — 1 primary, 2 scenari (+1 nella scenarioCards), 3 extra (quoteRequired), 0 reference, 12 breakdown", () => {
+  const classification = classifyPriceRows(rifareImpiantoElettricoGuide.priceRows)
+
+  assert.equal(classification.primary?.id, "elettrico-rifacimento-completo")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["elettrico-scenario-canalizzazioni-riutilizzabili", "elettrico-scenario-impianto-articolato"],
+  )
+  assert.equal(classification.scenarioCards.length, 3)
+  assert.equal(classification.extras.length, 3)
+  assert.ok(classification.extras.every((r) => r.priceStatus === "quoteRequired"))
+  assert.equal(classification.references.length, 0)
+  assert.equal(classification.breakdown.length, 12)
+  assert.ok(classification.breakdown.some((r) => r.id === "elettrico-punto-luce-completo"))
+  assert.ok(classification.breakdown.some((r) => r.id === "elettrico-collegamento-equipotenziale"))
 })
 
 test("classifyPriceRows: impermeabilizzare-tetto (dati reali) — nessuno scenario/primary/extra/reference inventato, tutte e 8 le righe nel breakdown", () => {

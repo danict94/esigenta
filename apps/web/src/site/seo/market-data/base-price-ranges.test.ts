@@ -16,6 +16,7 @@ import { rifareTettoGuide } from "../pages/costi/rifare-tetto/content"
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
 import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
 import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
+import { rifareImpiantoElettricoGuide } from "../pages/costi/rifare-impianto-elettrico/content"
 import { classifyPriceRows, describeCostTypeBadge } from "../templates/cost-guide-price-model"
 import { getCostGuideStaticParams } from "../engine/static-params"
 
@@ -1397,4 +1398,445 @@ test("altre Cost Guide: nessuna modifica — rifareTettoGuide, impermeabilizzare
   assert.equal(impermeabilizzareTettoGuide.priceRows.length, 8)
   assert.equal(impermeabilizzareTerrazzoGuide.priceRows.length, 11)
   assert.equal(impermeabilizzareTerrazzoGuide.nationalRange, "30–70 € al mq")
+})
+
+// Revisione 2026-08 (Scope 1/2/3) di rifare-impianto-elettrico — dati REALI
+// (guida composta): la guida passa da 24 righe (1 fascia editoriale + 23
+// prezzi ufficiali puntuali, nessun role/costType compilato su nessuna) a
+// 18 righe interamente migrate (1 primary + 2 scenario + 12 breakdown + 3
+// extra/quoteRequired, 0 reference).
+
+test("rifare-impianto-elettrico: esattamente 18 PriceRow, tutte con un id univoco reale", () => {
+  assert.equal(rifareImpiantoElettricoGuide.priceRows.length, 18)
+  assert.equal(new Set(rifareImpiantoElettricoGuide.priceRows.map((r) => r.id)).size, 18)
+})
+
+test("rifare-impianto-elettrico: Hero 55-90 €/mq per il rifacimento completo standard, non più 45-80", () => {
+  assert.equal(rifareImpiantoElettricoGuide.nationalRange, "55–90 € al mq")
+  assert.equal(rifareImpiantoElettricoGuide.pricePerSquareMeter, "da 55 € a 90 € al mq")
+  assert.equal(rifareImpiantoElettricoGuide.sourceType, "mixed")
+
+  const primary = rifareImpiantoElettricoGuide.priceRows.find((r) => r.id === "elettrico-rifacimento-completo")
+  assert.equal(primary?.label, "Rifacimento completo standard dell'impianto elettrico")
+  assert.equal(primary?.range, "da 55 € a 90 € al mq")
+  assert.equal(primary?.unit, "al mq")
+  assert.equal(primary?.costType, "complete")
+  assert.equal(primary?.role, "primary")
+
+  // Formula obbligatoria: mai più "opere murarie comprese" genericamente.
+  assert.match(primary?.note ?? "", /normali tracce e chiusura grezza comprese/i)
+  assert.match(primary?.note ?? "", /finitura estetica della parete esclusa/i)
+  assert.doesNotMatch(primary?.includes ?? "", /^opere murarie comprese$/i)
+})
+
+test("rifare-impianto-elettrico: i 2 scenari 40-60 e 80-110 hanno la classificazione approvata, categoryNote dichiara di non sommare", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+  const canalizzazioni = rows.find((r) => r.id === "elettrico-scenario-canalizzazioni-riutilizzabili")
+  assert.equal(canalizzazioni?.range, "da 40 € a 60 € al mq")
+  assert.equal(canalizzazioni?.costType, "complete")
+  assert.equal(canalizzazioni?.role, "scenario")
+  assert.match(canalizzazioni?.categoryNote ?? "", /non sommare le fasce tra loro/i)
+
+  const articolato = rows.find((r) => r.id === "elettrico-scenario-impianto-articolato")
+  assert.equal(articolato?.range, "da 80 € a 110 € al mq")
+  assert.equal(articolato?.costType, "complete")
+  assert.equal(articolato?.role, "scenario")
+})
+
+test("rifare-impianto-elettrico: classifyPriceRows promuove i 3 scenari (scenarioCards.length === 3), nessuna duplicazione nel breakdown", () => {
+  const classification = classifyPriceRows(rifareImpiantoElettricoGuide.priceRows)
+
+  assert.equal(classification.primary?.id, "elettrico-rifacimento-completo")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["elettrico-scenario-canalizzazioni-riutilizzabili", "elettrico-scenario-impianto-articolato"],
+  )
+  assert.equal(classification.scenarioCards.length, 3)
+  assert.equal(classification.references.length, 0)
+  assert.equal(classification.extras.length, 3)
+  assert.equal(classification.breakdown.length, 12)
+
+  const promoted = [...classification.scenarioCards.map((r) => r.id), ...classification.extras.map((r) => r.id)]
+  for (const id of promoted) {
+    assert.ok(!classification.breakdown.some((r) => r.id === id), `"${id}" non deve comparire anche in breakdown`)
+  }
+})
+
+test("rifare-impianto-elettrico: punto luce completo 70-110, presa completa 60-90 — nuova identità economica, id NON riutilizzati dalle vecchie voci ufficiali", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+
+  const puntoLuce = rows.find((r) => r.id === "elettrico-punto-luce-completo")
+  assert.equal(puntoLuce?.range, "da 70 € a 110 € cad")
+  assert.equal(puntoLuce?.costType, "complete")
+  assert.equal(puntoLuce?.role, undefined)
+  assert.match(puntoLuce?.includes ?? "", /traccia locale/i)
+  // Valori ufficiali preservati in nota, perimetro diverso dichiarato esplicitamente.
+  assert.match(puntoLuce?.note ?? "", /26,85/i)
+  assert.match(puntoLuce?.note ?? "", /28,96/i)
+  assert.match(puntoLuce?.note ?? "", /31,88/i)
+  assert.match(puntoLuce?.note ?? "", /40,55/i)
+  assert.match(puntoLuce?.note ?? "", /nessuna di queste voci ufficiali comprende la traccia/i)
+
+  const presa = rows.find((r) => r.id === "elettrico-presa-completa-standard")
+  assert.equal(presa?.range, "da 60 € a 90 € cad")
+  assert.equal(presa?.costType, "complete")
+  assert.match(presa?.includes ?? "", /traccia/i)
+  assert.match(presa?.note ?? "", /49,72/i)
+  assert.match(presa?.note ?? "", /56,07/i)
+  assert.match(presa?.note ?? "", /79,12/i)
+
+  // Nessun vecchio id ufficiale riutilizzato per queste due nuove righe.
+  assert.ok(!rows.some((r) => r.id === "elettrico-punto-luce-incassato-singolo"))
+  assert.ok(!rows.some((r) => r.id === "elettrico-punto-presa-incassato-10a"))
+})
+
+test("rifare-impianto-elettrico: comando aggiuntivo 45-70 e punto su predisposizione 25-45, perimetro non ambiguo", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+
+  const comando = rows.find((r) => r.id === "elettrico-comando-aggiuntivo")
+  assert.equal(comando?.range, "da 45 € a 70 € cad")
+  assert.equal(comando?.costType, "complete")
+  assert.match(comando?.note ?? "", /53,63/i)
+  assert.match(comando?.excludes ?? "", /creazione di un nuovo punto luce indipendente/i)
+
+  const predisposizione = rows.find((r) => r.id === "elettrico-punto-su-predisposizione")
+  assert.equal(predisposizione?.range, "da 25 € a 45 € cad")
+  assert.equal(predisposizione?.costType, "complete")
+  assert.match(predisposizione?.note ?? "", /15,18/i)
+  assert.match(predisposizione?.plainExplanation ?? "", /solo quando/i)
+})
+
+test("rifare-impianto-elettrico: circuito standard 200-300 e dedicato 250-400, valori delle 5 vecchie dorsali preservati in nota", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+
+  const standard = rows.find((r) => r.id === "elettrico-circuito-standard")
+  assert.equal(standard?.range, "da 200 € a 300 € cad")
+  assert.equal(standard?.costType, "complete")
+  assert.match(standard?.note ?? "", /200,14/)
+  assert.match(standard?.note ?? "", /205,09/)
+
+  const dedicato = rows.find((r) => r.id === "elettrico-circuito-dedicato")
+  assert.equal(dedicato?.range, "da 250 € a 400 € cad")
+  assert.equal(dedicato?.costType, "complete")
+  assert.match(dedicato?.note ?? "", /218,75/)
+  assert.match(dedicato?.note ?? "", /253,05/)
+  assert.match(dedicato?.note ?? "", /361,86/)
+
+  // Le 5 vecchie dorsali non esistono più come PriceRow.
+  for (const oldId of [
+    "elettrico-dorsale-1-5mmq",
+    "elettrico-dorsale-2-5mmq",
+    "elettrico-dorsale-4mmq",
+    "elettrico-dorsale-6mmq",
+    "elettrico-dorsale-10mmq",
+  ]) {
+    assert.ok(!rows.some((r) => r.id === oldId), `"${oldId}" doveva essere rimossa in questa revisione`)
+  }
+})
+
+test("rifare-impianto-elettrico: 3 fasce quadro completo (500-800/650-1.000/850-1.400), categoryNote chiarisce moduli ≠ circuiti, non sono scenari", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+
+  const q4 = rows.find((r) => r.id === "elettrico-quadro-generale-4-circuiti")
+  const q6 = rows.find((r) => r.id === "elettrico-quadro-generale-6-circuiti")
+  const q8 = rows.find((r) => r.id === "elettrico-quadro-generale-8-10-circuiti")
+
+  assert.equal(q4?.range, "da 500 € a 800 €")
+  assert.equal(q6?.range, "da 650 € a 1.000 €")
+  assert.equal(q8?.range, "da 850 € a 1.400 €")
+
+  for (const row of [q4, q6, q8]) {
+    assert.equal(row?.unit, "a corpo")
+    assert.equal(row?.costType, "complete")
+    assert.equal(row?.role, undefined, "il quadro completo non è uno scenario globale")
+  }
+
+  assert.match(q4?.categoryNote ?? "", /non il numero di moduli del centralino/i)
+  assert.match(q4?.categoryNote ?? "", /non vanno sommate tra loro/i)
+
+  // I 6 vecchi componenti del quadro sono preservati per intero nella nota
+  // della prima fascia, non più come PriceRow autonome.
+  assert.match(q4?.note ?? "", /173,32/)
+  assert.match(q4?.note ?? "", /66,61/)
+  assert.match(q4?.note ?? "", /85,57/)
+  assert.match(q4?.note ?? "", /151,66/)
+  assert.match(q4?.note ?? "", /184,87/)
+  assert.match(q4?.note ?? "", /281,37/)
+
+  for (const oldId of [
+    "elettrico-magnetotermico-differenziale",
+    "elettrico-centralino-incasso-6-moduli",
+    "elettrico-centralino-incasso-12-moduli",
+    "elettrico-blocco-differenziale-base",
+    "elettrico-blocco-differenziale-intermedia",
+    "elettrico-blocco-differenziale-maggiorata",
+  ]) {
+    assert.ok(!rows.some((r) => r.id === oldId), `"${oldId}" doveva essere rimossa in questa revisione`)
+  }
+})
+
+test("rifare-impianto-elettrico: tracce evolute in place (id riutilizzati) 15-25 e 20-35 €/m, costType work, vecchi valori puntuali preservati in nota", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+
+  const forati = rows.find((r) => r.id === "elettrico-traccia-muratura-mattoni-forati")
+  assert.equal(forati?.label, "Traccia e chiusura grezza — laterizio/forato")
+  assert.equal(forati?.range, "da 15 € a 25 € al metro")
+  assert.equal(forati?.costType, "work")
+  assert.match(forati?.note ?? "", /15,92/)
+  assert.match(forati?.excludes ?? "", /intonaco finale diffuso/i)
+  assert.match(forati?.excludes ?? "", /rasatura/i)
+  assert.match(forati?.excludes ?? "", /tinteggiatura/i)
+
+  const pieni = rows.find((r) => r.id === "elettrico-traccia-muratura-mattoni-pieni")
+  assert.equal(pieni?.label, "Traccia e chiusura grezza — muratura piena/difficile")
+  assert.equal(pieni?.range, "da 20 € a 35 € al metro")
+  assert.equal(pieni?.costType, "work")
+  assert.match(pieni?.note ?? "", /20,61/)
+})
+
+test("rifare-impianto-elettrico: collegamento equipotenziale invariato nel prezzo (188,81 €), rinominato, esplicitamente NON è la messa a terra", () => {
+  const row = rifareImpiantoElettricoGuide.priceRows.find((r) => r.id === "elettrico-collegamento-equipotenziale")
+
+  assert.equal(row?.label, "Collegamento equipotenziale locale o di un vano")
+  assert.equal(row?.range, "188,81 € cad")
+  assert.equal(row?.costType, "complete")
+  assert.match(row?.plainExplanation ?? "", /non è.*il rifacimento completo della messa a terra/i)
+  assert.match(row?.note ?? "", /Adeguamento \/ rifacimento impianto di terra/i)
+})
+
+test("rifare-impianto-elettrico: 3 costi quoteRequired (ripristino estetico, montante, terra) — role extra, nessun range inventato, nessuna relation forzata", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+  const ids = ["elettrico-ripristino-estetico-tracce", "elettrico-montante-contatore-quadro", "elettrico-adeguamento-impianto-terra"]
+
+  for (const id of ids) {
+    const row = rows.find((r) => r.id === id)
+    assert.ok(row, `"${id}" deve esistere`)
+    assert.equal(row?.priceStatus, "quoteRequired")
+    assert.equal(row?.role, "extra")
+    assert.equal(row?.relations, undefined, `"${id}" non deve avere relations forzate`)
+    assert.equal(row?.costType, undefined, `"${id}": composizione non determinabile, costType volutamente assente`)
+    assert.doesNotMatch(row?.range ?? "", /€/, `"${id}" non deve avere un prezzo inventato`)
+  }
+
+  // Montante non va confuso con i circuiti interni a valle del quadro.
+  const montante = rows.find((r) => r.id === "elettrico-montante-contatore-quadro")
+  assert.match(montante?.plainExplanation ?? "", /a monte di tutte le altre voci/i)
+
+  // Terra non va confuso con il collegamento equipotenziale locale.
+  const terra = rows.find((r) => r.id === "elettrico-adeguamento-impianto-terra")
+  assert.match(terra?.note ?? "", /Collegamento equipotenziale locale/i)
+})
+
+test("rifare-impianto-elettrico: nessuna PriceRow FVG illustrativa residua, valori preservati in copy delle nuove righe", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+
+  for (const oldId of [
+    "elettrico-punto-luce-vista-ip54-fvg",
+    "elettrico-punto-presa-10a-fvg",
+    "elettrico-posa-presa-scatola-predisposta-fvg",
+    "elettrico-punto-luce-incassato-doppio",
+    "elettrico-punto-luce-vista-ip40",
+    "elettrico-punto-presa-incassato-16a",
+    "elettrico-punto-comando-deviato",
+  ]) {
+    assert.ok(!rows.some((r) => r.id === oldId), `"${oldId}" doveva essere rimossa in questa revisione`)
+  }
+
+  // Nessuna categoria residua col vecchio nome della sezione FVG.
+  assert.ok(!rows.some((r) => r.category.includes("Friuli Venezia Giulia")))
+})
+
+test("rifare-impianto-elettrico: nessuna relation rotta — ogni target esiste nella stessa famiglia (ridondante rispetto a validatePriceRowIntegrity, verificato di nuovo qui sui dati composti reali)", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  for (const row of rows) {
+    for (const relation of row.relations ?? []) {
+      assert.ok(
+        ids.has(relation.target),
+        `"${row.id}" -> relation "${relation.type}" punta a un id inesistente "${relation.target}"`,
+      )
+    }
+  }
+})
+
+test("rifare-impianto-elettrico: sizeExamples ricalcolati sulla fascia 55-90 (rifacimento completo standard)", () => {
+  const bySize = new Map(rifareImpiantoElettricoGuide.sizeExamples.map((example) => [example.sizeRange, example]))
+  assert.equal(bySize.get("50 mq")?.range, "da 2.750 € a 4.500 €")
+  assert.equal(bySize.get("80 mq")?.range, "da 4.400 € a 7.200 €")
+  assert.equal(bySize.get("100 mq")?.range, "da 5.500 € a 9.000 €")
+  assert.equal(bySize.get("150 mq")?.range, "da 8.250 € a 13.500 €")
+
+  for (const example of rifareImpiantoElettricoGuide.sizeExamples) {
+    assert.match(example.note, /rifacimento completo standard/i)
+  }
+})
+
+test("rifare-impianto-elettrico: nationalRangeNote usa la formula obbligatoria; \"opere murarie comprese\" non compare mai come affermazione generica non negata", () => {
+  const note = rifareImpiantoElettricoGuide.nationalRangeNote ?? ""
+  assert.match(note, /normali tracce e chiusura grezza comprese/i)
+  assert.match(note, /finitura estetica della parete esclusa/i)
+  // La frase bandita compare SOLO citata e negata ("non una formula generica
+  // di 'opere murarie comprese'"), mai come affermazione a sé: verificato
+  // controllando che sia sempre preceduta da "non" entro pochi caratteri.
+  const bannedIndex = note.toLowerCase().indexOf("opere murarie comprese")
+  assert.ok(bannedIndex > 0, "la frase deve comparire solo citata, non essere del tutto assente")
+  assert.match(note.slice(Math.max(0, bannedIndex - 40), bannedIndex), /non/i)
+
+  // Il campo strutturato "cosa comprende" (primary) non usa mai la formula generica.
+  const primary = rifareImpiantoElettricoGuide.priceRows.find((r) => r.id === "elettrico-rifacimento-completo")
+  assert.doesNotMatch(primary?.includes ?? "", /opere murarie comprese/i)
+})
+
+test("altre Cost Guide: nessuna modifica — rifareTettoGuide, impermeabilizzareTettoGuide, impermeabilizzareTerrazzoGuide e rifareFacciataGuide restano invariate dopo la revisione di rifare-impianto-elettrico", () => {
+  assert.equal(rifareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTerrazzoGuide.priceRows.length, 11)
+  assert.equal(rifareFacciataGuide.priceRows.length, 14)
+  assert.equal(rifareFacciataGuide.nationalRange, "70–120 € al mq")
+})
+
+// Scope 4 di rifare-impianto-elettrico — QA semantica dell'editoriale
+// (base.ts + faq.ts): nessun vecchio numero come risposta PRINCIPALE, DiCo
+// e progetto spiegati correttamente, PriceRow (Scope 3) invariate.
+
+test("rifare-impianto-elettrico Scope 4: sanity check — 18 PriceRow, 1 primary, 2 scenari, 12 breakdown (10 complete + 2 work), 3 extra, 0 reference", () => {
+  const rows = rifareImpiantoElettricoGuide.priceRows
+  assert.equal(rows.length, 18)
+
+  const byRole = { primary: 0, scenario: 0, extra: 0, reference: 0, breakdown: 0 }
+  for (const row of rows) {
+    if (row.role === "primary") byRole.primary++
+    else if (row.role === "scenario") byRole.scenario++
+    else if (row.role === "extra") byRole.extra++
+    else if (row.role === "reference") byRole.reference++
+    else byRole.breakdown++
+  }
+  assert.deepEqual(byRole, { primary: 1, scenario: 2, extra: 3, reference: 0, breakdown: 12 })
+
+  // Sanity check esplicito Scope 4 §0: il report Scope 3 riportava "11×
+  // complete, 2× work" per le 12 righe breakdown (11+2=13, un refuso — il
+  // dato reale non è mai stato toccato). Conteggio corretto verificato qui
+  // sui soli 12 breakdown: 10 complete + 2 work = 12.
+  const breakdownRows = rows.filter(
+    (r) => r.role !== "primary" && r.role !== "scenario" && r.role !== "extra" && r.role !== "reference",
+  )
+  assert.equal(breakdownRows.length, 12)
+  assert.equal(breakdownRows.filter((r) => r.costType === "complete").length, 10)
+  assert.equal(breakdownRows.filter((r) => r.costType === "work").length, 2)
+})
+
+test("rifare-impianto-elettrico Scope 4: 12 FAQ, entro il target 9-12, nessuna vuota", () => {
+  const faq = rifareImpiantoElettricoGuide.faq
+  assert.ok(faq.length >= 9 && faq.length <= 12, `atteso tra 9 e 12 FAQ, trovate ${faq.length}`)
+  for (const entry of faq) {
+    assert.ok(entry.question.trim().length > 0)
+    assert.ok(entry.answer.trim().length > 0)
+  }
+})
+
+test("rifare-impianto-elettrico Scope 4: nessuna FAQ presenta 45-80 come fascia Hero (sostituita da 55-90)", () => {
+  const faq = rifareImpiantoElettricoGuide.faq
+  for (const entry of faq) {
+    assert.doesNotMatch(entry.answer, /45[–-]80/, `FAQ "${entry.question}" cita ancora la vecchia fascia 45-80`)
+  }
+  assert.ok(faq.some((f) => /55.{0,3}90/.test(f.answer)), "almeno una FAQ deve citare la fascia Hero 55-90")
+})
+
+test("rifare-impianto-elettrico Scope 4: FAQ copre punto luce/presa completi con chiarezza su traccia inclusa e parete NON rasata/pitturata", () => {
+  const faq = rifareImpiantoElettricoGuide.faq
+  const puntoLuceFaq = faq.find((f) => /punto luce completo/i.test(f.answer) && /70.{0,3}110/.test(f.answer))
+  assert.ok(puntoLuceFaq, "deve esistere una FAQ che risponde su punto luce completo 70-110")
+  assert.match(puntoLuceFaq.answer, /parete già rasata e pitturata/i)
+  assert.match(puntoLuceFaq.answer, /60 € a 90 €/, "la stessa FAQ deve coprire anche la presa completa 60-90")
+
+  // I vecchi valori ufficiali compaiono SOLO come confronto esplicitamente
+  // contestualizzato, mai come risposta principale.
+  assert.match(puntoLuceFaq.answer, /26,85/)
+  assert.match(puntoLuceFaq.answer, /perimetro diverso/i)
+})
+
+test("rifare-impianto-elettrico Scope 4: FAQ copre quadro completo (500-800/650-1.000/850-1.400) e chiarisce moduli ≠ circuiti", () => {
+  const faq = rifareImpiantoElettricoGuide.faq
+  const quadroFaq = faq.find((f) => /quadro elettrico completo/i.test(f.question))
+  assert.ok(quadroFaq, "deve esistere una FAQ sul quadro completo")
+  assert.match(quadroFaq.answer, /500 a 800/)
+  assert.match(quadroFaq.answer, /650 a 1\.000/)
+  assert.match(quadroFaq.answer, /850 a 1\.400/)
+
+  const moduliFaq = faq.find((f) => /moduli del centralino/i.test(f.question))
+  assert.ok(moduliFaq, "deve esistere una FAQ dedicata a moduli vs circuiti")
+  assert.match(moduliFaq.answer, /^No\./)
+})
+
+test("rifare-impianto-elettrico Scope 4: FAQ distingue montante, messa a terra e collegamento equipotenziale senza confonderli", () => {
+  const faq = rifareImpiantoElettricoGuide.faq
+  const montanteFaq = faq.find((f) => /montante/i.test(f.answer) && /200 a 300|250 a 400/.test(f.answer))
+  assert.ok(montanteFaq, "deve esistere una FAQ che distingue circuiti e montante")
+  assert.match(montanteFaq.answer, /punto di consegna\/contatore/i)
+
+  const terraFaq = faq.find((f) => /messa a terra/i.test(f.question))
+  assert.ok(terraFaq, "deve esistere una FAQ su messa a terra vs equipotenziale")
+  assert.match(terraFaq.answer, /188,81/)
+  assert.match(terraFaq.answer, /non equivale al rifacimento dell'impianto di terra/i)
+})
+
+test("rifare-impianto-elettrico Scope 4: DiCo spiegata come obbligo dell'impresa da verificare nel preventivo (non un'assicurazione assoluta \"sempre gratis\"), DiRi distinta, progetto spiegato correttamente", () => {
+  const faq = rifareImpiantoElettricoGuide.faq
+
+  const dicoFaq = faq.find((f) => /dichiarazione di conformità/i.test(f.question))
+  assert.ok(dicoFaq, "deve esistere una FAQ dedicata alla Dichiarazione di conformità")
+  assert.match(dicoFaq.answer, /non è un optional del rifacimento/i)
+  assert.match(dicoFaq.answer, /deve rilasciarla/i)
+  assert.match(dicoFaq.answer, /D\.M\. 37\/2008, art\. 7/)
+  assert.match(dicoFaq.answer, /è bene verificare che la documentazione finale prevista sia compresa nel prezzo/i)
+  // Micro-fix chiusura finale: la vecchia formulazione assoluta non deve
+  // più comparire (poteva far leggere la DiCo come "sempre gratis" invece
+  // di un obbligo comunque da verificare nel preventivo).
+  assert.doesNotMatch(dicoFaq.answer, /non è una prestazione aggiuntiva a pagamento/i)
+  assert.doesNotMatch(dicoFaq.answer, /gratuit/i)
+  // Nessun prezzo autonomo per la DiCo.
+  assert.ok(!rifareImpiantoElettricoGuide.priceRows.some((r) => /dichiarazione di conformità/i.test(r.label)))
+  // DiRi citata solo per distinguerla, mai come alternativa ordinaria alla DiCo.
+  assert.match(dicoFaq.answer, /Dichiarazione di Rispondenza/i)
+  assert.match(dicoFaq.answer, /impianti preesistenti/i)
+
+  const progettoFaq = faq.find((f) => /progetto/i.test(f.question))
+  assert.ok(progettoFaq, "deve esistere una FAQ dedicata al progetto")
+  // Non deve mai ridursi alla formula generica bandita "serve solo quando richiesto".
+  assert.doesNotMatch(progettoFaq.answer, /serve solo quando richiesto/i)
+  assert.match(progettoFaq.answer, /D\.M\. 37\/2008/)
+  assert.match(progettoFaq.answer, /responsabile tecnico dell'impresa/i)
+  assert.match(progettoFaq.answer, /professionista iscritto all'albo/i)
+
+  // priceTableNote (base.ts) usa la stessa formula corretta, mai quella bandita.
+  const priceTableNote = rifareImpiantoElettricoGuide.priceTableNote ?? ""
+  assert.match(priceTableNote, /D\.M\. 37\/2008, art\. 7/)
+  assert.match(priceTableNote, /non è un optional del rifacimento/i)
+  assert.match(priceTableNote, /è bene verificare che la documentazione finale prevista sia compresa nel prezzo/i)
+  assert.doesNotMatch(priceTableNote, /non come prestazione a parte o un optional commerciale/i)
+  assert.doesNotMatch(priceTableNote, /non è una prestazione aggiuntiva a pagamento/i)
+})
+
+test("rifare-impianto-elettrico Scope 4: factors e savingTips coprono i concetti richiesti, nessun saving tip riduce sicurezza/conformità", () => {
+  const factorsText = rifareImpiantoElettricoGuide.factors.join(" | ")
+  for (const concept of [
+    /canalizzazioni esistenti/i,
+    /nuove tracce/i,
+    /punti luce/i,
+    /circuiti/i,
+    /articolazione del quadro/i,
+    /muratura/i,
+    /montante/i,
+    /impianto di terra/i,
+    /ripristino estetico/i,
+    /progettazione tecnica esterna/i,
+  ]) {
+    assert.match(factorsText, concept, `factors deve menzionare: ${concept}`)
+  }
+
+  const tipsText = rifareImpiantoElettricoGuide.savingTips.join(" | ")
+  assert.doesNotMatch(tipsText, /senza (la )?dichiarazione di conformità/i)
+  assert.doesNotMatch(tipsText, /evita(re)? le verifiche/i)
+  assert.match(tipsText, /Dichiarazione di conformità/i)
 })

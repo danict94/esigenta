@@ -1,5 +1,17 @@
 import type { CostGuideBaseContent } from "../types";
 
+// Revisione 2026-08 (Scope 3 + Scope 4): il modello economico passa da 1
+// fascia unica (45–80 €/mq) + 23 prezzi ufficiali puntuali senza gerarchia a
+// 3 scenari di ampiezza (40–60 / 55–90 / 80–110 €/mq) + 12 lavorazioni
+// cliente + 3 costi da valutare — vedi il commento di revisione su
+// "costGuide:rifare-impianto-elettrico" in market-data/base-price-ranges.ts
+// per il dettaglio completo (Scope 3, PriceRow congelate da qui in poi).
+// Scope 4 completa l'allineamento editoriale: summary/nationalRangeNote/
+// priceTableIntro/priceTableNote/sizeExamplesIntro/metaDescription/factors/
+// savingTips aggiornati al nuovo modello, copy normativo DiCo/progetto
+// corretto (prima ometteva del tutto la spiegazione), FAQ interamente
+// riscritte in faq.ts (nessun vecchio numero residuo come risposta
+// principale).
 export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
   slug: "rifare-impianto-elettrico",
   funnelSlug: "rifare-impianto-elettrico",
@@ -7,12 +19,11 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
   title: "Costi impianto elettrico",
   h1: "Quanto costa rifare un impianto elettrico?",
   metaTitle: "Quanto costa rifare un impianto elettrico? Guida ai costi",
-  // Data reale dell'ultima revisione editoriale sostanziale (commit
-  // d3a9d81, fascia 45–80 €/mq per il rifacimento completo), non del
+  // Data reale dell'ultima revisione editoriale sostanziale, non del
   // deploy: vedi engine/editorial-date.ts.
-  lastModified: "2026-08-09",
+  lastModified: "2026-08-18",
   metaDescription:
-    "Prezzi ufficiali da prezzari regionali per punti luce, punti presa, distribuzione, componenti del quadro e opere murarie di un impianto elettrico.",
+    "Fasce orientative Esigenta e prezzi di riferimento per punti luce, prese, circuiti, quadro elettrico completo e opere murarie di un impianto elettrico, in linguaggio semplice.",
   heroImage: {
     src: "/assets/images/impianto-elettrico.webp",
     alt: "Intervento su impianto elettrico domestico",
@@ -20,46 +31,57 @@ export const rifareImpiantoElettricoBase: CostGuideBaseContent = {
   hubCategory: { slug: "impianti-e-manutenzioni-elettriche", name: "Impianti e manutenzioni elettriche" },
   hubOrder: 10,
   hubDescription:
-    "Costi di punti luce, prese, linee, componenti del quadro e opere murarie, spiegati in linguaggio semplice.",
+    "Costi di punti luce, prese, circuiti, quadro elettrico completo e opere murarie, spiegati in linguaggio semplice.",
   topicLabel: "rifare un impianto elettrico",
-  // Revisione 2026-08: prima diceva "usali... non per stimare un totale",
-  // in contraddizione diretta con la nuova fascia 45–80 €/mq qui sotto.
   summary:
-    "Rifare un impianto elettrico costa indicativamente da 45 € a 80 € al mq per un rifacimento completo standard, ma il preventivo reale dipende soprattutto da punti luce, punti presa, distribuzione interna, quadro elettrico e opere murarie: la tabella più sotto riporta i prezzi ufficiali di ogni singola lavorazione, utile per verificare nel dettaglio cosa comprende un preventivo.",
+    "Rifare un impianto elettrico costa indicativamente da 55 € a 90 € al mq per un rifacimento completo standard, ma il preventivo reale dipende soprattutto da punti luce, punti presa, distribuzione interna, quadro elettrico e opere murarie: la tabella più sotto distingue tre scenari di ampiezza (da 40–60 €/mq quando le canalizzazioni esistenti sono in buona parte riutilizzabili, a 80–110 €/mq per un impianto più articolato) dalle singole lavorazioni, utili per verificare nel dettaglio cosa comprende un preventivo.",
   factors: [
     "superficie e numero di stanze dell'abitazione",
-    "numero di punti luce, punti presa e punti comando richiesti",
-    "numero e tipo di circuiti dedicati (es. cucina, climatizzazione, ricarica veicolo)",
-    "quadro elettrico e dispositivi di protezione necessari",
-    "stato dell'impianto esistente e possibilità di riutilizzare le tubazioni già presenti",
-    "necessità di nuove tracce murarie e dei relativi ripristini",
-    "tipo di posa: incassata, a vista, o sola posa su predisposizione esistente",
-    "serie civile e materiali scelti (placche, apparecchi, componenti del quadro)",
+    "quanto delle canalizzazioni esistenti (corrugati, scatole, percorsi) è realmente riutilizzabile",
+    "numero di punti luce, punti presa e comandi richiesti",
+    "numero e tipo di circuiti: standard o dedicati a un'utenza specifica (es. cucina, climatizzazione, ricarica veicolo)",
+    "articolazione del quadro elettrico, in base al numero di circuiti da proteggere",
+    "quantità di nuove tracce murarie necessarie",
+    "tipo di muratura da lavorare (laterizio forato o muratura piena, più impegnativa)",
+    "necessità di un ripristino estetico delle pareti dopo le tracce (intonaco, rasatura, tinteggiatura)",
+    "stato e percorso del montante tra contatore e quadro, quando va rifatto",
+    "necessità di un adeguamento dell'impianto di terra",
+    "eventuale progettazione tecnica esterna, quando richiesta dal caso o dalla normativa",
     "accessibilità dell'abitazione e del cantiere",
-    "eventuali dotazioni aggiuntive, come predisposizioni per usi futuri",
-    "necessità di adeguamenti o nuova documentazione tecnica",
   ],
   savingTips: [
-    "Chiedi che il preventivo distingua punti elettrici, distribuzione interna, componenti del quadro e opere murarie: sono voci diverse con prezzi diversi.",
-    "Verifica se ogni punto luce o presa è a incasso o a vista: la posa a vista ha un prezzo diverso da quella incassata.",
-    "Chiedi se le tracce murarie comprendono anche la chiusura e il ripristino, o solo l'apertura.",
-    "Fai indicare separatamente i componenti del quadro elettrico (magnetotermici, differenziali, carpenteria) dal loro cablaggio.",
-    "Chiedi quali prove e quali documenti tecnici sono compresi nel preventivo: non sono sempre inclusi allo stesso modo.",
+    "Decidi in anticipo la posizione di prese, punti luce e comandi: le modifiche in corso d'opera, dopo che tracce e cablaggi sono già stati eseguiti, costano di più.",
+    "Chiedi un sopralluogo per verificare quali canalizzazioni esistenti sono davvero riutilizzabili: è la differenza principale tra lo scenario 40–60 €/mq e il rifacimento completo standard.",
+    "Chiedi che il preventivo distingua scenario scelto, punti elettrici, circuiti, quadro e opere murarie: sono voci diverse, utili per capire cosa stai pagando.",
+    "Chiedi esplicitamente se il ripristino estetico delle pareti dopo le tracce (intonaco, rasatura, tinteggiatura) è compreso o resta a parte: nella maggior parte dei preventivi non lo è.",
+    "Coordina i tempi tra elettricista e imbianchino/impresa edile: chiudere le tracce e ripristinare le pareti nello stesso intervento evita doppi sopralluoghi e doppi costi di accesso.",
+    "Chiedi se la Dichiarazione di conformità è compresa (di norma lo è, per legge, in un lavoro eseguito da un'impresa abilitata) e se serve un progetto tecnico, per evitare sorprese a fine lavori.",
   ],
-  // Revisione 2026-08: prima "Come si compone il costo" +
-  // "PREZZI PER SINGOLA LAVORAZIONE" (guida senza totale). Ora esiste una
-  // vera fascia editoriale complessiva: le etichette lo riflettono, stesso
-  // pattern testuale di rifare-tetto/impermeabilizzare-terrazzo.
   nationalRangeLabel: "Fascia orientativa al mq",
   interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
+  // Revisione 2026-08 (Scope 3): formula obbligatoria "normali tracce e
+  // chiusura grezza comprese; finitura estetica della parete esclusa" al
+  // posto della vecchia dicitura generica "opere murarie ordinarie" — vedi
+  // il commento di revisione sul primary in base-price-ranges.ts.
   nationalRangeNote:
-    "Indicativamente 45–80 € al mq per il rifacimento completo di un impianto elettrico residenziale esistente, con configurazione ordinaria, senza domotica avanzata e senza ripristini murari eccezionalmente estesi. Il preventivo reale dipende soprattutto dal numero e dal tipo di punti, linee, quadro elettrico, opere murarie e dalle condizioni dell'impianto esistente da sostituire.",
+    "Indicativamente 55–90 € al mq per il rifacimento completo standard di un impianto elettrico residenziale esistente: normali tracce e chiusura grezza comprese, finitura estetica della parete esclusa — non una formula generica di \"opere murarie comprese\". Un rifacimento con canalizzazioni esistenti in buona parte riutilizzabili costa indicativamente meno, da 40 a 60 €/mq; un impianto più articolato, con molte linee dedicate e nuove tracce diffuse, costa indicativamente di più, da 80 a 110 €/mq (vedi gli scenari più sotto). Le tre fasce non vanno sommate: rappresentano ampiezze diverse dello stesso tipo di intervento.",
   priceTableIntro:
-    "La prima riga della tabella riporta la fascia 45–80 €/mq come stima complessiva; le righe successive sono invece i prezzi ufficiali di ogni singola lavorazione (punti elettrici, distribuzione, componenti del quadro, opere murarie), utili per capire nel dettaglio cosa contiene un preventivo e cosa può farlo salire oltre la fascia standard — per esempio in una casa vecchia che richiede più tracce, più linee o un quadro più esteso.",
+    "La tabella distingue tre scenari di ampiezza del lavoro — dal rifacimento con canalizzazioni riutilizzabili all'impianto più articolato — dalle singole lavorazioni (punti elettrici, circuiti, quadro elettrico completo, opere murarie), utili per capire nel dettaglio cosa contiene un preventivo o per stimare un intervento parziale.",
+  // Revisione 2026-08 (Scope 4, micro-fix chiusura finale): copy normativo
+  // corretto due volte. Prima citava solo l'assenza di una voce di
+  // prezzario per la DiCo, senza mai spiegare cosa sia realmente. Poi
+  // dichiarava che "non è una prestazione aggiuntiva a pagamento" /
+  // "non come prestazione a parte o un optional commerciale" — formulazione
+  // troppo assoluta (poteva far leggere la DiCo come "sempre gratuita per
+  // definizione", invece di un obbligo dell'impresa che va comunque
+  // verificato nel preventivo). Ora: non è un optional del rifacimento
+  // (l'impresa abilitata DEVE rilasciarla, D.M. 37/2008 art. 7), ma il
+  // preventivo va comunque verificato. Nessun prezzo autonomo creato per
+  // questo (resta fuori dal modello PriceRow, come da vincolo).
   priceTableNote:
-    "I valori delle singole lavorazioni derivano dai prezzari regionali dei lavori pubblici Emilia-Romagna 2025 e Friuli Venezia Giulia 2025: non sono un tariffario nazionale né un preventivo per lavori privati, e le voci di categorie diverse (punti elettrici, distribuzione, componenti del quadro, opere murarie) non vanno sommate tra loro né aggiunte alla fascia 45–80 €/mq, che è già una stima complessiva alternativa. Nei prezzari consultati non è stata individuata una voce autonoma e omogenea per dichiarazione di conformità, verifiche finali, progetto o collaudo: il preventivo che ricevi deve indicare esplicitamente quali prove e quali documenti sono compresi.",
+    "Le fasce sono elaborazioni editoriali Esigenta, ancorate a prezzari regionali ufficiali (Emilia-Romagna 2025, Friuli Venezia Giulia 2025) e al confronto con il mercato nazionale: non sono la voce di un singolo prezzario né un tariffario nazionale. I valori ufficiali puntuali che hanno guidato ogni fascia restano citati nella nota di dettaglio della riga corrispondente, con fonte e anno originali. Le voci di categorie diverse (scenari, punti elettrici, circuiti, quadro, opere murarie) non vanno sommate tra loro: sono letture parallele dello stesso lavoro, non prezzi cumulativi. La Dichiarazione di conformità non è un optional del rifacimento: al termine dei lavori, dopo le verifiche previste, l'impresa installatrice abilitata deve rilasciarla al committente (D.M. 37/2008, art. 7). Nel preventivo è bene verificare che la documentazione finale prevista sia compresa nel prezzo dell'intervento.",
   sizeExamplesIntro:
-    "Ogni valore nasce da un calcolo — superficie dell'abitazione moltiplicata per la fascia 45–80 €/mq — non da quattro rilevazioni di mercato indipendenti: su appartamenti piccoli il costo al mq può risultare più alto, perché quadro elettrico, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie. Un impianto con domotica avanzata, molti ripristini murari o condizioni di partenza complesse può superare questa fascia.",
+    "Ogni valore nasce da un calcolo — superficie dell'abitazione moltiplicata per la fascia 55–90 €/mq del rifacimento completo standard — non da quattro rilevazioni di mercato indipendenti: su appartamenti piccoli il costo al mq può risultare più alto, perché quadro elettrico, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie. Un impianto con molte canalizzazioni riutilizzabili costa indicativamente meno di questi esempi; un impianto più articolato, con domotica avanzata o molti ripristini murari, può superare questa fascia.",
   relatedWork: [
     {
       slug: "riparare-guasto-elettrico",

@@ -1457,407 +1457,400 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
-  // Prezzi ufficiali da prezzari regionali dei lavori pubblici, forniti
-  // direttamente per questa revisione: Prezzario Regione Emilia-Romagna 2025
-  // (fonte principale) e Prezzario Regione Friuli Venezia Giulia 2025 (solo
-  // per il blocco "Esempi da un altro prezzario regionale", mai fuso con le
-  // voci Emilia-Romagna). Prezzi Lombardia esclusi: la struttura OPERA + LV
-  // del prezzario 2026 non è stata ricostruita con sufficienza certezza.
-  // "Colonna montante" esclusa: prezzo e descrizione leggibili, ma nessun
-  // codice di capitolato attribuibile con certezza in due estrazioni
-  // indipendenti del PDF ufficiale — mai un codice inventato.
-  // Revisione 2026-08: l'H1 ("Quanto costa rifare un impianto elettrico?")
-  // otteneva solo "Nessun totale complessivo" — mismatch tra intento e
-  // risposta. Aggiunta una fascia editoriale 45–80 €/mq per il rifacimento
-  // completo standard (prima riga di priceRows, confidence "media",
-  // sourceType ora "mixed", stesso pattern di rifare-tetto/ristrutturare-
-  // bagno/impermeabilizzare-terrazzo). Le righe ufficiali sottostanti
-  // restano prezzi puntuali invariati, senza confidence: continuano a non
-  // dover mai essere sommate tra loro né aggiunte alla fascia, che è già una
-  // stima complessiva alternativa, non cumulativa.
+  // Revisione 2026-08 (Scope 1/2/3, richiesta editoriale esplicita): la
+  // guida precedente era un prezzario per installatori travestito da Cost
+  // Guide — 24 PriceRow, di cui 1 sola fascia editoriale (il Hero) e 23
+  // prezzi ufficiali puntuali ER25/FVG25 senza alcuna gerarchia (nessun
+  // role/costType compilato su nessuna riga, quindi classifyPriceRows
+  // trattava l'intera guida come fallback: tutto in breakdown piatto).
+  // Sostituita con un modello a 18 PriceRow interamente migrato
+  // (costType/role/confidence su ogni riga prezzata): 1 primary + 2
+  // scenario (Scope 2 §1) + 12 breakdown + 3 extra/quoteRequired, **0
+  // reference** (correzione vincolante Scope 3: la sezione UI condivisa
+  // "role: reference" ha una copy fissa — "Quando il costo può superare la
+  // fascia standard" — pensata per valori-soglia tipo l'"oltre 12.000 €" del
+  // bagno, non per dati tecnici di confronto capitolato: usarla per 6+
+  // componenti del quadro sarebbe stato un uso improprio della sezione,
+  // oltre a rischiare una lista ingestibile).
+  //
+  // - 3 SCENARI (categoria "Scenari di ampiezza del lavoro", mai da sommare
+  //   tra loro): Rifacimento con canalizzazioni riutilizzabili (40–60 €/mq,
+  //   role "scenario"), Rifacimento completo standard (55–90 €/mq, role
+  //   "primary" — nuovo Hero, prima 45–80), Impianto più articolato / nuove
+  //   linee diffuse (80–110 €/mq, role "scenario"). L'id
+  //   "elettrico-rifacimento-completo" è RIUTILIZZATO per il primary
+  //   (stessa identità evolutiva: "il pacchetto complessivo della guida",
+  //   il perimetro non cambia natura, solo il range e la precisione del
+  //   testo — diverso dal caso punto-luce/presa qui sotto).
+  // - 6 PriceRow cliente NUOVE per punti/comandi/circuiti (nessun id
+  //   riutilizzato dalle vecchie voci ufficiali punto luce/presa/comando:
+  //   quelle escludevano SEMPRE la traccia, le nuove la comprendono —
+  //   perimetro economico diverso, nuova identità economica per
+  //   costruzione, non una rinomina): "Punto luce completo con un
+  //   comando" (70–110 €), "Presa elettrica completa standard" (60–90 €),
+  //   "Comando aggiuntivo (deviato/invertito)" (45–70 €, per aggiungere un
+  //   comando a un punto luce già cablato, non per crearne uno nuovo),
+  //   "Punto su predisposizione esistente" (25–45 €, solo quando
+  //   scatola/corrugato sono già presenti), "Circuito interno standard"
+  //   (200–300 €/circuito) e "Circuito dedicato / sezione maggiore"
+  //   (250–400 €/circuito, sostituiscono visivamente le 5 vecchie dorsali
+  //   tecniche 1,5/2,5/4/6/10 mmq — RIMOSSE come PriceRow, valori e fonte
+  //   preservati nella `note` delle due nuove righe, non persi).
+  // - 3 PriceRow NUOVE per il quadro elettrico completo, gap prima assente
+  //   (nessuna vecchia riga rappresentava un quadro cablato e configurato,
+  //   solo singoli componenti): "Quadro generale — circa 4/6/8–10 circuiti
+  //   protetti" (500–800 / 650–1.000 / 850–1.400 €, materiale + posa).
+  //   Deliberatamente NON scenari globali (`role` assente): sono una scelta
+  //   interna al breakdown, non un'ampiezza dell'intero lavoro.
+  //   `categoryNote` dedicata per chiarire moduli ≠ circuiti. Le 6 vecchie
+  //   righe "Singoli componenti del quadro" (magnetotermico differenziale,
+  //   2 centralini vuoti, 3 blocchi differenziali FVG) sono RIMOSSE come
+  //   PriceRow — non trasformate in `role: "reference"` (vedi sopra) — i
+  //   loro 6 valori, fonti e anni restano preservati per intero nella
+  //   `note` della riga "Quadro generale — circa 4 circuiti".
+  // - 2 righe traccia EVOLVONO IN PLACE (id riutilizzati:
+  //   "elettrico-traccia-muratura-mattoni-forati"/"...-pieni"): stesso
+  //   perimetro esatto di prima (apertura + chiusura grezza, finiture
+  //   sempre escluse), solo il numero passa da prezzo ufficiale puntuale
+  //   (15,92 €/20,61 € al metro, ER25) a fascia editoriale Esigenta
+  //   (15–25 €/20–35 € al metro) — valori originali preservati in `note`.
+  // - `elettrico-collegamento-equipotenziale` EVOLVE IN PLACE (id
+  //   riutilizzato, prezzo e provenance ER25 invariati, 188,81 €): solo la
+  //   label cambia in "Collegamento equipotenziale locale o di un vano" per
+  //   escludere ulteriormente la lettura "rifacimento della messa a terra"
+  //   (il `plainExplanation` lo negava già esplicitamente prima di questa
+  //   revisione).
+  // - 3 nuove righe `role: "extra"` + `priceStatus: "quoteRequired"`, NESSUN
+  //   range inventato, NESSUNA relation forzata (né `addsTo` né altro:
+  //   ognuna può applicarsi a qualunque dei 3 scenari, un `addsTo` verso
+  //   tutti e tre non avrebbe aggiunto informazione utile — la UI condivisa
+  //   "Cosa può far salire il prezzo" funziona correttamente anche senza
+  //   relations dichiarate, verificato leggendo cost-guide-extras.tsx):
+  //   "Ripristino estetico finale dopo le tracce" (intonaco/rasatura/
+  //   tinteggiatura, non quotabile al metro perché la porzione di parete
+  //   coinvolta varia), "Montante contatore → quadro appartamento" (gap già
+  //   riconosciuto in una revisione precedente di questo commento: nessun
+  //   codice di capitolato attribuibile con certezza), "Adeguamento /
+  //   rifacimento impianto di terra" (intervento generale, distinto dal
+  //   collegamento equipotenziale locale qui sopra). Nessuna delle tre ha
+  //   `costType`: composizione manodopera/materiali non determinabile senza
+  //   un caso reale, stesso trattamento già usato per
+  //   `bagno-adeguamento-elettrico`.
+  // - RIMOSSE come PriceRow, valore preservato in copy: le 3 righe "Esempi
+  //   da un altro prezzario regionale (FVG)" (punto luce IP54 40,55 €,
+  //   punto presa 79,12 €, sola posa 15,18 €) — erano già dichiarate "non
+  //   alternative equivalenti" dal loro stesso categoryNote, quindi
+  //   puramente illustrative: i valori restano citati nelle `note` delle
+  //   righe cliente pertinenti (punto luce completo, presa completa, punto
+  //   su predisposizione).
+  //
+  // Provenance: fasce editoriali Esigenta (sourceType "mixed", confidence
+  // "media" su ogni riga prezzata) ancorate ai prezzari regionali ufficiali
+  // già citati — MAI attribuite a un singolo codice di prezzario. I valori
+  // puntuali ER25/FVG25 originali (mai alterati, "2025" non toccato) restano
+  // sempre citati per intero nella `note` della riga cliente o tecnica
+  // pertinente: nessun dato perso, solo riorganizzato.
   "costGuide:rifare-impianto-elettrico": {
-    nationalRange: "45–80 € al mq",
-    pricePerSquareMeter: "da 45 € a 80 € al mq",
+    nationalRange: "55–90 € al mq",
+    pricePerSquareMeter: "da 55 € a 90 € al mq",
     sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
     sourceYear: "2025–2026",
     sourceType: "mixed",
     priceRows: [
       {
-        id: "elettrico-rifacimento-completo",
-        label: "Rifacimento completo, fascia standard",
-        category: "Rifacimento completo",
+        id: "elettrico-scenario-canalizzazioni-riutilizzabili",
+        label: "Rifacimento con canalizzazioni esistenti riutilizzabili",
+        category: "Scenari di ampiezza del lavoro",
+        categoryNote:
+          "Questi tre scenari rappresentano modi diversi di rifare un impianto elettrico, in base a quanto delle canalizzazioni esistenti resta riutilizzabile e a quanto l'impianto risultante è articolato: scegli quello più vicino al tuo caso, non sommare le fasce tra loro.",
         unit: "al mq",
-        range: "da 45 € a 80 € al mq",
-        note: "Stima elaborata confrontando le voci di impianto elettrico dei prezzari regionali ufficiali 2025–2026 con le fasce di mercato nazionale: nessun prezzario pubblico quota un pacchetto unico per il rifacimento completo di un impianto. Vale per un impianto residenziale esistente, con configurazione ordinaria, senza domotica avanzata e senza ripristini murari eccezionalmente estesi.",
-        includes: "punti luce, punti presa e punti comando, distribuzione interna, quadro elettrico e dispositivi di protezione, opere murarie ordinarie, verifiche finali",
-        excludes: "domotica avanzata, ripristini murari eccezionalmente estesi, aumento della potenza contrattuale, progettazioni specialistiche e documentazione tecnica ulteriore rispetto a quella ordinaria",
+        range: "da 40 € a 60 € al mq",
+        plainExplanation:
+          "È comunque un rifacimento dell'impianto, non una semplice sostituzione dei frutti: buona parte di corrugati, scatole e percorsi esistenti viene però riutilizzata perché ancora idonea, con meno tracce nuove e meno assistenza muraria rispetto al rifacimento completo.",
+        note: "Fascia editoriale Esigenta: si applica quando un sopralluogo conferma che le canalizzazioni esistenti sono davvero riutilizzabili, non per definizione su ogni impianto vecchio.",
+        includes:
+          "nuovi conduttori dove previsti, punti e apparecchi standard, distribuzione interna, protezioni e quadro adeguati alla configurazione, verifiche finali, Dichiarazione di conformità rilasciata dall'impresa abilitata al termine del lavoro",
+        excludes: "nuove tracce diffuse, montante quando da rifare, rifacimento generale della messa a terra, domotica avanzata",
         confidence: "media",
-        priceType: "corpo",
+        costType: "complete",
+        role: "scenario",
       },
       {
-        id: "elettrico-punto-luce-incassato-singolo",
-        label: "Punto luce incassato singolo",
-        simpleLabel: "Nuovo punto luce a incasso",
-        plainExplanation: "Punto luce realizzato sotto traccia. Comprende gli elementi indicati dal capitolato; non comprende le opere murarie e la linea principale a monte.",
-        technicalCode: "D01.001.005",
-        category: "Lavorazioni complete",
+        id: "elettrico-rifacimento-completo",
+        label: "Rifacimento completo standard dell'impianto elettrico",
+        category: "Scenari di ampiezza del lavoro",
+        unit: "al mq",
+        range: "da 55 € a 90 € al mq",
+        plainExplanation:
+          "È lo scenario principale di questa guida: nuovo impianto interno, distribuzione e circuiti ordinari, punti luce/prese/comandi standard, quadro generale completo e protezioni, con le normali tracce necessarie e la loro chiusura grezza.",
+        note: "Normali tracce e chiusura grezza comprese; finitura estetica della parete esclusa — non è una formula generica di \"opere murarie comprese\". È la fascia principale di questa guida: un rifacimento con canalizzazioni in buona parte riutilizzabili costa indicativamente meno (vedi lo scenario qui sopra), un impianto più articolato con molte linee dedicate costa indicativamente di più (vedi lo scenario qui sotto).",
+        includes:
+          "nuovo impianto interno, distribuzione e circuiti ordinari, punti luce/prese/comandi standard, quadro generale completo adeguato alla configurazione, protezioni, normali nuove tracce dove necessarie, chiusura grezza ordinaria delle tracce, verifiche finali, Dichiarazione di conformità rilasciata dall'impresa abilitata al termine del lavoro",
+        excludes:
+          "rasatura finale diffusa, tinteggiatura, ripristino estetico completo delle pareti, domotica avanzata, aumento della potenza contrattuale, montante contatore-quadro quando da rifare, rifacimento generale dell'impianto di terra quando necessario, lavorazioni eccezionali, prestazioni professionali esterne quando richieste dal caso",
+        confidence: "media",
+        costType: "complete",
+        role: "primary",
+      },
+      {
+        id: "elettrico-scenario-impianto-articolato",
+        label: "Impianto più articolato / nuove linee diffuse",
+        category: "Scenari di ampiezza del lavoro",
+        unit: "al mq",
+        range: "da 80 € a 110 € al mq",
+        plainExplanation:
+          "Per impianti con molte linee dedicate, maggiore suddivisione dei circuiti, un quadro più articolato, nuove tracce diffuse o più punti/distribuzione complessa — non un impianto \"premium\", ma un impianto con più lavoro tecnico da eseguire.",
+        note: "Domotica avanzata esclusa anche in questo scenario: quando prevista, resta una valutazione a parte.",
+        includes: "molte linee dedicate, maggiore suddivisione dei circuiti, quadro più articolato, nuove tracce diffuse, più punti o distribuzione più complessa",
+        excludes: "domotica avanzata",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
+      },
+      {
+        id: "elettrico-punto-luce-completo",
+        label: "Punto luce completo con un comando",
+        category: "Punti elettrici",
+        categoryNote:
+          "Queste voci sono lavorazioni complete, comprensive della normale traccia locale e della sua chiusura grezza: quando fanno già parte di uno degli scenari qui sopra, non vanno sommate di nuovo.",
         unit: "cadauno",
         unitLabel: "per punto",
-        range: "26,85 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo. Misurato a partire dalla scatola di derivazione in dorsale, questa esclusa.",
-        includes: "tubazione, cavi, scatola da incasso, supporto, apparecchio e placca",
-        excludes: "opere murarie (traccia, apertura e chiusura)",
-        priceType: "corpo",
+        range: "da 70 € a 110 € cad",
+        plainExplanation:
+          "Comprende l'uscita luce, il comando/interruttore standard, il corrugato, i conduttori, le scatole, il frutto/supporto/placca standard, i collegamenti e la normale traccia locale necessaria, con la sua chiusura grezza.",
+        note: "Fascia editoriale Esigenta, non un prezzo ufficiale puntuale: non è la stessa voce dei prezzi ufficiali di capitolato, che escludono sempre la traccia — un punto luce sotto traccia costa 26,85 € se singolo o 28,96 € se doppio (due punti dalla stessa derivazione), e un punto luce con tubazione a vista, senza incassarlo nel muro, costa 31,88 € (tutti Prezzario Emilia-Romagna 2025); un altro prezzario regionale (Friuli Venezia Giulia 2025) quota una posa a vista con grado di protezione IP54 a 40,55 €, capitolato non equivalente. Nessuna di queste voci ufficiali comprende la traccia: qui invece è compresa.",
+        includes: "uscita luce, comando/interruttore standard, tubo corrugato, conduttori, scatole, frutto/supporto/placca standard, collegamenti, normale traccia locale necessaria, fissaggio, chiusura grezza ordinaria",
+        excludes: "lampadario, plafoniera o altro corpo illuminante, linea dedicata lunga dal quadro, rasatura finale, tinteggiatura, murature particolari",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-punto-luce-incassato-doppio",
-        label: "Punto luce incassato doppio",
-        simpleLabel: "Due punti luce nello stesso collegamento",
-        plainExplanation: "Permette di collegare due punti luce dalla stessa derivazione. Le opere murarie restano escluse quando non indicate.",
-        technicalCode: "D01.001.010.a",
-        category: "Lavorazioni complete",
+        id: "elettrico-presa-completa-standard",
+        label: "Presa elettrica completa standard",
+        category: "Punti elettrici",
         unit: "cadauno",
         unitLabel: "per punto",
-        range: "28,96 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo.",
-        includes: "tubazione, cavi, scatola da incasso, supporto, doppio apparecchio e placca",
-        excludes: "opere murarie (traccia, apertura e chiusura)",
-        priceType: "corpo",
+        range: "da 60 € a 90 € cad",
+        plainExplanation:
+          "Comprende la presa standard, la scatola, il supporto/placca, il corrugato, i conduttori, i collegamenti e la derivazione ordinaria, con la normale traccia locale e la sua chiusura grezza.",
+        note: "Fascia editoriale Esigenta: non è la stessa voce dei prezzi ufficiali di capitolato, che escludono sempre la traccia — una presa completa 2P+T costa 49,72 € nella versione da 10 A o 56,07 € nella versione da 16 A (Prezzario Emilia-Romagna 2025); un altro prezzario regionale (Friuli Venezia Giulia 2025) quota una presa 2P+T 10A a 79,12 €, con un capitolato di posa diverso, non direttamente equivalente. Nessuna di queste voci ufficiali comprende la traccia: qui invece è compresa.",
+        includes: "presa standard, scatola, supporto/placca, tubo/corrugato, conduttori, collegamenti, derivazione ordinaria, normale traccia, fissaggio, chiusura grezza",
+        excludes: "linea dedicata lunga, rasatura, tinteggiatura, murature particolari",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-punto-luce-vista-ip40",
-        label: "Punto luce a vista, grado di protezione IP40",
-        simpleLabel: "Nuovo punto luce con tubazione esterna",
-        plainExplanation: "Il cablaggio viene posato a vista, senza incassarlo nel muro. IP40 resta un dettaglio tecnico della voce ufficiale, non una protezione contro l'acqua.",
-        category: "Lavorazioni complete",
+        id: "elettrico-comando-aggiuntivo",
+        label: "Comando aggiuntivo (deviato/invertito)",
+        category: "Punti elettrici",
+        unit: "cadauno",
+        unitLabel: "per comando",
+        range: "da 45 € a 70 € cad",
+        plainExplanation:
+          "Riguarda l'aggiunta di un secondo punto di comando a una luce già cablata (per esempio per accenderla da due posizioni diverse), non la creazione di un nuovo punto luce: comprende il comando, il cablaggio, l'apparecchio/placca e la normale traccia locale, con la sua chiusura grezza.",
+        note: "Fascia editoriale Esigenta: la vecchia voce ufficiale \"Punto comando deviato\" costava 53,63 € (Prezzario Emilia-Romagna 2025, capitolato analitico con collaudo compreso) ma escludeva la traccia — qui invece è compresa. Se serve invece un punto luce nuovo, vedi \"Punto luce completo con un comando\" qui sopra.",
+        includes: "comando aggiuntivo (deviato/invertito) su un punto luce già cablato, traccia locale per il nuovo comando, cablaggio, apparecchio e placca, fissaggio, chiusura grezza",
+        excludes: "creazione di un nuovo punto luce indipendente, rasatura finale, tinteggiatura",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "elettrico-punto-su-predisposizione",
+        label: "Punto su predisposizione esistente",
+        category: "Punti elettrici",
         unit: "cadauno",
         unitLabel: "per punto",
-        range: "31,88 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico. Codice di capitolato non attribuibile con certezza dal documento ufficiale: prezzo e descrizione riportati, codice volutamente omesso.",
-        includes: "tubazione rigida a vista, cavi, supporti e apparecchio IP40",
-        excludes: "scatola di derivazione (esclusa dalla voce stessa) e opere murarie",
-        priceType: "corpo",
+        range: "da 25 € a 45 € cad",
+        plainExplanation:
+          "Si applica solo quando scatola, corrugato e percorso sono già presenti e utilizzabili: comprende l'apparecchio, il collegamento, la posa e la verifica, non la creazione della predisposizione.",
+        note: "Fascia editoriale Esigenta: un prezzario regionale (Friuli Venezia Giulia 2025) quota una voce simile di sola posa in scatola già predisposta a 15,18 €, senza materiali, tubazione, scatola o cavi. Non è il prezzo di un nuovo punto da creare da zero: se la predisposizione non è già presente e idonea, vedi \"Punto luce completo\" o \"Presa elettrica completa standard\" qui sopra.",
+        includes: "apparecchio, collegamento, posa, verifica — solo quando scatola, corrugato/percorso e predisposizione sono già presenti e utilizzabili",
+        excludes: "creazione della predisposizione stessa (traccia, scatola, corrugato), verifica dell'idoneità della predisposizione esistente quando richiede lavoro aggiuntivo",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-punto-presa-incassato-10a",
-        label: "Punto presa incassato 2P+T 10A",
-        simpleLabel: "Nuova presa elettrica da 10 A",
-        plainExplanation: "Presa completa per usi domestici comuni, secondo il capitolato ufficiale. Le tracce e i ripristini murari non sono compresi.",
-        technicalCode: "D01.001.020",
-        category: "Lavorazioni complete",
+        id: "elettrico-circuito-standard",
+        label: "Circuito interno standard",
+        category: "Circuiti e distribuzione",
+        categoryNote:
+          "Sono i cavi che portano la corrente dal quadro fino alla zona dove si trovano i punti luce e le prese: la sezione viene dimensionata dal professionista in base al carico, non è una scelta libera del cliente.",
         unit: "cadauno",
-        unitLabel: "per punto",
-        range: "49,72 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo.",
-        includes: "tubazione, cavi, scatola da incasso, supporto, apparecchio e placca",
-        excludes: "opere murarie (traccia, apertura e chiusura)",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-punto-presa-incassato-16a",
-        label: "Punto presa incassato 2P+T 16A",
-        simpleLabel: "Nuova presa elettrica da 16 A",
-        plainExplanation: "Presa completa con portata nominale maggiore rispetto alla voce da 10 A. Non attribuire automaticamente usi specifici senza un progetto.",
-        technicalCode: "D01.001.020",
-        category: "Lavorazioni complete",
-        unit: "cadauno",
-        unitLabel: "per punto",
-        range: "56,07 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), unità abitativa tipo.",
-        includes: "tubazione, cavi, scatola da incasso, supporto, apparecchio e placca",
-        excludes: "opere murarie (traccia, apertura e chiusura)",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-punto-comando-deviato",
-        label: "Punto comando deviato",
-        simpleLabel: "Comando per accendere una luce da due punti",
-        plainExplanation: "Consente di comandare la stessa luce da due posizioni diverse.",
-        technicalCode: "E.04.12.01.024",
-        category: "Lavorazioni complete",
-        unit: "cadauno",
-        unitLabel: "per punto",
-        range: "53,63 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo analitico serie civile: capitolato diverso e più dettagliato delle altre voci di questo blocco, con collaudo compreso nella voce stessa.",
-        includes: "tubo corrugato, conduttori con protezione, morsetti, scatola portafrutto, apparecchio, placca e collaudo",
-        excludes: "opere murarie (traccia, apertura e chiusura)",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-collegamento-equipotenziale",
-        label: "Collegamento equipotenziale per vano",
-        simpleLabel: "Collegamenti di sicurezza del locale",
-        plainExplanation: "Collega tra loro le parti conduttrici previste nel locale. Non è una presa, un punto luce o il rifacimento completo della messa a terra.",
-        technicalCode: "D01.001.025",
-        category: "Lavorazioni complete",
-        unit: "cadauno",
-        unitLabel: "per collegamento",
-        range: "188,81 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), per vano con masse metalliche da collegare (es. bagno).",
-        includes: "conduttore di protezione, collegamenti e morsettiera equipotenziale del vano",
-        excludes: "opere murarie e collegamento a dispersore di terra esterno al vano",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-dorsale-1-5mmq",
-        label: "Dorsale interna 2 x 1,5 mmq + T",
-        simpleLabel: "Linea dal quadro alla stanza",
-        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
-        technicalCode: "D01.001.030",
-        categoryNote: "Le righe seguenti rappresentano configurazioni alternative della stessa tipologia di linea. Non devono essere sommate tra loro.",
-        category: "Distribuzione e linee",
-        unit: "cadauna",
         unitLabel: "per circuito",
-        range: "200,14 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo. Misurata dal centralino di appartamento: non è il montante contatore-centralino.",
-        includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
-        excludes: "opere murarie e montante a monte del centralino",
-        priceType: "corpo",
+        range: "da 200 € a 300 € cad",
+        plainExplanation:
+          "È la linea che collega il quadro a una zona dell'abitazione per illuminazione e prese di uso ordinario, comprensiva di tubazione/percorso, conduttori, scatole di derivazione e collegamenti.",
+        note: "Fascia editoriale Esigenta: i prezzari ufficiali quotano le sezioni tecniche corrispondenti come \"dorsale interna\" — 2×1,5 mmq + T a 200,14 € e 2×2,5 mmq + T a 205,09 € (Prezzario Emilia-Romagna 2025, unità abitativa tipo, misurata dal centralino di appartamento). Non è il montante contatore-quadro.",
+        includes: "linea dal quadro, tubazione/percorso ordinario, conduttori, scatole/derivazioni, collegamenti",
+        excludes: "grandi opere murarie, montante contatore-quadro",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-dorsale-2-5mmq",
-        label: "Dorsale interna 2 x 2,5 mmq + T",
-        simpleLabel: "Linea dal quadro alla stanza",
-        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
-        technicalCode: "D01.001.030",
-        category: "Distribuzione e linee",
-        unit: "cadauna",
+        id: "elettrico-circuito-dedicato",
+        label: "Circuito dedicato / sezione maggiore",
+        category: "Circuiti e distribuzione",
+        unit: "cadauno",
         unitLabel: "per circuito",
-        range: "205,09 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo.",
-        includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
-        excludes: "opere murarie e montante a monte del centralino",
-        priceType: "corpo",
+        range: "da 250 € a 400 € cad",
+        plainExplanation:
+          "È la linea dedicata a un carico specifico — forno, climatizzazione, un grande elettrodomestico o un'altra utenza dedicata — dimensionata con una sezione maggiore rispetto a un circuito standard.",
+        note: "Fascia editoriale Esigenta: non esiste una sezione fissa universale per \"circuito dedicato\", la sezione viene dimensionata in funzione del carico reale. I prezzari ufficiali quotano le sezioni tecniche corrispondenti come \"dorsale interna\" — 2×4 mmq + T a 218,75 €, 2×6 mmq + T a 253,05 € e 2×10 mmq + T a 361,86 € (Prezzario Emilia-Romagna 2025, unità abitativa tipo, sezioni maggiori tipicamente per linee dedicate a carichi specifici). Non è il montante contatore-quadro.",
+        includes: "linea dal quadro dimensionata per il carico specifico, tubazione/percorso, conduttori di sezione adeguata, collegamenti",
+        excludes: "grandi opere murarie, montante contatore-quadro",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-dorsale-4mmq",
-        label: "Dorsale interna 2 x 4 mmq + T",
-        simpleLabel: "Linea dal quadro alla stanza",
-        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
-        technicalCode: "D01.001.030",
-        category: "Distribuzione e linee",
-        unit: "cadauna",
-        unitLabel: "per circuito",
-        range: "218,75 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo.",
-        includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
-        excludes: "opere murarie e montante a monte del centralino",
-        priceType: "corpo",
+        id: "elettrico-quadro-generale-4-circuiti",
+        label: "Quadro generale — circa 4 circuiti protetti",
+        category: "Quadro elettrico completo",
+        categoryNote:
+          "Le fasce indicano il numero orientativo di circuiti protetti, non il numero di moduli del centralino. Il contenitore viene dimensionato sulla configurazione reale e può avere più moduli dei circuiti effettivamente cablati. Le tre fasce sono alternative: non vanno sommate tra loro.",
+        unit: "a corpo",
+        range: "da 500 € a 800 €",
+        plainExplanation:
+          "Quadro generale completo per una configurazione con circa 4 circuiti protetti: involucro, dispositivi di protezione, cablaggio interno e verifica finale, materiale e posa comprese.",
+        note: "Fascia editoriale Esigenta: nessun prezzario consultato quota un quadro completo come pacchetto unico, solo singoli componenti. Valori puntuali preservati come riferimento tecnico (Prezzario Emilia-Romagna 2025, salvo indicazione diversa): magnetotermico differenziale 173,32 €, centralino da incasso vuoto 6 moduli 66,61 €, centralino da incasso vuoto 12 moduli 85,57 €; blocco differenziale, configurazione base 151,66 €, intermedia 184,87 €, maggiorata 281,37 € (Prezzario Friuli Venezia Giulia 2025). Non rappresentano il costo di un quadro completo, cablato e configurato: sono i componenti tecnici con cui viene costruita la fascia editoriale qui sopra, non un totale alternativo da usare al loro posto.",
+        includes: "involucro/centralino adeguato, dispositivi di protezione coerenti con la configurazione, protezione dei circuiti, cablaggi interni, morsetti e accessori, identificazione dei circuiti, montaggio, collegamenti, verifica finale",
+        excludes: "protezioni o configurazioni particolari non ordinarie (dipendono dal progetto/caso reale), quadro condominiale o di parti comuni",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-dorsale-6mmq",
-        label: "Dorsale interna 2 x 6 mmq + T",
-        simpleLabel: "Linea dal quadro alla stanza",
-        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
-        technicalCode: "D01.001.030",
-        category: "Distribuzione e linee",
-        unit: "cadauna",
-        unitLabel: "per circuito",
-        range: "253,05 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo.",
-        includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
-        excludes: "opere murarie e montante a monte del centralino",
-        priceType: "corpo",
+        id: "elettrico-quadro-generale-6-circuiti",
+        label: "Quadro generale — circa 6 circuiti protetti",
+        category: "Quadro elettrico completo",
+        unit: "a corpo",
+        range: "da 650 € a 1.000 €",
+        plainExplanation:
+          "Quadro generale completo per una configurazione con circa 6 circuiti protetti: involucro, dispositivi di protezione, cablaggio interno e verifica finale, materiale e posa comprese.",
+        note: "Stesso principio della fascia da 4 circuiti qui sopra: nessun prezzario consultato quota un quadro completo come pacchetto unico. Il numero di moduli del centralino necessario dipende dalla configurazione reale (interruttore generale, differenziali, magnetotermici) e può essere superiore a 6.",
+        includes: "involucro/centralino adeguato, dispositivi di protezione coerenti con la configurazione, protezione dei circuiti, cablaggi interni, morsetti e accessori, identificazione dei circuiti, montaggio, collegamenti, verifica finale",
+        excludes: "protezioni o configurazioni particolari non ordinarie (dipendono dal progetto/caso reale), quadro condominiale o di parti comuni",
+        confidence: "media",
+        costType: "complete",
       },
       {
-        id: "elettrico-dorsale-10mmq",
-        label: "Dorsale interna 2 x 10 mmq + T",
-        simpleLabel: "Linea dal quadro alla stanza",
-        plainExplanation: "È la linea che collega il quadro alla zona dell'abitazione prima dei singoli punti luce e presa. Le varianti sono alternative tecniche, non fasce di prezzo.",
-        technicalCode: "D01.001.030",
-        category: "Distribuzione e linee",
-        unit: "cadauna",
-        unitLabel: "per circuito",
-        range: "361,86 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025, unità abitativa tipo. Sezione maggiore, tipicamente per linee dedicate a carichi specifici.",
-        includes: "scatole di derivazione da incasso, conduttori e tubazioni flessibili in PVC",
-        excludes: "opere murarie e montante a monte del centralino",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-punto-luce-vista-ip54-fvg",
-        label: "Punto luce a vista, grado di protezione IP54",
-        simpleLabel: "Punto luce a vista con maggiore protezione",
-        plainExplanation: "Voce FVG con grado IP54, che indica una maggiore protezione contro ingresso di polvere e spruzzi. Non implica automaticamente idoneità a qualsiasi ambiente.",
-        categoryNote: "Questi prezzi non sono alternative equivalenti alla tabella principale: cambiano regione, capitolato e contenuto della lavorazione.",
-        category: "Esempi da un altro prezzario regionale (Friuli Venezia Giulia)",
-        unit: "cadauno",
-        unitLabel: "per punto",
-        range: "40,55 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Non è una media nazionale: il capitolato di questa regione può differire da quello Emilia-Romagna, e il grado di protezione IP54 non è confrontabile con la voce IP40 del blocco principale.",
-        includes: "tubazione a vista, cavi, supporti e apparecchio IP54",
-        excludes: "scatola di derivazione e opere murarie",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-punto-presa-10a-fvg",
-        label: "Punto presa 2P+T 10A",
-        simpleLabel: "Presa completa in una specifica modalità di posa",
-        plainExplanation: "Il prezzo riguarda il particolare sistema di posa descritto dal prezzario FVG e non è direttamente equivalente alla presa Emilia-Romagna.",
-        category: "Esempi da un altro prezzario regionale (Friuli Venezia Giulia)",
-        unit: "cadauno",
-        unitLabel: "per punto",
-        range: "79,12 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Voce con una modalità di posa specifica di questo prezzario: non confrontare direttamente con il punto presa Emilia-Romagna senza verificare il capitolato.",
-        includes: "tubazione, cavi, scatola, supporto, apparecchio e placca secondo il capitolato FVG",
-        excludes: "opere murarie",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-posa-presa-scatola-predisposta-fvg",
-        label: "Sola posa di presa in scatola predisposta",
-        simpleLabel: "Solo montaggio della presa",
-        plainExplanation: "Comprende la sola installazione in una scatola già predisposta. Materiali, tubazioni, scatola e linee devono essere già presenti.",
-        category: "Esempi da un altro prezzario regionale (Friuli Venezia Giulia)",
-        unit: "cadauno",
-        unitLabel: "per punto",
-        range: "15,18 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025. Voce di sola posa: non include materiali, tubo o scatola, già presenti. Non va fusa con la voce di punto presa completo qui sopra.",
-        includes: "montaggio dell'apparecchio in una scatola già predisposta",
-        excludes: "materiali, tubazione, scatola, cavi e assistenza muraria",
-        priceType: "manodopera",
-      },
-      {
-        id: "elettrico-magnetotermico-differenziale",
-        label: "Magnetotermico differenziale",
-        simpleLabel: "Singolo interruttore di protezione",
-        plainExplanation: "È un dispositivo installato dentro il quadro. Non comprende l'intero quadro, gli altri interruttori, il cablaggio o la configurazione.",
-        categoryNote: "Questi valori riguardano singoli componenti o carpenterie e non rappresentano il costo di un quadro elettrico completo, cablato e configurato.",
-        category: "Singoli componenti del quadro, non quadro completo",
-        unit: "cadauno",
-        unitLabel: "per dispositivo",
-        range: "173,32 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025.",
-        includes: "fornitura e posa in opera del dispositivo nel quadro",
-        excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-centralino-incasso-6-moduli",
-        label: "Centralino da incasso vuoto, 6 moduli",
-        simpleLabel: "Contenitore vuoto del quadro elettrico (6 posti)",
-        plainExplanation: "È la sola scatola che ospita i dispositivi. Non comprende magnetotermici, differenziali, cablaggio e configurazione.",
-        technicalCode: "E.02.13.20.001",
-        category: "Singoli componenti del quadro, non quadro completo",
-        unit: "cadauno",
-        unitLabel: "per contenitore",
-        range: "66,61 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025. Involucro vuoto, non un quadro cablato: il prezzo del centralino comprende le verifiche dell'involucro stesso, non del quadro completato.",
-        includes: "fornitura e posa dell'involucro da incasso",
-        excludes: "magnetotermici, differenziali, cablaggio e frontalino",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-centralino-incasso-12-moduli",
-        label: "Centralino da incasso vuoto, 12 moduli",
-        simpleLabel: "Contenitore vuoto del quadro elettrico (12 posti)",
-        plainExplanation: "È la sola scatola che ospita i dispositivi. Non comprende magnetotermici, differenziali, cablaggio e configurazione.",
-        category: "Singoli componenti del quadro, non quadro completo",
-        unit: "cadauno",
-        unitLabel: "per contenitore",
-        range: "85,57 € cad",
-        note: "Prezzario Regione Emilia-Romagna 2025. Involucro vuoto, non un quadro cablato.",
-        includes: "fornitura e posa dell'involucro da incasso",
-        excludes: "magnetotermici, differenziali, cablaggio e frontalino",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-blocco-differenziale-base",
-        label: "Blocco differenziale, configurazione base",
-        simpleLabel: "Componente di protezione differenziale",
-        plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
-        category: "Singoli componenti del quadro, non quadro completo",
-        unit: "cadauno",
-        unitLabel: "per dispositivo",
-        range: "151,66 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025.",
-        includes: "fornitura e posa in opera del blocco differenziale",
-        excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-blocco-differenziale-intermedia",
-        label: "Blocco differenziale, configurazione intermedia",
-        simpleLabel: "Componente di protezione differenziale",
-        plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
-        category: "Singoli componenti del quadro, non quadro completo",
-        unit: "cadauno",
-        unitLabel: "per dispositivo",
-        range: "184,87 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025.",
-        includes: "fornitura e posa in opera del blocco differenziale",
-        excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
-        priceType: "corpo",
-      },
-      {
-        id: "elettrico-blocco-differenziale-maggiorata",
-        label: "Blocco differenziale, configurazione maggiorata",
-        simpleLabel: "Componente di protezione differenziale",
-        plainExplanation: "È un singolo componente o gruppo di protezione da installare nel quadro. Non rappresenta il prezzo del quadro completo.",
-        category: "Singoli componenti del quadro, non quadro completo",
-        unit: "cadauno",
-        unitLabel: "per dispositivo",
-        range: "281,37 € cad",
-        note: "Prezzario Regione Friuli Venezia Giulia 2025.",
-        includes: "fornitura e posa in opera del blocco differenziale",
-        excludes: "carpenteria del centralino, cablaggio complessivo, progettazione e collaudo del quadro",
-        priceType: "corpo",
+        id: "elettrico-quadro-generale-8-10-circuiti",
+        label: "Quadro generale — circa 8–10 circuiti protetti",
+        category: "Quadro elettrico completo",
+        unit: "a corpo",
+        range: "da 850 € a 1.400 €",
+        plainExplanation:
+          "Quadro generale completo per una configurazione con circa 8–10 circuiti protetti: involucro, dispositivi di protezione, cablaggio interno e verifica finale, materiale e posa comprese.",
+        note: "Stesso principio delle fasce qui sopra: nessun prezzario consultato quota un quadro completo come pacchetto unico. Non presuppone un'architettura fissa di differenziali/magnetotermici valida per ogni abitazione: la configurazione reale dipende dal progetto.",
+        includes: "involucro/centralino adeguato, dispositivi di protezione coerenti con la configurazione, protezione dei circuiti, cablaggi interni, morsetti e accessori, identificazione dei circuiti, montaggio, collegamenti, verifica finale",
+        excludes: "protezioni o configurazioni particolari non ordinarie (dipendono dal progetto/caso reale), quadro condominiale o di parti comuni",
+        confidence: "media",
+        costType: "complete",
       },
       {
         id: "elettrico-traccia-muratura-mattoni-forati",
-        label: "Traccia su muratura in mattoni forati",
-        simpleLabel: "Apertura e chiusura del muro per i cavi — mattoni forati",
-        plainExplanation: "Prezzo per metro di traccia. Può aggiungersi alle lavorazioni elettriche quando occorre aprire il muro: a differenza delle varianti di dorsale, questa voce è complementare e si somma ai punti a cui serve.",
-        technicalCode: "B01.013",
+        label: "Traccia e chiusura grezza — laterizio/forato",
+        simpleLabel: "Apertura e chiusura grezza del muro per i cavi — mattoni forati",
         category: "Opere murarie",
         unit: "al metro",
         unitLabel: "per metro di traccia",
-        range: "15,92 € al metro",
-        note: "Prezzario Regione Emilia-Romagna 2025, capitolato generale edilizia (non specifico dell'impiantistica elettrica), fino a 100 cmq di sezione.",
-        includes: "apertura, chiusura e avvicinamento delle macerie, quando previsto",
-        excludes: "intonaco, rasatura, tinteggiatura, trasporto e smaltimento delle macerie",
-        priceType: "manodopera",
+        range: "da 15 € a 25 € al metro",
+        plainExplanation:
+          "Apertura della traccia, normale assistenza/posa e chiusura grezza (tamponamento), su muratura in mattoni forati: la parete non è pronta da pitturare al termine di questa sola lavorazione.",
+        note: "Fascia editoriale Esigenta (era prezzo ufficiale puntuale: 15,92 € al metro, Prezzario Emilia-Romagna 2025, capitolato generale edilizia non specifico dell'impiantistica elettrica, fino a 100 cmq di sezione).",
+        includes: "apertura, normale assistenza/posa, fissaggio, chiusura grezza",
+        excludes: "intonaco finale diffuso, rasatura, tinteggiatura, finitura estetica uniforme, trasporto e smaltimento delle macerie quando non già compresi",
+        confidence: "media",
+        costType: "work",
       },
       {
         id: "elettrico-traccia-muratura-mattoni-pieni",
-        label: "Traccia su muratura in mattoni pieni",
-        simpleLabel: "Apertura e chiusura del muro per i cavi — mattoni pieni",
-        plainExplanation: "Prezzo per metro di traccia su una muratura più impegnativa da lavorare.",
-        technicalCode: "B01.010.020",
+        label: "Traccia e chiusura grezza — muratura piena/difficile",
+        simpleLabel: "Apertura e chiusura grezza del muro per i cavi — mattoni pieni",
         category: "Opere murarie",
         unit: "al metro",
         unitLabel: "per metro di traccia",
-        range: "20,61 € al metro",
-        note: "Prezzario Regione Emilia-Romagna 2025, capitolato generale edilizia (non specifico dell'impiantistica elettrica), fino a 100 cmq di sezione.",
-        includes: "apertura, chiusura e avvicinamento delle macerie, quando previsto",
-        excludes: "intonaco, rasatura, tinteggiatura, trasporto e smaltimento delle macerie",
-        priceType: "manodopera",
+        range: "da 20 € a 35 € al metro",
+        plainExplanation:
+          "Stesso perimetro della traccia su mattoni forati, su una muratura più impegnativa da lavorare: la parete non è pronta da pitturare al termine di questa sola lavorazione.",
+        note: "Fascia editoriale Esigenta (era prezzo ufficiale puntuale: 20,61 € al metro, Prezzario Emilia-Romagna 2025, capitolato generale edilizia non specifico dell'impiantistica elettrica, fino a 100 cmq di sezione).",
+        includes: "apertura, normale assistenza/posa, fissaggio, chiusura grezza",
+        excludes: "intonaco finale diffuso, rasatura, tinteggiatura, finitura estetica uniforme, trasporto e smaltimento delle macerie quando non già compresi",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "elettrico-collegamento-equipotenziale",
+        label: "Collegamento equipotenziale locale o di un vano",
+        simpleLabel: "Collegamenti di sicurezza del locale (es. bagno)",
+        technicalCode: "D01.001.025",
+        category: "Collegamenti di sicurezza",
+        unit: "cadauno",
+        unitLabel: "per collegamento",
+        range: "188,81 € cad",
+        plainExplanation:
+          "Collega tra loro le parti conduttrici previste in un locale (tipicamente il bagno). Non è una presa, un punto luce o il rifacimento completo della messa a terra dell'abitazione.",
+        note: "Prezzario Regione Emilia-Romagna 2025, metodo sintetico (D01.001), per vano con masse metalliche da collegare. Se serve un intervento più generale sull'impianto di terra (dispersore, conduttore di protezione principale), vedi \"Adeguamento / rifacimento impianto di terra\" più sotto: sono due lavorazioni diverse.",
+        includes: "conduttore di protezione, collegamenti e morsettiera equipotenziale del vano",
+        excludes: "opere murarie, collegamento a dispersore di terra esterno al vano",
+        costType: "complete",
+      },
+      {
+        id: "elettrico-ripristino-estetico-tracce",
+        label: "Ripristino estetico finale dopo le tracce",
+        category: "Costi da valutare con il professionista",
+        range: "da valutare con il professionista",
+        plainExplanation:
+          "Riguarda riprese di intonaco, rasatura e tinteggiatura necessarie a uniformare pareti o locali dopo l'apertura di nuove tracce: la chiusura grezza compresa nelle lavorazioni murarie qui sopra non è una parete pronta da pitturare.",
+        note: "Non è quotabile con un prezzo al metro: la necessità può riguardare una porzione limitata di parete oppure un'intera parete o stanza, a seconda di quanto le tracce sono estese e visibili una volta chiuse.",
+        priceStatus: "quoteRequired",
+        role: "extra",
+      },
+      {
+        id: "elettrico-montante-contatore-quadro",
+        label: "Montante contatore → quadro appartamento",
+        category: "Costi da valutare con il professionista",
+        range: "da valutare con il professionista",
+        plainExplanation:
+          "È il tratto tra il contatore e il quadro generale dell'appartamento, a monte di tutte le altre voci di questa guida: i circuiti interni partono dal quadro, non dal contatore.",
+        note: "Il costo dipende da distanza, sezione, piano, percorso, parti comuni e condizioni del cavidotto esistente: nessun prezzario consultato permette di attribuire un codice o un prezzo puntuale affidabile senza queste informazioni.",
+        priceStatus: "quoteRequired",
+        role: "extra",
+      },
+      {
+        id: "elettrico-adeguamento-impianto-terra",
+        label: "Adeguamento / rifacimento impianto di terra",
+        category: "Costi da valutare con il professionista",
+        range: "da valutare con il professionista",
+        plainExplanation:
+          "Riguarda un intervento generale sull'impianto di terra dell'edificio (dispersore, conduttore di protezione principale, collegamenti), non il singolo collegamento equipotenziale di un locale.",
+        note: "Il costo dipende dall'impianto di terra esistente, dal tipo di edificio (singolo o condominiale), dal dispersore, dai conduttori principali e dalle verifiche necessarie. Non va confuso con \"Collegamento equipotenziale locale o di un vano\" qui sopra, che riguarda solo i collegamenti di un singolo locale.",
+        priceStatus: "quoteRequired",
+        role: "extra",
       },
     ],
     sizeExamples: [
       {
         label: "Impianto per 50 mq",
         sizeRange: "50 mq",
-        range: "da 2.250 € a 4.000 €",
-        note: "Calcolo: 50 mq × 45–80 €/mq. Su un appartamento piccolo il costo al mq può risultare più alto: quadro, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie.",
+        range: "da 2.750 € a 4.500 €",
+        note: "Calcolo per il rifacimento completo standard: 50 mq × 55–90 €/mq. Su un appartamento piccolo il costo al mq può risultare più alto: quadro, nuova uscita, verifiche e lavorazioni minime non diminuiscono in proporzione alla superficie.",
       },
       {
         label: "Impianto per 80 mq",
         sizeRange: "80 mq",
-        range: "da 3.600 € a 6.400 €",
-        note: "Calcolo: 80 mq × 45–80 €/mq.",
+        range: "da 4.400 € a 7.200 €",
+        note: "Calcolo per il rifacimento completo standard: 80 mq × 55–90 €/mq.",
       },
       {
         label: "Impianto per 100 mq",
         sizeRange: "100 mq",
-        range: "da 4.500 € a 8.000 €",
-        note: "Calcolo: 100 mq × 45–80 €/mq.",
+        range: "da 5.500 € a 9.000 €",
+        note: "Calcolo per il rifacimento completo standard: 100 mq × 55–90 €/mq.",
       },
       {
         label: "Impianto per 150 mq",
         sizeRange: "150 mq",
-        range: "da 6.750 € a 12.000 €",
-        note: "Calcolo: 150 mq × 45–80 €/mq.",
+        range: "da 8.250 € a 13.500 €",
+        note: "Calcolo per il rifacimento completo standard: 150 mq × 55–90 €/mq.",
       },
     ],
   },
