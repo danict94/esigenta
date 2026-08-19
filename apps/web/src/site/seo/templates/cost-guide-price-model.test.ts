@@ -21,6 +21,7 @@ import type { PriceRow } from "../market-data/base-price-ranges"
 import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/content"
 import { rifareImpiantoElettricoGuide } from "../pages/costi/rifare-impianto-elettrico/content"
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
+import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
 
 // Scope 4B — logica di classificazione/traduzione condivisa dalle sezioni
 // della Cost Guide. Fixture minime per i casi puntuali, dati REALI (bagno,
@@ -152,10 +153,11 @@ test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/r
 test("classifyPriceRows: impermeabilizzare-tetto (dati reali) — nessuno scenario/primary/extra/reference inventato, tutte e 8 le righe nel breakdown", () => {
   const classification = classifyPriceRows(impermeabilizzareTettoGuide.priceRows)
 
-  // Nessuna riga usa costType "complete" + unit "a corpo": niente
+  // Nessuna riga usa role "scenario"/"primary" esplicito: niente
   // primary/scenario per questa guida, per costruzione dei dati (nessuna
-  // riga è pensata come "scenario complessivo"), non per il limite di
-  // isGuideScenarioRow documentato su rifare-tetto.
+  // riga è pensata come "scenario complessivo"), indipendentemente da unit
+  // o costType — invariato dal micro-fix 2026-08 su isGuideScenarioRow (vedi
+  // sotto), che riguarda solo righe con role esplicito.
   assert.equal(classification.primary, null)
   assert.equal(classification.scenarios.length, 0)
   assert.equal(classification.scenarioCards.length, 0)
@@ -173,7 +175,56 @@ test("classifyPriceRows: impermeabilizzare-tetto (dati reali) — nessuno scenar
   )
 })
 
-test("classifyPriceRows: fallback sintetico — riga role \"primary\" ma NON a corpo/complete resta fuori dagli scenari", () => {
+test("classifyPriceRows: rifare-facciata (dati reali) — micro-fix 2026-08: i 3 scenari al mq sono ora promossi a scenarioCards/primary, 1 extra (fissativo), 10 in breakdown", () => {
+  const classification = classifyPriceRows(rifareFacciataGuide.priceRows)
+
+  // Prima del micro-fix, isGuideScenarioRow richiedeva unit "a corpo": i 3
+  // scenari di rifare-facciata sono "al mq" (corretto per una facciata, il
+  // prezzo scala con la superficie) e restavano sempre esclusi. Il vincolo
+  // sull'unità è stato rimosso (vedi isGuideScenarioRow qui sopra) — questo
+  // test verifica il comportamento CORRETTO risultante.
+  assert.equal(classification.primary?.id, "facciata-rifacimento-ordinario")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["facciata-rinnovo-finitura", "facciata-ripristino-parziale"],
+  )
+  assert.equal(classification.scenarioCards.length, 3)
+  assert.equal(classification.references.length, 0)
+
+  assert.equal(classification.extras.length, 1)
+  assert.equal(classification.extras[0]?.id, "facciata-fissativo-primer")
+
+  assert.equal(classification.breakdown.length, 10)
+  assert.ok(!classification.breakdown.some((r) => r.id === "facciata-rifacimento-ordinario"))
+  assert.ok(!classification.breakdown.some((r) => r.id === "facciata-fissativo-primer"))
+})
+
+test("isGuideScenarioRow (via classifyPriceRows) — micro-fix 2026-08: role \"scenario\" esplicito + unit \"al mq\" È classificato come scenario (unit non è più un gate)", () => {
+  const rows: PriceRow[] = [
+    row({ id: "scenario-al-mq", role: "scenario", costType: "complete", unit: "al mq" }),
+  ]
+
+  const classification = classifyPriceRows(rows)
+
+  assert.deepEqual(classification.scenarios.map((r) => r.id), ["scenario-al-mq"])
+  assert.deepEqual(classification.scenarioCards.map((r) => r.id), ["scenario-al-mq"])
+  assert.equal(classification.breakdown.length, 0)
+})
+
+test("isGuideScenarioRow (via classifyPriceRows) — micro-fix 2026-08: una normale PriceRow \"al mq\" SENZA role esplicito NON diventa scenario automaticamente", () => {
+  const rows: PriceRow[] = [
+    row({ id: "riga-normale-al-mq", costType: "complete", unit: "al mq" }), // role assente
+  ]
+
+  const classification = classifyPriceRows(rows)
+
+  assert.equal(classification.primary, null)
+  assert.equal(classification.scenarios.length, 0)
+  assert.equal(classification.scenarioCards.length, 0)
+  assert.deepEqual(classification.breakdown.map((r) => r.id), ["riga-normale-al-mq"])
+})
+
+test("classifyPriceRows: fallback sintetico — riga role \"primary\"/\"scenario\" ma NON costType \"complete\", o già includedIn altrove, resta fuori dagli scenari (indipendentemente da unit)", () => {
   const rows: PriceRow[] = [
     row({ id: "voce-a", role: "primary", costType: "complete", unit: "a corpo" }),
     row({ id: "voce-b", role: "primary", costType: "work", unit: "al mq" }),
@@ -184,12 +235,28 @@ test("classifyPriceRows: fallback sintetico — riga role \"primary\" ma NON a c
       unit: "a corpo",
       relations: [{ type: "includedIn", target: "voce-a" }],
     }),
+    // Micro-fix 2026-08: prima del fix, "voce-d" (costType "work", unit "al
+    // mq") sarebbe stata esclusa (correttamente) anche solo per l'unità;
+    // dopo il fix è il costType a doverla escludere da solo — verificato
+    // esplicitamente qui, non solo per "voce-b" più sopra.
+    row({ id: "voce-d", role: "scenario", costType: "work", unit: "al mq" }),
+    // Una riga "scenario" già includedIn un'altra non deve diventare uno
+    // scenario a sé: il gate su hasOutgoingIncludedIn resta attivo anche con
+    // unit "al mq" (non solo con "a corpo", come prima del fix).
+    row({
+      id: "voce-e",
+      role: "scenario",
+      costType: "complete",
+      unit: "al mq",
+      relations: [{ type: "includedIn", target: "voce-a" }],
+    }),
   ]
 
   const classification = classifyPriceRows(rows)
 
   assert.equal(classification.primary?.id, "voce-a")
-  assert.deepEqual(classification.breakdown.map((r) => r.id), ["voce-b", "voce-c"])
+  assert.equal(classification.scenarios.length, 0)
+  assert.deepEqual(classification.breakdown.map((r) => r.id), ["voce-b", "voce-c", "voce-d", "voce-e"])
 })
 
 test("groupPriceRowsByCategory: preserva l'ordine di prima apparizione", () => {

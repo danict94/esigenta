@@ -15,6 +15,7 @@ import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/cont
 import { rifareTettoGuide } from "../pages/costi/rifare-tetto/content"
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
 import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
+import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
 import { classifyPriceRows, describeCostTypeBadge } from "../templates/cost-guide-price-model"
 import { getCostGuideStaticParams } from "../engine/static-params"
 
@@ -686,25 +687,41 @@ test("rifare-tetto: i 4 scenari di rifacimento hanno le fasce e la classificazio
   assert.doesNotMatch(strutturale?.range ?? "", /senza un massimo/)
 })
 
-test("rifare-tetto: BLOCKER noto — classifyPriceRows non riconosce oggi gli scenari al mq (isGuideScenarioRow richiede unit \"a corpo\")", () => {
-  // Questo test documenta lo stato REALE, non quello desiderato: la
-  // classificazione (role/costType) dei dati è corretta (verificato nei test
-  // sopra), ma isGuideScenarioRow — logica condivisa in
-  // templates/cost-guide-price-model.ts, esplicitamente FUORI perimetro in
-  // questa revisione (solo dati/contenuti di rifare-tetto) — riconosce uno
-  // scenario/primary solo con `unit === "a corpo"`. rifare-tetto usa "al mq"
-  // (l'unico corretto per un tetto: il prezzo scala sempre con la
-  // superficie). Risultato: le sezioni "Scenari"/"Cosa comprende" del
-  // template NON si attivano oggi, tutte le righe restano nel breakdown. Se
-  // in futuro isGuideScenarioRow viene generalizzato per accettare anche
-  // "al mq", questo assert andrà aggiornato di conseguenza — è il segnale
-  // voluto per accorgersene.
+test("rifare-tetto: micro-fix classificatore 2026-08 — i 4 scenari (unit \"al mq\") sono ora promossi a scenarioCards/primary, non più duplicati nel breakdown", () => {
+  // Prima del micro-fix, isGuideScenarioRow (templates/cost-guide-price-model.ts,
+  // condiviso) richiedeva `unit === "a corpo"`: questa guida usa "al mq"
+  // (l'unico corretto per un tetto, il prezzo scala sempre con la
+  // superficie) e restava sempre esclusa dalle sezioni Scenari/Cosa-comprende
+  // nonostante role/costType corretti (verificato nei test sopra). Il
+  // vincolo sull'unità è stato rimosso: questo test verifica il
+  // comportamento CORRETTO risultante sui dati reali di rifare-tetto.
   const classification = classifyPriceRows(rifareTettoGuide.priceRows)
 
-  assert.equal(classification.primary, null)
-  assert.equal(classification.scenarios.length, 0)
-  assert.equal(classification.scenarioCards.length, 0)
-  assert.equal(classification.breakdown.length, 8)
+  assert.equal(classification.primary?.id, "tetto-rifacimento-copertura")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["tetto-sostituzione-manto", "tetto-rifacimento-isolamento-ventilazione", "tetto-rifacimento-struttura"],
+  )
+  assert.deepEqual(
+    classification.scenarioCards.map((r) => r.id),
+    [
+      "tetto-sostituzione-manto",
+      "tetto-rifacimento-copertura",
+      "tetto-rifacimento-isolamento-ventilazione",
+      "tetto-rifacimento-struttura",
+    ],
+  )
+
+  // Le 4 righe "Lavorazioni specifiche" (nessun role compilato) restano nel
+  // breakdown come sempre; i 4 scenari promossi non ci sono più (nessuna
+  // duplicazione scenario + breakdown).
+  assert.equal(classification.breakdown.length, 4)
+  for (const scenarioId of classification.scenarioCards.map((r) => r.id)) {
+    assert.ok(
+      !classification.breakdown.some((r) => r.id === scenarioId),
+      `"${scenarioId}" non deve comparire sia in scenarioCards sia in breakdown`,
+    )
+  }
 })
 
 test("rifare-tetto: isolamento termico 50-120 €/mq, lavorazione autonoma (non scenario)", () => {
@@ -1153,4 +1170,231 @@ test("altre Cost Guide: nessuna modifica — rifareTettoGuide e impermeabilizzar
     impermeabilizzareTettoGuide.priceRows.find((r) => r.id === "impermeabilizzare-tetto-guaina-liscia")?.range,
     "da 25 € a 40 € al mq",
   )
+})
+
+// Revisione 2026-08 di rifare-facciata — dati REALI (guida composta), non
+// fixture sintetiche: la guida passa da 6 righe (1 prezzata "a corpo" +
+// 5 qualitative "Da valutare") a 14 righe cliente (3 scenari di ampiezza +
+// 10 lavorazioni del ciclo reale + ponteggio), Hero da 60–120 a 70–120 €/mq.
+
+test("rifare-facciata: esattamente 14 PriceRow, tutte con un id univoco reale", () => {
+  assert.equal(rifareFacciataGuide.priceRows.length, 14)
+  assert.equal(new Set(rifareFacciataGuide.priceRows.map((r) => r.id)).size, 14)
+})
+
+test("rifare-facciata: Hero 70-120 €/mq per il rifacimento esteso, non più 60-120", () => {
+  assert.equal(rifareFacciataGuide.nationalRange, "70–120 € al mq")
+  assert.equal(rifareFacciataGuide.pricePerSquareMeter, "da 70 € a 120 € al mq")
+  assert.equal(rifareFacciataGuide.sourceType, "mixed")
+
+  const esteso = rifareFacciataGuide.priceRows.find((r) => r.id === "facciata-rifacimento-ordinario")
+  assert.equal(esteso?.label, "Rifacimento esteso della facciata")
+  assert.equal(esteso?.range, "da 70 € a 120 € al mq")
+  assert.equal(esteso?.unit, "al mq")
+  assert.equal(esteso?.costType, "complete")
+  assert.equal(esteso?.role, "primary")
+
+  // Non deve leggersi come una semplice tinteggiatura: la nota lo dichiara
+  // esplicitamente, e cappotto/ponteggio restano sempre esclusi.
+  assert.match(esteso?.note ?? "", /non una semplice tinteggiatura/i)
+  assert.match(esteso?.excludes ?? "", /ponteggio/i)
+  assert.match(esteso?.excludes ?? "", /cappotto termico/i)
+})
+
+test("rifare-facciata: i 3 scenari di ampiezza hanno le fasce approvate e NON vanno sommati (categoryNote lo dichiara)", () => {
+  const rows = rifareFacciataGuide.priceRows
+  const scenari = rows.filter((r) => r.category === "Scenari di ampiezza del lavoro")
+  assert.equal(scenari.length, 3)
+
+  const rinnovo = rows.find((r) => r.id === "facciata-rinnovo-finitura")
+  assert.equal(rinnovo?.range, "da 25 € a 40 € al mq")
+  assert.equal(rinnovo?.costType, "complete")
+  assert.equal(rinnovo?.role, "scenario")
+  assert.match(rinnovo?.categoryNote ?? "", /non sommare le fasce tra loro/i)
+
+  const parziale = rows.find((r) => r.id === "facciata-ripristino-parziale")
+  assert.equal(parziale?.range, "da 45 € a 80 € al mq")
+  assert.equal(parziale?.costType, "complete")
+  assert.equal(parziale?.role, "scenario")
+
+  // I tre range non si sovrappongono in modo incoerente: crescono con
+  // l'ampiezza del degrado (25-40, 45-80, 70-120).
+  assert.equal(rows.find((r) => r.id === "facciata-rifacimento-ordinario")?.range, "da 70 € a 120 € al mq")
+})
+
+test("rifare-facciata: micro-fix classificatore 2026-08 — i 3 scenari (unit \"al mq\") sono ora promossi a scenarioCards/primary, non più duplicati nel breakdown", () => {
+  // Stesso bug/fix di rifare-tetto qui sopra: prima del micro-fix
+  // isGuideScenarioRow richiedeva unit === "a corpo", escludendo sempre
+  // questi 3 scenari (unit "al mq", corretto per una facciata) dalla
+  // sezione Scenari/Cosa-comprende nonostante role/costType corretti.
+  const classification = classifyPriceRows(rifareFacciataGuide.priceRows)
+
+  assert.equal(classification.primary?.id, "facciata-rifacimento-ordinario")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["facciata-rinnovo-finitura", "facciata-ripristino-parziale"],
+  )
+  assert.deepEqual(
+    classification.scenarioCards.map((r) => r.id),
+    ["facciata-rinnovo-finitura", "facciata-ripristino-parziale", "facciata-rifacimento-ordinario"],
+  )
+  assert.equal(classification.references.length, 0)
+
+  // Il fissativo resta l'unica riga "extra" di questa guida: finisce nella
+  // sezione Extra, non nel breakdown — invariato dal micro-fix (role
+  // "extra" non passa mai da isGuideScenarioRow).
+  assert.equal(classification.extras.length, 1)
+  assert.equal(classification.extras[0]?.id, "facciata-fissativo-primer")
+
+  // 14 righe totali - 3 scenari promossi - 1 extra = 10 nel breakdown;
+  // nessuna delle righe promosse deve comparire anche lì.
+  assert.equal(classification.breakdown.length, 10)
+  for (const promotedId of [...classification.scenarioCards.map((r) => r.id), "facciata-fissativo-primer"]) {
+    assert.ok(
+      !classification.breakdown.some((r) => r.id === promotedId),
+      `"${promotedId}" non deve comparire sia promossa (scenario/extra) sia in breakdown`,
+    )
+  }
+})
+
+test("rifare-facciata: rasatura semplice 15-25 e rasatura armata 25-40, nessuna relation (alternativeTo o includedIn) tra le due", () => {
+  const rows = rifareFacciataGuide.priceRows
+  const semplice = rows.find((r) => r.id === "facciata-rasatura-semplice")
+  const armata = rows.find((r) => r.id === "facciata-rasatura-armata")
+
+  assert.equal(semplice?.range, "da 15 € a 25 € al mq")
+  assert.equal(semplice?.costType, "complete")
+  assert.equal(armata?.range, "da 25 € a 40 € al mq")
+  assert.equal(armata?.costType, "complete")
+
+  assert.equal(semplice?.relations, undefined)
+  assert.equal(armata?.relations, undefined)
+  assert.equal(isAlternativeTo(rows, "facciata-rasatura-semplice", "facciata-rasatura-armata"), false)
+
+  // Non devono apparire come due fasi obbligatorie dello stesso lavoro.
+  assert.match(semplice?.categoryNote ?? "", /non due fasi da sommare/i)
+})
+
+test("rifare-facciata: fissativo 3-7 €/mq è role \"extra\" con addsTo verso le 3 finiture, copy anti-doppio-conteggio", () => {
+  const fissativo = rifareFacciataGuide.priceRows.find((r) => r.id === "facciata-fissativo-primer")
+
+  assert.equal(fissativo?.range, "da 3 € a 7 € al mq")
+  assert.equal(fissativo?.costType, "complete")
+  assert.equal(fissativo?.role, "extra")
+  assert.deepEqual(
+    fissativo?.relations?.map((r) => r.target),
+    ["facciata-tinteggiatura-acrilica", "facciata-pittura-silossanica", "facciata-rivestimento-a-spessore"],
+  )
+  assert.ok(fissativo?.relations?.every((r) => r.type === "addsTo"))
+
+  assert.match(fissativo?.note ?? "", /non va sommato automaticamente/i)
+  assert.match(fissativo?.plainExplanation ?? "", /non è una lavorazione obbligatoria/i)
+})
+
+test("rifare-facciata: pittura standard 16-25, silossanica 22-35, rivestimento a spessore 25-40 — tre finiture distinte", () => {
+  const rows = rifareFacciataGuide.priceRows
+  const standard = rows.find((r) => r.id === "facciata-tinteggiatura-acrilica")
+  const silossanica = rows.find((r) => r.id === "facciata-pittura-silossanica")
+  const spessore = rows.find((r) => r.id === "facciata-rivestimento-a-spessore")
+
+  assert.equal(standard?.range, "da 16 € a 25 € al mq")
+  assert.equal(silossanica?.range, "da 22 € a 35 € al mq")
+  assert.equal(spessore?.range, "da 25 € a 40 € al mq")
+
+  for (const row of [standard, silossanica, spessore]) {
+    assert.equal(row?.category, "Finiture")
+    assert.equal(row?.costType, "complete")
+  }
+
+  // Il rivestimento a spessore non deve leggersi come "una pittura più
+  // costosa": la nota lo dichiara esplicitamente.
+  assert.match(spessore?.plainExplanation ?? "", /non una semplice pittura più costosa/i)
+  assert.match(silossanica?.note ?? "", /rivestimento a spessore/i)
+})
+
+test("rifare-facciata: ponteggio 15-30 €/mq DI FACCIATA, sempre separato dai range principali, categoria propria", () => {
+  const ponteggio = rifareFacciataGuide.priceRows.find((r) => r.id === "facciata-ponteggio")
+
+  assert.equal(ponteggio?.label, "Ponteggio")
+  assert.equal(ponteggio?.unit, "al mq di facciata")
+  assert.equal(ponteggio?.range, "da 15 € a 30 € al mq di facciata")
+  assert.equal(ponteggio?.costType, "work")
+  assert.equal(ponteggio?.category, "Ponteggio")
+
+  // Stessa fascia editoriale di rifare-tetto (coerenza esplicitamente
+  // richiesta), verificata qui sui dati reali delle due guide.
+  assert.equal(
+    rifareTettoGuide.priceRows.find((r) => r.id === "tetto-ponteggi-accessibilita")?.range,
+    "da 15 € a 30 € al mq di facciata",
+  )
+})
+
+test("rifare-facciata: nessuna PriceRow dedicata al cappotto termico — resta fuori perimetro, spiegato solo in prosa/relatedWork", () => {
+  for (const row of rifareFacciataGuide.priceRows) {
+    assert.doesNotMatch(row.label, /cappotto/i, `"${row.id}" non deve essere una PriceRow dedicata al cappotto termico`)
+  }
+
+  const cappotto = rifareFacciataGuide.relatedWork?.find((item) => item.slug === "realizzare-cappotto-termico-facciata")
+  assert.ok(cappotto, "il relatedWork verso il cappotto termico deve restare preservato")
+  assert.match(
+    cappotto?.description ?? "",
+    /non è compreso nei prezzi di questa guida: aggiunge isolamento esterno, pannelli e un ciclo di posa specifico/i,
+  )
+})
+
+test("rifare-facciata: id rimossi (cappotto/consolidamento/restauro/balconi qualitativi) non esistono più, 2 id riutilizzati mantengono l'identità evolutiva", () => {
+  const ids = new Set(rifareFacciataGuide.priceRows.map((r) => r.id))
+
+  for (const removedId of [
+    "facciata-cappotto-termico",
+    "facciata-consolidamento-strutturale",
+    "facciata-restauro-specialistico",
+    "facciata-ripristino-balconi",
+  ]) {
+    assert.ok(!ids.has(removedId), `"${removedId}" doveva essere rimosso in questa revisione`)
+  }
+
+  assert.ok(ids.has("facciata-rifacimento-ordinario"), "id riutilizzato per lo scenario esteso")
+  assert.ok(ids.has("facciata-ponteggio"), "id riutilizzato per il ponteggio")
+})
+
+test("rifare-facciata: nessuna relation rotta — ogni target esiste nella stessa famiglia (ridondante rispetto a validatePriceRowIntegrity, verificato di nuovo qui sui dati composti reali)", () => {
+  const rows = rifareFacciataGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  for (const row of rows) {
+    for (const relation of row.relations ?? []) {
+      assert.ok(
+        ids.has(relation.target),
+        `"${row.id}" -> relation "${relation.type}" punta a un id inesistente "${relation.target}"`,
+      )
+    }
+  }
+})
+
+test("rifare-facciata: sizeExamples ricalcolati sulla fascia 70-120 (rifacimento esteso), ponteggio escluso", () => {
+  const bySize = new Map(rifareFacciataGuide.sizeExamples.map((example) => [example.sizeRange, example]))
+  assert.equal(bySize.get("100 mq")?.range, "da 7.000 € a 12.000 €")
+  assert.equal(bySize.get("200 mq")?.range, "da 14.000 € a 24.000 €")
+  assert.equal(bySize.get("300 mq")?.range, "da 21.000 € a 36.000 €")
+
+  for (const example of rifareFacciataGuide.sizeExamples) {
+    assert.match(example.note, /rifacimento esteso/i)
+    assert.match(example.note, /ponteggio escluso/i)
+  }
+})
+
+test("rifare-facciata: nationalRangeNote non presenta 70-120 come semplice tinteggiatura e chiarisce che interventi più leggeri costano meno", () => {
+  const note = rifareFacciataGuide.nationalRangeNote ?? ""
+  assert.match(note, /non una semplice tinteggiatura/i)
+  assert.match(note, /costano meno/i)
+  assert.match(note, /ponteggio/i)
+  assert.match(note, /cappotto termico/i)
+})
+
+test("altre Cost Guide: nessuna modifica — rifareTettoGuide, impermeabilizzareTettoGuide e impermeabilizzareTerrazzoGuide restano invariate dopo la revisione di rifare-facciata", () => {
+  assert.equal(rifareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTerrazzoGuide.priceRows.length, 11)
+  assert.equal(impermeabilizzareTerrazzoGuide.nationalRange, "30–70 € al mq")
 })

@@ -784,17 +784,25 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // sopralluogo/bonifica specifica) — citati nelle note delle righe
   // pertinenti, mai con un numero inventato.
   //
-  // LIMITE NOTO (da non correggere in questo Scope, solo dati/contenuti):
-  // isGuideScenarioRow in templates/cost-guide-price-model.ts riconosce uno
-  // scenario/primary SOLO con `unit === "a corpo"`. Qui l'unità corretta per
-  // uno scenario di rifacimento tetto è "al mq" — un tetto non ha una
-  // "metratura standard" come il bagno (5-6 mq): il prezzo scala sempre con
-  // la superficie, un "a corpo" sarebbe un numero inventato. Risultato: le
-  // sezioni "Scenari"/"Cosa comprende" del template condiviso NON si
-  // attivano oggi per questa guida nonostante role/costType corretti — le 8
-  // righe restano tutte nel Breakdown, raggruppate per category (da qui i
-  // due categoryNote qui sotto, pensati apposta per compensare in prosa
-  // l'assenza delle card Scenario).
+  // Micro-fix 2026-08 (cost-guide-price-model.ts, condiviso — non dati):
+  // isGuideScenarioRow riconosceva uno scenario/primary SOLO con
+  // `unit === "a corpo"`, escludendo SEMPRE questa guida dalle sezioni
+  // "Scenari"/"Cosa comprende" nonostante role/costType corretti — un tetto
+  // non ha una "metratura standard" come il bagno (5-6 mq), il prezzo scala
+  // sempre con la superficie, "a corpo" sarebbe stato un numero inventato.
+  // Il vincolo sull'unità è stato rimosso dal classificatore condiviso (vedi
+  // il commento di revisione su isGuideScenarioRow in
+  // templates/cost-guide-price-model.ts): i 4 scenari qui sotto vengono ora
+  // promossi alla sezione Scenari/Cosa-comprende, le 4 righe restanti
+  // ("Lavorazioni specifiche") restano nel Breakdown come sempre. Effetto
+  // collaterale verificato (nessuna azione richiesta): il `categoryNote`
+  // qui sotto ("Questi quattro scenari...") non ha più un gruppo Breakdown
+  // da introdurre per queste righe (promosse fuori dal Breakdown) e
+  // CostScenarioCards non legge `categoryNote` — quel testo non compare più
+  // da nessuna parte della pagina. Non è una perdita di contenuto grave: la
+  // sezione Scenari ha già un'intro fissa propria ("Scegli lo scenario più
+  // vicino al tuo caso") con lo stesso messaggio; il `categoryNote` resta
+  // nella SSOT solo come documentazione interna.
   "costGuide:rifare-tetto": {
     nationalRange: "120–180 € al mq",
     pricePerSquareMeter: "da 120 € a 180 € al mq",
@@ -987,12 +995,14 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // Nessun sizeExample aggiunto: fuori perimetro esplicito di questa
   // revisione (non richiesto, "non ampliare il perimetro").
   //
-  // Nessuna dipendenza da isGuideScenarioRow qui (a differenza di
-  // rifare-tetto): nessuna riga usa role "scenario"/"primary" in questa
-  // guida, quindi il limite noto su quel classificatore (vedi il commento
-  // sopra "costGuide:rifare-tetto") non si applica — le 5 nuove
-  // impermeabilizzazioni sono semplicemente lavorazioni autonome parallele,
-  // mai pensate per la UI "Scenari".
+  // Nessuna dipendenza da isGuideScenarioRow qui: nessuna riga usa role
+  // "scenario"/"primary" in questa guida — le 5 nuove impermeabilizzazioni
+  // sono semplicemente lavorazioni autonome parallele, mai pensate per la UI
+  // "Scenari". (Micro-fix 2026-08: il vincolo `unit === "a corpo"` di quel
+  // classificatore, citato qui in una revisione precedente di questo
+  // commento, è stato rimosso — vedi templates/cost-guide-price-model.ts.
+  // Non cambia nulla per questa guida, che non assegna role scenario/primary
+  // a nessuna riga per scelta editoriale, non per il vecchio limite tecnico.)
   //
   // Micro-fix 2026-08 (verifica di coerenza sul lavoro sopra, 3 correzioni):
   // 1) ID rinominati: "-conferimento-guaina" → "-rimozione-smaltimento-guaina"
@@ -1240,15 +1250,10 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   // rifacimento completo (demolizione, massetto, nuova pavimentazione),
   // fuori perimetro da questa guida per esplicita decisione editoriale.
   //
-  // LIMITE NOTO isGuideScenarioRow (templates/cost-guide-price-model.ts):
-  // nessuna riga di questa famiglia usa unit "a corpo" (gli 8 sistemi sono
-  // "al mq", la riparazione mirata è "a intervento") — anche volendo
-  // trattare gli 8 sistemi come "scenari" della guida, il classificatore
-  // condiviso non li riconoscerebbe comunque (richiede costType "complete" E
-  // unit "a corpo"), stesso limite già documentato sopra per rifare-tetto.
-  // Qui il limite è comunque moot: la scelta editoriale è di NON assegnare
-  // role "scenario"/"primary" a questi sistemi, perché non sono ampiezze
-  // diverse dello stesso intervento (quello giustificherebbe "scenario") ma
+  // isGuideScenarioRow (templates/cost-guide-price-model.ts): nessuna riga
+  // di questa famiglia usa role "scenario"/"primary" — la scelta editoriale
+  // è di NON assegnarlo agli 8 sistemi, perché non sono ampiezze diverse
+  // dello stesso intervento (quello giustificherebbe "scenario") ma
   // sistemi paralleli per materiale/tecnologia — la sezione "Scenari" del
   // template non si attiva per questa guida, tutte le righe restano nel
   // Breakdown raggruppate per category (da qui i due categoryNote sotto).
@@ -1856,99 +1861,346 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
-  // Fascia 60–120 €/mq: elaborazione orientativa da confronto di mercato
-  // nazionale 2026 (stesso metodo di rifare-tetto/ristrutturare-bagno), NON
-  // una voce di un prezzario. Prezzario Regione Siciliana 2024 (vigente fino
-  // al 31/12/2026) autorizzato come fonte SOLO per singole lavorazioni
-  // realmente verificabili: il PDF ufficiale (regione.sicilia.it, sia
-  // "Prezzario 2024.pdf" sia "prezzario 2024 definitivo.pdf") ha risposto
-  // 404 a ogni tentativo di download in questa sessione (verificato anche
-  // dalla pagina "prezziario-vigente" stessa, che lo linka con lo stesso URL
-  // non raggiungibile): nessuna voce di quel prezzario è quindi citata qui,
-  // per non rischiare un codice o un prezzo inventato. sourceType "mixed"
-  // come rifare-tetto: nessuna riga è un prezzo ufficiale puntuale verificato.
+  // Revisione 2026-08 (richiesta editoriale esplicita): la guida precedente
+  // aveva una sola PriceRow prezzata ("Rifacimento ordinario", 60–120 €/mq,
+  // pacchetto unico che fondeva demolizione+ripristino+rasatura+finitura in
+  // un solo numero) più 5 righe qualitative "Da valutare con il
+  // professionista" senza alcun numero — troppo povera per un lettore che
+  // vuole capire il ciclo reale di un rifacimento facciata (controllo →
+  // pulizia → rimozione parti ammalorate → ripristino intonaco → rasatura →
+  // preparazione → finitura → eventuale ponteggio). Sostituita con un
+  // modello dati ricco (14 PriceRow) e UI semplice: stessa architettura
+  // Scope 4B già usata da rifare-tetto/impermeabilizzare-terrazzo, nessun
+  // componente nuovo.
+  //
+  // - 3 macro-scenari di AMPIEZZA del lavoro, categoria "Scenari di ampiezza
+  //   del lavoro", mai da sommare tra loro: Rinnovo della finitura (25–40
+  //   €/mq, role "scenario"), Ripristino parziale + nuova finitura (45–80
+  //   €/mq, role "scenario"), Rifacimento esteso della facciata (70–120
+  //   €/mq, role "primary" — la nuova fascia Hero di questa guida). L'id
+  //   "facciata-rifacimento-ordinario" è RIUTILIZZATO per quest'ultima riga
+  //   (stessa identità evolutiva: "il rifacimento più esteso della guida"),
+  //   ma il perimetro si restringe da "tutta la guida in un unico numero" a
+  //   "lo scenario più ampio tra tre" — label aggiornata da "ordinario" a
+  //   "esteso" per marcare la distinzione dagli altri due scenari, oggi
+  //   espliciti invece di essere assenti.
+  // - 10 singole lavorazioni del ciclo reale, ognuna con la propria fascia
+  //   editoriale: controllo/pulizia (battitura, lavaggio), demolizione e
+  //   ripristino dell'intonaco, rasature (semplice/armata), preparazione del
+  //   fondo (fissativo), finiture (tinteggiatura, silossanica, rivestimento
+  //   a spessore). MAI sommate automaticamente tra loro o agli scenari qui
+  //   sopra: sono due letture parallele dello stesso lavoro (per scenario di
+  //   ampiezza, o lavorazione per lavorazione), non due prezzi cumulativi —
+  //   nessuna relation "includedIn" collega le singole lavorazioni ai 3
+  //   scenari qui sopra, deliberatamente: ogni scenario elenca già in
+  //   `includes` cosa comprende in prosa, un tentativo di collegare con
+  //   relation ogni lavorazione a UNO dei tre scenari sarebbe stato
+  //   ambiguo/parziale (una stessa lavorazione, es. la rasatura, può far
+  //   parte di più di uno scenario) — vedi anche il commento su
+  //   describeIncludedIn in cost-guide-price-model.ts, che legge solo la
+  //   PRIMA relation "includedIn" dichiarata: dichiararne più di una verso
+  //   scenari diversi sarebbe stato silenziosamente fuorviante in UI.
+  // - Il fissativo (3–7 €/mq) è l'unica riga con role "extra": si aggiunge
+  //   (relations "addsTo") alle 3 finiture quando il fondo lo richiede e non
+  //   è già compreso nel ciclo di pittura scelto — semantica reale, non
+  //   inventata per organizzare la pagina: è esattamente il caso d'uso
+  //   previsto da "extra"/"addsTo" (un costo condizionale legato a un
+  //   insieme preciso di righe target), e la sezione "Extra" della UI
+  //   condivisa ("non vanno sommati sempre: si applicano solo quando la
+  //   condizione è reale") comunica di per sé "non è automaticamente
+  //   sommabile" senza bisogno di altro testo ad hoc.
+  // - Rasatura semplice e rasatura armata restano DUE righe distinte senza
+  //   alcuna relation tra loro (né "alternativeTo" né "includedIn"): non
+  //   sono lo stesso lavoro calcolato con un metodo di prezzo diverso (quel
+  //   caso è "alternativeTo", es. impianto idraulico ↔ punto acqua nel
+  //   bagno), sono due tecnologie diverse (rasante liscio vs rasante + rete
+  //   in fibra di vetro) — la distinzione resta in prosa (`note`/
+  //   `categoryNote`), non nel modello di relazioni.
+  // - "facciata-ponteggio" id RIUTILIZZATO (stessa identità: il ponteggio
+  //   della facciata), contenuto riscritto: 15–30 €/mq DI FACCIATA, stessa
+  //   fascia editoriale già usata in "costGuide:rifare-tetto" qui sopra
+  //   (coerenza editoriale esplicitamente richiesta) al posto della vecchia
+  //   riga "variabile, da valutare" senza alcun numero. Categoria "Ponteggio"
+  //   dedicata (non condivisa con altre lavorazioni): la riga deve restare
+  //   sempre riconoscibile come costo separato dai range principali.
+  // - RIMOSSE le 4 righe qualitative "Da valutare con il professionista" mai
+  //   quotate (cappotto termico, consolidamento strutturale, restauro
+  //   specialistico, ripristino balconi/ballatoi/frontalini): nessuna fa
+  //   parte del ciclo di rifacimento descritto in questa guida (fuori
+  //   perimetro esplicito). Cappotto termico resta spiegato in prosa nel
+  //   relatedWork già esistente, mai come PriceRow (vedi
+  //   pages/costi/rifare-facciata/base.ts); consolidamento strutturale e
+  //   restauro specialistico restano citati come esclusione in
+  //   nationalRangeNote; ripristino balconi/ballatoi/frontalini resta
+  //   coperto dai relatedWork già esistenti verso quegli interventi
+  //   (preservati invariati, non duplicati qui come riga senza prezzo).
+  //
+  // Provenienza: fasce editoriali Esigenta ancorate a prezzari regionali
+  // ufficiali, confronto tra lavorazioni comparabili e mercato privato come
+  // controllo secondario — stesso metodo di
+  // rifare-tetto/ristrutturare-bagno/impermeabilizzare-terrazzo, MAI un
+  // prezzo ufficiale puntuale di un singolo prezzario. Il Prezzario Regione
+  // Siciliana 2024 citato in una revisione precedente di questo commento
+  // resta non verificabile in questa sessione (PDF ufficiale non
+  // raggiungibile in tentativi precedenti): nessun codice o prezzo puntuale
+  // di quella fonte è citato in nessuna riga qui sotto, per non rischiare un
+  // dato inventato. sourceType resta "mixed", confidence "media" su ogni
+  // riga prezzata (nessuna riga con "alta": ancoraggio a un confronto
+  // multi-fonte generale, non una triangolazione verificata voce per voce).
+  //
+  // Micro-fix 2026-08 (cost-guide-price-model.ts, condiviso — non dati): il
+  // vincolo `unit === "a corpo"` di isGuideScenarioRow (che escludeva questi
+  // 3 macro-scenari dalla sezione Scenari/Cosa-comprende nonostante
+  // role/costType corretti, stesso bug già noto su "costGuide:rifare-tetto"
+  // qui sopra) è stato rimosso dal classificatore condiviso — vedi il
+  // commento di revisione su isGuideScenarioRow in
+  // templates/cost-guide-price-model.ts. I 3 macro-scenari (`unit: "al mq"`,
+  // corretto: il prezzo di una facciata scala sempre con la superficie, "a
+  // corpo" non avrebbe senso) vengono ora promossi correttamente a
+  // scenarioCards/primary e NON restano più duplicati nel breakdown. Il
+  // `categoryNote` sulla categoria "Scenari di ampiezza del lavoro" non ha
+  // più un gruppo Breakdown da introdurre per queste righe e
+  // CostScenarioCards non lo legge: quel testo non compare più da nessuna
+  // parte della pagina (la sezione Scenari ha comunque già un'intro fissa
+  // propria con lo stesso messaggio — "Scegli lo scenario più vicino al tuo
+  // caso"). Il fissativo (role "extra") resta l'unica riga di questa guida
+  // che la sezione "Extra" della UI condivisa mostra.
   "costGuide:rifare-facciata": {
-    nationalRange: "60–120 € al mq",
-    pricePerSquareMeter: "da 60 € a 120 € al mq",
-    // Etichetta onesta sulla natura del dato: il range 60–120 €/mq nasce da
-    // un confronto di mercato nazionale, non da una voce del Prezzario
-    // Sicilia (vedi commento sopra) — non deve leggersi come un prezzo
-    // ufficiale di capitolato.
-    sourceLabel: "Confronto di mercato nazionale",
-    sourceYear: "2026",
+    nationalRange: "70–120 € al mq",
+    pricePerSquareMeter: "da 70 € a 120 € al mq",
+    sourceLabel: "Prezzari regionali ufficiali e confronto di mercato nazionale",
+    sourceYear: "2025–2026",
     sourceType: "mixed",
     priceRows: [
       {
-        id: "facciata-rifacimento-ordinario",
-        label: "Rifacimento ordinario della facciata, senza cappotto né interventi strutturali",
-        category: "Rifacimento ordinario della facciata",
+        id: "facciata-rinnovo-finitura",
+        label: "Rinnovo della finitura",
+        category: "Scenari di ampiezza del lavoro",
+        categoryNote:
+          "Questi tre scenari rappresentano modi diversi di rifare una facciata, in ordine di ampiezza del degrado da trattare: scegli quello più vicino al tuo caso, non sommare le fasce tra loro. Il ponteggio, quando serve, resta sempre una voce a parte (vedi più sotto in tabella).",
         unit: "al mq",
-        range: "da 60 € a 120 € al mq",
-        note: "Stima elaborata da confronto di mercato nazionale 2026: nessun prezzario pubblico quota un pacchetto unico per il rifacimento ordinario della facciata.",
-        includes: "rimozione delle parti di intonaco ammalorato, preparazione del supporto, ripristino dell'intonaco nelle zone rimosse, rasatura, finitura e tinteggiatura",
-        excludes: "ponteggio, cappotto termico, consolidamenti strutturali importanti, restauro specialistico o storico, ripristino di balconi, ballatoi e frontalini",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation:
+          "È lo scenario più leggero: la facciata è sostanzialmente sana, senza intonaco diffuso da rifare. Si pulisce e prepara la superficie, si applica un fissativo solo se il fondo lo richiede, e si rifà la pittura o la finitura, con piccoli ripristini puntuali dove serve.",
+        note: "Si applica quando l'intonaco esistente è compatto, senza crepe diffuse o distacchi importanti: il lavoro resta concentrato su pulizia, eventuale preparazione del fondo e nuova finitura. Non è una semplice tinteggiatura spacciata per rifacimento: se emergono zone di intonaco che si sta staccando, il lavoro rientra negli altri due scenari di questa guida.",
+        includes:
+          "pulizia e preparazione della superficie, fissativo quando il fondo lo richiede, nuova pittura o finitura, piccoli ripristini limitati",
+        excludes: "demolizione diffusa dell'intonaco, nuovo intonaco esteso, rasatura armata estesa, ponteggio",
         confidence: "media",
-        priceType: "corpo",
+        costType: "complete",
+        role: "scenario",
       },
-      // Nessuna di queste voci ha un numero verificato da fonti di settore
-      // (a differenza della riga sopra): restano qualitative sotto "Da
-      // valutare", stesso pattern delle righe non quotabili di rifare-tetto —
-      // mai un numero o un tetto massimo inventato.
+      {
+        id: "facciata-ripristino-parziale",
+        label: "Ripristino parziale e nuova finitura",
+        category: "Scenari di ampiezza del lavoro",
+        unit: "al mq",
+        range: "da 45 € a 80 € al mq",
+        plainExplanation:
+          "È l'intervento adatto a un degrado localizzato: alcune zone della facciata hanno intonaco che si sta staccando, mentre il resto della superficie è ancora in condizioni accettabili. Si rimuovono solo le parti ammalorate, si ripristina l'intonaco dove serve, si regolarizza con la rasatura e si applica la nuova finitura.",
+        note: "Perimetro intermedio tra il rinnovo della finitura e il rifacimento esteso qui sotto: la quantità di intonaco da rimuovere e rifare resta circoscritta a zone specifiche, non a tutta la facciata. Il ponteggio, quando serve per raggiungere quelle zone, resta una voce a parte.",
+        includes:
+          "rimozione delle zone di intonaco ammalorato, ripristino dell'intonaco dove necessario, rasatura delle zone interessate, preparazione, nuova finitura",
+        excludes: "ponteggio",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
+      },
+      {
+        id: "facciata-rifacimento-ordinario",
+        label: "Rifacimento esteso della facciata",
+        category: "Scenari di ampiezza del lavoro",
+        unit: "al mq",
+        range: "da 70 € a 120 € al mq",
+        plainExplanation:
+          "È lo scenario principale di questa guida: la facciata ha un degrado più diffuso, non limitato a poche zone. Si controllano le parti distaccate, si rimuove una quantità significativa di intonaco ammalorato, si ripristina, si regolarizza con la rasatura, si prepara il fondo e si applica la nuova finitura.",
+        note: "È la fascia principale di questa guida, non una semplice tinteggiatura: comprende il ciclo completo quando il degrado dell'intonaco è diffuso, non solo localizzato. Una rasatura armata molto estesa, su superfici molto ampie da regolarizzare, può portare il lavoro oltre questa fascia — non per questo diventa uno scenario a sé: resta lo stesso tipo di intervento, solo più esteso. Il ponteggio e il cappotto termico restano sempre esclusi, qualunque sia lo scenario scelto in questa guida.",
+        includes:
+          "controllo delle parti distaccate, rimozione significativa dell'intonaco ammalorato, ripristino dell'intonaco, rasatura, preparazione, nuova finitura",
+        excludes: "ponteggio, cappotto termico",
+        confidence: "media",
+        costType: "complete",
+        role: "primary",
+      },
+      {
+        id: "facciata-battitura-controllo",
+        label: "Battitura e controllo delle parti distaccate",
+        category: "Controllo e pulizia della facciata",
+        unit: "al mq",
+        range: "da 2 € a 4 € al mq",
+        plainExplanation:
+          "È il controllo manuale della facciata per individuare le zone di intonaco vuote, distaccate o non più aderenti — chiamata anche battitura o picchettatura di verifica.",
+        note: "Spesso è già compresa nel lavoro generale di ripristino, quando la stessa impresa esegue anche la rimozione e il rifacimento dell'intonaco: in quel caso può non comparire come voce a parte nel preventivo. Ponteggio escluso.",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "facciata-lavaggio-pulizia",
+        label: "Lavaggio e pulizia della facciata",
+        category: "Controllo e pulizia della facciata",
+        unit: "al mq",
+        range: "da 4 € a 8 € al mq",
+        plainExplanation:
+          "È la pulizia della superficie prima di intervenire: rimozione dello sporco e dei depositi superficiali, con idrolavaggio quando è compatibile con il supporto.",
+        note: "L'idrolavaggio non è sempre lo strumento più adatto: su supporti fragili o già ammalorati l'impresa può preferire un metodo di pulizia meno aggressivo. Non comprende il trattamento di muffe o degrado che richiede cicli specifici, né il ponteggio.",
+        includes: "pulizia/idrolavaggio quando compatibile con il supporto, rimozione ordinaria di sporco e depositi superficiali",
+        excludes: "ripristini, trattamento di muffe o degrado specialistico quando richiede cicli specifici, ponteggio",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "facciata-rimozione-intonaco-ammalorato",
+        label: "Rimozione dell'intonaco ammalorato",
+        category: "Demolizione e ripristino dell'intonaco",
+        unit: "al mq",
+        range: "da 14 € a 20 € al mq",
+        plainExplanation:
+          "È la rimozione delle parti di intonaco deteriorate o distaccate — in termini tecnici, la spicconatura — insieme alla pulizia del supporto sottostante.",
+        note: "Comprende la normale gestione, il trasporto e lo smaltimento del materiale rimosso. Il costo si applica alla quantità reale di intonaco da rimuovere, non all'intera superficie della facciata: riguarda solo le zone ammalorate individuate nel controllo iniziale.",
+        includes:
+          "spicconatura/rimozione delle parti deteriorate, pulizia del supporto, gestione, trasporto e smaltimento ordinari del materiale rimosso",
+        excludes: "ponteggio",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "facciata-ripristino-intonaco",
+        label: "Ripristino / nuovo intonaco esterno",
+        category: "Demolizione e ripristino dell'intonaco",
+        unit: "al mq",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation: "È l'applicazione del nuovo intonaco nelle zone dove quello vecchio è stato rimosso: materiale e posa comprese.",
+        note: "Presuppone che la rimozione dell'intonaco ammalorato sia già stata eseguita: non la comprende (vedi la riga qui sopra). Non comprende la rasatura finale dell'intera facciata né la pittura: sono lavorazioni successive, con un prezzo proprio più sotto in tabella.",
+        includes:
+          "materiale, applicazione del nuovo intonaco nelle zone demolite, normale preparazione/aggrappo compatibile con il ciclo quando necessario",
+        excludes: "ponteggio, demolizione precedente, rasatura finale dell'intera facciata, pittura",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "facciata-rasatura-semplice",
+        label: "Rasatura semplice in due mani",
+        category: "Rasature",
+        categoryNote:
+          "Rasatura semplice e rasatura armata sono due configurazioni diverse dello stesso passaggio, non due fasi da sommare sulla stessa superficie: si sceglie l'una o l'altra in base allo stato del fondo.",
+        unit: "al mq",
+        range: "da 15 € a 25 € al mq",
+        plainExplanation:
+          "È la regolarizzazione della superficie con un rasante professionale applicato in due mani, su un fondo già idoneo — utile per uniformare l'intonaco prima della finitura.",
+        note: "Presuppone un fondo già idoneo, non un intonaco appena rifatto su grandi superfici né molto irregolare: quando il fondo è più critico o la zona da regolarizzare è ampia, la scelta più adatta è di solito la rasatura armata qui sotto, non due rasature sommate sulla stessa parete.",
+        includes: "rasante professionale, applicazione in due mani/passate, normale finitura del supporto",
+        excludes:
+          "grandi ripristini, demolizione intonaco, rete armata, pittura, ponteggio, primer specialistici quando contabilizzati separatamente",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "facciata-rasatura-armata",
+        label: "Rasatura armata con rete",
+        category: "Rasature",
+        unit: "al mq",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation:
+          "È la stessa regolarizzazione della rasatura semplice qui sopra, con in più una rete in fibra di vetro annegata nel rasante: rende la superficie più resistente e uniforme, utile su fondi più critici o dopo un ripristino esteso dell'intonaco.",
+        note: "Comprende l'annegamento della rete, le sovrapposizioni tra i teli e una seconda passata di rasatura di copertura. Non va sommata alla rasatura semplice qui sopra: sono due configurazioni diverse dello stesso passaggio, si sceglie quella più adatta al proprio caso, non entrambe sulla stessa superficie.",
+        includes: "rasante, rete in fibra di vetro, annegamento e sovrapposizioni, seconda passata/rasatura di copertura",
+        excludes: "finitura pittorica, demolizione, ponteggio",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "facciata-fissativo-primer",
+        label: "Fissativo, consolidante o primer",
+        category: "Preparazione del fondo",
+        unit: "al mq",
+        range: "da 3 € a 7 € al mq",
+        plainExplanation:
+          "Su un fondo assorbente o sfarinante può servire un fissativo o un consolidante prima della finitura; su alcuni supporti può servire invece un primer di adesione. Non è una lavorazione obbligatoria su ogni facciata.",
+        note: "Da conteggiare separatamente solo quando non è già compreso nel ciclo successivo: alcuni cicli di pittura (in particolare alcune pitture silossaniche) comprendono già un fissativo compatibile nel proprio sistema. Non va sommato automaticamente alla tinteggiatura: verifica con l'impresa se il ciclo scelto lo comprende già.",
+        confidence: "media",
+        costType: "complete",
+        role: "extra",
+        relations: [
+          { type: "addsTo", target: "facciata-tinteggiatura-acrilica" },
+          { type: "addsTo", target: "facciata-pittura-silossanica" },
+          { type: "addsTo", target: "facciata-rivestimento-a-spessore" },
+        ],
+      },
+      {
+        id: "facciata-tinteggiatura-acrilica",
+        label: "Tinteggiatura esterna acrilica o al quarzo",
+        category: "Finiture",
+        unit: "al mq",
+        range: "da 16 € a 25 € al mq",
+        plainExplanation:
+          "È la pittura esterna più diffusa, su una facciata già preparata: normalmente due mani, su un fondo pronto a riceverla.",
+        note: "Il fissativo, quando serve, non è compreso in questo prezzo (vedi \"Fissativo, consolidante o primer\" qui sopra) — non va comunque duplicato se il ciclo di pittura scelto lo comprende già.",
+        includes: "preparazione ordinaria, due mani di pittura",
+        excludes: "ponteggio, fissativo quando non già compreso nel ciclo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "facciata-pittura-silossanica",
+        label: "Pittura silossanica",
+        category: "Finiture",
+        unit: "al mq",
+        range: "da 22 € a 35 € al mq",
+        plainExplanation:
+          "È una finitura esterna traspirante e idrorepellente, più resistente agli agenti atmosferici della tinteggiatura standard qui sopra: normalmente un fondo idoneo, un fissativo compatibile quando previsto dal ciclo, e due mani.",
+        note: "Va chiaramente distinta dal rivestimento a spessore qui sotto: è una pittura a film sottile, non una finitura granulata o frattazzata. Il prezzo più alto rispetto alla tinteggiatura standard riflette la tecnologia del prodotto (traspirabilità, idrorepellenza), non solo l'aspetto estetico.",
+        includes: "fondo idoneo, fissativo compatibile quando previsto dal ciclo, due mani",
+        excludes: "ponteggio",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "facciata-rivestimento-a-spessore",
+        label: "Rivestimento a spessore / intonachino",
+        category: "Finiture",
+        unit: "al mq",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation:
+          "È una finitura granulata o frattazzata applicata a spessore, non una semplice pittura più costosa: cambia la texture e la protezione della superficie, non solo il colore.",
+        note: "Può essere a base silossanica o un'altra tecnologia compatibile con il sistema scelto: questa riga non si restringe a una sola tecnologia di rivestimento a spessore.",
+        excludes: "ponteggio",
+        confidence: "media",
+        costType: "complete",
+      },
       {
         id: "facciata-ponteggio",
         label: "Ponteggio",
-        category: "Da valutare con il professionista",
-        categoryNote: "Queste voci non hanno una fascia in euro affidabile senza un sopralluogo: sono lavorazioni diverse dal rifacimento ordinario qui sopra, o fattori che dipendono dal singolo cantiere.",
-        range: "variabile in base ad altezza, accesso e durata del cantiere",
-        note: "Non è compreso nella fascia 60–120 €/mq: viene spesso quotato come voce separata nel preventivo.",
-      },
-      {
-        id: "facciata-cappotto-termico",
-        label: "Cappotto termico della facciata",
-        category: "Da valutare con il professionista",
-        range: "da valutare con il professionista",
-        note: "Intervento di isolamento termico, distinto dal rifacimento ordinario: comporta lavorazioni, spessori e costi propri.",
-      },
-      {
-        id: "facciata-consolidamento-strutturale",
-        label: "Consolidamento strutturale della facciata",
-        category: "Da valutare con il professionista",
-        range: "da valutare con il professionista",
-        note: "Necessario quando ci sono problemi strutturali importanti, non un semplice ripristino di intonaco e finitura.",
-      },
-      {
-        id: "facciata-restauro-specialistico",
-        label: "Restauro specialistico o facciata storica/vincolata",
-        category: "Da valutare con il professionista",
-        range: "da valutare con il professionista",
-        note: "Richiede tecniche e materiali specifici, spesso con vincoli della soprintendenza: non rientra nella fascia ordinaria.",
-      },
-      {
-        id: "facciata-ripristino-balconi",
-        label: "Ripristino di balconi, ballatoi e frontalini",
-        category: "Da valutare con il professionista",
-        range: "da valutare con il professionista",
-        note: "Interventi distinti sulla struttura di balconi, ballatoi e frontalini, non compresi nella fascia facciata.",
+        category: "Ponteggio",
+        unit: "al mq di facciata",
+        range: "da 15 € a 30 € al mq di facciata",
+        plainExplanation:
+          "È il costo del ponteggio necessario per lavorare in sicurezza sulla facciata, calcolato sulla superficie da ponteggiare — non sui mq di uno scenario o di una singola lavorazione qui sopra.",
+        note: "Comprende orientativamente montaggio, un periodo iniziale di utilizzo/noleggio e smontaggio. Periodi di noleggio più lunghi possono far salire il costo. Resta sempre una voce separata dai range principali di questa guida, qualunque sia lo scenario o le lavorazioni scelte.",
+        includes: "montaggio, periodo iniziale di utilizzo/noleggio, smontaggio",
+        excludes:
+          "occupazione di suolo pubblico, configurazioni particolari, protezioni speciali, noleggio molto prolungato, autorizzazioni e oneri specifici",
+        confidence: "media",
+        costType: "work",
       },
     ],
     sizeExamples: [
       {
         label: "Facciata da 100 mq",
         sizeRange: "100 mq",
-        range: "da 6.000 € a 12.000 €",
-        note: "Calcolo: 100 mq × 60–120 €/mq.",
+        range: "da 7.000 € a 12.000 €",
+        note: "Calcolo per il rifacimento esteso: 100 mq × 70–120 €/mq. Ponteggio escluso.",
       },
       {
         label: "Facciata da 200 mq",
         sizeRange: "200 mq",
-        range: "da 12.000 € a 24.000 €",
-        note: "Calcolo: 200 mq × 60–120 €/mq.",
+        range: "da 14.000 € a 24.000 €",
+        note: "Calcolo per il rifacimento esteso: 200 mq × 70–120 €/mq. Ponteggio escluso.",
       },
       {
         label: "Facciata da 300 mq",
         sizeRange: "300 mq",
-        range: "da 18.000 € a 36.000 €",
-        note: "Calcolo: 300 mq × 60–120 €/mq.",
+        range: "da 21.000 € a 36.000 €",
+        note: "Calcolo per il rifacimento esteso: 300 mq × 70–120 €/mq. Ponteggio escluso.",
       },
     ],
   },

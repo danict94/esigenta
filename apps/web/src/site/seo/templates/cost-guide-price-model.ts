@@ -85,20 +85,43 @@ export type PriceRowClassification = {
  * guida". Questo helper esiste apposta per non confondere le due cose a
  * livello di UI, senza toccare né reinterpretare i dati.
  *
- * Distinzione robusta e generica (nessun riferimento hardcoded al bagno):
- * una riga candidata a scenario è un prezzo "a corpo" per l'INTERO lavoro
- * (`costType: "complete"`, `unit: "a corpo"`) che non è a sua volta
- * `includedIn` un'altra riga — condizione che, in pratica, seleziona
- * correttamente "Ristrutturazione completa"/"Rinnovo leggero"/"Bagno più
- * grande o complesso" (la superano) ed esclude le lavorazioni autonome come
- * "Impianto idraulico bagno" (pur essendo "a corpo"/"complete", dichiara
- * `includedIn` verso la ristrutturazione completa) o "Demolizione pavimenti
- * e rivestimenti" (`costType: "work"`, prezzo al mq). Legge solo campi già
- * esistenti.
+ * Micro-fix 2026-08: il vincolo `unit === "a corpo"` è stato RIMOSSO. Legava
+ * il RUOLO (role, "cosa significa questa riga per il preventivo") al
+ * FORMATO del prezzo (unit, "come si esprime il numero") — due assi
+ * distinti per contratto (vedi PriceRowRole/PriceRowCostType/`unit` in
+ * market-data/base-price-ranges.ts), che questa funzione confondeva. Bug
+ * verificato: rifare-tetto e rifare-facciata dichiarano `role: "primary"`/
+ * `"scenario"` esplicitamente e correttamente sui propri scenari di
+ * ampiezza, ma con `unit: "al mq"` (l'unità corretta: un tetto o una
+ * facciata non hanno una "metratura standard" come il bagno, il prezzo
+ * scala sempre con la superficie — "a corpo" sarebbe un numero inventato).
+ * La vecchia condizione le escludeva SEMPRE dalla UI Scenari/Cosa-comprende
+ * nonostante il modello dati fosse corretto by design.
+ *
+ * Il segnale che distingue davvero "vero scenario esplicito" da
+ * "lavorazione autonoma con `role` impostato per altri motivi" (vedi la nota
+ * sopra) non è mai stato `unit`: è `costType === "complete"` (esclude le
+ * righe "work"/"supply" — "Demolizione pavimenti e rivestimenti", "Montaggio
+ * sanitari", "Trasformazione vasca in doccia", "Box doccia", "Rubinetteria"
+ * sono tutte escluse già solo da questo) insieme a `!hasOutgoingIncludedIn`
+ * (esclude una riga che è già dichiarata componente di un'altra, come
+ * "Impianto idraulico bagno" verso "Ristrutturazione completa"). Verificato
+ * riga per riga su tutta la SSOT (bagno, rifare-tetto, rifare-facciata —
+ * le uniche guide con `role: "primary"`/`"scenario"` esplicito oggi): queste
+ * due condizioni da sole escludevano già correttamente ogni riga
+ * `role: "primary"` non pensata come scenario complessivo, per QUALSIASI
+ * `unit` — il vincolo `unit === "a corpo"` era quindi ridondante per i casi
+ * reali già coperti, e dannoso per i casi "al mq" come questo.
+ *
+ * Nessuna euristica di fallback per righe SENZA `role` esplicito: non serve,
+ * perché nessun chiamante arriva mai a invocare questa funzione su una riga
+ * simile — `classifyPriceRows` qui sotto confronta sempre `row.role` con
+ * l'uguaglianza stretta a `"primary"`/`"scenario"`, che esclude `undefined`
+ * per costruzione (una riga senza `role` non entra mai in questo ramo).
  */
 function isGuideScenarioRow(row: PriceRow): boolean {
   const hasOutgoingIncludedIn = row.relations?.some((relation) => relation.type === "includedIn") ?? false;
-  return row.costType === "complete" && row.unit === "a corpo" && !hasOutgoingIncludedIn;
+  return row.costType === "complete" && !hasOutgoingIncludedIn;
 }
 
 /**
