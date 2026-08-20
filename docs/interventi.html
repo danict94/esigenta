@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ristrutturare bagno: preventivi da professionisti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --carta: #F1F4F3;
+    --carta-forte: #FFFFFF;
+    --cianotipo: #16385A;
+    --cianotipo-chiaro: #2C7DA0;
+    --inchiostro: #12181C;
+    --inchiostro-60: rgba(18,24,28,.62);
+    --inchiostro-40: rgba(18,24,28,.4);
+    --grafite: #B7C4C8;
+    --grafite-30: rgba(183,196,200,.35);
+    --matita: #C8402A;
+    --matita-scura: #A4321F;
+    --successo: #2E8B57;
+    --successo-tint: #E4F3EA;
+    --assente-tint: #F6E9E6;
+
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+    --container: 1120px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+
+  body{
+    margin:0;
+    background:var(--carta);
+    background-image:
+      linear-gradient(var(--grafite-30) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grafite-30) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color:var(--inchiostro);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ul{ margin:0; padding:0; list-style:none; }
+  h1,h2,h3,p{ margin:0; }
+  :focus-visible{ outline:2px solid var(--cianotipo-chiaro); outline-offset:3px; }
+
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 24px; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cianotipo-chiaro); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--cianotipo-chiaro); display:inline-block; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+
+  /* ============ HEADER ============ */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:rgba(241,244,243,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--grafite);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
+  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .nav-links a:hover{ color:var(--cianotipo); }
+  .btn-outline{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; text-transform:uppercase;
+    border:1px solid var(--cianotipo); color:var(--cianotipo) !important;
+    padding:9px 16px; text-decoration:none;
+    transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-outline:hover{ background:var(--cianotipo); color:var(--carta-forte) !important; transform:translateY(-1px); }
+
+  /* ============ BREADCRUMB ============ */
+  .breadcrumb{
+    padding:18px 0; font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40);
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+  .breadcrumb a{ text-decoration:none; color:var(--inchiostro-40); transition:color .2s var(--ease); }
+  .breadcrumb a:hover{ color:var(--cianotipo); }
+  .breadcrumb .current{ color:var(--inchiostro-60); }
+
+  /* ============ HERO ============ */
+  .hero{ padding:12px 0 56px; }
+  .hero-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:48px; align-items:center; }
+  .hero h1{
+    font-family:var(--mono); font-weight:600;
+    font-size:clamp(28px, 3.8vw, 42px); line-height:1.18; letter-spacing:-.01em;
+    margin:16px 0 16px;
+  }
+  .hero-sub{ font-size:16px; color:var(--inchiostro-60); line-height:1.6; max-width:520px; margin-bottom:26px; }
+  .hero-ctas{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
+  .btn-matita{
+    font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.03em;
+    background:var(--matita); color:#fff; padding:13px 22px; border:none;
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    transition:background .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-matita:hover{ background:var(--matita-scura); transform:translateY(-2px); }
+  .btn-cianotipo-outline{
+    font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.03em;
+    border:1px solid var(--cianotipo); color:var(--cianotipo); padding:13px 22px;
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-cianotipo-outline:hover{ background:var(--cianotipo); color:#fff; transform:translateY(-2px); }
+  .hero-note{ font-size:13px; color:var(--inchiostro-40); font-family:var(--mono); }
+
+  .hero-visual{
+    position:relative; background:var(--cianotipo); aspect-ratio:1/1;
+    box-shadow:0 24px 50px -20px rgba(4,16,28,.4);
+    background-image:
+      linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .hero-visual svg{ width:60%; height:60%; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#9FD3E8; }
+  @media (max-width:860px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-visual{ max-width:280px; margin:0 auto; aspect-ratio:1/1; }
+  }
+
+  section{ padding:64px 0; border-top:1px solid var(--grafite-30); }
+  .section-head{ max-width:640px; margin-bottom:36px; }
+  .section-head h2{ font-family:var(--mono); font-weight:600; font-size:clamp(21px,2.6vw,28px); line-height:1.26; margin-top:12px; }
+  .section-head p{ margin-top:12px; font-size:14.5px; color:var(--inchiostro-60); line-height:1.6; max-width:580px; }
+
+  /* ============ COSA PUOI RICHIEDERE ============ */
+  .req-list{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px 24px; max-width:640px; }
+  .req-list li{
+    display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--inchiostro-60);
+    padding:12px 0; border-bottom:1px solid var(--grafite-30);
+  }
+  .req-list li::before{
+    content:""; width:6px; height:6px; background:var(--matita); margin-top:7px; flex-shrink:0;
+  }
+  @media (max-width:600px){ .req-list{ grid-template-columns:1fr; } }
+
+  /* ============ PERIMETRO ============ */
+  .scope-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grafite); border:1px solid var(--grafite); }
+  .scope-col{ background:var(--carta-forte); padding:28px 26px; }
+  .scope-col h3{
+    font-family:var(--mono); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    margin-bottom:16px; display:flex; align-items:center; gap:8px;
+  }
+  .scope-col.in h3{ color:var(--successo); }
+  .scope-col.out h3{ color:var(--matita); }
+  .scope-col li{
+    display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--inchiostro-60);
+    line-height:1.5; margin-bottom:11px;
+  }
+  .scope-col li svg{ width:15px; height:15px; flex-shrink:0; margin-top:2px; }
+  .scope-col.in li svg{ color:var(--successo); }
+  .scope-col.out li svg{ color:var(--matita); }
+  @media (max-width:700px){ .scope-grid{ grid-template-columns:1fr; } }
+
+  .scope-note{
+    margin-top:20px; font-size:13.5px; color:var(--inchiostro-40); line-height:1.6; max-width:640px;
+  }
+
+  .pro-inline{
+    margin-top:24px; padding-top:20px; border-top:1px dashed var(--grafite);
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .pro-inline span.lbl{ font-family:var(--mono); font-size:12px; color:var(--inchiostro-40); }
+  .pro-chip{
+    font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--cianotipo);
+    border:1px solid var(--cianotipo); padding:6px 12px; text-decoration:none;
+    transition:background .2s var(--ease), color .2s var(--ease);
+  }
+  .pro-chip:hover{ background:var(--cianotipo); color:#fff; }
+
+  /* ============ LIVELLI ============ */
+  .levels-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .level-card{
+    background:var(--carta-forte); border:1px solid var(--grafite); padding:24px 22px;
+    transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .level-card:hover{ transform:translateY(-3px); box-shadow:0 18px 34px -20px rgba(18,24,28,.28); }
+  .level-card .price-tag{
+    display:inline-block; font-family:var(--mono); font-size:12px; font-weight:700; color:var(--cianotipo);
+    background:var(--cianotipo-chiaro); background:rgba(44,125,160,.1);
+    padding:4px 10px; margin-bottom:14px;
+  }
+  .level-card h3{ font-family:var(--mono); font-size:16px; font-weight:600; margin-bottom:10px; }
+  .level-card p{ font-size:13.5px; color:var(--inchiostro-60); line-height:1.55; }
+  @media (max-width:820px){ .levels-grid{ grid-template-columns:1fr; } }
+
+  /* ============ LAVORI COLLEGATI — unificato ============ */
+  .related-groups{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+  .related-group-title{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--inchiostro-40); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--grafite-30);
+  }
+  .related-list a{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:13px 0; border-bottom:1px solid var(--grafite-30);
+    text-decoration:none; color:var(--inchiostro); font-size:14.5px; font-weight:500;
+    transition:padding-left .2s var(--ease), color .2s var(--ease);
+  }
+  .related-list a:hover{ padding-left:8px; color:var(--cianotipo); }
+  .related-list a svg{ width:13px; height:13px; color:var(--matita); flex-shrink:0; }
+  @media (max-width:700px){ .related-groups{ grid-template-columns:1fr; gap:20px; } }
+
+  /* ============ ZONA ============ */
+  .zone-panel{
+    background:var(--carta-forte); border:1px solid var(--grafite);
+    padding:32px 30px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  }
+  .zone-panel h3{ font-family:var(--mono); font-size:16px; font-weight:600; margin-bottom:6px; }
+  .zone-panel p{ font-size:13.5px; color:var(--inchiostro-60); max-width:420px; }
+
+  /* ============ COSTI — versione teaser, non guida ============ */
+  .cost-teaser{
+    background:var(--cianotipo); color:#fff; padding:36px 32px; position:relative; overflow:hidden;
+  }
+  .cost-teaser::before{
+    content:""; position:absolute; width:340px; height:340px; border-radius:50%;
+    background:radial-gradient(circle, rgba(44,125,160,.4), transparent 70%);
+    top:-160px; right:-100px; pointer-events:none;
+  }
+  .cost-teaser-inner{ position:relative; display:grid; grid-template-columns:1.3fr .7fr; gap:32px; align-items:center; }
+  .cost-teaser .eyebrow{ color:#9FD3E8; }
+  .cost-teaser .eyebrow::before{ background:#9FD3E8; }
+  .cost-teaser h2{ font-family:var(--mono); font-weight:600; font-size:clamp(20px,2.6vw,26px); margin:12px 0 12px; }
+  .cost-teaser p{ font-size:14px; color:rgba(255,255,255,.75); line-height:1.6; margin-bottom:0; }
+  .cost-figure{
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    padding:22px 24px; text-align:center;
+  }
+  .cost-figure .val{ font-family:var(--mono); font-weight:700; font-size:clamp(22px,2.6vw,28px); color:#fff; line-height:1.15; }
+  .cost-figure .lbl{ margin-top:6px; font-size:11.5px; color:rgba(255,255,255,.6); font-family:var(--mono); letter-spacing:.03em; }
+  .cost-figure .btn-matita{ width:100%; justify-content:center; margin-top:16px; }
+  @media (max-width:760px){ .cost-teaser-inner{ grid-template-columns:1fr; } }
+
+  /* ============ PRIMA DELLA RICHIESTA ============ */
+  .prep-grid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; }
+  .prep-list li{
+    display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--inchiostro-60);
+    padding:9px 0; border-bottom:1px solid var(--grafite-30); line-height:1.5;
+  }
+  .prep-list li::before{ content:""; width:6px; height:6px; background:var(--cianotipo-chiaro); margin-top:7px; flex-shrink:0; }
+  @media (max-width:760px){ .prep-grid{ grid-template-columns:1fr; gap:20px; } }
+
+  /* ============ COME FUNZIONA — striscia compatta ============ */
+  .flow-strip{ display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+  .flow-strip-step{ display:flex; align-items:center; gap:12px; flex:1; min-width:200px; }
+  .flow-strip-step .n{
+    width:30px; height:30px; border-radius:50%; background:var(--carta-forte); border:1.5px solid var(--cianotipo);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:700; font-size:12px; color:var(--cianotipo);
+    flex-shrink:0;
+  }
+  .flow-strip-step .txt h4{ font-size:13.5px; font-weight:600; margin-bottom:2px; }
+  .flow-strip-step .txt p{ font-size:12px; color:var(--inchiostro-40); }
+  .flow-strip-arrow{ color:var(--grafite); flex-shrink:0; margin:0 6px; }
+  @media (max-width:760px){
+    .flow-strip{ flex-direction:column; align-items:stretch; gap:16px; }
+    .flow-strip-arrow{ display:none; }
+  }
+
+  /* ============ FAQ ============ */
+  .faq-list{ max-width:760px; }
+  .faq-item{ border-bottom:1px solid var(--grafite-30); }
+  .faq-item summary{
+    padding:18px 0; font-family:var(--mono); font-size:14.5px; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:16px;
+    list-style:none;
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary .plus{
+    font-size:18px; color:var(--matita); flex-shrink:0; transition:transform .25s var(--ease); font-weight:400;
+  }
+  .faq-item[open] summary .plus{ transform:rotate(45deg); }
+  .faq-item p{ padding:0 0 20px; font-size:14px; color:var(--inchiostro-60); line-height:1.6; max-width:680px; }
+
+  /* ============ CTA FINALE ============ */
+  .final-cta{ text-align:center; }
+  .final-cta-inner{ max-width:480px; margin:0 auto; }
+  .final-cta h2{ font-family:var(--mono); font-weight:600; font-size:clamp(22px,2.8vw,28px); margin:14px 0 12px; }
+  .final-cta p{ font-size:14.5px; color:var(--inchiostro-60); margin-bottom:24px; }
+
+  /* ============ FOOTER ============ */
+  footer{ background:var(--carta-forte); border-top:1px solid var(--grafite); padding:56px 0 32px; }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:32px; padding-bottom:40px; }
+  .footer-brand .logo{ margin-bottom:14px; }
+  .footer-brand p{ font-size:13.5px; color:var(--inchiostro-40); max-width:220px; line-height:1.6; }
+  .footer-col h4{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--inchiostro-40); margin-bottom:16px; font-weight:600; }
+  .footer-col ul li{ margin-bottom:10px; }
+  .footer-col a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .footer-col a:hover{ color:var(--cianotipo); }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-top:24px; border-top:1px solid var(--grafite-30); font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40); }
+  .footer-bottom .legal{ display:flex; gap:20px; flex-wrap:wrap; }
+  .footer-bottom a{ text-decoration:none; color:var(--inchiostro-40); }
+  .footer-bottom a:hover{ color:var(--cianotipo); }
+
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:600px){
+    .footer-grid{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+    section{ padding:48px 0; }
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <nav class="nav-links">
+      <a href="/servizi">Servizi</a>
+      <a href="/richieste/accesso">Le mie richieste</a>
+      <a href="/area-impresa/accedi">Accedi</a>
+      <a href="/area-impresa" class="btn-outline">Sei un professionista?</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap breadcrumb">
+  <a href="/">Home</a><span>/</span>
+  <a href="/servizi/ristrutturazioni">Ristrutturazioni</a><span>/</span>
+  <span class="current">Ristrutturare bagno</span>
+</div>
+
+<section class="hero" style="border-top:none;">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Intervento</div>
+      <h1>Ristrutturare bagno: trova professionisti qualificati nella tua zona</h1>
+      <p class="hero-sub">Ristrutturare un bagno significa coordinare demolizioni, impianti, sanitari, rivestimenti e finiture. Confronta professionisti adatti al lavoro e ricevi preventivi per il tuo intervento.</p>
+      <div class="hero-ctas">
+        <a href="/richiesta/ristrutturare-bagno" class="btn-matita">RICHIEDI PREVENTIVI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="/costi/ristrutturare-bagno" class="btn-cianotipo-outline">GUIDA AI COSTI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <p class="hero-note">— Gratis, senza impegno. Preventivi da professionisti qualificati nella tua zona.</p>
+    </div>
+    <div class="hero-visual">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="20" width="32" height="14" rx="1"/><path d="M8 28h32"/><path d="M14 20v-4a4 4 0 0 1 8 0"/><circle cx="34" cy="26" r="1.4" fill="currentColor" stroke="none"/><path d="M8 34v3M40 34v3"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="req-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Cosa puoi richiedere</div>
+      <h2 id="req-h">Dalle prime valutazioni al lavoro finito</h2>
+      <p>Ogni richiesta può includere lavorazioni diverse. Seleziona il tipo di intervento e descrivi cosa vuoi ottenere.</p>
+    </div>
+    <ul class="req-list reveal">
+      <li>rifacimento completo del bagno</li>
+      <li>sostituzione sanitari e rubinetteria</li>
+      <li>posa piastrelle e rivestimenti</li>
+      <li>adeguamento impianto idraulico</li>
+    </ul>
+  </div>
+</section>
+
+<section aria-labelledby="scope-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Perimetro del lavoro</div>
+      <h2 id="scope-h">Cosa entra nel preventivo e cosa va chiarito</h2>
+    </div>
+
+    <div class="scope-grid reveal">
+      <div class="scope-col in">
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Cosa può comprendere</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>demolizione di pavimenti, rivestimenti e vecchi sanitari</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>smaltimento delle macerie, se concordato nel preventivo</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>modifiche all'impianto idraulico e ai punti acqua</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>adeguamento dei punti luce e delle prese del bagno</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>impermeabilizzazione e preparazione dei sottofondi</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>posa di pavimento e rivestimenti</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>installazione di sanitari, rubinetteria e box doccia o vasca</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>finiture: sigillature, profili e ritocchi interni al bagno</li>
+        </ul>
+      </div>
+      <div class="scope-col out">
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>Cosa spesso resta fuori</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>sanitari, rubinetteria e piastrelle acquistati direttamente da te</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>arredo bagno, specchi e accessori</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>materiali di fascia alta oltre quanto concordato</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>modifiche strutturali o lavori fuori dal bagno</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>eventuali pratiche tecniche, quando necessarie</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>imprevisti scoperti in corso d'opera, come scarichi o tubazioni da rifare</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="scope-note reveal">Ogni impresa compone il preventivo in modo diverso: usa queste liste per chiedere esplicitamente cosa è compreso e cosa no, prima di confrontare i prezzi.</p>
+
+    <div class="pro-inline reveal">
+      <span class="lbl">Professionisti coinvolti:</span>
+      <a href="/professionisti/impresa-edile" class="pro-chip">Impresa edile</a>
+      <a href="/professionisti/idraulico" class="pro-chip">Idraulico</a>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="levels-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Livelli di intervento</div>
+      <h2 id="levels-h">Non tutti i lavori sono uguali</h2>
+      <p>Capire il livello del tuo lavoro aiuta a leggere i costi e a ricevere preventivi comparabili.</p>
+    </div>
+
+    <div class="levels-grid reveal">
+      <div class="level-card">
+        <span class="price-tag">1.500 € – 4.000 €</span>
+        <h3>Rinnovo leggero</h3>
+        <p>Sostituzioni mirate senza rifacimento completo: sanitari, rubinetteria, box doccia o singole finiture, con impianti esistenti in buono stato.</p>
+      </div>
+      <div class="level-card">
+        <span class="price-tag" style="opacity:.55">da definire</span>
+        <h3>Rifacimento parziale</h3>
+        <p>Si interviene solo su una parte del bagno, ad esempio la zona doccia, il pavimento o i rivestimenti. Il perimetro esatto va definito con il professionista.</p>
+      </div>
+      <div class="level-card">
+        <span class="price-tag">3.500 € – 12.000 €</span>
+        <h3>Ristrutturazione completa</h3>
+        <p>Demolizione, impianti, sottofondi, posa e finiture ripartendo da zero: il caso più frequente quando il bagno è datato o si cambia la disposizione.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="cost-h">
+  <div class="wrap">
+    <div class="cost-teaser reveal">
+      <div class="cost-teaser-inner">
+        <div>
+          <div class="eyebrow">Costi</div>
+          <h2 id="cost-h">Quanto costa, in sintesi</h2>
+          <p>Il costo dipende soprattutto da metratura, stato degli impianti, materiali e livello delle finiture. Per il dettaglio voce per voce, gli esempi per dimensione e i consigli per risparmiare, la guida ai costi è il posto giusto.</p>
+        </div>
+        <div class="cost-figure">
+          <div class="val">3.000 € – 12.000 €</div>
+          <div class="lbl">RANGE INDICATIVO COMPLESSIVO</div>
+          <a href="/costi/ristrutturare-bagno" class="btn-matita">GUIDA COMPLETA AI COSTI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section aria-labelledby="related-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Lavori collegati</div>
+      <h2 id="related-h">Percorsi utili da abbinare a questo intervento</h2>
+    </div>
+
+    <div class="related-groups reveal">
+      <div>
+        <div class="related-group-title">Interventi più ampi</div>
+        <div class="related-list">
+          <a href="/richiesta/ristrutturare-casa">Ristrutturare casa <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="/richiesta/ristrutturare-cucina">Ristrutturare cucina <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="/richiesta/tinteggiare-interni">Tinteggiare interni <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="related-group-title">Lavori specifici da aggiungere</div>
+        <div class="related-list">
+          <a href="/richiesta/installare-sanitari">Installare sanitari <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="/richiesta/sostituire-box-doccia">Sostituire box doccia <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="/richiesta/rifare-impianto-idraulico-bagno">Rifare impianto idraulico bagno <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="zone-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Zona</div>
+      <h2 id="zone-h">Trova professionisti per ristrutturare il bagno nella tua zona</h2>
+    </div>
+    <div class="zone-panel reveal">
+      <div>
+        <h3>Il comune lo indichi durante la richiesta</h3>
+        <p>Descrivi il lavoro e confronta preventivi da professionisti disponibili nella tua zona. Bastano pochi passaggi.</p>
+      </div>
+      <a href="/richiesta/ristrutturare-bagno" class="btn-matita">RICHIEDI PREVENTIVI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="prep-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Prima della richiesta</div>
+      <h2 id="prep-h">Cosa preparare per un preventivo più preciso</h2>
+      <p>Non serve avere tutto: più dettagli dai, più le risposte saranno comparabili.</p>
+    </div>
+    <div class="prep-grid reveal">
+      <ul class="prep-list">
+        <li>qualche foto del bagno attuale</li>
+        <li>misure indicative: bastano larghezza e lunghezza</li>
+        <li>cosa vuoi cambiare e cosa invece tenere</li>
+        <li>se doccia, sanitari o lavabo cambieranno posizione</li>
+      </ul>
+      <ul class="prep-list">
+        <li>se hai già scelto i materiali o preferisci ricevere proposte</li>
+        <li>se è l'unico bagno in casa</li>
+        <li>problemi visibili: muffa, perdite, scarichi lenti</li>
+        <li>quando vorresti iniziare i lavori</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="flow-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Come funziona</div>
+      <h2 id="flow-h">Dalla richiesta al lavoro fatto</h2>
+    </div>
+    <div class="flow-strip reveal">
+      <div class="flow-strip-step">
+        <span class="n">1</span>
+        <div class="txt"><h4>Descrivi il lavoro</h4><p>Con parole semplici</p></div>
+      </div>
+      <svg class="flow-strip-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <div class="flow-strip-step">
+        <span class="n">2</span>
+        <div class="txt"><h4>Ricevi risposte adatte</h4><p>Chiare e comparabili</p></div>
+      </div>
+      <svg class="flow-strip-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <div class="flow-strip-step">
+        <span class="n">✓</span>
+        <div class="txt"><h4>Scegli con calma</h4><p>Senza obblighi</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">FAQ</div>
+      <h2 id="faq-h">Domande frequenti</h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <details class="faq-item">
+        <summary>Posso chiedere preventivi senza aver scelto i materiali?<span class="plus">+</span></summary>
+        <p>Sì. Puoi indicare una fascia di qualità desiderata e chiedere che il preventivo tenga separata la fornitura dei materiali, così resti libero di sceglierli in un secondo momento.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Devo sapere già le misure precise?<span class="plus">+</span></summary>
+        <p>No: per la richiesta bastano misure indicative. Le misure esatte vengono verificate dal professionista, in genere durante il sopralluogo.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Posso allegare foto alla richiesta?<span class="plus">+</span></summary>
+        <p>Sì, durante la richiesta puoi caricare foto del bagno attuale: aiutano i professionisti a capire il lavoro e a rispondere in modo più pertinente.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Il sopralluogo è sempre necessario?<span class="plus">+</span></summary>
+        <p>Per un rinnovo leggero può bastare una descrizione accurata con foto; per un rifacimento completo il sopralluogo è in genere il passaggio che rende il preventivo affidabile.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Quanto tempo richiede ristrutturare un bagno?<span class="plus">+</span></summary>
+        <p>I tempi cambiano in base alla complessità. Un intervento completo richiede in genere più fasi: demolizione, impianti, sottofondi, posa rivestimenti, sanitari e finiture.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" aria-labelledby="next-h">
+  <div class="wrap">
+    <div class="final-cta-inner reveal">
+      <div class="eyebrow" style="justify-content:center;">Prossimo passo</div>
+      <h2 id="next-h">Racconta il lavoro e confronta i preventivi</h2>
+      <p>Continua nella richiesta dedicata e indica dettagli, tempi e zona dell'intervento.</p>
+      <a href="/richiesta/ristrutturare-bagno" class="btn-matita">RICHIEDI PREVENTIVI PER IL BAGNO <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+        <p>Preventivi da professionisti qualificati per ogni lavoro di casa.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Servizi per la casa</h4>
+        <ul>
+          <li><a href="/servizi">Tutti i servizi</a></li>
+          <li><a href="/servizi/idraulica">Idraulica</a></li>
+          <li><a href="/servizi/pavimentazioni">Pavimentazioni</a></li>
+          <li><a href="/servizi/serramenti-e-infissi">Serramenti e infissi</a></li>
+          <li><a href="/servizi/finiture">Imbianchini e finiture</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Guide e costi</h4>
+        <ul><li><a href="/costi">Guide ai costi</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Per le imprese</h4>
+        <ul>
+          <li><a href="/area-impresa">Per professionisti e imprese</a></li>
+          <li><a href="/area-impresa/accedi">Accedi alla tua area</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 esigenta</span>
+      <div class="legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/cookie-policy">Cookie</a>
+        <a href="/termini">Termini</a>
+        <a href="#">Preferenze cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

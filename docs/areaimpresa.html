@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>esigenta per professionisti | Il lavoro giusto, già organizzato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --carta: #F1F4F3;
+    --carta-forte: #FFFFFF;
+    --cianotipo: #16385A;
+    --cianotipo-chiaro: #2C7DA0;
+    --inchiostro: #12181C;
+    --inchiostro-60: rgba(18,24,28,.62);
+    --inchiostro-40: rgba(18,24,28,.4);
+    --grafite: #B7C4C8;
+    --grafite-30: rgba(183,196,200,.35);
+    --matita: #C8402A;
+    --matita-scura: #A4321F;
+    --successo: #2E8B57;
+
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+    --container: 1180px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+
+  body{
+    margin:0;
+    background:var(--carta);
+    background-image:
+      linear-gradient(var(--grafite-30) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grafite-30) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color:var(--inchiostro);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  button{ font:inherit; }
+  ul{ margin:0; padding:0; list-style:none; }
+  h1,h2,h3,p{ margin:0; }
+  :focus-visible{ outline:2px solid var(--cianotipo-chiaro); outline-offset:3px; }
+
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 24px; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cianotipo-chiaro); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--cianotipo-chiaro); display:inline-block; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+
+  /* ============ HEADER — ridotto, pagina di conversione ============ */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:rgba(241,244,243,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--grafite);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
+  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .nav-account{ font-size:14px; text-decoration:none; color:var(--inchiostro-60); display:flex; align-items:center; gap:6px; transition:color .2s var(--ease); }
+  .nav-account:hover{ color:var(--cianotipo); }
+
+  /* ============ HERO — copy a sinistra, configuratore a destra ============ */
+  .hero{
+    position:relative; overflow:hidden;
+    background:var(--cianotipo); color:#fff;
+    padding:64px 0 80px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:32px 32px;
+  }
+  .hero::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background:radial-gradient(ellipse at 12% 90%, rgba(44,125,160,.4), transparent 55%);
+    pointer-events:none;
+  }
+  .hero-grid{ position:relative; z-index:2; display:grid; grid-template-columns:1fr 1.05fr; gap:56px; align-items:start; }
+  .hero .eyebrow{ color:#9FD3E8; }
+  .hero .eyebrow::before{ background:#9FD3E8; }
+  .hero h1{
+    font-family:var(--mono); font-weight:600;
+    font-size:clamp(30px, 4.2vw, 46px); line-height:1.14; letter-spacing:-.01em;
+    margin:18px 0 18px;
+  }
+  .hero h1 em{ font-style:normal; color:#FF8A6E; }
+  .hero-sub{ font-size:16.5px; color:rgba(255,255,255,.82); max-width:440px; line-height:1.6; }
+
+  /* --- widget configuratore --- */
+  .configurator{
+    background:var(--carta-forte); color:var(--inchiostro);
+    padding:28px 26px 26px;
+    box-shadow:0 30px 60px -18px rgba(4,16,28,.5);
+  }
+  .conf-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+  .conf-head .eyebrow{ color:var(--cianotipo-chiaro); }
+  .conf-head .eyebrow::before{ background:var(--cianotipo-chiaro); }
+  .conf-step-count{ font-family:var(--mono); font-size:12px; color:var(--inchiostro-40); }
+
+  .conf-block{ margin-bottom:22px; }
+  .conf-block-title{
+    font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--matita);
+    display:flex; align-items:center; gap:8px; margin-bottom:12px;
+  }
+  .conf-block-title .n{
+    width:18px; height:18px; border-radius:50%; background:var(--matita); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:10.5px; flex-shrink:0;
+  }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    font-family:var(--sans); font-size:13px; font-weight:500;
+    background:var(--carta); border:1px solid var(--grafite); color:var(--inchiostro-60);
+    padding:8px 14px; cursor:pointer;
+    transition:all .18s var(--ease);
+  }
+  .chip:hover{ border-color:var(--cianotipo-chiaro); color:var(--inchiostro); }
+  .chip.is-active{
+    background:var(--cianotipo); border-color:var(--cianotipo); color:#fff; font-weight:600;
+  }
+
+  .conf-summary{
+    background:var(--carta); border:1px dashed var(--grafite);
+    padding:14px 16px; margin-bottom:18px;
+    font-size:13.5px; color:var(--inchiostro-60); line-height:1.5;
+  }
+  .conf-summary strong{ color:var(--cianotipo); font-weight:600; }
+
+  .btn-matita{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+    font-family:var(--mono); font-size:13.5px; font-weight:600; letter-spacing:.03em;
+    background:var(--matita); color:#fff; border:none; padding:15px 20px; cursor:pointer;
+    transition:background .2s var(--ease), transform .2s var(--ease), opacity .2s var(--ease);
+  }
+  .btn-matita:hover{ background:var(--matita-scura); transform:translateY(-1px); }
+  .btn-matita[aria-disabled="true"]{ opacity:.5; cursor:not-allowed; transform:none; }
+  .btn-matita[aria-disabled="true"]:hover{ background:var(--matita); }
+
+  .conf-privacy{ margin-top:12px; font-size:11.5px; color:var(--inchiostro-40); line-height:1.5; }
+  .conf-privacy a{ color:var(--cianotipo); text-decoration:underline; }
+
+  .hero-account-link{ margin-top:20px; font-size:13.5px; color:rgba(255,255,255,.6); }
+  .hero-account-link a{ color:#9FD3E8; text-decoration:none; font-weight:600; }
+  .hero-account-link a:hover{ text-decoration:underline; }
+
+  @media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+
+  /* ============ SCAFFOLD SEZIONI ============ */
+  section{ padding:88px 0; }
+  .section-head{ max-width:620px; margin-bottom:48px; }
+  .section-head h2{ font-family:var(--mono); font-weight:600; font-size:clamp(24px,3.2vw,33px); line-height:1.24; margin-top:14px; }
+
+  /* ============ PERCHE' ESIGENTA — griglia tecnica 4 celle ============ */
+  .why-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--grafite); border:1px solid var(--grafite); }
+  .why-item{ background:var(--carta); padding:30px 26px; transition:background .25s var(--ease), box-shadow .25s var(--ease); }
+  .why-item:hover{ background:var(--carta-forte); box-shadow:0 18px 34px -22px rgba(18,24,28,.35); position:relative; z-index:2; }
+  .why-item .n{ font-family:var(--mono); font-size:12px; color:var(--matita); font-weight:700; display:block; margin-bottom:16px; }
+  .why-item h3{ font-family:var(--mono); font-size:15.5px; font-weight:600; margin-bottom:10px; line-height:1.3; }
+  .why-item p{ font-size:13.5px; color:var(--inchiostro-60); line-height:1.55; }
+  @media (max-width:980px){ .why-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .why-grid{ grid-template-columns:1fr; } }
+
+  /* ============ COME FUNZIONA — timeline orizzontale con connettore ============ */
+  .flow{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; position:relative; }
+  .flow::before{
+    content:""; position:absolute; top:19px; left:9%; right:9%; height:1px;
+    background:repeating-linear-gradient(90deg, var(--grafite) 0 6px, transparent 6px 12px);
+  }
+  .flow-step{ position:relative; padding:0 16px; text-align:left; }
+  .flow-step .n{
+    width:38px; height:38px; border-radius:50%; background:var(--carta-forte); border:2px solid var(--cianotipo);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; font-size:14px; color:var(--cianotipo);
+    margin-bottom:18px; position:relative; z-index:2;
+  }
+  .flow-step h3{ font-family:var(--mono); font-size:15px; font-weight:600; margin-bottom:8px; }
+  .flow-step p{ font-size:13.5px; color:var(--inchiostro-60); line-height:1.55; }
+  @media (max-width:900px){
+    .flow{ grid-template-columns:1fr; gap:28px; }
+    .flow::before{ display:none; }
+  }
+
+  /* ============ GARANZIA CREDITO ============ */
+  .guarantee-band{ background:var(--inchiostro); color:var(--carta); position:relative; overflow:hidden; }
+  .guarantee-band::before{
+    content:""; position:absolute; width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle, rgba(44,125,160,.28), transparent 70%);
+    top:-260px; right:-140px; pointer-events:none;
+  }
+  .guarantee-band .wrap{ position:relative; }
+  .guarantee-band .eyebrow{ color:var(--cianotipo-chiaro); }
+  .guarantee-band .eyebrow::before{ background:var(--cianotipo-chiaro); }
+  .guarantee-band .section-head h2{ color:#fff; }
+  .guarantee-band .section-head p{ margin-top:14px; font-size:15px; color:rgba(255,255,255,.65); line-height:1.6; max-width:560px; }
+
+  .guarantee-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.14); }
+  .guarantee-item{ background:var(--inchiostro); padding:26px 28px; display:flex; gap:14px; transition:background .25s var(--ease); }
+  .guarantee-item:hover{ background:#1A2228; }
+  .guarantee-item .check{
+    width:22px; height:22px; border-radius:50%; background:var(--successo); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+  .guarantee-item .check svg{ width:12px; height:12px; color:#fff; }
+  .guarantee-item h3{ font-family:var(--mono); font-size:14.5px; font-weight:600; margin-bottom:6px; color:#fff; }
+  .guarantee-item p{ font-size:13.5px; color:rgba(255,255,255,.62); line-height:1.55; }
+  @media (max-width:700px){ .guarantee-grid{ grid-template-columns:1fr; } }
+
+  /* ============ CTA FINALE ============ */
+  .final-cta-inner{ max-width:560px; }
+  .final-cta h2{ font-family:var(--mono); font-weight:600; font-size:clamp(26px,3.4vw,38px); line-height:1.2; margin:16px 0 14px; }
+  .final-cta h2 em{ font-style:normal; color:var(--matita); }
+  .final-cta p{ font-size:15.5px; color:var(--inchiostro-60); line-height:1.6; margin-bottom:30px; }
+  .final-cta .btn-matita{ width:auto; display:inline-flex; padding:16px 30px; font-size:14px; }
+  .final-cta-meta{
+    margin-top:18px; display:flex; flex-wrap:wrap; gap:8px 22px;
+    font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-60);
+  }
+  .final-cta-meta span{ display:flex; align-items:center; gap:6px; }
+  .final-cta-meta svg{ width:13px; height:13px; color:var(--successo); }
+
+  /* ============ FOOTER — minimale, come da contenuto reale ============ */
+  footer{
+    border-top:1px solid var(--grafite);
+    padding:28px 0;
+    font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40);
+  }
+  footer .wrap{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+
+  @media (max-width:600px){
+    section{ padding:60px 0; }
+    .hero{ padding:48px 0 56px; }
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <a href="/area-impresa/accedi" class="nav-account">
+      Ho già un account
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+
+    <div class="hero-copy">
+      <div class="eyebrow">Per professionisti e imprese</div>
+      <h1>Il lavoro giusto arriva <em>già organizzato.</em></h1>
+      <p class="hero-sub">Niente più preventivi a vuoto o clienti che non richiamano. Ricevi richieste reali, verificate e nella tua zona. Paghi il contatto solo quando è davvero valido.</p>
+      <p class="hero-account-link">Hai già un profilo? <a href="/area-impresa/accedi">Accedi all'area impresa →</a></p>
+    </div>
+
+    <div class="configurator reveal" id="configurator">
+      <div class="conf-head">
+        <div class="eyebrow">Configura il tuo profilo</div>
+        <span class="conf-step-count">2 passi</span>
+      </div>
+
+      <div class="conf-block">
+        <div class="conf-block-title"><span class="n">1</span>CHE PROFESSIONISTA SEI?</div>
+        <div class="chip-row" id="chipsCategoria" role="group" aria-label="Categoria professionale">
+          <button type="button" class="chip">Cartongessista</button>
+          <button type="button" class="chip">Elettricista</button>
+          <button type="button" class="chip">Fabbro</button>
+          <button type="button" class="chip">Fumista</button>
+          <button type="button" class="chip">Geometra</button>
+          <button type="button" class="chip">Giardiniere</button>
+          <button type="button" class="chip">Idraulico</button>
+          <button type="button" class="chip">Imbianchino</button>
+          <button type="button" class="chip">Impresa edile</button>
+          <button type="button" class="chip">Installatore fotovoltaico</button>
+          <button type="button" class="chip">Piscinista</button>
+          <button type="button" class="chip">Serramentista</button>
+          <button type="button" class="chip">Tecnico climatizzazione</button>
+        </div>
+      </div>
+
+      <div class="conf-block">
+        <div class="conf-block-title"><span class="n">2</span>DOVE OPERI?</div>
+        <div class="chip-row" id="chipsCitta" role="group" aria-label="Città">
+          <button type="button" class="chip">Milano</button>
+          <button type="button" class="chip">Roma</button>
+          <button type="button" class="chip">Torino</button>
+          <button type="button" class="chip">Napoli</button>
+          <button type="button" class="chip">Bologna</button>
+          <button type="button" class="chip">Firenze</button>
+        </div>
+      </div>
+
+      <div class="conf-summary">
+        Profilo per <strong id="summaryCategoria">-</strong> in <strong id="summaryCitta">-</strong>. Completa l'attivazione gratuita.
+        <br>Configuri tu zona e categorie nel profilo.
+      </div>
+
+      <button type="button" class="btn-matita" id="ctaAttiva" aria-disabled="true">
+        <span id="ctaLabel">ATTIVA IL PROFILO</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+
+      <p class="conf-privacy">I dati saranno usati per preparare il profilo e ricontattarti. Leggi l'<a href="/privacy">informativa privacy</a>.</p>
+    </div>
+
+  </div>
+</section>
+
+<section aria-labelledby="why-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Perché Esigenta</div>
+      <h2 id="why-h">Costruita per chi lavora, non per chi vende lead.</h2>
+    </div>
+
+    <div class="why-grid reveal">
+      <div class="why-item">
+        <span class="n">01</span>
+        <h3>Lead verificati, non curiosi</h3>
+        <p>Ogni richiesta passa per identità e reale intenzione. Chi scrive vuole davvero fare il lavoro: niente perditempo, niente numeri falsi.</p>
+      </div>
+      <div class="why-item">
+        <span class="n">02</span>
+        <h3>Credito rimborsato sui lead non validi</h3>
+        <p>Numero inesistente, richiesta doppia o fuori zona? Segnali il contatto e ti restituiamo il credito.</p>
+      </div>
+      <div class="why-item">
+        <span class="n">03</span>
+        <h3>Paghi solo il contatto reale</h3>
+        <p>Nessun abbonamento obbligatorio, nessun canone fisso. Ricarichi il credito quando vuoi e lo consumi solo sui contatti che decidi di sbloccare.</p>
+      </div>
+      <div class="why-item">
+        <span class="n">04</span>
+        <h3>Zona protetta, non guerra al ribasso</h3>
+        <p>Limitiamo quanti professionisti ricevono la stessa richiesta. Il cliente confronta poche proposte serie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="flow-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Come funziona per te</div>
+      <h2 id="flow-h">Quattro passi, zero attriti.</h2>
+    </div>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <span class="n">01</span>
+        <h3>Ricevi richieste filtrate</h3>
+        <p>Solo la tua categoria, solo la tua zona. Ti arriva già scomposta: cosa serve, dove, con quale urgenza.</p>
+      </div>
+      <div class="flow-step">
+        <span class="n">02</span>
+        <h3>Sblocchi solo ciò che ti serve</h3>
+        <p>Leggi l'anteprima, valuti se fa per te, e usi il credito solo sulle richieste che vuoi davvero seguire.</p>
+      </div>
+      <div class="flow-step">
+        <span class="n">03</span>
+        <h3>Contatti il cliente</h3>
+        <p>Recapito diretto, subito. Nessun intermediario che rallenta, nessuna asta.</p>
+      </div>
+      <div class="flow-step">
+        <span class="n">04</span>
+        <h3>Chiudi il lavoro</h3>
+        <p>Il lavoro fatto rafforza il tuo profilo verificato e ti porta le prossime richieste, senza rincorrere nessuno.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="guarantee-band" aria-labelledby="guar-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">La garanzia sul credito</div>
+      <h2 id="guar-h">Se il contatto non è valido, il credito torna tuo.</h2>
+      <p>Il costo del lead è un rischio che ci prendiamo insieme a te, non che scarichiamo su di te. Ecco cosa copre la restituzione del credito dopo verifica.</p>
+    </div>
+
+    <div class="guarantee-grid reveal">
+      <div class="guarantee-item">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><h3>Numero inesistente o irraggiungibile</h3><p>Se il recapito non è reale, segnali e il credito rientra dopo verifica.</p></div>
+      </div>
+      <div class="guarantee-item">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><h3>Richiesta duplicata</h3><p>Stesso cliente, stesso lavoro arrivato due volte: non deve costarti due volte.</p></div>
+      </div>
+      <div class="guarantee-item">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><h3>Lavoro fuori categoria o zona</h3><p>Se la richiesta non compete davvero al tuo profilo, puoi richiedere controllo.</p></div>
+      </div>
+      <div class="guarantee-item">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><h3>Credito sempre visibile</h3><p>Consumo trasparente nell'area impresa: sai dove va ogni credito.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" aria-labelledby="final-h" id="inizia">
+  <div class="wrap">
+    <div class="final-cta-inner reveal">
+      <div class="eyebrow">Inizia ora</div>
+      <h2 id="final-h">Attiva il tuo profilo <em>in pochi minuti.</em></h2>
+      <p>Verifichiamo P.IVA e requisiti, poi iniziano ad arrivare le richieste. Nessun costo per registrarsi.</p>
+      <button type="button" class="btn-matita" id="scrollToConf">
+        CREA IL PROFILO PROFESSIONISTA
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <div class="final-cta-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Registrazione gratuita</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Verifica P.IVA</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Credito solo quando vuoi</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Esigenta / Pro</span>
+    <span>Il lavoro giusto, già organizzato.</span>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var catWrap = document.getElementById('chipsCategoria');
+    var cityWrap = document.getElementById('chipsCitta');
+    var summaryCat = document.getElementById('summaryCategoria');
+    var summaryCity = document.getElementById('summaryCitta');
+    var cta = document.getElementById('ctaAttiva');
+    var ctaLabel = document.getElementById('ctaLabel');
+
+    var selected = { categoria: null, citta: null };
+
+    function wireGroup(wrap, key, summaryEl){
+      wrap.querySelectorAll('.chip').forEach(function(chip){
+        chip.addEventListener('click', function(){
+          wrap.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('is-active'); });
+          chip.classList.add('is-active');
+          selected[key] = chip.textContent;
+          summaryEl.textContent = chip.textContent;
+          updateCta();
+        });
+      });
+    }
+
+    function updateCta(){
+      var ready = selected.categoria && selected.citta;
+      cta.setAttribute('aria-disabled', ready ? 'false' : 'true');
+    }
+
+    cta.addEventListener('click', function(){
+      if(cta.getAttribute('aria-disabled') === 'true') return;
+      ctaLabel.textContent = 'PROFILO IN CREAZIONE…';
+    });
+
+    document.getElementById('scrollToConf').addEventListener('click', function(){
+      var conf = document.getElementById('configurator');
+      conf.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    wireGroup(catWrap, 'categoria', summaryCat);
+    wireGroup(cityWrap, 'citta', summaryCity);
+  })();
+
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

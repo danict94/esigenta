@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanto costa ristrutturare un bagno? Prezzi indicativi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --carta: #F1F4F3;
+    --carta-forte: #FFFFFF;
+    --cianotipo: #16385A;
+    --cianotipo-chiaro: #2C7DA0;
+    --inchiostro: #12181C;
+    --inchiostro-60: rgba(18,24,28,.62);
+    --inchiostro-40: rgba(18,24,28,.4);
+    --grafite: #B7C4C8;
+    --grafite-30: rgba(183,196,200,.35);
+    --matita: #C8402A;
+    --matita-scura: #A4321F;
+    --successo: #2E8B57;
+
+    --tag-manodopera: #2C7DA0;
+    --tag-fornitura: #B8863F;
+    --tag-corpo: #6B5FA8;
+    --tag-valutare: #8A8F93;
+
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+    --container: 1120px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+
+  body{
+    margin:0; background:var(--carta);
+    background-image:
+      linear-gradient(var(--grafite-30) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grafite-30) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color:var(--inchiostro); font-family:var(--sans); font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ul{ margin:0; padding:0; list-style:none; }
+  h1,h2,h3,p{ margin:0; }
+  table{ border-collapse:collapse; width:100%; }
+  :focus-visible{ outline:2px solid var(--cianotipo-chiaro); outline-offset:3px; }
+
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 24px; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cianotipo-chiaro); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--cianotipo-chiaro); display:inline-block; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+
+  /* ============ HEADER ============ */
+  header{ position:sticky; top:0; z-index:40; background:rgba(241,244,243,.92); backdrop-filter:blur(6px); border-bottom:1px solid var(--grafite); }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
+  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .nav-links a:hover{ color:var(--cianotipo); }
+  .btn-outline{ font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; border:1px solid var(--cianotipo); color:var(--cianotipo) !important; padding:9px 16px; text-decoration:none; transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease); }
+  .btn-outline:hover{ background:var(--cianotipo); color:var(--carta-forte) !important; transform:translateY(-1px); }
+
+  .breadcrumb{ padding:18px 0; font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .breadcrumb a{ text-decoration:none; color:var(--inchiostro-40); transition:color .2s var(--ease); }
+  .breadcrumb a:hover{ color:var(--cianotipo); }
+  .breadcrumb .current{ color:var(--inchiostro-60); }
+
+  /* ============ HERO ============ */
+  .hero{ padding:12px 0 40px; }
+  .hero h1{ font-family:var(--mono); font-weight:600; font-size:clamp(26px,3.6vw,40px); line-height:1.2; letter-spacing:-.01em; margin:16px 0 16px; max-width:760px; }
+  .hero-sub{ font-size:16px; color:var(--inchiostro-60); line-height:1.6; max-width:640px; margin-bottom:26px; }
+  .hero-ctas{ display:flex; flex-wrap:wrap; gap:12px; }
+  .btn-matita{ font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.03em; background:var(--matita); color:#fff; padding:13px 22px; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:background .2s var(--ease), transform .2s var(--ease); }
+  .btn-matita:hover{ background:var(--matita-scura); transform:translateY(-2px); }
+  .btn-cianotipo-outline{ font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.03em; border:1px solid var(--cianotipo); color:var(--cianotipo); padding:13px 22px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease); }
+  .btn-cianotipo-outline:hover{ background:var(--cianotipo); color:#fff; transform:translateY(-2px); }
+
+  section{ padding:56px 0; border-top:1px solid var(--grafite-30); }
+  .section-head{ max-width:680px; margin-bottom:32px; }
+  .section-head h2{ font-family:var(--mono); font-weight:600; font-size:clamp(21px,2.6vw,27px); line-height:1.26; margin-top:12px; }
+  .section-head p{ margin-top:12px; font-size:14.5px; color:var(--inchiostro-60); line-height:1.6; max-width:620px; }
+
+  /* ============ SINTESI — unica fonte dei numeri aggregati ============ */
+  .summary-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grafite); border:1px solid var(--grafite); margin-bottom:20px; }
+  .summary-cell{ background:var(--carta-forte); padding:28px 26px; }
+  .summary-cell .val{ font-family:var(--mono); font-weight:700; font-size:clamp(24px,3vw,32px); color:var(--cianotipo); line-height:1.15; }
+  .summary-cell .lbl{ margin-top:8px; font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--inchiostro-40); }
+  @media (max-width:600px){ .summary-grid{ grid-template-columns:1fr; } }
+  .summary-disclaimer{ font-size:13px; color:var(--inchiostro-40); line-height:1.6; max-width:620px; margin-bottom:24px; }
+
+  .zone-inline{ background:var(--carta-forte); border:1px solid var(--grafite); padding:22px 24px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  .zone-inline p{ font-size:13.5px; color:var(--inchiostro-60); max-width:400px; }
+
+  /* ============ TABELLA PREZZI — con tag esplicito manodopera/fornitura/a corpo ============ */
+  .tag-legend{ display:flex; flex-wrap:wrap; gap:10px 20px; margin-bottom:28px; }
+  .tag-legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--inchiostro-60); }
+  .tag-legend-item .sw{ width:9px; height:9px; flex-shrink:0; }
+
+  .price-tag{
+    display:inline-block; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.03em;
+    text-transform:uppercase; padding:3px 8px; color:#fff; white-space:nowrap;
+  }
+  .price-tag.manodopera{ background:var(--tag-manodopera); }
+  .price-tag.fornitura{ background:var(--tag-fornitura); }
+  .price-tag.corpo{ background:var(--tag-corpo); }
+  .price-tag.valutare{ background:var(--tag-valutare); }
+
+  .price-group{ margin-bottom:8px; }
+  .price-group-title{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--inchiostro-40); padding:22px 0 10px;
+  }
+  .price-group:first-child .price-group-title{ padding-top:0; }
+
+  .price-table{ font-size:14px; }
+  .price-table thead th{
+    text-align:left; font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--inchiostro-40); padding:0 14px 10px; border-bottom:1px solid var(--grafite);
+  }
+  .price-table tbody td{ padding:14px; border-bottom:1px solid var(--grafite-30); vertical-align:top; }
+  .price-table tbody tr:hover td{ background:var(--carta-forte); }
+  .price-table .voce{ font-weight:600; }
+  .price-table .voce .unita{ display:block; font-family:var(--mono); font-size:11px; color:var(--inchiostro-40); font-weight:400; margin-top:2px; }
+  .price-table .fascia{ font-family:var(--mono); font-weight:700; color:var(--inchiostro); white-space:nowrap; }
+  .price-table .note{ color:var(--inchiostro-60); font-size:13px; line-height:1.5; max-width:320px; }
+  .price-table .inc-esc{ font-size:12px; color:var(--inchiostro-40); line-height:1.6; }
+  .price-table .inc-esc b{ color:var(--successo); font-weight:600; }
+  .price-table .inc-esc i{ color:var(--matita); font-style:normal; font-weight:600; }
+
+  @media (max-width:900px){
+    .price-table thead{ display:none; }
+    .price-table, .price-table tbody, .price-table tr, .price-table td{ display:block; width:100%; }
+    .price-table tr{ padding:14px 0; border-bottom:1px solid var(--grafite-30); }
+    .price-table td{ padding:3px 0; border-bottom:none; }
+    .price-table .fascia{ margin:4px 0; }
+  }
+
+  .table-note{ margin-top:18px; font-size:12.5px; color:var(--inchiostro-40); font-family:var(--mono); }
+
+  /* ============ ESEMPI ============ */
+  .examples-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .example-card{ background:var(--carta-forte); border:1px solid var(--grafite); padding:24px 22px; }
+  .example-card .val{ font-family:var(--mono); font-weight:700; font-size:19px; color:var(--matita); margin-bottom:10px; }
+  .example-card h3{ font-family:var(--mono); font-size:15px; font-weight:600; margin-bottom:8px; }
+  .example-card p{ font-size:13px; color:var(--inchiostro-60); line-height:1.5; }
+  @media (max-width:820px){ .examples-grid{ grid-template-columns:1fr; } }
+
+  /* ============ FATTORI + CITTA — due colonne distinte, senza sovrapposizione ============ */
+  .factors-grid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+  .factors-col-title{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--cianotipo-chiaro); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--grafite-30); }
+  .factors-list li{ display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--inchiostro-60); padding:9px 0; border-bottom:1px solid var(--grafite-30); line-height:1.5; }
+  .factors-list li::before{ content:""; width:6px; height:6px; background:var(--cianotipo-chiaro); margin-top:7px; flex-shrink:0; }
+  @media (max-width:760px){ .factors-grid{ grid-template-columns:1fr; gap:24px; } }
+  .city-disclaimer{ font-size:13.5px; color:var(--inchiostro-40); line-height:1.6; margin-bottom:18px; max-width:640px; }
+
+  /* ============ CONSIGLI ============ */
+  .tips-list{ max-width:680px; }
+  .tips-list li{ display:flex; align-items:flex-start; gap:12px; padding:13px 0; border-bottom:1px solid var(--grafite-30); font-size:14.5px; color:var(--inchiostro-60); line-height:1.55; }
+  .tips-list li .n{ font-family:var(--mono); font-weight:700; color:var(--matita); flex-shrink:0; font-size:13px; margin-top:1px; }
+
+  /* ============ FAQ ============ */
+  .faq-list{ max-width:760px; }
+  .faq-item{ border-bottom:1px solid var(--grafite-30); }
+  .faq-item summary{ padding:18px 0; font-family:var(--mono); font-size:14.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:16px; list-style:none; }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary .plus{ font-size:18px; color:var(--matita); flex-shrink:0; transition:transform .25s var(--ease); font-weight:400; }
+  .faq-item[open] summary .plus{ transform:rotate(45deg); }
+  .faq-item p{ padding:0 0 20px; font-size:14px; color:var(--inchiostro-60); line-height:1.6; max-width:680px; }
+
+  /* ============ CTA FINALE ============ */
+  .final-cta{ text-align:center; }
+  .final-cta-inner{ max-width:480px; margin:0 auto; }
+  .final-cta h2{ font-family:var(--mono); font-weight:600; font-size:clamp(22px,2.8vw,28px); margin:14px 0 12px; }
+  .final-cta p{ font-size:14.5px; color:var(--inchiostro-60); margin-bottom:24px; }
+
+  /* ============ FOOTER ============ */
+  footer{ background:var(--carta-forte); border-top:1px solid var(--grafite); padding:56px 0 32px; }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:32px; padding-bottom:40px; }
+  .footer-brand .logo{ margin-bottom:14px; }
+  .footer-brand p{ font-size:13.5px; color:var(--inchiostro-40); max-width:220px; line-height:1.6; }
+  .footer-col h4{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--inchiostro-40); margin-bottom:16px; font-weight:600; }
+  .footer-col ul li{ margin-bottom:10px; }
+  .footer-col a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .footer-col a:hover{ color:var(--cianotipo); }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-top:24px; border-top:1px solid var(--grafite-30); font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40); }
+  .footer-bottom .legal{ display:flex; gap:20px; flex-wrap:wrap; }
+  .footer-bottom a{ text-decoration:none; color:var(--inchiostro-40); }
+  .footer-bottom a:hover{ color:var(--cianotipo); }
+
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:600px){ .footer-grid{ grid-template-columns:1fr; } .nav-links{ display:none; } section{ padding:44px 0; } }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <nav class="nav-links">
+      <a href="/servizi">Servizi</a>
+      <a href="/richieste/accesso">Le mie richieste</a>
+      <a href="/area-impresa/accedi">Accedi</a>
+      <a href="/area-impresa" class="btn-outline">Sei un professionista?</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap breadcrumb">
+  <a href="/">Home</a><span>/</span>
+  <a href="/costi">Costi</a><span>/</span>
+  <span class="current">Ristrutturare bagno</span>
+</div>
+
+<section class="hero" style="border-top:none;">
+  <div class="wrap">
+    <div class="eyebrow">Guida costi</div>
+    <h1>Quanto costa ristrutturare un bagno?</h1>
+    <p class="hero-sub">Ristrutturare un bagno significa coordinare demolizioni, impianto idraulico, rivestimenti, sanitari, rubinetteria e finiture. Il preventivo cambia soprattutto in base a metratura, stato di partenza, materiali scelti e complessità del cantiere.</p>
+    <div class="hero-ctas">
+      <a href="/richiesta/ristrutturare-bagno" class="btn-matita">RICHIEDI PREVENTIVI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="/interventi/ristrutturare-bagno" class="btn-cianotipo-outline">VEDI LA PAGINA DEL SERVIZIO <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="summary-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Sintesi costo</div>
+      <h2 id="summary-h">Range indicativi per ristrutturare un bagno</h2>
+    </div>
+
+    <div class="summary-grid reveal">
+      <div class="summary-cell">
+        <div class="val">3.000 € – 12.000 €</div>
+        <div class="lbl">Costo complessivo</div>
+      </div>
+      <div class="summary-cell">
+        <div class="val">800 € – 1.500 € <span style="font-size:.55em;">/ mq</span></div>
+        <div class="lbl">Costo al mq</div>
+      </div>
+    </div>
+    <p class="summary-disclaimer reveal">I prezzi sono indicativi e variano in base a metratura, stato degli impianti, materiali, città, accessibilità del cantiere e sopralluogo.</p>
+
+    <div class="zone-inline reveal">
+      <div>
+        <h3 style="font-family:var(--mono); font-size:15px; font-weight:600; margin-bottom:4px;">Trova professionisti nella tua zona</h3>
+        <p>Il comune lo indichi durante la richiesta: bastano pochi passaggi.</p>
+      </div>
+      <a href="/richiesta/ristrutturare-bagno" class="btn-matita">RICHIEDI PREVENTIVI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="table-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Tabella prezzi</div>
+      <h2 id="table-h">Voci che compongono il preventivo</h2>
+      <p>Ogni riga è etichettata per tipo di prezzo: sapere se paghi solo manodopera, solo fornitura o un pacchetto a corpo è quello che ti permette di confrontare preventivi diversi sulla stessa base.</p>
+    </div>
+
+    <div class="tag-legend reveal">
+      <span class="tag-legend-item"><span class="sw" style="background:var(--tag-manodopera);"></span>Manodopera — solo posa/lavoro, materiali esclusi</span>
+      <span class="tag-legend-item"><span class="sw" style="background:var(--tag-fornitura);"></span>Fornitura — solo il prodotto, montaggio escluso</span>
+      <span class="tag-legend-item"><span class="sw" style="background:var(--tag-corpo);"></span>A corpo — pacchetto completo per quella lavorazione</span>
+      <span class="tag-legend-item"><span class="sw" style="background:var(--tag-valutare);"></span>Da valutare — prezzo troppo variabile, serve sopralluogo</span>
+    </div>
+
+    <div class="reveal">
+
+      <div class="price-group">
+        <div class="price-group-title">Demolizione e smaltimento</div>
+        <table class="price-table">
+          <thead><tr><th style="width:26%">Voce</th><th style="width:14%">Fascia</th><th style="width:12%">Tipo</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="voce">Demolizione pavimenti e rivestimenti<span class="unita">al mq</span></td>
+              <td class="fascia">35 € – 40 €/mq</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Sola rimozione, prima del conferimento in discarica. <span class="inc-esc"><i>Escluso</i> smaltimento macerie (voce successiva)</span></td>
+            </tr>
+            <tr>
+              <td class="voce">Smaltimento macerie<span class="unita">a corpo</span></td>
+              <td class="fascia">300 € – 800 €</td>
+              <td><span class="price-tag corpo">A corpo</span></td>
+              <td class="note">Un bagno standard produce circa 1-2 mc di macerie; incidono volume, accesso al cantiere e distanza dalla discarica autorizzata.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="price-group">
+        <div class="price-group-title">Impianti</div>
+        <table class="price-table">
+          <thead><tr><th style="width:26%">Voce</th><th style="width:14%">Fascia</th><th style="width:12%">Tipo</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="voce">Impianto idraulico bagno<span class="unita">a corpo</span></td>
+              <td class="fascia">1.000 € – 2.500 €</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Pacchetto per rifare tutti i punti del bagno insieme. Non sommarla alle righe "punto acqua": sono due modi di leggere lo stesso lavoro. <span class="inc-esc"><i>Escluso</i> opere murarie estese e colonne condominiali</span></td>
+            </tr>
+            <tr>
+              <td class="voce">Punto acqua semplice<span class="unita">a punto</span></td>
+              <td class="fascia">75 € – 150 €</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Singola adduzione (es. lavatrice) o punto già predisposto, con poca muratura da aprire.</td>
+            </tr>
+            <tr>
+              <td class="voce">Punto acqua completo<span class="unita">a punto</span></td>
+              <td class="fascia">150 € – 280 €</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Carico acqua calda e fredda più scarico per lo stesso elemento (lavabo, wc, bidet, doccia), con tracce e posa.</td>
+            </tr>
+            <tr>
+              <td class="voce">Spostamento scarichi<span class="unita">a corpo</span></td>
+              <td class="fascia">200 € – 800 €</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Il range è ampio perché dipende dalla distanza dalla posizione originale: uno spostamento minimo resta nella parte bassa, un nuovo tracciato esteso sale verso la parte alta.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="price-group">
+        <div class="price-group-title">Posa e finiture</div>
+        <table class="price-table">
+          <thead><tr><th style="width:26%">Voce</th><th style="width:14%">Fascia</th><th style="width:12%">Tipo</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="voce">Posa piastrelle e rivestimenti<span class="unita">al mq</span></td>
+              <td class="fascia">25 € – 80 €/mq</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Formati grandi, mosaici o pose complesse stanno nella parte alta. <span class="inc-esc"><i>Escluso</i> fornitura delle piastrelle</span></td>
+            </tr>
+            <tr>
+              <td class="voce">Montaggio sanitari<span class="unita">a elemento</span></td>
+              <td class="fascia">40 € – 150 €</td>
+              <td><span class="price-tag manodopera">Manodopera</span></td>
+              <td class="note">Per wc, bidet o lavabo; i modelli sospesi richiedono più lavorazione (staffe, cassetta incassata) dei modelli a terra. <span class="inc-esc"><i>Escluso</i> fornitura del sanitario</span></td>
+            </tr>
+            <tr>
+              <td class="voce">Trasformazione vasca in doccia<span class="unita">a corpo</span></td>
+              <td class="fascia">1.000 € – 3.500 €</td>
+              <td><span class="price-tag corpo">A corpo</span></td>
+              <td class="note">Rimozione vasca, piatto doccia standard e opere idrauliche localizzate. Piatti filo pavimento, su misura o design possono superare la fascia. <span class="inc-esc"><i>Escluso</i> box doccia di design</span></td>
+            </tr>
+            <tr>
+              <td class="voce">Box doccia<span class="unita">a elemento</span></td>
+              <td class="fascia">250 € – 1.500 €</td>
+              <td><span class="price-tag fornitura">Fornitura</span></td>
+              <td class="note">Scorrevoli base in fascia bassa, cristallo temperato in fascia media, walk-in in fascia alta. <span class="inc-esc"><i>Escluso</i> montaggio</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="price-group">
+        <div class="price-group-title">Da valutare con il professionista</div>
+        <table class="price-table">
+          <thead><tr><th style="width:26%">Voce</th><th style="width:14%">Fascia</th><th style="width:12%">Tipo</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="voce">Rubinetteria<span class="unita">—</span></td>
+              <td class="fascia" style="color:var(--inchiostro-40); font-weight:500;">variabile</td>
+              <td><span class="price-tag valutare">Da valutare</span></td>
+              <td class="note">La differenza tra fascia economica e design è troppo ampia per un range affidabile: chiedi la fornitura come voce separata del preventivo.</td>
+            </tr>
+            <tr>
+              <td class="voce">Adeguamento elettrico del bagno<span class="unita">—</span></td>
+              <td class="fascia" style="color:var(--inchiostro-40); font-weight:500;">da sopralluogo</td>
+              <td><span class="price-tag valutare">Da valutare</span></td>
+              <td class="note">Incidono numero di punti luce e prese, stato dell'impianto esistente ed eventuale nuova linea dedicata.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <p class="table-note reveal">Dati indicativi elaborati da più fonti di settore, aggiornati 2024–2026. Le fasce non sono un preventivo: il prezzo reale dipende dal sopralluogo.</p>
+  </div>
+</section>
+
+<section aria-labelledby="examples-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Esempi</div>
+      <h2 id="examples-h">Esempi per dimensione e livello di finitura</h2>
+    </div>
+    <div class="examples-grid reveal">
+      <div class="example-card">
+        <span style="display:inline-block; font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--cianotipo-chiaro); background:rgba(44,125,160,.1); padding:3px 9px; margin-bottom:10px;">3 – 5 MQ</span>
+        <div class="val">3.000 € – 6.000 €</div>
+        <h3>Bagno piccolo</h3>
+        <p>Intervento compatto con scelte standard e impianti in buono stato.</p>
+      </div>
+      <div class="example-card">
+        <span style="display:inline-block; font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--cianotipo-chiaro); background:rgba(44,125,160,.1); padding:3px 9px; margin-bottom:10px;">6 – 8 MQ</span>
+        <div class="val">4.500 € – 9.000 €</div>
+        <h3>Bagno medio</h3>
+        <p>Caso frequente con rifacimento completo e nuove finiture.</p>
+      </div>
+      <div class="example-card">
+        <span style="display:inline-block; font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--cianotipo-chiaro); background:rgba(44,125,160,.1); padding:3px 9px; margin-bottom:10px;">9 MQ E OLTRE</span>
+        <div class="val">7.000 € – 12.000 € +</div>
+        <h3>Bagno grande o premium</h3>
+        <p>Materiali ricercati, arredo su misura o lavorazioni più complesse.</p>
+      </div>
+    </div>
+    <p class="table-note reveal" style="margin-top:16px;">Classificazione per metratura basata su riferimenti di settore (dimensioni tipiche dei bagni residenziali in Italia); il costo resta guidato soprattutto dal livello delle finiture, non solo dai mq.</p>
+  </div>
+</section>
+
+<section aria-labelledby="factors-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Cosa incide sul prezzo</div>
+      <h2 id="factors-h">Fattori generali e fattori legati alla zona</h2>
+    </div>
+
+    <div class="factors-grid reveal">
+      <div>
+        <div class="factors-col-title">Il lavoro in sé</div>
+        <ul class="factors-list">
+          <li>metratura del bagno e superficie da rivestire</li>
+          <li>stato di impianto idraulico, scarichi e sottofondi</li>
+          <li>demolizioni e accessibilità del cantiere</li>
+          <li>qualità di piastrelle, sanitari, rubinetteria e arredo</li>
+          <li>spostamento di doccia, lavabo, wc o bidet</li>
+          <li>tempi richiesti e coordinamento tra più professionisti</li>
+        </ul>
+      </div>
+      <div>
+        <div class="factors-col-title">La tua zona e il tuo edificio</div>
+        <p class="city-disclaimer">Le fasce di questa guida sono nazionali: ristrutturare un bagno nella tua zona può costare diversamente per fattori locali, non per un prezzo di città che oggi non abbiamo.</p>
+        <ul class="factors-list">
+          <li>piano dell'immobile e disponibilità dell'ascensore</li>
+          <li>parcheggio e carico/scarico dei materiali</li>
+          <li>regole condominiali sugli orari di cantiere</li>
+          <li>trasporto dei materiali fino al cantiere</li>
+          <li>disponibilità dei professionisti nella zona</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="tips-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Consigli</div>
+      <h2 id="tips-h">Come risparmiare senza perdere qualità</h2>
+    </div>
+    <ul class="tips-list reveal">
+      <li><span class="n">01</span>Mantieni, se possibile, la stessa posizione di scarichi e punti acqua.</li>
+      <li><span class="n">02</span>Definisci prima materiali, sanitari e rubinetteria per evitare varianti in corso d'opera.</li>
+      <li><span class="n">03</span>Chiedi preventivi con voci separate per demolizione, impianti, posa e finiture.</li>
+      <li><span class="n">04</span>Valuta un rinnovo leggero se gli impianti sono recenti e in buono stato.</li>
+      <li><span class="n">05</span>Confronta professionisti disponibili nella tua zona prima di fissare il sopralluogo.</li>
+    </ul>
+  </div>
+</section>
+
+<section aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">FAQ</div>
+      <h2 id="faq-h">Domande frequenti</h2>
+    </div>
+    <div class="faq-list reveal">
+      <details class="faq-item" open>
+        <summary>Quanto costa in media rifare un bagno?<span class="plus">+</span></summary>
+        <p>Un bagno completo può costare indicativamente da 3.500 € a 12.000 €, ma il prezzo cambia in base a metratura, materiali, impianti e complessità del cantiere.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Quanto costa ristrutturare un bagno al mq?<span class="plus">+</span></summary>
+        <p>Il costo indicativo può andare da 800 € a 1.500 € al mq per un rifacimento completo. Il dato al mq è utile come orientamento, ma il preventivo reale dipende dalle lavorazioni richieste.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Serve sempre rifare l'impianto idraulico?<span class="plus">+</span></summary>
+        <p>Non sempre. Se tubazioni e scarichi sono recenti possono bastare lavori mirati, ma in un rifacimento completo conviene far verificare l'impianto prima della posa dei rivestimenti.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Come posso avere un preventivo più preciso?<span class="plus">+</span></summary>
+        <p>Descrivi dimensioni, stato del bagno, lavori desiderati e comune dell'intervento. Il sopralluogo resta il modo migliore per confermare costi e tempi.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" aria-labelledby="next-h">
+  <div class="wrap">
+    <div class="final-cta-inner reveal">
+      <div class="eyebrow" style="justify-content:center;">Prossimo passo</div>
+      <h2 id="next-h">Racconta il lavoro e confronta i preventivi</h2>
+      <p>Continua nella richiesta dedicata e indica dettagli, tempi e zona dell'intervento.</p>
+      <a href="/richiesta/ristrutturare-bagno" class="btn-matita">VAI ALLA RICHIESTA <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+        <p>Preventivi da professionisti qualificati per ogni lavoro di casa.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Servizi per la casa</h4>
+        <ul>
+          <li><a href="/servizi">Tutti i servizi</a></li>
+          <li><a href="/servizi/idraulica">Idraulica</a></li>
+          <li><a href="/servizi/pavimentazioni">Pavimentazioni</a></li>
+          <li><a href="/servizi/serramenti-e-infissi">Serramenti e infissi</a></li>
+          <li><a href="/servizi/finiture">Imbianchini e finiture</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Guide e costi</h4>
+        <ul><li><a href="/costi">Guide ai costi</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Per le imprese</h4>
+        <ul>
+          <li><a href="/area-impresa">Per professionisti e imprese</a></li>
+          <li><a href="/area-impresa/accedi">Accedi alla tua area</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 esigenta</span>
+      <div class="legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/cookie-policy">Cookie</a>
+        <a href="/termini">Termini</a>
+        <a href="#">Preferenze cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

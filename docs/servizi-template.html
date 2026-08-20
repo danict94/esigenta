@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ristrutturazioni: interventi, costi e preventivi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --carta: #F1F4F3;
+    --carta-forte: #FFFFFF;
+    --cianotipo: #16385A;
+    --cianotipo-chiaro: #2C7DA0;
+    --inchiostro: #12181C;
+    --inchiostro-60: rgba(18,24,28,.62);
+    --inchiostro-40: rgba(18,24,28,.4);
+    --grafite: #B7C4C8;
+    --grafite-30: rgba(183,196,200,.35);
+    --matita: #C8402A;
+    --matita-scura: #A4321F;
+
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+    --container: 1120px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+
+  body{
+    margin:0; background:var(--carta);
+    background-image:
+      linear-gradient(var(--grafite-30) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grafite-30) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color:var(--inchiostro); font-family:var(--sans); font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ul{ margin:0; padding:0; list-style:none; }
+  h1,h2,h3,p{ margin:0; }
+  :focus-visible{ outline:2px solid var(--cianotipo-chiaro); outline-offset:3px; }
+
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 24px; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cianotipo-chiaro); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--cianotipo-chiaro); display:inline-block; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+
+  /* ============ HEADER ============ */
+  header{ position:sticky; top:0; z-index:40; background:rgba(241,244,243,.92); backdrop-filter:blur(6px); border-bottom:1px solid var(--grafite); }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
+  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .nav-links a:hover{ color:var(--cianotipo); }
+  .btn-outline{ font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; border:1px solid var(--cianotipo); color:var(--cianotipo) !important; padding:9px 16px; text-decoration:none; transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease); }
+  .btn-outline:hover{ background:var(--cianotipo); color:var(--carta-forte) !important; transform:translateY(-1px); }
+
+  .breadcrumb{ padding:18px 0; font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .breadcrumb a{ text-decoration:none; color:var(--inchiostro-40); transition:color .2s var(--ease); }
+  .breadcrumb a:hover{ color:var(--cianotipo); }
+  .breadcrumb .current{ color:var(--inchiostro-60); }
+
+  /* ============ HERO — semplice, nessun percorso duplicato qui ============ */
+  .hero{ padding:12px 0 48px; }
+  .hero h1{ font-family:var(--mono); font-weight:600; font-size:clamp(27px,3.6vw,40px); line-height:1.2; letter-spacing:-.01em; margin:16px 0 16px; max-width:700px; }
+  .hero-sub{ font-size:16px; color:var(--inchiostro-60); line-height:1.6; max-width:600px; margin-bottom:24px; }
+  .btn-cianotipo-outline{ font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.03em; border:1px solid var(--cianotipo); color:var(--cianotipo); padding:13px 22px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease); }
+  .btn-cianotipo-outline:hover{ background:var(--cianotipo); color:#fff; transform:translateY(-2px); }
+  .btn-matita{ font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.03em; background:var(--matita); color:#fff; padding:13px 22px; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:background .2s var(--ease), transform .2s var(--ease); }
+  .btn-matita:hover{ background:var(--matita-scura); transform:translateY(-2px); }
+  .hero-note{ margin-top:16px; font-size:13px; font-family:var(--mono); color:var(--inchiostro-40); }
+
+  section{ padding:56px 0; border-top:1px solid var(--grafite-30); }
+  .section-head{ max-width:640px; margin-bottom:32px; }
+  .section-head h2{ font-family:var(--mono); font-weight:600; font-size:clamp(21px,2.6vw,27px); line-height:1.26; margin-top:12px; }
+  .section-head p{ margin-top:12px; font-size:14.5px; color:var(--inchiostro-60); line-height:1.6; max-width:580px; }
+
+  /* ============ INTERVENTI — griglia unica, bagno in evidenza dentro, non fuori ============ */
+  .interventions-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+  .intervention-card{
+    background:var(--carta-forte); border:1px solid var(--grafite); padding:26px 26px 24px;
+    display:flex; flex-direction:column;
+    transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .intervention-card:hover{ transform:translateY(-3px); box-shadow:0 20px 38px -20px rgba(18,24,28,.28); }
+  .intervention-card .n{ font-family:var(--mono); font-size:12px; color:var(--matita); font-weight:700; margin-bottom:12px; display:block; }
+  .intervention-card h3{ font-family:var(--mono); font-size:18px; font-weight:600; margin-bottom:10px; }
+  .intervention-card p{ font-size:14px; color:var(--inchiostro-60); line-height:1.58; flex:1; margin-bottom:18px; }
+
+  .intervention-card .card-ctas{ display:flex; flex-wrap:wrap; gap:10px; }
+  .card-cta-primary{
+    font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--matita);
+    text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+  }
+  .card-cta-primary:hover{ gap:9px; }
+  .card-cta-secondary{
+    font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--cianotipo);
+    border:1px solid var(--cianotipo); padding:7px 14px; text-decoration:none;
+    transition:background .2s var(--ease), color .2s var(--ease);
+  }
+  .card-cta-secondary:hover{ background:var(--cianotipo); color:#fff; }
+
+  .intervention-card.featured{ border-color:var(--cianotipo); position:relative; }
+  .content-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.03em;
+    color:var(--inchiostro-40); border:1px solid var(--grafite); padding:4px 9px;
+    margin-bottom:14px;
+  }
+  .content-chip::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--cianotipo-chiaro); }
+  .featured-price{
+    background:var(--carta); border:1px dashed var(--grafite);
+    padding:10px 14px; margin-bottom:10px; font-size:13px; color:var(--inchiostro-60);
+  }
+  .featured-price .price-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .featured-price strong{ font-family:var(--mono); color:var(--cianotipo); font-weight:700; }
+  .featured-links{ display:flex; gap:16px; flex-wrap:wrap; margin-top:8px; padding-top:8px; border-top:1px solid var(--grafite-30); }
+  .featured-links a{ font-family:var(--mono); font-size:11px; font-weight:600; color:var(--matita); text-decoration:none; }
+  .featured-links a:hover{ text-decoration:underline; }
+  .card-sublabel{ font-family:var(--mono); font-size:11px; color:var(--inchiostro-40); margin-bottom:2px; display:block; }
+
+  @media (max-width:760px){ .interventions-grid{ grid-template-columns:1fr; } }
+
+  /* ============ COME FUNZIONA — striscia compatta ============ */
+  .flow-strip{ display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+  .flow-strip-step{ display:flex; align-items:center; gap:12px; flex:1; min-width:200px; }
+  .flow-strip-step .n{ width:30px; height:30px; border-radius:50%; background:var(--carta-forte); border:1.5px solid var(--cianotipo); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:700; font-size:12px; color:var(--cianotipo); flex-shrink:0; }
+  .flow-strip-step .txt h4{ font-size:13.5px; font-weight:600; margin-bottom:2px; }
+  .flow-strip-step .txt p{ font-size:12px; color:var(--inchiostro-40); }
+  .flow-strip-arrow{ color:var(--grafite); flex-shrink:0; margin:0 6px; }
+  @media (max-width:760px){ .flow-strip{ flex-direction:column; align-items:stretch; gap:16px; } .flow-strip-arrow{ display:none; } }
+
+  /* ============ CTA FINALE + professionisti inline ============ */
+  .final-cta{ text-align:center; }
+  .final-cta-inner{ max-width:520px; margin:0 auto; }
+  .final-cta h2{ font-family:var(--mono); font-weight:600; font-size:clamp(22px,2.8vw,28px); margin:14px 0 12px; }
+  .final-cta p{ font-size:14.5px; color:var(--inchiostro-60); margin-bottom:24px; }
+  .final-cta-ctas{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:22px; }
+  .final-cta-pros{ font-size:13px; color:var(--inchiostro-40); font-family:var(--mono); }
+  .final-cta-pros a{ color:var(--cianotipo); text-decoration:none; font-weight:600; }
+  .final-cta-pros a:hover{ text-decoration:underline; }
+
+  /* ============ FOOTER ============ */
+  footer{ background:var(--carta-forte); border-top:1px solid var(--grafite); padding:56px 0 32px; }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:32px; padding-bottom:40px; }
+  .footer-brand .logo{ margin-bottom:14px; }
+  .footer-brand p{ font-size:13.5px; color:var(--inchiostro-40); max-width:220px; line-height:1.6; }
+  .footer-col h4{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--inchiostro-40); margin-bottom:16px; font-weight:600; }
+  .footer-col ul li{ margin-bottom:10px; }
+  .footer-col a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .footer-col a:hover{ color:var(--cianotipo); }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-top:24px; border-top:1px solid var(--grafite-30); font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40); }
+  .footer-bottom .legal{ display:flex; gap:20px; flex-wrap:wrap; }
+  .footer-bottom a{ text-decoration:none; color:var(--inchiostro-40); }
+  .footer-bottom a:hover{ color:var(--cianotipo); }
+
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:600px){ .footer-grid{ grid-template-columns:1fr; } .nav-links{ display:none; } section{ padding:44px 0; } }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <nav class="nav-links">
+      <a href="/servizi">Servizi</a>
+      <a href="/richieste/accesso">Le mie richieste</a>
+      <a href="/area-impresa/accedi">Accedi</a>
+      <a href="/area-impresa" class="btn-outline">Sei un professionista?</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap breadcrumb">
+  <a href="/">Home</a><span>/</span>
+  <a href="/servizi">Servizi</a><span>/</span>
+  <span class="current">Ristrutturazioni</span>
+</div>
+
+<section class="hero" style="border-top:none;">
+  <div class="wrap">
+    <div class="eyebrow">Ambito</div>
+    <h1>Ristrutturazioni: scegli l'intervento giusto e confronta preventivi</h1>
+    <p class="hero-sub">Bagno, cucina, appartamento o casa intera: ogni ristrutturazione ha un percorso dedicato. Scegli l'intervento, leggi i costi dove disponibili e invia una richiesta chiara ai professionisti della tua zona.</p>
+    <a href="#interventi" class="btn-cianotipo-outline">SCEGLI L'INTERVENTO <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+    <p class="hero-note">— Gratis, senza impegno. Preventivi da professionisti qualificati nella tua zona.</p>
+  </div>
+</section>
+
+<section id="interventi" aria-labelledby="int-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Interventi</div>
+      <h2 id="int-h">Cosa puoi ristrutturare</h2>
+      <p>Ogni intervento ha una richiesta dedicata. Approfondisci dove disponibile, oppure parti subito dal preventivo.</p>
+    </div>
+
+    <div class="interventions-grid reveal">
+
+      <div class="intervention-card featured">
+        <span class="content-chip">Guida ai costi disponibile</span>
+        <span class="n">01</span>
+        <h3>Ristrutturare bagno</h3>
+        <p>Demolizioni, impianti, rivestimenti e sanitari di una sola stanza: il percorso giusto quando il lavoro riguarda solo il bagno, dal rinnovo leggero al rifacimento completo.</p>
+        <div class="featured-price">
+          <div class="price-row"><span>Indicativamente <strong>3.000 € – 12.000 €</strong></span></div>
+          <div class="featured-links">
+            <a href="/costi/ristrutturare-bagno">GUIDA AI COSTI →</a>
+            <a href="/interventi/ristrutturare-bagno">PAGINA DEL SERVIZIO →</a>
+          </div>
+        </div>
+        <div class="card-ctas" style="margin-top:auto;">
+          <a href="/richiesta/ristrutturare-bagno" class="card-cta-primary">RICHIEDI PREVENTIVI →</a>
+        </div>
+      </div>
+
+      <div class="intervention-card">
+        <span class="card-sublabel">Richiesta diretta</span>
+        <span class="n">02</span>
+        <h3>Ristrutturare cucina</h3>
+        <p>Dal nuovo layout alle predisposizioni per acqua, scarichi ed elettrico: scegli questo percorso se il lavoro si concentra sulla cucina, con o senza opere murarie.</p>
+        <div class="card-ctas" style="margin-top:auto;">
+          <a href="/richiesta/ristrutturare-cucina" class="card-cta-primary">RICHIEDI PREVENTIVI →</a>
+        </div>
+      </div>
+
+      <div class="intervention-card">
+        <span class="card-sublabel">Richiesta diretta</span>
+        <span class="n">03</span>
+        <h3>Ristrutturare casa</h3>
+        <p>La ristrutturazione di più ambienti o dell'intera abitazione: impianti, finiture e opere murarie in un unico cantiere coordinato. Utile quando il lavoro non riguarda una sola stanza.</p>
+        <div class="card-ctas" style="margin-top:auto;">
+          <a href="/richiesta/ristrutturare-casa" class="card-cta-primary">RICHIEDI PREVENTIVI →</a>
+        </div>
+      </div>
+
+      <div class="intervention-card">
+        <span class="card-sublabel">Richiesta diretta</span>
+        <span class="n">04</span>
+        <h3>Ristrutturare appartamento</h3>
+        <p>Il rifacimento completo o parziale di un appartamento, spesso in condominio, dove accessi, spazi comuni e organizzazione del cantiere vanno gestiti con più attenzione.</p>
+        <div class="card-ctas" style="margin-top:auto;">
+          <a href="/richiesta/ristrutturare-appartamento" class="card-cta-primary">RICHIEDI PREVENTIVI →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="flow-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Come funziona</div>
+      <h2 id="flow-h">Dalla richiesta al lavoro fatto</h2>
+    </div>
+    <div class="flow-strip reveal">
+      <div class="flow-strip-step">
+        <span class="n">1</span>
+        <div class="txt"><h4>Descrivi il lavoro</h4><p>Con parole semplici</p></div>
+      </div>
+      <svg class="flow-strip-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <div class="flow-strip-step">
+        <span class="n">2</span>
+        <div class="txt"><h4>Ricevi risposte adatte</h4><p>Chiare e comparabili</p></div>
+      </div>
+      <svg class="flow-strip-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <div class="flow-strip-step">
+        <span class="n">✓</span>
+        <div class="txt"><h4>Scegli con calma</h4><p>Senza obblighi</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" aria-labelledby="next-h">
+  <div class="wrap">
+    <div class="final-cta-inner reveal">
+      <div class="eyebrow" style="justify-content:center;">Prossimo passo</div>
+      <h2 id="next-h">Racconta il lavoro e confronta i preventivi</h2>
+      <p>Scegli l'intervento più vicino al tuo lavoro e continua nella richiesta dedicata: dettagli, tempi e zona.</p>
+      <div class="final-cta-ctas">
+        <a href="#interventi" class="btn-matita">SCEGLI L'INTERVENTO <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+        <a href="/servizi" class="btn-cianotipo-outline">TUTTI I SERVIZI</a>
+      </div>
+      <p class="final-cta-pros">Le figure professionali di questo ambito: <a href="/professionisti/impresa-edile">Impresa edile</a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+        <p>Preventivi da professionisti qualificati per ogni lavoro di casa.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Servizi per la casa</h4>
+        <ul>
+          <li><a href="/servizi">Tutti i servizi</a></li>
+          <li><a href="/servizi/idraulica">Idraulica</a></li>
+          <li><a href="/servizi/pavimentazioni">Pavimentazioni</a></li>
+          <li><a href="/servizi/serramenti-e-infissi">Serramenti e infissi</a></li>
+          <li><a href="/servizi/finiture">Imbianchini e finiture</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Guide e costi</h4>
+        <ul><li><a href="/costi">Guide ai costi</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Per le imprese</h4>
+        <ul>
+          <li><a href="/area-impresa">Per professionisti e imprese</a></li>
+          <li><a href="/area-impresa/accedi">Accedi alla tua area</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 esigenta</span>
+      <div class="legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/cookie-policy">Cookie</a>
+        <a href="/termini">Termini</a>
+        <a href="#">Preferenze cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

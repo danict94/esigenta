@@ -12,12 +12,21 @@ export const COOKIE_CONSENT_CHANGED_EVENT =
  * assente, diversa o non valida è obsoleto e va ignorato — mai migrato in
  * automatico. parseCookieConsentPreferences ritorna null in quel caso, il
  * banner ricompare e l'utente sceglie di nuovo.
+ *
+ * NON bumpata per la rimozione di `functional` (allineamento post-fix
+ * Maps/Places, funzionale ora sempre disponibile indipendentemente dal
+ * consenso — vedi ui/location/city-autocomplete.tsx): a differenza del bump
+ * per GA4, qui il significato di necessary/analytics/marketing non cambia
+ * affatto, quindi non c'è nulla da invalidare. Un consenso v2 già salvato
+ * con la vecchia proprietà `functional` resta valido e viene letto
+ * normalmente da parseCookieConsentPreferences, che la ignora in modo
+ * innocuo (vedi sotto) — nessun reset forzato del banner per chi ha già
+ * scelto.
  */
 const COOKIE_CONSENT_SCHEMA_VERSION = 2 as const
 
 export type CookieConsentCategory =
   | "necessary"
-  | "functional"
   | "analytics"
   | "marketing"
 
@@ -34,7 +43,6 @@ export function createDefaultCookieConsentPreferences(): CookieConsentPreference
     version: COOKIE_CONSENT_SCHEMA_VERSION,
     updatedAt: new Date().toISOString(),
     necessary: true,
-    functional: false,
     analytics: false,
     marketing: false,
   }
@@ -45,7 +53,6 @@ export function createAcceptedCookieConsentPreferences(): CookieConsentPreferenc
     version: COOKIE_CONSENT_SCHEMA_VERSION,
     updatedAt: new Date().toISOString(),
     necessary: true,
-    functional: true,
     analytics: true,
     marketing: true,
   }
@@ -72,6 +79,12 @@ export function parseCookieConsentPreferences(
       return null
     }
 
+    // Un valore v2 scritto prima dell'allineamento post-fix Maps/Places può
+    // ancora avere una proprietà `functional` nel JSON grezzo in
+    // localStorage: non viene letta né riportata qui, ignorata in modo
+    // innocuo. Non è un errore né uno schema "diverso" — solo una proprietà
+    // in più che il resto del codice non guarda più da nessuna parte (vedi
+    // commento sopra COOKIE_CONSENT_SCHEMA_VERSION).
     return {
       version: COOKIE_CONSENT_SCHEMA_VERSION,
       updatedAt:
@@ -79,8 +92,6 @@ export function parseCookieConsentPreferences(
           ? parsed.updatedAt
           : new Date().toISOString(),
       necessary: true,
-      functional:
-        parsed.functional === true,
       analytics:
         parsed.analytics === true,
       marketing:
@@ -126,13 +137,6 @@ export function writeCookieConsentPreferences(
         detail: nextPreferences,
       },
     ),
-  )
-}
-
-export function hasFunctionalCookieConsent() {
-  return (
-    readCookieConsentPreferences()
-      ?.functional === true
   )
 }
 

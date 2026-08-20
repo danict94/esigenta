@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Servizi — Esigenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============ TOKENS — identici alla home Cianotipo ============ */
+  :root{
+    --carta: #F1F4F3;
+    --carta-forte: #FFFFFF;
+    --cianotipo: #16385A;
+    --cianotipo-chiaro: #2C7DA0;
+    --inchiostro: #12181C;
+    --inchiostro-60: rgba(18,24,28,.62);
+    --inchiostro-40: rgba(18,24,28,.4);
+    --grafite: #B7C4C8;
+    --grafite-30: rgba(183,196,200,.35);
+    --matita: #C8402A;
+    --matita-scura: #A4321F;
+
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+    --container: 1180px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+
+  body{
+    margin:0;
+    background:var(--carta);
+    background-image:
+      linear-gradient(var(--grafite-30) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grafite-30) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color:var(--inchiostro);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ul{ margin:0; padding:0; list-style:none; }
+  h1,h2,h3,p{ margin:0; }
+  :focus-visible{ outline:2px solid var(--cianotipo-chiaro); outline-offset:3px; }
+
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 24px; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cianotipo-chiaro); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--cianotipo-chiaro); display:inline-block; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+
+  /* ============ HEADER ============ */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:rgba(241,244,243,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--grafite);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
+  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .nav-links a:hover{ color:var(--cianotipo); }
+  .btn-outline{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; text-transform:uppercase;
+    border:1px solid var(--cianotipo); color:var(--cianotipo) !important;
+    padding:9px 16px; text-decoration:none;
+    transition:background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-outline:hover{ background:var(--cianotipo); color:var(--carta-forte) !important; transform:translateY(-1px); }
+
+  /* ============ BREADCRUMB ============ */
+  .breadcrumb{
+    padding:20px 0;
+    font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40);
+    display:flex; align-items:center; gap:8px;
+  }
+  .breadcrumb a{ text-decoration:none; color:var(--inchiostro-40); transition:color .2s var(--ease); }
+  .breadcrumb a:hover{ color:var(--cianotipo); }
+  .breadcrumb .current{ color:var(--inchiostro-60); }
+
+  /* ============ HERO — versione compatta per pagina interna ============ */
+  .hero{
+    position:relative; overflow:hidden;
+    background:var(--cianotipo); color:var(--carta-forte);
+    padding:56px 0 64px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:32px 32px;
+  }
+  .hero::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background:radial-gradient(ellipse at 82% 12%, rgba(44,125,160,.42), transparent 55%);
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; z-index:2; max-width:700px; }
+  .hero .eyebrow{ color:#9FD3E8; }
+  .hero .eyebrow::before{ background:#9FD3E8; }
+  .hero h1{
+    font-family:var(--mono); font-weight:600;
+    font-size:clamp(28px, 4.4vw, 46px); line-height:1.15; letter-spacing:-.01em;
+    margin:18px 0 16px;
+  }
+  .hero h1 em{ font-style:normal; color:#FF8A6E; }
+  .hero-sub{ font-size:16.5px; color:rgba(255,255,255,.8); max-width:480px; margin-bottom:32px; }
+
+  .hero-ctas{ display:flex; flex-wrap:wrap; gap:12px; }
+  .btn-matita{
+    font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.04em;
+    background:var(--matita); color:#fff; padding:13px 22px;
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition:background .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-matita:hover{ background:var(--matita-scura); transform:translateY(-2px); }
+  .btn-ghost{
+    font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.04em;
+    border:1px solid rgba(255,255,255,.4); color:#fff; padding:13px 22px;
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition:border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-ghost:hover{ border-color:#fff; background:rgba(255,255,255,.08); transform:translateY(-2px); }
+
+  section{ padding:80px 0; }
+  .section-head{ max-width:640px; margin-bottom:44px; }
+  .section-head h2{ font-family:var(--mono); font-weight:600; font-size:clamp(23px,3.1vw,32px); line-height:1.24; margin-top:14px; }
+  .section-head p{ margin-top:14px; font-size:15px; color:var(--inchiostro-60); line-height:1.6; max-width:560px; }
+
+  /* ============ CATALOGO — indice tecnico raggruppato, con ricerca e icone ============ */
+  .catalog-search{ margin-bottom:40px; max-width:480px; }
+  .catalog-search-panel{
+    display:flex; align-items:center; gap:10px;
+    background:var(--carta-forte); border:1px solid var(--grafite);
+    padding:4px 4px 4px 16px;
+    transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .catalog-search-panel:focus-within{ border-color:var(--cianotipo-chiaro); box-shadow:0 0 0 3px rgba(44,125,160,.14); }
+  .catalog-search-panel svg{ color:var(--inchiostro-40); flex-shrink:0; }
+  .catalog-search-panel input{
+    flex:1; border:none; outline:none; background:transparent;
+    font-family:var(--sans); font-size:14.5px; color:var(--inchiostro);
+    padding:11px 4px;
+  }
+  .catalog-search-panel input::placeholder{ color:var(--inchiostro-40); }
+  .catalog-search-count{
+    font-family:var(--mono); font-size:11.5px; color:var(--inchiostro-40);
+    padding-right:10px; white-space:nowrap;
+  }
+
+  .cat-group{ margin-bottom:40px; }
+  .cat-group:last-child{ margin-bottom:0; }
+  .cat-group-title{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--cianotipo-chiaro); margin-bottom:12px;
+    padding-bottom:10px; border-bottom:1px solid var(--grafite-30);
+  }
+
+  .index-list{
+    border-top:1px solid var(--grafite);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  .index-row{
+    display:flex; align-items:center; gap:14px;
+    padding:18px 18px;
+    border-bottom:1px solid var(--grafite);
+    text-decoration:none; color:inherit;
+    position:relative;
+    transition:background .2s var(--ease), padding-left .2s var(--ease);
+  }
+  .index-row:nth-child(odd){ border-right:1px solid var(--grafite); }
+  .index-row::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--matita); transform:scaleY(0); transform-origin:top;
+    transition:transform .25s var(--ease);
+  }
+  .index-row:hover{ background:var(--carta-forte); padding-left:26px; }
+  .index-row:hover::before{ transform:scaleY(1); }
+  .index-row .row-icon{
+    width:30px; height:30px; color:var(--cianotipo); flex-shrink:0;
+    transition:transform .25s var(--ease);
+  }
+  .index-row:hover .row-icon{ transform:scale(1.08) rotate(-2deg); color:var(--matita); }
+  .index-row .num{
+    font-family:var(--mono); font-size:12px; font-weight:700; color:var(--inchiostro-40);
+    min-width:22px; flex-shrink:0;
+  }
+  .index-row .body{ flex:1; min-width:0; }
+  .index-row h3{
+    font-family:var(--mono); font-size:15px; font-weight:600;
+    margin-bottom:3px;
+  }
+  .index-row p{
+    font-size:12.5px; color:var(--inchiostro-40); line-height:1.4;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .index-row .go{
+    font-family:var(--mono); font-size:12px; font-weight:600; color:var(--cianotipo);
+    flex-shrink:0; display:flex; align-items:center; gap:4px;
+    transition:transform .2s var(--ease);
+  }
+  .index-row:hover .go{ transform:translateX(3px); color:var(--matita); }
+  .index-row.is-hidden{ display:none; }
+  .cat-group.is-hidden{ display:none; }
+
+  .no-results{
+    display:none; padding:32px 0; text-align:center;
+    font-size:14.5px; color:var(--inchiostro-40); font-family:var(--mono);
+  }
+  .no-results.show{ display:block; }
+
+  @media (max-width:820px){
+    .index-list{ grid-template-columns:1fr; }
+    .index-row:nth-child(odd){ border-right:none; }
+    .index-row p{ display:none; }
+  }
+
+  /* ============ CTA "non trovi il lavoro" — pannello scuro ============ */
+  .cta-band{ background:var(--inchiostro); color:var(--carta); position:relative; overflow:hidden; }
+  .cta-band::before{
+    content:""; position:absolute; width:480px; height:480px; border-radius:50%;
+    background:radial-gradient(circle, rgba(44,125,160,.28), transparent 70%);
+    top:-220px; right:-120px; pointer-events:none;
+  }
+  .cta-inner{ position:relative; max-width:620px; }
+  .cta-band .eyebrow{ color:var(--cianotipo-chiaro); }
+  .cta-band .eyebrow::before{ background:var(--cianotipo-chiaro); }
+  .cta-band h2{ font-family:var(--mono); font-weight:600; font-size:clamp(22px,3vw,30px); line-height:1.28; margin:16px 0 14px; color:#fff; }
+  .cta-band p{ font-size:15px; color:rgba(255,255,255,.65); line-height:1.6; margin-bottom:28px; }
+
+  /* ============ STATISTICHE — come i dati di un cartiglio ============ */
+  .stats{
+    border:1px solid var(--grafite);
+    display:grid; grid-template-columns:repeat(3,1fr);
+  }
+  .stat{
+    padding:32px 24px; text-align:left;
+    border-right:1px solid var(--grafite);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .val{ font-family:var(--mono); font-weight:700; font-size:clamp(32px,4vw,44px); color:var(--cianotipo); line-height:1; }
+  .stat .lbl{ margin-top:10px; font-size:12.5px; color:var(--inchiostro-60); line-height:1.5; max-width:180px; }
+  .stats-note{
+    margin-top:18px; font-family:var(--mono); font-size:13px; color:var(--inchiostro-60);
+    display:flex; align-items:center; gap:8px;
+  }
+  @media (max-width:820px){
+    .stats{ grid-template-columns:1fr; }
+    .stat{ border-right:none !important; border-bottom:1px solid var(--grafite); }
+    .stat:last-child{ border-bottom:none; }
+  }
+
+  /* ============ FOOTER — identico alla home ============ */
+  footer{ background:var(--carta-forte); border-top:1px solid var(--grafite); padding:64px 0 32px; }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:32px; padding-bottom:44px; }
+  .footer-brand .logo{ margin-bottom:14px; }
+  .footer-brand p{ font-size:13.5px; color:var(--inchiostro-40); max-width:220px; line-height:1.6; }
+  .footer-col h4{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--inchiostro-40); margin-bottom:16px; font-weight:600; }
+  .footer-col ul li{ margin-bottom:10px; }
+  .footer-col a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
+  .footer-col a:hover{ color:var(--cianotipo); }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-top:28px; border-top:1px solid var(--grafite-30); font-family:var(--mono); font-size:12.5px; color:var(--inchiostro-40); }
+  .footer-bottom .legal{ display:flex; gap:20px; flex-wrap:wrap; }
+  .footer-bottom a{ text-decoration:none; color:var(--inchiostro-40); }
+  .footer-bottom a:hover{ color:var(--cianotipo); }
+
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:600px){
+    .footer-grid{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+    section{ padding:56px 0; }
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <nav class="nav-links">
+      <a href="/servizi">Servizi</a>
+      <a href="/richieste/accesso">Le mie richieste</a>
+      <a href="/area-impresa/accedi">Accedi</a>
+      <a href="/area-impresa" class="btn-outline">Sei un professionista?</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap breadcrumb">
+  <a href="/">Home</a>
+  <span>/</span>
+  <span class="current">Servizi</span>
+</div>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Esplora per ambito</div>
+    <h1>Tutti i servizi, <em>un solo metodo</em>.</h1>
+    <p class="hero-sub">Parti dall'ambito della casa e arriva a una richiesta leggibile: pochi passaggi, dati ordinati, professionisti più adatti al lavoro.</p>
+    <div class="hero-ctas">
+      <a href="/" class="btn-matita">RACCONTA IL LAVORO <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="#catalogo-servizi" class="btn-ghost">VEDI GLI AMBITI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section id="catalogo-servizi" aria-labelledby="cat-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Catalogo operativo</div>
+      <h2 id="cat-h">Ambiti chiari prima del preventivo.</h2>
+      <p>Ogni ambito raccoglie interventi affini: scegli il punto di partenza, poi il funnel entra nel dettaglio del lavoro.</p>
+    </div>
+
+    <div class="catalog-search reveal">
+      <div class="catalog-search-panel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="catalogSearch" placeholder="Cerca un ambito (es. tetto, idraulica, giardino)…" aria-label="Cerca un ambito">
+        <span class="catalog-search-count" id="catalogCount">20 ambiti</span>
+      </div>
+    </div>
+
+    <div class="catalog-groups reveal" id="catalogGroups">
+
+      <div class="cat-group" data-group>
+        <h3 class="cat-group-title">Ristrutturazione e muratura</h3>
+        <nav class="index-list" aria-label="Ristrutturazione e muratura">
+          <a href="/servizi/ristrutturazioni" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 26 6 12l10-7 10 7v14"/><path d="M12 26v-8h8v8"/></svg>
+            <span class="num">01</span>
+            <span class="body"><h3>Ristrutturazioni</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/opere-murarie-e-demolizioni" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h9v6H5zM18 12h9v6h-9zM5 18h9v6H5zM18 18h9v6h-9z"/></svg>
+            <span class="num">12</span>
+            <span class="body"><h3>Opere murarie e demolizioni</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/cartongesso" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="22" height="5"/><rect x="5" y="14" width="22" height="5"/><rect x="5" y="21" width="22" height="5"/></svg>
+            <span class="num">07</span>
+            <span class="body"><h3>Cartongesso</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/costruzioni-e-ampliamenti" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 27V9l7 4V9l7 4V9l6 4v14z"/><path d="M6 27h20"/></svg>
+            <span class="num">19</span>
+            <span class="body"><h3>Costruzioni e ampliamenti</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="cat-group" data-group>
+        <h3 class="cat-group-title">Tetti e facciate</h3>
+        <nav class="index-list" aria-label="Tetti e facciate">
+          <a href="/servizi/tetti" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 16 7l12 10"/><path d="M8 17v8h16v-8"/><path d="M13 20h6v5h-6z"/></svg>
+            <span class="num">02</span>
+            <span class="body"><h3>Tetti</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/facciate-e-balconi" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="20" height="22" rx="1"/><path d="M6 14h20M6 20h20"/><path d="M4 20h2M26 20h2"/></svg>
+            <span class="num">04</span>
+            <span class="body"><h3>Facciate e balconi</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="cat-group" data-group>
+        <h3 class="cat-group-title">Impianti</h3>
+        <nav class="index-list" aria-label="Impianti">
+          <a href="/servizi/impianti-e-manutenzioni-elettriche" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4 8 18h7l-2 10 11-14h-7z"/></svg>
+            <span class="num">08</span>
+            <span class="body"><h3>Impianti e manutenzioni elettriche</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/idraulica" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5h8v5l3 3v3H9v-3l3-3z"/><path d="M16 16v6a4 4 0 0 0 8 0v-2"/></svg>
+            <span class="num">09</span>
+            <span class="body"><h3>Idraulica</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/riscaldamento" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="6" width="18" height="20" rx="1"/><path d="M11 6v20M16 6v20M21 6v20"/></svg>
+            <span class="num">14</span>
+            <span class="body"><h3>Riscaldamento</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/climatizzazione" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="24" height="8" rx="3"/><path d="M9 21q2 3 0 6M16 21q2 3 0 6M23 21q2 3 0 6"/></svg>
+            <span class="num">10</span>
+            <span class="body"><h3>Climatizzazione</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/citofoni-sicurezza-e-smart-home" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 6 8v7c0 7 4.3 11 10 13 5.7-2 10-6 10-13V8z"/><path d="M12 16l3 3 5-6"/></svg>
+            <span class="num">11</span>
+            <span class="body"><h3>Citofoni, sicurezza e smart home</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="cat-group" data-group>
+        <h3 class="cat-group-title">Finiture e serramenti</h3>
+        <nav class="index-list" aria-label="Finiture e serramenti">
+          <a href="/servizi/pavimentazioni" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="9" height="9"/><rect x="18" y="5" width="9" height="9"/><rect x="5" y="18" width="9" height="9"/><rect x="18" y="18" width="9" height="9"/></svg>
+            <span class="num">05</span>
+            <span class="body"><h3>Pavimentazioni</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/finiture" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24 22 10a3 3 0 0 1 4 4L12 28z"/><path d="M6 28l2-6 4 4z"/></svg>
+            <span class="num">06</span>
+            <span class="body"><h3>Imbianchini e finiture</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/serramenti-e-infissi" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="20" height="22"/><path d="M16 5v22M6 16h20"/></svg>
+            <span class="num">13</span>
+            <span class="body"><h3>Serramenti e infissi</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="cat-group" data-group>
+        <h3 class="cat-group-title">Esterni e specialità</h3>
+        <nav class="index-list" aria-label="Esterni e specialità">
+          <a href="/servizi/fotovoltaico" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="14" rx="1"/><path d="M5 14h22M5 19h22M12 9v14M20 9v14"/></svg>
+            <span class="num">03</span>
+            <span class="body"><h3>Fotovoltaico</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/fabbro-serrande-e-cancelli" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="20" height="20" rx="1"/><path d="M6 12h20M6 18h20M6 24h20M12 6v20M20 6v20"/></svg>
+            <span class="num">15</span>
+            <span class="body"><h3>Fabbro, serrande e cancelli</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/camini-stufe-e-canne-fumarie" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 27V15l4-9 4 9v12z"/><path d="M8 27h12"/></svg>
+            <span class="num">16</span>
+            <span class="body"><h3>Camini, stufe e canne fumarie</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/esterni-e-giardino" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 28V16"/><path d="M16 16c0-6-5-9-9-9 0 6 3 9 9 9zM16 18c0-6 5-9 9-9 0 6-3 9-9 9z"/></svg>
+            <span class="num">17</span>
+            <span class="body"><h3>Esterni e giardino</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/piscine" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="22" height="13" rx="1"/><path d="M4 24q3-2 6 0t6 0 6 0 6 0"/></svg>
+            <span class="num">20</span>
+            <span class="body"><h3>Piscine</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/servizi/tecnici-e-pratiche-edilizie" class="index-row">
+            <svg class="row-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h10l4 4v20H9z"/><path d="M19 4v4h4"/><circle cx="14" cy="20" r="3.5"/><path d="M12 24l-2.5 4"/></svg>
+            <span class="num">18</span>
+            <span class="body"><h3>Tecnici e pratiche edilizie</h3><p>Ambito pronto per raccogliere richieste e dettagli del lavoro.</p></span>
+            <span class="go">APRI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </nav>
+      </div>
+
+    </div>
+
+    <p class="no-results" id="noResults">Nessun ambito corrisponde alla ricerca.</p>
+  </div>
+</section>
+
+<section class="cta-band" aria-labelledby="cta-h">
+  <div class="wrap cta-inner reveal">
+    <div class="eyebrow">Non trovi il tuo lavoro?</div>
+    <h2 id="cta-h">Raccontalo comunque: lo traduciamo in una richiesta chiara.</h2>
+    <p>Anche se il servizio non compare ancora in catalogo, puoi partire dal problema: Esigenta ti aiuta a portarlo verso il professionista giusto.</p>
+    <a href="/" class="btn-matita">INIZIA DALLA HOME <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</section>
+
+<section aria-label="Statistiche del catalogo">
+  <div class="wrap">
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="val">20</div>
+        <div class="lbl">Ambiti di lavoro raccolti dalla taxonomy</div>
+      </div>
+      <div class="stat">
+        <div class="val">100</div>
+        <div class="lbl">Interventi disponibili dentro i funnel</div>
+      </div>
+      <div class="stat stat-wide">
+        <div class="val">1</div>
+        <div class="lbl">Metodo unico, dalla richiesta alla scelta</div>
+      </div>
+    </div>
+    <p class="stats-note reveal">✓ Ogni voce del catalogo porta a un funnel attivo — nessun percorso segnaposto.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+        <p>Preventivi da professionisti qualificati per ogni lavoro di casa.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Servizi per la casa</h4>
+        <ul>
+          <li><a href="/servizi">Tutti i servizi</a></li>
+          <li><a href="/servizi/idraulica">Idraulica</a></li>
+          <li><a href="/servizi/pavimentazioni">Pavimentazioni</a></li>
+          <li><a href="/servizi/serramenti-e-infissi">Serramenti e infissi</a></li>
+          <li><a href="/servizi/finiture">Imbianchini e finiture</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Guide e costi</h4>
+        <ul><li><a href="/costi">Guide ai costi</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Per le imprese</h4>
+        <ul>
+          <li><a href="/area-impresa">Per professionisti e imprese</a></li>
+          <li><a href="/area-impresa/accedi">Accedi alla tua area</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 esigenta</span>
+      <div class="legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/cookie-policy">Cookie</a>
+        <a href="/termini">Termini</a>
+        <a href="#">Preferenze cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var input = document.getElementById('catalogSearch');
+    var count = document.getElementById('catalogCount');
+    var noResults = document.getElementById('noResults');
+    var groups = document.querySelectorAll('[data-group]');
+    var totalRows = document.querySelectorAll('.index-row').length;
+
+    if(!input) return;
+
+    input.addEventListener('input', function(){
+      var q = input.value.trim().toLowerCase();
+      var visibleTotal = 0;
+
+      groups.forEach(function(group){
+        var rows = group.querySelectorAll('.index-row');
+        var visibleInGroup = 0;
+
+        rows.forEach(function(row){
+          var text = row.querySelector('h3').textContent.toLowerCase();
+          var match = q === '' || text.indexOf(q) !== -1;
+          row.classList.toggle('is-hidden', !match);
+          if(match) visibleInGroup++;
+        });
+
+        group.classList.toggle('is-hidden', visibleInGroup === 0);
+        visibleTotal += visibleInGroup;
+      });
+
+      count.textContent = q === ''
+        ? totalRows + ' ambiti'
+        : visibleTotal + ' di ' + totalRows;
+
+      noResults.classList.toggle('show', visibleTotal === 0);
+    });
+  })();
+
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

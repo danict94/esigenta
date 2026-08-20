@@ -19,22 +19,16 @@ const optionalCategories: Array<{
   description: string;
 }> = [
   {
-    id: "functional",
-    label: "Funzionali",
-    description:
-      "Abilitano servizi opzionali come i suggerimenti automatici di Google Maps.",
-  },
-  {
     id: "analytics",
     label: "Analytics",
     description:
-      "Non sono attivi oggi. Se aggiunti, partiranno solo con consenso.",
+      "Abilitano Google Analytics 4 per misurare traffico e utilizzo del sito.",
   },
   {
     id: "marketing",
     label: "Marketing",
     description:
-      "Non sono attivi oggi. Nessuna profilazione pubblicitaria viene caricata.",
+      "Abilitano il tracciamento delle conversioni di Google Ads, se configurato.",
   },
 ];
 
@@ -117,9 +111,9 @@ export function CookieConsent() {
                 Preferenze cookie
               </p>
               <p className="eg-body-muted mt-2 text-sm">
-                Usiamo cookie tecnici necessari. I servizi facoltativi, come i
-                suggerimenti automatici di Google Maps, partono solo se li
-                abiliti. Puoi leggere la{" "}
+                Usiamo cookie tecnici necessari al funzionamento del sito e
+                del servizio. Analytics e marketing sono facoltativi e
+                partono solo se li abiliti. Puoi leggere la{" "}
                 <Link
                   href="/cookie-policy"
                   className="font-medium text-eg-brand-strong"

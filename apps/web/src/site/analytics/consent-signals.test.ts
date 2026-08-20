@@ -16,7 +16,6 @@ function preferences(
     version: 2,
     updatedAt: new Date().toISOString(),
     necessary: true,
-    functional: false,
     analytics: false,
     marketing: false,
     ...overrides,
@@ -53,7 +52,7 @@ test("toGoogleConsentSignals: marketing concesso, analytics negato -> solo i tre
 
 test("toGoogleConsentSignals: accept-all -> tutti i segnali granted", () => {
   const signals = toGoogleConsentSignals(
-    preferences({ analytics: true, marketing: true, functional: true }),
+    preferences({ analytics: true, marketing: true }),
   )
 
   assert.deepEqual(signals, {
@@ -62,14 +61,6 @@ test("toGoogleConsentSignals: accept-all -> tutti i segnali granted", () => {
     ad_user_data: "granted",
     ad_personalization: "granted",
   })
-})
-
-test("toGoogleConsentSignals: functional non influenza nessuno dei quattro segnali Google", () => {
-  const withFunctionalOnly = toGoogleConsentSignals(
-    preferences({ functional: true }),
-  )
-
-  assert.deepEqual(withFunctionalOnly, DENIED_CONSENT_SIGNALS)
 })
 
 test("shouldConfigureGoogleAdsDestination: false se già configurato in questa sessione, anche con tutto il resto favorevole", () => {

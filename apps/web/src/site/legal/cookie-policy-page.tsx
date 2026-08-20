@@ -17,12 +17,6 @@ const cookieCategories = [
       "Servono per sicurezza, autenticazione, sessione, funzionamento del sito, gestione richieste e pagamenti avviati dall'utente.",
   },
   {
-    title: "Funzionali",
-    status: "Disattivati di default",
-    description:
-      "Permettono funzionalita aggiuntive come i suggerimenti automatici di Google Maps Places per indirizzi e citta.",
-  },
-  {
     title: "Analytics",
     status: "Disattivati di default",
     description:
@@ -30,9 +24,9 @@ const cookieCategories = [
   },
   {
     title: "Marketing",
-    status: "Non attivi al momento",
+    status: "Disattivati di default",
     description:
-      "Esigenta non usa pixel marketing o profilazione pubblicitaria nel codice attuale.",
+      "Abilitano il tracciamento delle conversioni di Google Ads, se configurato per l'ambiente in uso.",
   },
 ];
 
@@ -79,12 +73,14 @@ export function CookiePolicyPage() {
               <section className="eg-panel p-6">
                 <h2 className="eg-h3">Google Maps Places</h2>
                 <p className="eg-body-muted mt-3">
-                  I suggerimenti automatici per indirizzi e citta usano Google
-                  Maps Places e sono trattati come servizio funzionale opzionale.
-                  Lo script non deve essere caricato prima del consenso
-                  funzionale o di un&apos;attivazione esplicita tramite
-                  preferenze. Se la funzionalita non e abilitata, l&apos;input
-                  manuale resta disponibile.
+                  I suggerimenti automatici per indirizzi e citta, usati per
+                  indicare dove eseguire un intervento, si basano su Google
+                  Maps Places. Lo script viene caricato quando si apre lo
+                  step di localizzazione della richiesta, indipendentemente
+                  dalle preferenze cookie scelte: e una componente tecnica
+                  necessaria per completare una richiesta su Esigenta, non
+                  una funzionalita facoltativa legata a una categoria di
+                  consenso.
                 </p>
               </section>
 
@@ -117,11 +113,16 @@ export function CookiePolicyPage() {
               <section className="eg-panel p-6">
                 <h2 className="eg-h3">Marketing e pubblicita</h2>
                 <p className="eg-body-muted mt-3">
-                  Nel codice attuale non risultano Google Ads, remarketing,
-                  Meta Pixel, Vercel Analytics, Speed Insights o strumenti
-                  equivalenti di profilazione pubblicitaria. Se in futuro
-                  saranno introdotti, dovranno essere dichiarati qui e
-                  bloccati fino al consenso della categoria Marketing.
+                  Il codice include il tracciamento delle conversioni di
+                  Google Ads: viene attivato solo dopo che la categoria
+                  Marketing viene accettata dal banner o dalle preferenze
+                  cookie, e solo se una conversione Google Ads e configurata
+                  per l&apos;ambiente in uso. Nessun altro pixel di
+                  marketing, remarketing o strumento equivalente di
+                  profilazione pubblicitaria e presente nel codice attuale.
+                  Se in futuro saranno introdotti altri strumenti, dovranno
+                  essere dichiarati qui e bloccati fino al consenso della
+                  categoria Marketing.
                 </p>
               </section>
 

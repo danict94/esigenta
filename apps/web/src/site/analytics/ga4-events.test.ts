@@ -34,7 +34,6 @@ function grantAnalyticsConsent(): void {
     version: 2,
     updatedAt: new Date().toISOString(),
     necessary: true,
-    functional: false,
     analytics: true,
     marketing: false,
   })
@@ -45,7 +44,6 @@ function denyAnalyticsConsent(): void {
     version: 2,
     updatedAt: new Date().toISOString(),
     necessary: true,
-    functional: false,
     analytics: false,
     marketing: false,
   })
@@ -56,7 +54,6 @@ function writeConsent(overrides: Partial<CookieConsentPreferences>): void {
     version: 2,
     updatedAt: new Date().toISOString(),
     necessary: true,
-    functional: false,
     analytics: false,
     marketing: false,
     ...overrides,
