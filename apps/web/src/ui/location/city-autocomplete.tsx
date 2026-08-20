@@ -14,11 +14,14 @@ import {
 } from '@esigenta/shared'
 import { cn } from '@esigenta/ui'
 
-import {
-  COOKIE_CONSENT_CHANGED_EVENT,
-  hasFunctionalCookieConsent,
-  openCookiePreferences,
-} from '../../site/shell/cookie-consent-storage'
+// Google Maps/Places è disponibilità tecnica del funnel, non un servizio
+// facoltativo: deve inizializzarsi indipendentemente dal consenso cookie
+// "Funzionali" (nessuna scelta, rifiuto o accettazione producono lo stesso
+// caricamento). Per questo il componente non legge più
+// site/shell/cookie-consent-storage — vedi audit consenso/Maps. GA4 e Google
+// Ads restano invece gated sulle rispettive categorie in
+// site/analytics/ga4-events.ts e site/shell/ga4-minimal-loader.tsx, qui
+// non toccati.
 
 type GoogleAddressComponent = {
   long_name: string
@@ -189,6 +192,22 @@ function loadGoogleMapsPlaces(
   return googleMapsPlacesPromise
 }
 
+/**
+ * Unica condizione per inizializzare Maps/Places: la presenza della API
+ * key. Deliberatamente NON accetta alcun parametro di consenso — a
+ * differenza di GA4/Ads (site/analytics/consent-signals.ts, gated su
+ * analytics/marketing), Google Maps/Places nel funnel non deve mai
+ * dipendere dalla scelta cookie dell'utente: nessuna scelta, rifiuto o
+ * accettazione producono lo stesso risultato. Estratta come funzione pura
+ * così l'invariante è verificabile senza montare il componente/il DOM —
+ * vedi city-autocomplete.test.ts.
+ */
+export function canLoadGoogleMapsPlaces(
+  apiKey: string | null | undefined,
+): apiKey is string {
+  return Boolean(apiKey)
+}
+
 function toResolverInput(
   place: GooglePlaceResult,
 ) {
@@ -258,15 +277,6 @@ export function CityAutocomplete({
 
   const [message, setMessage] =
     useState<string | null>(null)
-  const [
-    hasFunctionalConsent,
-    setHasFunctionalConsent,
-  ] = useState(false)
-
-  const hasGoogleMapsApiKey = Boolean(
-    process.env
-      .NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-  )
 
   useEffect(() => {
     onChangeRef.current = onChange
@@ -275,33 +285,6 @@ export function CityAutocomplete({
   useEffect(() => {
     setInputValueRef.current = setInputValue
   }, [setInputValue])
-
-  useEffect(() => {
-    function syncFunctionalConsent() {
-      setHasFunctionalConsent(
-        hasFunctionalCookieConsent(),
-      )
-    }
-
-    const syncTimeout =
-      window.setTimeout(
-        syncFunctionalConsent,
-        0,
-      )
-
-    window.addEventListener(
-      COOKIE_CONSENT_CHANGED_EVENT,
-      syncFunctionalConsent,
-    )
-
-    return () => {
-      window.clearTimeout(syncTimeout)
-      window.removeEventListener(
-        COOKIE_CONSENT_CHANGED_EVENT,
-        syncFunctionalConsent,
-      )
-    }
-  }, [])
 
   useEffect(() => {
     const nextAddress =
@@ -333,24 +316,11 @@ export function CityAutocomplete({
       process.env
         .NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
-    if (!apiKey) {
+    if (!canLoadGoogleMapsPlaces(apiKey)) {
       const messageTimeout =
         window.setTimeout(() => {
           setMessage(
             'Autocomplete indirizzi non configurato.',
-          )
-        }, 0)
-
-      return () => {
-        window.clearTimeout(messageTimeout)
-      }
-    }
-
-    if (!hasFunctionalConsent) {
-      const messageTimeout =
-        window.setTimeout(() => {
-          setMessage(
-            'I suggerimenti automatici usano Google Maps. Puoi abilitarli dalle preferenze cookie.',
           )
         }, 0)
 
@@ -450,7 +420,15 @@ export function CityAutocomplete({
       listenerRef.current?.remove()
       listenerRef.current = null
     }
-  }, [hasFunctionalConsent])
+    // Intenzionalmente []: il caricamento di Maps/Places non deve più
+    // ripartire (né essere smontato/reinizializzato) quando il consenso
+    // cookie cambia — dipende solo dalla presenza della API key, letta una
+    // volta al mount. loadGoogleMapsPlaces ha comunque una guardia
+    // idempotente a livello di modulo (googleMapsPlacesPromise +
+    // hasGooglePlaces) che previene un doppio <script> anche in caso di
+    // più istanze di CityAutocomplete montate insieme (funnel, form lead
+    // impresa, profilo impresa).
+  }, [])
 
   return (
     <div className="grid gap-2">
@@ -497,22 +475,9 @@ export function CityAutocomplete({
       </div>
 
       {message ? (
-        <div className="grid gap-2">
-          <p className="eg-form-help">
-            {message}
-          </p>
-
-          {!hasFunctionalConsent &&
-          hasGoogleMapsApiKey ? (
-            <button
-              type="button"
-              className="eg-button-ghost min-h-9 w-fit px-4"
-              onClick={openCookiePreferences}
-            >
-              Abilita suggerimenti
-            </button>
-          ) : null}
-        </div>
+        <p className="eg-form-help">
+          {message}
+        </p>
       ) : null}
     </div>
   )
