@@ -4,6 +4,7 @@ import { fontVariables } from "@esigenta/ui/fonts"
 
 import "./globals.css"
 import { CookieConsent } from "../site/shell/cookie-consent"
+import { FunnelAttributionCapture } from "../site/analytics/funnel-attribution-capture"
 import { resolveSiteOrigin } from "../site/seo/engine/site-url"
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         {children}
         <CookieConsent />
+        <FunnelAttributionCapture />
       </body>
     </html>
   )

@@ -3,7 +3,11 @@ import type { Prisma } from "@prisma/client"
 import { validateRequestPhotoAnswer } from "@esigenta/uploads"
 import type { RequestPhotoMetadata } from "@esigenta/uploads"
 
-import { prisma, setRequestLocationWithClient } from "@esigenta/database"
+import {
+  prisma,
+  recordFunnelEvent as writeFunnelEvent,
+  setRequestLocationWithClient,
+} from "@esigenta/database"
 import { isFreshGeoPlace, type GeoPlace } from "@esigenta/shared"
 
 import type { RequestDraft } from "@esigenta/funnel"
@@ -18,9 +22,20 @@ import { toRequestStructuredData } from "../../internal/request/request-structur
 import { createRequestVerificationAccessToken } from "../../internal/request/customer-access-token"
 import { generateUniqueRequestCode } from "../../internal/request/request-code"
 import { buildRequestVerificationUrl } from "../../internal/request/request-links"
+import {
+  FUNNEL_EVENT_STEP_SENTINEL_INDEX,
+  FUNNEL_EVENT_STEP_SENTINEL_KEY,
+  REQUEST_CREATED_EVENT_TYPE,
+} from "../funnel-events"
 
 export type CreateRequestFromDraftInput = {
   draft: RequestDraft
+  /**
+   * FASE 6B: id opaco già normalizzato dal chiamante (vedi
+   * ./funnel-session-id.ts) — mai un requisito della Request, solo
+   * diagnostico. undefined se assente o non nel formato atteso.
+   */
+  funnelSessionId?: string
 }
 
 export type CreateRequestFromDraftResult = {
@@ -257,6 +272,7 @@ async function attachRequestPhotos({
 
 export async function createRequestFromDraft({
   draft,
+  funnelSessionId,
 }: CreateRequestFromDraftInput): Promise<CreateRequestFromDraftResult> {
   const preparedPhotos = validateRequestPhotosForCreation(draft)
   const persistedDraft = preparedPhotos.draft
@@ -292,7 +308,10 @@ export async function createRequestFromDraft({
     interventionSlug: persistedDraft.interventionSlug,
     intervention: { connect: { id: intervention.id } },
     customerEmail: customer.customerEmail,
-    structuredData: toRequestStructuredData({ draft: persistedDraft }),
+    structuredData: toRequestStructuredData({
+      draft: persistedDraft,
+      ...(funnelSessionId ? { funnelSessionId } : {}),
+    }),
     // Effective commercial values (read by unlock/listings). At creation
     // effective = auto, so they equal the snapshot's creditCost/maxUnlocks.
     creditCost: leadValue.creditCost,
@@ -346,6 +365,45 @@ export async function createRequestFromDraft({
 
     return createdRequest
   })
+
+  // FASE 6B: unico log di successo dell'intero percorso di creazione — oggi
+  // esistevano solo log di fallimento (vedi submit-runtime-request.ts). Solo
+  // supporto diagnostico, mai la fonte primaria della persistenza (la
+  // Request già esiste, questa riga non la "conferma"). Deliberatamente
+  // niente email/telefono/indirizzo/note/altri dati del form: solo i tre
+  // identificatori opachi richiesti.
+  console.info("[createRequestFromDraft] Request created", {
+    requestId: request.id,
+    funnelSessionId: funnelSessionId ?? null,
+    interventionSlug: persistedDraft.interventionSlug,
+  })
+
+  // FASE 6D: request_created è l'unico FunnelEvent scritto qui, mai dal
+  // client — vedi packages/domain/src/public/funnel-events/record-funnel-event.ts
+  // per il perché. Best-effort, come l'invio email sotto: la transazione
+  // che crea la Request è già committata sopra, un fallimento qui non deve
+  // mai retrocedere né far sembrare la richiesta non creata. Nessuna
+  // scrittura se il client non ha mai mandato un funnelSessionId valido —
+  // non c'è nulla di significativo da correlare.
+  if (funnelSessionId) {
+    try {
+      await writeFunnelEvent({
+        funnelSessionId,
+        interventionSlug: persistedDraft.interventionSlug,
+        eventType: REQUEST_CREATED_EVENT_TYPE,
+        stepKey: FUNNEL_EVENT_STEP_SENTINEL_KEY,
+        stepIndex: FUNNEL_EVENT_STEP_SENTINEL_INDEX,
+      })
+    } catch (error) {
+      console.error(
+        "[createRequestFromDraft] request_created telemetry failed",
+        {
+          requestId: request.id,
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        },
+      )
+    }
+  }
 
   const verificationUrl = buildRequestVerificationUrl({
     token: verification.token,

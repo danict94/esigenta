@@ -34,6 +34,7 @@ const navItems: AdminNavItem[] = [
     href: "/crediti/rimborsi/richieste",
   },
   { label: "Assistenza", href: "/support" },
+  { label: "Funnel", href: "/funnel" },
 ];
 
 function isActivePath(pathname: string, href: string) {

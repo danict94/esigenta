@@ -31,3 +31,13 @@ export { writeCompanyServiceConfigurationWithClient } from "./company/write-comp
 export type { WriteCompanyServiceConfigurationInput } from "./company/write-company-service-configuration"
 export { readCompanyMarketplaceCapabilitySnapshot } from "./company/read-company-marketplace-capability-snapshot"
 export type { CompanyMarketplaceCapabilitySnapshotRow } from "./company/read-company-marketplace-capability-snapshot"
+
+// FUNNEL TELEMETRY (FASE 6C) — the only write path for FunnelEvent rows.
+// Lives here, not @esigenta/domain, for the same reason as the geo writers
+// above: a single, reusable write boundary in the package every other
+// package can already depend on.
+export { recordFunnelEvent } from "./funnel/record-funnel-event"
+export type {
+  RecordFunnelEventInput,
+  RecordFunnelEventOutcome,
+} from "./funnel/record-funnel-event"

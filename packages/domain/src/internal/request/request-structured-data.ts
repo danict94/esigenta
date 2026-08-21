@@ -12,14 +12,26 @@ export type RequestVerificationSnapshot = {
 export type RequestStructuredData = {
   draft: Prisma.JsonValue | null
   verification?: RequestVerificationSnapshot
+  /**
+   * FASE 6B: identificatore tecnico opaco della compilazione del funnel che
+   * ha prodotto questa Request (generato client-side, mai contenente PII —
+   * vedi apps/web/.../resolve-funnel-session-id.ts). Puramente diagnostico:
+   * un valore assente non significa nulla di anomalo (client vecchio,
+   * normalizzazione fallita) e non deve mai essere trattato come un
+   * requisito della Request. Non è un id di sessione telemetrica completa —
+   * quella è FASE 6C, non ancora implementata.
+   */
+  funnelSessionId?: string
 }
 
 export function toRequestStructuredData({
   draft,
   verification,
+  funnelSessionId,
 }: {
   draft: RequestDraft
   verification?: RequestVerificationSnapshot
+  funnelSessionId?: string
 }): Prisma.InputJsonObject {
   const serializedDraft = JSON.parse(JSON.stringify(draft)) as Prisma.InputJsonValue
   return {
@@ -27,6 +39,7 @@ export function toRequestStructuredData({
     ...(verification
       ? { verification: verification as Prisma.InputJsonValue }
       : {}),
+    ...(funnelSessionId ? { funnelSessionId } : {}),
   }
 }
 

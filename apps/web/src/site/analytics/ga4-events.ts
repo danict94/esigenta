@@ -90,3 +90,68 @@ export function trackGoogleAdsLeadConversion(
     transaction_id: requestId,
   })
 }
+
+export type FunnelEventGa4Type =
+  | "funnel_started"
+  | "step_viewed"
+  | "step_completed"
+  | "submit_started"
+  | "submit_failed"
+  | "request_created"
+
+export type TrackFunnelEventGa4Params = {
+  eventType: FunnelEventGa4Type
+  /** Slug tassonomico pubblico — stesso valore già inviato al DB first-party (FASE 6C). */
+  intervention: string
+  /** Richiesto per step_viewed/step_completed, omesso per ogni altro eventType — mai un sentinel/attempt-counter inviato a Google. */
+  stepKey?: string
+  stepIndex?: number
+  /** Solo per submit_failed (FASE 6D) — uno dei codici noti di FUNNEL_EVENT_ERROR_CODES, mai error.message. */
+  errorCode?: string
+}
+
+/**
+ * FASE 6C.1 (estesa FASE 6D con submit_started/submit_failed/
+ * request_created) — mirror su GA4 degli eventi first-party già scritti su
+ * FunnelEvent (packages/database, FASE 6C/6D), che restano la fonte
+ * completa e indipendente: questa funzione non li sostituisce né li
+ * condiziona in alcun modo, li affianca solo quando il consenso lo
+ * permette (vedi request-stepper.tsx: la chiamata al DB non è mai dentro
+ * un `if` che dipenda da questa). No-op silenzioso — mai un throw — con
+ * le stesse due guardie già usate da trackGenerateLead: consenso
+ * ANALYTICS (riletto qui, non cache di stato React — un utente può aver
+ * revocato dopo l'inizializzazione) e window.gtag già inizializzato da
+ * Ga4MinimalLoader.
+ *
+ * Nessun funnelSessionId né requestId nel payload, in nessun evento — di
+ * proposito, per non introdurre lato Google un identificatore di
+ * correlazione senza una necessità tecnica precisa — e nessun altro dato
+ * del form: solo slug dell'intervento, step (se pertinente) ed
+ * eventualmente errorCode. Per request_created in particolare: il DB
+ * resta l'unica fonte server-authoritative (scritto direttamente da
+ * create-request.ts, mai da questa funzione); questa chiamata a
+ * trackFunnelEventGa4 va invocata SOLO dal client dopo una risposta 200
+ * già ricevuta da /api/requests — vedi request-stepper.tsx — non prima.
+ */
+export function trackFunnelEventGa4(
+  measurementId: string,
+  params: TrackFunnelEventGa4Params,
+): void {
+  if (readCookieConsentPreferences()?.analytics !== true) {
+    return
+  }
+
+  const gtag = (window as GtagWindow).gtag
+
+  if (!gtag) {
+    return
+  }
+
+  gtag("event", params.eventType, {
+    intervention: params.intervention,
+    ...(params.stepKey !== undefined ? { step_key: params.stepKey } : {}),
+    ...(params.stepIndex !== undefined ? { step_index: params.stepIndex } : {}),
+    ...(params.errorCode !== undefined ? { error_code: params.errorCode } : {}),
+    send_to: measurementId,
+  })
+}

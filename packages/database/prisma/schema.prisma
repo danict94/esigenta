@@ -863,6 +863,129 @@ model RequestPhoto {
 }
 
 ///////////////////////////////////////////////////////////
+// FUNNEL TELEMETRY (FASE 6B/6C) — deliberately NOT linked to Request
+///////////////////////////////////////////////////////////
+
+/**
+ * Minimal funnel step-progress + outcome telemetry (FASE 6C, extended in
+ * FASE 6D with submit_started/submit_failed/request_created). No FK to
+ * Request: the entire point of this table is to observe funnel sessions
+ * that never produce one. funnelSessionId is the opaque id introduced in
+ * FASE 6B (packages/domain/src/public/requests/funnel-session-id.ts) —
+ * same value, copied here independently of whatever ends up (or not) in
+ * Request.structuredData.funnelSessionId.
+ *
+ * Deliberately excludes: any form answer, contact detail, address,
+ * coordinates, IP, full user agent, or free-form metadata. eventType is a
+ * plain String (not a Prisma enum) so the wire value from the client
+ * ("funnel_started" | "step_viewed" | "step_completed" | "submit_started" |
+ * "submit_failed", validated in packages/domain) and the stored value stay
+ * identical — no enum-mapping layer in between. "request_created" is the
+ * one eventType NEVER accepted from a client payload — written only
+ * server-side, directly inside createRequestFromDraft after the Request's
+ * own transaction has committed (packages/domain/src/public/requests/
+ * create-request.ts) — see FASE 6D report for why it must be
+ * server-authoritative.
+ *
+ * stepKey/stepIndex are NOT NULL, reused with THREE distinct meanings
+ * depending on eventType — chosen deliberately to reuse the single
+ * @@unique below for every event type without a schema/migration change,
+ * instead of introducing a second dedup mechanism:
+ *   - step_viewed / step_completed: the real RuntimeCapability id / its
+ *     index in the funnel — "at most once per step" (FASE 6C).
+ *   - funnel_started / request_created: sentinel ("" / -1), never a real
+ *     step — "at most once per funnelSessionId" for that eventType. Two
+ *     DIFFERENT eventTypes sharing the same sentinel never collide with
+ *     each other (eventType is part of the same unique tuple).
+ *   - submit_started / submit_failed: stepKey is the fixed literal
+ *     "submit", stepIndex is a 0-based SUBMIT ATTEMPT COUNTER (not a
+ *     funnel step) incremented client-side on every real submitDraft()
+ *     call (apps/web/.../request-stepper.tsx). This is deliberate, NOT an
+ *     oversight: the user can genuinely retry a failed submit more than
+ *     once, and each real attempt must produce its own row — collapsing
+ *     them under a single "at most once" key (like funnel_started) would
+ *     silently discard real retry information. An accidental re-fire of
+ *     the SAME attempt (identical attemptIndex) still correctly collides
+ *     and is deduped; a genuinely new attempt (incremented index) never
+ *     does.
+ *
+ * NOT NULL (not nullable) sentinels are used throughout instead of NULL
+ * specifically so @@unique below dedupes correctly: Postgres treats
+ * NULL <> NULL, so two rows with stepKey/stepIndex both NULL would NOT
+ * collide on a unique constraint, silently defeating "at most one" for
+ * funnel_started/request_created. Sentinels sidestep that without a
+ * NULLS NOT DISTINCT index.
+ *
+ * errorCode (FASE 6D): only ever set for submit_failed, one of a closed
+ * allow-list of known technical codes (real @esigenta/domain application
+ * error codes, or "network_error"/"unexpected_error") — never
+ * error.message, never a stack trace. Null for every other eventType.
+ *
+ * Attribution fields (FASE 6E): gclid/gbraid/wbraid/utm* — only ever set
+ * on the funnel_started row (captured once per session, on the landing
+ * page, before it is possible to know a funnelSessionId will exist at
+ * all; see apps/web/src/site/analytics/funnel-attribution.ts). Not
+ * duplicated on step_viewed/step_completed/submit_started/submit_failed/
+ * request_created rows of the same session, and not duplicated into
+ * Request.structuredData —
+ * the join Request.structuredData.funnelSessionId -> this row's
+ * funnel_started is enough to reconstruct "where did this Request come
+ * from" without storing the same 8 values N times. Every value here is
+ * exactly what arrived in the URL query string (trimmed, length-capped),
+ * never a parsed/derived classification.
+ *
+ * CONSENT DECISION REQUIRED (FASE 6E, not resolved by this codebase): the
+ * capture into sessionStorage is unconditional (first-party, ephemeral,
+ * no different technically from any other query-string read), but
+ * whether Esigenta may PERSIST gclid/gbraid/wbraid specifically — Google
+ * Ads click identifiers — into this first-party table without `marketing`
+ * consent is genuinely ambiguous under the current consent model.
+ * apps/web/.../funnel-attribution.ts + request-stepper.tsx apply the most
+ * conservative available default (gate those 3 fields on the SAME
+ * `marketing` flag already used for Google Ads conversion tracking,
+ * consent-signals.ts — reused, not invented) and DROP them client-side
+ * before ever reaching this table when marketing consent is not granted.
+ * utmSource/utmMedium/utmCampaign/utmTerm/utmContent are NOT gated: plain
+ * campaign tagging, not a Google Ads-specific identifier. This default is
+ * a starting point pending an explicit product/legal decision, not a
+ * verified resolution — see the FASE 6E report.
+ */
+model FunnelEvent {
+  id String @id @default(cuid())
+
+  funnelSessionId  String
+  interventionSlug String
+  eventType        String
+  stepKey          String
+  stepIndex        Int
+  /** FASE 6D — only for submit_failed, always a known code, never free text. */
+  errorCode        String?
+
+  /** FASE 6E — only for funnel_started, see model comment above (incl. CONSENT DECISION REQUIRED). */
+  gclid       String?
+  gbraid      String?
+  wbraid      String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmTerm     String?
+  utmContent  String?
+
+  createdAt DateTime @default(now())
+
+  /**
+   * Dedup guard (FASE 6C, semantics extended in FASE 6D — see the model
+   * comment above for what stepKey/stepIndex mean per eventType): a
+   * client-side re-render/refresh/back-forward/retried-but-identical
+   * attempt that re-fires the same logical event hits this constraint and
+   * is ignored (see packages/database/src/funnel/record-funnel-event.ts)
+   * — never a second row for the same funnelSessionId+eventType+step (or
+   * +submit-attempt).
+   */
+  @@unique([funnelSessionId, eventType, stepKey, stepIndex])
+}
+
+///////////////////////////////////////////////////////////
 // REQUEST DISPATCH / NOTIFICATION LAYER
 ///////////////////////////////////////////////////////////
 

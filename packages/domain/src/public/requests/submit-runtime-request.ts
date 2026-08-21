@@ -11,6 +11,7 @@ import {
 
 import { RequestFlowError } from "../../internal/request/request-errors"
 import { createRequestFromDraft } from "./create-request"
+import { normalizeFunnelSessionId } from "./funnel-session-id"
 
 export type SubmitRuntimeRequestInput = Record<string, unknown>
 
@@ -34,6 +35,10 @@ export async function submitRuntimeRequest(
   const query = normalizeRuntimeText(body.query)
   const customerDescription = normalizeRuntimeText(body.customerDescription)
   const answers = readRuntimeAnswers(body.answers)
+  // FASE 6B: mai un requisito — un valore assente/malformato diventa
+  // undefined qui, senza mai bloccare la creazione della Request (vedi
+  // ./funnel-session-id.ts).
+  const funnelSessionId = normalizeFunnelSessionId(body.funnelSessionId)
 
   if (!interventionSlug) {
     return {
@@ -63,7 +68,10 @@ export async function submitRuntimeRequest(
       }
     }
 
-    const createdRequest = await createRequestFromDraft({ draft: requestDraft })
+    const createdRequest = await createRequestFromDraft({
+      draft: requestDraft,
+      ...(funnelSessionId ? { funnelSessionId } : {}),
+    })
 
     return {
       ok: true,
@@ -76,6 +84,7 @@ export async function submitRuntimeRequest(
         code: error.code,
         statusCode: error.statusCode,
         interventionSlug,
+        funnelSessionId: funnelSessionId ?? null,
         answerKeys: Object.keys(answers),
         contact: describeRuntimeContactAnswerPresence(answers.contact),
         location: describeRuntimeLocationAnswerPresence(answers.location),
@@ -94,6 +103,7 @@ export async function submitRuntimeRequest(
       "[submitRuntimeRequest] Unexpected request creation failure",
       {
         interventionSlug,
+        funnelSessionId: funnelSessionId ?? null,
         answerKeys: Object.keys(answers),
         contact: describeRuntimeContactAnswerPresence(answers.contact),
         location: describeRuntimeLocationAnswerPresence(answers.location),
