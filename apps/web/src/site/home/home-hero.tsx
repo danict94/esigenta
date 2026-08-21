@@ -216,7 +216,7 @@ export function HomeHero() {
               un animation-delay per essere dipinto. Paragrafo e form restano
               nel blocco che si anima. */}
           <h1 id="home-title" className="eg-h1 relative z-1 max-w-[18ch] text-balance text-[clamp(32px,5vw,54px)] leading-[1.1] tracking-[-0.02em]">
-            Trasformiamo il caos di casa in <strong className="eg-hero-emphasis inline-block whitespace-nowrap">un percorso</strong> chiaro e affidabile.
+            Ti aiutiamo a trovare il professionista giusto, partendo dalla tua <strong className="eg-hero-emphasis font-semibold">esigenza</strong>.
           </h1>
 
           <div className="relative z-1 [animation:eg-home-fade-up_900ms_ease_180ms_both]">
@@ -225,7 +225,7 @@ export function HomeHero() {
           </p>
 
           <div ref={searchRef} className="relative z-[4] mt-[38px] w-full max-w-[600px] text-left">
-            <p className="eg-form-eyebrow mb-3 text-eg-on-brand-muted font-semibold min-[601px]:mb-5">Di cosa hai bisogno?</p>
+            <p className="eg-form-eyebrow mb-3 text-eg-on-brand-muted font-semibold min-[601px]:mb-5">Cosa devi fare?</p>
 
             {/* Contesto di posizionamento STRETTO per il dropdown: solo
                 form+validazione, non l'intero blocco (che include anche la
@@ -263,7 +263,7 @@ export function HomeHero() {
                 setValidationError(null);
                 resetShortSearch(nextQuery);
               }}
-              aria-label="Di cosa hai bisogno?"
+              aria-label="Cosa devi fare?"
               aria-invalid={validationError !== null}
               aria-describedby={validationError ? SEARCH_VALIDATION_MESSAGE_ID : undefined}
               placeholder="Es. ristrutturare bagno"
@@ -273,7 +273,7 @@ export function HomeHero() {
               type="submit"
               className="eg-button-primary eg-button-arrow shrink-0 max-[340px]:w-full"
             >
-              Cerca
+              Inizia
             </button>
           </form>
 
