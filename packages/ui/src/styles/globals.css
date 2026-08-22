@@ -528,6 +528,18 @@ body {
     color: var(--eg-color-text-muted);
   }
 
+  /* Etichetta di sezione non cliccabile: stessa ricetta mono-maiuscola di
+     .eg-eyebrow, ma in --eg-color-ink e semibold (come .eg-step-label) cosi'
+     da leggersi come intestazione statica e non come i link muted sotto. */
+  .eg-footer-title {
+    font-family: var(--eg-font-mono), monospace;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--eg-color-ink);
+  }
+
   .eg-panel {
     border: 1px solid var(--eg-color-border);
     border-radius: var(--eg-radius-lg);
