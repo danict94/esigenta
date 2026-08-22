@@ -19,6 +19,8 @@ export type RecordFunnelEventInput = {
   utmCampaign?: string
   utmTerm?: string
   utmContent?: string
+  /** FASE 7E — only meaningful for "funnel_started". "resolved" | "unknown" — see the FunnelEvent model comment in schema.prisma. */
+  attributionStatus?: string
 }
 
 export type RecordFunnelEventOutcome = "created" | "duplicate"
@@ -65,6 +67,9 @@ export async function recordFunnelEvent(
         ...(input.utmCampaign ? { utmCampaign: input.utmCampaign } : {}),
         ...(input.utmTerm ? { utmTerm: input.utmTerm } : {}),
         ...(input.utmContent ? { utmContent: input.utmContent } : {}),
+        ...(input.attributionStatus
+          ? { attributionStatus: input.attributionStatus }
+          : {}),
       },
     })
 

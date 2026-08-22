@@ -317,12 +317,23 @@ export function RequestStepUI({
   onReset,
 }: RequestStepUIProps) {
   const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  // FASE 7 FINAL (§D1) — stesso pattern già usato per successHeadingRef:
+  // porta il focus (e quindi, nella maggior parte dei browser, lo scroll)
+  // sul messaggio d'errore appena questo compare, così un errore su uno
+  // step lungo (es. contatto) non passa inosservato sotto la piega.
+  const errorRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     if (submittedRequest) {
       successHeadingRef.current?.focus();
     }
   }, [submittedRequest]);
+
+  useEffect(() => {
+    if (error) {
+      errorRef.current?.focus();
+    }
+  }, [error]);
 
   if (submittedRequest) {
     const verificationEmailSent = submittedRequest.request.verificationEmailSent;
@@ -462,7 +473,16 @@ export function RequestStepUI({
         })
       )}
 
-      {error ? <p className="text-sm text-eg-error">{error}</p> : null}
+      {error ? (
+        <p
+          ref={errorRef}
+          tabIndex={-1}
+          role="alert"
+          className="text-sm text-eg-error focus:outline-none"
+        >
+          {error}
+        </p>
+      ) : null}
 
       {isLastStep ? (
         <p className="eg-form-help">

@@ -63,6 +63,25 @@ function createHistoryTokenExpiresAt(): Date {
 }
 
 /**
+ * FASE 7 FINAL (§B) — pure decision boundary for the race branch inside
+ * verifyWithAccessToken: given the Request's CURRENT state (re-read right
+ * after losing the atomic token-consume race), is this "already verified
+ * by a concurrent request" or "genuinely nothing to show for this token"?
+ * Exported so this specific boundary is unit-testable without a live
+ * database — the surrounding orchestration (the transaction itself, the
+ * atomic consume, the exactly-once admin notification) is not, consistent
+ * with this package's existing convention of never touching Prisma in
+ * tests (see verify-request.test.ts).
+ */
+export function isRequestAlreadyVerified(
+  current: { verifiedAt: Date | null; status: string } | null,
+): boolean {
+  return Boolean(
+    current && (current.verifiedAt || current.status !== "PENDING_VERIFICATION"),
+  )
+}
+
+/**
  * Single transition point for PENDING_VERIFICATION -> PENDING_REVIEW.
  * Shared by the customer's own email-link verification
  * (verifyWithAccessToken) and the admin "verify manually" recovery action
@@ -134,6 +153,22 @@ async function advanceVerifiedRequestToReviewInTransaction({
   }
 }
 
+/**
+ * FASE 7 FINAL (§B): the two outcomes possible once inside the
+ * transaction — a real win (token consumed, Request advanced) or a
+ * legitimate loss to a concurrent verification of the SAME Request
+ * (see the count !== 1 branch below). Kept as a discriminated result
+ * returned FROM the transaction, rather than throwing on the second
+ * case, precisely so the caller can tell the two apart afterward.
+ */
+type VerifyWithAccessTokenTxResult =
+  | {
+      outcome: "verified"
+      statusAccessToken: string
+      historyAccessToken: string
+    }
+  | { outcome: "already_verified" }
+
 async function verifyWithAccessToken({
   request,
   tokenId,
@@ -156,8 +191,8 @@ async function verifyWithAccessToken({
     })
   }
 
-  const tokens = await prisma.$transaction(
-    async (tx) => {
+  const txResult = await prisma.$transaction(
+    async (tx): Promise<VerifyWithAccessTokenTxResult> => {
       const consumed =
         await consumeRequestVerificationAccessToken({
           tx,
@@ -166,6 +201,26 @@ async function verifyWithAccessToken({
         })
 
       if (consumed.count !== 1) {
+        // FASE 7 FINAL (§B) — the atomic consume above is unchanged and
+        // still race-safe (see customer-access-token.ts): this branch
+        // only decides what to TELL the customer about a token that
+        // lost the race, never re-opens who wins it. Two distinct
+        // reasons can land here, and only one of them is a real error:
+        // (1) the token was already consumed by a concurrent
+        // verification of THIS SAME Request (double click, two tabs,
+        // two devices) — the Request is now verified, and the customer
+        // should see that, not "invalid link"; (2) the token is
+        // genuinely invalid/expired/reused on a Request that is still
+        // unverified — a real error, unchanged from before this fix.
+        const current = await tx.request.findUnique({
+          where: { id: request.id },
+          select: { verifiedAt: true, status: true },
+        })
+
+        if (isRequestAlreadyVerified(current)) {
+          return { outcome: "already_verified" }
+        }
+
         throw new RequestFlowError({
           code: "invalid_verification_token",
           message:
@@ -174,22 +229,35 @@ async function verifyWithAccessToken({
         })
       }
 
-      return advanceVerifiedRequestToReviewInTransaction({
+      const tokens = await advanceVerifiedRequestToReviewInTransaction({
         tx,
         request,
         tokenEmail,
         verifiedAt,
       })
+
+      return { outcome: "verified", ...tokens }
     },
   )
+
+  if (txResult.outcome === "already_verified") {
+    // No admin notification here — only the transaction that actually
+    // performed advanceVerifiedRequestToReviewInTransaction (the real
+    // winner, possibly a different request entirely, e.g. a concurrent
+    // request in another tab) triggers it, exactly once — unchanged.
+    return {
+      requestId: request.id,
+      status: "ALREADY_VERIFIED",
+    }
+  }
 
   await notifyAdminsOfRequestPendingReview(request.id)
 
   return {
     requestId: request.id,
     status: "PENDING_REVIEW",
-    statusAccessToken: tokens.statusAccessToken,
-    historyAccessToken: tokens.historyAccessToken,
+    statusAccessToken: txResult.statusAccessToken,
+    historyAccessToken: txResult.historyAccessToken,
   }
 }
 

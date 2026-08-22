@@ -3,6 +3,7 @@ import test from "node:test"
 
 import {
   normalizeAttributionFields,
+  normalizeAttributionStatus,
   normalizeErrorCode,
   recordFunnelEvent,
 } from "./record-funnel-event"
@@ -270,4 +271,41 @@ test("recordFunnelEvent (FASE 6E): step_completed con campi attribution 'intrusi
 
   assert.equal(result.ok, false)
   assert.equal((result as { code: string }).code, "missing_step_key")
+})
+
+// --- FASE 7E: normalizeAttributionStatus (unit, stesso motivo di
+// normalizeErrorCode/normalizeAttributionFields — mai passa da
+// recordFunnelEvent per non toccare mai il database) ---
+
+test("normalizeAttributionStatus: 'resolved' e 'unknown' passano invariati", () => {
+  assert.equal(normalizeAttributionStatus("resolved"), "resolved")
+  assert.equal(normalizeAttributionStatus("unknown"), "unknown")
+})
+
+test("normalizeAttributionStatus: una stringa arbitraria non nell'allow-list -> undefined, mai salvata verbatim, mai un throw", () => {
+  assert.equal(normalizeAttributionStatus("qualunque cosa arrivi dal client"), undefined)
+  assert.equal(normalizeAttributionStatus("Resolved"), undefined, "case-sensitive, nessuna normalizzazione implicita")
+})
+
+test("normalizeAttributionStatus: assente/tipo sbagliato -> undefined, mai un throw", () => {
+  assert.equal(normalizeAttributionStatus(undefined), undefined)
+  assert.equal(normalizeAttributionStatus(null), undefined)
+  assert.equal(normalizeAttributionStatus(12345), undefined)
+  assert.equal(normalizeAttributionStatus({}), undefined)
+})
+
+test("recordFunnelEvent (FASE 7E): attributionStatus non valido su funnel_started non viene rifiutato, viene semplicemente omesso (verificato senza raggiungere il database tramite un funnelSessionId invalido, che fa comunque rifiutare la richiesta per il motivo corretto)", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: "non-un-uuid",
+    interventionSlug: "rifare-tetto",
+    eventType: "funnel_started",
+    attributionStatus: "qualcosa-di-non-valido",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal(
+    (result as { code: string }).code,
+    "invalid_funnel_session_id",
+    "mai un errore legato ad attributionStatus: quel campo non blocca mai la validazione",
+  )
 })

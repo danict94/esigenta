@@ -1,7 +1,10 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-function installFakeBrowser(search: string): {
+function installFakeBrowser(
+  search: string,
+  options?: { throwOnGet?: boolean; throwOnSet?: boolean },
+): {
   sessionStorage: Record<string, string>
 } {
   const store = new Map<string, string>()
@@ -10,8 +13,18 @@ function installFakeBrowser(search: string): {
   g.window = globalThis
   g.location = { search }
   g.sessionStorage = {
-    getItem: (key: string) => (store.has(key) ? (store.get(key) as string) : null),
+    getItem: (key: string) => {
+      if (options?.throwOnGet) {
+        throw new Error("sessionStorage.getItem blocked (test)")
+      }
+
+      return store.has(key) ? (store.get(key) as string) : null
+    },
     setItem: (key: string, value: string) => {
+      if (options?.throwOnSet) {
+        throw new Error("sessionStorage.setItem blocked (test)")
+      }
+
       store.set(key, value)
     },
     removeItem: (key: string) => {
@@ -200,4 +213,139 @@ test("applyAttributionConsent: attribution assente -> null indipendentemente dal
 
   assert.equal(applyAttributionConsent(null, true), null)
   assert.equal(applyAttributionConsent(null, false), null)
+})
+
+// ============================================================
+// FASE 7D — resolveFunnelStartedAttribution: l'attribution può fallire,
+// funnel_started (calcolato da request-stepper.tsx a partire dal valore
+// ritornato qui) mai. Tutti i casi sotto verificano solo che questa
+// funzione non lanci MAI e ritorni sempre un valore utilizzabile — la
+// prova che funnel_started viene comunque inviato al DB/GA4 è strutturale
+// (vedi request-stepper.tsx: trackFunnelEvent/trackFunnelEventGa4 sono
+// chiamate incondizionatamente, sulle righe DOPO il try/catch, mai al
+// suo interno) e non richiede un secondo test qui.
+//
+// FASE 7E: il ritorno non è più solo l'attribution — è
+// { status: "resolved" | "unknown", attribution }. I casi sotto sono stati
+// aggiornati per verificare anche lo status, non solo l'assenza di throw.
+// ============================================================
+
+// --- Caso 1 (task): attribution normale ---
+
+test("resolveFunnelStartedAttribution (Caso 1): UTM presenti e marketing concesso -> status resolved, attribution risolta correttamente", async () => {
+  installFakeBrowser("?utm_source=google&utm_medium=cpc&gclid=abc123")
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.deepEqual(resolveFunnelStartedAttribution(true), {
+    status: "resolved",
+    attribution: {
+      utmSource: "google",
+      utmMedium: "cpc",
+      gclid: "abc123",
+    },
+  })
+})
+
+// --- Caso 2 (task): sessionStorage.getItem lancia ---
+
+test("resolveFunnelStartedAttribution (Caso 2 — FASE 7E): sessionStorage.getItem lancia -> nessun throw, status unknown (non 'resolved con attribution null')", async () => {
+  // Nessun parametro nell'URL: forza il ramo che rilegge da sessionStorage
+  // (readStoredAttribution), l'unico che chiama getItem.
+  installFakeBrowser("", { throwOnGet: true })
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.doesNotThrow(() => {
+    assert.deepEqual(resolveFunnelStartedAttribution(true), {
+      status: "unknown",
+      attribution: null,
+    })
+  })
+})
+
+// --- Caso 3 (task): sessionStorage.setItem lancia ---
+
+test("resolveFunnelStartedAttribution (Caso 3): sessionStorage.setItem lancia durante la cattura da URL -> nessun throw, status resolved e l'attribution appena catturata viene comunque ritornata", async () => {
+  installFakeBrowser("?utm_source=google", { throwOnSet: true })
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.doesNotThrow(() => {
+    const resolution = resolveFunnelStartedAttribution(true)
+
+    // Lo scrivere in sessionStorage è solo un mirror best-effort (FASE 6E),
+    // già hardened di suo (safeWriteStoredRaw, FASE 7D): un suo fallimento
+    // non deve nemmeno far scattare lo status "unknown" — la risoluzione
+    // in sé è comunque riuscita.
+    assert.deepEqual(resolution, {
+      status: "resolved",
+      attribution: { utmSource: "google" },
+    })
+  })
+})
+
+// --- Caso 4 (task): storage corrotto ---
+
+test("resolveFunnelStartedAttribution (Caso 4): sessionStorage contiene JSON invalido -> status resolved, attribution vuota (null) — corrotto è già gestito internamente, non è un 'unknown'", async () => {
+  installFakeBrowser("")
+
+  ;(globalThis as unknown as { sessionStorage: Storage }).sessionStorage.setItem(
+    "esigenta:funnel-attribution",
+    "{questo non è JSON valido",
+  )
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.doesNotThrow(() => {
+    assert.deepEqual(resolveFunnelStartedAttribution(true), {
+      status: "resolved",
+      attribution: null,
+    })
+  })
+})
+
+// --- Caso 5 (task): marketing=false, comportamento gate invariato ---
+
+test("resolveFunnelStartedAttribution (Caso 5): marketing=false -> status resolved, UTM preservata, gclid filtrato, comportamento invariato dalla FASE 6E", async () => {
+  installFakeBrowser("?utm_source=google&gclid=XYZ")
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.deepEqual(resolveFunnelStartedAttribution(false), {
+    status: "resolved",
+    attribution: { utmSource: "google" },
+  })
+})
+
+// --- Robustezza aggiuntiva: fallimento combinato (getItem lancia E lo storage sarebbe comunque stato corrotto) ---
+
+test("resolveFunnelStartedAttribution: nessun parametro URL e sessionStorage del tutto inaccessibile -> status unknown, mai un throw", async () => {
+  installFakeBrowser("", { throwOnGet: true, throwOnSet: true })
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.doesNotThrow(() => {
+    assert.deepEqual(resolveFunnelStartedAttribution(true), {
+      status: "unknown",
+      attribution: null,
+    })
+    assert.deepEqual(resolveFunnelStartedAttribution(false), {
+      status: "unknown",
+      attribution: null,
+    })
+  })
+})
+
+// --- FASE 7E: nessun parametro URL, nessuno storage precedente, nessun errore -> status resolved con attribution null (Caso A, genuinamente non attribuito — non "unknown") ---
+
+test("resolveFunnelStartedAttribution (FASE 7E — Caso A vs B): nessuna attribution reale e nessun errore -> status resolved (attribution null), MAI unknown", async () => {
+  installFakeBrowser("")
+
+  const { resolveFunnelStartedAttribution } = await freshModule()
+
+  assert.deepEqual(resolveFunnelStartedAttribution(true), {
+    status: "resolved",
+    attribution: null,
+  })
 })

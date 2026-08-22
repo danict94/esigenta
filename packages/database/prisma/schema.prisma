@@ -998,6 +998,22 @@ model FunnelEvent {
   utmTerm     String?
   utmContent  String?
 
+  /**
+   * FASE 7E — only for funnel_started, set by the client alongside the 8
+   * attribution fields above. Distinguishes two cases that otherwise
+   * produce an identical row (every attribution field null): "resolved"
+   * means attribution capture ran without error and genuinely found
+   * nothing to attribute (organic/direct traffic, or a real click id that
+   * consent chose not to persist — see CONSENT DECISION REQUIRED above);
+   * "unknown" means capture itself failed (e.g. sessionStorage threw) and
+   * we never actually got to find out. Never set for any other eventType.
+   * Nullable for forward/backward compatibility with any client build
+   * that predates this field. See
+   * apps/web/src/site/analytics/funnel-attribution.ts
+   * (resolveFunnelStartedAttribution) for where this is decided.
+   */
+  attributionStatus String?
+
   createdAt DateTime @default(now())
 
   /**

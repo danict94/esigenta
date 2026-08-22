@@ -13,10 +13,8 @@ import {
   NOTE_STEP_ID,
 } from "@esigenta/funnel";
 
-import {
-  applyAttributionConsent,
-  resolveFunnelAttribution,
-} from "../../../site/analytics/funnel-attribution";
+import type { FunnelAttributionResolution } from "../../../site/analytics/funnel-attribution";
+import { resolveFunnelStartedAttribution } from "../../../site/analytics/funnel-attribution";
 import {
   trackFunnelEventGa4,
   trackGenerateLead,
@@ -55,6 +53,23 @@ const GOOGLE_ADS_CONVERSION_LABEL =
 // entrambi visibili — da un doppio invio accidentale dello stesso
 // tentativo, senza introdurre un secondo meccanismo di dedup.
 const SUBMIT_STEP_KEY = "submit";
+
+// FASE 7 FINAL (§D2): un valore generoso, non aggressivo — la risposta di
+// POST /api/requests include, sincronamente, l'invio dell'email di
+// verifica (vedi createRequestFromDraft), quindi un tempo di risposta di
+// alcuni secondi è normale, non un sintomo di problema. Questo timeout
+// serve solo a evitare uno spinner attivo per un tempo indeterminato se
+// il server non risponde affatto (vedi FASE 7A, LOW "nessun timeout
+// esplicito submit/upload") — mai a interrompere un submit che sta
+// semplicemente impiegando qualche secondo in più del solito.
+//
+// Sicuro da introdurre solo ORA, dopo la FASE 7B: un abort qui non
+// implica che il server non abbia creato la Request — semplicemente non
+// lo sappiamo — e un retry successivo continua a usare lo stesso
+// funnelSessionId (mai ripulito su questo ramo, vedi submitDraft più
+// sotto), quindi il fast-path/P2002 recovery della FASE 7B lo riconosce
+// come lo stesso tentativo invece di crearne uno duplicato.
+const SUBMIT_TIMEOUT_MS = 25_000;
 
 type RequestStepperProps = {
   payload: JsonRuntimeFunnelPayload;
@@ -210,19 +225,44 @@ export function RequestStepper({
       // è atterrato direttamente su /richiesta/[slug]?gclid=... senza mai
       // passare da un'altra pagina, resolveFunnelAttribution() la cattura
       // qui per la prima volta — nessuna dipendenza dall'ordine.
-      const attribution = applyAttributionConsent(
-        resolveFunnelAttribution(),
-        readCookieConsentPreferences()?.marketing === true,
-      );
+      //
+      // FASE 7D: isolata di proposito in un try/catch. Un fallimento
+      // nella risoluzione dell'attribution (o nella lettura del consenso
+      // qui sopra) deve poter costare SOLO i campi attribution — mai
+      // l'intero evento funnel_started, che va comunque inviato subito
+      // sotto. resolveFunnelStartedAttribution ha già un proprio
+      // try/catch interno (vedi funnel-attribution.ts); questo è un
+      // secondo livello che copre anche la lettura del consenso stesso.
+      //
+      // FASE 7E: il fallback del catch qui sotto usa status "unknown" di
+      // proposito — se anche solo LEGGERE il consenso lancia, non sappiamo
+      // davvero se ci fosse attribution da determinare, esattamente come
+      // quando resolveFunnelStartedAttribution stessa fallisce al suo
+      // interno.
+      let resolution: FunnelAttributionResolution = {
+        status: "unknown",
+        attribution: null,
+      };
+
+      try {
+        resolution = resolveFunnelStartedAttribution(
+          readCookieConsentPreferences()?.marketing === true,
+        );
+      } catch {
+        resolution = { status: "unknown", attribution: null };
+      }
 
       // DB first-party: sempre, indipendentemente dal consenso (FASE 6C)
       // — l'unico filtro applicato è quello già calcolato sopra su
       // gclid/gbraid/wbraid (mai su funnel_started in sé, mai sugli UTM).
+      // attributionStatus (FASE 7E) distingue "risolta, magari vuota" da
+      // "non determinabile" — vedi funnel-attribution.ts.
       trackFunnelEvent({
         funnelSessionId,
         interventionSlug: payload.selectedIntervention.slug,
         eventType: "funnel_started",
-        ...attribution,
+        attributionStatus: resolution.status,
+        ...resolution.attribution,
       });
 
       // Mirror GA4: solo se analytics===true, la guardia è tutta dentro
@@ -394,6 +434,14 @@ export function RequestStepper({
     // submitDraft()).
     let submitFailureErrorCode: string | null = null;
 
+    // FASE 7 FINAL (§D2): il timer viene sempre ripulito nel finally più
+    // sotto, sia che scada sia che il fetch finisca prima — mai un timer
+    // residuo tra un tentativo e l'altro.
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => {
+      abortController.abort();
+    }, SUBMIT_TIMEOUT_MS);
+
     try {
       const response = await fetch("/api/requests", {
         method: "POST",
@@ -407,6 +455,7 @@ export function RequestStepper({
           customerDescription,
           funnelSessionId,
         }),
+        signal: abortController.signal,
       });
 
       const responseBody = (await response.json().catch(() => null)) as unknown;
@@ -509,6 +558,8 @@ export function RequestStepper({
       // applicativo noto né qualcosa di davvero inatteso lato dominio.
       submitFailureErrorCode = "network_error";
     } finally {
+      clearTimeout(timeoutId);
+
       // Esattamente un submit_failed per tentativo fallito: sul successo
       // submitFailureErrorCode resta null e questo non fa nulla.
       if (submitFailureErrorCode) {

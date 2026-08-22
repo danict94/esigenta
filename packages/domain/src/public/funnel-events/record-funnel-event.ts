@@ -119,6 +119,18 @@ const ATTRIBUTION_FIELD_NAMES = [
 
 type AttributionFieldName = (typeof ATTRIBUTION_FIELD_NAMES)[number]
 
+/**
+ * FASE 7E — closed allow-list, only meaningful for eventType ===
+ * "funnel_started" (same restriction as ATTRIBUTION_FIELD_NAMES above,
+ * see normalizeAttributionStatus below). "resolved" = attribution capture
+ * ran without error (whether or not it actually found anything to
+ * attribute); "unknown" = capture itself failed. See the FunnelEvent
+ * model comment in schema.prisma for the full rationale.
+ */
+export const FUNNEL_ATTRIBUTION_STATUSES = ["resolved", "unknown"] as const
+
+export type FunnelAttributionStatus = (typeof FUNNEL_ATTRIBUTION_STATUSES)[number]
+
 export type RecordFunnelEventInput = Record<string, unknown>
 
 export type RecordFunnelEventResult =
@@ -193,6 +205,27 @@ export function normalizeAttributionFields(
   }
 
   return attribution
+}
+
+/**
+ * Never rejects — same principle as normalizeErrorCode above: an
+ * unrecognized/missing attributionStatus is simply not persisted, never a
+ * reason to reject the whole funnel_started event. Only meaningful for
+ * eventType === "funnel_started" (see the caller below); on any other
+ * eventType this is never even invoked. Exported for the same
+ * database-avoidance reason as the other normalizers here.
+ */
+export function normalizeAttributionStatus(
+  value: unknown,
+): FunnelAttributionStatus | undefined {
+  if (
+    typeof value === "string" &&
+    (FUNNEL_ATTRIBUTION_STATUSES as readonly string[]).includes(value)
+  ) {
+    return value as FunnelAttributionStatus
+  }
+
+  return undefined
 }
 
 /**
@@ -280,6 +313,11 @@ export async function recordFunnelEvent(
   const attribution =
     eventType === "funnel_started" ? normalizeAttributionFields(body) : {}
 
+  const attributionStatus =
+    eventType === "funnel_started"
+      ? normalizeAttributionStatus(body.attributionStatus)
+      : undefined
+
   const outcome = await writeFunnelEvent({
     funnelSessionId,
     interventionSlug,
@@ -288,6 +326,7 @@ export async function recordFunnelEvent(
     stepIndex,
     ...(errorCode ? { errorCode } : {}),
     ...attribution,
+    ...(attributionStatus ? { attributionStatus } : {}),
   })
 
   return { ok: true, outcome }

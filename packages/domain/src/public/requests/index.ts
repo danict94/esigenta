@@ -16,3 +16,10 @@ export type {
 export {
   storeUploadedRequestPhoto,
 } from "./store-uploaded-request-photo"
+
+export type {
+  CleanupOrphanRequestPhotosResult,
+} from "./cleanup-orphan-request-photos"
+export {
+  cleanupOrphanRequestPhotos,
+} from "./cleanup-orphan-request-photos"

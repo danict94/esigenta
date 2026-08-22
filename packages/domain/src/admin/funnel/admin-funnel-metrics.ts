@@ -32,7 +32,7 @@ import { prisma } from "@esigenta/database"
 import { resolveFunnelModel } from "@esigenta/funnel"
 
 export type AdminFunnelPeriod = "7d" | "30d" | "90d" | "all"
-export type AdminFunnelProvenance = "google_ads" | "campaign" | "direct"
+export type AdminFunnelProvenance = "google_ads" | "campaign" | "direct" | "unknown"
 
 export type AdminFunnelFilters = {
   period?: AdminFunnelPeriod
@@ -159,6 +159,11 @@ const PROVENANCE_LABELS: Record<AdminFunnelProvenance, string> = {
   google_ads: "Google Ads (gclid/gbraid/wbraid)",
   campaign: "Campagna (UTM)",
   direct: "Diretto / organico",
+  // FASE 7E: distinta da "direct" — qui la cattura dell'attribution è
+  // fallita tecnicamente (es. sessionStorage bloccata), non è stata
+  // semplicemente assente. Vedi deriveAttributionSource sotto e il
+  // commento sul modello FunnelEvent in schema.prisma.
+  unknown: "Non determinabile (errore tecnico)",
 }
 
 export function provenanceLabel(provenance: AdminFunnelProvenance): string {
@@ -173,13 +178,25 @@ export function provenanceLabel(provenance: AdminFunnelProvenance): string {
  * click) — see FASE 6E CONSENT DECISION REQUIRED for why these fields may
  * legitimately be absent even for a real Google Ads session (marketing
  * consent declined).
+ *
+ * FASE 7E: checked first, ahead of every field-based branch below —
+ * attributionStatus === "unknown" means capture itself failed (see the
+ * FunnelEvent model comment in schema.prisma), which is a materially
+ * different fact from "capture succeeded and found nothing" (the plain
+ * "direct" case, still reached whenever attributionStatus is "resolved"
+ * or simply absent — e.g. a row written before this field existed).
  */
 export function deriveAttributionSource(attribution: {
   gclid?: string | null
   gbraid?: string | null
   wbraid?: string | null
   utmSource?: string | null
+  attributionStatus?: string | null
 }): AdminFunnelProvenance {
+  if (attribution.attributionStatus === "unknown") {
+    return "unknown"
+  }
+
   if (attribution.gclid || attribution.gbraid || attribution.wbraid) {
     return "google_ads"
   }
@@ -214,33 +231,72 @@ export function deriveSessionStatus(
 
 // --- DB-backed aggregation (everything below touches Prisma) ---
 
+/**
+ * NOT { attributionStatus: "unknown" } expressed as an explicit OR of
+ * (null OR any other string) rather than a bare `{ not: "unknown" }` —
+ * deliberately, to avoid depending on exactly how Prisma's query engine
+ * treats NULL under `not` for a nullable column (unlike raw SQL `<>`,
+ * which never matches NULL). This form is unambiguous: it matches every
+ * row whose attributionStatus is null (the vast majority — legacy rows,
+ * or any client build predating FASE 7E) OR any value other than
+ * "unknown", and excludes only the rows we actually mean to exclude.
+ */
+const ATTRIBUTION_STATUS_NOT_UNKNOWN: Prisma.FunnelEventWhereInput = {
+  OR: [{ attributionStatus: null }, { attributionStatus: { not: "unknown" } }],
+}
+
 function provenanceWhere(
   provenance: AdminFunnelProvenance,
 ): Prisma.FunnelEventWhereInput {
+  // FASE 7E: checked first, mirroring deriveAttributionSource's own
+  // precedence — a row with attributionStatus "unknown" is excluded from
+  // every other bucket below, never double-counted.
+  if (provenance === "unknown") {
+    return { attributionStatus: "unknown" }
+  }
+
   if (provenance === "google_ads") {
+    // AND, not a spread: ATTRIBUTION_STATUS_NOT_UNKNOWN already has its
+    // own top-level OR — spreading both into one object would collide on
+    // the `OR` key and silently drop one of the two conditions.
     return {
-      OR: [
-        { gclid: { not: null } },
-        { gbraid: { not: null } },
-        { wbraid: { not: null } },
+      AND: [
+        ATTRIBUTION_STATUS_NOT_UNKNOWN,
+        {
+          OR: [
+            { gclid: { not: null } },
+            { gbraid: { not: null } },
+            { wbraid: { not: null } },
+          ],
+        },
       ],
     }
   }
 
   if (provenance === "campaign") {
     return {
-      utmSource: { not: null },
-      gclid: null,
-      gbraid: null,
-      wbraid: null,
+      AND: [
+        ATTRIBUTION_STATUS_NOT_UNKNOWN,
+        {
+          utmSource: { not: null },
+          gclid: null,
+          gbraid: null,
+          wbraid: null,
+        },
+      ],
     }
   }
 
   return {
-    gclid: null,
-    gbraid: null,
-    wbraid: null,
-    utmSource: null,
+    AND: [
+      ATTRIBUTION_STATUS_NOT_UNKNOWN,
+      {
+        gclid: null,
+        gbraid: null,
+        wbraid: null,
+        utmSource: null,
+      },
+    ],
   }
 }
 
@@ -349,6 +405,7 @@ async function getRecentFunnelSessions(
       gbraid: true,
       wbraid: true,
       utmSource: true,
+      attributionStatus: true,
     },
   })
 
@@ -580,30 +637,40 @@ export async function getAdminFunnelMetrics(
 
   // Attribution summary: this table IS the provenance breakdown, so it is
   // always computed over the period/intervention scope only, independent
-  // of the `provenance` filter itself.
-  const [googleAdsCount, campaignCount, directCount] = await Promise.all([
-    prisma.funnelEvent.count({
-      where: {
-        ...scope,
-        eventType: "funnel_started",
-        ...provenanceWhere("google_ads"),
-      },
-    }),
-    prisma.funnelEvent.count({
-      where: {
-        ...scope,
-        eventType: "funnel_started",
-        ...provenanceWhere("campaign"),
-      },
-    }),
-    prisma.funnelEvent.count({
-      where: {
-        ...scope,
-        eventType: "funnel_started",
-        ...provenanceWhere("direct"),
-      },
-    }),
-  ])
+  // of the `provenance` filter itself. FASE 7E added "unknown" as a 4th
+  // bucket — see deriveAttributionSource/provenanceWhere above for why it
+  // is a materially different fact from "direct".
+  const [googleAdsCount, campaignCount, directCount, unknownCount] =
+    await Promise.all([
+      prisma.funnelEvent.count({
+        where: {
+          ...scope,
+          eventType: "funnel_started",
+          ...provenanceWhere("google_ads"),
+        },
+      }),
+      prisma.funnelEvent.count({
+        where: {
+          ...scope,
+          eventType: "funnel_started",
+          ...provenanceWhere("campaign"),
+        },
+      }),
+      prisma.funnelEvent.count({
+        where: {
+          ...scope,
+          eventType: "funnel_started",
+          ...provenanceWhere("direct"),
+        },
+      }),
+      prisma.funnelEvent.count({
+        where: {
+          ...scope,
+          eventType: "funnel_started",
+          ...provenanceWhere("unknown"),
+        },
+      }),
+    ])
 
   const attribution: AdminFunnelAttributionRow[] = [
     {
@@ -620,6 +687,11 @@ export async function getAdminFunnelMetrics(
       source: "direct",
       label: provenanceLabel("direct"),
       sessionCount: directCount,
+    },
+    {
+      source: "unknown",
+      label: provenanceLabel("unknown"),
+      sessionCount: unknownCount,
     },
   ]
 

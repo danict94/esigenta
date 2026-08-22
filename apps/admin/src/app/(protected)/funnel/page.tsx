@@ -42,6 +42,8 @@ const PROVENANCE_OPTIONS: { value: AdminFunnelProvenance; label: string }[] = [
   { value: "google_ads", label: "Google Ads (gclid/gbraid/wbraid)" },
   { value: "campaign", label: "Campagna (UTM)" },
   { value: "direct", label: "Diretto / organico" },
+  // FASE 7E: distinta da "direct" — cattura fallita per un errore tecnico, non semplicemente assente.
+  { value: "unknown", label: "Non determinabile (errore tecnico)" },
 ]
 
 const SESSION_STATUS_LABELS: Record<AdminFunnelSessionStatus, string> = {
@@ -69,7 +71,10 @@ function normalizePeriod(value?: string): AdminFunnelPeriod {
 }
 
 function normalizeProvenance(value?: string): AdminFunnelProvenance | undefined {
-  return value === "google_ads" || value === "campaign" || value === "direct"
+  return value === "google_ads" ||
+    value === "campaign" ||
+    value === "direct" ||
+    value === "unknown"
     ? value
     : undefined
 }

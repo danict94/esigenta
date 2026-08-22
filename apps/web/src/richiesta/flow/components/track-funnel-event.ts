@@ -39,6 +39,13 @@ export type TrackFunnelEventInput = {
   utmCampaign?: string
   utmTerm?: string
   utmContent?: string
+  /**
+   * Solo per funnel_started (FASE 7E) — "resolved" | "unknown". Distingue
+   * "nessuna attribution da determinare/persistere" da "la risoluzione
+   * dell'attribution è fallita per un errore tecnico". Vedi
+   * site/analytics/funnel-attribution.ts, resolveFunnelStartedAttribution.
+   */
+  attributionStatus?: "resolved" | "unknown"
 }
 
 /**
@@ -78,6 +85,9 @@ export function trackFunnelEvent(input: TrackFunnelEventInput): void {
       ...(input.utmCampaign !== undefined ? { utmCampaign: input.utmCampaign } : {}),
       ...(input.utmTerm !== undefined ? { utmTerm: input.utmTerm } : {}),
       ...(input.utmContent !== undefined ? { utmContent: input.utmContent } : {}),
+      ...(input.attributionStatus !== undefined
+        ? { attributionStatus: input.attributionStatus }
+        : {}),
     }),
   }).catch(() => {
     // Silenzioso di proposito: vedi il commento sulla funzione.

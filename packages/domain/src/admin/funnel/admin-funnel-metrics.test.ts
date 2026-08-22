@@ -97,14 +97,15 @@ test("resolveStepLabel: interventionSlug sconosciuto -> risolve comunque (modell
 
 // --- provenanceLabel ---
 
-test("provenanceLabel: le 3 etichette sono stabili e distinte", () => {
+test("provenanceLabel: le 4 etichette sono stabili e distinte (FASE 7E aggiunge 'unknown')", () => {
   const labels = new Set([
     provenanceLabel("google_ads"),
     provenanceLabel("campaign"),
     provenanceLabel("direct"),
+    provenanceLabel("unknown"),
   ])
 
-  assert.equal(labels.size, 3)
+  assert.equal(labels.size, 4)
 })
 
 // --- deriveAttributionSource ---
@@ -129,6 +130,36 @@ test("deriveAttributionSource: nessun campo attribution -> direct", () => {
   assert.equal(
     deriveAttributionSource({ gclid: null, gbraid: null, wbraid: null, utmSource: null }),
     "direct",
+  )
+})
+
+// --- FASE 7E: attributionStatus "unknown" ---
+
+test("deriveAttributionSource (FASE 7E): attributionStatus 'unknown' -> unknown, anche se per errore fossero presenti campi attribution (non dovrebbe succedere mai in pratica, ma la precedenza deve restare esplicita)", () => {
+  assert.equal(
+    deriveAttributionSource({ attributionStatus: "unknown" }),
+    "unknown",
+  )
+  assert.equal(
+    deriveAttributionSource({ gclid: "abc", attributionStatus: "unknown" }),
+    "unknown",
+    "unknown vince sempre, indipendentemente da cosa contengono gli altri campi",
+  )
+})
+
+test("deriveAttributionSource (FASE 7E): attributionStatus 'resolved' o assente -> comportamento invariato, mai 'unknown'", () => {
+  assert.equal(
+    deriveAttributionSource({ gclid: "abc", attributionStatus: "resolved" }),
+    "google_ads",
+  )
+  assert.equal(
+    deriveAttributionSource({ attributionStatus: "resolved" }),
+    "direct",
+  )
+  assert.equal(
+    deriveAttributionSource({}),
+    "direct",
+    "un campo attributionStatus del tutto assente (riga scritta prima della FASE 7E) non deve mai risultare 'unknown'",
   )
 })
 

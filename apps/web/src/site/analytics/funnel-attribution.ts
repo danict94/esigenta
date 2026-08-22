@@ -61,21 +61,84 @@ function readAttributionFromCurrentUrl(): FunnelAttribution | null {
   return hasAny ? attribution : null
 }
 
-function readStoredAttribution(): FunnelAttribution | null {
-  const raw = window.sessionStorage.getItem(FUNNEL_ATTRIBUTION_STORAGE_KEY)
+/**
+ * FASE 7D: window.sessionStorage.getItem itself (not just a malformed
+ * value) can throw in some locked-down browser configurations — same
+ * class of failure already hardened for the funnel session id in
+ * resolve-funnel-session-id.ts (FASE 7C).
+ *
+ * FASE 7E: unlike the FASE 7D version, this no longer silently coalesces
+ * a failure into "nothing stored" — that early coalescing is exactly what
+ * made a real storage failure indistinguishable from Caso E (genuinely no
+ * attribution) by the time it reached resolveFunnelStartedAttribution
+ * (caught by a real concurrent-race-style test, not assumed). Returns a
+ * discriminated result instead, so the failure survives long enough for
+ * the caller that actually needs to know about it (resolveFunnelAttributionWithStatus below) to see it — while readStoredAttribution
+ * (used by the plain, status-agnostic resolveFunnelAttribution) still
+ * collapses it to "nothing", unchanged external behavior for that caller.
+ */
+type StorageReadResult =
+  | { ok: true; value: string | null }
+  | { ok: false }
 
-  if (!raw) {
-    return null
+function safeReadStoredRaw(): StorageReadResult {
+  try {
+    return { ok: true, value: window.sessionStorage.getItem(FUNNEL_ATTRIBUTION_STORAGE_KEY) }
+  } catch {
+    return { ok: false }
+  }
+}
+
+/**
+ * Same principle as safeReadStoredRaw above, but a failed WRITE is
+ * deliberately never treated as an attribution-resolution failure (see
+ * resolveFunnelAttributionWithStatus): it only costs the sessionStorage
+ * mirror, never the freshly-captured value the caller already has in
+ * hand from the URL in the same call.
+ */
+function safeWriteStoredRaw(attribution: FunnelAttribution): void {
+  try {
+    window.sessionStorage.setItem(
+      FUNNEL_ATTRIBUTION_STORAGE_KEY,
+      JSON.stringify(attribution),
+    )
+  } catch {
+    // Best-effort mirror only — see resolveFunnelAttributionWithStatus.
+  }
+}
+
+type AttributionReadResult = { ok: boolean; attribution: FunnelAttribution | null }
+
+/**
+ * Corrupted/unparsable JSON already in storage is NOT a storage-access
+ * failure — the read itself succeeded, what was stored is simply garbage
+ * — so this returns ok:true with attribution:null in that case, same as
+ * "nothing stored". Only a genuine failure to even read the raw string
+ * (safeReadStoredRaw's ok:false) produces ok:false here.
+ */
+function readStoredAttributionWithStatus(): AttributionReadResult {
+  const raw = safeReadStoredRaw()
+
+  if (!raw.ok) {
+    return { ok: false, attribution: null }
+  }
+
+  if (!raw.value) {
+    return { ok: true, attribution: null }
   }
 
   try {
-    const parsed = JSON.parse(raw) as unknown
+    const parsed = JSON.parse(raw.value) as unknown
 
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-      ? (parsed as FunnelAttribution)
-      : null
+    return {
+      ok: true,
+      attribution:
+        parsed && typeof parsed === "object" && !Array.isArray(parsed)
+          ? (parsed as FunnelAttribution)
+          : null,
+    }
   } catch {
-    return null
+    return { ok: true, attribution: null }
   }
 }
 
@@ -102,23 +165,34 @@ function readStoredAttribution(): FunnelAttribution | null {
  * funnel_started (vedi applyAttributionConsent più sotto e
  * request-stepper.tsx — CONSENT DECISION REQUIRED, vedi report FASE 6E).
  */
-export function resolveFunnelAttribution(): FunnelAttribution | null {
+/**
+ * FASE 7E: same logic as resolveFunnelAttribution below, but surfaces
+ * whether resolution genuinely succeeded (ok:true, whether or not
+ * anything was found) or a storage read failed (ok:false) — the one
+ * signal resolveFunnelStartedAttribution needs to tell Caso A (no
+ * attribution) apart from Caso B (couldn't determine). Writing the
+ * URL-captured value to sessionStorage is still best-effort here (see
+ * safeWriteStoredRaw): a write failure never turns ok:true into
+ * ok:false, since the value itself was still captured successfully.
+ */
+function resolveFunnelAttributionWithStatus(): AttributionReadResult {
   if (typeof window === "undefined") {
-    return null
+    return { ok: true, attribution: null }
   }
 
   const fromUrl = readAttributionFromCurrentUrl()
 
   if (fromUrl) {
-    window.sessionStorage.setItem(
-      FUNNEL_ATTRIBUTION_STORAGE_KEY,
-      JSON.stringify(fromUrl),
-    )
+    safeWriteStoredRaw(fromUrl)
 
-    return fromUrl
+    return { ok: true, attribution: fromUrl }
   }
 
-  return readStoredAttribution()
+  return readStoredAttributionWithStatus()
+}
+
+export function resolveFunnelAttribution(): FunnelAttribution | null {
+  return resolveFunnelAttributionWithStatus().attribution
 }
 
 /**
@@ -160,4 +234,57 @@ export function applyAttributionConsent(
   }
 
   return Object.keys(utmOnly).length > 0 ? utmOnly : null
+}
+
+/**
+ * FASE 7D — unico punto che request-stepper.tsx chiama per calcolare
+ * l'attribution di funnel_started. Isola resolveFunnelAttribution() +
+ * applyAttributionConsent() (già hardened sopra per il proprio accesso a
+ * sessionStorage, ma questo è un secondo livello di difesa contro
+ * qualunque altro fallimento non ancora previsto) dietro un unico
+ * try/catch: un fallimento qui deve poter costare SOLO i campi
+ * attribution, mai l'intero evento funnel_started — vedi report FASE 7D.
+ *
+ * FASE 7E: il ritorno non è più solo `FunnelAttribution | null` — porta
+ * anche uno `status` esplicito, perché "nessuna attribution" e
+ * "attribution non determinabile" sono fatti diversi che prima
+ * risultavano indistinguibili (stesso `null`, stesso payload DB con tutti
+ * i campi assenti). `status: "resolved"` copre sia il caso con dati
+ * (attribution non nulla) sia il caso senza — la risoluzione è comunque
+ * riuscita, non c'è stato alcun errore, il fatto che non ci sia nulla da
+ * attribuire è già un'informazione completa. `status: "unknown"` copre
+ * solo il ramo catch: la risoluzione stessa è fallita, `attribution` è
+ * sempre null in quel caso perché non sappiamo cosa ci fosse davvero.
+ * Vedi il commento sul modello FunnelEvent in schema.prisma.
+ *
+ * Riceve il consenso marketing già letto dal chiamante (mai una nuova
+ * lettura di consent-storage qui dentro): request-stepper.tsx resta
+ * l'unico punto che legge readCookieConsentPreferences per questo scopo,
+ * invariato dalla FASE 6E — vedi il commento lì.
+ */
+export type FunnelAttributionResolution = {
+  status: "resolved" | "unknown"
+  attribution: FunnelAttribution | null
+}
+
+export function resolveFunnelStartedAttribution(
+  hasMarketingConsent: boolean,
+): FunnelAttributionResolution {
+  try {
+    const resolved = resolveFunnelAttributionWithStatus()
+
+    if (!resolved.ok) {
+      return { status: "unknown", attribution: null }
+    }
+
+    return {
+      status: "resolved",
+      attribution: applyAttributionConsent(
+        resolved.attribution,
+        hasMarketingConsent,
+      ),
+    }
+  } catch {
+    return { status: "unknown", attribution: null }
+  }
 }
