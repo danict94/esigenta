@@ -723,6 +723,33 @@ model Request {
   structuredData Json?
 
   ///////////////////////////////////////////////////////////
+  // IDEMPOTENCY (FASE 7B)
+  ///////////////////////////////////////////////////////////
+
+  /**
+   * Business idempotency key for Request creation — deliberately named
+   * differently from FunnelEvent.funnelSessionId (telemetry) and the copy
+   * already kept in structuredData.funnelSessionId (diagnostic only, FASE
+   * 6B) to avoid ambiguity: THIS column is the one Postgres actually
+   * enforces uniqueness on. Same value as the client's funnelSessionId
+   * (packages/domain/src/public/requests/funnel-session-id.ts) when the
+   * request came through the public funnel; null for any other creation
+   * path (legacy requests, admin-created requests, anything that doesn't
+   * carry a funnelSessionId — see createRequestFromDraft). Nullable +
+   * UNIQUE: Postgres allows unlimited NULLs in a unique index, so requests
+   * without a funnelSessionId never collide with each other.
+   *
+   * Enforcement is at the database level (see
+   * packages/domain/src/public/requests/create-request.ts, FASE 7B
+   * report): a second Request.create() with the same submissionSessionId
+   * always fails with P2002, which the caller catches and turns into
+   * "return the already-created Request" instead of a duplicate — this is
+   * what actually prevents duplicate Requests on retry/concurrent submit,
+   * never client-side state alone.
+   */
+  submissionSessionId String? @unique
+
+  ///////////////////////////////////////////////////////////
   // MODERATION
   ///////////////////////////////////////////////////////////
 

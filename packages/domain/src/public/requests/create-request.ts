@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
 import { validateRequestPhotoAnswer } from "@esigenta/uploads"
 import type { RequestPhotoMetadata } from "@esigenta/uploads"
@@ -46,6 +46,137 @@ export type CreateRequestFromDraftResult = {
   /** Snapshot tassonomico già risolto/validato in questa stessa chiamata — mai da rifidare lato client (es. per Analytics). */
   interventionSlug: string
   serviceGroupSlug: string | null
+}
+
+// --- FASE 7B: idempotency on Request.submissionSessionId (see the
+// column comment on schema.prisma's Request model + the FASE 7B report) ---
+
+/**
+ * Looks up an already-created Request for this funnelSessionId. Used
+ * twice: (1) as a fast, indexed pre-check before even starting the
+ * creation transaction — covers the common sequential-retry case (the
+ * first Request already fully committed by the time the retry arrives)
+ * without ever touching photo attachment, since a retry must never
+ * attempt to re-attach already-ATTACHED photos (see FASE 7A report §8);
+ * (2) after catching a submissionSessionId P2002 collision from a
+ * genuine concurrent race, to recover the winning Request. Selects only
+ * what toIdempotentRetryResult needs to build a normal-looking success
+ * response.
+ */
+async function findRequestBySubmissionSessionId(
+  submissionSessionId: string,
+): Promise<{
+  id: string
+  interventionSlug: string | null
+  serviceGroupSlug: string | null
+} | null> {
+  const existing = await prisma.request.findUnique({
+    where: { submissionSessionId },
+    select: {
+      id: true,
+      interventionSlug: true,
+      intervention: { select: { projectGroup: { select: { slug: true } } } },
+    },
+  })
+
+  if (!existing) {
+    return null
+  }
+
+  return {
+    id: existing.id,
+    interventionSlug: existing.interventionSlug,
+    serviceGroupSlug: existing.intervention?.projectGroup?.slug ?? null,
+  }
+}
+
+/**
+ * A retry recovering an existing Request must look exactly like a normal
+ * success to every caller (submitRuntimeRequest, the API route, the
+ * client) — see FASE 7B report §11. Two deliberate simplifications, both
+ * explained here and safe within this phase's scope:
+ * - status is always reported as "PENDING_VERIFICATION" (the literal type
+ *   this function has always returned), even on the astronomically rare
+ *   chance the customer already verified their email in the gap between
+ *   the original request and a very late retry — the client never
+ *   branches on this field, only on requestId/verificationEmailSent/
+ *   interventionSlug/serviceGroupSlug (see request-stepper.tsx /
+ *   request-step-ui.tsx).
+ * - verificationEmailSent is always reported as `false` (FASE 7B.1 —
+ *   revised from FASE 7B's original `true`, which was flagged as an
+ *   invented certainty and is no longer correct). Nothing in the data
+ *   model records whether the ORIGINAL send attempt succeeded — a
+ *   CustomerAccessToken row for REQUEST_VERIFICATION exists on every
+ *   Request unconditionally (it's created inside the same transaction as
+ *   the Request itself, before the email is ever attempted), so its mere
+ *   presence proves nothing about delivery. Rather than fabricate a
+ *   confirmed-success value we cannot know, `false` is read literally as
+ *   "this call did not itself send or confirm an email" — which is always
+ *   true for a retry, regardless of what the original call's send attempt
+ *   did. This is a deliberate, minimal choice within the existing boolean
+ *   contract, not a new architecture: no new column, no new lookup.
+ *   Fixing a genuinely failed original send stays out of scope — the
+ *   existing admin recovery paths (resendRequestVerificationEmail,
+ *   verifyRequestManually) already cover it, and this function never
+ *   triggers a second send on its own.
+ */
+export function toIdempotentRetryResult(
+  existing: {
+    id: string
+    interventionSlug: string | null
+    serviceGroupSlug: string | null
+  },
+  fallbackInterventionSlug: string,
+): CreateRequestFromDraftResult {
+  return {
+    requestId: existing.id,
+    status: "PENDING_VERIFICATION",
+    verificationEmailSent: false,
+    verificationEmailProvider: "resend",
+    interventionSlug: existing.interventionSlug ?? fallbackInterventionSlug,
+    serviceGroupSlug: existing.serviceGroupSlug,
+  }
+}
+
+/**
+ * True only for a P2002 raised specifically by
+ * Request.submissionSessionId — never swallows any other unique-constraint
+ * violation (e.g. a genuine requestCode collision, which would be a
+ * different bug). Even if this were ever imprecise, the caller only
+ * treats it as a real collision when findRequestBySubmissionSessionId
+ * actually finds a matching row — any other P2002 falls through and
+ * re-throws unchanged.
+ *
+ * FASE 7B.1: checks error.meta.target first (array of field names or a
+ * constraint-name string, depending on Prisma version), but that alone was
+ * NOT enough — confirmed against a real concurrent-race smoke test against
+ * production Postgres, where @prisma/adapter-pg (driver adapters, this
+ * repo's setup — see packages/database/src/client.ts) reported P2002 with
+ * `meta: { modelName: 'Request', driverAdapterError: [Error] }` and NO
+ * `target` at all. The field name is still always present in Prisma's own
+ * human-readable message ("Unique constraint failed on the fields:
+ * (`submissionSessionId`)"), which is driver/version-independent (it's
+ * Prisma's own formatting, not the raw driver error) — so that is the
+ * primary, reliable signal; meta.target is kept as a secondary check for
+ * any future/older Prisma setup that does populate it.
+ */
+export function isSubmissionSessionIdCollision(error: unknown): boolean {
+  if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
+    return false
+  }
+
+  if (error.code !== "P2002") {
+    return false
+  }
+
+  if (error.message.includes("submissionSessionId")) {
+    return true
+  }
+
+  const target = error.meta?.target
+  const targetText = Array.isArray(target) ? target.join(",") : String(target ?? "")
+
+  return targetText.includes("submissionSessionId")
 }
 
 function isValidEmail(value: string): boolean {
@@ -274,6 +405,28 @@ export async function createRequestFromDraft({
   draft,
   funnelSessionId,
 }: CreateRequestFromDraftInput): Promise<CreateRequestFromDraftResult> {
+  // FASE 7B: fast-path idempotency check. Covers the common sequential
+  // retry (the original Request already committed by the time this call
+  // arrives) — cheap, indexed, and crucially runs BEFORE any photo
+  // validation/attachment, so a retry can never hit the photo-attach race
+  // described in the FASE 7A report §8. A true concurrent race (two
+  // submits arriving before either commits) is NOT prevented by this
+  // check alone — see the P2002 handling around the transaction below,
+  // which is the actual database-enforced guarantee (see FASE 7B report
+  // §6, "Concorrenza").
+  if (funnelSessionId) {
+    const existingRequest = await findRequestBySubmissionSessionId(funnelSessionId)
+
+    if (existingRequest) {
+      console.info(
+        "[createRequestFromDraft] Idempotent retry — returning existing Request",
+        { requestId: existingRequest.id, funnelSessionId },
+      )
+
+      return toIdempotentRetryResult(existingRequest, draft.interventionSlug)
+    }
+  }
+
   const preparedPhotos = validateRequestPhotosForCreation(draft)
   const persistedDraft = preparedPhotos.draft
   const customer = validateDraftForCreation(persistedDraft)
@@ -312,6 +465,12 @@ export async function createRequestFromDraft({
       draft: persistedDraft,
       ...(funnelSessionId ? { funnelSessionId } : {}),
     }),
+    // FASE 7B: the real, database-enforced idempotency key — see the
+    // column comment on Request.submissionSessionId in schema.prisma and
+    // the P2002 handling around the transaction below. Deliberately a
+    // separate column from the structuredData copy above: that one is
+    // diagnostic only and was never enforced.
+    ...(funnelSessionId ? { submissionSessionId: funnelSessionId } : {}),
     // Effective commercial values (read by unlock/listings). At creation
     // effective = auto, so they equal the snapshot's creditCost/maxUnlocks.
     creditCost: leadValue.creditCost,
@@ -324,47 +483,76 @@ export async function createRequestFromDraft({
   if (customer.customerName) data.customerName = customer.customerName
   if (customer.customerPhone) data.customerPhone = customer.customerPhone
 
-  const request = await prisma.$transaction(async (tx) => {
-    const persistedCustomer = await tx.customer.upsert({
-      where: { email: customer.customerEmail },
-      create: {
+  let request: { id: string; status: string }
+
+  try {
+    request = await prisma.$transaction(async (tx) => {
+      const persistedCustomer = await tx.customer.upsert({
+        where: { email: customer.customerEmail },
+        create: {
+          email: customer.customerEmail,
+          ...(customer.customerName ? { name: customer.customerName } : {}),
+          ...(customer.customerPhone ? { phone: customer.customerPhone } : {}),
+        },
+        update: {
+          ...(customer.customerName ? { name: customer.customerName } : {}),
+          ...(customer.customerPhone ? { phone: customer.customerPhone } : {}),
+        },
+        select: { id: true },
+      })
+
+      const createdRequest = await tx.request.create({
+        data: {
+          ...data,
+          customer: { connect: { id: persistedCustomer.id } },
+        },
+        select: { id: true, status: true },
+      })
+
+      await setRequestLocationWithClient(tx, createdRequest.id, geo)
+
+      await attachRequestPhotos({
+        tx,
+        requestId: createdRequest.id,
+        photos: preparedPhotos.photos,
+      })
+
+      await createRequestVerificationAccessToken({
+        tx,
         email: customer.customerEmail,
-        ...(customer.customerName ? { name: customer.customerName } : {}),
-        ...(customer.customerPhone ? { phone: customer.customerPhone } : {}),
-      },
-      update: {
-        ...(customer.customerName ? { name: customer.customerName } : {}),
-        ...(customer.customerPhone ? { phone: customer.customerPhone } : {}),
-      },
-      select: { id: true },
+        requestId: createdRequest.id,
+        tokenHash: verification.tokenHash,
+        expiresAt: verification.expiresAt,
+      })
+
+      return createdRequest
     })
+  } catch (error) {
+    // FASE 7B: lost a genuine concurrent race on submissionSessionId — the
+    // whole transaction above rolled back atomically (Customer upsert
+    // included), and crucially never reached attachRequestPhotos: the
+    // unique violation fires at tx.request.create() itself, the very
+    // first write inside the transaction, before any photo attach is even
+    // attempted (see FASE 7B report §6/§8 — this is what keeps the losing
+    // side of a race from ever touching photos at all). The winning
+    // transaction is guaranteed committed and visible by the time
+    // Postgres reports this conflict back to us, so recovering it here is
+    // always safe.
+    if (funnelSessionId && isSubmissionSessionIdCollision(error)) {
+      const existingRequest = await findRequestBySubmissionSessionId(funnelSessionId)
 
-    const createdRequest = await tx.request.create({
-      data: {
-        ...data,
-        customer: { connect: { id: persistedCustomer.id } },
-      },
-      select: { id: true, status: true },
-    })
+      if (existingRequest) {
+        console.info(
+          "[createRequestFromDraft] Idempotent retry (concurrent race) — returning existing Request",
+          { requestId: existingRequest.id, funnelSessionId },
+        )
 
-    await setRequestLocationWithClient(tx, createdRequest.id, geo)
+        return toIdempotentRetryResult(existingRequest, persistedDraft.interventionSlug)
+      }
+    }
 
-    await attachRequestPhotos({
-      tx,
-      requestId: createdRequest.id,
-      photos: preparedPhotos.photos,
-    })
-
-    await createRequestVerificationAccessToken({
-      tx,
-      email: customer.customerEmail,
-      requestId: createdRequest.id,
-      tokenHash: verification.tokenHash,
-      expiresAt: verification.expiresAt,
-    })
-
-    return createdRequest
-  })
+    throw error
+  }
 
   // FASE 6B: unico log di successo dell'intero percorso di creazione — oggi
   // esistevano solo log di fallimento (vedi submit-runtime-request.ts). Solo
