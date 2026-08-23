@@ -26,7 +26,15 @@ export type GeoPlace = {
   resolvedAt: string
 }
 
-export type GeoPlaceSource = "GOOGLE_PLACES" | "LEGACY_BACKFILL"
+/**
+ * FASE 8B — MANUAL_RESOLVED is produced ONLY by
+ * packages/domain/src/internal/geo/resolve-manual-location.ts (a
+ * server-side CAP/Comune resolver), never by any client. It is accepted
+ * only at the Request write boundary (see isResolvedGeoPlace below) — the
+ * Company write boundary (isFreshGeoPlace / setCompanyLocationWithClient)
+ * still requires GOOGLE_PLACES specifically, unchanged.
+ */
+export type GeoPlaceSource = "GOOGLE_PLACES" | "LEGACY_BACKFILL" | "MANUAL_RESOLVED"
 
 export type GoogleAddressComponent = {
   longName: string
@@ -123,7 +131,8 @@ export function isGeoPlace(value: unknown): value is GeoPlace {
     typeof candidate.longitude === "number" &&
     Number.isFinite(candidate.longitude) &&
     (candidate.source === "GOOGLE_PLACES" ||
-      candidate.source === "LEGACY_BACKFILL") &&
+      candidate.source === "LEGACY_BACKFILL" ||
+      candidate.source === "MANUAL_RESOLVED") &&
     typeof candidate.resolvedAt === "string"
   )
 }
@@ -142,6 +151,32 @@ export function isFreshGeoPlace(
     isGeoPlace(value) &&
     value.placeId !== null &&
     value.source === "GOOGLE_PLACES"
+  )
+}
+
+/**
+ * FASE 8B — the Request-only write-boundary gate: accepts EITHER a fresh
+ * Google Places capture (isFreshGeoPlace, exactly as before, unchanged) OR
+ * a fresh manually-resolved one (source MANUAL_RESOLVED — producible only
+ * by resolveManualLocation, see packages/domain/src/internal/geo/
+ * resolve-manual-location.ts; nothing in any client bundle can construct
+ * one). placeId may be null on the manual branch — isGeoPlace's own base
+ * shape check already allows that.
+ *
+ * Deliberately NOT a change to isFreshGeoPlace itself: that predicate
+ * keeps meaning exactly what it always has ("a fresh Google Places
+ * capture"), and stays the ONLY gate used by
+ * setCompanyLocationWithClient / onboarding.ts / update-profile.ts /
+ * signup-action.ts — Company's write paths are untouched by this export.
+ * Use isResolvedGeoPlace ONLY where both origins are meant to be
+ * accepted (currently: setRequestLocationWithClient / create-request.ts).
+ */
+export function isResolvedGeoPlace(
+  value: unknown,
+): value is GeoPlace & { source: "GOOGLE_PLACES" | "MANUAL_RESOLVED" } {
+  return (
+    isFreshGeoPlace(value) ||
+    (isGeoPlace(value) && value.source === "MANUAL_RESOLVED")
   )
 }
 

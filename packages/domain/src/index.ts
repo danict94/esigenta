@@ -1,5 +1,6 @@
 export * from "./internal/request"
 export * from "./internal/conversation"
+export * from "./internal/geo"
 export * from "./public/requests"
 export * from "./public/funnel-events"
 export * from "./public/business-area"

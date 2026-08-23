@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "GeoSource" ADD VALUE 'MANUAL_RESOLVED';

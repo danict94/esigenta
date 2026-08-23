@@ -16,6 +16,7 @@ import { buildRuntimeContactName, normalizeRuntimeText } from "@esigenta/funnel"
 import { deriveLeadValue } from "../../lead-value"
 import { createCommercialSnapshotFromLeadValue } from "../../commercial"
 import { RequestFlowError } from "../../internal/request/request-errors"
+import { resolveManualLocation } from "../../internal/geo/resolve-manual-location"
 import { createRequestVerificationToken } from "../../internal/request/verification-token"
 import { sendRequestVerificationEmail } from "../../internal/request/send-verification-email"
 import { toRequestStructuredData } from "../../internal/request/request-structured-data"
@@ -288,16 +289,59 @@ function validateDraftForCreation(draft: RequestDraft): {
   }
 }
 
-function validateGeoForCreation(draft: RequestDraft): GeoPlace {
-  if (!isFreshGeoPlace(draft.geo)) {
-    throw new RequestFlowError({
-      code: "invalid_request_location",
-      message: "A normalized request location is required.",
-      statusCode: 400,
-    })
+/**
+ * FASE 8B.2 — TRUST BOUNDARY FIX.
+ *
+ * FASE 8B originally gated this on isResolvedGeoPlace(draft.geo), which
+ * accepts EITHER a fresh GOOGLE_PLACES capture OR a well-SHAPED
+ * MANUAL_RESOLVED object — with no way to tell whether that MANUAL_RESOLVED
+ * object really came from resolveManualLocation or was simply typed by an
+ * attacker into the POST /api/requests body (readRuntimeLocationAnswer
+ * passes any isGeoPlace-shaped value straight through as draft.geo — see
+ * packages/funnel/src/normalization/index.ts). Confirmed exploitable end
+ * to end in a real, live call to createRequestFromDraft with a forged
+ * {source:"MANUAL_RESOLVED", latitude:999, longitude:999, ...} draft.geo:
+ * it reached tx.geoLocation.create() inside the transaction and was only
+ * stopped by Postgres rejecting the (not-yet-migrated) enum value — i.e.
+ * the application layer had already accepted it. See FASE 8B.2 report §2.
+ *
+ * The fix: draft.geo is now trusted ONLY for the GOOGLE_PLACES case
+ * (isFreshGeoPlace, unchanged from before FASE 8B — a claimed
+ * MANUAL_RESOLVED draft.geo is REJECTED here, never used). The only way to
+ * get a MANUAL_RESOLVED location is draft.geoManualQuery — raw text, never
+ * a source/coordinate claim — which this function resolves itself, via
+ * its own server-side call to resolveManualLocation. A MANUAL_RESOLVED
+ * GeoPlace is therefore now producible in exactly one place: this call,
+ * server-side, in the same request that creates the Request. Company's
+ * equivalent check (signup-action.ts / onboarding.ts / update-profile.ts /
+ * set-company-location.ts) is untouched and still uses isFreshGeoPlace
+ * alone — this function never sees or affects Company's flow.
+ */
+export async function resolveGeoForCreation(draft: RequestDraft): Promise<GeoPlace> {
+  if (isFreshGeoPlace(draft.geo)) {
+    return draft.geo
   }
 
-  return draft.geo
+  const manualQuery = normalizeRuntimeText(draft.geoManualQuery)
+
+  if (manualQuery) {
+    const resolution = await resolveManualLocation(manualQuery)
+
+    if (resolution.ok) {
+      return resolution.place
+    }
+
+    console.warn(
+      "[createRequestFromDraft] Manual location could not be resolved",
+      { code: resolution.code },
+    )
+  }
+
+  throw new RequestFlowError({
+    code: "invalid_request_location",
+    message: "A normalized request location is required.",
+    statusCode: 400,
+  })
 }
 
 function validateRequestPhotosForCreation(draft: RequestDraft): {
@@ -430,7 +474,7 @@ export async function createRequestFromDraft({
   const preparedPhotos = validateRequestPhotosForCreation(draft)
   const persistedDraft = preparedPhotos.draft
   const customer = validateDraftForCreation(persistedDraft)
-  const geo = validateGeoForCreation(persistedDraft)
+  const geo = await resolveGeoForCreation(persistedDraft)
 
   const [intervention, requestCode] = await Promise.all([
     resolveIntervention(persistedDraft.interventionSlug),

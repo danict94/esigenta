@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client"
 
 import {
   isSubmissionSessionIdCollision,
+  resolveGeoForCreation,
   toIdempotentRetryResult,
 } from "./create-request"
 
@@ -174,4 +175,116 @@ test("toIdempotentRetryResult: mai un errore da dati vuoti/minimi", () => {
 
   assert.equal(result.requestId, "req_x")
   assert.equal(result.interventionSlug, "")
+})
+
+// ---------------------------------------------------------------------
+// resolveGeoForCreation (FASE 8B.2 — trust boundary fix)
+//
+// Confermato con una chiamata REALE a createRequestFromDraft, contro il
+// database di produzione (vedi report §2): un draft.geo forgiato dal
+// client con source "MANUAL_RESOLVED" e coordinate arbitrarie, prima di
+// questo fix, superava la validazione applicativa (isResolvedGeoPlace) e
+// raggiungeva tx.geoLocation.create() dentro la transazione — fermato
+// SOLO da Postgres, perché l'enum GeoSource non aveva ancora il valore
+// MANUAL_RESOLVED (migration non applicata). Con la migration applicata,
+// quella scrittura sarebbe silenziosamente riuscita.
+//
+// I test sotto coprono i soli rami di resolveGeoForCreation che NON
+// toccano la rete (il ramo "MANUAL_RESOLVED risolto per davvero" chiama
+// resolveManualLocation, quindi tocca Google — verificato separatamente
+// con una chiamata live one-off, vedi report §2/§7, non ripetuto qui come
+// test automatico per non rendere la suite dipendente dalla rete).
+
+function minimalDraft(overrides: Partial<Parameters<typeof resolveGeoForCreation>[0]>) {
+  return {
+    interventionSlug: "qualunque-intervento",
+    rawAnswers: {},
+    contact: {},
+    derivedSignals: {},
+    routingSignals: {},
+    createdAt: new Date(),
+    geo: null,
+    ...overrides,
+  } as Parameters<typeof resolveGeoForCreation>[0]
+}
+
+const FRESH_GOOGLE_PLACE = {
+  placeId: "ChIJ_real_google_place",
+  formattedAddress: "Via Roma 1, Catania, Italia",
+  city: "Catania",
+  postalCode: "95100",
+  province: "CT",
+  latitude: 37.5,
+  longitude: 15.09,
+  source: "GOOGLE_PLACES" as const,
+  resolvedAt: "2026-08-22T12:00:00.000Z",
+}
+
+test("resolveGeoForCreation: un GOOGLE_PLACES fresco viene restituito invariato (comportamento pre-FASE-8B invariato)", async () => {
+  const draft = minimalDraft({ geo: FRESH_GOOGLE_PLACE })
+
+  const result = await resolveGeoForCreation(draft)
+
+  assert.deepEqual(result, FRESH_GOOGLE_PLACE)
+})
+
+test("resolveGeoForCreation: un draft.geo forgiato dal client con source MANUAL_RESOLVED (e coordinate arbitrarie) viene rifiutato, mai usato direttamente — riproduce l'exploit reale trovato in questa fase", async () => {
+  const draft = minimalDraft({
+    geo: {
+      placeId: null,
+      formattedAddress: "FASE 8B.2 EXPLOIT TEST",
+      city: "FASE 8B.2 EXPLOIT TEST",
+      postalCode: null,
+      province: null,
+      latitude: 999,
+      longitude: 999,
+      source: "MANUAL_RESOLVED",
+      resolvedAt: new Date().toISOString(),
+    },
+  })
+
+  await assert.rejects(
+    () => resolveGeoForCreation(draft),
+    (error: unknown) => {
+      assert.ok(error instanceof Error)
+      assert.equal((error as { code?: string }).code, "invalid_request_location")
+      return true
+    },
+  )
+})
+
+test("resolveGeoForCreation: coordinate diverse/palesemente arbitrarie in un draft.geo MANUAL_RESOLVED forgiato — rifiutate comunque, non solo il caso specifico sopra", async () => {
+  const draft = minimalDraft({
+    geo: {
+      placeId: null,
+      formattedAddress: "Un altro posto inventato",
+      city: "Un altro posto inventato",
+      postalCode: null,
+      province: null,
+      latitude: -999.5,
+      longitude: 12345,
+      source: "MANUAL_RESOLVED",
+      resolvedAt: new Date().toISOString(),
+    },
+  })
+
+  await assert.rejects(() => resolveGeoForCreation(draft))
+})
+
+test("resolveGeoForCreation: nessun draft.geo valido e nessuna query manuale -> rifiutato", async () => {
+  const draft = minimalDraft({ geo: null })
+
+  await assert.rejects(
+    () => resolveGeoForCreation(draft),
+    (error: unknown) => {
+      assert.equal((error as { code?: string }).code, "invalid_request_location")
+      return true
+    },
+  )
+})
+
+test("resolveGeoForCreation: geoManualQuery vuoto/whitespace non innesca mai una chiamata di rete e viene comunque rifiutato", async () => {
+  const draft = minimalDraft({ geo: null, geoManualQuery: "   " })
+
+  await assert.rejects(() => resolveGeoForCreation(draft))
 })

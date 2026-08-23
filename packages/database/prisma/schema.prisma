@@ -221,6 +221,15 @@ model CategoryAlias {
 enum GeoSource {
   GOOGLE_PLACES
   LEGACY_BACKFILL
+  /// FASE 8B — produced ONLY server-side by the manual geo resolver
+  /// (packages/domain/src/internal/geo/resolve-manual-location.ts), never
+  /// by any client. placeId may be null for this source; formattedAddress/
+  /// city/latitude/longitude are still always mandatory (see
+  /// isResolvedGeoPlace in packages/shared/src/geo.ts). Accepted only at
+  /// the Request write boundary (setRequestLocationWithClient) — the
+  /// Company write boundary (setCompanyLocationWithClient) still accepts
+  /// GOOGLE_PLACES only, unchanged.
+  MANUAL_RESOLVED
 }
 
 /**

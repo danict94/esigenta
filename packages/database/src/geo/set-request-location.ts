@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client"
-import { isFreshGeoPlace, type GeoPlace } from "@esigenta/shared"
+import { isResolvedGeoPlace, type GeoPlace } from "@esigenta/shared"
 
 import { createGeoLocationWithClient } from "./create-geo-location"
 
@@ -14,13 +14,19 @@ export type SetRequestLocationResult =
  * afterward, so unlike setCompanyLocationWithClient there is no replace
  * case here. If that ever changes, it must still go through this file and
  * nowhere else.
+ *
+ * FASE 8B: gated by isResolvedGeoPlace, not isFreshGeoPlace — a Request's
+ * location may come from either a real Google Places capture OR the
+ * server-side manual CAP/Comune resolver. This is a deliberately
+ * Request-only widening: setCompanyLocationWithClient (the equivalent
+ * write boundary for Company) still gates on isFreshGeoPlace alone.
  */
 export async function setRequestLocationWithClient(
   tx: Prisma.TransactionClient,
   requestId: string,
   place: GeoPlace,
 ): Promise<SetRequestLocationResult> {
-  if (!isFreshGeoPlace(place)) {
+  if (!isResolvedGeoPlace(place)) {
     return { ok: false, code: "invalid_location" }
   }
 

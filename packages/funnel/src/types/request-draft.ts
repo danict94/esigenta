@@ -173,8 +173,29 @@ export type RequestDraft = {
 
   /**
    * Normalized geographic data.
+   *
+   * TRUST BOUNDARY (FASE 8B.2): this field is client-supplied and is only
+   * ever trusted by create-request.ts when it is a fresh GOOGLE_PLACES
+   * capture (isFreshGeoPlace) — a claimed MANUAL_RESOLVED GeoPlace here is
+   * NEVER trusted, no matter how complete/well-formed it looks. See
+   * geoManualQuery below for the only legitimate way to get a
+   * MANUAL_RESOLVED location attached to a Request.
    */
   geo: RequestGeoDraft
+
+  /**
+   * FASE 8B.2 — raw, unvalidated manual location input (a CAP, a Comune,
+   * or "CAP Comune"), present only when the funnel could not or did not
+   * capture a real Google Places selection. This is free text, NOT a
+   * GeoPlace: it carries no claimed source, coordinates, or trust of any
+   * kind. Only create-request.ts may turn this into a canonical
+   * location, via its own server-side call to resolveManualLocation
+   * (packages/domain/src/internal/geo/resolve-manual-location.ts) — the
+   * ONLY place a MANUAL_RESOLVED GeoPlace can legitimately be produced.
+   * Not yet set by any funnel step (no UI wiring yet — see FASE
+   * 8B/8B.1/8B.2 reports).
+   */
+  geoManualQuery?: string
 
   /**
    * Contact information.
