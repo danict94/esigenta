@@ -13,7 +13,7 @@ export function ProcessSteps() {
         <Reveal>
           <SectionHeader
             eyebrow="Dal bisogno al lavoro"
-            title="Un filo chiaro, dall'idea alla scelta."
+            title="Un percorso chiaro, dall'idea alla scelta."
             align="left"
             id="process-title"
             className="mb-14 max-w-[640px]"
@@ -29,7 +29,7 @@ export function ProcessSteps() {
               className="relative bg-eg-page px-7.5 pt-9 pb-8.5 transition-[background-color,box-shadow] duration-250 ease-(--eg-ease-brand) hover:z-2 hover:bg-eg-surface hover:shadow-eg-step"
             >
               <span className="mb-4.5 block font-(family-name:--eg-font-mono) text-[13px] font-bold text-eg-accent">
-                {step.verified ? "OK" : step.marker.padStart(2, "0")}
+                {step.marker}
               </span>
               <h3 className="eg-h3 mb-2.5 text-[17px]">{step.title}</h3>
               <p className="eg-body-muted text-[14.5px] leading-[1.55]">{step.description}</p>

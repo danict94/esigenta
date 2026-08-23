@@ -216,7 +216,7 @@ export function HomeHero() {
               un animation-delay per essere dipinto. Paragrafo e form restano
               nel blocco che si anima. */}
           <h1 id="home-title" className="eg-h1 relative z-1 max-w-[18ch] text-balance text-[clamp(32px,5vw,54px)] leading-[1.1] tracking-[-0.02em]">
-            Ti aiutiamo a trovare il professionista giusto, partendo dalla tua <strong className="eg-hero-emphasis font-semibold">esigenza</strong>.
+            Trova il professionista giusto, partendo dalla tua <strong className="eg-hero-emphasis font-semibold">esigenza</strong>.
           </h1>
 
           <div className="relative z-1 [animation:eg-home-fade-up_900ms_ease_180ms_both]">

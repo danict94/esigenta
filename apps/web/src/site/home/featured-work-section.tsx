@@ -12,8 +12,8 @@ export function FeaturedWorkSection() {
       <div className="eg-container">
         <Reveal>
           <SectionHeader
-            eyebrow="Lavori piu richiesti"
-            title="Le richieste che partono piu spesso da casa."
+            eyebrow="Lavori più richiesti"
+            title="Le richieste più comuni."
             align="left"
             id="works-title"
             className="mb-14 max-w-160"

@@ -3,25 +3,25 @@
 // riscrivere questi step altrove.
 export type ProcessStep = {
   marker: string;
-  verified?: boolean;
   title: string;
   description: string;
 };
 
 export const processSteps: ProcessStep[] = [
   {
-    marker: "1",
+    marker: "PASSO 1",
     title: "Descrivi il lavoro",
-    description: "Racconta cosa devi fare con parole semplici: bagno, tetto, impianto, energia o clima.",
+    description:
+      "Racconta cosa devi fare con parole semplici: bagno, tetto, impianto, energia o clima.",
   },
   {
-    marker: "2",
+    marker: "PASSO 2",
     title: "Ricevi risposte adatte",
-    description: "Mettiamo ordine nei dettagli e inviamo la richiesta alle imprese adatte, così ricevi risposte chiare e comparabili.",
+    description:
+      "Mettiamo ordine nei dettagli e inviamo la richiesta alle imprese adatte, così ricevi risposte chiare e comparabili.",
   },
   {
-    marker: "ok",
-    verified: true,
+    marker: "PASSO 3",
     title: "Scegli con calma",
     description: "Valuta le risposte e scegli chi ti convince, senza obblighi.",
   },

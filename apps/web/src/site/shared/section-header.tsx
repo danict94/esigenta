@@ -14,7 +14,7 @@ const sectionHeaderAlignment = {
 } as const;
 
 type SectionHeaderProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   align: keyof typeof sectionHeaderAlignment;
   id?: string;
@@ -39,12 +39,17 @@ export function SectionHeader({
 
   return (
     <div className={[alignment, className].filter(Boolean).join(" ")}>
-      <p
-        className={["eg-eyebrow", eyebrowClassName].filter(Boolean).join(" ")}
+      {eyebrow ? (
+        <p
+          className={["eg-eyebrow", eyebrowClassName].filter(Boolean).join(" ")}
+        >
+          {eyebrow}
+        </p>
+      ) : null}
+      <h2
+        id={id}
+        className={[eyebrow ? "eg-h2 mt-4" : "eg-h2", titleClassName].filter(Boolean).join(" ")}
       >
-        {eyebrow}
-      </p>
-      <h2 id={id} className={["eg-h2 mt-4", titleClassName].filter(Boolean).join(" ")}>
         {title}
       </h2>
     </div>

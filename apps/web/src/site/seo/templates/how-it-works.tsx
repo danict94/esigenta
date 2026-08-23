@@ -26,7 +26,7 @@ export function HowItWorks() {
           <Fragment key={step.title}>
             <div className="flex min-w-0 flex-1 items-center gap-3.5">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-eg-brand-strong bg-eg-surface font-(family-name:--eg-font-mono) text-sm font-bold text-eg-brand-strong">
-                {step.verified ? "✓" : step.marker}
+                {index + 1}
               </span>
 
               <div className="min-w-0">

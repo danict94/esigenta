@@ -77,7 +77,7 @@
 
   /* Accent — matita (rosso pastello): segni caldi DECORATIVI (frecce, pallini,
    * numeri di passo, enfasi del titolo, hover). NON i pulsanti (vedi Action). */
-  --eg-color-accent: #c8402a;
+  --eg-color-accent: #077496;
 
   /* Action — CTA chiare con testo navy; in hover torna il Brand precedente. */
   --eg-color-action: var(--eg-color-brand);
