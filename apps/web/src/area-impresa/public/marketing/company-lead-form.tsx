@@ -136,6 +136,13 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
               placeholder="Citta o provincia - es. Torino"
               className="text-[15px]"
             />
+
+            {/* FASE 8D.1: no manual fallback exists for Company (unlike
+                the client funnel) — this must not claim a CAP works on
+                its own, only that typing + selecting a suggestion does. */}
+            <p className="mt-2 text-xs leading-5 text-eg-text-muted">
+              Scrivi il comune o l&apos;indirizzo e seleziona un suggerimento.
+            </p>
           </div>
         </div>
 

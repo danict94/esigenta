@@ -74,7 +74,10 @@ function resolveComplexity(
 function hasGeoContext(
   draft: RequestDraft,
 ): boolean {
-  return draft.geo !== null
+  // FASE 8D: a confirmed manual location (draft.geoManualQuery) is also
+  // geo-routing readiness, even though draft.geo itself stays null until
+  // create-request.ts re-resolves it server-side — see resolveGeoForCreation.
+  return draft.geo !== null || Boolean(draft.geoManualQuery)
 }
 
 function hasContactContext(

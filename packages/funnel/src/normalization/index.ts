@@ -38,6 +38,7 @@ export type RuntimeContactAnswerPresence = {
 export type RuntimeLocationAnswerPresence = {
   shape: string
   isCompleteGeoPlace: boolean
+  isManualLocationPreview: boolean
 }
 
 function isRuntimeRecord(
@@ -285,9 +286,80 @@ export function updateRuntimeContactAnswerField(
 }
 
 /**
- * The funnel's "location" answer is a complete GeoPlace or nothing — see
- * RequestGeoDraft. Anything else (a typed-but-unselected string, a partial
- * object from a stale client) is not a location at all.
+ * FASE 8D — the funnel's "location" capability answer can be either a
+ * complete GeoPlace (a real Google Places selection — see RequestGeoDraft)
+ * OR a RuntimeManualLocationAnswer (the user typed a CAP/Comune, found no
+ * Google suggestion, and confirmed the server-resolved preview from
+ * POST /api/geo/resolve — see LocationCapabilityInput). Anything else (a
+ * typed-but-unselected string, a partial object from a stale client) is
+ * not a complete location answer at all.
+ *
+ * draft.geo itself (RequestGeoDraft) stays GeoPlace | null — a manual
+ * answer NEVER becomes draft.geo client-side; only
+ * resolveGeoForCreation's own server-side re-resolution (FASE 8B.2) may
+ * ever produce a MANUAL_RESOLVED GeoPlace. See readRuntimeLocationManualQuery
+ * for how draft.geoManualQuery is populated instead.
+ */
+export type RuntimeManualLocationAnswer = {
+  kind: "manual_location_preview"
+  /** The raw query the user typed — the ONLY thing ever re-resolved server-side at submit time. Never trusted as-is. */
+  query: string
+  /**
+   * Display-only preview from POST /api/geo/resolve, shown to the user for
+   * confirmation. Never read authoritatively anywhere server-side — see
+   * resolveGeoForCreation, which re-derives everything from `query` alone.
+   */
+  preview: {
+    city: string
+    postalCode: string | null
+    province: string | null
+    formattedAddress: string
+  }
+}
+
+export function isManualLocationAnswer(
+  value: unknown,
+): value is RuntimeManualLocationAnswer {
+  if (!value || typeof value !== "object") {
+    return false
+  }
+
+  const candidate = value as Record<string, unknown>
+
+  if (candidate.kind !== "manual_location_preview") {
+    return false
+  }
+
+  if (
+    typeof candidate.query !== "string" ||
+    candidate.query.trim().length === 0
+  ) {
+    return false
+  }
+
+  const preview = candidate.preview
+
+  if (!preview || typeof preview !== "object") {
+    return false
+  }
+
+  const previewCandidate = preview as Record<string, unknown>
+
+  return (
+    typeof previewCandidate.city === "string" &&
+    previewCandidate.city.length > 0 &&
+    typeof previewCandidate.formattedAddress === "string" &&
+    previewCandidate.formattedAddress.length > 0
+  )
+}
+
+/**
+ * The funnel's "location" answer used to be a complete GeoPlace or
+ * nothing — see RequestGeoDraft. draft.geo keeps exactly that contract:
+ * a manual location answer (see RuntimeManualLocationAnswer above) is
+ * NOT a GeoPlace and normalizes to null here, same as any other
+ * incomplete/invalid value — see readRuntimeLocationManualQuery for how
+ * that case is carried into the draft instead.
  */
 export function readRuntimeLocationAnswer(
   value: unknown,
@@ -299,6 +371,18 @@ export function normalizeRuntimeLocationAnswer(
   value: unknown,
 ): RequestGeoDraft {
   return readRuntimeLocationAnswer(value)
+}
+
+/**
+ * Extracts the raw manual query from a confirmed
+ * RuntimeManualLocationAnswer, for populating draft.geoManualQuery
+ * (see build-request-draft.ts). undefined for anything else — including a
+ * real GeoPlace answer, where geoManualQuery has no meaning.
+ */
+export function readRuntimeLocationManualQuery(
+  value: unknown,
+): string | undefined {
+  return isManualLocationAnswer(value) ? value.query : undefined
 }
 
 export function readRuntimeAnswers(
@@ -415,7 +499,7 @@ export function isRuntimeContactAnswerComplete(
 export function isRuntimeLocationAnswerComplete(
   value: unknown,
 ): boolean {
-  return isGeoPlace(value)
+  return isGeoPlace(value) || isManualLocationAnswer(value)
 }
 
 export function isRuntimeCapabilityAnswerComplete(
@@ -509,5 +593,7 @@ export function describeRuntimeLocationAnswerPresence(
         : typeof value,
     isCompleteGeoPlace:
       isGeoPlace(value),
+    isManualLocationPreview:
+      isManualLocationAnswer(value),
   }
 }

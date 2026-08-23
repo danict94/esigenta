@@ -47,6 +47,7 @@ import {
   normalizeRuntimeContactAnswer,
   normalizeRuntimeLocationAnswer,
   normalizeRuntimeText,
+  readRuntimeLocationManualQuery,
 } from "../normalization"
 
 export type BuildRequestDraftInput = {
@@ -248,6 +249,21 @@ export function buildRequestDraft({
 
   if (query) {
     draft.originalQuery = query
+  }
+
+  // FASE 8D: populated only when the location capability's answer is a
+  // confirmed manual preview (see RuntimeManualLocationAnswer) — draft.geo
+  // stays null in that case (a manual answer is never a GeoPlace), and
+  // create-request.ts's resolveGeoForCreation is what turns this raw
+  // query into a trusted, server-resolved MANUAL_RESOLVED location at
+  // submit time (FASE 8B.2's trust boundary, unchanged).
+  const geoManualQuery =
+    readRuntimeLocationManualQuery(
+      rawAnswers.location,
+    )
+
+  if (geoManualQuery) {
+    draft.geoManualQuery = geoManualQuery
   }
 
   const description =

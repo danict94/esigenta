@@ -41,9 +41,15 @@ export const locationCapability: RuntimeCapability = {
 
   /**
    * Optional UX helper copy.
+   *
+   * FASE 8D.1 — updated to tell the user, BEFORE they start typing, that a
+   * CAP or Comune is also accepted (not just a full address) — the
+   * manual fallback ("Usa '95022'", see LocationCapabilityInput) only
+   * ever surfaces after they've typed without picking a suggestion, so
+   * this is the one place that sets that expectation upfront.
    */
   description:
-    "Seleziona l'indirizzo dai suggerimenti per preparare correttamente la richiesta.",
+    "Seleziona l'indirizzo dai suggerimenti, oppure scrivi CAP o Comune.",
 
   /**
    * Location is operationally critical.

@@ -591,7 +591,7 @@ export function RequestStepper({
     ) {
       setError(
         currentCapability.type === "location"
-          ? "Seleziona un indirizzo dai suggerimenti per continuare."
+          ? "Seleziona un indirizzo dai suggerimenti, oppure conferma la località trovata, per continuare."
           : currentCapability.type === "contact"
             ? "Inserisci nome, cognome, telefono ed email per continuare."
             : "Completa questo passaggio per continuare.",
