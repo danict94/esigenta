@@ -79,7 +79,7 @@ export function mapResolverFailure(code: string): MappedGeoResolveError {
       return {
         status: 422,
         code: "unresolvable",
-        error: "Non troviamo questa località. Prova con un CAP o un nome comune diverso.",
+        error: "Non troviamo questa località. Prova con un CAP o un Comune diverso.",
       }
     case "location_mismatch":
       return {
