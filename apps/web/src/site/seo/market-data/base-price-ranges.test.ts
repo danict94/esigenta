@@ -17,6 +17,7 @@ import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-te
 import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
 import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
 import { rifareImpiantoElettricoGuide } from "../pages/costi/rifare-impianto-elettrico/content"
+import { rifarePavimentiGuide } from "../pages/costi/rifare-pavimenti/content"
 import { classifyPriceRows, describeCostTypeBadge } from "../templates/cost-guide-price-model"
 import { getCostGuideStaticParams } from "../engine/static-params"
 
@@ -1839,4 +1840,281 @@ test("rifare-impianto-elettrico Scope 4: factors e savingTips coprono i concetti
   assert.doesNotMatch(tipsText, /senza (la )?dichiarazione di conformità/i)
   assert.doesNotMatch(tipsText, /evita(re)? le verifiche/i)
   assert.match(tipsText, /Dichiarazione di conformità/i)
+})
+
+// Nuova Cost Guide 2026-08: rifare-pavimenti. Listino approvato editorialmente
+// e implementato senza modifiche ai range (dati REALI, guida composta). Prima
+// guida di questo registry con `slug` ("rifare-pavimenti") diverso da
+// `interventionSeoSlug`/`funnelSlug` (il vero slug taxonomy
+// "posare-o-rifare-pavimento-interno") — verificato esplicitamente qui che
+// resta comunque pubblicata e raggiungibile.
+
+test("rifare-pavimenti: pubblicazione verificata — interventionSeoSlug reale e PUBLISHED, la guida è inclusa in getCostGuideStaticParams con lo slug proprio (non quello taxonomy)", () => {
+  assert.equal(rifarePavimentiGuide.interventionSeoSlug, "posare-o-rifare-pavimento-interno")
+  assert.equal(rifarePavimentiGuide.funnelSlug, "posare-o-rifare-pavimento-interno")
+  assert.equal(isInterventionPublished(rifarePavimentiGuide.interventionSeoSlug), true)
+
+  const staticParams = getCostGuideStaticParams()
+  assert.ok(
+    staticParams.some((p) => p.costSlug === "rifare-pavimenti"),
+    "rifare-pavimenti deve comparire in getCostGuideStaticParams con il proprio slug, non con quello taxonomy",
+  )
+  assert.ok(
+    !staticParams.some((p) => p.costSlug === "posare-o-rifare-pavimento-interno"),
+    "il costSlug generato deve essere sempre guide.slug, mai interventionSeoSlug",
+  )
+})
+
+test("rifare-pavimenti: esattamente 23 PriceRow, tutte con un id univoco reale", () => {
+  assert.equal(rifarePavimentiGuide.priceRows.length, 23)
+  assert.equal(new Set(rifarePavimentiGuide.priceRows.map((r) => r.id)).size, 23)
+})
+
+test("rifare-pavimenti: Hero 60-100 €/mq per il rifacimento standard (intento principale \"rifare\", non solo \"posare\")", () => {
+  assert.equal(rifarePavimentiGuide.nationalRange, "60–100 € al mq")
+  assert.equal(rifarePavimentiGuide.pricePerSquareMeter, "da 60 € a 100 € al mq")
+  assert.equal(rifarePavimentiGuide.sourceType, "mixed")
+
+  const primary = rifarePavimentiGuide.priceRows.find((r) => r.id === "pavimenti-rifacimento-standard")
+  assert.equal(primary?.label, "Rifacimento standard del pavimento")
+  assert.equal(primary?.range, "da 60 € a 100 € al mq")
+  assert.equal(primary?.unit, "al mq")
+  assert.equal(primary?.costType, "complete")
+  assert.equal(primary?.role, "primary")
+  // L'Hero non deve leggersi come "solo posa": comprende rimozione del
+  // vecchio pavimento e gestione dello smaltimento.
+  assert.match(primary?.includes ?? "", /rimozione del vecchio pavimento/i)
+})
+
+test("rifare-pavimenti: i 2 scenari 40-75 (sovrapposizione) e 90-140 (nuovo massetto) hanno la classificazione approvata, categoryNote dichiara di non sommare", () => {
+  const rows = rifarePavimentiGuide.priceRows
+
+  const sovrapposizione = rows.find((r) => r.id === "pavimenti-scenario-sovrapposizione")
+  assert.equal(sovrapposizione?.range, "da 40 € a 75 € al mq")
+  assert.equal(sovrapposizione?.costType, "complete")
+  assert.equal(sovrapposizione?.role, "scenario")
+  assert.match(sovrapposizione?.categoryNote ?? "", /non sommare le fasce tra loro/i)
+
+  const nuovoMassetto = rows.find((r) => r.id === "pavimenti-rifacimento-nuovo-massetto")
+  assert.equal(nuovoMassetto?.range, "da 90 € a 140 € al mq")
+  assert.equal(nuovoMassetto?.costType, "complete")
+  assert.equal(nuovoMassetto?.role, "scenario")
+})
+
+test("rifare-pavimenti: classifyPriceRows promuove i 3 scenari (scenarioCards.length === 3), 2 extra, nessuna duplicazione nel breakdown", () => {
+  const classification = classifyPriceRows(rifarePavimentiGuide.priceRows)
+
+  assert.equal(classification.primary?.id, "pavimenti-rifacimento-standard")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["pavimenti-scenario-sovrapposizione", "pavimenti-rifacimento-nuovo-massetto"],
+  )
+  assert.equal(classification.scenarioCards.length, 3)
+  assert.equal(classification.references.length, 0)
+  assert.deepEqual(
+    classification.extras.map((r) => r.id),
+    ["pavimenti-adattamento-porte-soglie", "pavimenti-ripristini-localizzati-fondo"],
+  )
+  assert.equal(classification.breakdown.length, 18)
+
+  const promoted = [...classification.scenarioCards.map((r) => r.id), ...classification.extras.map((r) => r.id)]
+  for (const id of promoted) {
+    assert.ok(!classification.breakdown.some((r) => r.id === id), `"${id}" non deve comparire anche in breakdown`)
+  }
+})
+
+test("rifare-pavimenti: le 4 fasce di sola posa gres hanno esattamente i range approvati, XXL è quoteRequired", () => {
+  const rows = rifarePavimentiGuide.priceRows
+
+  const standard = rows.find((r) => r.id === "pavimenti-posa-gres-formato-standard")
+  assert.equal(standard?.range, "da 20 € a 30 € al mq")
+  assert.equal(standard?.costType, "work")
+
+  const medio = rows.find((r) => r.id === "pavimenti-posa-gres-formato-medio")
+  assert.equal(medio?.range, "da 28 € a 40 € al mq")
+  assert.equal(medio?.costType, "work")
+
+  const grande = rows.find((r) => r.id === "pavimenti-posa-gres-grande-formato")
+  assert.equal(grande?.range, "da 35 € a 55 € al mq")
+  assert.equal(grande?.costType, "work")
+
+  const xxl = rows.find((r) => r.id === "pavimenti-posa-gres-lastre-xxl")
+  assert.equal(xxl?.priceStatus, "quoteRequired")
+  assert.doesNotMatch(xxl?.range ?? "", /€/, "nessun range in euro inventato per le lastre XXL")
+
+  // Tutte e 4 sono SOLO posa: mai un prezzo delle piastrelle/lastre.
+  for (const row of [standard, medio, grande, xxl]) {
+    assert.match(row?.excludes ?? "", /fornitura (del gres|delle lastre)/i)
+  }
+})
+
+test("rifare-pavimenti: le 5 righe materiale+posa su fondo pronto hanno esattamente i range approvati (gres/gres grande formato/SPC click/laminato/parquet)", () => {
+  const rows = rifarePavimentiGuide.priceRows
+  const expected: [string, string][] = [
+    ["pavimenti-gres-standard-materiale-posa", "da 40 € a 70 € al mq"],
+    ["pavimenti-gres-grande-formato-materiale-posa", "da 60 € a 100 € al mq"],
+    ["pavimenti-spc-click-materiale-posa", "da 35 € a 60 € al mq"],
+    ["pavimenti-laminato-materiale-posa", "da 25 € a 45 € al mq"],
+    ["pavimenti-parquet-prefinito-materiale-posa", "da 50 € a 100 € al mq"],
+  ]
+  for (const [id, range] of expected) {
+    const row = rows.find((r) => r.id === id)
+    assert.equal(row?.range, range, id)
+    assert.equal(row?.costType, "complete", id)
+    assert.equal(row?.category, "Materiale e posa su fondo pronto", id)
+    // Nessuna di queste è uno scenario globale: parquet/SPC/laminato sono
+    // alternative di materiale, non nuovi scenari.
+    assert.equal(row?.role, undefined, id)
+  }
+})
+
+test("rifare-pavimenti: SPC solo posa 15-25 €/mq, esplicitamente NON una demolizione", () => {
+  const row = rifarePavimentiGuide.priceRows.find((r) => r.id === "pavimenti-posa-spc-click")
+  assert.equal(row?.range, "da 15 € a 25 € al mq")
+  assert.equal(row?.costType, "work")
+  assert.match(row?.note ?? "", /non è una voce di demolizione/i)
+  assert.match(row?.excludes ?? "", /materiale SPC/i)
+  assert.match(row?.excludes ?? "", /demolizione/i)
+  assert.match(row?.excludes ?? "", /battiscopa/i)
+})
+
+test("rifare-pavimenti: le 2 righe di demolizione hanno i range approvati, nessuna alternativeTo tra loro (due perimetri, non due modi di prezzare lo stesso lavoro)", () => {
+  const rows = rifarePavimentiGuide.priceRows
+
+  const soloPavimento = rows.find((r) => r.id === "pavimenti-demolizione-solo-pavimento")
+  assert.equal(soloPavimento?.range, "da 15 € a 30 € al mq")
+  assert.equal(soloPavimento?.costType, "work")
+
+  const pavimentoMassetto = rows.find((r) => r.id === "pavimenti-demolizione-pavimento-massetto")
+  assert.equal(pavimentoMassetto?.range, "da 25 € a 40 € al mq")
+  assert.equal(pavimentoMassetto?.costType, "work")
+
+  assert.equal(soloPavimento?.relations, undefined)
+  assert.equal(pavimentoMassetto?.relations, undefined)
+  assert.equal(
+    isAlternativeTo(rows, "pavimenti-demolizione-solo-pavimento", "pavimenti-demolizione-pavimento-massetto"),
+    false,
+  )
+  assert.match(soloPavimento?.categoryNote ?? "", /non vanno sommate automaticamente/i)
+})
+
+test("rifare-pavimenti: le 2 righe di massetto dichiarano lo spessore in label, unit resta al mq (mai al m³ come unità principale)", () => {
+  const rows = rifarePavimentiGuide.priceRows
+
+  const cm5_6 = rows.find((r) => r.id === "pavimenti-massetto-tradizionale-5-6cm")
+  assert.equal(cm5_6?.label, "Massetto tradizionale sabbia-cemento, 5–6 cm")
+  assert.equal(cm5_6?.range, "da 20 € a 35 € al mq")
+  assert.equal(cm5_6?.unit, "al mq")
+  assert.equal(cm5_6?.costType, "complete")
+  // Il volume resta un dettaglio di approfondimento nel categoryNote, non l'unità di prezzo.
+  assert.match(cm5_6?.categoryNote ?? "", /0,05 m³/i)
+  assert.match(cm5_6?.categoryNote ?? "", /0,06 m³/i)
+
+  const cm7_10 = rows.find((r) => r.id === "pavimenti-massetto-tradizionale-7-10cm")
+  assert.equal(cm7_10?.label, "Massetto tradizionale sabbia-cemento, 7–10 cm")
+  assert.equal(cm7_10?.range, "da 25 € a 40 € al mq")
+  assert.equal(cm7_10?.unit, "al mq")
+  assert.equal(cm7_10?.costType, "complete")
+
+  for (const row of rifarePavimentiGuide.priceRows) {
+    assert.notEqual(row.unit, "al m³", `"${row.id}" non deve usare €/m³ come unità principale`)
+  }
+})
+
+test("rifare-pavimenti: le 2 righe di livellamento sono distinte esplicitamente da un nuovo massetto", () => {
+  const rows = rifarePavimentiGuide.priceRows
+
+  const sottile = rows.find((r) => r.id === "pavimenti-livellamento-sottile-1cm")
+  assert.equal(sottile?.range, "da 10 € a 18 € al mq")
+  assert.equal(sottile?.costType, "complete")
+  assert.match(sottile?.categoryNote ?? "", /il livellamento non è un nuovo massetto/i)
+
+  const due_cm = rows.find((r) => r.id === "pavimenti-livellamento-2cm")
+  assert.equal(due_cm?.range, "da 15 € a 25 € al mq")
+  assert.equal(due_cm?.costType, "complete")
+})
+
+test("rifare-pavimenti: battiscopa in €/ml, sola posa 6-12 distinta da materiale+posa 15-30", () => {
+  const rows = rifarePavimentiGuide.priceRows
+
+  const solaPosa = rows.find((r) => r.id === "pavimenti-battiscopa-sola-posa")
+  assert.equal(solaPosa?.range, "da 6 € a 12 € al metro lineare")
+  assert.equal(solaPosa?.unit, "al metro lineare")
+  assert.equal(solaPosa?.costType, "work")
+
+  const materialePosa = rows.find((r) => r.id === "pavimenti-battiscopa-gres-materiale-posa")
+  assert.equal(materialePosa?.range, "da 15 € a 30 € al metro lineare")
+  assert.equal(materialePosa?.unit, "al metro lineare")
+  assert.equal(materialePosa?.costType, "complete")
+})
+
+test("rifare-pavimenti: 2 extra quoteRequired (adattamento porte/soglie, ripristini localizzati), nessun range universale inventato", () => {
+  const rows = rifarePavimentiGuide.priceRows
+  for (const id of ["pavimenti-adattamento-porte-soglie", "pavimenti-ripristini-localizzati-fondo"]) {
+    const row = rows.find((r) => r.id === id)
+    assert.ok(row, `"${id}" deve esistere`)
+    assert.equal(row?.priceStatus, "quoteRequired")
+    assert.equal(row?.role, "extra")
+    assert.equal(row?.relations, undefined, `"${id}" non deve avere relations forzate`)
+    assert.doesNotMatch(row?.range ?? "", /€/, `"${id}" non deve avere un prezzo inventato`)
+  }
+})
+
+test("rifare-pavimenti: nessuna relation rotta — ogni target esiste nella stessa famiglia (ridondante rispetto a validatePriceRowIntegrity, verificato di nuovo qui sui dati composti reali)", () => {
+  const rows = rifarePavimentiGuide.priceRows
+  const ids = new Set(rows.map((r) => r.id))
+
+  for (const row of rows) {
+    for (const relation of row.relations ?? []) {
+      assert.ok(
+        ids.has(relation.target),
+        `"${row.id}" -> relation "${relation.type}" punta a un id inesistente "${relation.target}"`,
+      )
+    }
+  }
+})
+
+test("rifare-pavimenti: sizeExamples esattamente 50/80/100 mq sulla fascia 60-100 (rifacimento standard), nuovo massetto escluso, superficie catastale disclaimer presente", () => {
+  const bySize = new Map(rifarePavimentiGuide.sizeExamples.map((example) => [example.sizeRange, example]))
+  assert.equal(bySize.get("50 mq")?.range, "da 3.000 € a 5.000 €")
+  assert.equal(bySize.get("80 mq")?.range, "da 4.800 € a 8.000 €")
+  assert.equal(bySize.get("100 mq")?.range, "da 6.000 € a 10.000 €")
+
+  for (const example of rifarePavimentiGuide.sizeExamples) {
+    assert.match(example.note, /rifacimento standard/i)
+    assert.match(example.note, /nuovo massetto escluso/i)
+    assert.match(example.note, /non necessariamente alla superficie catastale/i)
+  }
+})
+
+test("rifare-pavimenti: relatedWork punta a interventi taxonomy reali e pubblicati (fare-massetto, parquet, riparare-pavimento), distinti dal rifacimento completo", () => {
+  const relatedSlugs = rifarePavimentiGuide.relatedWork?.map((r) => r.slug) ?? []
+  assert.deepEqual(relatedSlugs, [
+    "fare-massetto",
+    "posare-levigare-o-ripristinare-parquet",
+    "riparare-pavimento",
+  ])
+  for (const slug of relatedSlugs) {
+    assert.equal(isInterventionPublished(slug), true, `relatedWork "${slug}" deve essere un intervento pubblicato reale`)
+  }
+})
+
+test("rifare-pavimenti: 12 FAQ, copre intento principale (rifare) e sotto-intento posa, nessuna FAQ vuota", () => {
+  const faq = rifarePavimentiGuide.faq
+  assert.ok(faq.length >= 9 && faq.length <= 12, `atteso 9-12 FAQ, trovate ${faq.length}`)
+  for (const entry of faq) {
+    assert.ok(entry.question.trim().length > 0)
+    assert.ok(entry.answer.trim().length > 0)
+  }
+  assert.ok(faq.some((f) => /rifare il pavimento al mq/i.test(f.question)))
+  assert.ok(faq.some((f) => /solo la posa del gres/i.test(f.question)))
+})
+
+test("altre Cost Guide: nessuna modifica — le 6 guide precedenti restano invariate dopo l'introduzione di rifare-pavimenti", () => {
+  assert.equal(rifareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTettoGuide.priceRows.length, 8)
+  assert.equal(impermeabilizzareTerrazzoGuide.priceRows.length, 11)
+  assert.equal(rifareFacciataGuide.priceRows.length, 14)
+  assert.equal(rifareImpiantoElettricoGuide.priceRows.length, 18)
+  assert.equal(ristrutturareBagnoGuide.priceRows.length, 18)
 })

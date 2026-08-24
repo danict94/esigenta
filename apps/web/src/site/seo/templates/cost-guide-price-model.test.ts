@@ -23,6 +23,7 @@ import { rifareImpiantoElettricoGuide } from "../pages/costi/rifare-impianto-ele
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
 import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
 import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
+import { rifarePavimentiGuide } from "../pages/costi/rifare-pavimenti/content"
 
 // Scope 4B — logica di classificazione/traduzione condivisa dalle sezioni
 // della Cost Guide. Fixture minime per i casi puntuali, dati REALI (bagno,
@@ -223,6 +224,29 @@ test("classifyPriceRows: rifare-facciata (dati reali) — micro-fix 2026-08: i 3
   assert.equal(classification.breakdown.length, 10)
   assert.ok(!classification.breakdown.some((r) => r.id === "facciata-rifacimento-ordinario"))
   assert.ok(!classification.breakdown.some((r) => r.id === "facciata-fissativo-primer"))
+})
+
+test("classifyPriceRows: rifare-pavimenti (dati reali, nuova guida 2026-08) — 3 scenari promossi a scenarioCards/primary, 2 extra, 18 in breakdown, 0 reference", () => {
+  const classification = classifyPriceRows(rifarePavimentiGuide.priceRows)
+
+  assert.equal(classification.primary?.id, "pavimenti-rifacimento-standard")
+  assert.deepEqual(
+    classification.scenarios.map((r) => r.id),
+    ["pavimenti-scenario-sovrapposizione", "pavimenti-rifacimento-nuovo-massetto"],
+  )
+  assert.equal(classification.scenarioCards.length, 3)
+  assert.equal(classification.references.length, 0)
+
+  assert.deepEqual(
+    classification.extras.map((r) => r.id),
+    ["pavimenti-adattamento-porte-soglie", "pavimenti-ripristini-localizzati-fondo"],
+  )
+
+  assert.equal(classification.breakdown.length, 18)
+  const promoted = [...classification.scenarioCards.map((r) => r.id), ...classification.extras.map((r) => r.id)]
+  for (const id of promoted) {
+    assert.ok(!classification.breakdown.some((r) => r.id === id), `"${id}" non deve comparire anche in breakdown`)
+  }
 })
 
 test("isGuideScenarioRow (via classifyPriceRows) — micro-fix 2026-08: role \"scenario\" esplicito + unit \"al mq\" È classificato come scenario (unit non è più un gate)", () => {

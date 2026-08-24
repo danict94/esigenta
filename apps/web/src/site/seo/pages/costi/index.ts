@@ -4,6 +4,7 @@ import { impermeabilizzareTettoGuide } from "./impermeabilizzare-tetto/content";
 import { rifareImpiantoElettricoGuide } from "./rifare-impianto-elettrico/content";
 import { impermeabilizzareTerrazzoGuide } from "./impermeabilizzare-terrazzo/content";
 import { rifareFacciataGuide } from "./rifare-facciata/content";
+import { rifarePavimentiGuide } from "./rifare-pavimenti/content";
 import type { CostGuide, CostGuideCityPage } from "./types";
 import { isIndexableCityPage } from "../../engine/geo-policy";
 
@@ -23,6 +24,14 @@ export const costGuidePriceNote =
 // esclude automaticamente da generateStaticParams, hub /costi, sitemap e da
 // qualunque lookup pubblico — nessuna condizione qui, il registry resta
 // identico per ogni guida.
+//
+// rifarePavimentiGuide: `slug` ("rifare-pavimenti") è diverso da
+// `interventionSeoSlug`/`funnelSlug` (il vero slug taxonomy
+// "posare-o-rifare-pavimento-interno") — prima guida di questo registry a
+// farlo, vedi il commento su questa scelta in
+// pages/costi/rifare-pavimenti/base.ts. Il gate di pubblicazione qui sotto
+// usa comunque solo `interventionSeoSlug`, per costruzione: nessun
+// trattamento speciale necessario in questo file.
 const all: readonly CostGuide[] = [
   ristrutturareBagnoGuide,
   rifareTettoGuide,
@@ -30,6 +39,7 @@ const all: readonly CostGuide[] = [
   rifareImpiantoElettricoGuide,
   impermeabilizzareTerrazzoGuide,
   rifareFacciataGuide,
+  rifarePavimentiGuide,
 ];
 
 const bySlug: ReadonlyMap<string, CostGuide> = new Map(

@@ -2197,6 +2197,378 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
       },
     ],
   },
+  // Nuova Cost Guide 2026-08 (listino approvato editorialmente, fornito
+  // per questa implementazione — NON ricercato/reinterpretato in questa
+  // sessione, nessun range modificato). Intento principale della guida:
+  // "quanto costa rifare il pavimento" (non solo "quanto costa la posa") —
+  // per questo l'Hero/primary è il rifacimento standard (60–100 €/mq), non
+  // una riga di sola posa. 23 PriceRow: 3 scenari di ampiezza (mai da
+  // sommare) + 4 righe di sola posa gres per fascia dimensionale + 5 righe
+  // materiale+posa su fondo pronto (gres standard, gres grande formato,
+  // SPC click, laminato, parquet prefinito) + 1 riga di sola posa SPC + 2
+  // righe di demolizione (due perimetri alternativi, non da sommare) + 2
+  // righe di massetto (unità cliente €/mq CON spessore dichiarato in label,
+  // mai €/m³ come unità principale) + 2 righe di livellamento del fondo
+  // (esplicitamente distinte da un nuovo massetto) + 2 righe di battiscopa
+  // (€/ml, sola posa vs materiale+posa) + 2 righe quoteRequired role
+  // "extra" (adattamento porte/soglie, ripristini localizzati del fondo).
+  //
+  // Nessuna relation forzata: le due righe di demolizione restano
+  // deliberatamente senza `alternativeTo` (rappresentano due PERIMETRI di
+  // demolizione, non due modi di calcolare/prezzare lo stesso lavoro — la
+  // distinzione resta in prosa via categoryNote, coerente con la regola già
+  // stabilita su rifare-facciata: "alternativeTo" solo per un vero metodo
+  // alternativo di prezzatura dello stesso lavoro, mai per un perimetro
+  // diverso). Stesso principio per parquet/SPC/laminato rispetto al gres:
+  // sono alternative di MATERIALE all'interno del breakdown "materiale +
+  // posa su fondo pronto", non scenari globali della guida e non
+  // `alternativeTo` tra loro. I 3 scenari non dichiarano alcuna relation
+  // verso le righe di breakdown (stesso motivo già documentato su
+  // rifare-facciata/rifare-impianto-elettrico: una singola lavorazione può
+  // ricadere in più di uno scenario, e `describeIncludedIn` legge solo la
+  // prima relation "includedIn" dichiarata — collegarne una sola verso UNO
+  // scenario sarebbe stato parziale/fuorviante).
+  //
+  // Provenance: fasce editoriali Esigenta (sourceType "mixed", confidence
+  // "media" su ogni riga prezzata) — non prezzi ufficiali attribuibili a un
+  // singolo prezzario regionale. Nessuna riga di questo blocco cita un
+  // valore ufficiale puntuale come ancoraggio: a differenza di altre guide
+  // di questo stesso engagement (rifare-tetto, rifare-impianto-elettrico),
+  // qui non è stata fornita alcuna fonte regionale puntuale da preservare —
+  // sourceLabel riflette onestamente questo, nessun codice o prezzario
+  // inventato.
+  "costGuide:rifare-pavimenti": {
+    nationalRange: "60–100 € al mq",
+    pricePerSquareMeter: "da 60 € a 100 € al mq",
+    sourceLabel: "Confronto di mercato nazionale ed elaborazione editoriale Esigenta",
+    sourceYear: "2026",
+    sourceType: "mixed",
+    priceRows: [
+      {
+        id: "pavimenti-scenario-sovrapposizione",
+        label: "Posa sopra pavimento esistente",
+        category: "Scenari di ampiezza del lavoro",
+        categoryNote:
+          "Questi tre scenari rappresentano modi diversi di rifare un pavimento, in ordine di ampiezza dell'intervento: scegli quello più vicino al tuo caso, non sommare le fasce tra loro.",
+        unit: "al mq",
+        range: "da 40 € a 75 € al mq",
+        plainExplanation:
+          "Si applica quando il pavimento esistente è stabile e idoneo a ricevere il nuovo rivestimento sopra di sé, senza demolirlo: preparazione ordinaria del fondo, gres standard/medio, collante, posa e stuccatura.",
+        note: "Fascia editoriale Esigenta. Non comprende demolizione, nuovo massetto, importanti correzioni del fondo né adattamenti importanti di porte e soglie: quando servono, il lavoro rientra negli altri due scenari di questa guida.",
+        includes: "preparazione ordinaria del fondo, gres standard/medio, collante, posa, stuccatura",
+        excludes: "demolizione, nuovo massetto, importanti correzioni del fondo, adattamenti importanti di porte o soglie",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
+      },
+      {
+        id: "pavimenti-rifacimento-standard",
+        label: "Rifacimento standard del pavimento",
+        category: "Scenari di ampiezza del lavoro",
+        unit: "al mq",
+        range: "da 60 € a 100 € al mq",
+        plainExplanation:
+          "È lo scenario principale di questa guida: rimozione del vecchio pavimento, gestione ordinaria dello smaltimento, massetto esistente recuperabile, normale preparazione del fondo, nuovo gres standard/medio, posa e stuccatura.",
+        note: "È la fascia principale di questa guida: rappresenta il modo più comune di rifare un pavimento, quando il massetto esistente è recuperabile e non serve rifarlo da zero. Non comprende materiali di fascia alta, grandi lastre, lavorazioni eccezionali né importanti correzioni strutturali del fondo — quando servono, il lavoro rientra negli altri scenari di questa guida.",
+        includes: "rimozione del vecchio pavimento, smaltimento/gestione ordinaria, massetto esistente recuperabile, normale preparazione del fondo, gres standard/medio, collante, posa, stuccatura",
+        excludes: "rifacimento del massetto, materiali di fascia alta, grandi lastre, lavorazioni eccezionali, importanti correzioni strutturali del fondo",
+        confidence: "media",
+        costType: "complete",
+        role: "primary",
+      },
+      {
+        id: "pavimenti-rifacimento-nuovo-massetto",
+        label: "Rifacimento completo con nuovo massetto",
+        category: "Scenari di ampiezza del lavoro",
+        unit: "al mq",
+        range: "da 90 € a 140 € al mq",
+        plainExplanation:
+          "Per quando il sottofondo non è recuperabile: demolizione più profonda, rimozione di pavimento e sottofondo quando necessaria, nuovo massetto, nuovo gres standard/medio e posa.",
+        note: "Fascia più alta tra gli scenari di questa guida: si applica quando il massetto esistente non è recuperabile, non per scelta di materiali più pregiati (quelli restano fuori da questa fascia, vedi le righe di dettaglio più sotto).",
+        includes: "demolizione più profonda, rimozione di pavimento e sottofondo quando necessaria, nuovo massetto, gres standard/medio, posa",
+        excludes: "materiali di fascia alta, grandi lastre, lavorazioni eccezionali",
+        confidence: "media",
+        costType: "complete",
+        role: "scenario",
+      },
+      {
+        id: "pavimenti-posa-gres-formato-standard",
+        label: "Posa gres, formato standard (fino a circa 60×60)",
+        category: "Posa gres — solo posa (fondo pronto)",
+        categoryNote:
+          "Queste righe sono SOLO la posa, su un fondo già pronto: non comprendono il prezzo delle piastrelle. Le dimensioni sono riferimenti orientativi, non confini rigidi: il prezzo reale varia con dimensione e peso delle lastre, movimentazione, precisione richiesta, numero e complessità dei tagli, schema di posa e lavorazioni necessarie per quel formato.",
+        unit: "al mq",
+        range: "da 20 € a 30 € al mq",
+        plainExplanation: "Solo la manodopera di posa del gres in formato standard, fino a circa 60×60 cm, su un fondo già pronto e idoneo.",
+        note: "Fascia editoriale Esigenta. Non comprende la fornitura del gres né lavorazioni sul fondo.",
+        excludes: "fornitura del gres/piastrelle, preparazione o correzione del fondo",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-posa-gres-formato-medio",
+        label: "Posa gres rettificato/formato medio (es. 80×80, 60×120)",
+        category: "Posa gres — solo posa (fondo pronto)",
+        unit: "al mq",
+        range: "da 28 € a 40 € al mq",
+        plainExplanation: "Solo la manodopera di posa del gres rettificato o di formato medio (es. 80×80, 60×120 cm), su un fondo già pronto e idoneo.",
+        note: "Fascia editoriale Esigenta. Il prezzo sale rispetto al formato standard per la maggiore precisione richiesta, il peso delle lastre e la complessità dei tagli.",
+        excludes: "fornitura del gres/piastrelle, preparazione o correzione del fondo",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-posa-gres-grande-formato",
+        label: "Posa gres grande formato (es. circa 120×120)",
+        category: "Posa gres — solo posa (fondo pronto)",
+        unit: "al mq",
+        range: "da 35 € a 55 € al mq",
+        plainExplanation: "Solo la manodopera di posa del gres in grande formato (es. circa 120×120 cm), su un fondo già pronto e idoneo.",
+        note: "Fascia editoriale Esigenta. Lastre di questa dimensione richiedono movimentazione, attrezzature e precisione maggiori rispetto al formato medio.",
+        excludes: "fornitura del gres/piastrelle, preparazione o correzione del fondo",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-posa-gres-lastre-xxl",
+        label: "Posa lastre XXL (es. 120×240 e oltre)",
+        category: "Posa gres — solo posa (fondo pronto)",
+        unit: "al mq",
+        range: "da valutare con il professionista",
+        plainExplanation: "Lastre di grande formato oltre l'ordinario (es. 120×240 cm e oltre) richiedono movimentazione, schema di posa e attrezzature specifiche che cambiano molto da un cantiere all'altro: non esiste una fascia editoriale affidabile senza un sopralluogo.",
+        note: "Nessuna fascia in euro affidabile senza sopralluogo: il numero di operatori necessari, l'accessibilità del cantiere e lo schema di posa incidono troppo per un range editoriale generico.",
+        excludes: "fornitura delle lastre, preparazione o correzione del fondo",
+        priceStatus: "quoteRequired",
+      },
+      {
+        id: "pavimenti-gres-standard-materiale-posa",
+        label: "Gres standard/medio, materiale e posa",
+        category: "Materiale e posa su fondo pronto",
+        categoryNote: "Queste righe comprendono sia il materiale sia la posa, su un fondo già pronto e idoneo: demolizione, nuovo massetto e importanti livellamenti restano sempre esclusi e hanno un prezzo proprio più sotto in tabella.",
+        unit: "al mq",
+        range: "da 40 € a 70 € al mq",
+        plainExplanation: "Gres in formato standard o medio, fornito e posato, su un fondo già pronto e idoneo a riceverlo.",
+        note: "Fascia editoriale Esigenta.",
+        includes: "materiale (gres standard/medio), posa",
+        excludes: "demolizione, nuovo massetto, importanti livellamenti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-gres-grande-formato-materiale-posa",
+        label: "Gres grande formato, materiale e posa",
+        category: "Materiale e posa su fondo pronto",
+        unit: "al mq",
+        range: "da 60 € a 100 € al mq",
+        plainExplanation: "Gres in grande formato, fornito e posato, su un fondo già pronto e idoneo a riceverlo.",
+        note: "Fascia editoriale Esigenta. Il prezzo più alto rispetto al gres standard/medio riflette sia il costo del materiale sia la maggiore complessità di posa del grande formato.",
+        includes: "materiale (gres grande formato), posa",
+        excludes: "demolizione, nuovo massetto, importanti livellamenti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-spc-click-materiale-posa",
+        label: "SPC click, materiale e posa",
+        category: "Materiale e posa su fondo pronto",
+        unit: "al mq",
+        range: "da 35 € a 60 € al mq",
+        plainExplanation: "Pavimento SPC a incastro (click), fornito e posato, su un fondo già pronto e idoneo a riceverlo.",
+        note: "Fascia editoriale Esigenta.",
+        includes: "materiale (SPC click), posa",
+        excludes: "demolizione, nuovo massetto, importanti livellamenti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-laminato-materiale-posa",
+        label: "Laminato, materiale e posa",
+        category: "Materiale e posa su fondo pronto",
+        unit: "al mq",
+        range: "da 25 € a 45 € al mq",
+        plainExplanation: "Pavimento laminato, fornito e posato, su un fondo già pronto e idoneo a riceverlo.",
+        note: "Fascia editoriale Esigenta.",
+        includes: "materiale (laminato), posa",
+        excludes: "demolizione, nuovo massetto, importanti livellamenti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-parquet-prefinito-materiale-posa",
+        label: "Parquet prefinito, materiale e posa",
+        category: "Materiale e posa su fondo pronto",
+        unit: "al mq",
+        range: "da 50 € a 100 € al mq",
+        plainExplanation: "Parquet prefinito, fornito e posato, su un fondo già pronto e idoneo a riceverlo.",
+        note: "Fascia editoriale Esigenta. Parquet, laminato e SPC sono alternative di materiale all'interno dello stesso perimetro (materiale + posa su fondo pronto), non scenari a sé della guida.",
+        includes: "materiale (parquet prefinito), posa",
+        excludes: "demolizione, nuovo massetto, importanti livellamenti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-posa-spc-click",
+        label: "Posa SPC click (solo posa)",
+        category: "Posa SPC — solo posa (fondo esistente idoneo)",
+        categoryNote: "Solo la posa del nuovo SPC su un fondo esistente già idoneo: non è una demolizione, non comprende il materiale SPC.",
+        unit: "al mq",
+        range: "da 15 € a 25 € al mq",
+        plainExplanation: "Solo la manodopera di posa del nuovo pavimento SPC a incastro su un fondo esistente già idoneo, senza demolire nulla.",
+        note: "Fascia editoriale Esigenta. Non è una voce di demolizione: presuppone che il fondo esistente sia già idoneo a ricevere il nuovo SPC.",
+        includes: "posa del nuovo SPC su fondo esistente idoneo",
+        excludes: "materiale SPC, demolizione, importanti livellamenti, preparazioni straordinarie, battiscopa, adattamento di porte o soglie",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-demolizione-solo-pavimento",
+        label: "Rimozione del solo pavimento + smaltimento ordinario",
+        category: "Demolizione",
+        categoryNote: "Queste due righe rappresentano due perimetri alternativi di demolizione, in base a cosa va rimosso davvero: non vanno sommate automaticamente.",
+        unit: "al mq",
+        range: "da 15 € a 30 € al mq",
+        plainExplanation: "Rimozione del solo pavimento esistente, con smaltimento ordinario del materiale, quando il massetto sottostante può essere conservato.",
+        note: "Fascia editoriale Esigenta. Da usare quando il massetto sottostante resta: se invece va demolito anche il sottofondo, la voce corretta è quella qui sotto, non la somma delle due.",
+        includes: "rimozione del pavimento esistente, smaltimento ordinario",
+        excludes: "demolizione del massetto/sottofondo, nuovo massetto, nuova pavimentazione",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-demolizione-pavimento-massetto",
+        label: "Demolizione pavimento + massetto/sottofondo",
+        category: "Demolizione",
+        unit: "al mq",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation: "Demolizione del pavimento esistente insieme al massetto/sottofondo sottostante, quando anche quest'ultimo va rimosso.",
+        note: "Fascia editoriale Esigenta. Da usare quando è necessario demolire anche il sottofondo: non va sommata alla rimozione del solo pavimento qui sopra, sono due perimetri alternativi.",
+        includes: "rimozione del pavimento esistente, demolizione del massetto/sottofondo, smaltimento ordinario",
+        excludes: "nuovo massetto, nuova pavimentazione",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-massetto-tradizionale-5-6cm",
+        label: "Massetto tradizionale sabbia-cemento, 5–6 cm",
+        category: "Massetto",
+        categoryNote: "Il prezzo è al mq con lo spessore dichiarato in etichetta, non al metro cubo: per un approfondimento sul volume, 5 cm corrispondono a circa 0,05 m³ per m² e 6 cm a circa 0,06 m³ per m² — un dettaglio tecnico, non l'unità di prezzo principale.",
+        unit: "al mq",
+        range: "da 20 € a 35 € al mq",
+        plainExplanation: "Nuovo massetto tradizionale in sabbia e cemento, spessore 5–6 cm, materiale e posa comprese.",
+        note: "Fascia editoriale Esigenta.",
+        includes: "materiale, posa del massetto tradizionale sabbia-cemento (5–6 cm)",
+        excludes: "demolizione del massetto esistente, nuova pavimentazione",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-massetto-tradizionale-7-10cm",
+        label: "Massetto tradizionale sabbia-cemento, 7–10 cm",
+        category: "Massetto",
+        unit: "al mq",
+        range: "da 25 € a 40 € al mq",
+        plainExplanation: "Nuovo massetto tradizionale in sabbia e cemento, spessore 7–10 cm, materiale e posa comprese.",
+        note: "Fascia editoriale Esigenta. Spessore maggiore rispetto alla voce 5–6 cm qui sopra: più materiale e più tempo di lavorazione.",
+        includes: "materiale, posa del massetto tradizionale sabbia-cemento (7–10 cm)",
+        excludes: "demolizione del massetto esistente, nuova pavimentazione",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-livellamento-sottile-1cm",
+        label: "Livellamento/autolivellante sottile, fino a circa 1 cm",
+        category: "Livellamento del fondo",
+        categoryNote: "Il livellamento non è un nuovo massetto: regolarizza un fondo già sostanzialmente piano, non sostituisce un massetto da 5–10 cm quando il sottofondo va rifatto.",
+        unit: "al mq",
+        range: "da 10 € a 18 € al mq",
+        plainExplanation: "Rasante autolivellante sottile, fino a circa 1 cm di spessore, per regolarizzare piccole imperfezioni del fondo prima della posa.",
+        note: "Fascia editoriale Esigenta.",
+        includes: "materiale, applicazione del livellamento/autolivellante sottile",
+        excludes: "nuovo massetto, demolizione, correzioni importanti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-livellamento-2cm",
+        label: "Livellamento, fino a circa 2 cm",
+        category: "Livellamento del fondo",
+        unit: "al mq",
+        range: "da 15 € a 25 € al mq",
+        plainExplanation: "Livellamento del fondo con uno spessore maggiore, fino a circa 2 cm, per correggere dislivelli più evidenti prima della posa.",
+        note: "Fascia editoriale Esigenta. Resta un livellamento, non un nuovo massetto: quando serve un intervento più esteso sul sottofondo, vedi le righe di massetto qui sopra.",
+        includes: "materiale, applicazione del livellamento fino a circa 2 cm",
+        excludes: "nuovo massetto, demolizione, correzioni importanti del fondo",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-battiscopa-sola-posa",
+        label: "Sola posa zoccolino standard già fornito",
+        category: "Battiscopa / zoccolino",
+        unit: "al metro lineare",
+        unitLabel: "per ml",
+        range: "da 6 € a 12 € al metro lineare",
+        plainExplanation: "Solo la posa dello zoccolino standard, quando il materiale è già stato fornito a parte.",
+        note: "Fascia editoriale Esigenta. Sola posa: non comprende la fornitura dello zoccolino.",
+        excludes: "fornitura dello zoccolino/battiscopa",
+        confidence: "media",
+        costType: "work",
+      },
+      {
+        id: "pavimenti-battiscopa-gres-materiale-posa",
+        label: "Battiscopa in gres, materiale e posa",
+        category: "Battiscopa / zoccolino",
+        unit: "al metro lineare",
+        unitLabel: "per ml",
+        range: "da 15 € a 30 € al metro lineare",
+        plainExplanation: "Battiscopa in gres, fornito e posato.",
+        note: "Fascia editoriale Esigenta. Materiale + posa, da non confondere con la sola posa dello zoccolino standard qui sopra.",
+        includes: "materiale (battiscopa in gres), posa",
+        confidence: "media",
+        costType: "complete",
+      },
+      {
+        id: "pavimenti-adattamento-porte-soglie",
+        label: "Adattamento porte, portoncini e soglie",
+        category: "Costi da valutare con il professionista",
+        range: "da valutare con il professionista",
+        plainExplanation: "Quando un nuovo pavimento cambia lo spessore del piano di calpestio, porte, portoncini e soglie possono aver bisogno di essere adattati: un lavoro il cui costo dipende dal numero di infissi coinvolti e dal tipo di intervento necessario.",
+        note: "Nessuna fascia in euro affidabile senza un sopralluogo: numero di porte, tipo di adattamento e materiali coinvolti cambiano troppo da un caso all'altro.",
+        priceStatus: "quoteRequired",
+        role: "extra",
+      },
+      {
+        id: "pavimenti-ripristini-localizzati-fondo",
+        label: "Ripristini importanti/localizzati del fondo",
+        category: "Costi da valutare con il professionista",
+        range: "da valutare con il professionista",
+        plainExplanation: "Quando il sottofondo presenta problemi localizzati ma importanti (crepe, cedimenti, umidità), può servire un ripristino mirato prima di procedere con la posa.",
+        note: "Nessuna fascia in euro affidabile senza un sopralluogo: l'estensione e la natura del problema cambiano troppo da un caso all'altro.",
+        priceStatus: "quoteRequired",
+        role: "extra",
+      },
+    ],
+    sizeExamples: [
+      {
+        label: "Pavimento da 50 mq",
+        sizeRange: "50 mq",
+        range: "da 3.000 € a 5.000 €",
+        note: "Calcolo per il rifacimento standard: 50 mq × 60–100 €/mq. Nuovo massetto escluso. Esempio riferito a 50 mq effettivi di pavimento interessato, non necessariamente alla superficie catastale dell'abitazione.",
+      },
+      {
+        label: "Pavimento da 80 mq",
+        sizeRange: "80 mq",
+        range: "da 4.800 € a 8.000 €",
+        note: "Calcolo per il rifacimento standard: 80 mq × 60–100 €/mq. Nuovo massetto escluso. Esempio riferito a 80 mq effettivi di pavimento interessato, non necessariamente alla superficie catastale dell'abitazione.",
+      },
+      {
+        label: "Pavimento da 100 mq",
+        sizeRange: "100 mq",
+        range: "da 6.000 € a 10.000 €",
+        note: "Calcolo per il rifacimento standard: 100 mq × 60–100 €/mq. Nuovo massetto escluso. Esempio riferito a 100 mq effettivi di pavimento interessato, non necessariamente alla superficie catastale dell'abitazione.",
+      },
+    ],
+  },
 };
 
 export function getBasePriceRange(familyKey: string): BasePriceRange | null {

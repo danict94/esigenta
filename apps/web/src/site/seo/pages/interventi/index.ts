@@ -6,6 +6,7 @@ import { impermeabilizzareTettoLanding } from "./impermeabilizzare-tetto/content
 import { installareClimatizzatoreLanding } from "./installare-climatizzatore/content";
 import { impermeabilizzareTerrazzoLanding } from "./impermeabilizzare-terrazzo/content";
 import { rifareFacciataLanding } from "./rifare-facciata/content";
+import { posareORifarePavimentoInternoLanding } from "./posare-o-rifare-pavimento-interno/content";
 import type { SeoInterventionLanding } from "./types";
 
 export type { SeoInterventionLanding } from "./types";
@@ -24,6 +25,7 @@ const all: readonly SeoInterventionLanding[] = [
   installareClimatizzatoreLanding,
   impermeabilizzareTerrazzoLanding,
   rifareFacciataLanding,
+  posareORifarePavimentoInternoLanding,
 ];
 
 const bySlug: ReadonlyMap<string, SeoInterventionLanding> = new Map(
