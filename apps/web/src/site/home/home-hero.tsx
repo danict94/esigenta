@@ -189,11 +189,10 @@ export function HomeHero() {
 
   return (
     <section
-      className="eg-theme-hero relative z-10 pt-[132px] pb-[60px] text-eg-on-brand min-[861px]:pt-[152px] min-[861px]:pb-[80px]"
+      className="eg-theme-hero relative z-10 pt-28 pb-12 bg-[url('/assets/images/home/hero-mobile.webp')] text-eg-on-brand min-[861px]:pt-35 min-[861px]:pb-16 min-[861px]:bg-[url('/assets/images/home/hero-desktop.webp')]"
       style={
         {
           backgroundColor: "var(--eg-color-brand-strong)",
-          backgroundImage: "url('/assets/images/home/hero.webp')",
           backgroundPosition: "center bottom",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -201,31 +200,39 @@ export function HomeHero() {
       }
       aria-labelledby="home-title"
     >
+      {/* Velo di contrasto su tutta la foto (non solo dietro al testo):
+          un'unica tinta uniforme cosi' il bianco on-brand resta leggibile
+          ovunque cada sull'immagine, senza la "macchia" localizzata di
+          prima. Sotto al contenuto (z-[2]) ma sopra il background-image
+          della section. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-1"
+        style={{
+          backgroundColor: "color-mix(in srgb, var(--eg-color-ink) 42%, transparent)",
+        }}
+      />
       <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[22px] min-[861px]:px-12">
         <div className="relative isolate w-full max-w-[800px] text-left">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -inset-y-10 -left-[22px] right-[-22px] z-0 min-[861px]:-left-10 min-[861px]:right-[-2rem]"
-            style={{
-              background:
-                "radial-gradient(ellipse at 28% 48%, color-mix(in srgb, var(--eg-color-ink) 66%, transparent) 0%, color-mix(in srgb, var(--eg-color-ink) 42%, transparent) 52%, transparent 78%)",
-            }}
-          />
           {/* H1 fuori dal wrapper animato: e' il testo piu' grande sopra la
               piega (candidato LCP) e non deve dipendere da opacity:0 ne' da
               un animation-delay per essere dipinto. Paragrafo e form restano
               nel blocco che si anima. */}
-          <h1 id="home-title" className="eg-h1 relative z-1 max-w-[18ch] text-balance text-[clamp(32px,5vw,54px)] leading-[1.1] tracking-[-0.02em]">
-            Trova il professionista giusto, partendo dalla tua <strong className="eg-hero-emphasis font-semibold">esigenza</strong>.
+          <h1 id="home-title" className="eg-h1 eg-hero-legible relative z-1 text-balance text-[clamp(32px,5vw,54px)] leading-[1.1] tracking-[-0.02em]">
+            Trova il
+            <br />
+            professionista adatto,
+            <br />
+            per ogni esigenza.
           </h1>
 
           <div className="relative z-1 [animation:eg-home-fade-up_900ms_ease_180ms_both]">
-          <p className="mt-[22px] max-w-[44ch] text-balance text-lg leading-[1.6] text-eg-on-brand-muted">
+          <p className="eg-hero-legible mt-[22px] max-w-[44ch] text-balance text-lg leading-[1.6] text-eg-on-brand">
             Domande mirate per far arrivare la tua richiesta ai professionisti più adatti.
           </p>
 
           <div ref={searchRef} className="relative z-[4] mt-[38px] w-full max-w-[600px] text-left">
-            <p className="eg-form-eyebrow mb-3 text-eg-on-brand-muted font-semibold min-[601px]:mb-5">Cosa devi fare?</p>
+            <p className="eg-form-eyebrow eg-hero-legible mb-3 text-eg-on-brand font-semibold min-[601px]:mb-5">Cosa devi fare?</p>
 
             {/* Contesto di posizionamento STRETTO per il dropdown: solo
                 form+validazione, non l'intero blocco (che include anche la
@@ -306,8 +313,9 @@ export function HomeHero() {
           ) : null}
             </div>
 
-            <p className="eg-form-help mt-4 max-w-[52ch] text-left text-eg-on-brand-muted">
-              Richiedere &egrave; gratuito e senza impegno. Decidi tu se e con chi proseguire.
+            <p className="eg-form-help eg-hero-legible mt-4 max-w-[52ch] text-left text-eg-on-brand">
+              <span className="font-semibold">Richiedere &egrave; gratuito</span> e senza impegno. Decidi tu se e con
+              chi proseguire.
             </p>
           </div>
           </div>

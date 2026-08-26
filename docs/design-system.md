@@ -76,9 +76,10 @@ Le intestazioni delle pagine pubbliche interne usano il componente
 ricostruiti nei template.
 
 Le CTA usano la recipe condivisa di `packages/ui`: sentence case, altezza e
-stati focus/hover non vanno ricostruiti localmente. `eg-button-arrow` aggiunge
-la freccia direzionale alle sole azioni di avanzamento; i pulsanti funzionali
-e distruttivi non la usano. Il componente `Button` e `buttonClassName`
+stati focus/hover non vanno ricostruiti localmente. `eg-button-arrow` marca
+solo semanticamente le azioni di avanzamento (i pulsanti funzionali e
+distruttivi non la usano) — non genera piu' la freccia direzionale, tolta dal
+design. Il componente `Button` e `buttonClassName`
 consumano la stessa recipe CSS. Il colore dei pulsanti deriva esclusivamente
 dal token semantico `--eg-color-action`, allineato al Brand chiaro. Il testo
 usa Brand strong e l'hover usa `--eg-color-brand-hover`; il rosso `Accent`
@@ -94,8 +95,9 @@ Le parole chiave sulle hero scure usano `eg-hero-emphasis`, alimentata dallo
 stesso Brand chiaro; non usare quel ciano come testo su fondi chiari.
 
 Il marchio condiviso `EsigentaLogo` usa esclusivamente Brand strong per il
-wordmark e Brand per i dettagli del simbolo e del suffisso `.it`. Non usa
-Accent: navbar, footer, Area Impresa e Admin ereditano la stessa versione.
+wordmark e Brand per i dettagli del simbolo. Non usa Accent: navbar, footer,
+Area Impresa e Admin ereditano la stessa versione. Il suffisso `.it` è stato
+rimosso dal logo: il marchio mostra solo "esigenta".
 
 Per una nuova sezione:
 

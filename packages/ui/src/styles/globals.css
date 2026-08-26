@@ -336,6 +336,19 @@ body {
     color: var(--eg-color-hero-emphasis);
   }
 
+  /* Leggibilita' per il testo on-brand appoggiato direttamente su una
+   * foto in una hero scura (non sul pannello bianco del form). Un velo
+   * piatto sull'immagine non basta da solo: la foto ha luminosita' che
+   * varia punto per punto, un velo a percentuale fissa non garantisce
+   * contrasto ovunque. Due livelli: uno stretto/scuro per il bordo delle
+   * lettere, uno ampio/morbido per staccare il testo dallo sfondo senza
+   * sembrare un'ombra dura da bottone. */
+  .eg-hero-legible {
+    text-shadow:
+      0 1px 2px color-mix(in srgb, var(--eg-color-ink) 55%, transparent),
+      0 6px 20px color-mix(in srgb, var(--eg-color-ink) 38%, transparent);
+  }
+
   .eg-h2 {
     font-family: var(--eg-font-primary), sans-serif;
     font-size: var(--eg-text-heading);
@@ -401,26 +414,15 @@ body {
     opacity: 0.55;
   }
 
-  .eg-button-arrow::after {
-    width: 16px;
-    height: 16px;
-    flex: none;
-    background-color: currentColor;
-    content: "";
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
-    transition: transform 220ms var(--eg-ease-brand);
-  }
-
-  .eg-button-arrow:hover::after {
-    transform: translateX(3px);
-  }
+  /* eg-button-arrow: la freccia direzionale e' stata tolta (era generata
+   * da questo ::after). La classe resta nel markup dei chiamanti come
+   * marcatore semantico "azione di avanzamento" — nessuna proprieta'
+   * visiva qui sopra, di proposito. */
 
   @media (prefers-reduced-motion: reduce) {
     .eg-button,
     .eg-button-primary,
-    .eg-button-ghost,
-    .eg-button-arrow::after {
+    .eg-button-ghost {
       transition-duration: 0.01ms;
     }
   }
