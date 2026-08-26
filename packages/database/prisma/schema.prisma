@@ -904,7 +904,15 @@ model RequestPhoto {
 
 /**
  * Minimal funnel step-progress + outcome telemetry (FASE 6C, extended in
- * FASE 6D with submit_started/submit_failed/request_created). No FK to
+ * FASE 6D with submit_started/submit_failed/request_created; FASE 9A
+ * splits what used to be a single mount-triggered "funnel_started" into
+ * TWO distinct eventTypes — funnel_opened (the funnel merely mounted) and
+ * a redefined funnel_started (the user's first real answer modification/
+ * selection — never mount/focus/scroll/step_viewed alone). See
+ * trackingVersion below for how a legacy funnel_started row (old meaning:
+ * "opened") is told apart from a V2 one (new meaning: "first real
+ * interaction"), and apps/web/.../request-stepper.tsx for where the split
+ * is implemented). No FK to
  * Request: the entire point of this table is to observe funnel sessions
  * that never produce one. funnelSessionId is the opaque id introduced in
  * FASE 6B (packages/domain/src/public/requests/funnel-session-id.ts) —
@@ -914,10 +922,12 @@ model RequestPhoto {
  * Deliberately excludes: any form answer, contact detail, address,
  * coordinates, IP, full user agent, or free-form metadata. eventType is a
  * plain String (not a Prisma enum) so the wire value from the client
- * ("funnel_started" | "step_viewed" | "step_completed" | "submit_started" |
- * "submit_failed", validated in packages/domain) and the stored value stay
- * identical — no enum-mapping layer in between. "request_created" is the
- * one eventType NEVER accepted from a client payload — written only
+ * ("funnel_opened" | "funnel_started" | "step_viewed" | "step_completed" |
+ * "client_validation_failed" | "exit_feedback_submitted" | "submit_started" |
+ * "submit_failed", validated in packages/domain) and
+ * the stored value stay identical — no enum-mapping layer in between.
+ * "request_created" is the one eventType NEVER accepted from a client
+ * payload — written only
  * server-side, directly inside createRequestFromDraft after the Request's
  * own transaction has committed (packages/domain/src/public/requests/
  * create-request.ts) — see FASE 6D report for why it must be
@@ -927,12 +937,20 @@ model RequestPhoto {
  * depending on eventType — chosen deliberately to reuse the single
  * @@unique below for every event type without a schema/migration change,
  * instead of introducing a second dedup mechanism:
- *   - step_viewed / step_completed: the real RuntimeCapability id / its
- *     index in the funnel — "at most once per step" (FASE 6C).
- *   - funnel_started / request_created: sentinel ("" / -1), never a real
- *     step — "at most once per funnelSessionId" for that eventType. Two
- *     DIFFERENT eventTypes sharing the same sentinel never collide with
- *     each other (eventType is part of the same unique tuple).
+ *   - step_viewed / step_completed / client_validation_failed /
+ *     exit_feedback_submitted: the real RuntimeCapability id / its index
+ *     in the funnel — "at most once per step" (FASE 6C;
+ *     client_validation_failed added FASE 9E; exit_feedback_submitted
+ *     added FASE 9H — see the exitFeedbackReasonCode-style comment below
+ *     on why THIS eventType additionally needs a second, per-session
+ *     — not per-step — uniqueness guarantee, enforced outside this
+ *     @@unique via a raw partial index).
+ *   - funnel_opened / funnel_started / request_created: sentinel ("" /
+ *     -1), never a real step — "at most once per funnelSessionId" for
+ *     that eventType (FASE 9A adds funnel_opened to this group, same
+ *     sentinel treatment funnel_started already had). Two DIFFERENT
+ *     eventTypes sharing the same sentinel never collide with each other
+ *     (eventType is part of the same unique tuple).
  *   - submit_started / submit_failed: stepKey is the fixed literal
  *     "submit", stepIndex is a 0-based SUBMIT ATTEMPT COUNTER (not a
  *     funnel step) incremented client-side on every real submitDraft()
@@ -957,15 +975,31 @@ model RequestPhoto {
  * error codes, or "network_error"/"unexpected_error") — never
  * error.message, never a stack trace. Null for every other eventType.
  *
- * Attribution fields (FASE 6E): gclid/gbraid/wbraid/utm* — only ever set
- * on the funnel_started row (captured once per session, on the landing
- * page, before it is possible to know a funnelSessionId will exist at
- * all; see apps/web/src/site/analytics/funnel-attribution.ts). Not
- * duplicated on step_viewed/step_completed/submit_started/submit_failed/
+ * reasonCode (FASE 9H): only ever set for exit_feedback_submitted, one of
+ * a closed allow-list of controlled codes (just_browsing/
+ * too_many_questions/dont_know_what_to_choose/dont_want_to_share_contact/
+ * want_cost_first/not_ready/other — see EXIT_FEEDBACK_REASON_CODES in
+ * packages/domain/.../record-funnel-event.ts). NEVER free text, by
+ * design, in this phase — same "no PII, no user-authored content" rule
+ * this whole table already follows. No modal/trigger UI exists yet to
+ * produce this eventType (see the FASE 9H report) — this is data-layer
+ * readiness only.
+ *
+
+ * Attribution fields (FASE 6E; re-anchored in FASE 9A): gclid/gbraid/
+ * wbraid/utm* — only ever set on the funnel_opened row (captured once per
+ * session, on the landing page, before it is possible to know a
+ * funnelSessionId will exist at all; see
+ * apps/web/src/site/analytics/funnel-attribution.ts). Before FASE 9A this
+ * capture was attached to the row then called "funnel_started" (the
+ * mount-triggered event); FASE 9A renamed that event to funnel_opened and
+ * moved the capture with it — the capture logic/consent rules themselves
+ * are unchanged, only the eventType label they attach to. Not duplicated
+ * on step_viewed/step_completed/submit_started/submit_failed/
  * request_created rows of the same session, and not duplicated into
  * Request.structuredData —
  * the join Request.structuredData.funnelSessionId -> this row's
- * funnel_started is enough to reconstruct "where did this Request come
+ * funnel_opened is enough to reconstruct "where did this Request come
  * from" without storing the same 8 values N times. Every value here is
  * exactly what arrived in the URL query string (trimmed, length-capped),
  * never a parsed/derived classification.
@@ -996,6 +1030,8 @@ model FunnelEvent {
   stepIndex        Int
   /** FASE 6D — only for submit_failed, always a known code, never free text. */
   errorCode        String?
+  /** FASE 9H — only for exit_feedback_submitted, always a known code, never free text. See the model comment above. */
+  reasonCode       String?
 
   /** FASE 6E — only for funnel_started, see model comment above (incl. CONSENT DECISION REQUIRED). */
   gclid       String?
@@ -1008,20 +1044,44 @@ model FunnelEvent {
   utmContent  String?
 
   /**
-   * FASE 7E — only for funnel_started, set by the client alongside the 8
-   * attribution fields above. Distinguishes two cases that otherwise
-   * produce an identical row (every attribution field null): "resolved"
-   * means attribution capture ran without error and genuinely found
-   * nothing to attribute (organic/direct traffic, or a real click id that
-   * consent chose not to persist — see CONSENT DECISION REQUIRED above);
-   * "unknown" means capture itself failed (e.g. sessionStorage threw) and
-   * we never actually got to find out. Never set for any other eventType.
-   * Nullable for forward/backward compatibility with any client build
-   * that predates this field. See
+   * FASE 7E — only for funnel_opened (FASE 9A: re-anchored from
+   * funnel_started, see the attribution fields comment above), set by the
+   * client alongside the 8 attribution fields above. Distinguishes two
+   * cases that otherwise produce an identical row (every attribution
+   * field null): "resolved" means attribution capture ran without error
+   * and genuinely found nothing to attribute (organic/direct traffic, or
+   * a real click id that consent chose not to persist — see CONSENT
+   * DECISION REQUIRED above); "unknown" means capture itself failed (e.g.
+   * sessionStorage threw) and we never actually got to find out. Never
+   * set for any other eventType. Nullable for forward/backward
+   * compatibility with any client build that predates this field. See
    * apps/web/src/site/analytics/funnel-attribution.ts
-   * (resolveFunnelStartedAttribution) for where this is decided.
+   * (resolveFunnelStartedAttribution) for where this is decided — the
+   * function name itself still says "Started" for historical reasons
+   * (FASE 6E/7E), it now feeds funnel_opened.
    */
   attributionStatus String?
+
+  /**
+   * FASE 9A — legacy/V2 tracking-generation marker. Purely descriptive:
+   * deliberately NOT part of the @@unique below, never used for dedup or
+   * idempotency. Written by the client's single outbound event function
+   * (apps/web/src/richiesta/flow/components/track-funnel-event.ts) on
+   * EVERY client-submitted event — funnel_opened, funnel_started,
+   * step_viewed, step_completed, submit_started, submit_failed alike, all
+   * through that one call site, never a per-eventType conditional that
+   * could be forgotten for a new event type later. Null on every row
+   * written before this phase (legacy semantics: "funnel_started" meant
+   * "the funnel mounted") and on request_created (still written directly,
+   * server-side, by create-request.ts — untouched by this phase, never
+   * routed through the client tracker). "v2" is the one value currently
+   * defined — it marks a row produced after the funnel_opened/
+   * funnel_started split, so a future reader can tell a legacy
+   * funnel_started row apart from a V2 one without a createdAt/deploy-date
+   * heuristic. See packages/domain/src/public/funnel-events/
+   * record-funnel-event.ts for the allow-listed values.
+   */
+  trackingVersion String?
 
   createdAt DateTime @default(now())
 
@@ -1035,6 +1095,37 @@ model FunnelEvent {
    * +submit-attempt).
    */
   @@unique([funnelSessionId, eventType, stepKey, stepIndex])
+
+  /**
+   * FASE 9H — NOT a Prisma attribute (Prisma's schema DSL has no WHERE
+   * clause for @@unique/@@index — partial/filtered unique indexes cannot
+   * be expressed here at all): a second, PARTIAL unique index exists in
+   * the database, created directly in this phase's migration SQL —
+   *
+   *   CREATE UNIQUE INDEX ... ON "FunnelEvent" ("funnelSessionId")
+   *   WHERE "eventType" = 'exit_feedback_submitted';
+   *
+   * — enforcing "at most one exit_feedback_submitted row per
+   * funnelSessionId", REGARDLESS of stepKey/stepIndex. The @@unique above
+   * cannot provide this alone: exit_feedback_submitted deliberately
+   * carries the REAL step the user was on (varying stepKey/stepIndex, see
+   * the model comment above), so two genuinely different steps would
+   * otherwise pass the 4-column constraint as two "distinct" rows for the
+   * same session — defeating "at most one definitive exit feedback per
+   * session". A second INSERT attempt hits Postgres error 23505
+   * (unique_violation), already caught generically as "duplicate" by
+   * packages/database/src/funnel/record-funnel-event.ts's existing P2002
+   * handling — no code change needed there for this to work.
+   *
+   * Residual risk, stated plainly: because this index has no
+   * representation in schema.prisma, `prisma migrate dev`/`deploy` will
+   * never touch or drop it (they diff schema.prisma against applied
+   * migrations, not the live database) — but a full `prisma db pull`
+   * (introspection) WOULD detect it and attempt to represent it in
+   * schema.prisma, likely imperfectly (no WHERE-clause syntax to write
+   * back). Do not run db pull against this database without accounting
+   * for that; see the FASE 9H report.
+   */
 }
 
 ///////////////////////////////////////////////////////////

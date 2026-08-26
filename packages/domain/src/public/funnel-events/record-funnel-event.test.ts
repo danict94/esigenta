@@ -2,9 +2,12 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import {
+  EXIT_FEEDBACK_REASON_CODES,
   normalizeAttributionFields,
   normalizeAttributionStatus,
   normalizeErrorCode,
+  normalizeReasonCode,
+  normalizeTrackingVersion,
   recordFunnelEvent,
 } from "./record-funnel-event"
 
@@ -109,6 +112,99 @@ test("recordFunnelEvent: step_completed senza stepIndex -> rifiutato", async () 
   assert.equal((result as { code: string }).code, "missing_step_index")
 })
 
+// --- FASE 9E: client_validation_failed ---
+
+test("recordFunnelEvent (FASE 9E): client_validation_failed senza stepKey -> rifiutato con missing_step_key, MAI invalid_event_type — prova che l'eventType di per sé è accettato (stesso trattamento di step_viewed/step_completed, mai un sentinel)", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "client_validation_failed",
+    stepIndex: 0,
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "missing_step_key")
+})
+
+test("recordFunnelEvent (FASE 9E): client_validation_failed senza stepIndex -> rifiutato con missing_step_index", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "client_validation_failed",
+    stepKey: "location",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "missing_step_index")
+})
+
+// --- FASE 9H: exit_feedback_submitted (solo base dati/tracking, nessun
+// modal/trigger esiste ancora — vedi il report FASE 9H) ---
+
+test("recordFunnelEvent (FASE 9H): exit_feedback_submitted senza stepKey -> rifiutato con missing_step_key, MAI invalid_event_type — prova che l'eventType di per sé è accettato (stesso trattamento di step_viewed/step_completed/client_validation_failed, mai un sentinel)", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "exit_feedback_submitted",
+    stepIndex: 0,
+    reasonCode: "just_browsing",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "missing_step_key")
+})
+
+test("recordFunnelEvent (FASE 9H): exit_feedback_submitted senza stepIndex -> rifiutato con missing_step_index", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "exit_feedback_submitted",
+    stepKey: "location",
+    reasonCode: "just_browsing",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "missing_step_index")
+})
+
+test("recordFunnelEvent (FASE 9H): exit_feedback_submitted senza reasonCode -> rifiutato con invalid_reason_code (a differenza di errorCode, qui è un rifiuto duro, non un fallback silenzioso)", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "exit_feedback_submitted",
+    stepKey: "location",
+    stepIndex: 0,
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "invalid_reason_code")
+})
+
+test("recordFunnelEvent (FASE 9H): exit_feedback_submitted con reasonCode non nell'allow-list -> rifiutato con invalid_reason_code", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "exit_feedback_submitted",
+    stepKey: "location",
+    stepIndex: 0,
+    reasonCode: "qualunque cosa arrivi dal client",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "invalid_reason_code")
+})
+
+test("recordFunnelEvent (FASE 9H): stepKey/stepIndex mancanti vengono rilevati PRIMA di reasonCode (ordine di validazione) — un payload senza nessuno dei due viene rifiutato per missing_step_key, non per il reasonCode", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: VALID_FUNNEL_SESSION_ID,
+    interventionSlug: "rifare-tetto",
+    eventType: "exit_feedback_submitted",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal((result as { code: string }).code, "missing_step_key")
+})
+
 test("recordFunnelEvent: stepIndex negativo o non intero -> rifiutato", async () => {
   const negative = await recordFunnelEvent({
     funnelSessionId: VALID_FUNNEL_SESSION_ID,
@@ -142,6 +238,42 @@ test("recordFunnelEvent: stepKey/stepIndex NON sono richiesti per funnel_started
 
   assert.equal(result.ok, false)
   assert.equal((result as { code: string }).code, "invalid_funnel_session_id")
+})
+
+// --- FASE 9A: funnel_opened (nuovo eventType, mount) + trackingVersion ---
+
+test("recordFunnelEvent (FASE 9A): funnel_opened è un eventType riconosciuto, mai rifiutato con invalid_event_type", async () => {
+  // Stesso trucco dei test sopra: funnelSessionId deliberatamente invalido
+  // per fermarsi prima del database, verificando solo che il rifiuto
+  // arrivi per funnelSessionId — se funnel_opened non fosse nell'allow-list
+  // il codice sarebbe invalid_event_type, non invalid_funnel_session_id.
+  const result = await recordFunnelEvent({
+    funnelSessionId: "non-un-uuid",
+    interventionSlug: "rifare-tetto",
+    eventType: "funnel_opened",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal(
+    (result as { code: string }).code,
+    "invalid_funnel_session_id",
+    "se funnel_opened non fosse nell'allow-list, il codice sarebbe invalid_event_type",
+  )
+})
+
+test("recordFunnelEvent (FASE 9A): stepKey/stepIndex NON sono richiesti per funnel_opened, stessa esenzione già valida per funnel_started", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: "non-un-uuid",
+    interventionSlug: "rifare-tetto",
+    eventType: "funnel_opened",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal(
+    (result as { code: string }).code,
+    "invalid_funnel_session_id",
+    "mai missing_step_key/missing_step_index per funnel_opened",
+  )
 })
 
 test("recordFunnelEvent: una risposta payload arbitrario/malevolo (oggetto vuoto) -> rifiutato senza throw", async () => {
@@ -202,6 +334,45 @@ test("normalizeErrorCode: assente/tipo sbagliato -> unexpected_error, mai un thr
   assert.equal(normalizeErrorCode(undefined), "unexpected_error")
   assert.equal(normalizeErrorCode(null), "unexpected_error")
   assert.equal(normalizeErrorCode(12345), "unexpected_error")
+})
+
+// --- FASE 9H: normalizeReasonCode (unit, stesso motivo di
+// normalizeErrorCode — mai passa da recordFunnelEvent per non toccare mai
+// il database). A differenza di normalizeErrorCode, NON coercisce a un
+// default: ritorna undefined, ed è recordFunnelEvent a trasformarlo in un
+// rifiuto duro per exit_feedback_submitted (vedi i test sopra). ---
+
+test("EXIT_FEEDBACK_REASON_CODES: contiene esattamente i 7 codici concordati per questa fase", () => {
+  assert.deepEqual(
+    [...EXIT_FEEDBACK_REASON_CODES].sort(),
+    [
+      "just_browsing",
+      "too_many_questions",
+      "dont_know_what_to_choose",
+      "dont_want_to_share_contact",
+      "want_cost_first",
+      "not_ready",
+      "other",
+    ].sort(),
+  )
+})
+
+test("normalizeReasonCode: ciascuno dei 7 codici validi passa invariato", () => {
+  for (const code of EXIT_FEEDBACK_REASON_CODES) {
+    assert.equal(normalizeReasonCode(code), code)
+  }
+})
+
+test("normalizeReasonCode: una stringa arbitraria non nell'allow-list -> undefined, mai salvata verbatim, mai un throw", () => {
+  assert.equal(normalizeReasonCode("qualunque cosa arrivi dal client"), undefined)
+  assert.equal(normalizeReasonCode("Other"), undefined, "case-sensitive, nessuna normalizzazione implicita")
+})
+
+test("normalizeReasonCode: assente/tipo sbagliato -> undefined, mai un throw", () => {
+  assert.equal(normalizeReasonCode(undefined), undefined)
+  assert.equal(normalizeReasonCode(null), undefined)
+  assert.equal(normalizeReasonCode(12345), undefined)
+  assert.equal(normalizeReasonCode({}), undefined)
 })
 
 // --- FASE 6E: normalizeAttributionFields (unit, stesso motivo di
@@ -307,5 +478,44 @@ test("recordFunnelEvent (FASE 7E): attributionStatus non valido su funnel_starte
     (result as { code: string }).code,
     "invalid_funnel_session_id",
     "mai un errore legato ad attributionStatus: quel campo non blocca mai la validazione",
+  )
+})
+
+// --- FASE 9A: normalizeTrackingVersion (unit, stesso motivo di
+// normalizeErrorCode/normalizeAttributionFields/normalizeAttributionStatus
+// — mai passa da recordFunnelEvent per non toccare mai il database) ---
+
+test("normalizeTrackingVersion: 'v2' passa invariato", () => {
+  assert.equal(normalizeTrackingVersion("v2"), "v2")
+})
+
+test("normalizeTrackingVersion: una stringa arbitraria non nell'allow-list -> undefined, mai salvata verbatim, mai un throw", () => {
+  assert.equal(normalizeTrackingVersion("qualunque cosa arrivi dal client"), undefined)
+  assert.equal(normalizeTrackingVersion("v1"), undefined)
+  assert.equal(normalizeTrackingVersion("V2"), undefined, "case-sensitive, nessuna normalizzazione implicita")
+})
+
+test("normalizeTrackingVersion: assente/tipo sbagliato -> undefined, mai un throw", () => {
+  assert.equal(normalizeTrackingVersion(undefined), undefined)
+  assert.equal(normalizeTrackingVersion(null), undefined)
+  assert.equal(normalizeTrackingVersion(12345), undefined)
+  assert.equal(normalizeTrackingVersion({}), undefined)
+})
+
+test("recordFunnelEvent (FASE 9A): trackingVersion non valido non viene rifiutato, viene semplicemente omesso (verificato senza raggiungere il database tramite un funnelSessionId invalido, che fa comunque rifiutare la richiesta per il motivo corretto)", async () => {
+  const result = await recordFunnelEvent({
+    funnelSessionId: "non-un-uuid",
+    interventionSlug: "rifare-tetto",
+    eventType: "step_viewed",
+    stepKey: "location",
+    stepIndex: 0,
+    trackingVersion: "qualcosa-di-non-valido",
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal(
+    (result as { code: string }).code,
+    "invalid_funnel_session_id",
+    "mai un errore legato a trackingVersion: quel campo non blocca mai la validazione",
   )
 })

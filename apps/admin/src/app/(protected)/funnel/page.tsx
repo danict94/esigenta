@@ -1,14 +1,19 @@
 import type { ReactNode } from "react"
+import { revalidatePath } from "next/cache"
 
 import {
   type AdminFunnelAbandonmentRow,
   type AdminFunnelAttributionRow,
   type AdminFunnelErrorRow,
+  type AdminFunnelExitFeedbackOriginCounts,
+  type AdminFunnelExitFeedbackReasonRow,
   type AdminFunnelPeriod,
   type AdminFunnelProvenance,
   type AdminFunnelSessionSummary,
-  type AdminFunnelSessionStatus,
+  type AdminFunnelV2SessionStatus,
   type AdminFunnelStepRow,
+  type AdminFunnelValidationFailureRow,
+  deleteAllFunnelEvents,
   getAdminFunnelMetrics,
 } from "@esigenta/domain"
 import {
@@ -20,7 +25,38 @@ import {
   cn,
 } from "@esigenta/ui"
 
+import { requireAdmin } from "../../../auth/server"
+import { DeleteFunnelDataButton } from "./delete-funnel-data-button"
+
 export const dynamic = "force-dynamic"
+
+// FASE 9G — Server Action distruttiva: elimina TUTTI i record FunnelEvent.
+// requireAdmin() è la PRIMA istruzione, come ogni altra azione mutante in
+// questa app (vedi es. approveCompanyAction in
+// apps/admin/.../imprese/[companyId]/page.tsx) — il layout (protected)
+// protegge solo il RENDER della pagina, mai l'invocazione di una Server
+// Action, che è un endpoint POST separato e va riverificata qui
+// esplicitamente. Nessun'altra tabella toccata: deleteAllFunnelEvents
+// (vedi packages/domain/src/admin/funnel/delete-all-funnel-events.ts) è
+// isolata per costruzione, FunnelEvent non ha alcuna relazione con
+// Request né con nessun'altra tabella.
+async function deleteAllFunnelEventsAction(): Promise<
+  { ok: true; deletedCount: number } | { ok: false; message: string }
+> {
+  "use server"
+
+  const admin = await requireAdmin()
+
+  const result = await deleteAllFunnelEvents({ adminUserId: admin.userId })
+
+  if (!result.ok) {
+    return { ok: false, message: result.message }
+  }
+
+  revalidatePath("/funnel")
+
+  return { ok: true, deletedCount: result.deletedCount }
+}
 
 // FASE 6F — pagina admin READ-ONLY: legge solo FunnelEvent (via
 // getAdminFunnelMetrics), non scrive mai nulla, non introduce nuovi eventi
@@ -46,10 +82,17 @@ const PROVENANCE_OPTIONS: { value: AdminFunnelProvenance; label: string }[] = [
   { value: "unknown", label: "Non determinabile (errore tecnico)" },
 ]
 
-const SESSION_STATUS_LABELS: Record<AdminFunnelSessionStatus, string> = {
+// FASE 9D — converted/in_progress/abandoned/invalid, non più
+// converted/submitting/abandoned: "in_progress" è ora basato sul tempo
+// (ultima attività significativa entro la soglia di inattività), non
+// sulla semplice presenza di un evento submit_started. "invalid" è un
+// caso difensivo (dato incompleto), non dovrebbe mai comparire in
+// pratica — vedi classifySessionStatus in @esigenta/domain.
+const SESSION_STATUS_LABELS: Record<AdminFunnelV2SessionStatus, string> = {
   converted: "Convertita",
-  submitting: "In invio",
+  in_progress: "In corso",
   abandoned: "Abbandonata",
+  invalid: "Dato incompleto",
 }
 
 type FunnelPageProps = {
@@ -174,11 +217,15 @@ function FiltersForm({
   interventionSlug,
   provenance,
   interventionOptions,
+  onDeleteFunnelData,
 }: {
   period: AdminFunnelPeriod
   interventionSlug?: string
   provenance?: AdminFunnelProvenance
   interventionOptions: string[]
+  onDeleteFunnelData: () => Promise<
+    { ok: true; deletedCount: number } | { ok: false; message: string }
+  >
 }) {
   return (
     <form className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
@@ -217,13 +264,18 @@ function FiltersForm({
         </Select>
       </label>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button type="submit" variant="primary">
           Applica
         </Button>
         <a href="/funnel" className={buttonClassName({ variant: "ghost" })}>
           Azzera
         </a>
+        {/* FASE 9G: azione distruttiva, volutamente separata dal resto del
+            form (nessun name/value inviato con "Applica") — il modal di
+            conferma vive interamente nel componente client, vedi
+            delete-funnel-data-button.tsx. */}
+        <DeleteFunnelDataButton onDelete={onDeleteFunnelData} />
       </div>
     </form>
   )
@@ -254,6 +306,43 @@ function StepTable({ steps }: { steps: AdminFunnelStepRow[] }) {
               <td className="py-3 pr-4 text-eg-ink">{formatCount(step.viewedCount)}</td>
               <td className="py-3 pr-4 text-eg-ink">{formatCount(step.completedCount)}</td>
               <td className="py-3 text-eg-ink">{formatPercent(step.completionRate)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function ValidationFailureTable({
+  rows,
+}: {
+  rows: AdminFunnelValidationFailureRow[]
+}) {
+  if (rows.length === 0) {
+    return (
+      <EmptyState message="Nessun dato di validazione disponibile per questo periodo/filtro." />
+    )
+  }
+
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full min-w-[40rem] border-collapse text-sm">
+        <thead>
+          <tr className="border-b border-eg-border text-left text-xs font-medium uppercase tracking-wide text-eg-text-muted">
+            <th className="py-2 pr-4">Step</th>
+            <th className="py-2 pr-4">Visualizzato</th>
+            <th className="py-2 pr-4">Bloccato da validazione</th>
+            <th className="py-2">% delle sessioni visualizzate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.stepKey} className="border-b border-eg-border last:border-b-0">
+              <td className="py-3 pr-4 text-eg-ink">{row.stepLabel}</td>
+              <td className="py-3 pr-4 text-eg-ink">{formatCount(row.viewedCount)}</td>
+              <td className="py-3 pr-4 text-eg-ink">{formatCount(row.validationFailedCount)}</td>
+              <td className="py-3 text-eg-ink">{formatPercent(row.validationFailureRate)}</td>
             </tr>
           ))}
         </tbody>
@@ -318,6 +407,76 @@ function AbandonmentTable({ rows }: { rows: AdminFunnelAbandonmentRow[] }) {
   )
 }
 
+// FASE 9K — "Motivi di uscita dichiarati": una riga per ciascuno dei 7
+// reasonCode (sempre tutti, anche a 0 — vedi AdminFunnelExitFeedbackReasonRow),
+// il breakdown per step reso come elenco compatto in un'unica cella
+// ("Contact: 8 · Location: 1"), stessa idea dell'esempio nel brief ma senza
+// una sotto-tabella annidata — mantiene la UI semplice, coerente con ogni
+// altra tabella di questa pagina.
+//
+// FASE 9K.1 — byOrigin è un riepilogo VOLUTAMENTE separato dalla tabella
+// (mai una colonna in più lì, per non complicarla): quanti dei feedback
+// sotto vengono da chi non aveva mai davvero iniziato (solo funnel_opened)
+// contro chi aveva già funnel_started. Non è un giudizio sullo stato della
+// sessione (vedi lo status "Abbandonata" nel pannello Sessioni recenti,
+// invariato) — solo un'etichetta su QUESTA sezione.
+function ExitFeedbackReasonTable({
+  rows,
+  byOrigin,
+}: {
+  rows: AdminFunnelExitFeedbackReasonRow[]
+  byOrigin: AdminFunnelExitFeedbackOriginCounts
+}) {
+  const total = rows.reduce((sum, row) => sum + row.sessionCount, 0)
+
+  if (total === 0) {
+    return (
+      <EmptyState message="Nessun feedback di uscita registrato per questo periodo/filtro." />
+    )
+  }
+
+  return (
+    <div className="mt-4">
+      <p className="text-xs text-eg-text-muted">
+        Prima di iniziare:{" "}
+        <span className="font-semibold text-eg-ink">{formatCount(byOrigin.preStart)}</span>
+        {" · "}
+        Dopo aver iniziato:{" "}
+        <span className="font-semibold text-eg-ink">{formatCount(byOrigin.started)}</span>
+      </p>
+
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full min-w-[40rem] border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-eg-border text-left text-xs font-medium uppercase tracking-wide text-eg-text-muted">
+              <th className="py-2 pr-4">Motivo</th>
+              <th className="py-2 pr-4">Sessioni</th>
+              <th className="py-2 pr-4">% dei feedback</th>
+              <th className="py-2">Per step</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.reasonCode} className="border-b border-eg-border last:border-b-0">
+                <td className="py-3 pr-4 text-eg-ink">{row.label}</td>
+                <td className="py-3 pr-4 text-eg-ink">{formatCount(row.sessionCount)}</td>
+                <td className="py-3 pr-4 text-eg-ink">{formatPercent(row.percentage)}</td>
+                <td className="py-3 text-eg-text-muted">
+                  {row.byStep.length > 0
+                    ? row.byStep
+                        .map((step) => `${step.stepLabel}: ${formatCount(step.sessionCount)}`)
+                        .join(" · ")
+                    : "-"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 function AttributionTable({ rows }: { rows: AdminFunnelAttributionRow[] }) {
   const total = rows.reduce((sum, row) => sum + row.sessionCount, 0)
 
@@ -349,8 +508,15 @@ function AttributionTable({ rows }: { rows: AdminFunnelAttributionRow[] }) {
   )
 }
 
-function SessionStatusBadge({ status }: { status: AdminFunnelSessionStatus }) {
-  const variant = status === "converted" ? "success" : status === "submitting" ? "warning" : "neutral"
+function SessionStatusBadge({ status }: { status: AdminFunnelV2SessionStatus }) {
+  const variant =
+    status === "converted"
+      ? "success"
+      : status === "in_progress"
+        ? "warning"
+        : status === "invalid"
+          ? "danger"
+          : "neutral"
 
   return (
     <Badge variant={variant} size="sm">
@@ -425,6 +591,7 @@ export default async function AdminFunnelPage({ searchParams }: FunnelPageProps)
         <FiltersForm
           period={period}
           interventionOptions={metrics.interventionOptions}
+          onDeleteFunnelData={deleteAllFunnelEventsAction}
           {...(interventionSlug ? { interventionSlug } : {})}
           {...(provenance ? { provenance } : {})}
         />
@@ -434,19 +601,37 @@ export default async function AdminFunnelPage({ searchParams }: FunnelPageProps)
         <Panel>
           <SectionHeader
             title="Panoramica"
-            description="Sessioni avviate, conversioni e tentativi di invio nel periodo selezionato."
+            description="Sessioni avviate → Convertite → In corso → Abbandonate. Conversione e abbandono sono calcolati solo sulle sessioni risolte (esclude quelle ancora in corso)."
           />
-          <div className="mt-5 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            <KpiCard label="Sessioni avviate" value={formatCount(metrics.totalStarted)} />
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <KpiCard
+              label="Aperture funnel"
+              value={formatCount(metrics.totalOpened)}
+              helper="Tracking V2 — funnel_opened, volume complessivo (non filtrato da Provenienza)"
+            />
+            <KpiCard
+              label="Sessioni avviate"
+              value={formatCount(metrics.totalStarted)}
+              helper={
+                metrics.legacyStartedCount > 0
+                  ? `Tracking V2 — ${formatCount(metrics.legacyStartedCount)} sessioni legacy non incluse`
+                  : "Tracking V2 — funnel_started"
+              }
+            />
             <KpiCard
               label="Richieste create"
               value={formatCount(metrics.totalConverted)}
-              helper={`Conversione ${formatPercent(metrics.conversionRate)}`}
+              helper={`Conversione ${formatPercent(metrics.conversionRate)} delle risolte`}
+            />
+            <KpiCard
+              label="In corso"
+              value={formatCount(metrics.totalInProgress)}
+              helper="Attività recente, non ancora convertita né abbandonata"
             />
             <KpiCard
               label="Abbandoni"
               value={formatCount(metrics.totalAbandoned)}
-              helper={`${formatPercent(metrics.abandonmentRate)} delle sessioni avviate`}
+              helper={`${formatPercent(metrics.abandonmentRate)} delle risolte (esclude le sessioni in corso)`}
             />
             <KpiCard label="Invii tentati" value={formatCount(metrics.totalSubmitStarted)} />
             <KpiCard
@@ -454,6 +639,13 @@ export default async function AdminFunnelPage({ searchParams }: FunnelPageProps)
               value={formatCount(metrics.totalSubmitFailed)}
               helper={`${formatPercent(metrics.submitFailureRate)} dei tentativi`}
             />
+            {metrics.totalInvalid > 0 ? (
+              <KpiCard
+                label="Dati incompleti"
+                value={formatCount(metrics.totalInvalid)}
+                helper="Sessioni V2 senza alcuna attività registrata — anomalia, da indagare"
+              />
+            ) : null}
           </div>
         </Panel>
 
@@ -469,6 +661,14 @@ export default async function AdminFunnelPage({ searchParams }: FunnelPageProps)
           <StepTable steps={metrics.steps} />
         </Panel>
 
+        <Panel>
+          <SectionHeader
+            title="Tentativi bloccati dalla validazione"
+            description="Sessioni V2 che hanno premuto Avanti/Prepara richiesta senza superare la validazione dello step corrente. Stesso scope di Sessioni avviate (periodo, intervento, provenienza)."
+          />
+          <ValidationFailureTable rows={metrics.validationFailures} />
+        </Panel>
+
         <div className="grid gap-6 lg:grid-cols-2">
           <Panel>
             <SectionHeader
@@ -481,11 +681,22 @@ export default async function AdminFunnelPage({ searchParams }: FunnelPageProps)
           <Panel>
             <SectionHeader
               title="Abbandoni per ultimo step"
-              description="Sessioni avviate senza una richiesta creata, raggruppate per l'ultimo step visto."
+              description="Solo sessioni classificate Abbandonata (inattive da oltre la soglia, mai le sessioni ancora In corso), raggruppate per l'ultimo step visto."
             />
             <AbandonmentTable rows={metrics.abandonmentByLastStep} />
           </Panel>
         </div>
+
+        <Panel>
+          <SectionHeader
+            title="Motivi di uscita dichiarati"
+            description="Sessioni V2 che hanno scelto un motivo nel modal di uscita dal funnel (exit_feedback_submitted) — incluse quelle che hanno aperto il funnel senza mai iniziarlo davvero. Periodo, intervento e provenienza si applicano come altrove."
+          />
+          <ExitFeedbackReasonTable
+            rows={metrics.exitFeedbackReasons}
+            byOrigin={metrics.exitFeedbackByOrigin}
+          />
+        </Panel>
 
         <Panel>
           <SectionHeader

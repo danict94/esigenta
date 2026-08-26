@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useId } from "react";
+import type { MouseEvent } from "react";
 
 import { buttonClassName, cn, EsigentaLogo, useDismissableMenu } from "@esigenta/ui";
 
@@ -13,7 +14,25 @@ import {
   headerTriggerBaseClassName,
   headerTriggerSolidClassName,
 } from "./header-gutter";
+import { useFunnelExitGuardIntercept } from "./funnel-exit-guard";
 import { CloseIcon, MenuIcon } from "./icons";
+
+/**
+ * FASE 9J — vero solo per un click sinistro "semplice" (nessun tasto
+ * modificatore, nessun altro pulsante). Un ctrl/cmd/shift/middle-click
+ * vuole aprire il link in una nuova scheda/finestra: non va MAI
+ * intercettato, altrimenti si romperebbe un comportamento nativo del
+ * browser che gli utenti si aspettano da qualunque link.
+ */
+function isPlainLeftClick(event: MouseEvent): boolean {
+  return (
+    event.button === 0 &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
+}
 
 export type NavbarVariant = "default" | "funnel";
 
@@ -62,7 +81,31 @@ export function Navbar({ variant = "default" }: NavbarProps) {
   const navItems = variant === "funnel" ? funnelNavItems : defaultNavItems;
   const navId = useId();
   const pathname = usePathname();
+  const router = useRouter();
+  const interceptFunnelExit = useFunnelExitGuardIntercept();
   const { isOpen, containerRef, toggle, close } = useDismissableMenu();
+
+  // FASE 9J — assente (no-op, mai un'intercettazione) su ogni pagina che
+  // non sia il funnel, vedi funnel-exit-guard.tsx. Su /richiesta/[slug],
+  // intercetta il click sul logo e su OGNI link della navbar (tutti
+  // portano fuori dal funnel) — mai i link di Privacy/Termini, che non
+  // vivono in Navbar (sono in request-step-ui.tsx/il footer, qui non
+  // toccati).
+  function handleGuardedNavigate(event: MouseEvent, href: string) {
+    close();
+
+    if (!isPlainLeftClick(event)) {
+      return;
+    }
+
+    const intercepted = interceptFunnelExit(() => {
+      router.push(href);
+    });
+
+    if (intercepted) {
+      event.preventDefault();
+    }
+  }
 
   return (
     <header
@@ -85,6 +128,9 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           className="relative z-102 inline-flex items-center gap-2 no-underline"
           prefetch={false}
           aria-label="Esigenta home"
+          onClick={(event) => {
+            handleGuardedNavigate(event, "/");
+          }}
         >
           <EsigentaLogo decorative className="h-6 w-auto shrink-0" />
         </Link>
@@ -119,7 +165,9 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                     href={item.href}
                     prefetch={false}
                     className={cn(ctaLinkClassName, "mx-4.5 my-3 min-[861px]:m-0")}
-                    onClick={close}
+                    onClick={(event) => {
+                      handleGuardedNavigate(event, item.href);
+                    }}
                   >
                     {item.label}
                   </Link>
@@ -138,7 +186,9 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                     "eg-nav-link whitespace-nowrap border-b border-eg-border px-4.5 py-4 last:border-b-0 min-[861px]:border-0 min-[861px]:p-0",
                     active ? "text-eg-brand-strong" : "text-eg-ink hover:text-eg-brand-strong",
                   )}
-                  onClick={close}
+                  onClick={(event) => {
+                    handleGuardedNavigate(event, item.href);
+                  }}
                 >
                   {item.label}
                 </Link>

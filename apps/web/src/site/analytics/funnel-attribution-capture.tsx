@@ -15,9 +15,10 @@ import { resolveFunnelAttribution } from "./funnel-attribution"
  *
  * Non dipende dall'ordine di montaggio rispetto a RequestStepper: quel
  * componente richiama la STESSA resolveFunnelAttribution() al momento di
- * funnel_started, quindi anche un accesso diretto a /richiesta/[slug] con
- * parametri nell'URL viene catturato correttamente, con o senza questo
- * componente.
+ * funnel_opened (FASE 9A: rinominato da funnel_started, il mount del
+ * funnel — non la prima interazione), quindi anche un accesso diretto a
+ * /richiesta/[slug] con parametri nell'URL viene catturato correttamente,
+ * con o senza questo componente.
  */
 export function FunnelAttributionCapture() {
   useEffect(() => {

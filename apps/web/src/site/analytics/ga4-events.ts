@@ -91,7 +91,11 @@ export function trackGoogleAdsLeadConversion(
   })
 }
 
+// FASE 9A: "funnel_opened" aggiunto, mirror del mount-event lato DB —
+// vedi apps/web/.../track-funnel-event.ts. "funnel_started" resta ma ora
+// significa la prima vera interazione, mai il semplice mount.
 export type FunnelEventGa4Type =
+  | "funnel_opened"
   | "funnel_started"
   | "step_viewed"
   | "step_completed"
