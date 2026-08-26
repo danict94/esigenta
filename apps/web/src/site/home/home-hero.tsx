@@ -193,7 +193,13 @@ export function HomeHero() {
       style={
         {
           backgroundColor: "var(--eg-color-brand-strong)",
-          backgroundPosition: "center bottom",
+          // "top" e non "bottom": le teste stanno nella meta' superiore
+          // della foto, il pavimento/dettagli in basso contano meno. Con
+          // cover, ancorare in basso sacrifica la parte alta quando il
+          // contenitore e' piu' corto del rapporto naturale della foto —
+          // e' quello che tagliava le teste. Ancorare in alto protegge le
+          // teste a qualunque rapporto larghezza/altezza dello schermo.
+          backgroundPosition: "center top",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }
