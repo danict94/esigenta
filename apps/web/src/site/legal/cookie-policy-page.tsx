@@ -55,7 +55,7 @@ export function CookiePolicyPage() {
                     esigenta_cookie_consent
                   </span>
                   . Questa scelta serve a ricordare se l&apos;utente ha accettato
-                  o rifiutato categorie facoltative. Non e un consenso marketing
+                  o rifiutato categorie facoltative. Non è un consenso marketing
                   e non viene salvata nel database.
                 </p>
               </section>
@@ -73,13 +73,13 @@ export function CookiePolicyPage() {
               <section className="eg-panel p-6">
                 <h2 className="eg-h3">Google Maps Places</h2>
                 <p className="eg-body-muted mt-3">
-                  I suggerimenti automatici per indirizzi e citta, usati per
+                  I suggerimenti automatici per indirizzi e città, usati per
                   indicare dove eseguire un intervento, si basano su Google
                   Maps Places. Lo script viene caricato quando si apre lo
                   step di localizzazione della richiesta, indipendentemente
-                  dalle preferenze cookie scelte: e una componente tecnica
+                  dalle preferenze cookie scelte: è una componente tecnica
                   necessaria per completare una richiesta su Esigenta, non
-                  una funzionalita facoltativa legata a una categoria di
+                  una funzionalità facoltativa legata a una categoria di
                   consenso.
                 </p>
               </section>
@@ -98,7 +98,7 @@ export function CookiePolicyPage() {
                   misurazioni.
                 </p>
                 <p className="eg-body-muted mt-3">
-                  Quando la categoria e attiva, Google Analytics 4 puo
+                  Quando la categoria è attiva, Google Analytics 4 può
                   impostare cookie come{" "}
                   <span className="font-medium text-eg-ink">_ga</span> e{" "}
                   <span className="font-medium text-eg-ink">

@@ -23,7 +23,7 @@ function getResetErrorMessage(error?: string) {
   }
 
   if (error === "password_too_long") {
-    return "La password e troppo lunga.";
+    return "La password è troppo lunga.";
   }
 
   if (error === "invalid_token" || error === "missing_token") {
@@ -31,7 +31,7 @@ function getResetErrorMessage(error?: string) {
   }
 
   if (error === "token_expired") {
-    return "Il link di reset e scaduto.";
+    return "Il link di reset è scaduto.";
   }
 
   return null;

@@ -81,7 +81,7 @@ export function Footer() {
       <div className="flex flex-col justify-between gap-6 border-t border-eg-border pt-6 text-eg-text-muted min-[861px]:flex-row min-[861px]:items-center">
         <div className="flex items-center gap-4">
           <EsigentaLogo decorative className="h-5 w-auto shrink-0" />
-          <p>&copy; 2026 esigenta</p>
+          <p>&copy; 2026 Esigenta</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-4">

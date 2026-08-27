@@ -19,7 +19,7 @@ import { ProHero } from "./pro-hero";
 import { ProSelector } from "./pro-selector";
 
 export const metadata: Metadata = {
-  title: "esigenta per professionisti | Il lavoro giusto, gia organizzato",
+  title: "Esigenta per professionisti | Il lavoro giusto, già organizzato",
   description:
     "Ricevi richieste reali, verificate e nella tua zona. Configura gratis il profilo professionista Esigenta e scegli quali contatti seguire.",
 };

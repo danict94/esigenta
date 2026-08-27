@@ -46,7 +46,7 @@ export function ImpresaSignupForm({
 
   function validateCompanyStep() {
     if (!hasValidLeadLocation) {
-      return "Seleziona prima la citta dalla pagina professionisti.";
+      return "Seleziona prima la città dalla pagina professionisti.";
     }
 
     if (!categorySlug) {
@@ -130,12 +130,12 @@ export function ImpresaSignupForm({
       });
 
       if (signupResult.error) {
-        setError(signupResult.error.message || "Non e stato possibile creare l'account.");
+        setError(signupResult.error.message || "Non è stato possibile creare l'account.");
         return;
       }
 
       if (!geoPlace) {
-        setError("Seleziona prima la citta dalla pagina professionisti.");
+        setError("Seleziona prima la città dalla pagina professionisti.");
         return;
       }
 
@@ -151,7 +151,7 @@ export function ImpresaSignupForm({
       if (!onboardingResult.ok) {
         setError(
           onboardingResult.message ||
-            "Accesso creato, ma non e stato possibile completare il profilo azienda.",
+            "Accesso creato, ma non è stato possibile completare il profilo azienda.",
         );
         return;
       }
@@ -234,8 +234,8 @@ export function ImpresaSignupForm({
               ))}
             </Select>
             <span className="eg-form-help">
-              Il raggio sara calcolato dalla citta selezionata nel passaggio
-              precedente. Potrai modificarlo piu avanti.
+              Il raggio sarà calcolato dalla città selezionata nel passaggio
+              precedente. Potrai modificarlo più avanti.
             </span>
           </label>
         </div>

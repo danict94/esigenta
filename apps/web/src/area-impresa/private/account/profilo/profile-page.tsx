@@ -56,14 +56,14 @@ const errorMessages: Record<string, string> = {
   invalid_phone: "Inserisci un telefono aziendale valido.",
   requested_value_unchanged: "Non hai modificato il telefono aziendale.",
   company_contact_change_request_already_pending:
-    "Esiste gia una richiesta in revisione per questo dato.",
+    "Esiste già una richiesta in revisione per questo dato.",
   company_membership_not_found:
     "Non puoi richiedere modifiche per questa impresa.",
   invalid_public_name: "Inserisci un nome pubblico valido (massimo 80 caratteri).",
   invalid_short_description:
-    "La descrizione breve puo avere al massimo 240 caratteri.",
+    "La descrizione breve può avere al massimo 240 caratteri.",
   invalid_full_description:
-    "La descrizione completa puo avere al massimo 2000 caratteri.",
+    "La descrizione completa può avere al massimo 2000 caratteri.",
   invalid_years_of_experience:
     "Inserisci un numero di anni di esperienza valido (0-60).",
 }
@@ -139,7 +139,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
             Non troviamo il tuo profilo impresa
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-eg-text-muted">
-            L&apos;account risulta autenticato, ma non e collegato a un profilo
+            L&apos;account risulta autenticato, ma non è collegato a un profilo
             impresa valido.
           </p>
         </Card>
@@ -150,7 +150,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
   const savedMessage = params.saved === "1" ? "Profilo aggiornato." : null
   const contactRequestedMessage =
     params.contactRequested === "1"
-      ? "Richiesta inviata. Il team Esigenta la valutera prima di applicare la modifica."
+      ? "Richiesta inviata. Il team Esigenta la valuterà prima di applicare la modifica."
       : null
   const errorMessage = params.error ? errorMessages[params.error] : null
 
@@ -193,7 +193,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
               Nome, partita IVA ed email impresa restano protetti. Il telefono
-              aziendale puo essere modificato inviando una richiesta al team
+              aziendale può essere modificato inviando una richiesta al team
               Esigenta.
             </p>
           </div>
@@ -302,7 +302,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                 rows={5}
                 maxLength={2000}
                 defaultValue={company.fullDescription ?? ""}
-                placeholder="Racconta la tua attivita, esperienza e specializzazioni"
+                placeholder="Racconta la tua attività, esperienza e specializzazioni"
               />
             </label>
 
@@ -387,8 +387,8 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
                 Categorie e interventi
               </h2>
               <p className="mt-2 text-sm leading-6 text-eg-text-muted">
-                Le categorie definiscono la visibilita ampia; gli interventi
-                aiutano Esigenta a dare priorita alle richieste piu pertinenti.
+                Le categorie definiscono la visibilità ampia; gli interventi
+                aiutano Esigenta a dare priorità alle richieste più pertinenti.
               </p>
             </div>
             <Link
@@ -431,8 +431,8 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
               ) : (
                 <p className="mt-2 text-sm leading-6 text-eg-text-muted">
                   Hai selezionato categorie operative. Gli interventi sono
-                  opzionali e aiutano Esigenta a dare priorita alle richieste
-                  piu pertinenti.
+                  opzionali e aiutano Esigenta a dare priorità alle richieste
+                  più pertinenti.
                 </p>
               )}
             </div>
@@ -445,7 +445,7 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
               Checklist completamento profilo
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
-              Un profilo completo non e obbligatorio per operare oggi: aiuta
+              Un profilo completo non è obbligatorio per operare oggi: aiuta
               solo a preparare una futura vetrina pubblica.
             </p>
           </div>
@@ -519,8 +519,8 @@ export async function ProfilePage({ searchParams }: ProfilePageProps) {
               Elimina account
             </h2>
             <p className="mt-2 text-sm leading-6 text-eg-text-muted">
-              La tua impresa verra disattivata e non ricevera piu richieste. Lo
-              storico verra preservato per motivi amministrativi e di sicurezza.
+              La tua impresa verrà disattivata e non riceverà più richieste. Lo
+              storico verrà preservato per motivi amministrativi e di sicurezza.
             </p>
           </div>
           <DeactivateAccountForm action={deactivateAccountAction} />

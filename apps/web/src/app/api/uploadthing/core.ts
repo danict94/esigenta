@@ -66,10 +66,10 @@ function getFileValidationMessage(
       return "Sono consentite solo immagini JPEG, PNG o WebP."
 
     case "empty_file":
-      return "La foto selezionata e vuota."
+      return "La foto selezionata è vuota."
 
     case "invalid_file_name":
-      return "Il nome del file selezionato non e valido."
+      return "Il nome del file selezionato non è valido."
   }
 }
 

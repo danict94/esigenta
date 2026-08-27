@@ -42,13 +42,13 @@ function mapVerificationErrorCode(code: string | undefined): {
     case "invalid_verification_token":
       return {
         title: "Link non valido",
-        message: "Il link di conferma non e valido.",
+        message: "Il link di conferma non è valido.",
       };
 
     case "verification_token_expired":
       return {
         title: "Link non valido",
-        message: "Il link di conferma e scaduto.",
+        message: "Il link di conferma è scaduto.",
       };
 
     case "request_not_found":
@@ -87,8 +87,8 @@ async function verifyFromParams({
       return {
         ok: true,
         alreadyVerified: true,
-        title: "Email gia confermata",
-        message: "La richiesta e gia stata confermata.",
+        title: "Email già confermata",
+        message: "La richiesta è già stata confermata.",
       };
     }
 
@@ -99,7 +99,7 @@ async function verifyFromParams({
       // Nessun template email per "revisione completata" esiste in
       // @esigenta/notifications: nessuna promessa di aggiornamento
       // automatico non supportata dal codice.
-      message: "La richiesta e ora in revisione.",
+      message: "La richiesta è ora in revisione.",
       statusUrl: result.statusAccessToken
         ? buildStatusUrl(result.statusAccessToken)
         : undefined,

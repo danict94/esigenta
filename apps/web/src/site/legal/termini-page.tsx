@@ -81,9 +81,9 @@ export function TerminiPage() {
               <section className="eg-panel p-6">
                 <h2 className="eg-h3">Ruolo di Esigenta</h2>
                 <p className="eg-body-muted mt-3">
-                  Esigenta raccoglie richieste, le organizza e puo metterle a
+                  Esigenta raccoglie richieste, le organizza e può metterle a
                   disposizione di imprese o professionisti registrati. Esigenta
-                  non e l&apos;impresa che svolge il lavoro e non sostituisce
+                  non è l&apos;impresa che svolge il lavoro e non sostituisce
                   accordi, preventivi o contratti tra cliente e professionista.
                 </p>
               </section>
@@ -94,7 +94,7 @@ export function TerminiPage() {
               <section className="eg-panel p-6">
                 <h2 className="eg-h3">Crediti e pagamenti</h2>
                 <p className="eg-body-muted mt-3">
-                  Se i pacchetti crediti sono attivi, prezzo, quantita, durata e
+                  Se i pacchetti crediti sono attivi, prezzo, quantità, durata e
                   condizioni operative sono quelli mostrati prima
                   dell&apos;acquisto. Il pagamento viene gestito tramite Stripe.
                   I crediti possono essere usati secondo le regole della
@@ -107,7 +107,7 @@ export function TerminiPage() {
                 <h2 className="eg-h3">Account impresa</h2>
                 <p className="eg-body-muted mt-3">
                   L&apos;impresa deve inserire dati corretti e aggiornati.
-                  Esigenta puo verificare il profilo, limitarne le funzioni,
+                  Esigenta può verificare il profilo, limitarne le funzioni,
                   sospenderlo o bloccarlo in caso di dati non coerenti, uso
                   improprio o esigenze di sicurezza.
                 </p>
@@ -116,7 +116,7 @@ export function TerminiPage() {
               <section className="eg-panel p-6">
                 <h2 className="eg-h3">Contatti</h2>
                 <p className="eg-body-muted mt-3">
-                  Per richieste di supporto o chiarimenti sui termini e
+                  Per richieste di supporto o chiarimenti sui termini è
                   possibile scrivere a {legalProfile.supportEmail}.
                 </p>
               </section>

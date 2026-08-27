@@ -26,15 +26,15 @@ export function ProHero({ children }: ProHeroProps) {
             id="business-title"
             className="eg-h1 mt-4.5 mb-4.5 max-w-130 text-balance"
           >
-            Il lavoro giusto arriva <strong className="eg-hero-emphasis font-semibold">gia organizzato.</strong>
+            Il lavoro giusto arriva <strong className="eg-hero-emphasis font-semibold">già organizzato.</strong>
           </h1>
           <p className="eg-body max-w-110 text-eg-on-brand-muted">
-            Niente piu preventivi a vuoto o clienti che non richiamano. Ricevi
+            Niente più preventivi a vuoto o clienti che non richiamano. Ricevi
             richieste reali, verificate e nella tua zona. Paghi il contatto
-            solo quando e davvero valido.
+            solo quando è davvero valido.
           </p>
           <p className="mt-5 text-sm text-eg-on-brand-muted">
-            Hai gia un profilo?{" "}
+            Hai già un profilo?{" "}
             <Link
               href="/area-impresa/accedi"
               prefetch={false}

@@ -74,7 +74,7 @@ export function FeaturedWorkSection() {
             </span>
             <h3 className="eg-h3 mb-2 text-base">Non trovi il lavoro che ti serve tra questi?</h3>
             <p className="eg-body-muted mb-4 text-[13px] leading-[1.55]">
-              Il catalogo comprende decine di interventi diversi, dalle piccole manutenzioni ai lavori piu complessi: sfoglia tutte le categorie e trova quella adatta.
+              Il catalogo comprende decine di interventi diversi, dalle piccole manutenzioni ai lavori più complessi: sfoglia tutte le categorie e trova quella adatta.
             </p>
             <span className="flex items-center gap-1.5 font-(family-name:--eg-font-primary) text-[11.5px] font-semibold text-eg-accent">
               Scopri tutti i servizi

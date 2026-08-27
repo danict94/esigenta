@@ -122,7 +122,7 @@ export function CompanyDocumentsSection({
     } catch {
       setRowState(item.type, {
         isUploading: false,
-        error: "Il caricamento del file non e riuscito. Riprova.",
+        error: "Il caricamento del file non è riuscito. Riprova.",
       })
       return
     }
@@ -139,7 +139,7 @@ export function CompanyDocumentsSection({
       setRowState(item.type, {
         isUploading: false,
         error:
-          "Il file e stato caricato ma non siamo riusciti a confermarlo. Riprova.",
+          "Il file è stato caricato ma non siamo riusciti a confermarlo. Riprova.",
       })
       return
     }

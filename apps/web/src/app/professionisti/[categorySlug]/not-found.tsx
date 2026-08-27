@@ -13,7 +13,7 @@ export default function ProfessionNotFound() {
             <h1 className="eg-h1 mt-5">Professione non trovata</h1>
 
             <p className="eg-body-muted mx-auto mt-6 max-w-[42ch]">
-              La pagina richiesta non e disponibile.
+              La pagina richiesta non è disponibile.
             </p>
 
             <Link href="/" className="eg-button-primary mt-8 w-full sm:w-auto">

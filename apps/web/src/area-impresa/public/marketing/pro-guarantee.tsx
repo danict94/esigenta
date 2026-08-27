@@ -8,7 +8,7 @@ import { ProEyebrow } from "./pro-primitives";
 const guarantees = [
   {
     title: "Numero inesistente o irraggiungibile",
-    body: "Se il recapito non e reale, segnali e il credito rientra dopo verifica.",
+    body: "Se il recapito non è reale, segnali e il credito rientra dopo verifica.",
   },
   {
     title: "Richiesta duplicata",
@@ -54,10 +54,10 @@ export function ProGuarantee() {
         <div className="mb-12 max-w-155">
           <ProEyebrow tone="light">La garanzia sul credito</ProEyebrow>
           <h2 id="pro-guarantee-title" className={cn("eg-h2 mt-3.5", blueprintTitleClassName)}>
-            Se il contatto non e valido, il credito torna tuo.
+            Se il contatto non è valido, il credito torna tuo.
           </h2>
           <p className="eg-body mt-3.5 max-w-140 text-eg-on-brand-muted">
-            Il costo del lead e un rischio che ci prendiamo insieme a te, non
+            Il costo del lead è un rischio che ci prendiamo insieme a te, non
             che scarichiamo su di te. Ecco cosa copre la restituzione del
             credito dopo verifica.
           </p>

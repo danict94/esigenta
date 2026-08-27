@@ -131,7 +131,7 @@ function getRequestSubmitErrorMessage({
 }) {
   switch (code) {
     case "invalid_customer_email":
-      return "Inserisci una email valida per confermare la richiesta.";
+      return "Inserisci un indirizzo email valido per confermare la richiesta.";
 
     case "invalid_customer_name":
       return "Inserisci nome e cognome per continuare.";
@@ -152,7 +152,7 @@ function getRequestSubmitErrorMessage({
       return "Non siamo riusciti a collegare i servizi necessari. Riprova tra poco.";
 
     case "invalid_json_payload":
-      return "La richiesta non e stata preparata correttamente. Riprova.";
+      return "La richiesta non è stata preparata correttamente. Riprova.";
 
     case "invalid_request_photos":
       return "Non siamo riusciti a verificare le foto caricate. Rimuovile o riprova il caricamento.";

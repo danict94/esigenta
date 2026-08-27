@@ -100,7 +100,7 @@ export function ServicesHubPage() {
               ))
             ) : (
               <p className="eg-body-muted mx-auto mt-12 max-w-[46ch] text-center">
-                Il catalogo servizi e in preparazione. Torna a trovarci presto.
+                Il catalogo servizi è in preparazione. Torna a trovarci presto.
               </p>
             )}
           </div>

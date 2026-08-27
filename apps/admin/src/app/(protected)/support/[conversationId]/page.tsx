@@ -258,7 +258,7 @@ export default async function AdminSupportThreadPage({
             <CardContent className="pt-6">
               <p className="text-sm text-eg-text-muted">
                 {result.ok
-                  ? "Questo non e un canale di assistenza."
+                  ? "Questo non è un canale di assistenza."
                   : result.message}
               </p>
             </CardContent>

@@ -199,7 +199,7 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
 
         <MarketingFinalCta
           title="Racconta il lavoro e confronta i preventivi"
-          description="Scegli l'intervento piu vicino al tuo lavoro e continua nella richiesta dedicata: dettagli, tempi e zona."
+          description="Scegli l'intervento più vicino al tuo lavoro e continua nella richiesta dedicata: dettagli, tempi e zona."
           href="#interventi"
           ctaLabel="Scegli l'intervento"
           secondaryAction={{ href: "/servizi", label: "Tutti i servizi" }}

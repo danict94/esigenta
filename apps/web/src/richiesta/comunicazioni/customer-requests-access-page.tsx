@@ -41,7 +41,7 @@ export function CustomerRequestsAccessPage({
                 {hasSent ? (
                   <div className="eg-alert mt-6">
                     <strong className="font-medium">Controlla la tua email.</strong>{" "}
-                    Se l&apos;indirizzo e associato a una o piu richieste,
+                    Se l&apos;indirizzo è associato a una o più richieste,
                     riceverai un link di accesso.
                   </div>
                 ) : null}

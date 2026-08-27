@@ -7,11 +7,11 @@ export function SelezionaImpresaPage() {
     <AuthShell headerAction={null}>
       <div className="flex flex-col gap-6">
         <div>
-          <p className="eg-eyebrow">Profilo gia presente</p>
-          <h1 className="eg-h2 mt-4">Questo account ha gia un&apos;impresa.</h1>
+          <p className="eg-eyebrow">Profilo già presente</p>
+          <h1 className="eg-h2 mt-4">Questo account ha già un&apos;impresa.</h1>
           <p className="eg-body-muted mt-4">
             Per questa versione ogni account impresa gestisce una sola azienda.
-            Se hai gia completato l&apos;iscrizione, accedi alla tua area impresa.
+            Se hai già completato l&apos;iscrizione, accedi alla tua area impresa.
           </p>
         </div>
 
@@ -32,7 +32,7 @@ export function SelezionaImpresaPage() {
         </div>
 
         <p className="eg-form-help">
-          La gestione di piu imprese dallo stesso account non e attiva in questa
+          La gestione di più imprese dallo stesso account non è attiva in questa
           versione.
         </p>
       </div>

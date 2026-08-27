@@ -13,7 +13,7 @@ export default function InterventionSeoNotFound() {
             <h1 className="eg-h1 mt-5">Intervento non trovato</h1>
 
             <p className="eg-body-muted mx-auto mt-6 max-w-[42ch]">
-              La landing richiesta non e disponibile.
+              La landing richiesta non è disponibile.
             </p>
 
             <Link href="/" className="eg-button-primary mt-8 w-full sm:w-auto">

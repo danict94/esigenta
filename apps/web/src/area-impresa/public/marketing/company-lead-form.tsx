@@ -47,7 +47,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
     event.preventDefault();
 
     if (!selectedCategory || !isGeoPlace(location)) {
-      setError("Seleziona la tua attivita e scegli la citta dai suggerimenti.");
+      setError("Seleziona la tua attività e scegli la città dai suggerimenti.");
       return;
     }
 
@@ -133,7 +133,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
                 }
                 setError(null);
               }}
-              placeholder="Citta o provincia - es. Torino"
+              placeholder="Città o provincia - es. Torino"
               className="text-[15px]"
             />
 

@@ -48,15 +48,15 @@ function formatStatus(status: string) {
 function getStatusMessage(status: string) {
   switch (status) {
     case "PENDING_REVIEW":
-      return "La richiesta e in revisione. Ti aggiorneremo quando sara pronta.";
+      return "La richiesta è in revisione. Ti aggiorneremo quando sarà pronta.";
     case "APPROVED":
-      return "La richiesta e stata approvata ed e pronta per la pubblicazione.";
+      return "La richiesta è stata approvata ed è pronta per la pubblicazione.";
     case "PUBLISHED":
-      return "La richiesta e pubblicata e visibile ai professionisti disponibili.";
+      return "La richiesta è pubblicata e visibile ai professionisti disponibili.";
     case "CLOSED":
-      return "La richiesta e stata chiusa.";
+      return "La richiesta è stata chiusa.";
     case "REJECTED":
-      return "La richiesta non e stata approvata dopo la revisione.";
+      return "La richiesta non è stata approvata dopo la revisione.";
     default:
       return "Stiamo elaborando lo stato della richiesta.";
   }
@@ -185,7 +185,7 @@ export async function RequestStatusPage({ token }: RequestStatusPageProps) {
                       value={formatIntervention(result.request.interventionSlug)}
                     />
                     <DetailItem
-                      label="Citta"
+                      label="Città"
                       value={result.request.city ?? "Non specificata"}
                     />
                     <DetailItem

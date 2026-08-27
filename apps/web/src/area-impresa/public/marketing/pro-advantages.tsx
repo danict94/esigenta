@@ -10,7 +10,7 @@ const advantages: Advantage[] = [
   {
     index: "01",
     title: "Lead verificati, non curiosi",
-    body: "Ogni richiesta passa per identita e reale intenzione. Chi scrive vuole davvero fare il lavoro: niente perditempo, niente numeri falsi.",
+    body: "Ogni richiesta passa per identità e reale intenzione. Chi scrive vuole davvero fare il lavoro: niente perditempo, niente numeri falsi.",
   },
   {
     index: "02",
@@ -34,7 +34,7 @@ export function ProAdvantages() {
     <section className="eg-section" aria-labelledby="pro-advantages-title">
       <div className="eg-container">
         <ProSectionHeader
-          eyebrow="Perche Esigenta"
+          eyebrow="Perché Esigenta"
           title={
             <>
               Costruita per chi lavora,

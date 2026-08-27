@@ -4,11 +4,11 @@ const steps = [
   {
     number: "01",
     title: "Ricevi richieste filtrate",
-    body: "Solo la tua categoria, solo la tua zona. Ti arriva gia scomposta: cosa serve, dove, con quale urgenza.",
+    body: "Solo la tua categoria, solo la tua zona. Ti arriva già scomposta: cosa serve, dove, con quale urgenza.",
   },
   {
     number: "02",
-    title: "Sblocchi solo cio che ti serve",
+    title: "Sblocchi solo ciò che ti serve",
     body: "Leggi l'anteprima, valuti se fa per te, e usi il credito solo sulle richieste che vuoi davvero seguire.",
   },
   {

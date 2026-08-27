@@ -19,7 +19,7 @@ type ProHeaderProps = {
 };
 
 const defaultAction: ProHeaderAction = {
-  label: "Ho gia un account",
+  label: "Ho già un account",
   href: "/area-impresa/accedi",
 };
 

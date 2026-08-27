@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const customerData = [
   "nome e cognome",
   "email e telefono",
-  "citta, indirizzo e coordinate normalizzate della richiesta",
+  "città, indirizzo e coordinate normalizzate della richiesta",
   "descrizione del lavoro e risposte inserite nel percorso guidato",
   "foto caricate per descrivere la richiesta",
 ];
@@ -28,7 +28,7 @@ const companyData = [
   "nome impresa o ditta indicata dall'utente",
   "P.IVA inserita dall'impresa, quando fornita",
   "telefono, email, sito web e dati di contatto",
-  "sede, citta, indirizzo e raggio operativo",
+  "sede, città, indirizzo e raggio operativo",
   "categorie e servizi configurati nell'area impresa",
 ];
 
@@ -46,7 +46,7 @@ const services = [
   "Stripe: pagamenti e checkout. Esigenta non salva direttamente i dati della carta.",
   "UploadThing: caricamento e gestione tecnica delle foto allegate alle richieste.",
   "Resend: invio di email transazionali e comunicazioni di servizio.",
-  "Google Maps Places: suggerimenti automatici per indirizzi e citta, solo previo consenso funzionale o attivazione dell'utente.",
+  "Google Maps Places: suggerimenti automatici per indirizzi e città, solo previo consenso funzionale o attivazione dell'utente.",
 ];
 
 export function PrivacyPage() {

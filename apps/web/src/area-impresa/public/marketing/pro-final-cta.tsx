@@ -16,7 +16,7 @@ export function ProFinalCta() {
     >
       <div className="max-w-155">
         <h2 id="pro-final-title" className="eg-h2">
-          Pronto a ricevere richieste piu adatte al tuo lavoro?
+          Pronto a ricevere richieste più adatte al tuo lavoro?
         </h2>
         <p className="eg-body mt-4 max-w-140 text-eg-on-brand-muted">
           Configura gratuitamente categoria e zona operativa. Verificheremo i

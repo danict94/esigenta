@@ -54,7 +54,7 @@ function getFileErrorMessage(
       return "Carica solo immagini JPEG, PNG o WebP.";
 
     case "empty_file":
-      return "Una delle immagini selezionate e vuota.";
+      return "Una delle immagini selezionate è vuota.";
 
     case "invalid_file_name":
       return "Una delle immagini ha un nome file non valido.";
@@ -307,7 +307,7 @@ export function RequestPhotoUpload({
           pendingItems.length
       ) {
         throw new Error(
-          "Il caricamento delle foto non e stato completato.",
+          "Il caricamento delle foto non è stato completato.",
         );
       }
 
@@ -331,7 +331,7 @@ export function RequestPhotoUpload({
 
         if (!metadata) {
           throw new Error(
-            "La risposta del caricamento foto non e valida.",
+            "La risposta del caricamento foto non è valida.",
           );
         }
 
