@@ -234,7 +234,7 @@ export function HomeHero() {
 
           <div className="relative z-1 [animation:eg-home-fade-up_900ms_ease_180ms_both]">
           <p className="eg-hero-legible mt-[22px] max-w-[44ch] text-balance text-lg leading-[1.6] text-eg-on-brand">
-            Domande mirate per far arrivare la tua richiesta ai professionisti più adatti.
+            Cerchi professionisti qualificati per i lavori di casa? Descrivi ciò che ti serve, ricevi proposte e confronta le soluzioni più adatte al tuo progetto.
           </p>
 
           <div ref={searchRef} className="relative z-[4] mt-[38px] w-full max-w-[600px] text-left">
