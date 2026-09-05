@@ -61,7 +61,7 @@ export function buildOrganizationJsonLd(): object {
     "@id": toAbsoluteUrl("/#organization"),
     name: "Esigenta",
     url: toAbsoluteUrl("/"),
-    logo: toAbsoluteUrl("/icon.png"),
+    logo: toAbsoluteUrl("/assets/brand/esigenta-organization-logo.png"),
     description:
       "Esigenta gestisce una piattaforma online italiana che mette in contatto clienti, imprese e professionisti per lavori di ristrutturazione, manutenzione e impiantistica.",
     sameAs: [

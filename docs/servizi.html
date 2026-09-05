@@ -73,8 +73,8 @@
     border-bottom:1px solid var(--grafite);
   }
   .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
-  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
-  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .logo{ text-decoration:none; display:inline-flex; align-items:center; }
+  .logo img{ display:block; height:24px; width:auto; }
   .nav-links{ display:flex; align-items:center; gap:28px; }
   .nav-links a{ font-size:14.5px; text-decoration:none; color:var(--inchiostro-60); transition:color .2s var(--ease); }
   .nav-links a:hover{ color:var(--cianotipo); }
@@ -294,7 +294,7 @@
 
 <header>
   <div class="wrap nav">
-    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <a href="/" class="logo"><img src="/assets/brand/esigenta-logo.svg" alt="Esigenta"></a>
     <nav class="nav-links">
       <a href="/servizi">Servizi</a>
       <a href="/richieste/accesso">Le mie richieste</a>
@@ -529,7 +529,7 @@
   <div class="wrap">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+        <a href="/" class="logo"><img src="/assets/brand/esigenta-logo.svg" alt="Esigenta"></a>
         <p>Preventivi da professionisti qualificati per ogni lavoro di casa.</p>
       </div>
       <div class="footer-col">

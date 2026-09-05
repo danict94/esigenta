@@ -74,8 +74,8 @@
     border-bottom:1px solid var(--grafite);
   }
   .nav{ display:flex; align-items:center; justify-content:space-between; height:72px; }
-  .logo{ font-family:var(--mono); font-weight:700; font-size:19px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:8px; }
-  .logo .dot{ width:8px; height:8px; background:var(--matita); display:inline-block; border-radius:1px; }
+  .logo{ text-decoration:none; display:inline-flex; align-items:center; }
+  .logo img{ display:block; height:24px; width:auto; }
   .nav-account{ font-size:14px; text-decoration:none; color:var(--inchiostro-60); display:flex; align-items:center; gap:6px; transition:color .2s var(--ease); }
   .nav-account:hover{ color:var(--cianotipo); }
 
@@ -256,7 +256,7 @@
 
 <header>
   <div class="wrap nav">
-    <a href="/" class="logo"><span class="dot"></span>esigenta</a>
+    <a href="/" class="logo"><img src="/assets/brand/esigenta-logo.svg" alt="Esigenta"></a>
     <a href="/area-impresa/accedi" class="nav-account">
       Ho già un account
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>

@@ -94,10 +94,10 @@ il pannello bianco del form continua a garantirne separazione e contrasto.
 Le parole chiave sulle hero scure usano `eg-hero-emphasis`, alimentata dallo
 stesso Brand chiaro; non usare quel ciano come testo su fondi chiari.
 
-Il marchio condiviso `EsigentaLogo` usa esclusivamente Brand strong per il
-wordmark e Brand per i dettagli del simbolo. Non usa Accent: navbar, footer,
-Area Impresa e Admin ereditano la stessa versione. Il suffisso `.it` è stato
-rimosso dal logo: il marchio mostra solo "esigenta".
+Il marchio condiviso `EsigentaLogo` carica l'unico asset canonico
+`/assets/brand/esigenta-logo.svg`: wordmark Ink e simbolo Brand, leggibili
+sulle superfici chiare. Navbar, footer, Area Impresa e Admin usano la stessa
+fonte; non duplicare i tracciati SVG nei componenti.
 
 Per una nuova sezione:
 

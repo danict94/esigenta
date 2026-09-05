@@ -5,14 +5,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { useId } from "react";
 import type { MouseEvent } from "react";
 
-import { buttonClassName, cn, EsigentaLogo, useDismissableMenu } from "@esigenta/ui";
+import {
+  cn,
+  EsigentaLogo,
+  ESIGENTA_LOGO_ON_DARK_PATH,
+  useDismissableMenu,
+} from "@esigenta/ui";
 
 import {
   headerGutterClassName,
   headerHeightClassName,
-  headerSurfaceClassName,
   headerTriggerBaseClassName,
-  headerTriggerSolidClassName,
 } from "./header-gutter";
 import { useFunnelExitGuardIntercept } from "./funnel-exit-guard";
 import { CloseIcon, MenuIcon } from "./icons";
@@ -65,20 +68,10 @@ const funnelNavItems: NavItem[] = [
   { href: "/area-impresa", label: "Sei un professionista?", variant: "cta" },
 ];
 
-// Bordo/colore Brand (non Action/matita): e' un invito di navigazione
-// secondario, non una CTA primaria come "Cerca"/"Richiedi preventivi" —
-// stessa distinzione del riferimento (.btn-outline usa cianotipo, non
-// matita). Stesso pattern di override gia' usato da ProHeader/ImpresaHeader
-// per adattare i colori di una variante condivisa a un contesto specifico.
-const ctaLinkClassName = buttonClassName({
-  variant: "ghost",
-  size: "sm",
-  className:
-    "border-eg-brand-strong text-eg-brand-strong hover:bg-eg-brand-strong hover:text-eg-on-brand hover:-translate-y-px",
-});
-
 export function Navbar({ variant = "default" }: NavbarProps) {
   const navItems = variant === "funnel" ? funnelNavItems : defaultNavItems;
+  const centerNavItems = variant === "funnel" ? navItems.slice(0, 1) : navItems.slice(0, 3);
+  const actionNavItems = variant === "funnel" ? navItems.slice(1) : navItems.slice(3);
   const navId = useId();
   const pathname = usePathname();
   const router = useRouter();
@@ -110,7 +103,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
   return (
     <header
       ref={containerRef}
-      className={cn("fixed inset-x-0 top-0 z-100", headerSurfaceClassName)}
+      className="fixed inset-x-0 top-0 z-100 bg-eg-header text-eg-header-text"
     >
       {/* Sfondo/bordo sopra (headerSurfaceClassName) restano a tutta
           larghezza: e' solo il CONTENUTO che si allinea alla colonna da
@@ -118,7 +111,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           altrimenti si restringe anche lo sfondo. */}
       <div
         className={cn(
-          "mx-auto flex items-center justify-between gap-6",
+          "mx-auto flex items-center justify-between gap-6 min-[861px]:grid min-[861px]:grid-cols-[1fr_auto_1fr]",
           headerHeightClassName,
           headerGutterClassName,
         )}
@@ -132,12 +125,19 @@ export function Navbar({ variant = "default" }: NavbarProps) {
             handleGuardedNavigate(event, "/");
           }}
         >
-          <EsigentaLogo decorative className="h-6 w-auto shrink-0" />
+          <EsigentaLogo
+            decorative
+            src={ESIGENTA_LOGO_ON_DARK_PATH}
+            className="h-10 w-auto shrink-0"
+          />
         </Link>
 
         <button
           type="button"
-          className={cn(headerTriggerBaseClassName, headerTriggerSolidClassName)}
+          className={cn(
+            headerTriggerBaseClassName,
+            "border-eg-header-border text-eg-header-text hover:bg-eg-header-text/10 focus-visible:outline-eg-header-text",
+          )}
           aria-controls={navId}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Chiudi menu" : "Apri menu"}
@@ -149,14 +149,14 @@ export function Navbar({ variant = "default" }: NavbarProps) {
         <nav
           id={navId}
           className={[
-            "absolute left-5.5 right-5.5 top-[calc(100%+8px)] grid overflow-hidden transition-[grid-template-rows,opacity,transform,border-color,background-color] duration-200 min-[861px]:static min-[861px]:flex min-[861px]:translate-y-0 min-[861px]:overflow-visible min-[861px]:border-0 min-[861px]:bg-transparent min-[861px]:opacity-100 min-[861px]:pointer-events-auto",
+            "absolute left-5.5 right-5.5 top-[calc(100%+8px)] grid overflow-hidden transition-[grid-template-rows,opacity,transform,border-color,background-color] duration-200 min-[861px]:contents min-[861px]:translate-y-0 min-[861px]:overflow-visible min-[861px]:border-0 min-[861px]:bg-transparent min-[861px]:opacity-100 min-[861px]:pointer-events-auto",
             isOpen
-              ? "grid-rows-[1fr] border border-eg-border bg-eg-surface opacity-100 pointer-events-auto translate-y-0"
+              ? "grid-rows-[1fr] border border-eg-header-border bg-eg-header opacity-100 pointer-events-auto translate-y-0"
               : "grid-rows-[0fr] border border-transparent bg-transparent opacity-0 pointer-events-none -translate-y-2",
           ].join(" ")}
           aria-label="Navigazione principale"
         >
-          <div className="min-h-0 flex flex-col items-stretch overflow-hidden min-[861px]:flex-row min-[861px]:items-center min-[861px]:gap-6 min-[861px]:overflow-visible">
+          <div className="min-h-0 flex flex-col items-stretch overflow-hidden min-[861px]:hidden">
             {navItems.map((item) => {
               if (item.variant === "cta") {
                 return (
@@ -164,7 +164,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                     key={item.href}
                     href={item.href}
                     prefetch={false}
-                    className={cn(ctaLinkClassName, "mx-4.5 my-3 min-[861px]:m-0")}
+                    className="mx-4.5 my-3 inline-flex min-h-11 items-center justify-center rounded-eg-md bg-eg-header-action px-5 py-3 text-eg-header-nav font-semibold text-eg-header transition-[filter] hover:brightness-105"
                     onClick={(event) => {
                       handleGuardedNavigate(event, item.href);
                     }}
@@ -183,8 +183,8 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                   prefetch={false}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "eg-nav-link whitespace-nowrap border-b border-eg-border px-4.5 py-4 last:border-b-0 min-[861px]:border-0 min-[861px]:p-0",
-                    active ? "text-eg-brand-strong" : "text-eg-ink hover:text-eg-brand-strong",
+                    "whitespace-nowrap border-b border-eg-header-border px-4.5 py-4 text-eg-header-nav font-medium text-eg-header-text last:border-b-0 hover:text-eg-header-action",
+                    active && "text-eg-header-action",
                   )}
                   onClick={(event) => {
                     handleGuardedNavigate(event, item.href);
@@ -194,6 +194,46 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                 </Link>
               );
             })}
+          </div>
+
+          <div className="hidden min-[861px]:contents">
+            <div className="col-start-2 flex items-center gap-8">
+              {centerNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
+                  className="whitespace-nowrap text-eg-header-nav font-medium text-eg-header-text transition-colors hover:text-eg-header-action"
+                  onClick={(event) => {
+                    handleGuardedNavigate(event, item.href);
+                  }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="col-start-3 flex items-center justify-self-end gap-6">
+              {actionNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
+                  className={
+                    item.variant === "cta"
+                      ? "inline-flex min-h-11 items-center justify-center rounded-eg-md bg-eg-header-action px-5 py-3 text-eg-header-nav font-semibold text-eg-header transition-[filter] hover:brightness-105"
+                      : "whitespace-nowrap text-eg-header-nav font-medium text-eg-header-text transition-colors hover:text-eg-header-action"
+                  }
+                  onClick={(event) => {
+                    handleGuardedNavigate(event, item.href);
+                  }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </nav>
       </div>

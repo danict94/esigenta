@@ -118,7 +118,7 @@ No single container width — three different treatments coexist, each used cons
 - Two visual states, both scroll-driven (`scrolled = window.scrollY > 8`):
   - Resting: transparent background, transparent border.
   - Scrolled (or mobile menu open): `cc.paperTranslucent` background, `cc.hairline` border, `ccElevation` shadow.
-- Logo: text wordmark "esigenta", `17px`, `font-semibold`, `tracking-[-0.01em]`, color `cc.ink`.
+- Logo: componente condiviso `EsigentaLogo`, alimentato dall'asset canonico `/assets/brand/esigenta-logo.svg`.
 - Desktop nav (`lg:flex`, hidden below `lg`): 3 links — "Le mie richieste", "Accedi", and an accent link "Sei un professionista?" styled as a bordered button (`cc.accent` border + text, `rounded-[6px]`, `px-3 py-1.5`, `14px font-medium`, `hover:bg-[#CC785C]/10`).
 - Mobile: hamburger/close icon toggle (`MenuIcon`/`CloseIcon` from `icons.tsx`), opens a dropdown panel below the bar (`cc.paper` background, `ccElevation` shadow, `cc.hairline` border) listing the same 3 links, with the accent link rendered as a filled-outline button.
 - `variant` prop: `"default" | "funnel"` — `"funnel"` removes the first link ("Le mie richieste") from both desktop and mobile menus. This is the only variant currently implemented.
@@ -129,7 +129,7 @@ No single container width — three different treatments coexist, each used cons
 - `cc.paper` background, `cc.ink` text, single top `cc.hairline` border.
 - Content centered at `max-w-[1120px]`, `py-16`.
 - Single-row layout (column on mobile, row on `sm:` and up): copyright text (`13px`, `cc.inkSecondary`) on one side; a `<nav>` of legal links (Privacy, Informativa sui cookie, Termini di servizio) plus a `CookiePreferencesButton`, all `13px`, `cc.inkSecondary`, on the other.
-- No logo, no multi-column layout, no newsletter/social block — the footer is intentionally minimal.
+- Il footer riusa lo stesso `EsigentaLogo` canonico della navbar.
 
 ---
 

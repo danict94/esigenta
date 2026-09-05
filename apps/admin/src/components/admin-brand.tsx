@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { EsigentaLogo, cn } from "@esigenta/ui";
+import { ESIGENTA_LOGO_PATH, EsigentaLogo, cn } from "@esigenta/ui";
 
 type AdminBrandProps = {
   href?: string;
@@ -10,10 +10,20 @@ type AdminBrandProps = {
   className?: string;
 };
 
+const publicSiteOrigin = (
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://www.esigenta.it"
+).replace(/\/+$/, "");
+
+const adminLogoSrc = `${publicSiteOrigin}${ESIGENTA_LOGO_PATH}`;
+
 function AdminBrandContent() {
   return (
     <>
-    <EsigentaLogo decorative className="block h-6 w-auto" />
+    <EsigentaLogo
+      decorative
+      src={adminLogoSrc}
+      className="block h-10 w-auto"
+    />
     <span className="font-(family-name:--eg-font-mono) text-xs font-medium uppercase tracking-widest text-eg-brand-strong">
       / admin
     </span>

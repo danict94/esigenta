@@ -85,6 +85,13 @@
   /* Hero emphasis — usa lo stesso Brand chiaro sulle superfici scure. */
   --eg-color-hero-emphasis: var(--eg-color-brand);
 
+  /* Header pubblico: superficie, contenuti e CTA costituiscono un unico
+   * contratto cromatico consumato dalla navbar, senza colori locali. */
+  --eg-color-header: #2a343b;
+  --eg-color-header-text: #ffffff;
+  --eg-color-header-border: rgba(255, 255, 255, 0.15);
+  --eg-color-header-action: #c7e91d;
+
   /* Feedback: error, success, warning.
    * Ruoli: colore pieno per testo/icona; *-soft per lo sfondo;
    * *-border per il bordo. Non usare Brand o Accent per gli stati. */
@@ -122,13 +129,14 @@
 
   --eg-text-page-title: clamp(28px, 3.8vw, 42px);
   --eg-text-heading: clamp(28px, 3.6vw, 42px);
+  --eg-text-header-nav: 15px;
 
   /* Curva di movimento del brand (docs/index.md --ease): riusata per ogni
    * transizione/animazione in stile blueprint (post-it, hover card, ecc).
    * Un solo valore, mai duplicato come magic string nei singoli componenti. */
   --eg-ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
 
-  --eg-nav-height: 72px;
+  --eg-nav-height: 88px;
   --eg-nav-clear: calc(var(--eg-nav-height) + 1.5rem);
 }
 
@@ -170,6 +178,12 @@
   --color-eg-action: var(--eg-color-action);
   --color-eg-hero-emphasis: var(--eg-color-hero-emphasis);
 
+  /* Header pubblico */
+  --color-eg-header: var(--eg-color-header);
+  --color-eg-header-text: var(--eg-color-header-text);
+  --color-eg-header-border: var(--eg-color-header-border);
+  --color-eg-header-action: var(--eg-color-header-action);
+
   /* Feedback: testo/icona, sfondo, bordo. */
   --color-eg-error: var(--eg-color-error);
   --color-eg-error-soft: var(--eg-color-error-soft);
@@ -193,6 +207,8 @@
   --radius-eg-sm: var(--eg-radius-sm);
   --radius-eg-md: var(--eg-radius-md);
   --radius-eg-lg: var(--eg-radius-lg);
+
+  --text-eg-header-nav: var(--eg-text-header-nav);
 
   --ease-eg-brand: var(--eg-ease-brand);
 }
