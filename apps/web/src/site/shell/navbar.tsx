@@ -136,14 +136,15 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           type="button"
           className={cn(
             headerTriggerBaseClassName,
-            "border-eg-header-border text-eg-header-text hover:bg-eg-header-text/10 focus-visible:outline-eg-header-text",
+            "size-12 rounded-full border-transparent text-eg-header-text hover:bg-eg-header-text/10 focus-visible:outline-eg-header-action",
+            isOpen && "bg-eg-header-text/10",
           )}
           aria-controls={navId}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Chiudi menu" : "Apri menu"}
           onClick={toggle}
         >
-          {isOpen ? <CloseIcon className="size-5" /> : <MenuIcon className="size-5" />}
+          {isOpen ? <CloseIcon className="size-7" /> : <MenuIcon className="size-7" />}
         </button>
 
         <nav

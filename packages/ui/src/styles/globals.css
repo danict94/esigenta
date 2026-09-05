@@ -87,7 +87,7 @@
 
   /* Header pubblico: superficie, contenuti e CTA costituiscono un unico
    * contratto cromatico consumato dalla navbar, senza colori locali. */
-  --eg-color-header: #2a343b;
+  --eg-color-header: var(--eg-color-ink);
   --eg-color-header-text: #ffffff;
   --eg-color-header-border: rgba(255, 255, 255, 0.15);
   --eg-color-header-action: #c7e91d;

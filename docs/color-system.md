@@ -48,7 +48,7 @@ Sono vietati:
 | `--eg-color-accent` | `#C8402A` | Dettaglio caldo distintivo e puntuale |
 | `--eg-color-action` | `var(--eg-color-brand)` | Pulsanti e CTA standard |
 | `--eg-color-hero-emphasis` | `var(--eg-color-brand)` | Enfasi breve esclusivamente su superfici scure |
-| `--eg-color-header` | `#2A343B` | Superficie dell'header pubblico |
+| `--eg-color-header` | `var(--eg-color-ink)` (`#12181C`) | Superficie dell'header pubblico |
 | `--eg-color-header-text` | `#FFFFFF` | Navigazione e controlli sopra l'header pubblico |
 | `--eg-color-header-border` | `rgba(255, 255, 255, 0.15)` | Divisori del menu mobile nell'header pubblico |
 | `--eg-color-header-action` | `#C7E91D` | CTA professionista nell'header pubblico |
