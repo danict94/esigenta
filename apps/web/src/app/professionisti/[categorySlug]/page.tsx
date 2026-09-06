@@ -3,19 +3,21 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 
 import {
-  getPublicProfessionDetail,
   listPublicProfessionCategorySlugs,
-  type PublicProfessionDetail,
 } from "@esigenta/taxonomy/public-professions";
 
 import { buildCanonicalPath } from "../../../site/seo/engine/canonical";
 import { ProfessionPageTemplate } from "../../../site/professions/profession-page-template";
+import {
+  resolveProfessionDetailViewModel,
+  type ProfessionDetailViewModel,
+} from "../../../site/professions/resolve-profession-detail";
 
 type Props = { params: Promise<{ categorySlug: string }> };
 
 export const dynamicParams = false;
 
-const resolveProfessionPage = cache(getPublicProfessionDetail);
+const resolveProfessionPage = cache(resolveProfessionDetailViewModel);
 
 export function generateStaticParams() {
   const slugs = listPublicProfessionCategorySlugs();
@@ -28,10 +30,10 @@ export function generateStaticParams() {
  * concatenato "01Disostruire scarichi ; 02..."): prime interventions reali
  * della categoria, nell'ordine in cui compaiono in pagina.
  */
-function buildProfessionMetaDescription(page: PublicProfessionDetail): string {
+function buildProfessionMetaDescription(page: ProfessionDetailViewModel): string {
   const interventionNames = Array.from(
     new Set(
-      page.projectGroups.flatMap((group) =>
+      page.groups.flatMap((group) =>
         group.interventions.map((intervention) => intervention.name),
       ),
     ),

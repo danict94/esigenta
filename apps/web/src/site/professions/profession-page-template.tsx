@@ -1,28 +1,29 @@
 import Link from "next/link";
 
-import type { PublicProfessionDetail } from "@esigenta/taxonomy/public-professions";
-
 import { buildCanonicalPath } from "../seo/engine/canonical";
 import {
   buildBreadcrumbJsonLd,
   serializeJsonLd,
 } from "../seo/engine/schema-builder";
-import { getSeoInterventionLandingBySlug } from "../seo/pages/interventi";
 import { PublicShell } from "../shell/public-shell";
 import { InternalPageIntro } from "../shared/internal-page-intro";
+import { InterventionCard } from "../shared/intervention-card";
+import { ProfessionEditorialIntro } from "./profession-editorial-intro";
+import { ProfessionPricingSection } from "./profession-pricing-section";
+import type { ProfessionDetailViewModel } from "./resolve-profession-detail";
 
 export type ProfessionPageTemplateProps = {
-  page: PublicProfessionDetail;
+  page: ProfessionDetailViewModel;
 };
 
-function getInterventionHref(slug: string): string {
-  const landing = getSeoInterventionLandingBySlug(slug);
-
-  return landing ? `/interventi/${slug}` : `/richiesta/${slug}`;
-}
+const professionInterventionCardLabels = {
+  landing: "Scopri l’intervento",
+  costGuide: "Guida ai costi",
+  request: "Richiedi preventivi",
+} as const;
 
 export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
-  const { category, projectGroups } = page;
+  const { category, groups } = page;
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
@@ -50,48 +51,47 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
           description={category.description}
         />
 
+        <ProfessionEditorialIntro
+          intro={page.editorialContent?.intro ?? null}
+        />
+
+        <ProfessionPricingSection
+          pricing={page.editorialContent?.pricing ?? null}
+        />
+
         <section className="pb-16">
           <div className="eg-container">
-            {projectGroups.length === 0 ? (
+            {groups.length === 0 ? (
               <p className="eg-body-muted max-w-[46ch]">
                 Nessuna area di lavoro disponibile per questa professione.
               </p>
             ) : (
               <div className="grid gap-14">
-                {projectGroups.map((projectGroup) => (
-                  <section key={projectGroup.slug} aria-labelledby={`profession-group-${projectGroup.slug}`}>
+                {groups.map((group) => (
+                  <section key={group.slug} aria-labelledby={`profession-group-${group.slug}`}>
                     <div className="max-w-[760px]">
-                      <h2 id={`profession-group-${projectGroup.slug}`} className="eg-h2">
-                        {projectGroup.name}
+                      <h2 id={`profession-group-${group.slug}`} className="eg-h2">
+                        <Link
+                          href={group.href}
+                          prefetch={false}
+                          className="transition-colors hover:text-eg-brand-strong"
+                        >
+                          {group.name}
+                        </Link>
                       </h2>
-                      {projectGroup.description ? (
-                        <p className="eg-body-muted mt-5 max-w-[46ch]">
-                          {projectGroup.description}
-                        </p>
-                      ) : null}
                     </div>
 
-                    <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
-                      {projectGroup.interventions.map((intervention) => (
-                        <li key={intervention.slug}>
-                          <Link
-                            href={getInterventionHref(intervention.slug)}
-                            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-1 max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
-                            prefetch={false}
-                          >
-                            <span>
-                              <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">
-                                {intervention.name}
-                              </span>
-                              {intervention.description ? (
-                                <span className="mt-2.5 max-w-[44ch] text-[15px] leading-[1.55] text-eg-text-muted block">
-                                  {intervention.description}
-                                </span>
-                              ) : null}
-                            </span>
-                            <span className="eg-list-status justify-self-end whitespace-nowrap max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
-                          </Link>
-                        </li>
+                    <ul className="mt-[54px] grid gap-5 max-[860px]:mt-[38px] min-[761px]:grid-cols-2">
+                      {group.interventions.map((intervention) => (
+                        <InterventionCard
+                          key={intervention.slug}
+                          name={intervention.name}
+                          summary={intervention.summary}
+                          requestHref={intervention.requestHref}
+                          landingHref={intervention.landingHref}
+                          costGuideHref={intervention.costGuideHref}
+                          ctaLabels={professionInterventionCardLabels}
+                        />
                       ))}
                     </ul>
                   </section>
@@ -100,6 +100,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
             )}
           </div>
         </section>
+
       </div>
     </PublicShell>
   );

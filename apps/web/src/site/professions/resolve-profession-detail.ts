@@ -8,6 +8,10 @@ import {
   resolveCostGuidePage,
   resolveInterventionPage,
 } from "../seo/engine/resolve-seo-page";
+import {
+  getProfessionEditorialContent,
+  type ProfessionEditorialContent,
+} from "./profession-editorial-content";
 
 export type ProfessionDetailInterventionViewModel = {
   readonly slug: string;
@@ -27,6 +31,7 @@ export type ProfessionDetailGroupViewModel = {
 
 export type ProfessionDetailViewModel = {
   readonly category: PublicProfessionDetail["category"];
+  readonly editorialContent: ProfessionEditorialContent | null;
   readonly groups: readonly ProfessionDetailGroupViewModel[];
 };
 
@@ -46,6 +51,9 @@ type ProfessionCostGuide = {
 };
 
 export type ProfessionDetailComposerDependencies = {
+  readonly getEditorialContent: (
+    categorySlug: string,
+  ) => ProfessionEditorialContent | null;
   readonly getEditorialGroup: (
     slug: string,
   ) => ProfessionEditorialGroup | null;
@@ -58,6 +66,7 @@ export type ProfessionDetailComposerDependencies = {
 };
 
 const publicComposerDependencies: ProfessionDetailComposerDependencies = {
+  getEditorialContent: getProfessionEditorialContent,
   getEditorialGroup: getSeoGroupLandingBySlug,
   getPublishedInterventionLanding: resolveInterventionPage,
   getPublishedCostGuide: resolveCostGuidePage,
@@ -72,8 +81,22 @@ export function composeProfessionDetailViewModel(
   detail: PublicProfessionDetail,
   dependencies: ProfessionDetailComposerDependencies,
 ): ProfessionDetailViewModel {
+  const editorialContent = dependencies.getEditorialContent(
+    detail.category.slug,
+  );
+
+  if (
+    editorialContent &&
+    editorialContent.categorySlug !== detail.category.slug
+  ) {
+    throw new Error(
+      `[profession:${detail.category.slug}] Editorial content mismatch: received ${editorialContent.categorySlug}`,
+    );
+  }
+
   return {
     category: detail.category,
+    editorialContent,
     groups: detail.projectGroups.map((group) => {
       const editorialGroup = dependencies.getEditorialGroup(group.slug);
 

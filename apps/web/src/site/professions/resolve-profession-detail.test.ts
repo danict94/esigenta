@@ -41,6 +41,7 @@ function createDependencies(
   overrides: Partial<ProfessionDetailComposerDependencies> = {},
 ): ProfessionDetailComposerDependencies {
   return {
+    getEditorialContent: () => null,
     getEditorialGroup: (slug) => ({
       slug,
       interventionSummaries: {
@@ -70,6 +71,37 @@ test("composer resolves an Intervention with funnel only", () => {
     landingHref: null,
     costGuideHref: null,
   });
+});
+
+test("composer exposes editorial intro and pricing without deriving content", () => {
+  const result = composeProfessionDetailViewModel(
+    createDetail(["only-funnel"]),
+    createDependencies({
+      getEditorialContent: (categorySlug) => ({
+        categorySlug,
+        intro: {
+          paragraphs: ["Primo paragrafo.", "Secondo paragrafo."],
+        },
+        pricing: {
+          heading: "Pricing fixture",
+          rows: [
+            {
+              label: "Tariffa fixture",
+              value: "Valore fixture",
+            },
+          ],
+        },
+      }),
+    }),
+  );
+
+  assert.deepEqual(result.editorialContent?.intro?.paragraphs, [
+    "Primo paragrafo.",
+    "Secondo paragrafo.",
+  ]);
+  assert.deepEqual(result.editorialContent?.pricing?.rows, [
+    { label: "Tariffa fixture", value: "Valore fixture" },
+  ]);
 });
 
 test("composer resolves a published landing and funnel without inventing a cost guide", () => {
@@ -227,6 +259,12 @@ test("real registry resolves summaries for all 101 published profession Interven
 
     assert.ok(source);
     assert.ok(resolved);
+    if (categorySlug === "elettricista") {
+      assert.equal(resolved.editorialContent?.intro?.paragraphs.length, 2);
+      assert.equal(resolved.editorialContent?.pricing?.rows.length, 1);
+    } else {
+      assert.equal(resolved.editorialContent, null);
+    }
 
     return { source, resolved };
   });
