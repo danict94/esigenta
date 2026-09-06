@@ -20,6 +20,22 @@ export type {
 } from "./frozen"
 
 export {
+  composePublicProfessionCatalog,
+  getPublicProfessionDetail,
+  listPublicProfessionCategorySlugs,
+  listPublicProfessionHubItems,
+} from "./public-professions"
+
+export type {
+  PublicProfessionCatalog,
+  PublicProfessionDetail,
+  PublicProfessionHubItem,
+  PublicProfessionHubProjectGroup,
+  PublicProfessionIntervention,
+  PublicProfessionProjectGroup,
+} from "./public-professions"
+
+export {
   getPopularInterventions,
   getProfessionPage,
   listProfessionPageCategorySlugs,

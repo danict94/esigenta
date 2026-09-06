@@ -8,6 +8,8 @@ export const piscinista: FrozenCategory = {
   id: "piscinista",
   slug: "piscinista",
   name: "Piscinista",
+  shortDescription:
+    "Costruisce, ristruttura e mantiene piscine, occupandosi anche delle coperture.",
   aliases: [
     "piscinisti",
     "costruttore piscine",

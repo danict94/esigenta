@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import type { ProfessionPage } from "@esigenta/taxonomy";
+import type { PublicProfessionDetail } from "@esigenta/taxonomy/public-professions";
 
 import { buildCanonicalPath } from "../seo/engine/canonical";
 import {
@@ -12,7 +12,7 @@ import { PublicShell } from "../shell/public-shell";
 import { InternalPageIntro } from "../shared/internal-page-intro";
 
 export type ProfessionPageTemplateProps = {
-  page: ProfessionPage;
+  page: PublicProfessionDetail;
 };
 
 function getInterventionHref(slug: string): string {
@@ -26,6 +26,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
+    { name: "Professionisti", path: "/professionisti" },
     {
       name: category.name,
       path: buildCanonicalPath({ family: "profession", slug: category.slug }),
@@ -42,7 +43,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
         <InternalPageIntro
           breadcrumbs={[
             { label: "Home", href: "/" },
-            { label: "Professionisti" },
+            { label: "Professionisti", href: "/professionisti" },
             { label: category.name },
           ]}
           title={category.name}
@@ -58,9 +59,9 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
             ) : (
               <div className="grid gap-14">
                 {projectGroups.map((projectGroup) => (
-                  <section key={projectGroup.id} aria-labelledby={`profession-group-${projectGroup.id}`}>
+                  <section key={projectGroup.slug} aria-labelledby={`profession-group-${projectGroup.slug}`}>
                     <div className="max-w-[760px]">
-                      <h2 id={`profession-group-${projectGroup.id}`} className="eg-h2">
+                      <h2 id={`profession-group-${projectGroup.slug}`} className="eg-h2">
                         {projectGroup.name}
                       </h2>
                       {projectGroup.description ? (
@@ -71,21 +72,13 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                     </div>
 
                     <ul className="mt-[54px] border-t border-eg-border max-[860px]:mt-[38px]">
-                      {projectGroup.interventions.map((intervention, index) => (
-                        <li key={intervention.id}>
+                      {projectGroup.interventions.map((intervention) => (
+                        <li key={intervention.slug}>
                           <Link
                             href={getInterventionHref(intervention.slug)}
-                            className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-[44px_minmax(0,1fr)] max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
+                            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-6 border-b border-eg-border py-6 text-eg-ink max-[860px]:grid-cols-1 max-[860px]:gap-3.5 max-[860px]:py-[22px] transition-colors hover:text-eg-brand-strong"
                             prefetch={false}
                           >
-                            <span
-                              aria-hidden="true"
-                              data-nosnippet=""
-                              className="eg-list-index"
-                            >
-                              {String(index + 1).padStart(2, "0")}
-                            </span>
-                            {" "}
                             <span>
                               <span className="text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.12] tracking-[-0.01em] block">
                                 {intervention.name}
@@ -96,7 +89,7 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                                 </span>
                               ) : null}
                             </span>
-                            <span className="eg-list-status justify-self-end whitespace-nowrap max-[860px]:col-start-2 max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
+                            <span className="eg-list-status justify-self-end whitespace-nowrap max-[860px]:mt-1 max-[860px]:justify-self-start">Apri &rarr;</span>
                           </Link>
                         </li>
                       ))}

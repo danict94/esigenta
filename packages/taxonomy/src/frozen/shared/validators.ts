@@ -150,6 +150,11 @@ function validateCategory(
 ) {
   assertNonEmptyString(category.slug, "[category] slug")
   assertNonEmptyString(category.name, `[category:${category.slug}] name`)
+  invariant(
+    typeof category.shortDescription === "string" &&
+      category.shortDescription.trim().length > 0,
+    `[category:${category.slug}] shortDescription cannot be empty.`,
+  )
 
   validateEntityAliases(category, `category:${category.slug}`)
 

@@ -8,6 +8,8 @@ export const geometra: FrozenCategory = {
   id: "geometra",
   slug: "geometra",
   name: "Geometra",
+  shortDescription:
+    "Gestisce CILA, SCIA, APE, variazioni catastali, sanatorie edilizie e progetti di ristrutturazione.",
   aliases: [
     "geometri",
     "studio tecnico",

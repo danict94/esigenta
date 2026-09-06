@@ -51,6 +51,7 @@ type NavItem = {
 
 const defaultNavItems: NavItem[] = [
   { href: "/servizi", label: "Servizi" },
+  { href: "/professionisti", label: "Professionisti" },
   { href: "/costi", label: "Costi" },
   { href: "/richieste/accesso", label: "Le mie richieste" },
   { href: "/area-impresa/accedi", label: "Accedi" },
@@ -70,8 +71,8 @@ const funnelNavItems: NavItem[] = [
 
 export function Navbar({ variant = "default" }: NavbarProps) {
   const navItems = variant === "funnel" ? funnelNavItems : defaultNavItems;
-  const centerNavItems = variant === "funnel" ? navItems.slice(0, 1) : navItems.slice(0, 3);
-  const actionNavItems = variant === "funnel" ? navItems.slice(1) : navItems.slice(3);
+  const centerNavItems = variant === "funnel" ? navItems.slice(0, 1) : navItems.slice(0, 4);
+  const actionNavItems = variant === "funnel" ? navItems.slice(1) : navItems.slice(4);
   const navId = useId();
   const pathname = usePathname();
   const router = useRouter();
@@ -198,7 +199,12 @@ export function Navbar({ variant = "default" }: NavbarProps) {
           </div>
 
           <div className="hidden min-[861px]:contents">
-            <div className="col-start-2 flex items-center gap-8">
+            <div
+              className={cn(
+                "col-start-2 flex items-center",
+                variant === "default" ? "gap-4 min-[1101px]:gap-8" : "gap-8",
+              )}
+            >
               {centerNavItems.map((item) => (
                 <Link
                   key={item.href}
@@ -215,7 +221,12 @@ export function Navbar({ variant = "default" }: NavbarProps) {
               ))}
             </div>
 
-            <div className="col-start-3 flex items-center justify-self-end gap-6">
+            <div
+              className={cn(
+                "col-start-3 flex items-center justify-self-end",
+                variant === "default" ? "gap-3 min-[1101px]:gap-6" : "gap-6",
+              )}
+            >
               {actionNavItems.map((item) => (
                 <Link
                   key={item.href}

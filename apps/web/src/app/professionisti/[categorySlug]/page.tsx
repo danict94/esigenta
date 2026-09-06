@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 import {
-  getProfessionPage,
-  listProfessionPageCategorySlugs,
-  type ProfessionPage,
-} from "@esigenta/taxonomy";
+  getPublicProfessionDetail,
+  listPublicProfessionCategorySlugs,
+  type PublicProfessionDetail,
+} from "@esigenta/taxonomy/public-professions";
 
 import { buildCanonicalPath } from "../../../site/seo/engine/canonical";
 import { ProfessionPageTemplate } from "../../../site/professions/profession-page-template";
 
 type Props = { params: Promise<{ categorySlug: string }> };
 
-export async function generateStaticParams() {
-  const slugs = await listProfessionPageCategorySlugs();
+export const dynamicParams = false;
+
+const resolveProfessionPage = cache(getPublicProfessionDetail);
+
+export function generateStaticParams() {
+  const slugs = listPublicProfessionCategorySlugs();
 
   return slugs.map((categorySlug) => ({ categorySlug }));
 }
@@ -23,7 +28,7 @@ export async function generateStaticParams() {
  * concatenato "01Disostruire scarichi ; 02..."): prime interventions reali
  * della categoria, nell'ordine in cui compaiono in pagina.
  */
-function buildProfessionMetaDescription(page: ProfessionPage): string {
+function buildProfessionMetaDescription(page: PublicProfessionDetail): string {
   const interventionNames = Array.from(
     new Set(
       page.projectGroups.flatMap((group) =>
@@ -48,7 +53,7 @@ function buildProfessionMetaDescription(page: ProfessionPage): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { categorySlug } = await params;
-  const page = await getProfessionPage(categorySlug);
+  const page = resolveProfessionPage(categorySlug);
 
   if (!page) {
     return { title: "Professione non trovata" };
@@ -68,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { categorySlug } = await params;
-  const page = await getProfessionPage(categorySlug);
+  const page = resolveProfessionPage(categorySlug);
 
   if (!page) {
     notFound();

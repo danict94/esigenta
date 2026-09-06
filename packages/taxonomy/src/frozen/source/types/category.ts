@@ -2,6 +2,7 @@ export type FrozenCategory = {
   id: string
   slug: string
   name: string
+  shortDescription: string
   description?: string
   aliases?: string[]
 

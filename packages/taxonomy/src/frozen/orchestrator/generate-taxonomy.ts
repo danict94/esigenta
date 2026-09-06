@@ -32,6 +32,7 @@ type GeneratedCategory = {
   id: string
   slug: string
   name: string
+  shortDescription: string
   description?: string
   aliases?: string[]
   projectGroups: string[]
@@ -61,6 +62,7 @@ function cleanCategory(category: FrozenCategory): GeneratedCategory {
     id: category.id,
     slug: category.slug,
     name: category.name,
+    shortDescription: category.shortDescription,
     projectGroups: sortedUnique(category.projectGroups),
   }
 
