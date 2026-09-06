@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { buildCanonicalPath } from "../seo/engine/canonical";
 import {
@@ -6,9 +8,12 @@ import {
   serializeJsonLd,
 } from "../seo/engine/schema-builder";
 import { PublicShell } from "../shell/public-shell";
+import { FrameMarks } from "../shared/frame-marks";
 import { InternalPageIntro } from "../shared/internal-page-intro";
-import { InterventionCard } from "../shared/intervention-card";
-import { ProfessionEditorialIntro } from "./profession-editorial-intro";
+import { ProfessionBusinessCta } from "./profession-business-cta";
+import { ProfessionEditorialSections } from "./profession-editorial-sections";
+import { ProfessionHeroCopy } from "./profession-hero-copy";
+import { ProfessionInterventionItem } from "./profession-intervention-item";
 import { ProfessionPricingSection } from "./profession-pricing-section";
 import type { ProfessionDetailViewModel } from "./resolve-profession-detail";
 
@@ -16,14 +21,9 @@ export type ProfessionPageTemplateProps = {
   page: ProfessionDetailViewModel;
 };
 
-const professionInterventionCardLabels = {
-  landing: "Scopri l’intervento",
-  costGuide: "Guida ai costi",
-  request: "Richiedi preventivi",
-} as const;
-
 export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
   const { category, groups } = page;
+  const editorialContent = page.editorialContent;
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
@@ -48,28 +48,59 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
             { label: category.name },
           ]}
           title={category.name}
-          description={category.description}
-        />
-
-        <ProfessionEditorialIntro
-          intro={page.editorialContent?.intro ?? null}
+          afterTitle={
+            editorialContent?.intro ? (
+              <ProfessionHeroCopy intro={editorialContent.intro} />
+            ) : undefined
+          }
+          description={editorialContent?.intro ? undefined : category.description}
+          compact
+          actions={
+            <>
+              <Link
+                href="#interventi-professione"
+                className="eg-button-primary min-h-10 px-4 text-[13px]"
+              >
+                Richiedi preventivi
+                <ArrowRight aria-hidden="true" className="size-4" />
+              </Link>
+              <span className="text-[12px] font-medium text-eg-text-muted">
+                Confronta soluzioni per il lavoro che ti serve
+              </span>
+            </>
+          }
+          aside={
+            editorialContent?.hero ? (
+              <div className="group relative h-[170px] w-full overflow-hidden sm:h-[200px] lg:h-[230px]">
+                <FrameMarks />
+                <Image
+                  src={editorialContent.hero.src}
+                  alt={editorialContent.hero.alt}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 400px, calc(100vw - 44px)"
+                  className="object-cover"
+                />
+              </div>
+            ) : undefined
+          }
         />
 
         <ProfessionPricingSection
           pricing={page.editorialContent?.pricing ?? null}
         />
 
-        <section className="pb-16">
+        <section id="interventi-professione" className="scroll-mt-24 py-9 sm:py-11">
           <div className="eg-container">
             {groups.length === 0 ? (
               <p className="eg-body-muted max-w-[46ch]">
                 Nessuna area di lavoro disponibile per questa professione.
               </p>
             ) : (
-              <div className="grid gap-14">
+              <div className="grid gap-10 sm:gap-12">
                 {groups.map((group) => (
                   <section key={group.slug} aria-labelledby={`profession-group-${group.slug}`}>
-                    <div className="max-w-[760px]">
+                    <div className="flex items-end justify-between gap-5">
                       <h2 id={`profession-group-${group.slug}`} className="eg-h2">
                         <Link
                           href={group.href}
@@ -79,18 +110,20 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                           {group.name}
                         </Link>
                       </h2>
+
+                      <p className="shrink-0 text-[12px] text-eg-text-muted max-[560px]:hidden">
+                        {group.interventions.length}{" "}
+                        {group.interventions.length === 1
+                          ? "intervento"
+                          : "interventi"}
+                      </p>
                     </div>
 
-                    <ul className="mt-[54px] grid gap-5 max-[860px]:mt-[38px] min-[761px]:grid-cols-2">
+                    <ul className="mt-4 grid grid-cols-1 border-t-[0.5px] border-eg-border/60 min-[761px]:grid-cols-2 min-[761px]:gap-x-10">
                       {group.interventions.map((intervention) => (
-                        <InterventionCard
+                        <ProfessionInterventionItem
                           key={intervention.slug}
-                          name={intervention.name}
-                          summary={intervention.summary}
-                          requestHref={intervention.requestHref}
-                          landingHref={intervention.landingHref}
-                          costGuideHref={intervention.costGuideHref}
-                          ctaLabels={professionInterventionCardLabels}
+                          {...intervention}
                         />
                       ))}
                     </ul>
@@ -101,6 +134,11 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
           </div>
         </section>
 
+        <ProfessionEditorialSections
+          sections={editorialContent?.closingSections ?? []}
+        />
+
+        <ProfessionBusinessCta professionName={category.name} />
       </div>
     </PublicShell>
   );

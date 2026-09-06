@@ -1,4 +1,5 @@
 import React from "react";
+import { BadgeEuro } from "lucide-react";
 
 import type { ProfessionEditorialPricing } from "./profession-editorial-content";
 
@@ -16,7 +17,7 @@ export function ProfessionPricingSection({
   return (
     <section
       aria-labelledby="profession-pricing-title"
-      className="border-y border-eg-border py-9 sm:py-10"
+      className="border-y-[0.5px] border-eg-border/60 py-5 sm:py-6"
       data-profession-pricing=""
     >
       <div className="eg-container">
@@ -28,22 +29,19 @@ export function ProfessionPricingSection({
             {pricing.heading}
           </h2>
 
-          {pricing.intro ? (
-            <p className="eg-body-muted mt-4 max-w-[840px]">
-              {pricing.intro}
-            </p>
-          ) : null}
-
-          <div className="mt-6 grid min-w-0 grid-cols-1 items-end gap-x-10 gap-y-5 min-[861px]:grid-cols-[minmax(280px,0.8fr)_minmax(0,1.2fr)]">
+          <div className="mt-4 grid min-w-0 grid-cols-1 items-end gap-x-10 gap-y-4 min-[861px]:grid-cols-[minmax(300px,0.85fr)_minmax(0,1.15fr)]">
             <dl className="min-w-0">
-              {pricing.rows.map((row) => (
+              {pricing.rows.map((row, index) => (
                 <div key={`${row.label}:${row.value}`}>
                   <dt className="text-[13px] font-semibold leading-normal text-eg-ink">
                     {row.label}
                   </dt>
-                  <dd className="mt-1.5">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <strong className="text-[clamp(34px,6vw,44px)] font-semibold leading-none tracking-[-0.03em] text-eg-brand-strong [font-variant-numeric:tabular-nums]">
+                  <dd className="mt-1">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                      {index === 0 ? (
+                        <BadgeEuro aria-hidden="true" className="size-5 shrink-0 text-eg-brand-strong" strokeWidth={1.8} />
+                      ) : null}
+                      <strong className="text-[clamp(32px,5vw,38px)] font-semibold leading-none tracking-[-0.03em] text-eg-brand-strong [font-variant-numeric:tabular-nums]">
                         {row.value}
                       </strong>
                       {row.unit ? (
@@ -54,13 +52,13 @@ export function ProfessionPricingSection({
                     </div>
 
                     {pricing.context ? (
-                      <p className="mt-2.5 font-(family-name:--eg-font-mono) text-[11px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
+                      <p className="mt-1.5 text-[12px] font-semibold text-eg-text-muted">
                         {pricing.context}
                       </p>
                     ) : null}
 
                     {row.note ? (
-                      <p className="mt-2.5 max-w-[520px] text-[12.5px] leading-[1.5] text-eg-text-muted">
+                      <p className="mt-1.5 text-[12px] leading-[1.5] text-eg-text-muted">
                         {row.note}
                       </p>
                     ) : null}
@@ -69,32 +67,31 @@ export function ProfessionPricingSection({
               ))}
             </dl>
 
-            {pricing.factors && pricing.factors.length > 0 ? (
+            {pricing.intro || (pricing.factors && pricing.factors.length > 0) ? (
               <div className="min-w-0">
-                <h3 className="text-[13px] font-semibold leading-normal text-eg-ink">
-                  Cosa può incidere sul prezzo
-                </h3>
-                <ul
-                  aria-label="Fattori che possono incidere sul prezzo"
-                  className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[13px] leading-normal text-eg-text-muted"
-                >
-                  {pricing.factors.map((factor, index) => (
-                    <li key={factor} className="flex items-center gap-2">
-                      {index > 0 ? (
-                        <span aria-hidden="true" className="text-eg-border">
-                          ·
-                        </span>
-                      ) : null}
-                      <span>{factor}</span>
-                    </li>
-                  ))}
-                </ul>
+                {pricing.intro ? (
+                  <p className="text-[12.5px] leading-[1.55] text-eg-text-muted">
+                    {pricing.intro}
+                  </p>
+                ) : null}
+
+                {pricing.factors && pricing.factors.length > 0 ? (
+                  <p className={`${pricing.intro ? "mt-1.5" : ""} text-[12.5px] leading-[1.6] text-eg-text-muted`}>
+                    <strong className="font-semibold text-eg-ink">Può incidere:</strong>{" "}
+                    {pricing.factors.map((factor, index) => (
+                      <React.Fragment key={factor}>
+                        {index > 0 ? " · " : null}
+                        {factor.toLocaleLowerCase("it")}
+                      </React.Fragment>
+                    ))}
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>
 
           {pricing.disclaimer || pricing.lastReviewed ? (
-            <div className="mt-5 flex flex-col gap-2 text-[12px] leading-[1.55] text-eg-text-muted sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+            <div className="mt-3 flex flex-col gap-1.5 text-[11px] leading-[1.5] text-eg-text-muted sm:flex-row sm:items-start sm:justify-between sm:gap-8">
               {pricing.disclaimer ? (
                 <p className="max-w-[820px]">{pricing.disclaimer}</p>
               ) : null}

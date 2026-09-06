@@ -1,5 +1,19 @@
 export type ProfessionEditorialIntro = {
+  readonly lead?: string;
   readonly paragraphs: readonly string[];
+  readonly note?: string;
+};
+
+export type ProfessionEditorialHero = {
+  readonly src: string;
+  readonly alt: string;
+};
+
+export type ProfessionEditorialSection = {
+  readonly kind?: "when-to-contact" | "how-to-choose";
+  readonly heading: string;
+  readonly paragraphs?: readonly string[];
+  readonly items?: readonly string[];
 };
 
 export type ProfessionEditorialPricingRow = {
@@ -21,8 +35,10 @@ export type ProfessionEditorialPricing = {
 
 export type ProfessionEditorialContent = {
   readonly categorySlug: string;
+  readonly hero?: ProfessionEditorialHero;
   readonly intro?: ProfessionEditorialIntro;
   readonly pricing?: ProfessionEditorialPricing;
+  readonly closingSections?: readonly ProfessionEditorialSection[];
 };
 
 // Registry editoriale web-side: ogni voce entra solo dopo studio e
@@ -30,35 +46,38 @@ export type ProfessionEditorialContent = {
 const all: readonly ProfessionEditorialContent[] = [
   {
     categorySlug: "elettricista",
+    hero: {
+      src: "/assets/images/impianto-elettrico.webp",
+      alt: "Intervento su impianto elettrico domestico",
+    },
     intro: {
+      lead:
+        "Un elettricista si occupa dell’installazione, della manutenzione e della riparazione degli impianti elettrici negli edifici.",
       paragraphs: [
-        "Un elettricista si occupa dell’installazione, della manutenzione e della riparazione degli impianti elettrici negli edifici. Può intervenire per realizzare o modificare un impianto, individuare guasti e malfunzionamenti, installare punti luce e prese oppure integrare sistemi come citofoni, videocitofoni, dispositivi di sicurezza e soluzioni per la smart home.",
-        "Per i lavori sugli impianti elettrici è importante rivolgersi a un professionista qualificato e, quando previsto dalla normativa, a un’impresa abilitata per la tipologia di intervento da eseguire. Su Esigenta puoi individuare il lavoro di cui hai bisogno, approfondirne caratteristiche e costi quando è disponibile una guida dedicata e richiedere preventivi per confrontare le soluzioni più adatte.",
+        "Può realizzare o modificare un impianto, individuare guasti e malfunzionamenti, installare punti luce e prese oppure integrare citofoni, sistemi di sicurezza e soluzioni per la smart home.",
       ],
+      note:
+        "Per i lavori sugli impianti elettrici è importante rivolgersi a un professionista qualificato e, quando previsto, a un’impresa abilitata. Su Esigenta puoi individuare l’intervento di cui hai bisogno, approfondirne caratteristiche e costi quando è disponibile una guida dedicata e richiedere preventivi per confrontare le soluzioni più adatte.",
     },
     pricing: {
       heading: "Quanto costa un elettricista?",
-      intro:
-        "La tariffa di un elettricista può variare in base alla zona, alla complessità dell’intervento, alla durata del lavoro e alle condizioni in cui viene richiesto il servizio. Per gli interventi ordinari, i riferimenti di mercato analizzati indicano generalmente una tariffa oraria compresa nella seguente fascia.",
       rows: [
         {
           label: "Tariffa oraria indicativa",
           value: "25–50 €",
           unit: "all’ora",
-          note:
-            "Riferimento orientativo per interventi ordinari. Materiali, eventuale uscita e condizioni particolari possono incidere sul prezzo finale.",
         },
       ],
-      context: "Interventi ordinari",
+      context: "Tariffa indicativa per interventi ordinari",
       factors: [
         "Zona",
         "Complessità",
         "Durata",
-        "Eventuale uscita",
         "Materiali",
+        "Eventuale uscita",
       ],
       disclaimer:
-        "Le tariffe indicate sono riferimenti orientativi di mercato e non costituiscono un tariffario professionale vincolante. Il costo effettivo dipende dal lavoro richiesto e dalle condizioni definite dal professionista.",
+        "Valore orientativo di mercato. IVA e condizioni dipendono dal preventivo.",
       lastReviewed: "settembre 2026",
     },
   },

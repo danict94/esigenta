@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { cn } from "@esigenta/ui";
+
 type InternalBreadcrumbItem = {
   label: ReactNode;
   href?: string;
@@ -18,6 +20,7 @@ type InternalPageIntroProps = {
   aside?: ReactNode;
   id?: string;
   titleId?: string;
+  compact?: boolean;
 };
 
 export function InternalPageIntro({
@@ -31,16 +34,26 @@ export function InternalPageIntro({
   aside,
   id,
   titleId,
+  compact = false,
 }: InternalPageIntroProps) {
   return (
-    <header id={id} className="eg-internal-header">
+    <header
+      id={id}
+      className={cn(
+        "eg-internal-header",
+        compact && "pt-[calc(var(--eg-nav-clear)+4px)] pb-7",
+      )}
+    >
       <div className="eg-container">
         <Breadcrumbs items={breadcrumbs} />
 
         <div
           className={
             aside
-              ? "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]"
+              ? cn(
+                  "grid items-center lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]",
+                  compact ? "gap-6 lg:gap-9" : "gap-12",
+                )
               : undefined
           }
         >
@@ -54,7 +67,11 @@ export function InternalPageIntro({
 
             {description ? <p className="eg-page-lede mt-4 max-w-160">{description}</p> : null}
 
-            {actions ? <div className="mt-7 flex flex-wrap gap-3">{actions}</div> : null}
+            {actions ? (
+              <div className={cn("flex flex-wrap items-center gap-3", compact ? "mt-5" : "mt-7")}>
+                {actions}
+              </div>
+            ) : null}
 
             {note ? <div className="mt-4 text-[13px] leading-[1.5] text-eg-ink">{note}</div> : null}
           </div>

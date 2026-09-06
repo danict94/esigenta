@@ -42,9 +42,9 @@ test("pricing professionale usa markup semantico e conserva tutti i contenuti", 
   assert.match(html, /25–50 €/);
   assert.match(html, /all’ora/);
   assert.match(html, /Interventi ordinari/);
-  assert.match(html, /Cosa può incidere sul prezzo/);
-  assert.match(html, /Zona/);
-  assert.match(html, /Complessità/);
+  assert.match(html, /Può incidere:/);
+  assert.match(html, /zona/);
+  assert.match(html, /complessità/);
   assert.match(html, /Nota della tariffa\./);
   assert.match(html, /Disclaimer pricing\./);
   assert.match(html, /Aggiornato: settembre 2026/);

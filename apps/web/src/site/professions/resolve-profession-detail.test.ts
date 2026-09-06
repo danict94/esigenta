@@ -260,7 +260,9 @@ test("real registry resolves summaries for all 101 published profession Interven
     assert.ok(source);
     assert.ok(resolved);
     if (categorySlug === "elettricista") {
-      assert.equal(resolved.editorialContent?.intro?.paragraphs.length, 2);
+      assert.ok(resolved.editorialContent?.intro?.lead);
+      assert.equal(resolved.editorialContent?.intro?.paragraphs.length, 1);
+      assert.ok(resolved.editorialContent?.intro?.note);
       assert.equal(resolved.editorialContent?.pricing?.rows.length, 1);
     } else {
       assert.equal(resolved.editorialContent, null);
@@ -289,6 +291,28 @@ test("real registry resolves summaries for all 101 published profession Interven
       Boolean(intervention.summary.trim()),
     ),
   );
+});
+
+test("representative profession details keep their expected group and Intervention counts", () => {
+  const expected = [
+    { slug: "elettricista", groups: 2, interventions: 11 },
+    { slug: "impresa-edile", groups: 6, interventions: 33 },
+    { slug: "idraulico", groups: 2, interventions: 11 },
+    { slug: "tecnico-climatizzazione", groups: 1, interventions: 2 },
+  ] as const;
+
+  for (const item of expected) {
+    const detail = resolveProfessionDetailViewModel(item.slug);
+    assert.ok(detail);
+    assert.equal(detail.groups.length, item.groups);
+    assert.equal(
+      detail.groups.reduce(
+        (total, group) => total + group.interventions.length,
+        0,
+      ),
+      item.interventions,
+    );
+  }
 });
 
 test("real registry keeps the pavement landing linked to /costi/rifare-pavimenti", () => {
