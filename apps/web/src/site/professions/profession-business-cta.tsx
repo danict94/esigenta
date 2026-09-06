@@ -33,7 +33,7 @@ export function ProfessionBusinessCta({
           prefetch={false}
           className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-eg-md bg-eg-header-action px-5 py-3 text-[14px] font-semibold text-eg-header transition-[filter] hover:brightness-105"
         >
-          Registrati come professionista <span aria-hidden="true">→</span>
+          Registrati come professionista
         </Link>
       </div>
     </section>

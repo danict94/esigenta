@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { buildCanonicalPath } from "../seo/engine/canonical";
 import {
@@ -62,7 +61,6 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                 className="eg-button-primary min-h-10 px-4 text-[13px]"
               >
                 Richiedi preventivi
-                <ArrowRight aria-hidden="true" className="size-4" />
               </Link>
               <span className="text-[12px] font-medium text-eg-text-muted">
                 Confronta soluzioni per il lavoro che ti serve

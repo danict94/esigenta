@@ -71,7 +71,7 @@ export function ProfessionInterventionItem({
           prefetch={false}
           className="inline-flex min-h-8 items-center bg-eg-brand-soft px-2.5 py-1.5 text-eg-brand-strong transition-colors hover:bg-eg-brand hover:text-eg-on-brand"
         >
-          Richiedi preventivi <span aria-hidden="true">→</span>
+          Richiedi preventivi
         </Link>
       </div>
     </li>
