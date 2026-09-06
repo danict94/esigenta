@@ -13,7 +13,7 @@ export function FeaturedWorkSection() {
         <Reveal>
           <SectionHeader
             eyebrow="Lavori più richiesti"
-            title="Le richieste più comuni."
+            title="Esplora le richieste più comuni."
             align="left"
             id="works-title"
             className="mb-14 max-w-160"
