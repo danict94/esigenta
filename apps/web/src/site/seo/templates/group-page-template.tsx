@@ -1,16 +1,14 @@
 import Link from "next/link";
 
 import { buildCanonicalPath } from "../engine/canonical";
-import type {
-  GroupInterventionItem,
-  GroupLandingPageData,
-} from "../engine/resolve-group-page";
+import type { GroupLandingPageData } from "../engine/resolve-group-page";
 import {
   buildBreadcrumbJsonLd,
   serializeJsonLd,
 } from "../engine/schema-builder";
 import { getCostGuidePriceNote } from "../pages/costi";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
+import { InterventionCard } from "../../shared/intervention-card";
 import { InternalPageIntro } from "../../shared/internal-page-intro";
 import { MarketingFinalCta } from "../../shared/marketing-final-cta";
 import { HowItWorks } from "./how-it-works";
@@ -20,6 +18,12 @@ import { PublicShell } from "../../shell/public-shell";
 export type GroupLandingPageProps = {
   data: GroupLandingPageData;
 };
+
+const serviceInterventionCardLabels = {
+  landing: "Approfondisci",
+  costGuide: "guida ai costi",
+  request: "Richiedi preventivi",
+} as const;
 
 export function GroupLandingPage({ data }: GroupLandingPageProps) {
   const { content, interventions, featured, professionalCategories } = data;
@@ -144,9 +148,15 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
 
             <ul className="mt-13.5 grid gap-5 max-[860px]:mt-9.5 min-[761px]:grid-cols-2">
               {interventions.map((item) => (
-                <GroupInterventionCard
+                <InterventionCard
                   key={item.slug}
-                  item={item}
+                  name={item.name}
+                  summary={item.summary}
+                  requestHref={item.requestHref}
+                  landingHref={item.landingHref}
+                  costGuideHref={item.costGuideHref}
+                  costRange={item.costRange}
+                  ctaLabels={serviceInterventionCardLabels}
                 />
               ))}
             </ul>
@@ -206,61 +216,5 @@ export function GroupLandingPage({ data }: GroupLandingPageProps) {
         />
       </div>
     </PublicShell>
-  );
-}
-
-function GroupInterventionCard({
-  item,
-}: {
-  item: GroupInterventionItem;
-}) {
-  return (
-    <li className="flex flex-col rounded-none border border-eg-border bg-eg-surface p-6.5 shadow-none transition-[transform,box-shadow] duration-200 ease-(--eg-ease-brand) hover:-translate-y-1 hover:shadow-eg-slab">
-      <h3 className="text-[19px] font-semibold leading-[1.2] tracking-[-0.01em] text-eg-ink">
-        {item.name}
-      </h3>
-
-      <p className="mt-2.5 flex-1 text-[14px] leading-[1.55] text-eg-text-muted">
-        {item.summary}
-      </p>
-
-      {item.costRange ? (
-        <p className="mt-4 border border-dashed border-eg-border bg-eg-page px-3.5 py-3 text-[13px] leading-normal text-eg-text-muted">
-          <span className="font-medium text-eg-ink">{item.costRange}</span>
-          {item.costGuideHref ? (
-            <>
-              {" — "}
-              <Link
-                href={item.costGuideHref}
-                prefetch={false}
-                className="font-semibold text-eg-brand-strong transition-colors hover:text-eg-brand-hover hover:underline"
-              >
-                guida ai costi
-              </Link>
-            </>
-          ) : null}
-        </p>
-      ) : null}
-
-      <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-eg-border pt-4">
-        {item.landingHref ? (
-          <Link
-            href={item.landingHref}
-            prefetch={false}
-            className="eg-button-ghost min-h-10 px-3.5 text-xs"
-          >
-            Approfondisci
-          </Link>
-        ) : null}
-
-        <Link
-          href={item.requestHref}
-          prefetch={false}
-          className="eg-button-primary eg-button-arrow min-h-10 px-3.5 text-xs"
-        >
-          Richiedi preventivi
-        </Link>
-      </div>
-    </li>
   );
 }
