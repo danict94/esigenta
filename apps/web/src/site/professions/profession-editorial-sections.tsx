@@ -19,7 +19,7 @@ export function ProfessionEditorialSections({
   return (
     <section
       aria-label="Approfondimenti sulla professione"
-      className="border-t-[0.5px] border-eg-border/60 py-10"
+      className="border-t border-eg-border py-10"
       data-profession-editorial-sections=""
     >
       <div className="eg-container grid gap-9 md:grid-cols-2 md:gap-12">

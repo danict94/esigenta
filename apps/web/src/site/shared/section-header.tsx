@@ -1,3 +1,5 @@
+import React from "react";
+
 // Trattamento eyebrow editoriale condiviso.
 // guida in Brand, titolo Primary piu' compatto del default .eg-h2.
 // Un solo valore, riusato dalle sezioni editoriali via

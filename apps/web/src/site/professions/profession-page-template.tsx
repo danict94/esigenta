@@ -7,6 +7,7 @@ import {
   serializeJsonLd,
 } from "../seo/engine/schema-builder";
 import { PublicShell } from "../shell/public-shell";
+import { DirectoryGroupHeader } from "../shared/directory-primitives";
 import { FrameMarks } from "../shared/frame-marks";
 import { InternalPageIntro } from "../shared/internal-page-intro";
 import { ProfessionBusinessCta } from "./profession-business-cta";
@@ -98,8 +99,10 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
               <div className="grid gap-10 sm:gap-12">
                 {groups.map((group) => (
                   <section key={group.slug} aria-labelledby={`profession-group-${group.slug}`}>
-                    <div className="flex items-end justify-between gap-5">
-                      <h2 id={`profession-group-${group.slug}`} className="eg-h2">
+                    <DirectoryGroupHeader
+                      id={`profession-group-${group.slug}`}
+                      headingLevel={2}
+                      title={
                         <Link
                           href={group.href}
                           prefetch={false}
@@ -107,17 +110,18 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                         >
                           {group.name}
                         </Link>
-                      </h2>
-
-                      <p className="shrink-0 text-[12px] text-eg-text-muted max-[560px]:hidden">
+                      }
+                      count={
+                        <span className="max-[560px]:hidden">
                         {group.interventions.length}{" "}
                         {group.interventions.length === 1
                           ? "intervento"
                           : "interventi"}
-                      </p>
-                    </div>
+                        </span>
+                      }
+                    />
 
-                    <ul className="mt-4 grid grid-cols-1 border-t-[0.5px] border-eg-border/60 min-[761px]:grid-cols-2 min-[761px]:gap-x-10">
+                    <ul className="mt-3 grid grid-cols-1 border-t border-eg-border min-[761px]:grid-cols-2 min-[761px]:gap-x-10">
                       {group.interventions.map((intervention) => (
                         <ProfessionInterventionItem
                           key={intervention.slug}

@@ -9,7 +9,17 @@ import {
   serializeJsonLd,
 } from "../seo/engine/schema-builder";
 import { PublicShell } from "../shell/public-shell";
+import {
+  DirectoryAction,
+  DirectoryItemSummary,
+  DirectoryItemTitle,
+} from "../shared/directory-primitives";
 import { FrameMarks } from "../shared/frame-marks";
+import { InternalPageFinalCta } from "../shared/internal-page-final-cta";
+import {
+  blueprintTitleClassName,
+  SectionHeader,
+} from "../shared/section-header";
 
 export type ProfessionsHubPageProps = {
   professions: readonly PublicProfessionHubItem[];
@@ -39,14 +49,14 @@ export function ProfessionsHubPage({ professions }: ProfessionsHubPageProps) {
 
         <section aria-labelledby="profession-catalog-title" className="pb-12 sm:pb-14">
           <div className="eg-container">
-            <div className="flex flex-col gap-2 border-t-[0.5px] border-eg-border/60 pt-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+            <div className="flex flex-col gap-2 border-t border-eg-border pt-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
               <div>
-                <h2
+                <SectionHeader
                   id="profession-catalog-title"
-                  className="text-[clamp(26px,3vw,30px)] font-semibold leading-[1.1] tracking-[-0.02em] text-eg-ink"
-                >
-                  Trova il professionista adatto
-                </h2>
+                  title="Trova il professionista adatto"
+                  align="left"
+                  titleClassName={blueprintTitleClassName}
+                />
                 <p className="mt-2 max-w-[700px] text-[13px] leading-[1.55] text-eg-text-muted sm:text-[14px]">
                   Parti dalla categoria professionale e scegli l’intervento che
                   corrisponde alla tua esigenza.
@@ -57,7 +67,7 @@ export function ProfessionsHubPage({ professions }: ProfessionsHubPageProps) {
               </p>
             </div>
 
-            <ul className="mt-4 grid grid-cols-1 border-t-[0.5px] border-eg-border/60 min-[701px]:grid-cols-2 min-[701px]:gap-x-8 min-[981px]:grid-cols-3 min-[981px]:gap-x-9">
+            <ul className="mt-4 grid grid-cols-1 border-t border-eg-border min-[701px]:grid-cols-2 min-[701px]:gap-x-8 min-[981px]:grid-cols-3 min-[981px]:gap-x-9">
               {professions.map((profession) => (
                 <ProfessionDirectoryItem
                   key={profession.slug}
@@ -68,7 +78,12 @@ export function ProfessionsHubPage({ professions }: ProfessionsHubPageProps) {
           </div>
         </section>
 
-        <HubBusinessCta />
+        <InternalPageFinalCta
+          title="Sei un professionista?"
+          description="Entra in Esigenta e presenta la tua attività ai clienti che cercano lavori nella tua categoria."
+          href="/area-impresa/iscriviti"
+          ctaLabel="Registrati come professionista"
+        />
       </div>
     </PublicShell>
   );
@@ -154,21 +169,19 @@ export function ProfessionDirectoryItem({
     profession.interventionCount === 1 ? "intervento" : "interventi";
 
   return (
-    <li className="min-w-0 border-b-[0.5px] border-eg-border/60">
-      <Link
-        href={`/professionisti/${profession.slug}`}
-        prefetch={false}
-        className="group flex h-full min-w-0 flex-col py-4.5 text-eg-ink transition-transform duration-200 ease-(--eg-ease-brand) hover:-translate-y-0.5"
+    <li className="min-w-0 border-b border-eg-border">
+      <div
+        className="group relative flex h-full min-w-0 flex-col py-4.5 text-eg-ink transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2"
       >
-        <h3 className="text-[19px] font-semibold leading-[1.25] tracking-[-0.015em] transition-colors group-hover:text-eg-brand-hover sm:text-[20px]">
+        <DirectoryItemTitle className="transition-colors group-hover:text-eg-brand-hover">
           {profession.name}
-        </h3>
+        </DirectoryItemTitle>
 
-        <p className="mt-1.5 text-[12.5px] leading-[1.55] text-eg-text-muted sm:text-[13px]">
+        <DirectoryItemSummary className="mt-1.5">
           {profession.shortDescription}
-        </p>
+        </DirectoryItemSummary>
 
-        <p className="mt-3 text-[11.5px] leading-[1.55] text-eg-text-muted sm:text-[12px]">
+        <DirectoryItemSummary className="mt-3">
           <strong className="font-semibold text-eg-ink">Ambiti:</strong>{" "}
           {visibleProjectGroups.map((projectGroup, index) => (
             <span key={projectGroup.slug}>
@@ -179,43 +192,20 @@ export function ProfessionDirectoryItem({
           {remainingProjectGroupCount > 0
             ? ` +${remainingProjectGroupCount}`
             : null}
-        </p>
+        </DirectoryItemSummary>
 
         <div className="mt-auto flex items-center justify-between gap-4 pt-3.5 text-[11.5px] sm:text-[12px]">
           <span className="text-eg-text-muted">
             {profession.interventionCount} {interventionLabel}
           </span>
-          <span className="font-semibold text-eg-brand-strong transition-colors group-hover:text-eg-brand-hover">
+          <DirectoryAction
+            href={`/professionisti/${profession.slug}`}
+            className="after:absolute after:inset-0"
+          >
             Scopri
-          </span>
+          </DirectoryAction>
         </div>
-      </Link>
-    </li>
-  );
-}
-
-function HubBusinessCta() {
-  return (
-    <section className="border-y-[0.5px] border-eg-header-border bg-eg-header py-7 text-eg-header-text">
-      <div className="eg-container flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
-        <div className="max-w-[700px]">
-          <h2 className="text-[clamp(23px,3vw,27px)] font-semibold leading-tight tracking-[-0.01em]">
-            Sei un professionista?
-          </h2>
-          <p className="mt-2 text-[13.5px] leading-[1.55] text-eg-header-text/75 sm:text-[14px]">
-            Entra in Esigenta e presenta la tua attività ai clienti che cercano
-            lavori nella tua categoria.
-          </p>
-        </div>
-
-        <Link
-          href="/area-impresa/iscriviti"
-          prefetch={false}
-          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-eg-md bg-eg-header-action px-5 py-3 text-[14px] font-semibold text-eg-header transition-[filter] hover:brightness-105"
-        >
-          Registrati come professionista
-        </Link>
       </div>
-    </section>
+    </li>
   );
 }

@@ -1,6 +1,11 @@
 import Link from "next/link";
 import React from "react";
 
+import {
+  DirectoryAction,
+  DirectoryItemSummary,
+  DirectoryItemTitle,
+} from "../shared/directory-primitives";
 import type { ProfessionDetailInterventionViewModel } from "./resolve-profession-detail";
 
 export type ProfessionInterventionItemProps =
@@ -34,36 +39,26 @@ export function ProfessionInterventionItem({
 
   return (
     <li
-      className="flex min-w-0 flex-col border-b-[0.5px] border-eg-border/60 py-4.5"
+      className="flex min-w-0 flex-col border-b border-eg-border py-4.5"
       data-profession-intervention-item=""
     >
-      <h3 className="text-[17px] font-semibold leading-[1.3] tracking-[-0.01em] text-eg-ink">
-        {name}
-      </h3>
+      <DirectoryItemTitle>{name}</DirectoryItemTitle>
 
-      <p className="mt-1.5 flex-1 text-[13px] leading-[1.5] text-eg-text-muted">
+      <DirectoryItemSummary className="mt-1.5 flex-1">
         {compactSummary}
-      </p>
+      </DirectoryItemSummary>
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-semibold">
         {landingHref ? (
-          <Link
-            href={landingHref}
-            prefetch={false}
-            className="text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-brand-hover"
-          >
+          <DirectoryAction href={landingHref}>
             Scopri
-          </Link>
+          </DirectoryAction>
         ) : null}
 
         {costGuideHref ? (
-          <Link
-            href={costGuideHref}
-            prefetch={false}
-            className="text-eg-brand-strong underline decoration-eg-border underline-offset-4 transition-colors hover:text-eg-brand-hover"
-          >
+          <DirectoryAction href={costGuideHref}>
             Guida ai costi
-          </Link>
+          </DirectoryAction>
         ) : null}
 
         <Link
