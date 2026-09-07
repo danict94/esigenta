@@ -1,4 +1,5 @@
 import Link from "next/link";
+import React from "react";
 
 /**
  * Fase 5.D — sostituisce il vecchio GeoRequestForm: quel form aveva un campo
@@ -8,14 +9,19 @@ import Link from "next/link";
 export type RequestCtaPanelProps = {
   requestHref: string;
   ctaLabel: string;
+  title?: string;
 };
 
-export function RequestCtaPanel({ requestHref, ctaLabel }: RequestCtaPanelProps) {
+export function RequestCtaPanel({
+  requestHref,
+  ctaLabel,
+  title = "Trova professionisti nella tua zona",
+}: RequestCtaPanelProps) {
   return (
     <div className="space-y-5 border border-eg-border bg-eg-surface p-6.5 shadow-eg-slab">
       <div>
         <h3 className="font-(family-name:--eg-font-primary) text-[17px] font-semibold leading-[1.3]">
-          Trova professionisti nella tua zona
+          {title}
         </h3>
 
         <p className="eg-body-muted mt-2 text-[13.5px]">

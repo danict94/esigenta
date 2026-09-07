@@ -16,10 +16,10 @@ import type { SeoInterventionLanding } from "../types";
 export const rifareImpiantoElettricoLanding: SeoInterventionLanding = {
   slug: "rifare-impianto-elettrico",
   title: "Rifare impianto elettrico",
-  h1: "Rifare impianto elettrico: adegua casa con un elettricista qualificato",
+  h1: "Rifare l’impianto elettrico: cosa comprende il lavoro",
   description:
-    "Rifare l'impianto elettrico permette di aumentare sicurezza, affidabilità e conformità dell'abitazione. Descrivi il lavoro e confronta preventivi da elettricisti qualificati.",
-  metaTitle: "Rifare impianto elettrico: preventivi elettricista",
+    "Rifare l’impianto elettrico permette di aumentare sicurezza, affidabilità e conformità dell’abitazione. Descrivi il lavoro e confronta preventivi per il rifacimento.",
+  metaTitle: "Rifare l’impianto elettrico: intervento e preventivi | Esigenta",
   // Correzione concettuale: lastModified deve riflettere l'ultima modifica
   // significativa della PAGINA RENDERIZZATA, non solo di questo file. Il
   // modulo Costi di questa landing legge guide.nationalRange e
@@ -30,18 +30,21 @@ export const rifareImpiantoElettricoLanding: SeoInterventionLanding = {
   // di 9b40e23 (detailSections + DM 37/2008): vince d3a9d81.
   lastModified: "2026-08-09",
   metaDescription:
-    "Devi rifare o adeguare l'impianto elettrico? Scopri cosa incide sul costo e richiedi preventivi da elettricisti qualificati.",
+    "Devi rifare o adeguare l’impianto elettrico? Scopri cosa comprende il lavoro, cosa incide sul costo e richiedi preventivi per il rifacimento.",
   funnelSlug: "rifare-impianto-elettrico",
   groupSlug: "impianti-e-manutenzioni-elettriche",
-  requestCtaLabel: "Richiedi preventivi per l'impianto elettrico",
+  requestCtaLabel: "Richiedi preventivi per rifare l’impianto elettrico",
+  heroNote:
+    "Gratis, senza impegno. Confronta preventivi per rifare o adeguare l’impianto elettrico.",
+  requestPanelTitle: "Completa la richiesta per questo intervento",
   image: {
     src: "/assets/images/impianto-elettrico.webp",
     alt: "Intervento su impianto elettrico domestico",
   },
   geoSection: {
-    title: "Trova elettricisti per il tuo impianto nella tua zona",
+    title: "Preventivi per rifare il tuo impianto elettrico",
     summary:
-      "Indica dove si trova l'abitazione e confronta professionisti attivi nella tua area per adeguare o rifare l'impianto elettrico.",
+      "Indica dove si trova l’abitazione e descrivi il lavoro per confrontare preventivi relativi al rifacimento o all’adeguamento dell’impianto elettrico.",
   },
   relatedInterventionSlugs: [
     "riparare-quadro-elettrico",

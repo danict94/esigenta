@@ -41,6 +41,10 @@ export type SeoInterventionLanding = {
   groupSlug?: string;
   /** Label CTA verso il funnel: mai generica sulla pilota (es. "Richiedi preventivi per il bagno"). */
   requestCtaLabel?: string;
+  /** Nota opzionale sotto le CTA hero; assente = fallback condiviso invariato. */
+  heroNote?: string;
+  /** Titolo opzionale del pannello richiesta; assente = fallback condiviso invariato. */
+  requestPanelTitle?: string;
   /**
    * Opzionale: una landing senza foto reale coerente (es. un intervento
    * appena introdotto) renderizza senza il blocco immagine invece di usare

@@ -112,7 +112,10 @@ export function InterventionLandingPage({
                   )}
             </>
           }
-          note="Gratis, senza impegno. Preventivi da professionisti qualificati nella tua zona."
+          note={
+            landing.heroNote ??
+            "Gratis, senza impegno. Preventivi da professionisti qualificati nella tua zona."
+          }
           aside={
             landing.image ? (
               <div className="relative mx-auto aspect-square w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:max-w-none">
@@ -362,6 +365,7 @@ export function InterventionLandingPage({
               priceData={priceData}
               funnelSlug={landing.funnelSlug}
               requestCtaLabel={requestCtaLabel}
+              requestPanelTitle={landing.requestPanelTitle}
               costGuideHref={costGuideHref}
             />
           </div>

@@ -18,6 +18,7 @@ export type GeoCostModuleProps = {
   priceData: InterventionCostSectionPriceData;
   funnelSlug: string;
   requestCtaLabel: string;
+  requestPanelTitle?: string;
   costGuideHref: string | null;
 };
 
@@ -33,6 +34,7 @@ export function GeoCostModule({
   priceData,
   funnelSlug,
   requestCtaLabel,
+  requestPanelTitle,
   costGuideHref,
 }: GeoCostModuleProps) {
   const requestHref = `/richiesta/${funnelSlug}`;
@@ -51,7 +53,11 @@ export function GeoCostModule({
             <p className="mt-3 max-w-[56ch] text-[14.5px] leading-[1.6] text-eg-ink">{geoSection.summary}</p>
           </div>
 
-          <RequestCtaPanel requestHref={requestHref} ctaLabel={requestCtaLabel} />
+          <RequestCtaPanel
+            requestHref={requestHref}
+            ctaLabel={requestCtaLabel}
+            title={requestPanelTitle}
+          />
         </div>
       </section>
 
