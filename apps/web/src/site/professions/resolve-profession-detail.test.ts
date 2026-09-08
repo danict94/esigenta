@@ -264,6 +264,12 @@ test("real registry resolves summaries for all 101 published profession Interven
       assert.equal(resolved.editorialContent?.intro?.paragraphs.length, 1);
       assert.ok(resolved.editorialContent?.intro?.note);
       assert.equal(resolved.editorialContent?.pricing?.rows.length, 1);
+    } else if (categorySlug === "idraulico") {
+      assert.ok(resolved.editorialContent?.intro?.lead);
+      assert.equal(resolved.editorialContent?.intro?.paragraphs.length, 1);
+      assert.ok(resolved.editorialContent?.intro?.note);
+      assert.equal(resolved.editorialContent?.pricing, undefined);
+      assert.equal(resolved.editorialContent?.hero, undefined);
     } else {
       assert.equal(resolved.editorialContent, null);
     }

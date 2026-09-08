@@ -8,8 +8,8 @@ export const idraulicaGroupLanding: SeoGroupLanding = {
     "Perdite d'acqua, scarichi otturati, sanitari e impianti idraulici: ogni intervento idraulico ha un percorso dedicato, anche per le urgenze. Scegli quello giusto e confronta preventivi.",
   metaTitle: "Idraulica: interventi urgenti e preventivi",
   metaDescription:
-    "Perdite d'acqua, scarichi otturati, sanitari e impianto idraulico bagno: trova il percorso giusto e richiedi preventivi da idraulici qualificati.",
-  interventionsTitle: "Cosa puoi richiedere all'idraulico",
+    "Perdite d'acqua, scarichi otturati, sanitari e impianto idraulico bagno: trova il percorso giusto e richiedi preventivi per il lavoro di idraulica.",
+  interventionsTitle: "Interventi di idraulica disponibili",
   featuredInterventionSlug: "riparare-perdita-acqua",
   interventionSummaries: {
     "disostruire-scarichi":

@@ -37,10 +37,12 @@ export function ProfessionEditorialSections({
               <ul className="mt-4 grid gap-3">
                 {section.items.map((item, index) => {
                   const ChoiceIcon = choiceIcons[index % choiceIcons.length]!;
+                  const itemKey =
+                    typeof item === "string" ? item : item.title;
 
                   return (
                     <li
-                      key={item}
+                      key={itemKey}
                       className="flex gap-3 text-[14px] leading-[1.55] text-eg-text-muted"
                     >
                       {section.kind === "how-to-choose" ? (
@@ -50,7 +52,16 @@ export function ProfessionEditorialSections({
                           strokeWidth={1.8}
                         />
                       ) : null}
-                      <span>{item}</span>
+                      {typeof item === "string" ? (
+                        <span>{item}</span>
+                      ) : (
+                        <div>
+                          <h3 className="font-semibold text-eg-ink">
+                            {item.title}
+                          </h3>
+                          <p className="mt-0.5">{item.description}</p>
+                        </div>
+                      )}
                     </li>
                   );
                 })}

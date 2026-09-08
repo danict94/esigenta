@@ -75,3 +75,54 @@ test("only elettricista exposes the approved profession pricing", () => {
 
   assert.equal(getProfessionEditorialContent("imbianchino")?.pricing, undefined);
 });
+
+test("idraulico resolves the approved SEO, hero copy and closing sections without pricing or image", () => {
+  const content = getProfessionEditorialContent("idraulico");
+
+  assert.deepEqual(content?.seo, {
+    title: "Trova un idraulico e confronta preventivi | Esigenta",
+    description:
+      "Trova un idraulico per i lavori di casa, scegli tra interventi di idraulica e riscaldamento e richiedi preventivi per confrontare le soluzioni disponibili.",
+  });
+  assert.deepEqual(content?.intro, {
+    lead:
+      "Un idraulico si occupa dell’installazione, della manutenzione e della riparazione degli impianti idrici e sanitari negli edifici.",
+    paragraphs: [
+      "Interviene su tubazioni, perdite, scarichi, sanitari e punti acqua. In base alle competenze e alle abilitazioni richieste, può occuparsi anche di impianti di riscaldamento e produzione di acqua calda.",
+    ],
+    note:
+      "Per i lavori per cui è richiesta un’abilitazione ai sensi del D.M. 37/2008, è importante verificare che l’impresa sia abilitata per la specifica tipologia di impianto. Su Esigenta puoi scegliere l’intervento di cui hai bisogno e richiedere preventivi da confrontare.",
+  });
+  assert.deepEqual(content?.closingSections, [
+    {
+      kind: "when-to-contact",
+      heading: "Quando rivolgersi a un idraulico",
+      paragraphs: [
+        "Puoi rivolgerti a un idraulico quando devi realizzare o modificare un impianto idrico, risolvere perdite o scarichi ostruiti, sostituire sanitari e punti acqua. Per caldaie e altri impianti di riscaldamento, verifica che il professionista o l’impresa disponga delle abilitazioni richieste per il lavoro.",
+      ],
+    },
+    {
+      kind: "how-to-choose",
+      heading: "Come scegliere un idraulico",
+      items: [
+        {
+          title: "Verifica le abilitazioni",
+          description:
+            "Per i lavori regolamentati, controlla che l’impresa sia abilitata per la specifica tipologia di impianto.",
+        },
+        {
+          title: "Confronta il preventivo",
+          description:
+            "Verifica che siano indicate le lavorazioni, i materiali e gli eventuali costi accessori.",
+        },
+        {
+          title: "Chiarisci tempi e documentazione",
+          description:
+            "Prima dei lavori, chiedi i tempi previsti e quale documentazione verrà rilasciata quando richiesta.",
+        },
+      ],
+    },
+  ]);
+  assert.equal(content?.pricing, undefined);
+  assert.equal(content?.hero, undefined);
+});

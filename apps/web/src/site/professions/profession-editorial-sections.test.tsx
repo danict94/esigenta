@@ -44,3 +44,44 @@ test("sezioni editoriali future conservano paragrafi e punti nell'ordine dichiar
   assert.match(html, /lucide-file-text/);
   assert.match(html, /lucide-badge-check/);
 });
+
+test("gli item editoriali strutturati mostrano titolo e descrizione con le icone previste", () => {
+  const html = renderToStaticMarkup(
+    <ProfessionEditorialSections
+      sections={[
+        {
+          kind: "how-to-choose",
+          heading: "Come scegliere un idraulico",
+          items: [
+            {
+              title: "Verifica le abilitazioni",
+              description: "Controlla l’abilitazione richiesta.",
+            },
+            {
+              title: "Confronta il preventivo",
+              description: "Verifica lavorazioni e materiali.",
+            },
+            {
+              title: "Chiarisci tempi e documentazione",
+              description: "Chiedi tempi e documentazione prevista.",
+            },
+          ],
+        },
+      ]}
+    />,
+  );
+
+  assert.match(html, /<h3[^>]*>Verifica le abilitazioni<\/h3>/);
+  assert.match(html, /Controlla l’abilitazione richiesta\./);
+  assert.ok(
+    html.indexOf("Verifica le abilitazioni") <
+      html.indexOf("Confronta il preventivo"),
+  );
+  assert.ok(
+    html.indexOf("Confronta il preventivo") <
+      html.indexOf("Chiarisci tempi e documentazione"),
+  );
+  assert.match(html, /lucide-shield-check/);
+  assert.match(html, /lucide-file-text/);
+  assert.match(html, /lucide-badge-check/);
+});

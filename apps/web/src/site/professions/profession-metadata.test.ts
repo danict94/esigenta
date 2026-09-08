@@ -18,9 +18,23 @@ test("elettricista usa l'override SEO editoriale approvato", () => {
   });
 });
 
+test("idraulico usa l'override SEO editoriale approvato", () => {
+  const page = resolveProfessionDetailViewModel("idraulico");
+  assert.ok(page);
+
+  assert.deepEqual(buildProfessionSeoMetadata(page), {
+    title: "Trova un idraulico e confronta preventivi | Esigenta",
+    description:
+      "Trova un idraulico per i lavori di casa, scegli tra interventi di idraulica e riscaldamento e richiedi preventivi per confrontare le soluzioni disponibili.",
+    canonical: "/professionisti/idraulico",
+  });
+});
+
 test("le altre professioni usano un fallback neutro senza elenchi di interventi", () => {
   for (const categorySlug of listPublicProfessionCategorySlugs()) {
-    if (categorySlug === "elettricista") continue;
+    if (categorySlug === "elettricista" || categorySlug === "idraulico") {
+      continue;
+    }
 
     const page = resolveProfessionDetailViewModel(categorySlug);
     assert.ok(page);

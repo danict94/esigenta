@@ -13,7 +13,7 @@ export type ProfessionEditorialSection = {
   readonly kind?: "when-to-contact" | "how-to-choose";
   readonly heading: string;
   readonly paragraphs?: readonly string[];
-  readonly items?: readonly string[];
+  readonly items?: readonly ProfessionEditorialItem[];
 };
 
 export type ProfessionEditorialPricingRow = {
@@ -37,6 +37,13 @@ export type ProfessionEditorialSeo = {
   readonly title: string;
   readonly description: string;
 };
+
+export type ProfessionEditorialItem =
+  | string
+  | {
+      readonly title: string;
+      readonly description: string;
+    };
 
 export type ProfessionEditorialContent = {
   readonly categorySlug: string;
@@ -106,6 +113,53 @@ const all: readonly ProfessionEditorialContent[] = [
           "Verifica l’abilitazione quando è prevista per il tipo di intervento.",
           "Confronta cosa comprende il preventivo e quali lavorazioni restano escluse.",
           "Chiarisci materiali, tempi di esecuzione e documentazione prevista.",
+        ],
+      },
+    ],
+  },
+  {
+    categorySlug: "idraulico",
+    seo: {
+      title: "Trova un idraulico e confronta preventivi | Esigenta",
+      description:
+        "Trova un idraulico per i lavori di casa, scegli tra interventi di idraulica e riscaldamento e richiedi preventivi per confrontare le soluzioni disponibili.",
+    },
+    intro: {
+      lead:
+        "Un idraulico si occupa dell’installazione, della manutenzione e della riparazione degli impianti idrici e sanitari negli edifici.",
+      paragraphs: [
+        "Interviene su tubazioni, perdite, scarichi, sanitari e punti acqua. In base alle competenze e alle abilitazioni richieste, può occuparsi anche di impianti di riscaldamento e produzione di acqua calda.",
+      ],
+      note:
+        "Per i lavori per cui è richiesta un’abilitazione ai sensi del D.M. 37/2008, è importante verificare che l’impresa sia abilitata per la specifica tipologia di impianto. Su Esigenta puoi scegliere l’intervento di cui hai bisogno e richiedere preventivi da confrontare.",
+    },
+    closingSections: [
+      {
+        kind: "when-to-contact",
+        heading: "Quando rivolgersi a un idraulico",
+        paragraphs: [
+          "Puoi rivolgerti a un idraulico quando devi realizzare o modificare un impianto idrico, risolvere perdite o scarichi ostruiti, sostituire sanitari e punti acqua. Per caldaie e altri impianti di riscaldamento, verifica che il professionista o l’impresa disponga delle abilitazioni richieste per il lavoro.",
+        ],
+      },
+      {
+        kind: "how-to-choose",
+        heading: "Come scegliere un idraulico",
+        items: [
+          {
+            title: "Verifica le abilitazioni",
+            description:
+              "Per i lavori regolamentati, controlla che l’impresa sia abilitata per la specifica tipologia di impianto.",
+          },
+          {
+            title: "Confronta il preventivo",
+            description:
+              "Verifica che siano indicate le lavorazioni, i materiali e gli eventuali costi accessori.",
+          },
+          {
+            title: "Chiarisci tempi e documentazione",
+            description:
+              "Prima dei lavori, chiedi i tempi previsti e quale documentazione verrà rilasciata quando richiesta.",
+          },
         ],
       },
     ],
