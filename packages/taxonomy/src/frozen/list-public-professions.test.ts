@@ -74,13 +74,15 @@ test("a non-public profession remains internally resolvable", () => {
   )
 })
 
-test("the 13 public production professions stay unchanged with internal professions", () => {
+test("all 17 production professions are public in frozen source order", () => {
   assert.equal(frozenTaxonomySource.categories.length, 17)
   assert.deepEqual(
     listPublicProfessions(frozenTaxonomySource).map((category) => category.slug),
     [
       "impresa-edile",
+      "muratore",
       "idraulico",
+      "termoidraulico",
       "elettricista",
       "cartongessista",
       "imbianchino",
@@ -91,25 +93,9 @@ test("the 13 public production professions stay unchanged with internal professi
       "fumista",
       "giardiniere",
       "geometra",
+      "architetto",
+      "ingegnere",
       "piscinista",
     ],
-  )
-  assert.ok(
-    !listPublicProfessions(frozenTaxonomySource).some(
-      (category) => category.slug === "termoidraulico",
-    ),
-  )
-  assert.ok(
-    !listPublicProfessions(frozenTaxonomySource).some(
-      (category) => category.slug === "muratore",
-    ),
-  )
-  assert.ok(
-    ["architetto", "ingegnere"].every(
-      (slug) =>
-        !listPublicProfessions(frozenTaxonomySource).some(
-          (category) => category.slug === slug,
-        ),
-    ),
   )
 })

@@ -50,6 +50,7 @@ export type ProfessionEditorialContent = {
   readonly seo?: ProfessionEditorialSeo;
   readonly hero?: ProfessionEditorialHero;
   readonly intro?: ProfessionEditorialIntro;
+  readonly requestMicrocopy?: string;
   readonly pricing?: ProfessionEditorialPricing;
   readonly closingSections?: readonly ProfessionEditorialSection[];
 };
@@ -159,6 +160,87 @@ const all: readonly ProfessionEditorialContent[] = [
             title: "Chiarisci tempi e documentazione",
             description:
               "Prima dei lavori, chiedi i tempi previsti e quale documentazione verrà rilasciata quando richiesta.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    categorySlug: "impresa-edile",
+    seo: {
+      title: "Trova un'impresa edile e confronta preventivi | Esigenta",
+      description:
+        "Trova un'impresa edile per lavori e ristrutturazioni, scegli l'intervento che ti serve e richiedi preventivi per confrontare le proposte disponibili.",
+    },
+    hero: {
+      src: "/assets/images/professionisti-hero.webp",
+      alt: "Impresa edile al lavoro su un edificio",
+    },
+    intro: {
+      lead:
+        "Un’impresa edile si occupa di lavori di costruzione, manutenzione e ristrutturazione degli edifici.",
+      paragraphs: [
+        "Può eseguire opere murarie, ristrutturazioni, interventi su facciate e balconi, pavimentazioni, coperture e lavori di costruzione, direttamente o coordinando le diverse lavorazioni necessarie al cantiere.",
+      ],
+      note:
+        "Le attività offerte possono variare da un’impresa all’altra. Su Esigenta puoi scegliere il lavoro che devi realizzare e richiedere preventivi per confrontare le proposte disponibili.",
+    },
+    requestMicrocopy:
+      "Confronta imprese per il lavoro che devi realizzare",
+    closingSections: [
+      {
+        kind: "when-to-contact",
+        heading: "Quando rivolgersi a un’impresa edile",
+        items: [
+          {
+            title: "Ristrutturazioni articolate",
+            description:
+              "Quando il lavoro comprende più fasi o diverse lavorazioni edili da organizzare nello stesso intervento.",
+          },
+          {
+            title: "Opere sull’edificio",
+            description:
+              "Per interventi su murature, facciate, balconi, pavimentazioni, coperture e altre parti dell’immobile.",
+          },
+          {
+            title: "Costruzioni e ampliamenti",
+            description:
+              "Per lavori più estesi che richiedono organizzazione del cantiere e il coordinamento delle attività necessarie.",
+          },
+        ],
+      },
+      {
+        heading: "Cosa incide sul preventivo",
+        paragraphs: [
+          "Il costo di un lavoro edile dipende dal tipo di intervento e dalle condizioni specifiche del cantiere.",
+        ],
+        items: [
+          "tipo di intervento",
+          "dimensioni del lavoro",
+          "condizioni dell’immobile",
+          "materiali e finiture",
+          "numero di lavorazioni coinvolte",
+          "accessibilità del cantiere",
+        ],
+      },
+      {
+        kind: "how-to-choose",
+        heading: "Come scegliere un’impresa edile",
+        items: [
+          {
+            title: "Esperienza su lavori simili",
+            description:
+              "Valuta se l’impresa ha esperienza con interventi paragonabili a quello che devi realizzare.",
+          },
+          {
+            title: "Preventivo chiaro",
+            description:
+              "Confronta le lavorazioni comprese, i materiali, i tempi indicativi e le condizioni della proposta, non soltanto il totale.",
+          },
+          {
+            title: "Dati e documentazione",
+            description:
+              "Verifica i dati dell’impresa e la documentazione pertinente al tipo di lavoro da eseguire.",
           },
         ],
       },

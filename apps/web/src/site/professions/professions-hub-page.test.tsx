@@ -10,11 +10,15 @@ import { ProfessionDirectoryItem } from "./professions-hub-page";
 const professions = listPublicProfessionHubItems();
 
 test("catalogo hub conserva tutte le professioni frozen e i relativi href", () => {
-  assert.equal(professions.length, 13);
-  assert.ok(!professions.some(({ slug }) => slug === "termoidraulico"));
-  assert.ok(!professions.some(({ slug }) => slug === "muratore"));
-  assert.ok(!professions.some(({ slug }) => slug === "architetto"));
-  assert.ok(!professions.some(({ slug }) => slug === "ingegnere"));
+  assert.equal(professions.length, 17);
+  for (const slug of [
+    "termoidraulico",
+    "muratore",
+    "architetto",
+    "ingegnere",
+  ]) {
+    assert.ok(professions.some((profession) => profession.slug === slug));
+  }
 
   for (const profession of professions) {
     const html = renderToStaticMarkup(

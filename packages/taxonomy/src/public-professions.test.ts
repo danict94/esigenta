@@ -46,7 +46,7 @@ test("public professions expose the frozen catalog without Prisma data", () => {
   const slugs = listPublicProfessionCategorySlugs()
   const hubItems = listPublicProfessionHubItems()
 
-  assert.equal(slugs.length, 13)
+  assert.equal(slugs.length, 17)
   assert.equal(hubItems.length, slugs.length)
   assert.ok(hubItems.every((item) => item.shortDescription.trim().length > 0))
   assert.deepEqual(
@@ -55,17 +55,21 @@ test("public professions expose the frozen catalog without Prisma data", () => {
   )
   assert.equal(
     hubItems.reduce((total, item) => total + item.interventionCount, 0),
-    101,
+    128,
   )
 
   const detail = getPublicProfessionDetail(" impresa-edile ")
   assert.equal(detail?.category.name, "Impresa edile")
   assert.equal(detail?.projectGroups.length, 6)
   assert.equal(getPublicProfessionDetail("does-not-exist"), null)
-  assert.equal(getPublicProfessionDetail("termoidraulico"), null)
-  assert.equal(getPublicProfessionDetail("muratore"), null)
-  assert.equal(getPublicProfessionDetail("architetto"), null)
-  assert.equal(getPublicProfessionDetail("ingegnere"), null)
+  for (const slug of [
+    "termoidraulico",
+    "muratore",
+    "architetto",
+    "ingegnere",
+  ]) {
+    assert.ok(getPublicProfessionDetail(slug))
+  }
 })
 
 test("draft interventions are excluded from detail and hub counts", () => {

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test src/frozen/publication-status.test.ts src/frozen/list-public-professions.test.ts src/frozen/list-public-professions-for-project-group.test.ts src/frozen/resolve-profession-interventions.test.ts src/public-professions.test.ts",
+    "test": "node --import tsx --test src/frozen/publication-status.test.ts src/frozen/list-company-professions.test.ts src/frozen/list-public-professions.test.ts src/frozen/list-public-professions-for-project-group.test.ts src/frozen/resolve-profession-interventions.test.ts src/frozen/orchestrator/sync-catalog-to-database.test.ts src/public-professions.test.ts",
     "test:lifecycle-db": "node --import tsx --test src/queries/publication-lifecycle.integration.test.ts",
     "taxonomy:frozen:build": "tsx src/frozen/orchestrator/build-taxonomy.ts",
     "taxonomy:frozen:generate": "tsx src/frozen/orchestrator/generate-taxonomy.ts",

@@ -154,7 +154,7 @@ test("Termoidraulico and Idraulico share the canonical riscaldamento group", () 
 
   assert.ok(termoidraulico)
   assert.ok(idraulico)
-  assert.equal(termoidraulico.category.isPublic, false)
+  assert.equal(termoidraulico.category.isPublic, true)
   assert.deepEqual(termoidraulico.category.aliases, ["termoidraulici"])
   assert.deepEqual(
     termoidraulico.projectGroups.map(({ projectGroup }) => projectGroup.slug),
@@ -186,7 +186,7 @@ test("Muratore uses one base group and canonical cross-group includes", () => {
   const resolved = resolveProfessionInterventions("muratore")
 
   assert.ok(resolved)
-  assert.equal(resolved.category.isPublic, false)
+  assert.equal(resolved.category.isPublic, true)
   assert.deepEqual(resolved.category.aliases, ["muratori"])
   assert.deepEqual(resolved.category.projectGroups, [
     "opere-murarie-e-demolizioni",
@@ -253,8 +253,8 @@ test("Geometra, Architetto and Ingegnere are distinct professions sharing the te
 
   for (const [categorySlug, aliases, isPublic] of [
     ["geometra", ["geometri"], true],
-    ["architetto", ["architetti"], false],
-    ["ingegnere", ["ingegneri"], false],
+    ["architetto", ["architetti"], true],
+    ["ingegnere", ["ingegneri"], true],
   ] as const) {
     const resolved = resolveProfessionInterventions(categorySlug)
 

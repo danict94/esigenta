@@ -34,6 +34,10 @@ test("signup resolves only canonical onboarding defaults in one DB query", async
     ["idraulico", 7],
     ["impresa-edile", 15],
     ["elettricista", 11],
+    ["termoidraulico", 4],
+    ["muratore", 6],
+    ["architetto", 2],
+    ["ingegnere", 2],
   ] as const) {
     const { client, getQueries } = productionClient()
     const ids = await resolveOnboardingInterventionIdsWithClient(

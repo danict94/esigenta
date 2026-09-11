@@ -30,9 +30,25 @@ test("idraulico usa l'override SEO editoriale approvato", () => {
   });
 });
 
+test("impresa edile usa l'override SEO editoriale approvato", () => {
+  const page = resolveProfessionDetailViewModel("impresa-edile");
+  assert.ok(page);
+
+  assert.deepEqual(buildProfessionSeoMetadata(page), {
+    title: "Trova un'impresa edile e confronta preventivi | Esigenta",
+    description:
+      "Trova un'impresa edile per lavori e ristrutturazioni, scegli l'intervento che ti serve e richiedi preventivi per confrontare le proposte disponibili.",
+    canonical: "/professionisti/impresa-edile",
+  });
+});
+
 test("le altre professioni usano un fallback neutro senza elenchi di interventi", () => {
   for (const categorySlug of listPublicProfessionCategorySlugs()) {
-    if (categorySlug === "elettricista" || categorySlug === "idraulico") {
+    if (
+      categorySlug === "elettricista" ||
+      categorySlug === "idraulico" ||
+      categorySlug === "impresa-edile"
+    ) {
       continue;
     }
 

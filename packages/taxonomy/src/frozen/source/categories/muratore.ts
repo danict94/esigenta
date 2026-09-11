@@ -7,7 +7,7 @@ export const muratore: FrozenCategory = {
   shortDescription:
     "Esegue opere murarie, tramezzi, demolizioni interne e piccoli interventi edili.",
   aliases: ["muratori"],
-  isPublic: false,
+  isPublic: true,
   projectGroups: ["opere-murarie-e-demolizioni"],
   interventionOverrides: {
     include: [

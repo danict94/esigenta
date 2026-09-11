@@ -1,6 +1,5 @@
-import {
-  prisma,
-} from "@esigenta/database"
+import { prisma } from "@esigenta/database"
+import { listCompanyProfessions } from "@esigenta/taxonomy/frozen"
 
 export type PublicBusinessAreaCategory = {
   slug: string
@@ -12,26 +11,22 @@ export type PublicBusinessAreaPageData = {
   hasDeactivatedCompany: boolean
 }
 
-export async function getPublicBusinessAreaPageData({
-  userId,
-}: {
-  userId?: string | null
-}): Promise<PublicBusinessAreaPageData> {
-  const [
-    categories,
-    deactivatedCompanyMembership,
-  ] = await Promise.all([
-    prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
-      select: {
-        slug: true,
-        name: true,
-      },
-    }),
-    userId
-      ? prisma.companyMembership.findFirst({
+type BusinessAreaClient = {
+  companyMembership: {
+    findFirst(query: unknown): Promise<{ id: string } | null>
+  }
+}
+
+export async function getPublicBusinessAreaPageData(
+  { userId }: { userId?: string | null },
+  client: BusinessAreaClient = prisma,
+): Promise<PublicBusinessAreaPageData> {
+  const categories = listCompanyProfessions().map(({ slug, name }) => ({
+    slug,
+    name,
+  }))
+  const deactivatedCompanyMembership = userId
+    ? await client.companyMembership.findFirst({
           where: {
             userId,
             company: {
@@ -43,9 +38,8 @@ export async function getPublicBusinessAreaPageData({
           select: {
             id: true,
           },
-        })
-      : Promise.resolve(null),
-  ])
+      })
+    : null
 
   return {
     categories,

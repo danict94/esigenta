@@ -126,3 +126,56 @@ test("idraulico resolves the approved SEO, hero copy and closing sections withou
   assert.equal(content?.pricing, undefined);
   assert.equal(content?.hero, undefined);
 });
+
+test("impresa edile resolves the approved editorial page without pricing or FAQ", () => {
+  const content = getProfessionEditorialContent("impresa-edile");
+
+  assert.deepEqual(content?.seo, {
+    title: "Trova un'impresa edile e confronta preventivi | Esigenta",
+    description:
+      "Trova un'impresa edile per lavori e ristrutturazioni, scegli l'intervento che ti serve e richiedi preventivi per confrontare le proposte disponibili.",
+  });
+  assert.deepEqual(content?.hero, {
+    src: "/assets/images/professionisti-hero.webp",
+    alt: "Impresa edile al lavoro su un edificio",
+  });
+  assert.deepEqual(content?.intro, {
+    lead:
+      "Un’impresa edile si occupa di lavori di costruzione, manutenzione e ristrutturazione degli edifici.",
+    paragraphs: [
+      "Può eseguire opere murarie, ristrutturazioni, interventi su facciate e balconi, pavimentazioni, coperture e lavori di costruzione, direttamente o coordinando le diverse lavorazioni necessarie al cantiere.",
+    ],
+    note:
+      "Le attività offerte possono variare da un’impresa all’altra. Su Esigenta puoi scegliere il lavoro che devi realizzare e richiedere preventivi per confrontare le proposte disponibili.",
+  });
+  assert.equal(
+    content?.requestMicrocopy,
+    "Confronta imprese per il lavoro che devi realizzare",
+  );
+  assert.deepEqual(
+    content?.closingSections?.map((section) => section.heading),
+    [
+      "Quando rivolgersi a un’impresa edile",
+      "Cosa incide sul preventivo",
+      "Come scegliere un’impresa edile",
+    ],
+  );
+  assert.equal(content?.closingSections?.[0]?.items?.length, 3);
+  assert.deepEqual(content?.closingSections?.[1], {
+    heading: "Cosa incide sul preventivo",
+    paragraphs: [
+      "Il costo di un lavoro edile dipende dal tipo di intervento e dalle condizioni specifiche del cantiere.",
+    ],
+    items: [
+      "tipo di intervento",
+      "dimensioni del lavoro",
+      "condizioni dell’immobile",
+      "materiali e finiture",
+      "numero di lavorazioni coinvolte",
+      "accessibilità del cantiere",
+    ],
+  });
+  assert.equal(content?.closingSections?.[2]?.items?.length, 3);
+  assert.equal(content?.pricing, undefined);
+  assert.ok(!("faq" in (content ?? {})));
+});

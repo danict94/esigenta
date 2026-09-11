@@ -252,7 +252,7 @@ test("frozen group and Intervention order is preserved", () => {
   );
 });
 
-test("real registry resolves summaries for all 101 published profession Interventions", () => {
+test("real registry resolves summaries for all 128 public profession memberships", () => {
   const details = listPublicProfessionCategorySlugs().map((categorySlug) => {
     const source = getPublicProfessionDetail(categorySlug);
     const resolved = resolveProfessionDetailViewModel(categorySlug);
@@ -270,6 +270,12 @@ test("real registry resolves summaries for all 101 published profession Interven
       assert.ok(resolved.editorialContent?.intro?.note);
       assert.equal(resolved.editorialContent?.pricing, undefined);
       assert.equal(resolved.editorialContent?.hero, undefined);
+    } else if (categorySlug === "impresa-edile") {
+      assert.ok(resolved.editorialContent?.intro?.lead);
+      assert.equal(resolved.editorialContent?.intro?.paragraphs.length, 1);
+      assert.ok(resolved.editorialContent?.intro?.note);
+      assert.equal(resolved.editorialContent?.closingSections?.length, 3);
+      assert.equal(resolved.editorialContent?.pricing, undefined);
     } else {
       assert.equal(resolved.editorialContent, null);
     }
@@ -290,8 +296,12 @@ test("real registry resolves summaries for all 101 published profession Interven
     resolved.groups.flatMap((group) => group.interventions),
   );
 
-  assert.equal(sourceCount, 101);
-  assert.equal(resolvedInterventions.length, 101);
+  assert.equal(sourceCount, 128);
+  assert.equal(resolvedInterventions.length, 128);
+  assert.equal(
+    new Set(resolvedInterventions.map((intervention) => intervention.slug)).size,
+    101,
+  );
   assert.ok(
     resolvedInterventions.every((intervention) =>
       Boolean(intervention.summary.trim()),

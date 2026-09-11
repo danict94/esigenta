@@ -29,22 +29,18 @@ test("all 20 service pages use the canonical public profession membership", () =
     resolveGroupLandingPage("riscaldamento")?.professionalCategories.map(
       ({ slug }) => slug,
     ),
-    ["idraulico"],
+    ["idraulico", "termoidraulico"],
   );
-  for (const internalProfessionSlug of [
-    "muratore",
-    "architetto",
-    "ingegnere",
-  ]) {
-    assert.ok(
-      groupLandings.every(
-        (groupLanding) =>
-          !resolveGroupLandingPage(
-            groupLanding.slug,
-          )?.professionalCategories.some(
-            ({ slug }) => slug === internalProfessionSlug,
-          ),
-      ),
-    );
-  }
+  assert.deepEqual(
+    resolveGroupLandingPage("opere-murarie-e-demolizioni")?.professionalCategories.map(
+      ({ slug }) => slug,
+    ),
+    ["impresa-edile", "muratore"],
+  );
+  assert.deepEqual(
+    resolveGroupLandingPage("tecnici-e-pratiche-edilizie")?.professionalCategories.map(
+      ({ slug }) => slug,
+    ),
+    ["geometra", "architetto", "ingegnere"],
+  );
 });

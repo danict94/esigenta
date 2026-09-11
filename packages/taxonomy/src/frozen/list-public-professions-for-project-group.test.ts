@@ -110,44 +110,56 @@ test("an unknown ProjectGroup fails clearly", () => {
   )
 })
 
-test("production service profession chips preserve their previous order", () => {
+test("production service profession chips use canonical public membership order", () => {
   assert.equal(frozenTaxonomySource.categories.length, 17)
-  assert.equal(listPublicProfessions(frozenTaxonomySource).length, 13)
+  assert.equal(listPublicProfessions(frozenTaxonomySource).length, 17)
   assert.equal(frozenTaxonomySource.projectGroups.length, 20)
 
+  const categoryOrder = new Map(
+    frozenTaxonomySource.categories.map((category, index) => [
+      category.slug,
+      index,
+    ]),
+  )
+
   for (const projectGroup of frozenTaxonomySource.projectGroups) {
-    const previousCategorySlugs = frozenTaxonomySource.categories
-      .filter(
-        (item) =>
-          item.isPublic !== false &&
-          item.projectGroups.includes(projectGroup.slug),
-      )
-      .map((item) => item.slug)
     const resolvedCategorySlugs = listPublicProfessionsForProjectGroup(
       projectGroup.slug,
       frozenTaxonomySource,
     ).map((item) => item.slug)
+    const resolvedCategoryIndexes = resolvedCategorySlugs.map(
+      (slug) => categoryOrder.get(slug)!,
+    )
 
-    assert.deepEqual(resolvedCategorySlugs, previousCategorySlugs)
+    assert.equal(new Set(resolvedCategorySlugs).size, resolvedCategorySlugs.length)
+    assert.deepEqual(
+      resolvedCategoryIndexes,
+      [...resolvedCategoryIndexes].sort((first, second) => first - second),
+    )
   }
 
   assert.deepEqual(
     listPublicProfessionsForProjectGroup("riscaldamento").map(
       (category) => category.slug,
     ),
-    ["idraulico"],
+    ["idraulico", "termoidraulico"],
   )
-  for (const internalProfessionSlug of [
-    "muratore",
-    "architetto",
-    "ingegnere",
-  ]) {
+  assert.deepEqual(
+    listPublicProfessionsForProjectGroup(
+      "opere-murarie-e-demolizioni",
+    ).map((category) => category.slug),
+    ["impresa-edile", "muratore"],
+  )
+  assert.deepEqual(
+    listPublicProfessionsForProjectGroup(
+      "tecnici-e-pratiche-edilizie",
+    ).map((category) => category.slug),
+    ["geometra", "architetto", "ingegnere"],
+  )
+  for (const groupSlug of ["facciate-e-balconi", "pavimentazioni"]) {
     assert.ok(
-      frozenTaxonomySource.projectGroups.every(
-        (projectGroup) =>
-          !listPublicProfessionsForProjectGroup(projectGroup.slug).some(
-            (category) => category.slug === internalProfessionSlug,
-          ),
+      listPublicProfessionsForProjectGroup(groupSlug).some(
+        (category) => category.slug === "muratore",
       ),
     )
   }

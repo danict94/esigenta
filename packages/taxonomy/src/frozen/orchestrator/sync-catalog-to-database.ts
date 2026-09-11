@@ -5,6 +5,7 @@ import type { InterventionPublicationStatus, PrismaClient } from "@prisma/client
 
 import { frozenTaxonomySource } from "../source"
 import { validateFrozenTaxonomySource } from "../shared/validators"
+import type { FrozenCategory } from "../source"
 import type { InterventionPublicationStatus as FrozenPublicationStatus } from "../source/types/intervention"
 
 const packageDir = path.resolve(import.meta.dirname, "../../..")
@@ -29,8 +30,47 @@ type SyncReport = {
   projectGroupsUpserted: number
   interventionsUpserted: number
   interventionsCreated: string[]
-  categoriesMatched: number
-  categoriesUnmatched: string[]
+  categoriesUpserted: number
+  categoriesCreated: string[]
+}
+
+type CategorySectorContext = {
+  slug: string
+  sectorId: string
+  projectGroupIds: readonly string[]
+}
+
+/**
+ * Sector is a surviving DB-only grouping and is intentionally absent from
+ * frozen Taxonomy V2. A new Category inherits it only when existing catalog
+ * data gives one unambiguous answer through shared ProjectGroups.
+ */
+export function inferCategorySectorId(
+  categorySlug: string,
+  projectGroupIds: readonly string[],
+  categoryContexts: readonly CategorySectorContext[],
+): string {
+  const matchingSectorIds = new Set(
+    categoryContexts
+      .filter(
+        (context) =>
+          context.slug !== categorySlug &&
+          context.projectGroupIds.some((projectGroupId) =>
+            projectGroupIds.includes(projectGroupId),
+          ),
+      )
+      .map((context) => context.sectorId),
+  )
+
+  if (matchingSectorIds.size !== 1) {
+    const reason = matchingSectorIds.size === 0 ? "missing" : "ambiguous"
+
+    throw new Error(
+      `[category:${categorySlug}] Cannot infer DB sectorId from shared ProjectGroups: ${reason}`,
+    )
+  }
+
+  return [...matchingSectorIds][0]!
 }
 
 async function replaceCategoryAliases(
@@ -48,6 +88,83 @@ async function replaceCategoryAliases(
     data: aliases.map((value) => ({ value, categoryId })),
     skipDuplicates: true,
   })
+}
+
+export async function syncFrozenCategoriesToDatabase(
+  prisma: PrismaClient,
+  projectGroupIdBySlug: ReadonlyMap<string, string>,
+  categories: readonly FrozenCategory[] = frozenTaxonomySource.categories,
+): Promise<{ upserted: number; created: string[] }> {
+  const existingCategories = await prisma.category.findMany({
+    select: {
+      slug: true,
+      sectorId: true,
+      projectGroupIds: true,
+    },
+  })
+  const existingSlugs = new Set(
+    existingCategories.map((category) => category.slug),
+  )
+  const categoryContexts: CategorySectorContext[] = [...existingCategories]
+  const created: string[] = []
+
+  for (const category of categories) {
+    const projectGroupIds = category.projectGroups.map((projectGroupSlug) => {
+      const projectGroupId = projectGroupIdBySlug.get(projectGroupSlug)
+
+      if (!projectGroupId) {
+        throw new Error(
+          `[category:${category.slug}] Missing projectGroups reference: ${projectGroupSlug}`,
+        )
+      }
+
+      return projectGroupId
+    })
+    const existingCategory = categoryContexts.find(
+      (context) => context.slug === category.slug,
+    )
+    const sectorId =
+      existingCategory?.sectorId ??
+      inferCategorySectorId(category.slug, projectGroupIds, categoryContexts)
+    const record = await prisma.category.upsert({
+      where: { slug: category.slug },
+      create: {
+        slug: category.slug,
+        name: category.name,
+        description: category.description ?? null,
+        sectorId,
+        projectGroupIds,
+      },
+      update: {
+        name: category.name,
+        description: category.description ?? null,
+        projectGroupIds,
+      },
+    })
+
+    if (!existingSlugs.has(category.slug)) {
+      created.push(category.slug)
+    }
+
+    const contextIndex = categoryContexts.findIndex(
+      (context) => context.slug === category.slug,
+    )
+    const nextContext = {
+      slug: category.slug,
+      sectorId: record.sectorId,
+      projectGroupIds,
+    }
+
+    if (contextIndex === -1) {
+      categoryContexts.push(nextContext)
+    } else {
+      categoryContexts[contextIndex] = nextContext
+    }
+
+    await replaceCategoryAliases(prisma, record.id, category.aliases ?? [])
+  }
+
+  return { upserted: categories.length, created }
 }
 
 async function replaceProjectGroupAliases(
@@ -182,81 +299,37 @@ export async function syncCatalogToDatabase(
     }
   }
 
-  let categoriesMatched = 0
-  const categoriesUnmatched: string[] = []
-
-  for (const category of frozenTaxonomySource.categories) {
-    const projectGroupIds = category.projectGroups.map((projectGroupSlug) => {
-      const projectGroupId = projectGroupIdBySlug.get(projectGroupSlug)
-
-      if (!projectGroupId) {
-        throw new Error(
-          `[category:${category.slug}] Missing projectGroups reference: ${projectGroupSlug}`,
-        )
-      }
-
-      return projectGroupId
-    })
-
-    const result = await prisma.category.updateMany({
-      where: {
-        slug: category.slug,
-      },
-      data: {
-        name: category.name,
-        description: category.description ?? null,
-        projectGroupIds,
-      },
-    })
-
-    if (result.count === 0) {
-      categoriesUnmatched.push(category.slug)
-    } else {
-      categoriesMatched += result.count
-
-      const categoryRecord = await prisma.category.findUnique({
-        where: { slug: category.slug },
-        select: { id: true },
-      })
-
-      if (categoryRecord) {
-        await replaceCategoryAliases(
-          prisma,
-          categoryRecord.id,
-          category.aliases ?? [],
-        )
-      }
-    }
-  }
+  const categorySync = await syncFrozenCategoriesToDatabase(
+    prisma,
+    projectGroupIdBySlug,
+  )
 
   return {
     projectGroupsUpserted: projectGroupIdBySlug.size,
     interventionsUpserted,
     interventionsCreated,
-    categoriesMatched,
-    categoriesUnmatched,
+    categoriesUpserted: categorySync.upserted,
+    categoriesCreated: categorySync.created,
   }
 }
 
-const { prisma } = await import("@esigenta/database")
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === path.resolve(import.meta.filename)
+) {
+  const { prisma } = await import("@esigenta/database")
 
-syncCatalogToDatabase(prisma)
-  .then((report) => {
-    console.log("Catalog sync completed")
-    console.log(JSON.stringify(report, null, 2))
-
-    if (report.categoriesUnmatched.length > 0) {
-      console.error(
-        "Catalog sync completed with unmatched frozen-source category references — see report above.",
-      )
+  syncCatalogToDatabase(prisma)
+    .then((report) => {
+      console.log("Catalog sync completed")
+      console.log(JSON.stringify(report, null, 2))
+    })
+    .catch((error) => {
+      console.error("Catalog sync failed")
+      console.error(error)
       process.exitCode = 1
-    }
-  })
-  .catch((error) => {
-    console.error("Catalog sync failed")
-    console.error(error)
-    process.exitCode = 1
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+    })
+    .finally(async () => {
+      await prisma.$disconnect()
+    })
+}

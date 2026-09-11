@@ -64,7 +64,8 @@ export function ProfessionPageTemplate({ page }: ProfessionPageTemplateProps) {
                 Richiedi preventivi
               </Link>
               <span className="text-[12px] font-medium text-eg-text-muted">
-                Confronta soluzioni per il lavoro che ti serve
+                {editorialContent?.requestMicrocopy ??
+                  "Confronta soluzioni per il lavoro che ti serve"}
               </span>
             </>
           }

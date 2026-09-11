@@ -7,7 +7,7 @@ export const termoidraulico: FrozenCategory = {
   shortDescription:
     "Si occupa di installazione e manutenzione di caldaie e sistemi di riscaldamento.",
   aliases: ["termoidraulici"],
-  isPublic: false,
+  isPublic: true,
   projectGroups: ["riscaldamento"],
   onboardingDefaults: [
     "installare-o-sostituire-caldaia",

@@ -7,6 +7,8 @@ export {
 
 export { listPublicProfessions } from "./list-public-professions"
 
+export { listCompanyProfessions } from "./list-company-professions"
+
 export { listPublicProfessionsForProjectGroup } from "./list-public-professions-for-project-group"
 
 export { resolveProfessionInterventions } from "./resolve-profession-interventions"

@@ -8,6 +8,7 @@ export { frozenTaxonomySource } from "./frozen"
 export {
   getInterventionPublicationStatus,
   isInterventionPublished,
+  listCompanyProfessions,
   listPublicProfessions,
   listPublicProfessionsForProjectGroup,
   resolveProfessionInterventions,

@@ -7,7 +7,7 @@ export const architetto: FrozenCategory = {
   shortDescription:
     "Offre servizi tecnici per pratiche edilizie e progetti di ristrutturazione.",
   aliases: ["architetti"],
-  isPublic: false,
+  isPublic: true,
   projectGroups: ["tecnici-e-pratiche-edilizie"],
   onboardingDefaults: [
     "fare-cila-o-scia",
