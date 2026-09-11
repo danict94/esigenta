@@ -5,16 +5,14 @@ import type { CompanyMarketplaceCapabilitySnapshot } from "./company-marketplace
 
 export type CompanyRequestEligibilityRequestSnapshot = {
   interventionId: string | null
-  interventionProjectGroupId: string | null
   coordinates: {
     latitude: number
     longitude: number
   } | null
 }
 
-export type CompanyRequestEligibilityReason =
+type CompanyRequestEligibilityReason =
   | "eligible_by_selected_intervention"
-  | "eligible_by_category"
   | "company_not_marketplace_ready"
   | "company_not_configured"
   | "company_location_missing"
@@ -27,17 +25,7 @@ export type CompanyRequestEligibilityResult = {
   reason: CompanyRequestEligibilityReason
   isConfigured: boolean
   matchesSelectedIntervention: boolean
-  matchesCategory: boolean
   withinOperatingRadius: boolean
-}
-
-export function isCompanyMarketplaceCapabilityConfigured(
-  snapshot: CompanyMarketplaceCapabilitySnapshot,
-): boolean {
-  return (
-    snapshot.enabledCategoryIds.length > 0 &&
-    snapshot.enabledCategoryProjectGroupIds.length > 0
-  )
 }
 
 export function evaluateCompanyRequestEligibility({
@@ -47,23 +35,15 @@ export function evaluateCompanyRequestEligibility({
   companySnapshot: CompanyMarketplaceCapabilitySnapshot
   requestSnapshot: CompanyRequestEligibilityRequestSnapshot
 }): CompanyRequestEligibilityResult {
-  const isConfigured =
-    isCompanyMarketplaceCapabilityConfigured(companySnapshot)
+  const isConfigured = companySnapshot.isConfigured
   const matchesSelectedIntervention =
     requestSnapshot.interventionId !== null &&
     companySnapshot.selectedInterventionIds.includes(
       requestSnapshot.interventionId,
     )
-  const matchesCategory =
-    requestSnapshot.interventionProjectGroupId !== null &&
-    companySnapshot.enabledCategoryProjectGroupIds.includes(
-      requestSnapshot.interventionProjectGroupId,
-    )
-
   const base = {
     isConfigured,
     matchesSelectedIntervention,
-    matchesCategory,
   }
 
   if (!isCompanyMarketplaceReady(companySnapshot.marketplaceState)) {
@@ -102,7 +82,7 @@ export function evaluateCompanyRequestEligibility({
     }
   }
 
-  if (!matchesSelectedIntervention && !matchesCategory) {
+  if (!matchesSelectedIntervention) {
     return {
       ...base,
       eligible: false,
@@ -133,9 +113,7 @@ export function evaluateCompanyRequestEligibility({
   return {
     ...base,
     eligible: true,
-    reason: matchesSelectedIntervention
-      ? "eligible_by_selected_intervention"
-      : "eligible_by_category",
+    reason: "eligible_by_selected_intervention",
     withinOperatingRadius,
   }
 }

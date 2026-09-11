@@ -213,7 +213,7 @@ export async function getCompanyProfilePage(
     }
   }
 
-  // Real saved configuration only — no onboardingCategorySlug fallback.
+  // Real saved configuration only — no onboarding snapshot fallback.
   // See docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md.
   const categories: CompanyProfileCategory[] =
     (row.categories as Array<{ id: string; name: string }> | null) ?? []

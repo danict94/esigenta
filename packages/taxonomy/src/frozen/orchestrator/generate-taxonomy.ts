@@ -35,7 +35,13 @@ type GeneratedCategory = {
   shortDescription: string
   description?: string
   aliases?: string[]
+  isPublic?: boolean
   projectGroups: string[]
+  interventionOverrides?: {
+    include?: string[]
+    exclude?: string[]
+  }
+  onboardingDefaults?: string[]
 }
 
 type GeneratedProjectGroup = {
@@ -72,6 +78,29 @@ function cleanCategory(category: FrozenCategory): GeneratedCategory {
 
   if (category.aliases && category.aliases.length > 0) {
     result.aliases = sortedUnique(category.aliases)
+  }
+
+  if (category.isPublic !== undefined) {
+    result.isPublic = category.isPublic
+  }
+
+  const include = category.interventionOverrides?.include
+  const exclude = category.interventionOverrides?.exclude
+
+  if ((include && include.length > 0) || (exclude && exclude.length > 0)) {
+    result.interventionOverrides = {}
+
+    if (include && include.length > 0) {
+      result.interventionOverrides.include = sortedUnique([...include])
+    }
+
+    if (exclude && exclude.length > 0) {
+      result.interventionOverrides.exclude = sortedUnique([...exclude])
+    }
+  }
+
+  if (category.onboardingDefaults !== undefined) {
+    result.onboardingDefaults = [...category.onboardingDefaults]
   }
 
   return result

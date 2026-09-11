@@ -199,7 +199,7 @@ it has nothing to dispatch to.
 
 This traces back to company onboarding: `createCompanyForUser`
 (`packages/auth/src/identity/company/onboarding.ts`) only ever sets
-`Company.onboardingCategorySlug` (a text snapshot, explicitly documented in
+`Company.legacyOnboardingCategorySnapshot` (a text snapshot, explicitly documented in
 the schema as "ONBOARDING CONTEXT ONLY... runtime matching must use
 CompanyCategory, not this onboarding snapshot") — it never inserts
 `CompanyCategory` or `CompanyIntervention` rows. A company only gets those

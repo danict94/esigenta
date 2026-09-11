@@ -6,9 +6,8 @@ import { prisma } from "@esigenta/database"
  * from CompanyCategory and CompanyIntervention, the two tables
  * update-services-configuration.ts is the sole writer of.
  *
- * Company.onboardingCategorySlug is never read here and must never be —
- * it is onboarding memory only, not configuration (see
- * docs/archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md).
+ * The removed onboarding snapshot is not configuration. Only persisted
+ * CompanyCategory and CompanyIntervention rows participate here.
  */
 export type CompanyConfigurationStatus = {
   categoryIds: string[]

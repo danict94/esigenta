@@ -25,7 +25,7 @@ export type CompanyConfigurationStatus = {
 }
 
 // Pure — the single definition of "configured." Takes only real ids,
-// cannot see onboardingCategorySlug (it's not a parameter).
+// cannot see legacyOnboardingCategorySnapshot (it's not a parameter).
 export function deriveCompanyConfigurationStatus(input: {
   categoryIds: string[]
   interventionIds: string[]
@@ -61,14 +61,14 @@ explicit and reusable instead of inline and duplicated.
 | Reader | Before | Used onboarding fallback? |
 | --- | --- | --- |
 | Matching/dispatch (`resolve-request-dispatch-candidates.ts`) | `INNER JOIN CompanyIntervention`, exact, no fallback | No — already compliant, untouched |
-| Dashboard visibility (`get-requests-list-page.ts`) | Real `CompanyCategory` query, **with** an `onboardingCategorySlug` fallback when empty (lines 569-585, removed) | **Yes — removed** |
+| Dashboard visibility (`get-requests-list-page.ts`) | Real `CompanyCategory` query, **with** an `legacyOnboardingCategorySnapshot` fallback when empty (lines 569-585, removed) | **Yes — removed** |
 | Configura Servizi (`services-configuration-page.tsx` / `get-services-configuration-page.ts`) | Real ids, **with** onboarding-derived preselection rendered as pre-checked (removed) | **Yes — removed** |
 | Company profile page (`get-profile-page.ts`) | Real `CompanyCategory`/`CompanyIntervention` JSON aggregation, **with** a `fallback_category` SQL subquery injected into the displayed category badges when `CompanyCategory` was empty (removed) | **Yes — removed (found during this phase, not listed in the original minimum set, but the same anti-pattern on a 4th page)** |
 | Marketplace access (`CompanyMarketplaceReady`, status-based) | Confirmed in Phase 0 to be a *separate* invariant (`Company.status`), never conflated with `CompanyConfigured` | N/A — out of scope for this phase, correctly so |
 
 Four real readers found (one more than the brief's minimum list named) —
 the profile page's category badges were an undocumented 4th instance of
-exactly the same bug, surfaced by grepping every `onboardingCategorySlug`
+exactly the same bug, surfaced by grepping every `legacyOnboardingCategorySnapshot`
 reference in the repository rather than trusting the original list to be
 exhaustive.
 
@@ -76,9 +76,9 @@ exhaustive.
 
 ## TASK 3 — Migration
 
-- **`get-requests-list-page.ts`**: removed the `onboardingCategorySlug`
+- **`get-requests-list-page.ts`**: removed the `legacyOnboardingCategorySnapshot`
   fallback block entirely (was lines 569-585) and the now-unused
-  `buildFallbackCategoryQuery` function and `onboardingCategorySlug: true`
+  `buildFallbackCategoryQuery` function and `legacyOnboardingCategorySnapshot: true`
   select field. `resolvedCategoryIds` is now always exactly
   `companyCategoryRows.map(...)` — real data, no substitution. An
   unconfigured company now falls straight through to the pre-existing
@@ -102,7 +102,7 @@ canonical function and the two SQL queries that fetch the real
 
 ---
 
-## TASK 4 — Runtime business usage of `onboardingCategorySlug` removed
+## TASK 4 — Runtime business usage of `legacyOnboardingCategorySnapshot` removed
 
 Repo-wide search after this phase's changes, every remaining reference:
 
@@ -121,7 +121,7 @@ Repo-wide search after this phase's changes, every remaining reference:
 ## TASK 5 — Configura Servizi cleanup
 
 **Before**: a never-configured company saw pre-checked category and
-intervention checkboxes (derived from `onboardingCategorySlug`), visually
+intervention checkboxes (derived from `legacyOnboardingCategorySnapshot`), visually
 identical to a real saved state, with only a small, easily-missed
 "Categoria suggerita" badge on the category card and **no signal at all**
 on the suggested interventions.
@@ -139,21 +139,19 @@ on the suggested interventions.
   sotto e premi 'Salva configurazione' per applicarlo.") instead of
   pre-checking it.
 
-Database empty → `Non configurato`, no checked boxes, suggestion shown as
-plain text only. Database populated → `Configurato`, checked boxes match
-exactly what's saved. No fake configured state in either direction.
+Database empty → `Non configurato`, no checked boxes. Database populated →
+`Configurato`, checked boxes match exactly what's saved. Signup persists its
+canonical defaults before opening this page; no display-only fallback exists.
 
 ---
 
 ## TASK 6 — Dashboard cleanup
 
-`get-requests-list-page.ts` no longer reads `onboardingCategorySlug` at
+`get-requests-list-page.ts` no longer reads `legacyOnboardingCategorySnapshot` at
 all (removed from both the SQL `select` and the application logic).
-Visibility now depends only on `CompanyCategory` (for the category-derived
-"broad net"/explore match level — a real, intentional, pre-existing
-feature unrelated to onboarding, left untouched) and `CompanyIntervention`
-(for the strict `selected_intervention` match level, matching exactly what
-dispatch uses). An unconfigured company gets the `missing_category` empty
+Visibility now depends on `CompanyIntervention`; `CompanyCategory` remains
+professional identity and one half of the configured-state check. An
+unconfigured company gets the `missing_category` empty
 state, consistently with what Configura Servizi now also reports as "Non
 configurato" — same underlying fact, same answer, two pages.
 
@@ -165,9 +163,8 @@ configurato" — same underlying fact, same answer, two pages.
 | --- | --- | --- |
 | `CompanyCategory` (table) | **SOURCE_OF_TRUTH** | Half of `isConfigured`; sole writer `update-services-configuration.ts` |
 | `CompanyIntervention` (table) | **SOURCE_OF_TRUTH** | Other half of `isConfigured`; also the sole table matching/dispatch reads |
-| `Company.onboardingCategorySlug` | **LEGACY** (demoted, not dead) | Now read in exactly one legitimate role (onboarding suggestion display on Configura Servizi) plus one harmless unused passthrough (profile page's `CompanyProfileData.onboardingCategorySlug`, never rendered). No longer read by matching, visibility, or configuration-state logic anywhere. |
-| `CompanyProfileData.onboardingCategorySlug` (the passthrough on the profile-page domain function) | **DEAD** (newly classified this phase) | Returned by `get-profile-page.ts`, consumed by nothing in `profile-page.tsx`. Candidate for removal in Phase 6 — kept now to avoid touching the profile page's API surface beyond what this phase requires. |
-| `Category.projectGroupIds` | **DERIVED** (unchanged from Phase 0) | Still legitimately used to expand a *real, saved* category into its interventions for the dashboard's "explore" broadening — untouched by this phase, not part of the bug |
+| Removed onboarding snapshot column | **REMOVED** | No reader or writer remained; the final schema cleanup drops the column and its index. |
+| `Category.projectGroupIds` | **CATALOG_ONLY** | Search/category metadata only; never expands a company's capabilities or marketplace visibility. |
 | `CompanyConfigurationStatus.isConfigured` (new) | **DERIVED** | The one new derived value this phase introduces; computed nowhere except `deriveCompanyConfigurationStatus` |
 
 Nothing removed yet — per the task's instruction, this is preparation for
@@ -211,7 +208,7 @@ structurally: `get-requests-list-page.ts`'s `resolvedCategoryIds` would be
 this phase — the only change is that *no* company can avoid that branch
 through an onboarding snapshot anymore.
 
-**Case C — `onboardingCategorySlug` present, `CompanyCategory` empty,
+**Case C — `legacyOnboardingCategorySnapshot` present, `CompanyCategory` empty,
 `CompanyIntervention` empty**:
 
 ```
@@ -220,11 +217,11 @@ deriveCompanyConfigurationStatus({ categoryIds: [], interventionIds: [] })
 ```
 **Expected: Configured = false, no marketplace access based on the
 onboarding snapshot. Confirmed structurally** — `deriveCompanyConfigurationStatus`'s
-parameter list does not include `onboardingCategorySlug` at all; it is
+parameter list does not include `legacyOnboardingCategorySnapshot` at all; it is
 not merely ignored at runtime, it is **not a parameter the function can
 see**. The only way Case C could differ from Case A is if some other
 reader bypassed the canonical function and re-derived from
-`onboardingCategorySlug` directly — confirmed absent by the Task 4
+`legacyOnboardingCategorySnapshot` directly — confirmed absent by the Task 4
 repo-wide search.
 
 ---
@@ -232,9 +229,10 @@ repo-wide search.
 ## FINAL ANSWERS
 
 ```txt
-COMPANY_CONFIGURED_IMPLEMENTATIONS_BEFORE = 4 (matching — strict, correct;
-  dashboard — onboarding-fallback; Configura Servizi — onboarding-fallback,
-  rendered as pre-checked; company profile page — onboarding-fallback,
+COMPANY_CONFIGURED_IMPLEMENTATIONS_BEFORE = 4 (historical implementations,
+  all removed or consolidated: matching — strict, correct; dashboard —
+  legacy category-derived behavior; Configura Servizi — legacy derived
+  suggestions rendered as pre-checked; company profile page — legacy category-derived
   rendered as a category badge. The 4th was found during this phase, not
   in the original minimum list.)
 COMPANY_CONFIGURED_IMPLEMENTATIONS_AFTER = 1 (deriveCompanyConfigurationStatus,
@@ -252,7 +250,7 @@ ONBOARDING_RUNTIME_USAGE_REMOVED = YES — confirmed by repo-wide search;
   page API response), neither of which can affect isConfigured, visibility,
   matching, or marketplace access.
 DASHBOARD_CONSOLIDATED = YES — get-requests-list-page.ts no longer reads
-  onboardingCategorySlug; resolvedCategoryIds is real CompanyCategory data
+  legacyOnboardingCategorySnapshot; resolvedCategoryIds is real CompanyCategory data
   only.
 CONFIGURE_SERVICES_CONSOLIDATED = YES — initial checkbox state is real
   saved data only; an explicit Configurato/Non configurato badge and an

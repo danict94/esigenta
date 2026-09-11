@@ -11,6 +11,10 @@ const professions = listPublicProfessionHubItems();
 
 test("catalogo hub conserva tutte le professioni frozen e i relativi href", () => {
   assert.equal(professions.length, 13);
+  assert.ok(!professions.some(({ slug }) => slug === "termoidraulico"));
+  assert.ok(!professions.some(({ slug }) => slug === "muratore"));
+  assert.ok(!professions.some(({ slug }) => slug === "architetto"));
+  assert.ok(!professions.some(({ slug }) => slug === "ingegnere"));
 
   for (const profession of professions) {
     const html = renderToStaticMarkup(

@@ -8,4 +8,13 @@ export const idraulico: FrozenCategory = {
     "Interviene su impianti idraulici, perdite, scarichi, sanitari, caldaie e sistemi di riscaldamento.",
   aliases: ["impresa idraulica"],
   projectGroups: ["idraulica", "riscaldamento"],
+  onboardingDefaults: [
+    "rifare-impianto-idraulico-bagno",
+    "riparare-perdita-acqua",
+    "disostruire-scarichi",
+    "sostituire-box-doccia",
+    "installare-sanitari",
+    "installare-o-sostituire-termosifoni",
+    "installare-o-sostituire-scaldabagno",
+  ],
 }

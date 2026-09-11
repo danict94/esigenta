@@ -8,6 +8,9 @@ export { frozenTaxonomySource } from "./frozen"
 export {
   getInterventionPublicationStatus,
   isInterventionPublished,
+  listPublicProfessions,
+  listPublicProfessionsForProjectGroup,
+  resolveProfessionInterventions,
 } from "./frozen"
 
 export type {
@@ -17,6 +20,8 @@ export type {
   FrozenAlias,
   FrozenTaxonomySource,
   InterventionPublicationStatus,
+  ResolvedProfessionInterventions,
+  ResolvedProfessionProjectGroup,
 } from "./frozen"
 
 export {
@@ -37,15 +42,10 @@ export type {
 
 export {
   getPopularInterventions,
-  getProfessionPage,
-  listProfessionPageCategorySlugs,
   resolveInterventionForFunnel,
   searchTaxonomy,
 } from "./queries"
 
 export type {
   InterventionForFunnel,
-  ProfessionPage,
-  ProfessionPageIntervention,
-  ProfessionPageProjectGroup,
 } from "./queries"

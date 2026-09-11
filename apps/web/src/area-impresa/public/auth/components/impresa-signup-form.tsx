@@ -156,8 +156,7 @@ export function ImpresaSignupForm({
         return;
       }
 
-      await authClient.signOut();
-      router.replace("/area-impresa/accedi?registered=1");
+      router.replace("/area-impresa/configura-servizi?onboarding=1");
       router.refresh();
     } catch {
       setError("Impossibile completare l'iscrizione. Riprova tra poco.");

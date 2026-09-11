@@ -5,13 +5,7 @@ import { prisma } from "@esigenta/database"
 import {
   deriveCompanyRequestAccess,
 } from "./derive-company-request-access"
-import {
-  isCompanyMarketplaceCapabilityConfigured,
-} from "./company-request-eligibility"
 import { getCompanyMarketplaceCapabilitySnapshot } from "./company-marketplace-capability-snapshot"
-import type {
-  CompanyRequestMatchLevel,
-} from "./get-requests-list-page"
 
 const PREVIEW_LIMIT = 20
 
@@ -22,7 +16,7 @@ export type CompanyRequestPreview = {
   city: string | null
   province: string | null
   createdAt: Date
-  matchLevel: CompanyRequestMatchLevel
+  matchLevel: "selected_intervention"
 }
 
 export type CompanyRequestPreviewCompany = {
@@ -30,6 +24,7 @@ export type CompanyRequestPreviewCompany = {
   city: string | null
   province: string | null
   operatingRadiusKm: number | null
+  activeInterventionCount: number
 }
 
 export type ListCompanyRequestPreviewsResult =
@@ -48,6 +43,7 @@ export type ListCompanyRequestPreviewsResult =
         | "missing_category"
         | "missing_location"
       message: string
+      activeInterventionCount: number
     }
 
 type PreviewRow = {
@@ -57,7 +53,7 @@ type PreviewRow = {
   city: string | null
   province: string | null
   created_at: Date
-  match_level: CompanyRequestMatchLevel
+  match_level: "selected_intervention"
 }
 
 function hasFiniteNumber(
@@ -86,6 +82,7 @@ export async function listCompanyRequestPreviews(
       code: "preview_not_available",
       message:
         "La preview richieste non è disponibile per questo profilo.",
+      activeInterventionCount: 0,
     }
   }
 
@@ -109,20 +106,25 @@ export async function listCompanyRequestPreviews(
       getCompanyMarketplaceCapabilitySnapshot(actor.company.id),
     ])
 
+  const activeInterventionCount =
+    capabilitySnapshot?.selectedInterventionIds.length ?? 0
+
   if (!company || !capabilitySnapshot) {
     return {
       ok: false,
       code: "company_not_found",
       message: "Impresa non trovata.",
+      activeInterventionCount,
     }
   }
 
-  if (!isCompanyMarketplaceCapabilityConfigured(capabilitySnapshot)) {
+  if (!capabilitySnapshot.isConfigured) {
     return {
       ok: false,
       code: "missing_category",
       message:
         "Configura i servizi per vedere richieste compatibili.",
+      activeInterventionCount,
     }
   }
 
@@ -144,20 +146,14 @@ export async function listCompanyRequestPreviews(
       code: "missing_location",
       message:
         "Completa sede e raggio operativo per vedere richieste compatibili.",
+      activeInterventionCount,
     }
   }
 
   const selectedInterventionIds = Array.from(
     capabilitySnapshot.selectedInterventionIds,
   )
-  const enabledCategoryProjectGroupIds = Array.from(
-    capabilitySnapshot.enabledCategoryProjectGroupIds,
-  )
-
-  if (
-    selectedInterventionIds.length === 0 &&
-    enabledCategoryProjectGroupIds.length === 0
-  ) {
+  if (selectedInterventionIds.length === 0) {
     return {
       ok: true,
       company: {
@@ -166,6 +162,7 @@ export async function listCompanyRequestPreviews(
         province:
           company.geoLocation?.province ?? null,
         operatingRadiusKm,
+        activeInterventionCount,
       },
       requests: [],
       limit: PREVIEW_LIMIT,
@@ -185,13 +182,7 @@ export async function listCompanyRequestPreviews(
       rg."city" AS city,
       rg."province" AS province,
       r."createdAt" AS created_at,
-      CASE
-        WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[])
-          THEN 'selected_intervention'
-        WHEN iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[])
-          THEN 'category'
-        ELSE 'explore'
-      END AS match_level
+      'selected_intervention'::text AS match_level
     FROM "Request" r
     JOIN "GeoLocation" rg
       ON rg."id" = r."geoLocationId"
@@ -200,10 +191,7 @@ export async function listCompanyRequestPreviews(
     WHERE r."status" IN ('APPROVED', 'PUBLISHED')
       AND r."archivedAt" IS NULL
       AND r."deletedAt" IS NULL
-      AND (
-        r."interventionId" = ANY(${selectedInterventionIds}::text[])
-        OR iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[])
-      )
+      AND r."interventionId" = ANY(${selectedInterventionIds}::text[])
       AND earth_box(
         ll_to_earth(${latitude}, ${longitude}),
         ${radiusMeters}
@@ -212,15 +200,7 @@ export async function listCompanyRequestPreviews(
         ll_to_earth(${latitude}, ${longitude}),
         ll_to_earth(rg."latitude", rg."longitude")
       ) <= ${radiusMeters}
-    ORDER BY
-      CASE
-        WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[])
-          THEN 0
-        WHEN iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[])
-          THEN 1
-        ELSE 2
-      END ASC,
-      r."createdAt" DESC
+    ORDER BY r."createdAt" DESC
     LIMIT ${PREVIEW_LIMIT + 1}
   `
 
@@ -237,6 +217,7 @@ export async function listCompanyRequestPreviews(
       province:
         company.geoLocation?.province ?? null,
       operatingRadiusKm,
+      activeInterventionCount,
     },
     requests: visibleRows.map((row) => ({
       id: row.id,

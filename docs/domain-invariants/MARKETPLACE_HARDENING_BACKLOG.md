@@ -50,7 +50,6 @@ Current source conflict:
 
 * CompanyCategory
 * CompanyIntervention
-* onboardingCategorySlug
 
 Target:
 

@@ -21,13 +21,13 @@ Repo-wide search, exact function name:
 
 **Exactly one literal caller.** But `evaluateRequestVisibility`'s
 `LiveMatch` half is not an isolated idea — it is built from
-`resolveCompanyRequestEligibility`/`getDefaultVisibilityInterventionIds`
-(`company-request-eligibility.ts`), and **that** pair has a second
+`getCompanyMarketplaceCapabilitySnapshot`/`evaluateCompanyRequestEligibility`,
+and that pair has a second
 consumer:
 
 | Caller | File | What it does with it |
 | --- | --- | --- |
-| `getCompanyRequestsListPage` | `packages/domain/src/company/requests/get-requests-list-page.ts:601` | Uses `getDefaultVisibilityInterventionIds(eligibility)` to build the bulk SQL query's `WHERE r."interventionId" = ANY(${visibilityInterventionIds}::text[])` clause — a **hard inclusion filter**, not a ranking signal. Requests whose `interventionId` falls outside the company's selected-or-category-derived set are excluded from the result set entirely; they are not returned with a lower `match_level`, they are not returned at all. |
+| `getCompanyRequestsListPage` | `packages/domain/src/company/requests/get-requests-list-page.ts` | Uses persisted `selectedInterventionIds` for the bulk SQL inclusion predicate. Unselected requests are excluded entirely. |
 
 So the real picture is: one shared eligibility computation, expressed
 twice — once as `evaluateRequestVisibility`'s `LiveMatch` (detail page),
@@ -116,19 +116,13 @@ separate, now named explicitly:**
 ### `RequestRecommendedToCompany(company, request)`
 **This is Phase 3's `LiveMatch`, renamed and re-scoped to its correct
 role.** `CompanyConfigured` (Phase 1) AND `request.interventionId` ∈
-(`CompanyIntervention` ∪ category-derived `operationalInterventionIds` —
-the existing "broad net") AND within geo coverage. Used to:
-- Rank/filter the **default** dashboard feed (today's `match_level`:
-  `selected_intervention` / `category` / `explore` is already exactly
-  this gradient, and should stay).
+`CompanyIntervention` AND within geo coverage. Used to:
+- Rank/filter the **default** dashboard feed.
 - Decide what counts as "recommended" anywhere else recommendation is a
   distinct, named concept (e.g., a future "for you" surface).
 
-It is **broader** than `RequestDispatchEligible` (it includes the
-category-derived set; dispatch does not) — this asymmetry already exists
-today and is intentional (documented in the list page: "dashboard must
-not be stricter than dispatch, or a company stops seeing requests it's
-actually being notified about").
+Its intervention-capability boundary is the same as dispatch. Persistent
+saved/unlock/dispatch grants are applied separately by request visibility.
 
 ### `RequestVisibleToCompany(company, request)`
 **The corrected, broadest invariant — what Phase 3's

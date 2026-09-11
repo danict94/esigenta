@@ -15,21 +15,15 @@ import {
 
 import {
   prisma,
-  type CategoryInterventionRow,
 } from "@esigenta/database"
 
-import {
-  isCompanyMarketplaceCapabilityConfigured,
-} from "./company-request-eligibility"
 import { getCompanyMarketplaceCapabilitySnapshot } from "./company-marketplace-capability-snapshot"
-import { loadRequestCategoryInterventions } from "./request-category-interventions"
+import {
+  loadDashboardCategoryFilterInterventions,
+  type DashboardCategoryFilterIntervention,
+} from "./load-dashboard-category-filter-interventions"
 
 // ─── Public types ────────────────────────────────────────────────────────────
-
-export type CompanyRequestMatchLevel =
-  | "selected_intervention"
-  | "category"
-  | "explore"
 
 export type RequestDashboardSort =
   | "recommended"
@@ -72,6 +66,7 @@ export type RequestDashboardCompanyProfile = {
   province: string | null
   operatingRadiusKm: number | null
   operationalCategoryCount: number
+  activeInterventionCount: number
 }
 
 export type AvailableCompanyRequest = {
@@ -90,7 +85,7 @@ export type AvailableCompanyRequest = {
   unlockCount: number
   isSaved: boolean
   createdAt: Date
-  matchLevel: CompanyRequestMatchLevel
+  matchLevel: "selected_intervention"
 }
 
 export type CompanyRequestsListPageResult =
@@ -136,7 +131,7 @@ type RequestListRow = {
   unlock_count: number
   created_at: Date
   is_saved: boolean
-  match_level: CompanyRequestMatchLevel
+  match_level: "selected_intervention"
 }
 
 type PerfRecorder = (operation: string, durationMs: number) => void
@@ -228,8 +223,8 @@ function escapeLikeTerm(term: string): string {
 // Marketplace visibility/ranking is Intervention-only (Phase 14): no
 // Service, CategoryService, CompanyService, or RequestRequiredService
 // anywhere in this file. Category still has no direct relation to
-// Intervention — the only path is Category.projectGroupIds (a plain
-// string[] column, no join) -> Intervention.projectGroupId.
+// Intervention. Category is identity/filter metadata and never broadens
+// ordinary marketplace visibility beyond CompanyIntervention.
 
 function buildCompanyQuery(companyId: string) {
   return prisma.company.findUnique({
@@ -269,26 +264,23 @@ function buildTaxonomyCategoriesQuery() {
 // and not a manually-computed bounding box — earth_box() is itself the
 // index-accelerated pre-filter, earth_distance() the exact circle check),
 // keyword search (request fields, structuredData, intervention name/slug,
-// category name via Category.projectGroupIds -> Intervention.projectGroupId),
-// match level (selected_intervention / category / explore) computed once as
-// a numeric rank, sort and pagination fully in SQL.
+// category name via DB grouping; this is search metadata only and never an
+// eligibility or visibility decision),
+// Every returned row is an explicit selected-intervention match.
 
 function buildOrderByClause(sort: RequestDashboardSort) {
   if (sort === "newest") {
     return Prisma.sql`ORDER BY created_at DESC`
   }
   if (sort === "nearest") {
-    return Prisma.sql`ORDER BY distance_km ASC, match_rank ASC, created_at DESC`
+    return Prisma.sql`ORDER BY distance_km ASC, created_at DESC`
   }
-  return Prisma.sql`ORDER BY match_rank ASC, created_at DESC`
+  return Prisma.sql`ORDER BY created_at DESC`
 }
 
 async function queryPaginatedRequests({
   companyId,
   visibilityInterventionIds,
-  visibilityProjectGroupIds,
-  selectedInterventionIds,
-  enabledCategoryProjectGroupIds,
   companyLat,
   companyLng,
   effectiveRadiusKm,
@@ -298,9 +290,6 @@ async function queryPaginatedRequests({
 }: {
   companyId: string
   visibilityInterventionIds: string[]
-  visibilityProjectGroupIds: string[]
-  selectedInterventionIds: string[]
-  enabledCategoryProjectGroupIds: string[]
   companyLat: number
   companyLng: number
   effectiveRadiusKm: number
@@ -331,11 +320,6 @@ async function queryPaginatedRequests({
         r."unlockCount"      AS unlock_count,
         r."createdAt"        AS created_at,
         (csr."companyId" IS NOT NULL) AS is_saved,
-        CASE
-          WHEN r."interventionId" = ANY(${selectedInterventionIds}::text[]) THEN 0
-          WHEN iv."projectGroupId" = ANY(${enabledCategoryProjectGroupIds}::text[]) THEN 1
-          ELSE 2
-        END AS match_rank,
         (
           earth_distance(
             ll_to_earth(${companyLat}, ${companyLng}),
@@ -354,10 +338,7 @@ async function queryPaginatedRequests({
           ll_to_earth(${companyLat}, ${companyLng}),
           ${radiusMeters}
         ) @> ll_to_earth(rg."latitude", rg."longitude")
-        AND (
-          r."interventionId" = ANY(${visibilityInterventionIds}::text[])
-          OR iv."projectGroupId" = ANY(${visibilityProjectGroupIds}::text[])
-        )
+        AND r."interventionId" = ANY(${visibilityInterventionIds}::text[])
         AND (
           ${likeTerm}::text IS NULL
           OR r."requestCode" ILIKE ${likeTerm}
@@ -383,11 +364,7 @@ async function queryPaginatedRequests({
       id, request_code, status, intervention_slug, city, address, postal_code,
       latitude, longitude, structured_data, credit_cost, max_unlocks,
       unlock_count, created_at, is_saved,
-      CASE match_rank
-        WHEN 0 THEN 'selected_intervention'
-        WHEN 1 THEN 'category'
-        ELSE 'explore'
-      END AS match_level
+      'selected_intervention'::text AS match_level
     FROM scoped
     WHERE distance_km <= ${effectiveRadiusKm}
     ${orderByClause}
@@ -446,12 +423,12 @@ export async function getCompanyRequestsListPage(
     active: normalizedFilters,
   }
 
-  // ── Batch 1 (truly parallel): company + operational interventions + taxonomy filter data ─
+  // ── Batch 1 (truly parallel): company profile + capability snapshot + filter data ─
   //
   // All independent, run in parallel:
-  // - company: profile, location, selected interventions (CompanyIntervention)
-  // - operationalInterventions: Category.projectGroupIds -> Intervention for
-  //   this company's CompanyCategory rows (the "broad net" set)
+  // - company: profile and location
+  // - capabilitySnapshot: CompanyCategory identity and explicitly selected
+  //   CompanyIntervention capabilities
   // - taxonomyCategories: all marketplace categories for filter dropdown
   // - filterCategoryInterventions: interventions for the URL-selected
   //   category (null if none selected)
@@ -489,6 +466,8 @@ export async function getCompanyRequestsListPage(
     province: company.geoLocation?.province ?? null,
     operatingRadiusKm: company.operatingRadiusKm,
     operationalCategoryCount: 0,
+    activeInterventionCount:
+      capabilitySnapshot.selectedInterventionIds.length,
   }
 
   if (!isCompanyMarketplaceReady(actor.company)) {
@@ -524,7 +503,7 @@ export async function getCompanyRequestsListPage(
   const operatingRadiusKm = company.operatingRadiusKm
 
   // Canonical eligibility (docs/domain-invariants/03_REQUEST_VISIBILITY.md)
-  // — the same computation request-detail uses. No onboardingCategorySlug
+  // — the same computation request-detail uses. No onboarding snapshot
   // fallback (docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md): an
   // unconfigured company correctly falls through to the missing_category
   // empty state below, the same one matching/dispatch implicitly enforces.
@@ -532,10 +511,7 @@ export async function getCompanyRequestsListPage(
   const selectedInterventionIds = new Set(
     capabilitySnapshot.selectedInterventionIds,
   )
-  const enabledCategoryProjectGroupIds =
-    capabilitySnapshot.enabledCategoryProjectGroupIds
-  const isConfigured =
-    isCompanyMarketplaceCapabilityConfigured(capabilitySnapshot)
+  const isConfigured = capabilitySnapshot.isConfigured
 
   const companyProfile: RequestDashboardCompanyProfile = {
     ...companyProfileBase,
@@ -563,15 +539,15 @@ export async function getCompanyRequestsListPage(
       ? normalizedFilters.categoryId
       : null
 
-  // Interventions for the active category — only fetched when a category
-  // filter is active, scoped to exactly that category's ProjectGroups.
+  // Effective canonical membership for the active category — fetched only
+  // when that explicit dashboard filter is active.
   const { interventions: filterCategoryInterventions } = activeCategoryId
     ? await measureAsync(
         "filter-category-interventions",
         recordPerf,
-        () => loadRequestCategoryInterventions([activeCategoryId]),
+        () => loadDashboardCategoryFilterInterventions([activeCategoryId]),
       )
-    : { interventions: [] as CategoryInterventionRow[] }
+    : { interventions: [] as DashboardCategoryFilterIntervention[] }
 
   const activeCategoryInterventionSet = activeCategoryId
     ? new Set(filterCategoryInterventions.map((iv) => iv.id))
@@ -590,30 +566,19 @@ export async function getCompanyRequestsListPage(
     interventionId: activeInterventionId,
   }
 
-  // Default (no filter) visibility is the UNION of directly-selected and
-  // category-derived interventions, not just the category-derived set.
-  // In the legacy model these were always the same set by construction
-  // (CompanyService was validated against the selected categories'
-  // CategoryService rows at write time). The frozen model deliberately
-  // dropped that cross-validation (Category must never gate Intervention
-  // selection, confirmed in Phase 9) — a company can select an
-  // intervention outside its own categories' ProjectGroups, and dispatch
-  // (CompanyIntervention-only) already notifies them for it. The
-  // dashboard must not be stricter than dispatch, or a company stops
-  // seeing requests it's actually being notified about.
+  // CompanyIntervention is the only ordinary marketplace capability.
+  // Category can narrow the dashboard filter, but never broadens visibility.
   const visibilityInterventionIds: string[] = activeInterventionId
-    ? [activeInterventionId]
+    ? selectedInterventionIds.has(activeInterventionId)
+      ? [activeInterventionId]
+      : []
     : activeCategoryId
-      ? Array.from(activeCategoryInterventionSet)
+      ? Array.from(selectedInterventionIds).filter((interventionId) =>
+          activeCategoryInterventionSet.has(interventionId),
+        )
       : Array.from(selectedInterventionIds)
-  const visibilityProjectGroupIds = activeCategoryId
-    ? []
-    : Array.from(enabledCategoryProjectGroupIds)
 
-  if (
-    visibilityInterventionIds.length === 0 &&
-    visibilityProjectGroupIds.length === 0
-  ) {
+  if (visibilityInterventionIds.length === 0) {
     return {
       ok: true,
       company: companyProfile,
@@ -670,11 +635,6 @@ export async function getCompanyRequestsListPage(
       queryPaginatedRequests({
         companyId,
         visibilityInterventionIds,
-        visibilityProjectGroupIds,
-        selectedInterventionIds: Array.from(selectedInterventionIds),
-        enabledCategoryProjectGroupIds: Array.from(
-          enabledCategoryProjectGroupIds,
-        ),
         companyLat,
         companyLng,
         effectiveRadiusKm,

@@ -63,7 +63,7 @@ Visible(company, request) =
   AND ( LiveMatch(company, request) OR Grant(company, request) )
 
 LiveMatch = CompanyConfigured
-            AND request.interventionId ∈ (CompanyIntervention ∪ CompanyCategory-derived interventions)
+            AND request.interventionId ∈ CompanyIntervention
             AND distance(company, request) <= company.operatingRadiusKm
 
 Grant = RequestUnlock exists (regardless of refunded status — see below)
@@ -91,26 +91,24 @@ a suspended/deactivated/deleted company's exclusion (verified in Task 10).
 
 **Files** (new):
 - `packages/domain/src/company/requests/company-request-eligibility.ts` —
-  `resolveCompanyRequestEligibility(companyId)`, returning
-  `{ resolvedCategoryIds, selectedInterventionIds, operationalInterventionIds, isConfigured }`,
-  plus `getDefaultVisibilityInterventionIds(eligibility)` and
-  `loadInterventionsForCategoryIds(categoryIds)` (the category→ProjectGroup→Intervention
-  traversal, relocated here from being private to the list page).
+  `evaluateCompanyRequestEligibility(input)`, consuming
+  `{ enabledCategoryIds, selectedInterventionIds, isConfigured }`,
+  with ordinary eligibility based only on persisted `CompanyIntervention`.
 - `packages/domain/src/company/requests/request-visibility.ts` —
   `evaluateRequestVisibility(input): { visible, isLiveMatch, hasGrant }`,
   the pure function implementing exactly the Task 3 rule set.
 
 **Consumers**:
-- `get-requests-list-page.ts` calls `resolveCompanyRequestEligibility` and
-  `getDefaultVisibilityInterventionIds` for its bulk query's parameters —
+- `get-requests-list-page.ts` uses persisted CompanyIntervention ids for
+  its bulk query parameters —
   it does **not** call `evaluateRequestVisibility` directly (see Task 5's
   explanation: the list is the LiveMatch half of the rule, expressed as a
   bulk SQL predicate built from the *same* eligibility data, not a
   per-row JS function call — same performance reasoning already
   established for `isCompanyMarketplaceReady` vs. dispatch's SQL in
   Phase 2).
-- `get-request-detail-page.ts` calls both `resolveCompanyRequestEligibility`
-  and `evaluateRequestVisibility` — this is the one true yes/no gate.
+- Request detail loads `getCompanyMarketplaceCapabilitySnapshot` and calls
+  `evaluateRequestVisibility` — this is the one true yes/no gate.
 
 ---
 
@@ -122,11 +120,10 @@ a suspended/deactivated/deleted company's exclusion (verified in Task 10).
   outright — they were private to this file, zero external callers, fully
   superseded). Removed the redundant `company.interventions` Prisma select
   (selected interventions now come from the shared eligibility call). The
-  default ("no filter") `visibilityInterventionIds` computation now calls
-  `getDefaultVisibilityInterventionIds(eligibility)` instead of
-  re-deriving the same union inline.
+  default ("no filter") `visibilityInterventionIds` comes directly from
+  persisted `selectedInterventionIds`.
 - **`get-request-detail-page.ts`**: added `interventionId` and `dispatches`
-  to its `Request` select; added a call to `resolveCompanyRequestEligibility`;
+  to its `Request` select; added the marketplace capability snapshot;
   replaced the old geo-only check with one call to
   `evaluateRequestVisibility`, which now also makes `isSaved`'s computed
   value (`hasSaved`) the single source for both the visibility grant and
@@ -169,12 +166,10 @@ nonexistent request can never appear in any list).
 
 `RequestDispatchable` (geo refoundation, `resolve-request-dispatch-candidates.ts`)
 answers a *different* question — "which companies should be *notified* about
-this request, right now, at publish time" — using `CompanyIntervention`
-only, with **no** category-derived broadening. `RequestVisibleToCompany`'s
-LiveMatch deliberately uses the *broader* set (`CompanyIntervention` ∪
-category-derived interventions), per the existing, intentional "dashboard
-must not be stricter than dispatch" rule (already documented in the list
-page before this phase, preserved unchanged).
+this request, right now, at publish time" — using `CompanyIntervention`.
+Ordinary `RequestVisibleToCompany` LiveMatch uses the same intervention
+capability boundary. Saved, unlock and persisted dispatch grants can retain
+historical visibility independently of current live eligibility.
 
 **The coupling, made explicit rather than hidden**: a `RequestDispatch` row
 existing for `(company, request)` is now one of the three `Grant` clauses
@@ -191,9 +186,9 @@ mutual recomputation.
 
 | Table/field | Classification | Used by |
 | --- | --- | --- |
-| `CompanyCategory` | **SOURCE_OF_TRUTH** | `resolveCompanyRequestEligibility` (via `isConfigured`/`resolvedCategoryIds`) |
-| `CompanyIntervention` | **SOURCE_OF_TRUTH** | Same function (`selectedInterventionIds`); also `RequestDispatchable`, unchanged |
-| `Category.projectGroupIds` → `Intervention.projectGroupId` | **DERIVED** | `operationalInterventionIds` — the category-broadened discovery set, unchanged from before this phase |
+| `CompanyCategory` | **SOURCE_OF_TRUTH** | Professional identity and one half of canonical `isConfigured`; it does not grant request eligibility |
+| `CompanyIntervention` | **SOURCE_OF_TRUTH** | Sole ordinary marketplace capability; also used by `RequestDispatchable` |
+| `Category.projectGroupIds` → `Intervention.projectGroupId` | **CATALOG_ONLY** | Search/category metadata only; never interpreted as a company capability |
 | `RequestDispatch` | **SOURCE_OF_TRUTH** (for the Grant it represents) | New: `evaluateRequestVisibility`'s `hasDispatch` clause. Already source-of-truth for `RequestDispatchable`; this phase adds a second, read-only consumer, not a second writer. |
 | `RequestUnlock` | **SOURCE_OF_TRUTH** (for its Grant) | `evaluateRequestVisibility`'s `hasUnlock`; unchanged usage in the Purchased list |
 | `CompanySavedRequest` | **SOURCE_OF_TRUTH** (for its Grant) | `evaluateRequestVisibility`'s `hasSaved`; unchanged usage in the Saved list |
@@ -271,8 +266,8 @@ REQUEST_VISIBLE_IMPLEMENTATIONS_AFTER = 1 canonical rule
   remain their own single Grant clause each, by design, not divergence.
 CANONICAL_VISIBILITY_FUNCTION = evaluateRequestVisibility
   (packages/domain/src/company/requests/request-visibility.ts), backed by
-  resolveCompanyRequestEligibility (company-request-eligibility.ts) as the
-  shared eligibility source both list and detail consume.
+  getCompanyMarketplaceCapabilitySnapshot as the shared persisted capability
+  source both list and detail consume.
 LIST_DETAIL_DIVERGENCE_REMOVED = YES — proven both structurally (List ⊆
   Detail by construction) and live, on real data, for the one currently
   visible request in the database.

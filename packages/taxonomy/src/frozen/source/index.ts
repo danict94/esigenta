@@ -1,5 +1,7 @@
 import { impresaEdile } from "./categories/impresa-edile"
+import { muratore } from "./categories/muratore"
 import { idraulico } from "./categories/idraulico"
+import { termoidraulico } from "./categories/termoidraulico"
 import { elettricista } from "./categories/elettricista"
 import { cartongessista } from "./categories/cartongessista"
 import { imbianchino } from "./categories/imbianchino"
@@ -10,6 +12,8 @@ import { fabbro } from "./categories/fabbro"
 import { fumista } from "./categories/fumista"
 import { giardiniere } from "./categories/giardiniere"
 import { geometra } from "./categories/geometra"
+import { architetto } from "./categories/architetto"
+import { ingegnere } from "./categories/ingegnere"
 import { piscinista } from "./categories/piscinista"
 
 import { ristrutturazioni } from "./project-groups/ristrutturazioni"
@@ -38,7 +42,9 @@ import type { FrozenTaxonomySource } from "./types/source"
 export const frozenTaxonomySource: FrozenTaxonomySource = {
   categories: [
     impresaEdile,
+    muratore,
     idraulico,
+    termoidraulico,
     elettricista,
     cartongessista,
     imbianchino,
@@ -49,6 +55,8 @@ export const frozenTaxonomySource: FrozenTaxonomySource = {
     fumista,
     giardiniere,
     geometra,
+    architetto,
+    ingegnere,
     piscinista,
   ],
 

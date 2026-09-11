@@ -41,7 +41,7 @@ Company {
 - `CompanyCategory` survives structurally (companyId, categoryId) but its purpose changes: it no longer feeds matching, only "what professional identity does this company present" (badges, onboarding display, defaultProjectGroups re-bootstrap if the user reopens configuration).
 - New junction `CompanyIntervention` (companyId, interventionId) replaces `CompanyService` 1:1 in shape, replacing "service" with "intervention" as the unit a company declares it wants to receive.
 - `requestMatchingMode` enum is **removed from the target model** — there is exactly one matching mode (Intervention match), so the strictness toggle has no meaning.
-- `onboardingCategorySlug` can remain as-is; it's already documented as "onboarding snapshot, not used in runtime matching" — compatible with the frozen model unchanged.
+- `legacyOnboardingCategorySnapshot` can remain as-is; it's already documented as "onboarding snapshot, not used in runtime matching" — compatible with the frozen model unchanged.
 
 No ProjectGroup column or table is touched by Company persistence at any point — confirmed against spec's explicit "Non salvare ProjectGroup."
 

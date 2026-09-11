@@ -182,7 +182,7 @@ caller sees on rejection.
 | --- | --- | --- |
 | `isCompanyMarketplaceEnabled` (`packages/domain/src/company/account/company-status-policy.ts`) | **SAFE_REMOVE** | Strictly weaker duplicate of the now-canonical function; zero callers before this phase, zero after. Nothing depends on its weaker (status-only) semantics. |
 | `assertCompanyCanUseMarketplace` / `assertCompanyCanBuyCredits` / `CompanyMarketplaceAuthorizationError` / `assertCompanyMarketplaceState` (`marketplace-policy.ts`) | **DEFER** | Unlike the item above, these do **not** reimplement the rule — they call the same canonical predicate (`isCompanyMarketplaceReady`, after this phase's internal rename) and only differ in calling convention (throw vs. boolean) and in that they fetch the company by id themselves rather than taking an existing `CompanyActor`. They are currently uncalled, but they are not a second source of truth — removing them is a judgment call for whichever future caller might prefer exception-based flow control (e.g. a server action that wants to throw straight into a generic error boundary), not a correctness issue. Recommend deferring to Phase 6 rather than classifying as unconditionally safe to remove now. |
-| `Company.onboardingCategorySlug`-adjacent items | Out of scope — already classified in Phase 1 | — |
+| Removed onboarding snapshot column | Removed by the final schema cleanup after all readers and writers were eliminated | — |
 
 ---
 

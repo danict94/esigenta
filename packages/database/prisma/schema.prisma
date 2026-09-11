@@ -339,13 +339,6 @@ model Company {
   publicProfileConsentAt DateTime?
 
   /**
-   * ONBOARDING CONTEXT ONLY
-   * Captures the first professional category selected in the public signup flow.
-   * Runtime matching must use CompanyCategory, not this onboarding snapshot.
-   */
-  onboardingCategorySlug String?
-
-  /**
    * IMPORTANT
    * Company marketplace eligibility is defined by:
    * - CompanyCategory as broad professional coverage
@@ -376,7 +369,6 @@ model Company {
   conversationParticipants ConversationParticipant[]
   documents                CompanyDocument[]
 
-  @@index([onboardingCategorySlug])
   @@index([status])
   @@index([createdAt])
   @@index([statusChangedByAdminUserId])

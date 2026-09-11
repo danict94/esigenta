@@ -1,5 +1,10 @@
 import type { CompanyMarketplaceState } from "@esigenta/auth"
-import { readCompanyMarketplaceCapabilitySnapshot } from "@esigenta/database"
+import {
+  readCompanyMarketplaceCapabilitySnapshot,
+  type CompanyMarketplaceCapabilitySnapshotRow,
+} from "@esigenta/database"
+
+import { deriveCompanyConfigurationStatus } from "../configuration/company-configuration-status"
 
 export type CompanyMarketplaceCapabilitySnapshot = {
   companyId: string
@@ -10,8 +15,8 @@ export type CompanyMarketplaceCapabilitySnapshot = {
   } | null
   operatingRadiusKm: number
   enabledCategoryIds: readonly string[]
-  enabledCategoryProjectGroupIds: readonly string[]
   selectedInterventionIds: readonly string[]
+  isConfigured: boolean
 }
 
 function unique(values: readonly string[]): string[] {
@@ -20,10 +25,24 @@ function unique(values: readonly string[]): string[] {
 
 export async function getCompanyMarketplaceCapabilitySnapshot(
   companyId: string,
+  readSnapshot: (
+    companyId: string,
+  ) => Promise<CompanyMarketplaceCapabilitySnapshotRow | null> =
+    readCompanyMarketplaceCapabilitySnapshot,
 ): Promise<CompanyMarketplaceCapabilitySnapshot | null> {
-  const row = await readCompanyMarketplaceCapabilitySnapshot(companyId)
+  const row = await readSnapshot(companyId)
   if (!row) return null
 
+  const enabledCategoryIds = unique(
+    row.categories.map((item) => item.categoryId),
+  )
+  const selectedInterventionIds = unique(
+    row.interventions.map((item) => item.interventionId),
+  )
+  const { isConfigured } = deriveCompanyConfigurationStatus({
+    categoryIds: enabledCategoryIds,
+    interventionIds: selectedInterventionIds,
+  })
   return {
     companyId: row.id,
     marketplaceState: {
@@ -33,12 +52,8 @@ export async function getCompanyMarketplaceCapabilitySnapshot(
     },
     coordinates: row.geoLocation,
     operatingRadiusKm: row.operatingRadiusKm,
-    enabledCategoryIds: unique(row.categories.map((item) => item.categoryId)),
-    enabledCategoryProjectGroupIds: unique(
-      row.categories.flatMap((item) => item.category.projectGroupIds),
-    ),
-    selectedInterventionIds: unique(
-      row.interventions.map((item) => item.interventionId),
-    ),
+    enabledCategoryIds,
+    selectedInterventionIds,
+    isConfigured,
   }
 }

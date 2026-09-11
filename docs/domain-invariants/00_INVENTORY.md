@@ -21,11 +21,11 @@ the check inline instead.
 | | |
 | --- | --- |
 | **Source of truth** | `CompanyCategory` + `CompanyIntervention` tables (the only tables `update-services-configuration.ts` writes) |
-| **Implementations** | **3, disagreeing** — already fully documented in [docs/archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md](../archive-legacy/refoundation/company-configuration/ONBOARDING_CONFIGURATION_REFOUNDATION_AUDIT.md). Summary: (1) matching/dispatch — strict, `CompanyIntervention` only, no fallback (`resolve-request-dispatch-candidates.ts`); (2) dashboard visibility — falls back to `Company.onboardingCategorySlug` when `CompanyCategory` is empty (`get-requests-list-page.ts:582-593`); (3) Configura Servizi preselection — same fallback, rendered indistinguishably from a saved state (`services-configuration-page.tsx:143-174`). |
-| **Readers** | `resolve-request-dispatch-candidates.ts`, `get-requests-list-page.ts` (`buildCompanyQuery`, fallback-category branch), `services-configuration-page.tsx`, `get-services-configuration-page.ts` |
-| **Writers** | `update-services-configuration.ts` only (confirmed sole writer) |
-| **Fallbacks** | `Company.onboardingCategorySlug` → `Category` → `Category.projectGroupIds` → `ProjectGroup.interventions`, used independently by readers (2) and (3) above, never by (1) |
-| **Verdict** | **MULTIPLE_IMPLEMENTATIONS** — already the subject of a dedicated audit; carried into this inventory as the canonical example of the whole initiative's problem statement. |
+| **Implementations** | **1** — `deriveCompanyConfigurationStatus`, requiring at least one persisted Category and one persisted Intervention. |
+| **Readers** | Company profile, service configuration and marketplace snapshot consumers. |
+| **Writers** | Signup bootstrap and manual service configuration, both through `writeCompanyServiceConfigurationWithClient`. |
+| **Fallbacks** | None. Signup persists canonical onboarding defaults directly into `CompanyIntervention`. |
+| **Verdict** | **SINGLE_SOURCE_OF_TRUTH** |
 
 ---
 
@@ -96,11 +96,11 @@ the check inline instead.
 | | |
 | --- | --- |
 | **Source of truth** | Intentionally **not single** — this invariant legitimately branches into two different questions that get conflated under one name |
-| **Implementations** | (1) **Browse/dashboard visibility** (`get-requests-list-page.ts`): status ∈ {APPROVED, PUBLISHED}, not archived/deleted, within bounding-box+earthdistance radius, `interventionId` ∈ the company's *visibility set* — which is the union of `CompanyIntervention` (real) and the onboarding-fallback-derived set when `CompanyCategory` is empty (the `CompanyConfigured` divergence leaking into this invariant too). (2) **Detail-page visibility** (`get-request-detail-page.ts`): status ∈ {APPROVED, PUBLISHED}, not archived/deleted, has `geoLocationId`, distance ≤ `operatingRadiusKm` via plain JS — but **does not check `CompanyIntervention` membership at all**, only company geo/radius and request status. A company could open `/area-impresa/richieste/:id` directly (e.g. from a stale link, or a notification for a request they were once eligible for but have since reconfigured away from) and see full detail without an intervention match, as long as geography still lines up. (3) **Saved requests** (`get-saved-requests-page.ts`) and (4) **Purchased/unlocked requests** (`get-purchased-requests-page.ts`): neither re-checks geo, status, or intervention eligibility at all — visibility here is entirely defined by the existence of a `CompanySavedRequest` or `RequestUnlock` row, which is correct and intentional (once saved/unlocked, a request should stay visible to that company regardless of later eligibility drift), but worth naming explicitly as a **4th, deliberately different** rule so it isn't mistaken for an inconsistency. |
-| **Readers** | The 4 page-data functions above; each is its own reader and decider, no shared "is this request visible to this company" predicate exists anywhere |
+| **Implementations** | (1) **Browse/dashboard visibility** (`get-requests-list-page.ts`): status ∈ {APPROVED, PUBLISHED}, not archived/deleted, within bounding-box+earthdistance radius, and `Request.interventionId` present in persisted `CompanyIntervention`. (2) **Detail-page visibility** (`get-request-detail-page.ts`): the same live-match capability rule through `evaluateRequestVisibility`, with saved/unlock/dispatch as explicit historical grants. (3) **Saved requests** and (4) **Purchased/unlocked requests** remain grant-based views and intentionally do not re-check current live eligibility. |
+| **Readers** | List uses the DB-side equivalent of the canonical live-match rule; detail uses `evaluateRequestVisibility`; saved/purchased use their explicit persisted grants. |
 | **Writers** | N/A — derived |
-| **Fallbacks** | The `CompanyConfigured` onboarding fallback, inherited into (1) only |
-| **Verdict** | **MULTIPLE_IMPLEMENTATIONS** — 4 independent decision paths for "can this company see this request," 2 of which (browse vs. detail) can disagree with each other on intervention-eligibility grounds even before the `CompanyConfigured` issue is considered, and the other 2 are correctly exempt for a different, legitimate reason that should be made explicit rather than left implicit. |
+| **Fallbacks** | None. Category identity never expands ordinary marketplace visibility. |
+| **Verdict** | **SINGLE_CAPABILITY_SOURCE_WITH_EXPLICIT_GRANTS** — ordinary visibility is `CompanyIntervention`; saved, unlock and dispatch are separate persisted grants. |
 
 ---
 
@@ -163,7 +163,7 @@ the check inline instead.
 ## Cross-cutting observations (not one of the 10, but found while inventorying all of them)
 
 - **Two fully dead policy modules** (`isCompanyMarketplaceEnabled`, the `marketplace-policy.ts` trio) — exported, documented, never called. These are not legacy leftovers from a removed feature; nothing in the git history surfaced suggests they were ever wired up. They appear to have been written as the "correct" abstraction and then bypassed by every real call site, which inlined the check instead. This is a useful, concrete data point for Phase 1/2: a canonical function already exists in skeleton form for `CompanyMarketplaceReady` — it doesn't need to be invented, it needs to be *adopted* (and the weaker, also-dead `isCompanyMarketplaceEnabled` retired in its favor, since `marketplace-policy.ts`'s version is strictly more correct).
-- **No shared "is this request visible to this company" predicate exists at all** — every one of the 4 `RequestVisibleToCompany` readers computes its own answer from raw `Company`/`Request`/`CompanyIntervention`/`RequestUnlock`/`CompanySavedRequest` data, independently.
+- **Visibility capability and grants are deliberately separate** — ordinary marketplace visibility reads `CompanyIntervention`; detail additionally accepts persisted saved/unlock/dispatch grants.
 - **The actor-resolution implicit guarantee** (`isActive`/`deletedAt` filtered before a `CompanyActor` is ever handed to business logic) is real and currently correct, but undocumented at 3 of its 4 dependent call sites — a future refactor of `actor.ts` could silently break all of them without any type error, since `CompanyActor.company` doesn't expose the fields the guarantee is about.
 
 ---

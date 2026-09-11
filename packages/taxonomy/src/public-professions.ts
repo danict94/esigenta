@@ -1,5 +1,8 @@
-import { frozenTaxonomySource } from "./frozen"
-import { validateFrozenTaxonomySource } from "./frozen/shared/validators"
+import {
+  frozenTaxonomySource,
+  listPublicProfessions,
+  resolveProfessionInterventions,
+} from "./frozen"
 
 import type { FrozenTaxonomySource } from "./frozen"
 
@@ -54,48 +57,31 @@ export type PublicProfessionCatalog = {
 export function composePublicProfessionCatalog(
   source: FrozenTaxonomySource,
 ): PublicProfessionCatalog {
-  validateFrozenTaxonomySource(source)
+  const publicCategories = listPublicProfessions(source)
 
-  const projectGroupsBySlug = new Map(
-    source.projectGroups.map((projectGroup) => [projectGroup.slug, projectGroup]),
-  )
+  const details = publicCategories.map((category) => {
+    const resolved = resolveProfessionInterventions(category.slug, source)
 
-  const details = source.categories.map((category) => {
-    const seenProjectGroupSlugs = new Set<string>()
+    // The category comes from the same validated source passed to the
+    // resolver, so null would indicate a broken resolver contract.
+    if (!resolved) {
+      throw new Error(
+        `[public-profession:${category.slug}] Category could not be resolved`,
+      )
+    }
 
-    const projectGroups = category.projectGroups.map((projectGroupSlug) => {
-      if (seenProjectGroupSlugs.has(projectGroupSlug)) {
-        throw new Error(
-          `[public-profession:${category.slug}] Duplicate ProjectGroup reference: ${projectGroupSlug}`,
-        )
-      }
-
-      seenProjectGroupSlugs.add(projectGroupSlug)
-
-      // validateFrozenTaxonomySource() already guarantees this lookup. Keep
-      // the explicit branch so this composer remains fail-fast if that shared
-      // validator is ever relaxed independently.
-      const projectGroup = projectGroupsBySlug.get(projectGroupSlug)
-
-      if (!projectGroup) {
-        throw new Error(
-          `[public-profession:${category.slug}] Missing ProjectGroup reference: ${projectGroupSlug}`,
-        )
-      }
-
-      return {
+    const projectGroups = resolved.projectGroups.map(
+      ({ projectGroup, interventions }) => ({
         slug: projectGroup.slug,
         name: projectGroup.name,
         description: projectGroup.description ?? null,
-        interventions: projectGroup.interventions
-          .filter((intervention) => intervention.publicationStatus === "published")
-          .map((intervention) => ({
-            slug: intervention.slug,
-            name: intervention.name,
-            description: intervention.description ?? null,
-          })),
-      }
-    })
+        interventions: interventions.map((intervention) => ({
+          slug: intervention.slug,
+          name: intervention.name,
+          description: intervention.description ?? null,
+        })),
+      }),
+    )
 
     return {
       category: {
@@ -110,7 +96,7 @@ export function composePublicProfessionCatalog(
   const hubItems = details.map((detail, index) => ({
     slug: detail.category.slug,
     name: detail.category.name,
-    shortDescription: source.categories[index]!.shortDescription,
+    shortDescription: publicCategories[index]!.shortDescription,
     projectGroups: detail.projectGroups.map((projectGroup) => ({
       slug: projectGroup.slug,
       name: projectGroup.name,

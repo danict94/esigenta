@@ -40,6 +40,7 @@ import {
 import {
   PANEL_TOP_OFFSET,
 } from "../components/dashboard-layout-constants"
+import { ActiveWorksCard } from "../components/active-works-card"
 
 import {
   toggleSavedRequestAction,
@@ -154,15 +155,19 @@ function RequestsDashboardShell({
   kpi,
   children,
   showPanelRail,
+  activeInterventionCount,
 }: {
   kpi?: ReactNode
   children: ReactNode
   showPanelRail: boolean
+  activeInterventionCount: number
 }) {
   return (
     <>
       <div className="bg-eg-surface">
         {kpi}
+
+        <ActiveWorksCard count={activeInterventionCount} />
 
         <div className={cn(showPanelRail && "min-[900px]:pr-[460px]")}>
           {children}
@@ -313,7 +318,10 @@ export async function RequestsPage({
 
     if (!previewResult.ok) {
       return (
-        <RequestsDashboardShell showPanelRail={false}>
+        <RequestsDashboardShell
+          showPanelRail={false}
+          activeInterventionCount={previewResult.activeInterventionCount}
+        >
           <ListHead title="Richieste per te" />
           <UnavailableNotice
             title="Preview non disponibile"
@@ -350,6 +358,9 @@ export async function RequestsPage({
     return (
       <RequestsDashboardShell
         showPanelRail
+        activeInterventionCount={
+          previewResult.company.activeInterventionCount
+        }
         kpi={
           <KpiStrip
             items={[
@@ -458,6 +469,9 @@ export async function RequestsPage({
   return (
     <RequestsDashboardShell
       showPanelRail={result.ok}
+      activeInterventionCount={
+        result.company?.activeInterventionCount ?? 0
+      }
       kpi={
         result.ok ? (
           <KpiStrip

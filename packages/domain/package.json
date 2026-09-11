@@ -16,6 +16,7 @@
     "@esigenta/funnel": "workspace:*",
     "@esigenta/notifications": "workspace:*",
     "@esigenta/shared": "workspace:*",
+    "@esigenta/taxonomy": "workspace:*",
     "@esigenta/uploads": "workspace:*",
     "@prisma/client": "^7.8.0",
     "dotenv": "^17.4.2"

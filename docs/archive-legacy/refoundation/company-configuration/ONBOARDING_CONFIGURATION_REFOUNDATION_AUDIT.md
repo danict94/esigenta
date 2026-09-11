@@ -96,7 +96,7 @@ framing than a point-in-time count.
 
 | Finding | Classification |
 | --- | --- |
-| `Company.onboardingCategorySlug` — written once at signup, **read by two different fallback code paths** (Task 3/4) that treat it as if it were a real configuration signal, even though the schema's own comment says "Runtime matching must use CompanyCategory, not this onboarding snapshot" | **LEGACY_MODEL** — the field itself isn't dead (it's actively read), but its *semantic role* has drifted: it was meant as a one-time onboarding memory, and has become a parallel, lower-fidelity configuration model that two UI/visibility paths trust as if it were current |
+| `Company.legacyOnboardingCategorySnapshot` — written once at signup, **read by two different fallback code paths** (Task 3/4) that treat it as if it were a real configuration signal, even though the schema's own comment says "Runtime matching must use CompanyCategory, not this onboarding snapshot" | **LEGACY_MODEL** — the field itself isn't dead (it's actively read), but its *semantic role* has drifted: it was meant as a one-time onboarding memory, and has become a parallel, lower-fidelity configuration model that two UI/visibility paths trust as if it were current |
 | `street`/`streetNo` style write-only fields | none currently — already removed in the geo refoundation (`docs/archive-legacy/refoundation/geo-refoundation/04_CLEANUP_REPORT.md`) | N/A |
 
 ---
@@ -112,10 +112,10 @@ apps/web/src/area-impresa/public/auth/components/impresa-signup-form.tsx
       apps/web/src/area-impresa/public/auth/actions/signup-action.ts
       validates name/vatNumber/phone/categorySlug/operatingRadiusKm/geoPlace
       ↓
-      createCompanyForCurrentUser({ onboardingCategorySlug, company })
+      createCompanyForCurrentUser({ legacyOnboardingCategorySnapshot, company })
         apps/web/.../create-company-for-current-user.ts — requireUser(), passthrough
         ↓
-        createCompanyForUser({ userId, onboardingCategorySlug, company })
+        createCompanyForUser({ userId, legacyOnboardingCategorySnapshot, company })
           packages/auth/src/identity/company/onboarding.ts:229
           - listExistingCompanyLinksForUser(userId)        [read CompanyMembership]
           - normalizeCompanyProfile(company)                [validates geoPlace via isFreshGeoPlace]
@@ -124,7 +124,7 @@ apps/web/src/area-impresa/public/auth/components/impresa-signup-form.tsx
               tx.company.create({ data: buildCompanyCreateData(...) })
                 → WRITES: Company.name, vatNumber, phone, website?,
                   operatingRadiusKm, status="PENDING_REVIEW",
-                  onboardingCategorySlug
+                  legacyOnboardingCategorySnapshot
               setCompanyLocationWithClient(tx, companyRecord.id, geoPlace)
                 → WRITES: GeoLocation (new row), Company.geoLocationId
               tx.companyMembership.create({ companyId, userId, role: "OWNER" })
@@ -138,13 +138,13 @@ tables (outside this domain's schema).
 
 **Tables NOT touched, at any point in this flow**: `CompanyCategory`,
 `CompanyIntervention`. The only trace of the category the user picked
-during signup is the **text snapshot** `Company.onboardingCategorySlug` —
+during signup is the **text snapshot** `Company.legacyOnboardingCategorySnapshot` —
 a plain string, not a foreign key, not a join table row, carrying no
 referential integrity and not validated against `Category` at write time
 beyond what the signup form itself restricts.
 
 **Fields written**: `Company.{name, vatNumber, phone, website?,
-operatingRadiusKm, status, onboardingCategorySlug, geoLocationId}`,
+operatingRadiusKm, status, legacyOnboardingCategorySnapshot, geoLocationId}`,
 `GeoLocation.{placeId, formattedAddress, city, postalCode, province,
 latitude, longitude, source, resolvedAt}`, `CompanyMembership.{companyId,
 userId, role}`.
@@ -167,12 +167,12 @@ UI:
           - Company row + json_agg(CompanyCategory.categoryId) + json_agg(CompanyIntervention.interventionId)
           - all Category rows (id, slug, name, projectGroupIds)
           - all ProjectGroup rows with their Interventions (nested json_agg)
-      ↓ result.company = { id, name, onboardingCategorySlug, categoryIds, interventionIds }
+      ↓ result.company = { id, name, legacyOnboardingCategorySnapshot, categoryIds, interventionIds }
       ↓ result.categories, result.projectGroups (full taxonomy, not company-scoped)
 
   Preselection logic (services-configuration-page.tsx:143-174):
     savedCategoryIds = company.categoryIds                      [REAL: from CompanyCategory]
-    onboardingCategoryId = categories.find(slug === company.onboardingCategorySlug)
+    onboardingCategoryId = categories.find(slug === company.legacyOnboardingCategorySnapshot)
     initialCategoryIds =
       savedCategoryIds.length > 0 ? savedCategoryIds            [REAL]
       : onboardingCategoryId ? [onboardingCategoryId]           [FALLBACK — see Task 3]
@@ -209,7 +209,7 @@ UI:
 **Source of displayed categories/interventions**: a *blend* of two
 disjoint sources, selected by an `if/else` based on whether the real table
 is empty — `CompanyCategory`/`CompanyIntervention` when non-empty, else
-`Company.onboardingCategorySlug` resolved through `Category` →
+`Company.legacyOnboardingCategorySnapshot` resolved through `Category` →
 `Category.projectGroupIds` → `ProjectGroup.interventions`. The UI gives no
 visual signal distinguishing the two for interventions at all (only the
 category section gets a "Categoria suggerita" badge — line 202-204 — and
@@ -226,7 +226,7 @@ yet*).
 every company between signup and their first successful save — true for
 *every* company, not just the one observed), the page does not show "no
 configuration yet" — it computes a **derived, unsaved suggestion** from
-`Company.onboardingCategorySlug` and pre-checks it in the selector exactly
+`Company.legacyOnboardingCategorySnapshot` and pre-checks it in the selector exactly
 as if it were the company's real, saved configuration. A user looking at
 the page sees checked boxes and reasonably concludes "this is already
 configured" — there is nothing in the rendered UI (beyond one easily-missed
@@ -255,20 +255,20 @@ every request, regardless of category, geography, or status. **Tables/fields
 consumed**: `Company.{isActive, deletedAt, status, operatingRadiusKm,
 geoLocationId→GeoLocation.{latitude,longitude}}`, `CompanyIntervention.{companyId,
 interventionId}`, `CompanyMembership` (for the OWNER recipient email).
-`Company.onboardingCategorySlug` is **never read** by this function — confirmed
+`Company.legacyOnboardingCategorySnapshot` is **never read** by this function — confirmed
 by its full text containing no reference to that column.
 
 **A second, looser "source of truth" — dashboard visibility**:
 `packages/domain/src/company/requests/get-requests-list-page.ts:582-593`.
 ```ts
-if (resolvedCategoryIds.length === 0 && company.onboardingCategorySlug) {
-  const fallbackCategory = await buildFallbackCategoryQuery(company.onboardingCategorySlug!)
+if (resolvedCategoryIds.length === 0 && company.legacyOnboardingCategorySnapshot) {
+  const fallbackCategory = await buildFallbackCategoryQuery(company.legacyOnboardingCategorySnapshot!)
   if (fallbackCategory) {
     resolvedCategoryIds = [fallbackCategory.id]
   }
 }
 ```
-This *does* fall back to `onboardingCategorySlug`, broadening
+This *does* fall back to `legacyOnboardingCategorySnapshot`, broadening
 `operationalInterventionIds` (the dashboard's "browse" visibility set) via
 `Category.projectGroupIds` → `ProjectGroup` → `Intervention`, **even when
 `CompanyCategory` is empty**. This means a company that has never saved any
@@ -278,7 +278,7 @@ remaining permanently invisible to actual dispatch/notification, because
 that path has no such fallback.
 
 **Does onboarding write the same entities matching consumes? NO.**
-Onboarding writes `Company.onboardingCategorySlug` (text). Matching reads
+Onboarding writes `Company.legacyOnboardingCategorySnapshot` (text). Matching reads
 `CompanyIntervention` (foreign-keyed rows). These are different tables,
 different write paths, and only contingently related through two
 *separate* fallback computations (Task 3's UI suggestion, Task 4's
@@ -295,7 +295,7 @@ real tables.
 | --- | --- | --- |
 | `CompanyCategory` (table) | **SOURCE_OF_TRUTH** | What `Configura Servizi` actually writes; read by dashboard visibility (`buildCompanyQuery`) and the services page itself |
 | `CompanyIntervention` (table) | **SOURCE_OF_TRUTH** | The *only* table matching/dispatch consumes; also the only table read by `Configura Servizi`'s "real" branch |
-| `Company.onboardingCategorySlug` | **LEGACY_MODEL** (not dead — actively read by 2 fallback paths, but semantically demoted by the taxonomy refoundation's own documentation, which says runtime matching must not use it) | Schema comment literally says "ONBOARDING CONTEXT ONLY... Runtime matching must use CompanyCategory, not this onboarding snapshot" — and one piece of code (dashboard visibility) doesn't follow that rule |
+| `Company.legacyOnboardingCategorySnapshot` | **LEGACY_MODEL** (not dead — actively read by 2 fallback paths, but semantically demoted by the taxonomy refoundation's own documentation, which says runtime matching must not use it) | Schema comment literally says "ONBOARDING CONTEXT ONLY... Runtime matching must use CompanyCategory, not this onboarding snapshot" — and one piece of code (dashboard visibility) doesn't follow that rule |
 | `Category.projectGroupIds` | **DERIVED** (intentionally, per `docs/taxonomy.md`) | Used to expand a category into interventions for both the onboarding-fallback paths and the "first-time bootstrap" intervention suggestion — explicitly documented as carrying no authorization/matching weight on its own |
 | `GeoLocation` (table) | **SOURCE_OF_TRUTH** for location | Out of scope for this audit's main question, included for completeness — confirmed single source post geo-refoundation |
 | `Company.operatingRadiusKm` | **SOURCE_OF_TRUTH** for radius | Same, confirmed single source in the geo refoundation audit |
@@ -322,7 +322,7 @@ choice ("which jobs do you want to be notified about") that a category
 pick at signup cannot honestly imply.
 
 **Should onboarding only store a temporary selection?** Yes — and it
-already effectively does (`onboardingCategorySlug` is exactly that). The
+already effectively does (`legacyOnboardingCategorySnapshot` is exactly that). The
 defect is that "temporary" is not enforced anywhere downstream; two
 consumers (Task 3, Task 4) treat it as durable.
 
@@ -346,7 +346,7 @@ fallback-derived results as "exploratory" rather than indistinguishable
 from a real match level — the dashboard's own `matchLevel: "explore"`
 concept already exists and is the right shape for this, it's just not
 being applied to the *whole-company* unconfigured case, only to
-*per-request* category-vs-intervention ranking). `onboardingCategorySlug`
+*per-request* category-vs-intervention ranking). `legacyOnboardingCategorySnapshot`
 would stop being read anywhere except by the services page itself, purely
 as a one-time UX hint clearly marked as a suggestion, never as a
 visibility or matching input.
@@ -363,7 +363,7 @@ visibility or matching input.
 | No dead columns found beyond what the geo refoundation already removed | — |
 | No dead tables found | — |
 | No dead adapters found in this area | — |
-| `onboardingCategorySlug` itself | not dead, but a candidate for *redefinition* (read-only-by-the-services-page, never by visibility/matching) rather than removal — removing it outright would lose a genuinely useful onboarding signal |
+| `legacyOnboardingCategorySnapshot` itself | not dead, but a candidate for *redefinition* (read-only-by-the-services-page, never by visibility/matching) rather than removal — removing it outright would lose a genuinely useful onboarding signal |
 
 ---
 
@@ -376,7 +376,7 @@ visibility or matching input.
 | A `PUBLISHED` request should have a resolvable intervention and location | DB-level: `interventionId`/`geoLocationId` are nullable FKs, but `publishReviewedRequest` only ever transitions a request that already passed `validateGeoForCreation`/intervention resolution at creation time | None found missing — confirmed enforced upstream, at creation, not at publish | No change needed |
 | A `CompanyNotification`/`NotificationDelivery` should always trace back to a real `RequestDispatch` | Enforced by FK (`onDelete: Cascade` from `RequestDispatch`) | None | No change needed |
 | A `GeoLocation` row should not outlive every entity that references it | **None** | No cleanup path removes an orphaned `GeoLocation` row when its owning `Company`/`Request` is deleted | A scheduled cleanup query, or an application-level "delete location with owner" step alongside entity deletion, would close this — currently entity deletion (wherever it happens) doesn't go through any geo-aware code path at all |
-| Dashboard visibility and matching eligibility should agree on what "configured" means | **None — this is the core finding of this audit** | Two independent fallback computations exist, reading the same `onboardingCategorySlug` field, producing answers neither tied to each other nor to the real `CompanyIntervention` table that matching trusts | A single shared "is this company configured" check, sourced only from `CompanyCategory`/`CompanyIntervention`, consumed identically wherever "can this company see/receive this request" is asked |
+| Dashboard visibility and matching eligibility should agree on what "configured" means | **None — this is the core finding of this audit** | Two independent fallback computations exist, reading the same `legacyOnboardingCategorySnapshot` field, producing answers neither tied to each other nor to the real `CompanyIntervention` table that matching trusts | A single shared "is this company configured" check, sourced only from `CompanyCategory`/`CompanyIntervention`, consumed identically wherever "can this company see/receive this request" is asked |
 
 ---
 
@@ -397,7 +397,7 @@ side instead of the location side.
 1. One function, e.g. `getCompanyConfigurationStatus(companyId)`, reading
    only `CompanyCategory`/`CompanyIntervention`, returning a small,
    explicit shape: `{ categoryIds, interventionIds, isConfigured: boolean }`.
-   `onboardingCategorySlug` does not appear in this function's output at
+   `legacyOnboardingCategorySnapshot` does not appear in this function's output at
    all.
 2. `services-configuration-page.tsx` calls this function for the *saved*
    state and renders it honestly: if `isConfigured` is false, show an
@@ -412,7 +412,7 @@ side instead of the location side.
    onboarding-fallback branch that currently *bypasses* that empty state
    is removed, so dashboard visibility and matching eligibility can never
    disagree about whether a company is configured.
-4. `onboardingCategorySlug` remains on `Company` (it is a legitimate,
+4. `legacyOnboardingCategorySnapshot` remains on `Company` (it is a legitimate,
    useful onboarding signal for the one-time suggestion in step 2), but is
    never again read by anything that determines real visibility or
    matching eligibility.
@@ -438,7 +438,7 @@ IMPOSSIBLE_STATES_FOUND = NONE CURRENTLY MATERIALIZED, but reachable and
   unenforced — an APPROVED company with zero CompanyIntervention is not
   prevented by any constraint or validation, only currently absent from the
   live data by chance of timing.
-LEGACY_CONFIGURATION_MODEL_EXISTS = YES — Company.onboardingCategorySlug,
+LEGACY_CONFIGURATION_MODEL_EXISTS = YES — Company.legacyOnboardingCategorySnapshot,
   documented in the schema itself as onboarding-only, but actively read by
   two independent runtime fallback paths as if it had matching/visibility
   authority.
@@ -449,7 +449,7 @@ MULTIPLE_CONFIGURATION_MODELS = YES — three disagreeing interpretations of
   one Configura Servizi displays (onboarding-fallback, indistinguishable
   from saved state in the UI).
 SOURCE_OF_PRESELECTED_CATEGORIES = services-configuration-page.tsx:143-151 —
-  Company.onboardingCategorySlug resolved against the Category table,
+  Company.legacyOnboardingCategorySnapshot resolved against the Category table,
   rendered as pre-checked when CompanyCategory is empty. Confirmed by live
   reproduction: this company showed checked categories/interventions while
   CompanyCategory/CompanyIntervention were both 0 in the database at that
@@ -457,7 +457,7 @@ SOURCE_OF_PRESELECTED_CATEGORIES = services-configuration-page.tsx:143-151 —
 MATCHING_SOURCE_OF_TRUTH = CompanyIntervention only (joined directly in
   resolve-request-dispatch-candidates.ts), with Company.{status, isActive,
   operatingRadiusKm, geoLocationId} as the remaining eligibility gates.
-  Company.onboardingCategorySlug and Category.projectGroupIds are never
+  Company.legacyOnboardingCategorySnapshot and Category.projectGroupIds are never
   read by matching — confirmed by full-text inspection of the matching
   query.
 DEAD_COLUMNS_FOUND = NONE beyond what the geo refoundation already removed.

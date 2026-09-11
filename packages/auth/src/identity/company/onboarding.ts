@@ -5,7 +5,6 @@ import {
 import {
   prisma,
   resolveCategoryBySlugWithClient,
-  resolveInterventionsForCategoryIdsWithClient,
   setCompanyLocationWithClient,
   writeCompanyServiceConfigurationWithClient,
 } from "@esigenta/database"
@@ -18,6 +17,7 @@ import {
 import {
   notifyAdminsOfCompanyPendingReview,
 } from "./notify-admins-company-pending-review"
+import { resolveOnboardingInterventionIdsWithClient } from "./resolve-onboarding-intervention-ids"
 
 const allowedOperatingRadiusKm = [
   10,
@@ -71,7 +71,7 @@ export type CreateCompanyProfileInput = {
 
 export type CreateCompanyForUserInput = {
   userId: string
-  onboardingCategorySlug?: string
+  initialCategorySlug?: string
   company: CreateCompanyProfileInput
 }
 
@@ -119,7 +119,7 @@ export class CompanyOnboardingError extends Error {
 /**
  * Thrown only inside the createCompanyForUser transaction, when the
  * onboarding category preset cannot be applied (unknown slug, or a real
- * Category whose ProjectGroups resolve to zero Intervention rows — a
+ * Category whose onboarding defaults resolve to zero Intervention rows — a
  * catalog inconsistency, not a user input error). Thrown mid-transaction
  * so Prisma rolls back Company/GeoLocation/CompanyMembership atomically —
  * there is no successful path that leaves a Company without its category
@@ -237,14 +237,10 @@ function normalizeCompanyProfile(
 
 function buildCompanyCreateData({
   company,
-  onboardingCategorySlug,
 }: {
   company: ReturnType<
     typeof normalizeCompanyProfile
   >
-  onboardingCategorySlug:
-    | string
-    | undefined
 }): Prisma.CompanyCreateInput {
   return {
     name: company.name,
@@ -261,17 +257,12 @@ function buildCompanyCreateData({
             company.website,
         }
       : {}),
-    ...(onboardingCategorySlug
-      ? {
-          onboardingCategorySlug,
-        }
-      : {}),
   }
 }
 
 export async function createCompanyForUser({
   userId,
-  onboardingCategorySlug,
+  initialCategorySlug,
   company,
 }: CreateCompanyForUserInput): Promise<CreateCompanyForUserResult> {
   const memberships =
@@ -304,8 +295,8 @@ export async function createCompanyForUser({
   const normalizedCompany =
     normalizeCompanyProfile(company)
 
-  const normalizedOnboardingCategorySlug =
-    normalizeText(onboardingCategorySlug)
+  const normalizedInitialCategorySlug =
+    normalizeText(initialCategorySlug)
 
   const existingCompany =
     await prisma.company.findUnique({
@@ -341,11 +332,11 @@ export async function createCompanyForUser({
           | { categoryId: string; interventionIds: string[] }
           | null = null
 
-        if (normalizedOnboardingCategorySlug) {
+        if (normalizedInitialCategorySlug) {
           const resolvedCategory =
             await resolveCategoryBySlugWithClient(
               tx,
-              normalizedOnboardingCategorySlug,
+              normalizedInitialCategorySlug,
             )
 
           if (!resolvedCategory) {
@@ -355,21 +346,36 @@ export async function createCompanyForUser({
             )
           }
 
-          const { interventions } =
-            await resolveInterventionsForCategoryIdsWithClient(tx, [
-              resolvedCategory.id,
-            ])
+          let interventionIds: string[]
 
-          if (interventions.length === 0) {
+          try {
+            interventionIds =
+              await resolveOnboardingInterventionIdsWithClient(
+                tx,
+                normalizedInitialCategorySlug,
+              )
+          } catch (error) {
+            console.error("company_onboarding_category_preset_invalid", {
+              categorySlug: normalizedInitialCategorySlug,
+              categoryId: resolvedCategory.id,
+              error,
+            })
+            throw new CompanyOnboardingCategoryError(
+              "company_category_configuration_unavailable",
+              "Non è possibile completare la registrazione con questa categoria in questo momento. Riprova più tardi o contatta l'assistenza.",
+            )
+          }
+
+          if (interventionIds.length === 0) {
             // Catalog inconsistency, not a user input error: a real
-            // Category whose ProjectGroups resolve to zero Intervention
+            // Category whose onboarding defaults resolve to zero Intervention
             // rows. Logged via the existing console-based structured
             // logging convention (see notify-admins-company-pending-review.ts)
             // — no new notification system introduced.
             console.error(
               "company_onboarding_category_preset_empty",
               {
-                categorySlug: normalizedOnboardingCategorySlug,
+                categorySlug: normalizedInitialCategorySlug,
                 categoryId: resolvedCategory.id,
               },
             )
@@ -382,9 +388,7 @@ export async function createCompanyForUser({
 
           categoryPreset = {
             categoryId: resolvedCategory.id,
-            interventionIds: interventions.map(
-              (intervention) => intervention.id,
-            ),
+            interventionIds,
           }
         }
 
@@ -393,8 +397,6 @@ export async function createCompanyForUser({
             data: buildCompanyCreateData({
               company:
                 normalizedCompany,
-              onboardingCategorySlug:
-                normalizedOnboardingCategorySlug,
             }),
             select: {
               id: true,

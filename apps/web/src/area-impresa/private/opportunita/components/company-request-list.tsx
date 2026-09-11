@@ -37,10 +37,7 @@ type CompanyRequestListItem = {
   requestUnlockId?: string | null
   unlockedAt?: Date | null
   refundedAt?: Date | null
-  matchLevel?:
-    | "selected_intervention"
-    | "category"
-    | "explore"
+  matchLevel?: "selected_intervention"
 }
 
 type CompanyRequestListProps<
@@ -52,24 +49,9 @@ type CompanyRequestListProps<
   savedAction?: (formData: FormData) => Promise<void>
 }
 
-function getMatchLabel(
-  matchLevel:
-    | "selected_intervention"
-    | "category"
-    | "explore"
-    | null
-    | undefined,
-) {
+function getMatchLabel(matchLevel: "selected_intervention" | null | undefined) {
   if (matchLevel === "selected_intervention") {
     return "Molto compatibile"
-  }
-
-  if (matchLevel === "category") {
-    return "Nella tua categoria"
-  }
-
-  if (matchLevel === "explore") {
-    return "Non nel profilo"
   }
 
   return undefined

@@ -29,6 +29,7 @@ export type ServicesConfigurationPageProps = {
   searchParams: Promise<{
     error?: string
     saved?: string
+    onboarding?: string
   }>
 }
 
@@ -50,7 +51,7 @@ export async function ServicesConfigurationPage({
     areaLog("area.model.servicesConfiguration.start", {})
   }
 
-  const [{ error, saved }, actor] = await Promise.all([
+  const [{ error, saved, onboarding }, actor] = await Promise.all([
     searchParams,
     requireAreaImpresaAccess(),
   ])
@@ -131,7 +132,7 @@ export async function ServicesConfigurationPage({
   const categoryOptions: CategoryOption[] = categories.map((category) => ({
     id: category.id,
     name: category.name,
-    projectGroupIds: category.projectGroupIds,
+    suggestedInterventionIds: category.suggestedInterventionIds,
   }))
 
   const projectGroupOptions: ProjectGroupOption[] = projectGroups.map(
@@ -143,36 +144,32 @@ export async function ServicesConfigurationPage({
   )
 
   // Real saved configuration only (docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md).
-  // Never pre-fill from onboardingCategorySlug — a checkbox that appears
-  // checked must mean it is actually saved in CompanyCategory/CompanyIntervention.
+  // A checked control always reflects CompanyCategory/CompanyIntervention.
   const initialCategoryIds = company.categoryIds
   const initialInterventionIds = company.interventionIds
 
-  // Onboarding suggestion: display-only, shown unapplied, never fed into
-  // initialCategoryIds/initialInterventionIds above.
-  const onboardingCategory =
-    categories.find((cat) => cat.slug === company.onboardingCategorySlug) ??
-    null
-
   const errorMessage = error ? (errorMessages[error] ?? null) : null
   const savedMessage = saved === "1" ? "Configurazione salvata." : null
+  const isOnboarding = onboarding === "1"
 
   // Edit mode opens directly for an unconfigured company (nothing to
   // summarize yet) or right after a failed save (the error needs the form
   // visible to be actionable) — otherwise the page opens on the calm
   // read-only summary. See category-interventions-selector.tsx.
-  const startInEditMode = !company.isConfigured || errorMessage !== null
+  const startInEditMode =
+    isOnboarding || !company.isConfigured || errorMessage !== null
 
   return (
     <PageShell size="lg">
       <div className="max-w-4xl">
         <h1 className="eg-h1 mt-5 text-3xl font-semibold tracking-tight text-eg-ink">
-          Configura categorie e interventi
+          {isOnboarding ? "Lavori che esegui" : "Configura categorie e interventi"}
         </h1>
 
         <p className="mt-4 max-w-2xl text-sm leading-6 text-eg-text-muted">
-          Le categorie determinano la tua identità professionale. Gli
-          interventi determinano quali richieste puoi vedere.
+          {isOnboarding
+            ? "Abbiamo già selezionato alcuni lavori tipici della tua attività. Controllali e modifica quelli che non offri."
+            : "Le categorie determinano la tua identità professionale. Gli interventi determinano quali richieste puoi vedere."}
         </p>
 
         <Card className="mt-8 p-6">
@@ -191,17 +188,6 @@ export async function ServicesConfigurationPage({
               {company.isConfigured ? "Configurato" : "Non configurato"}
             </Badge>
           </div>
-
-          {!company.isConfigured && onboardingCategory ? (
-            <p className="mt-5 text-sm leading-6 text-eg-text-muted">
-              Suggerimento dalla registrazione:{" "}
-              <span className="font-medium text-eg-ink">
-                {onboardingCategory.name}
-              </span>
-              . Non è ancora salvato — selezionalo qui sotto e premi
-              &quot;Salva configurazione&quot; per applicarlo.
-            </p>
-          ) : null}
 
           {errorMessage ? (
             <div className="mt-5 border border-eg-error-border bg-eg-error-soft px-4 py-3 text-sm text-eg-error">
@@ -222,6 +208,8 @@ export async function ServicesConfigurationPage({
             initialInterventionIds={initialInterventionIds}
             action={updateServicesAction}
             startInEditMode={startInEditMode}
+            submitLabel={isOnboarding ? "Conferma e continua" : undefined}
+            continueAfterSave={isOnboarding}
           />
         </Card>
       </div>

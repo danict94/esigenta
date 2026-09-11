@@ -5,6 +5,12 @@ import { useFormStatus } from "react-dom";
 
 import { Badge, Button, Checkbox, Input, cn } from "@esigenta/ui";
 
+import {
+  initializeInterventionSelection,
+  replaceProjectGroupInterventionSelection,
+  toggleInterventionSelection,
+} from "./service-selection-state";
+
 type InterventionOption = {
   id: string;
   name: string;
@@ -21,13 +27,13 @@ export type CategoryOption = {
   id: string;
   name: string;
   /**
-   * Already resolved server-side (Category.projectGroupIds, see
+   * Already resolved server-side from canonical profession membership (see
    * packages/domain/src/company/services/get-services-configuration-page.ts)
    * — used here only to decide which already-fetched ProjectGroups to list
    * first for the currently selected categories. No category -> group ->
    * intervention mapping is computed in this component.
    */
-  projectGroupIds: string[];
+  suggestedInterventionIds: string[];
 };
 
 export type CategoryInterventionsSelectorProps = {
@@ -43,6 +49,8 @@ export type CategoryInterventionsSelectorProps = {
    * this component only holds the resulting local UI state.
    */
   startInEditMode: boolean;
+  submitLabel?: string;
+  continueAfterSave?: boolean;
 };
 
 const maxCategories = 6;
@@ -102,26 +110,35 @@ function getInterventionMatchesQuery(
 }
 
 // Which ProjectGroup ids belong to the given categories — a plain lookup
-// over data already resolved server-side (CategoryOption.projectGroupIds),
+// over effective Intervention ids already resolved server-side,
 // not a re-derivation of the category -> group mapping itself.
 function computePriorityProjectGroupIds(
   categories: CategoryOption[],
+  projectGroups: ProjectGroupOption[],
   categoryIds: string[],
 ): Set<string> {
   const categoryIdSet = new Set(categoryIds);
-  const groupIds = new Set<string>();
+  const suggestedInterventionIds = new Set<string>();
 
   for (const category of categories) {
     if (!categoryIdSet.has(category.id)) {
       continue;
     }
 
-    for (const groupId of category.projectGroupIds) {
-      groupIds.add(groupId);
+    for (const interventionId of category.suggestedInterventionIds) {
+      suggestedInterventionIds.add(interventionId);
     }
   }
 
-  return groupIds;
+  return new Set(
+    projectGroups
+      .filter((group) =>
+        group.interventions.some((intervention) =>
+          suggestedInterventionIds.has(intervention.id),
+        ),
+      )
+      .map((group) => group.id),
+  );
 }
 
 // Order-independent comparison — the form works with plain string[] ids,
@@ -153,12 +170,12 @@ function formatNameList(names: string[]): string {
 // Reads pending state from the nearest ancestor <form>, so Save reflects
 // the actual in-flight submission and disables itself against a double
 // click/tap without any extra state wiring in the parent component.
-function SaveConfigurationButton() {
+function SaveConfigurationButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
 
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Salvataggio…" : "Salva configurazione"}
+      {pending ? "Salvataggio…" : label}
     </Button>
   );
 }
@@ -170,6 +187,8 @@ export function CategoryInterventionsSelector({
   initialInterventionIds,
   action,
   startInEditMode,
+  submitLabel = "Salva configurazione",
+  continueAfterSave = false,
 }: CategoryInterventionsSelectorProps) {
   const [mode, setMode] = useState<"view" | "edit">(
     startInEditMode ? "edit" : "view",
@@ -183,7 +202,7 @@ export function CategoryInterventionsSelector({
     Record<string, number>
   >({});
   const [selectedInterventionIds, setSelectedInterventionIds] = useState(
-    initialInterventionIds,
+    () => initializeInterventionSelection(initialInterventionIds),
   );
 
   const selectedCategoryIdSet = useMemo(
@@ -201,8 +220,13 @@ export function CategoryInterventionsSelector({
   // When no category is selected, there is nothing to prioritize: every
   // group renders in the single main list, matching the pre-UX2 behaviour.
   const priorityProjectGroupIdSet = useMemo(
-    () => computePriorityProjectGroupIds(categories, selectedCategoryIds),
-    [categories, selectedCategoryIds],
+    () =>
+      computePriorityProjectGroupIds(
+        categories,
+        projectGroups,
+        selectedCategoryIds,
+      ),
+    [categories, projectGroups, selectedCategoryIds],
   );
   const priorityGroups = useMemo(
     () =>
@@ -228,6 +252,7 @@ export function CategoryInterventionsSelector({
   >(() => {
     const initialPriorityIds = computePriorityProjectGroupIds(
       categories,
+      projectGroups,
       initialCategoryIds,
     );
     const firstPriorityGroup = projectGroups.find((group) =>
@@ -246,6 +271,7 @@ export function CategoryInterventionsSelector({
   const [showOtherGroups, setShowOtherGroups] = useState(() => {
     const initialPriorityIds = computePriorityProjectGroupIds(
       categories,
+      projectGroups,
       initialCategoryIds,
     );
 
@@ -317,11 +343,7 @@ export function CategoryInterventionsSelector({
 
   function toggleIntervention(interventionId: string) {
     setSelectedInterventionIds((currentInterventionIds) =>
-      currentInterventionIds.includes(interventionId)
-        ? currentInterventionIds.filter(
-            (currentInterventionId) => currentInterventionId !== interventionId,
-          )
-        : [...currentInterventionIds, interventionId],
+      toggleInterventionSelection(currentInterventionIds, interventionId),
     );
   }
 
@@ -344,21 +366,14 @@ export function CategoryInterventionsSelector({
     const groupInterventionIds = projectGroup.interventions.map(
       (intervention) => intervention.id,
     );
-    const groupInterventionIdSet = new Set(groupInterventionIds);
     const allSelected = isProjectGroupFullySelected(projectGroup);
 
     setSelectedInterventionIds((currentInterventionIds) => {
-      if (allSelected) {
-        return currentInterventionIds.filter(
-          (interventionId) => !groupInterventionIdSet.has(interventionId),
-        );
-      }
-
-      const remaining = currentInterventionIds.filter(
-        (interventionId) => !groupInterventionIdSet.has(interventionId),
+      return replaceProjectGroupInterventionSelection(
+        currentInterventionIds,
+        groupInterventionIds,
+        !allSelected,
       );
-
-      return [...remaining, ...groupInterventionIds];
     });
   }
 
@@ -622,6 +637,9 @@ export function CategoryInterventionsSelector({
 
   return (
     <form action={action} className="mt-6 space-y-8">
+      {continueAfterSave ? (
+        <Input type="hidden" name="continue" value="1" readOnly />
+      ) : null}
       {hiddenSelectedInterventionIds.map((interventionId) => (
         <Input
           key={interventionId}
@@ -748,7 +766,7 @@ export function CategoryInterventionsSelector({
             </Button>
           ) : null}
 
-          <SaveConfigurationButton />
+          <SaveConfigurationButton label={submitLabel} />
         </div>
       </div>
     </form>

@@ -15,6 +15,7 @@
     "@esigenta/database": "workspace:*",
     "@esigenta/notifications": "workspace:*",
     "@esigenta/shared": "workspace:*",
+    "@esigenta/taxonomy": "workspace:*",
     "@prisma/client": "^7.8.0",
     "better-auth": "^1.6.11"
   },

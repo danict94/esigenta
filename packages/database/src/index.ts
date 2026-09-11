@@ -16,17 +16,9 @@ export type { SetRequestLocationResult } from "./geo/set-request-location"
 // @esigenta/domain.
 export { getAdminNotificationRecipientEmails } from "./admin/get-admin-notification-recipients"
 
-// CATALOG / COMPANY CONFIGURATION — same cross-package placement reason as
-// above: @esigenta/auth's onboarding bootstrap must also resolve/write
-// CompanyCategory/CompanyIntervention and cannot depend on
-// @esigenta/domain. @esigenta/domain's request eligibility and services
-// configuration reuse these same primitives instead of reimplementing the
-// Category -> ProjectGroup -> Intervention traversal or the replace-set
-// write a second time.
+// CATALOG / COMPANY CONFIGURATION persistence boundaries shared with auth.
 export { resolveCategoryBySlugWithClient } from "./catalog/resolve-category-by-slug"
 export type { ResolvedCategoryBySlug } from "./catalog/resolve-category-by-slug"
-export { resolveInterventionsForCategoryIdsWithClient } from "./catalog/resolve-interventions-for-category-ids"
-export type { CategoryInterventionRow } from "./catalog/resolve-interventions-for-category-ids"
 export { writeCompanyServiceConfigurationWithClient } from "./company/write-company-service-configuration"
 export type { WriteCompanyServiceConfigurationInput } from "./company/write-company-service-configuration"
 export { readCompanyMarketplaceCapabilitySnapshot } from "./company/read-company-marketplace-capability-snapshot"

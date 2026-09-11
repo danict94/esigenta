@@ -26,9 +26,9 @@ function normalizeIds(values: FormDataEntryValue[]): string[] {
   )
 }
 
-function redirectWithError(code: string): never {
+function redirectWithError(code: string, continueAfterSave: boolean): never {
   redirect(
-    `/area-impresa/configura-servizi?error=${encodeURIComponent(code)}`,
+    `/area-impresa/configura-servizi?error=${encodeURIComponent(code)}${continueAfterSave ? "&onboarding=1" : ""}`,
   )
 }
 
@@ -43,6 +43,7 @@ export async function updateServicesAction(
 
   const selectedInterventionIds = normalizeIds(formData.getAll("interventionIds"))
   const selectedCategoryIds = normalizeIds(formData.getAll("categoryIds"))
+  const continueAfterSave = formData.get("continue") === "1"
 
   const result = await updateCompanyServicesConfiguration(
     actor,
@@ -65,7 +66,11 @@ export async function updateServicesAction(
   }
 
   if (!result.ok) {
-    redirectWithError(result.code)
+    redirectWithError(result.code, continueAfterSave)
+  }
+
+  if (continueAfterSave) {
+    redirect("/area-impresa/richieste")
   }
 
   redirect("/area-impresa/configura-servizi?saved=1")

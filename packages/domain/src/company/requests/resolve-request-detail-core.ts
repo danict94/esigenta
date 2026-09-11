@@ -122,11 +122,6 @@ export async function resolveCompanyRequestDetailCore(
           status: true,
           interventionId: true,
           interventionSlug: true,
-          intervention: {
-            select: {
-              projectGroupId: true,
-            },
-          },
           geoLocation: {
             select: {
               city: true,
@@ -192,8 +187,6 @@ export async function resolveCompanyRequestDetailCore(
     companySnapshot,
     request: {
       interventionId: request.interventionId,
-      interventionProjectGroupId:
-        request.intervention?.projectGroupId ?? null,
       coordinates: request.geoLocation,
     },
     grants: {

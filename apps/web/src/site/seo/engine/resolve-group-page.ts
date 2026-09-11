@@ -1,4 +1,7 @@
-import { frozenTaxonomySource } from "@esigenta/taxonomy";
+import {
+  frozenTaxonomySource,
+  listPublicProfessionsForProjectGroup,
+} from "@esigenta/taxonomy";
 
 import {
   getSeoGroupLandingBySlug,
@@ -197,13 +200,13 @@ export function resolveGroupLandingPage(
     );
   }
 
-  const professionalCategories = frozenTaxonomySource.categories
-    .filter((category) => category.projectGroups.includes(content.slug))
-    .map((category) => ({
-      slug: category.slug,
-      name: category.name,
-      href: `/professionisti/${category.slug}`,
-    }));
+  const professionalCategories = listPublicProfessionsForProjectGroup(
+    content.slug,
+  ).map((category) => ({
+    slug: category.slug,
+    name: category.name,
+    href: `/professionisti/${category.slug}`,
+  }));
 
   return { content, interventions, featured, professionalCategories };
 }

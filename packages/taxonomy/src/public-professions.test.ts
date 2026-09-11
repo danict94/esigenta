@@ -62,6 +62,10 @@ test("public professions expose the frozen catalog without Prisma data", () => {
   assert.equal(detail?.category.name, "Impresa edile")
   assert.equal(detail?.projectGroups.length, 6)
   assert.equal(getPublicProfessionDetail("does-not-exist"), null)
+  assert.equal(getPublicProfessionDetail("termoidraulico"), null)
+  assert.equal(getPublicProfessionDetail("muratore"), null)
+  assert.equal(getPublicProfessionDetail("architetto"), null)
+  assert.equal(getPublicProfessionDetail("ingegnere"), null)
 })
 
 test("draft interventions are excluded from detail and hub counts", () => {
@@ -95,6 +99,42 @@ test("draft interventions are excluded from detail and hub counts", () => {
     ["published-a"],
   )
   assert.equal(hubItem.interventionCount, 1)
+})
+
+test("public readiness gates hub, detail, static-param and sitemap slug sources", () => {
+  const baseCategory = source().categories[0]!
+  const fixture = source({
+    categories: [
+      baseCategory,
+      {
+        ...baseCategory,
+        id: "category-hidden",
+        slug: "category-hidden",
+        name: "Category Hidden",
+        isPublic: false,
+      },
+      {
+        ...baseCategory,
+        id: "category-public",
+        slug: "category-public",
+        name: "Category Public",
+        isPublic: true,
+      },
+    ],
+  })
+
+  const catalog = composePublicProfessionCatalog(fixture)
+  const expectedPublicSlugs = ["category-a", "category-public"]
+
+  assert.deepEqual(catalog.categorySlugs, expectedPublicSlugs)
+  assert.deepEqual(
+    catalog.hubItems.map((item) => item.slug),
+    expectedPublicSlugs,
+  )
+  assert.deepEqual(
+    catalog.details.map((detail) => detail.category.slug),
+    expectedPublicSlugs,
+  )
 })
 
 test("a missing Category to ProjectGroup reference fails fast", () => {
@@ -177,5 +217,20 @@ test("a public Category without shortDescription fails fast", () => {
   assert.throws(
     () => composePublicProfessionCatalog(fixture),
     /shortDescription cannot be empty/,
+  )
+})
+
+test("a non-boolean public readiness value fails fast", () => {
+  const fixture = source()
+  const category = fixture.categories[0]!
+
+  fixture.categories[0] = {
+    ...category,
+    isPublic: "yes",
+  } as unknown as typeof category
+
+  assert.throws(
+    () => composePublicProfessionCatalog(fixture),
+    /isPublic must be a boolean when provided/,
   )
 })

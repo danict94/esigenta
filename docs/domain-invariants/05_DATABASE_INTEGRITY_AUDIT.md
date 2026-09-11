@@ -100,13 +100,13 @@ task named — has **zero** orphans.
 ### `Company`
 | Column | Reads | Writes | Classification |
 | --- | --- | --- | --- |
-| `onboardingCategorySlug` | `services-configuration-page.tsx` (suggestion display only) | `onboarding.ts` (signup) | **LEGACY** (Phase 1 — restricted to onboarding-suggestion role, confirmed not read by matching/visibility/readiness) |
+| `legacyOnboardingCategorySnapshot` | `services-configuration-page.tsx` (suggestion display only) | `onboarding.ts` (signup) | **LEGACY** (Phase 1 — restricted to onboarding-suggestion role, confirmed not read by matching/visibility/readiness) |
 | `geoLocationId` | every geo-aware reader (Phase geo refoundation) | `set-company-location.ts` (sole writer) | **ACTIVE / SOURCE_OF_TRUTH** |
 | `operatingRadiusKm` | matching, dashboard, detail page | onboarding, profile update | **ACTIVE** |
 | `isActive`/`deletedAt`/`status` | `isCompanyMarketplaceReady` (Phase 2, sole reader of this exact combination) | `mutateCompanyStatus`/its 3 wrappers (admin-companies.ts) | **ACTIVE** |
 | `website`, `phone`, `vatNumber`, `name` | profile page, admin company list | onboarding, profile update | **ACTIVE** |
 
-`CompanyProfileData.onboardingCategorySlug` (the **read-side return
+`CompanyProfileData.legacyOnboardingCategorySnapshot` (the **read-side return
 value** in `get-profile-page.ts`, not the column itself) — confirmed in
 Phase 1 as returned but never rendered by `profile-page.tsx`. Re-confirmed
 here: still true, still unfixed (correctly deferred — Phase 1 explicitly
@@ -240,7 +240,7 @@ informative). Structural review instead:
 | Item | Group | Classification |
 | --- | --- | --- |
 | 3 orphaned `GeoLocation` rows | Rows (not schema) | `SAFE_REMOVE_NOW` — confirmed unreferenced by any FK; deleting them is a data operation, not a code/schema change, and carries no risk since nothing points to them |
-| `CompanyProfileData.onboardingCategorySlug` passthrough field | Code (domain function return type) | `REMOVE_PHASE_6` — confirmed unused by `profile-page.tsx`; removing it narrows a public API surface, which this audit's prior phases consistently deferred to a dedicated cleanup phase rather than doing opportunistically |
+| `CompanyProfileData.legacyOnboardingCategorySnapshot` passthrough field | Code (domain function return type) | `REMOVE_PHASE_6` — confirmed unused by `profile-page.tsx`; removing it narrows a public API surface, which this audit's prior phases consistently deferred to a dedicated cleanup phase rather than doing opportunistically |
 | `NotificationChannel.WHATSAPP` enum member | Enum | `KEEP` — explicit forward placeholder, costs nothing to leave, would have to be re-added the moment WhatsApp delivery is actually built |
 | `ConversationType.COMPANY_ADMIN`/`ADMIN_CUSTOMER`/`INTERNAL_ADMIN` | Enum | `KEEP` (not `SAFE_REMOVE`) — these read as intentional forward declarations for admin-involved conversation types, not leftovers from a removed feature (no removed code referencing them was found); removing them would be guessing at product intent this audit cannot confirm |
 | `CustomerTokenPurpose.REVIEW_ACCESS` | Enum | `KEEP` — same reasoning, and explicitly self-documented as intentional in the schema comment |
@@ -259,10 +259,10 @@ ORPHAN_TABLES_FOUND = 0 (no table is itself orphaned/unreferenced; the
 ORPHAN_ROWS_FOUND = 3 (GeoLocation rows with no owning Company or Request
   — confirmed live, unchanged from the geo refoundation's own finding;
   every other table checked has zero orphans)
-DEAD_COLUMNS_FOUND = 1 confirmed (CompanyProfileData.onboardingCategorySlug
+DEAD_COLUMNS_FOUND = 1 confirmed (CompanyProfileData.legacyOnboardingCategorySnapshot
   passthrough — a return-value field, not a database column itself;
-  the underlying Company.onboardingCategorySlug column is LEGACY/restricted,
-  not dead, since it's still read by the Configura Servizi suggestion banner)
+  the underlying onboarding snapshot column was subsequently removed by
+  the final schema cleanup once its last consumers disappeared)
 DEAD_TABLES_FOUND = 0 — every table has a confirmed active reader and
   writer in current application code (or is owned by better-auth)
 DUPLICATE_DATA_FOUND = 1 case (Request.interventionSlug vs. interventionId),
@@ -273,7 +273,7 @@ UNUSED_INDEXES_FOUND = 0 currently present — all previously-dead geo and
   refoundation phases; nothing unused remains in the live schema
 PHASE_6_CLEANUP_READY = PARTIALLY — one safe, immediate data cleanup
   (delete the 3 orphaned GeoLocation rows) and one safe, immediate code
-  cleanup (remove the unused onboardingCategorySlug passthrough) are ready
+  cleanup (remove the unused legacyOnboardingCategorySnapshot passthrough) are ready
   now. Three enum members (CLOSED, and the full credit-system enum sweep)
   are explicitly DEFERRED, not cleared, pending a dedicated, narrower check
   this audit's depth did not reach. No SAFE_REMOVE_NOW table, column, or

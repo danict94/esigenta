@@ -3,7 +3,6 @@ export {
 } from "./get-requests-list-page"
 export type {
   AvailableCompanyRequest,
-  CompanyRequestMatchLevel,
   CompanyRequestsListPageResult,
   RequestDashboardCompanyProfile,
   RequestDashboardFilterOptions,

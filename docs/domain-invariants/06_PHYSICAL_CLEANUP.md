@@ -8,27 +8,25 @@ database (`Esigenta`, project `purple-glitter-37268985`).
 
 ---
 
-## TASK 1 — `onboardingCategorySlug` passthrough removed
+## TASK 1 — `legacyOnboardingCategorySnapshot` passthrough removed
 
 **File**: `packages/domain/src/company/profile/get-profile-page.ts`
 
 Removed:
-- `CompanyProfileData.onboardingCategorySlug` field
+- `CompanyProfileData.legacyOnboardingCategorySnapshot` field
 - `CompanyProfileRow.onboarding_category_slug` field
-- the `c."onboardingCategorySlug" AS onboarding_category_slug` SQL select
+- the `c."legacyOnboardingCategorySnapshot" AS onboarding_category_slug` SQL select
   column
-- the `onboardingCategorySlug: row.onboarding_category_slug` assignment
+- the `legacyOnboardingCategorySnapshot: row.onboarding_category_slug` assignment
 - one stale comment ("fallback category included") describing behavior
   Phase 1 had already removed but the comment never caught up to
 
-**What was not touched**: `Company.onboardingCategorySlug` the database
-column itself, and its two legitimate remaining readers/writers
-(`onboarding.ts` at signup, `services-configuration-page.tsx`'s unsaved
-suggestion banner) — both confirmed still in place, unaffected, per Phase
-1's design. This task removed only the one confirmed-dead passthrough,
-not the column or its restricted, intentional uses elsewhere.
+**Subsequent final schema cleanup**: after signup and service configuration
+were migrated to their canonical sources, the onboarding snapshot column,
+its index, and the remaining naming residue were removed. No runtime reader
+or writer remains.
 
-**Verification**: repo-wide search for `company.onboardingCategorySlug`
+**Verification**: repo-wide search for `company.legacyOnboardingCategorySnapshot`
 under `apps/web/src/area-impresa/private/account/profilo/` (the one place
 that could have read this field) returns zero matches. Search for
 `CompanyProfileData` across the whole repo returns only the type's own
@@ -137,11 +135,9 @@ not cleanup candidates.
 
 ## TASK 5 — Integrity verification
 
-- `onboardingCategorySlug` dead-passthrough usage: **0** — confirmed by
-  the Task 1 search above. (The column's own legitimate, restricted
-  usage at signup and in the Configura Servizi suggestion banner is
-  unaffected and intentionally out of scope — that is Phase 1's
-  `LEGACY`-classified, still-correct behavior, not a dangling reference.)
+- Removed onboarding snapshot usage: **0** — the later final schema cleanup
+  also removed the database column and index after all runtime consumers
+  had disappeared.
 - `GeoLocation` orphan generators: **0** — confirmed no hard-delete code
   path exists for `Company` or `Request` anywhere in the codebase.
 - New dangling references introduced by this phase's edits: **0** —
@@ -191,7 +187,7 @@ TYPECHECK_PASS = YES — full turbo typecheck, all 12 packages, forced
   rebuild, zero cache, zero errors.
 PHYSICAL_CLEANUP_COMPLETE = YES, for the scope this phase was given. Both
   Phase 5's SAFE_REMOVE_NOW items are now actually removed (the 3 orphan
-  GeoLocation rows, deleted; the dead onboardingCategorySlug passthrough,
+  GeoLocation rows, deleted; the dead legacyOnboardingCategorySnapshot passthrough,
   removed from code). The two DEFER items from Phase 5
   (RequestStatus.CLOSED, the full credit-system enum sweep) remain exactly
   where Phase 5 left them — investigated further here only for CLOSED

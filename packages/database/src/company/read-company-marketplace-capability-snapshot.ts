@@ -14,9 +14,6 @@ export type CompanyMarketplaceCapabilitySnapshotRow = {
   } | null
   categories: Array<{
     categoryId: string
-    category: {
-      projectGroupIds: string[]
-    }
   }>
   interventions: Array<{
     interventionId: string
@@ -48,11 +45,6 @@ export async function readCompanyMarketplaceCapabilitySnapshot(
       categories: {
         select: {
           categoryId: true,
-          category: {
-            select: {
-              projectGroupIds: true,
-            },
-          },
         },
       },
       interventions: {

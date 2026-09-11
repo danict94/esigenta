@@ -132,10 +132,10 @@ export async function completeCompanyOnboardingAction(
     }
   }
 
-  const onboardingCategorySlug =
+  const initialCategorySlug =
     normalizeOptionalText(input.categorySlug)
 
-  if (!onboardingCategorySlug) {
+  if (!initialCategorySlug) {
     return {
       ok: false,
       code: "invalid_company_category",
@@ -169,7 +169,7 @@ export async function completeCompanyOnboardingAction(
   try {
     const result =
       await createCompanyForCurrentUser({
-        onboardingCategorySlug,
+        initialCategorySlug,
         company: {
           name: name.value,
           vatNumber: vatNumber.value,

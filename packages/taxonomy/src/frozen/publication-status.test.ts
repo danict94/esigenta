@@ -24,7 +24,7 @@ function allInterventions() {
 }
 
 test("frozen taxonomy counts match the migrated baseline", () => {
-  assert.equal(frozenTaxonomySource.categories.length, 13)
+  assert.equal(frozenTaxonomySource.categories.length, 17)
   assert.equal(frozenTaxonomySource.projectGroups.length, 20)
   assert.equal(allInterventions().length, 101)
 })

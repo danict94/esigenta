@@ -2,13 +2,13 @@ import type { CompanyActor } from "@esigenta/auth"
 import { prisma } from "@esigenta/database"
 
 import { deriveCompanyConfigurationStatus } from "../configuration/company-configuration-status"
+import { resolveConfigurableCategorySuggestions } from "./resolve-configurable-category-suggestions"
 
 type PerfRecorder = (label: string, ms: number) => void
 
 type CompanyConfigRow = {
   id: string
   name: string
-  onboarding_category_slug: string | null
   category_ids: string[] | null
   intervention_ids: string[] | null
 }
@@ -17,7 +17,6 @@ type CategoryRow = {
   id: string
   slug: string
   name: string
-  project_group_ids: string[] | null
 }
 
 type ProjectGroupRow = {
@@ -35,12 +34,6 @@ type ProjectGroupRow = {
 export type CompanyServicesConfigurationState = {
   id: string
   name: string
-  /**
-   * Onboarding memory only — a one-time signup suggestion. Never treated
-   * as configuration; isConfigured below is the only real signal. See
-   * docs/domain-invariants/01_CONFIGURATION_CONSOLIDATION.md.
-   */
-  onboardingCategorySlug: string | null
   categoryIds: string[]
   interventionIds: string[]
   isConfigured: boolean
@@ -50,7 +43,7 @@ export type ConfigurableCategory = {
   id: string
   slug: string
   name: string
-  projectGroupIds: string[]
+  suggestedInterventionIds: string[]
 }
 
 export type ConfigurableProjectGroup = {
@@ -86,7 +79,6 @@ export async function getCompanyServicesConfigurationPage(
       SELECT
         c."id"                      AS id,
         c."name"                    AS name,
-        c."onboardingCategorySlug"  AS onboarding_category_slug,
         (
           SELECT COALESCE(json_agg(cc."categoryId"), '[]'::json)
           FROM "CompanyCategory" cc
@@ -105,8 +97,7 @@ export async function getCompanyServicesConfigurationPage(
       SELECT
         cat."id"                       AS id,
         cat."slug"                     AS slug,
-        cat."name"                     AS name,
-        cat."projectGroupIds"          AS project_group_ids
+        cat."name"                     AS name
       FROM "Category" cat
       ORDER BY cat."name"
     `,
@@ -147,20 +138,12 @@ export async function getCompanyServicesConfigurationPage(
     ? {
         id: companyRow.id,
         name: companyRow.name,
-        onboardingCategorySlug: companyRow.onboarding_category_slug,
         ...deriveCompanyConfigurationStatus({
           categoryIds: (companyRow.category_ids as string[] | null) ?? [],
           interventionIds: (companyRow.intervention_ids as string[] | null) ?? [],
         }),
       }
     : null
-
-  const categories: ConfigurableCategory[] = categoryRows.map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    name: row.name,
-    projectGroupIds: (row.project_group_ids as string[] | null) ?? [],
-  }))
 
   const projectGroups: ConfigurableProjectGroup[] = projectGroupRows.map(
     (row) => ({
@@ -171,6 +154,9 @@ export async function getCompanyServicesConfigurationPage(
         (row.interventions as ConfigurableProjectGroup["interventions"]) ?? [],
     }),
   )
+
+  const categories: ConfigurableCategory[] =
+    resolveConfigurableCategorySuggestions(categoryRows, projectGroups)
 
   return { company, categories, projectGroups }
 }
