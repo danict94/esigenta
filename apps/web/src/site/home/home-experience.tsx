@@ -2,8 +2,11 @@
 
 import ReactDOM from "react-dom";
 
+import type { PublicProfessionHubItem } from "@esigenta/taxonomy/public-professions";
+
 import { FeaturedWorkSection } from "./featured-work-section";
 import { HomeHero } from "./home-hero";
+import { HomeProfessionsSection } from "./home-professions-section";
 import { HomeTrustSection } from "./home-trust-section";
 import { ProcessSteps } from "./process-steps";
 
@@ -21,9 +24,13 @@ type HomeExperienceProps = {
   // dichiarato dal chiamante (home-page.tsx), che lo condivide anche con
   // BusinessAccessTab. Questo componente non conosce il valore concreto.
   heroBoundaryId: string;
+  homeProfessions: readonly PublicProfessionHubItem[];
 };
 
-export function HomeExperience({ heroBoundaryId }: HomeExperienceProps) {
+export function HomeExperience({
+  heroBoundaryId,
+  homeProfessions,
+}: HomeExperienceProps) {
   ReactDOM.preload(HOME_HERO_IMAGE_SRC_MOBILE, {
     as: "image",
     fetchPriority: "high",
@@ -43,6 +50,7 @@ export function HomeExperience({ heroBoundaryId }: HomeExperienceProps) {
       <div id={heroBoundaryId} aria-hidden="true" className="h-px" />
       <ProcessSteps />
       <FeaturedWorkSection />
+      <HomeProfessionsSection professions={homeProfessions} />
       <HomeTrustSection />
     </main>
   );

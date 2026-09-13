@@ -1,6 +1,7 @@
 import { BusinessAccessTab } from "../shell/business-access-tab";
 import { Footer } from "../shell/footer";
 import { Navbar } from "../shell/navbar";
+import { listPublicProfessionHubItems } from "@esigenta/taxonomy/public-professions";
 import {
   buildOrganizationJsonLd,
   buildWebsiteJsonLd,
@@ -15,8 +16,29 @@ const HERO_BOUNDARY_ID = "hero-boundary";
 
 const websiteJsonLd = buildWebsiteJsonLd();
 const organizationJsonLd = buildOrganizationJsonLd();
+const homeProfessionSlugs = [
+  "impresa-edile",
+  "idraulico",
+  "elettricista",
+  "muratore",
+  "geometra",
+  "imbianchino",
+] as const;
 
 export function HomePage() {
+  const professionsBySlug = new Map(
+    listPublicProfessionHubItems().map((profession) => [profession.slug, profession]),
+  );
+  const homeProfessions = homeProfessionSlugs.map((slug) => {
+    const profession = professionsBySlug.get(slug);
+
+    if (!profession) {
+      throw new Error(`[home-professions] Missing public profession: ${slug}`);
+    }
+
+    return profession;
+  });
+
   return (
     <div className="eg-page-bg">
       <script
@@ -29,7 +51,10 @@ export function HomePage() {
       />
       <Grain />
       <Navbar />
-      <HomeExperience heroBoundaryId={HERO_BOUNDARY_ID} />
+      <HomeExperience
+        heroBoundaryId={HERO_BOUNDARY_ID}
+        homeProfessions={homeProfessions}
+      />
       <Footer />
       <BusinessAccessTab heroBoundaryId={HERO_BOUNDARY_ID} />
     </div>
