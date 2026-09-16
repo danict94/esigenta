@@ -175,6 +175,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               href: "/interventi/rifare-impianto-elettrico",
               label: "Scopri l’intervento",
             }}
+            align="left"
           />
         ) : null}
 

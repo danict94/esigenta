@@ -9,6 +9,7 @@ type MarketingFinalCtaProps = {
     href: string;
     label: string;
   };
+  align?: "center" | "left";
 };
 
 export function MarketingFinalCta({
@@ -17,17 +18,20 @@ export function MarketingFinalCta({
   href,
   ctaLabel,
   secondaryAction,
+  align = "center",
 }: MarketingFinalCtaProps) {
+  const isLeftAligned = align === "left";
+
   return (
     <section className="eg-theme-ink eg-section-editorial">
-      <div className="eg-container-narrow text-center">
+      <div className={isLeftAligned ? "eg-container" : "eg-container-narrow text-center"}>
         <h2 className="eg-h2">{title}</h2>
 
-        <p className="eg-body mx-auto mt-4 max-w-[58ch] text-eg-on-brand-muted">
+        <p className={isLeftAligned ? "eg-body mt-4 max-w-[58ch] text-eg-on-brand-muted" : "eg-body mx-auto mt-4 max-w-[58ch] text-eg-on-brand-muted"}>
           {description}
         </p>
 
-        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className={isLeftAligned ? "mt-7 flex flex-col items-start gap-4 sm:flex-row" : "mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"}>
           <Link
             href={href}
             prefetch={false}
