@@ -17,8 +17,31 @@ export type CostExtrasProps = {
   allRows: readonly PriceRow[];
 };
 
+const electricalExtraContent = {
+  "elettrico-ripristino-estetico-tracce": {
+    title: "Ripristino estetico finale",
+    description: "Rasatura, tinteggiatura e finiture necessarie dopo la chiusura grezza delle tracce.",
+  },
+  "elettrico-montante-contatore-quadro": {
+    title: "Montante contatore → quadro",
+    description: "Intervento sul collegamento tra contatore e quadro generale dell’abitazione.",
+  },
+  "elettrico-adeguamento-impianto-terra": {
+    title: "Adeguamento o rifacimento della messa a terra",
+    description: "Intervento generale sull’impianto di terra quando quello esistente richiede adeguamenti.",
+  },
+} as const;
+
+function isElectricalExtra(rows: PriceRow[]): boolean {
+  return rows.length === 3 && rows.every((row) => row.id in electricalExtraContent);
+}
+
 export function CostExtras({ rows, allRows }: CostExtrasProps) {
   if (rows.length === 0) return null;
+
+  if (isElectricalExtra(rows)) {
+    return <ElectricalExtrasSection rows={rows} />;
+  }
 
   return (
     <section aria-labelledby="extra-title" className="eg-section-editorial border-t border-eg-border">
@@ -39,6 +62,41 @@ export function CostExtras({ rows, allRows }: CostExtrasProps) {
           {rows.map((row) => (
             <ExtraCard key={row.id} row={row} allRows={allRows} />
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ElectricalExtrasSection({ rows }: { rows: PriceRow[] }) {
+  return (
+    <section aria-labelledby="extra-title" className="eg-section-editorial border-t border-eg-border">
+      <div className="eg-container">
+        <div className="mb-6 max-w-170">
+          <h2 id="extra-title" className={sectionTitleClassName}>
+            Cosa può far aumentare il prezzo
+          </h2>
+          <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
+            Alcune lavorazioni possono aggiungersi solo quando necessarie, in base alle condizioni dell’impianto e dell’immobile.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-eg-border">
+          {rows.map((row) => {
+            const content = electricalExtraContent[row.id as keyof typeof electricalExtraContent];
+
+            return (
+              <article key={row.id} className="border-t border-eg-border pt-4 lg:border-t-0 lg:px-5 lg:first:pl-0 lg:last:pr-0">
+                <h3 className="font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink">
+                  {content.title}
+                </h3>
+                <p className="mt-2 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
+                  Da valutare
+                </p>
+                <p className="mt-2.5 text-[13px] leading-normal text-eg-ink">{content.description}</p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

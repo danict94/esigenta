@@ -29,9 +29,23 @@ const cityInfluenceFactors: readonly string[] = [
 export type CostFactorsProps = {
   factors: readonly string[];
   topicLabel: string;
+  electricalVariant?: boolean;
 };
 
-export function CostFactors({ factors, topicLabel }: CostFactorsProps) {
+const electricalFactors = [
+  "piano dell’immobile e presenza dell’ascensore",
+  "facilità di accesso, parcheggio e carico/scarico",
+  "trasporto dei materiali e smaltimento delle macerie",
+  "eventuali vincoli condominiali sugli orari di lavoro",
+  "necessità di un progetto tecnico, quando previsto",
+  "disponibilità e costi dei professionisti nella zona",
+];
+
+export function CostFactors({ factors, topicLabel, electricalVariant = false }: CostFactorsProps) {
+  if (electricalVariant) {
+    return <ElectricalFactors />;
+  }
+
   return (
     <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
@@ -82,6 +96,32 @@ export function CostFactors({ factors, topicLabel }: CostFactorsProps) {
             </ul>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function ElectricalFactors() {
+  return (
+    <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
+      <div className="eg-container">
+        <div className="mb-6 max-w-170">
+          <h2 id="fattori-costo-title" className={sectionTitleClassName}>
+            Altri fattori che possono incidere sul preventivo
+          </h2>
+          <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
+            Oltre alle caratteristiche dell’impianto, il preventivo può variare in base al contesto del cantiere e ad altre esigenze tecniche.
+          </p>
+        </div>
+
+        <ul className="grid max-w-170 gap-x-8 gap-y-2 md:grid-cols-2">
+          {electricalFactors.map((factor) => (
+            <li key={factor} className="flex gap-2.5 text-[13.5px] leading-normal text-eg-ink">
+              <span aria-hidden="true" className="mt-1.5 size-1.5 shrink-0 rounded-full bg-eg-brand" />
+              <span>{factor}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

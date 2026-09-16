@@ -1611,13 +1611,11 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         id: "elettrico-punto-luce-completo",
         label: "Punto luce completo con un comando",
         category: "Punti elettrici",
-        categoryNote:
-          "Queste voci sono lavorazioni complete, comprensive della normale traccia locale e della sua chiusura grezza: quando fanno già parte di uno degli scenari qui sopra, non vanno sommate di nuovo.",
         unit: "cadauno",
         unitLabel: "per punto",
         range: "da 70 € a 110 € cad",
         plainExplanation:
-          "Comprende l'uscita luce, il comando/interruttore standard, il corrugato, i conduttori, le scatole, il frutto/supporto/placca standard, i collegamenti e la normale traccia locale necessaria, con la sua chiusura grezza.",
+          "Comprende uscita luce, comando standard, scatole, corrugato, conduttori, frutti e collegamenti, con la normale traccia locale e chiusura grezza.",
         note: "Fascia editoriale Esigenta, non un prezzo ufficiale puntuale: non è la stessa voce dei prezzi ufficiali di capitolato, che escludono sempre la traccia — un punto luce sotto traccia costa 26,85 € se singolo o 28,96 € se doppio (due punti dalla stessa derivazione), e un punto luce con tubazione a vista, senza incassarlo nel muro, costa 31,88 € (tutti Prezzario Emilia-Romagna 2025); un altro prezzario regionale (Friuli Venezia Giulia 2025) quota una posa a vista con grado di protezione IP54 a 40,55 €, capitolato non equivalente. Nessuna di queste voci ufficiali comprende la traccia: qui invece è compresa.",
         includes: "uscita luce, comando/interruttore standard, tubo corrugato, conduttori, scatole, frutto/supporto/placca standard, collegamenti, normale traccia locale necessaria, fissaggio, chiusura grezza ordinaria",
         excludes: "lampadario, plafoniera o altro corpo illuminante, linea dedicata lunga dal quadro, rasatura finale, tinteggiatura, murature particolari",
@@ -1632,7 +1630,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unitLabel: "per punto",
         range: "da 60 € a 90 € cad",
         plainExplanation:
-          "Comprende la presa standard, la scatola, il supporto/placca, il corrugato, i conduttori, i collegamenti e la derivazione ordinaria, con la normale traccia locale e la sua chiusura grezza.",
+          "Comprende presa, scatola, supporto e placca standard, corrugato, conduttori e collegamenti, con la normale traccia locale e chiusura grezza.",
         note: "Fascia editoriale Esigenta: non è la stessa voce dei prezzi ufficiali di capitolato, che escludono sempre la traccia — una presa completa 2P+T costa 49,72 € nella versione da 10 A o 56,07 € nella versione da 16 A (Prezzario Emilia-Romagna 2025); un altro prezzario regionale (Friuli Venezia Giulia 2025) quota una presa 2P+T 10A a 79,12 €, con un capitolato di posa diverso, non direttamente equivalente. Nessuna di queste voci ufficiali comprende la traccia: qui invece è compresa.",
         includes: "presa standard, scatola, supporto/placca, tubo/corrugato, conduttori, collegamenti, derivazione ordinaria, normale traccia, fissaggio, chiusura grezza",
         excludes: "linea dedicata lunga, rasatura, tinteggiatura, murature particolari",
@@ -1647,7 +1645,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unitLabel: "per comando",
         range: "da 45 € a 70 € cad",
         plainExplanation:
-          "Riguarda l'aggiunta di un secondo punto di comando a una luce già cablata (per esempio per accenderla da due posizioni diverse), non la creazione di un nuovo punto luce: comprende il comando, il cablaggio, l'apparecchio/placca e la normale traccia locale, con la sua chiusura grezza.",
+          "Permette di comandare una luce già cablata da un secondo punto. Comprende comando, cablaggio, apparecchio e normale lavorazione locale necessaria.",
         note: "Fascia editoriale Esigenta: la vecchia voce ufficiale \"Punto comando deviato\" costava 53,63 € (Prezzario Emilia-Romagna 2025, capitolato analitico con collaudo compreso) ma escludeva la traccia — qui invece è compresa. Se serve invece un punto luce nuovo, vedi \"Punto luce completo con un comando\" qui sopra.",
         includes: "comando aggiuntivo (deviato/invertito) su un punto luce già cablato, traccia locale per il nuovo comando, cablaggio, apparecchio e placca, fissaggio, chiusura grezza",
         excludes: "creazione di un nuovo punto luce indipendente, rasatura finale, tinteggiatura",
@@ -1662,7 +1660,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unitLabel: "per punto",
         range: "da 25 € a 45 € cad",
         plainExplanation:
-          "Si applica solo quando scatola, corrugato e percorso sono già presenti e utilizzabili: comprende l'apparecchio, il collegamento, la posa e la verifica, non la creazione della predisposizione.",
+          "Si applica quando scatola, corrugato e percorso sono già presenti e utilizzabili. Comprende apparecchio, collegamento, posa e verifica.",
         note: "Fascia editoriale Esigenta: un prezzario regionale (Friuli Venezia Giulia 2025) quota una voce simile di sola posa in scatola già predisposta a 15,18 €, senza materiali, tubazione, scatola o cavi. Non è il prezzo di un nuovo punto da creare da zero: se la predisposizione non è già presente e idonea, vedi \"Punto luce completo\" o \"Presa elettrica completa standard\" qui sopra.",
         includes: "apparecchio, collegamento, posa, verifica — solo quando scatola, corrugato/percorso e predisposizione sono già presenti e utilizzabili",
         excludes: "creazione della predisposizione stessa (traccia, scatola, corrugato), verifica dell'idoneità della predisposizione esistente quando richiede lavoro aggiuntivo",
@@ -1674,12 +1672,12 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Circuito interno standard",
         category: "Circuiti e distribuzione",
         categoryNote:
-          "Sono i cavi che portano la corrente dal quadro fino alla zona dove si trovano i punti luce e le prese: la sezione viene dimensionata dal professionista in base al carico, non è una scelta libera del cliente.",
+          "I circuiti collegano il quadro alle diverse zone o utenze dell’abitazione. Numero e sezione vengono dimensionati dal professionista in base ai carichi previsti.",
         unit: "cadauno",
         unitLabel: "per circuito",
         range: "da 200 € a 300 € cad",
         plainExplanation:
-          "È la linea che collega il quadro a una zona dell'abitazione per illuminazione e prese di uso ordinario, comprensiva di tubazione/percorso, conduttori, scatole di derivazione e collegamenti.",
+          "Linea per l’alimentazione ordinaria di illuminazione e prese di una zona dell’abitazione, comprensiva di percorso, conduttori, derivazioni e collegamenti.",
         note: "Fascia editoriale Esigenta: i prezzari ufficiali quotano le sezioni tecniche corrispondenti come \"dorsale interna\" — 2×1,5 mmq + T a 200,14 € e 2×2,5 mmq + T a 205,09 € (Prezzario Emilia-Romagna 2025, unità abitativa tipo, misurata dal centralino di appartamento). Non è il montante contatore-quadro.",
         includes: "linea dal quadro, tubazione/percorso ordinario, conduttori, scatole/derivazioni, collegamenti",
         excludes: "grandi opere murarie, montante contatore-quadro",
@@ -1694,7 +1692,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unitLabel: "per circuito",
         range: "da 250 € a 400 € cad",
         plainExplanation:
-          "È la linea dedicata a un carico specifico — forno, climatizzazione, un grande elettrodomestico o un'altra utenza dedicata — dimensionata con una sezione maggiore rispetto a un circuito standard.",
+          "Linea destinata a un’utenza specifica, come forno, climatizzazione o altri carichi dedicati, dimensionata in base alla potenza richiesta.",
         note: "Fascia editoriale Esigenta: non esiste una sezione fissa universale per \"circuito dedicato\", la sezione viene dimensionata in funzione del carico reale. I prezzari ufficiali quotano le sezioni tecniche corrispondenti come \"dorsale interna\" — 2×4 mmq + T a 218,75 €, 2×6 mmq + T a 253,05 € e 2×10 mmq + T a 361,86 € (Prezzario Emilia-Romagna 2025, unità abitativa tipo, sezioni maggiori tipicamente per linee dedicate a carichi specifici). Non è il montante contatore-quadro.",
         includes: "linea dal quadro dimensionata per il carico specifico, tubazione/percorso, conduttori di sezione adeguata, collegamenti",
         excludes: "grandi opere murarie, montante contatore-quadro",
@@ -1706,11 +1704,11 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Quadro generale — circa 4 circuiti protetti",
         category: "Quadro elettrico completo",
         categoryNote:
-          "Le fasce indicano il numero orientativo di circuiti protetti, non il numero di moduli del centralino. Il contenitore viene dimensionato sulla configurazione reale e può avere più moduli dei circuiti effettivamente cablati. Le tre fasce sono alternative: non vanno sommate tra loro.",
+          "Le fasce fanno riferimento al numero orientativo di circuiti protetti, non ai moduli del centralino. Le tre configurazioni sono alternative e il dimensionamento reale dipende dall’impianto.",
         unit: "a corpo",
         range: "da 500 € a 800 €",
         plainExplanation:
-          "Quadro generale completo per una configurazione con circa 4 circuiti protetti: involucro, dispositivi di protezione, cablaggio interno e verifica finale, materiale e posa comprese.",
+          "Configurazione indicativa per circa 4 circuiti protetti, comprensiva di quadro, dispositivi di protezione, cablaggio interno, posa e verifica finale.",
         note: "Fascia editoriale Esigenta: nessun prezzario consultato quota un quadro completo come pacchetto unico, solo singoli componenti. Valori puntuali preservati come riferimento tecnico (Prezzario Emilia-Romagna 2025, salvo indicazione diversa): magnetotermico differenziale 173,32 €, centralino da incasso vuoto 6 moduli 66,61 €, centralino da incasso vuoto 12 moduli 85,57 €; blocco differenziale, configurazione base 151,66 €, intermedia 184,87 €, maggiorata 281,37 € (Prezzario Friuli Venezia Giulia 2025). Non rappresentano il costo di un quadro completo, cablato e configurato: sono i componenti tecnici con cui viene costruita la fascia editoriale qui sopra, non un totale alternativo da usare al loro posto.",
         includes: "involucro/centralino adeguato, dispositivi di protezione coerenti con la configurazione, protezione dei circuiti, cablaggi interni, morsetti e accessori, identificazione dei circuiti, montaggio, collegamenti, verifica finale",
         excludes: "protezioni o configurazioni particolari non ordinarie (dipendono dal progetto/caso reale), quadro condominiale o di parti comuni",
@@ -1724,7 +1722,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "a corpo",
         range: "da 650 € a 1.000 €",
         plainExplanation:
-          "Quadro generale completo per una configurazione con circa 6 circuiti protetti: involucro, dispositivi di protezione, cablaggio interno e verifica finale, materiale e posa comprese.",
+          "Configurazione indicativa per circa 6 circuiti protetti, comprensiva di quadro, dispositivi di protezione, cablaggio interno, posa e verifica finale.",
         note: "Stesso principio della fascia da 4 circuiti qui sopra: nessun prezzario consultato quota un quadro completo come pacchetto unico. Il numero di moduli del centralino necessario dipende dalla configurazione reale (interruttore generale, differenziali, magnetotermici) e può essere superiore a 6.",
         includes: "involucro/centralino adeguato, dispositivi di protezione coerenti con la configurazione, protezione dei circuiti, cablaggi interni, morsetti e accessori, identificazione dei circuiti, montaggio, collegamenti, verifica finale",
         excludes: "protezioni o configurazioni particolari non ordinarie (dipendono dal progetto/caso reale), quadro condominiale o di parti comuni",
@@ -1738,7 +1736,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "a corpo",
         range: "da 850 € a 1.400 €",
         plainExplanation:
-          "Quadro generale completo per una configurazione con circa 8–10 circuiti protetti: involucro, dispositivi di protezione, cablaggio interno e verifica finale, materiale e posa comprese.",
+          "Configurazione indicativa per circa 8–10 circuiti protetti, comprensiva di quadro, dispositivi di protezione, cablaggio interno, posa e verifica finale.",
         note: "Stesso principio delle fasce qui sopra: nessun prezzario consultato quota un quadro completo come pacchetto unico. Non presuppone un'architettura fissa di differenziali/magnetotermici valida per ogni abitazione: la configurazione reale dipende dal progetto.",
         includes: "involucro/centralino adeguato, dispositivi di protezione coerenti con la configurazione, protezione dei circuiti, cablaggi interni, morsetti e accessori, identificazione dei circuiti, montaggio, collegamenti, verifica finale",
         excludes: "protezioni o configurazioni particolari non ordinarie (dipendono dal progetto/caso reale), quadro condominiale o di parti comuni",
@@ -1750,11 +1748,13 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Traccia e chiusura grezza — laterizio/forato",
         simpleLabel: "Apertura e chiusura grezza del muro per i cavi — mattoni forati",
         category: "Opere murarie",
+        categoryNote:
+          "Le fasce riguardano l’apertura della traccia e la successiva chiusura grezza.",
         unit: "al metro",
         unitLabel: "per metro di traccia",
         range: "da 15 € a 25 € al metro",
         plainExplanation:
-          "Apertura della traccia, normale assistenza/posa e chiusura grezza (tamponamento), su muratura in mattoni forati: la parete non è pronta da pitturare al termine di questa sola lavorazione.",
+          "Apertura e chiusura grezza della traccia su muratura in laterizio o mattoni forati.",
         note: "Fascia editoriale Esigenta (era prezzo ufficiale puntuale: 15,92 € al metro, Prezzario Emilia-Romagna 2025, capitolato generale edilizia non specifico dell'impiantistica elettrica, fino a 100 cmq di sezione).",
         includes: "apertura, normale assistenza/posa, fissaggio, chiusura grezza",
         excludes: "intonaco finale diffuso, rasatura, tinteggiatura, finitura estetica uniforme, trasporto e smaltimento delle macerie quando non già compresi",
@@ -1770,7 +1770,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unitLabel: "per metro di traccia",
         range: "da 20 € a 35 € al metro",
         plainExplanation:
-          "Stesso perimetro della traccia su mattoni forati, su una muratura più impegnativa da lavorare: la parete non è pronta da pitturare al termine di questa sola lavorazione.",
+          "Apertura e chiusura grezza della traccia su muratura piena o più impegnativa da lavorare.",
         note: "Fascia editoriale Esigenta (era prezzo ufficiale puntuale: 20,61 € al metro, Prezzario Emilia-Romagna 2025, capitolato generale edilizia non specifico dell'impiantistica elettrica, fino a 100 cmq di sezione).",
         includes: "apertura, normale assistenza/posa, fissaggio, chiusura grezza",
         excludes: "intonaco finale diffuso, rasatura, tinteggiatura, finitura estetica uniforme, trasporto e smaltimento delle macerie quando non già compresi",

@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { cn } from "@esigenta/ui";
 
@@ -15,7 +15,6 @@ import {
   serializeJsonLd,
 } from "../engine/schema-builder";
 import { PublicShell } from "../../shell/public-shell";
-import { FrameMarks } from "../../shared/frame-marks";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
 import { InternalPageIntro } from "../../shared/internal-page-intro";
 import { MarketingFinalCta } from "../../shared/marketing-final-cta";
@@ -34,6 +33,18 @@ import { sectionTitleClassName } from "./seo-section-title";
 export type CostGuidePageProps = {
   guide: CostGuide;
 };
+
+// Regola editoriale condivisa per le hero delle guide costi: una fascia in
+// euro resta leggibile nel testo introduttivo senza richiedere markup manuale
+// nei contenuti di ogni singola guida.
+const priceRangePattern = /\b\d+(?:[.,]\d+)?\s*(?:a|–|-)\s*\d+(?:[.,]\d+)?\s*€(?:\s*(?:al|\/)\s*(?:mq|m²))?/;
+const priceRangeSplitPattern = new RegExp(`(${priceRangePattern.source})`, "g");
+
+function emphasizePriceRanges(text: string): ReactNode {
+  return text.split(priceRangeSplitPattern).map((part, index) =>
+    priceRangePattern.test(part) ? <strong key={index}>{part}</strong> : part,
+  );
+}
 
 /**
  * Scope 4B — redesign responsive del template condiviso. Ordine delle
@@ -100,6 +111,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             { label: guide.title },
           ]}
           title={guide.h1}
+          wideContent={guide.slug === "rifare-impianto-elettrico"}
           // Fix UI review: il prezzo va SUBITO dopo l'H1 (afterTitle), prima
           // di descrizione/CTA — deve leggersi come risposta diretta alla
           // domanda del titolo, non come un blocco raggiunto dopo aver
@@ -107,7 +119,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           // riposizionato: nessun elemento nuovo, l'Hero non diventa più
           // pesante.
           afterTitle={
-            <>
+            guide.slug === "rifare-impianto-elettrico" ? null : <>
               <CostGuideHero
                 nationalRange={guide.nationalRange}
                 nationalRangeLabel={guide.nationalRangeLabel}
@@ -118,7 +130,11 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               <p className="mt-4 max-w-155 text-[13px] leading-[1.6] text-eg-text-muted">{priceNote}</p>
             </>
           }
-          description={guide.summary}
+          description={emphasizePriceRanges(
+            guide.slug === "rifare-impianto-elettrico"
+              ? "Il costo varia in base alla metratura, al numero di punti luce e prese, allo stato dell’impianto esistente, alla possibilità di riutilizzare le canalizzazioni e alla complessità delle opere murarie.\n\nIndicativamente, un rifacimento completo standard può costare da 55 a 90 €/mq. Se le canalizzazioni esistenti sono riutilizzabili, la fascia può scendere a 40–60 €/mq; per un impianto più articolato può invece arrivare mediamente a 80–110 €/mq."
+              : guide.summary
+          )}
           actions={
             <>
               <Link href={requestHref} className="eg-button-primary eg-button-arrow">
@@ -132,38 +148,21 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               ) : null}
             </>
           }
-          aside={
-            guide.heroImage ? (
-              // Scope 4B: aspect-[16/9] su mobile/tablet (era aspect-square
-              // anche lì) — un quadrato a piena larghezza su 320-390px
-              // "rubava" quasi metà del primo schermo, spingendo il prezzo
-              // sotto la piega. Da lg: torna square, dove l'immagine sta in
-              // una colonna stretta accanto al testo e il quadrato resta
-              // proporzionato.
-              <div className="relative mx-auto aspect-video w-full max-w-100 overflow-hidden shadow-eg-slab after:absolute after:inset-0 after:bg-eg-ink after:opacity-[0.14] after:mix-blend-multiply after:content-[''] lg:aspect-square lg:max-w-none">
-                <FrameMarks />
-                <Image
-                  src={guide.heroImage.src}
-                  alt={guide.heroImage.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 36vw, (min-width: 640px) 400px, calc(100vw - 44px)"
-                  className="object-cover"
-                />
-              </div>
-            ) : undefined
-          }
         />
 
+        <div className={guide.slug === "rifare-impianto-elettrico" ? "[&_.eg-section-editorial]:border-t-0 lg:[&_.eg-section-editorial]:py-14" : undefined}>
         <CostScenarioCards rows={classification.scenarioCards} />
 
-        <CostIncludedExcluded primary={classification.primary} />
+        {guide.slug === "rifare-impianto-elettrico" ? null : (
+          <CostIncludedExcluded primary={classification.primary} />
+        )}
 
         <CostExtras rows={classification.extras} allRows={guide.priceRows} />
 
         <CostSizeExamples
           sizeExamples={guide.sizeExamples}
           sizeExamplesIntro={guide.sizeExamplesIntro}
+          electricalVariant={guide.slug === "rifare-impianto-elettrico"}
         />
 
         <CostBreakdown
@@ -171,11 +170,18 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           allRows={guide.priceRows}
           sourceLabel={guide.sourceLabel}
           sourceYear={guide.sourceYear}
+          electricalVariant={guide.slug === "rifare-impianto-elettrico"}
         />
 
-        <CostReference pricePerSquareMeter={guide.pricePerSquareMeter} rows={classification.references} />
+        {guide.slug === "rifare-impianto-elettrico" ? null : (
+          <CostReference pricePerSquareMeter={guide.pricePerSquareMeter} rows={classification.references} />
+        )}
 
-        <CostFactors factors={guide.factors} topicLabel={guide.topicLabel} />
+        <CostFactors
+          factors={guide.factors}
+          topicLabel={guide.topicLabel}
+          electricalVariant={guide.slug === "rifare-impianto-elettrico"}
+        />
 
         <section aria-labelledby="approfondimenti-title" className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
@@ -292,12 +298,13 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             <SeoFaq faq={guide.faq} defaultOpenFirst />
           </div>
         </section>
+        </div>
 
         <MarketingFinalCta
-          title="Racconta il lavoro e confronta i preventivi"
-          description="Continua nella richiesta dedicata e indica dettagli, tempi e zona dell'intervento."
+          title="Richiedi preventivi per il tuo lavoro"
+          description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
           href={requestHref}
-          ctaLabel="Vai alla richiesta"
+          ctaLabel="Richiedi preventivi"
         />
       </div>
     </PublicShell>

@@ -21,6 +21,8 @@ type InternalPageIntroProps = {
   id?: string;
   titleId?: string;
   compact?: boolean;
+  /** Amplia il contenuto della hero da desktop in su senza modificarne l'ordine. */
+  wideContent?: boolean;
 };
 
 export function InternalPageIntro({
@@ -35,6 +37,7 @@ export function InternalPageIntro({
   id,
   titleId,
   compact = false,
+  wideContent = false,
 }: InternalPageIntroProps) {
   return (
     <header
@@ -57,7 +60,7 @@ export function InternalPageIntro({
               : undefined
           }
         >
-          <div className="max-w-190">
+          <div className={cn("max-w-190", wideContent && "lg:mr-auto lg:max-w-[56rem]")}>
             {eyebrow ? <p className="eg-eyebrow mb-4">{eyebrow}</p> : null}
             <h1 id={titleId} className="eg-h1 text-balance">
               {title}
@@ -65,10 +68,14 @@ export function InternalPageIntro({
 
             {afterTitle}
 
-            {description ? <p className="eg-page-lede mt-4 max-w-160">{description}</p> : null}
+            {description ? (
+              <p className={cn("eg-page-lede mt-4 max-w-160", wideContent && "lg:max-w-[56rem]")}>
+                {description}
+              </p>
+            ) : null}
 
             {actions ? (
-              <div className={cn("flex flex-wrap items-center gap-3", compact ? "mt-5" : "mt-7")}>
+              <div className={cn("flex flex-wrap items-center gap-3", compact ? "mt-5" : "mt-7", wideContent && "lg:mt-5")}>
                 {actions}
               </div>
             ) : null}

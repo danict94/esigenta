@@ -31,9 +31,10 @@ export type CostBreakdownProps = {
   allRows: readonly PriceRow[];
   sourceLabel?: string;
   sourceYear?: string;
+  electricalVariant?: boolean;
 };
 
-export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear }: CostBreakdownProps) {
+export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear, electricalVariant = false }: CostBreakdownProps) {
   if (rows.length === 0) return null;
 
   const groups = groupPriceRowsByCategory(rows);
@@ -49,7 +50,9 @@ export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear }: CostBr
           </h2>
 
           <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
-            Alcune di queste lavorazioni sono già comprese nel prezzo standard più sopra: quando lo sono, la riga lo indica esplicitamente e non va sommata di nuovo.
+            {electricalVariant
+              ? "Alcune lavorazioni possono essere già comprese negli scenari indicati sopra: in questi casi non vanno sommate una seconda volta."
+              : "Alcune di queste lavorazioni sono già comprese nel prezzo standard più sopra: quando lo sono, la riga lo indica esplicitamente e non va sommata di nuovo."}
           </p>
         </div>
 
@@ -81,6 +84,7 @@ export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear }: CostBr
           <p className="mt-7 text-center font-(family-name:--eg-font-primary) text-[12.5px] text-eg-ink">
             {sourceLabel}
             {sourceYear ? `, aggiornati ${sourceYear}` : null}. Le fasce non sono un preventivo: il prezzo reale dipende dal sopralluogo.
+            {electricalVariant ? " Le fasce sono orientative e non rappresentano un prezzo specifico per singola città." : null}
           </p>
         ) : null}
       </div>
