@@ -136,7 +136,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
               : guide.summary
           )}
           actions={
-            <>
+            guide.slug === "rifare-impianto-elettrico" ? undefined : <>
               <Link href={requestHref} className="eg-button-primary eg-button-arrow">
                 Richiedi preventivi
               </Link>
@@ -164,6 +164,19 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           sizeExamplesIntro={guide.sizeExamplesIntro}
           electricalVariant={guide.slug === "rifare-impianto-elettrico"}
         />
+
+        {guide.slug === "rifare-impianto-elettrico" ? (
+          <MarketingFinalCta
+            title="Richiedi preventivi per il tuo lavoro"
+            description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
+            href={requestHref}
+            ctaLabel="Richiedi preventivi"
+            secondaryAction={{
+              href: "/interventi/rifare-impianto-elettrico",
+              label: "Scopri l’intervento",
+            }}
+          />
+        ) : null}
 
         <CostBreakdown
           rows={classification.breakdown}
@@ -300,12 +313,14 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         </section>
         </div>
 
-        <MarketingFinalCta
-          title="Richiedi preventivi per il tuo lavoro"
-          description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
-          href={requestHref}
-          ctaLabel="Richiedi preventivi"
-        />
+        {guide.slug === "rifare-impianto-elettrico" ? null : (
+          <MarketingFinalCta
+            title="Richiedi preventivi per il tuo lavoro"
+            description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
+            href={requestHref}
+            ctaLabel="Richiedi preventivi"
+          />
+        )}
       </div>
     </PublicShell>
   );
