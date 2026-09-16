@@ -47,7 +47,7 @@ export function CostExtras({ rows, allRows }: CostExtrasProps) {
     <section aria-labelledby="extra-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
         <div className="mb-8 max-w-170">
-          <p className={blueprintEyebrowClassName}>Costi condizionali</p>
+          <p className={blueprintEyebrowClassName}>Extra</p>
 
           <h2 id="extra-title" className={cn(sectionTitleClassName, "mt-3")}>
             Cosa può far salire il prezzo
@@ -73,7 +73,8 @@ function ElectricalExtrasSection({ rows }: { rows: PriceRow[] }) {
     <section aria-labelledby="extra-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
         <div className="mb-6 max-w-170">
-          <h2 id="extra-title" className={sectionTitleClassName}>
+          <p className={blueprintEyebrowClassName}>Extra</p>
+          <h2 id="extra-title" className={cn(sectionTitleClassName, "mt-3")}>
             Cosa può far aumentare il prezzo
           </h2>
           <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">

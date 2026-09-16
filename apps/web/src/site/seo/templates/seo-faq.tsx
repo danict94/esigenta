@@ -10,12 +10,14 @@ export type SeoFaqProps = {
   title?: string;
   /** Solo la guida costi apre la prima voce di default (docs/costi.html). */
   defaultOpenFirst?: boolean;
+  emphasizePhrase?: string;
 };
 
 export function SeoFaq({
   faq,
   title = "Domande frequenti",
   defaultOpenFirst = false,
+  emphasizePhrase,
 }: SeoFaqProps) {
   if (faq.length === 0) {
     return null;
@@ -46,10 +48,23 @@ export function SeoFaq({
               </span>
             </summary>
 
-            <p className="max-w-165 pb-5 text-[14px] leading-[1.6] text-eg-ink">{item.answer}</p>
+            <p className="max-w-165 pb-5 text-[14px] leading-[1.6] text-eg-ink">
+              <FaqAnswer answer={item.answer} emphasizePhrase={emphasizePhrase} />
+            </p>
           </details>
         ))}
       </div>
     </div>
   );
+}
+
+function FaqAnswer({ answer, emphasizePhrase }: { answer: string; emphasizePhrase?: string }) {
+  if (!emphasizePhrase || !answer.includes(emphasizePhrase)) return answer;
+
+  return answer.split(emphasizePhrase).map((part, index, parts) => (
+    <span key={index}>
+      {part}
+      {index < parts.length - 1 ? <strong>{emphasizePhrase}</strong> : null}
+    </span>
+  ));
 }

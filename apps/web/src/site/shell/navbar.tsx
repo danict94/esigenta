@@ -12,6 +12,7 @@ import {
   useDismissableMenu,
 } from "@esigenta/ui";
 
+import { professionalCtaClassName } from "../shared/cta-variants";
 import {
   headerGutterClassName,
   headerHeightClassName,
@@ -235,7 +236,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                   aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
                   className={
                     item.variant === "cta"
-                      ? "inline-flex min-h-11 items-center justify-center rounded-eg-md bg-eg-header-action px-5 py-3 text-eg-header-nav font-semibold text-eg-header transition-[filter] hover:brightness-105"
+                      ? professionalCtaClassName
                       : "whitespace-nowrap text-eg-header-nav font-medium text-eg-header-text transition-colors hover:text-eg-header-action"
                   }
                   onClick={(event) => {

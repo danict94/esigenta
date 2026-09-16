@@ -57,10 +57,56 @@ const electricalScenarioContent = {
 } as const;
 
 const electricalScenarioIds = Object.keys(electricalScenarioContent);
+const roofScenarioContent = {
+  "tetto-sostituzione-manto": {
+    title: "Sostituzione del solo manto",
+    label: "Può comprendere",
+    items: [
+      "rimozione del vecchio manto",
+      "posa di tegole, coppi o altra copertura standard",
+      "lavorazioni ordinarie sul supporto esistente",
+    ],
+  },
+  "tetto-rifacimento-copertura": {
+    title: "Rifacimento standard della copertura",
+    label: "Comprende",
+    items: [
+      "rimozione e smaltimento del vecchio manto",
+      "preparazione ordinaria del supporto",
+      "impermeabilizzazione",
+      "nuovo manto e posa",
+    ],
+  },
+  "tetto-rifacimento-isolamento-ventilazione": {
+    title: "Rifacimento con isolamento o ventilazione",
+    label: "Può comprendere",
+    items: [
+      "lavorazioni del rifacimento standard",
+      "isolamento termico",
+      "stratigrafia più evoluta",
+      "tetto ventilato",
+    ],
+  },
+  "tetto-rifacimento-struttura": {
+    title: "Rifacimento con interventi strutturali",
+    label: "Può comprendere",
+    items: [
+      "rifacimento della copertura",
+      "interventi su travi",
+      "interventi sull’orditura",
+      "interventi sul solaio, quando necessari",
+    ],
+  },
+} as const;
+const roofScenarioIds = Object.keys(roofScenarioContent);
 const priceRangeClassName = "font-(family-name:--eg-font-primary) text-[22px] font-bold leading-tight text-eg-brand-strong [font-variant-numeric:tabular-nums]";
 
 function isElectricalScenario(rows: PriceRow[]): boolean {
   return rows.length === electricalScenarioIds.length && rows.every((row) => row.id in electricalScenarioContent);
+}
+
+function isRoofScenario(rows: PriceRow[]): boolean {
+  return rows.length === roofScenarioIds.length && rows.every((row) => row.id in roofScenarioContent);
 }
 
 function formatPriceRange(range: string): string {
@@ -74,11 +120,15 @@ export function CostScenarioCards({ rows }: CostScenarioCardsProps) {
     return <ElectricalScenarioSection rows={rows} />;
   }
 
+  if (isRoofScenario(rows)) {
+    return <RoofScenarioSection rows={rows} />;
+  }
+
   return (
     <section aria-labelledby="scenari-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
         <div className="mb-8 max-w-170">
-          <p className={blueprintEyebrowClassName}>Quanto può costare</p>
+          <p className={blueprintEyebrowClassName}>Scenari</p>
 
           <h2 id="scenari-title" className={cn(sectionTitleClassName, "mt-3")}>
             Scegli lo scenario più vicino al tuo caso
@@ -135,67 +185,119 @@ function ElectricalScenarioSection({ rows }: { rows: PriceRow[] }) {
     content: electricalScenarioContent[row.id as keyof typeof electricalScenarioContent],
     price: formatPriceRange(row.range),
   }));
-  const rowCount = Math.max(...scenarios.map(({ content }) => content.items.length));
 
   return (
     <section aria-labelledby="scenari-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
-        <h2 id="scenari-title" className={sectionTitleClassName}>
+        <p className={blueprintEyebrowClassName}>Scenari</p>
+        <h2 id="scenari-title" className={cn(sectionTitleClassName, "mt-3")}>
           Tre scenari di intervento
         </h2>
 
-        <div className="mt-8 hidden grid-cols-3 overflow-hidden border border-eg-border lg:grid">
-          {scenarios.map(({ content }, index) => (
-            <header key={content.title} className={cn("bg-eg-brand-soft px-5 py-4.5", index < 2 && "border-r border-eg-border")}>
+        <ComparativeScenarioTable scenarios={scenarios} />
+      </div>
+    </section>
+  );
+}
+
+function RoofScenarioSection({ rows }: { rows: PriceRow[] }) {
+  const scenarios = rows.map((row) => ({
+    content: roofScenarioContent[row.id as keyof typeof roofScenarioContent],
+    price: formatPriceRange(row.range),
+  }));
+  return (
+    <section aria-labelledby="scenari-title" className="eg-section-editorial border-t border-eg-border">
+      <div className="eg-container">
+        <p className={blueprintEyebrowClassName}>Scenari</p>
+        <h2 id="scenari-title" className={cn(sectionTitleClassName, "mt-3")}>
+          Quattro scenari di intervento
+        </h2>
+
+        <ComparativeScenarioTable scenarios={scenarios} />
+
+        <div className="mt-5 border-t border-eg-border pt-4">
+          <h3 className="font-(family-name:--eg-font-primary) text-[15px] font-semibold text-eg-ink">
+            Nel rifacimento standard non sono compresi
+          </h3>
+          <ul className="mt-3 grid list-disc gap-x-8 gap-y-1.5 pl-5 text-[13px] leading-normal text-eg-text-muted sm:grid-cols-2">
+            <li>isolamento termico completo</li>
+            <li>tetto ventilato o stratigrafie più evolute</li>
+            <li>interventi sulla struttura portante</li>
+            <li>grondaie</li>
+            <li>ponteggio</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type ComparativeScenario = {
+  content: {
+    title: string;
+    label: string;
+    items: readonly string[];
+  };
+  price: string;
+};
+
+function ComparativeScenarioTable({ scenarios }: { scenarios: readonly ComparativeScenario[] }) {
+  const rowCount = Math.max(...scenarios.map(({ content }) => content.items.length));
+  const lastColumnIndex = scenarios.length - 1;
+  const gridStyle = { gridTemplateColumns: `repeat(${scenarios.length}, minmax(0, 1fr))` };
+
+  return (
+    <>
+      <div className="mt-8 hidden overflow-hidden border border-eg-border bg-white lg:grid" style={gridStyle}>
+        {scenarios.map(({ content }, index) => (
+          <header key={content.title} className={cn("px-5 py-4.5", index < lastColumnIndex && "border-r border-eg-border")}>
+            <h3 className="font-(family-name:--eg-font-primary) text-[15.5px] font-semibold leading-snug text-eg-ink">
+              {content.title}
+            </h3>
+          </header>
+        ))}
+
+        {scenarios.map(({ content, price }, index) => (
+          <p key={content.title} className={cn(priceRangeClassName, "border-y border-eg-border px-5 py-4", index < lastColumnIndex && "border-r border-eg-border")}>
+            {price}
+          </p>
+        ))}
+
+        {scenarios.map(({ content }, index) => (
+          <p key={content.title} className={cn("border-b border-eg-border px-5 py-3 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted", index < lastColumnIndex && "border-r border-eg-border")}>
+            {content.label}
+          </p>
+        ))}
+
+        {Array.from({ length: rowCount }, (_, rowIndex) =>
+          scenarios.map(({ content }, columnIndex) => (
+            <div key={`${content.title}-${rowIndex}`} className={cn("min-h-12 border-b border-eg-border px-5 py-3 text-[13.5px] leading-normal text-eg-ink", columnIndex < lastColumnIndex && "border-r border-eg-border", rowIndex === rowCount - 1 && "border-b-0")}>
+              {content.items[rowIndex] ?? ""}
+            </div>
+          )),
+        )}
+      </div>
+
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:hidden">
+        {scenarios.map(({ content, price }) => (
+          <article key={content.title} className="overflow-hidden border border-eg-border bg-white">
+            <header className="px-5 py-4.5">
               <h3 className="font-(family-name:--eg-font-primary) text-[15.5px] font-semibold leading-snug text-eg-ink">
                 {content.title}
               </h3>
             </header>
-          ))}
-
-          {scenarios.map(({ content, price }, index) => (
-            <p key={content.title} className={cn(priceRangeClassName, "border-y border-eg-border px-5 py-4", index < 2 && "border-r border-eg-border")}>
-              {price}
-            </p>
-          ))}
-
-          {scenarios.map(({ content }, index) => (
-            <p key={content.title} className={cn("border-b border-eg-border px-5 py-3 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted", index < 2 && "border-r border-eg-border")}>
+            <p className={cn(priceRangeClassName, "border-y border-eg-border px-5 py-4")}>{price}</p>
+            <p className="border-b border-eg-border px-5 py-3 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
               {content.label}
             </p>
-          ))}
-
-          {Array.from({ length: rowCount }, (_, rowIndex) =>
-            scenarios.map(({ content }, columnIndex) => (
-              <div key={`${content.title}-${rowIndex}`} className={cn("min-h-12 border-b border-eg-border px-5 py-3 text-[13.5px] leading-normal text-eg-ink", columnIndex < 2 && "border-r border-eg-border", rowIndex === rowCount - 1 && "border-b-0")}>
-                {content.items[rowIndex] ?? ""}
-              </div>
-            )),
-          )}
-        </div>
-
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:hidden">
-          {scenarios.map(({ content, price }) => (
-            <article key={content.title} className="overflow-hidden border border-eg-border">
-              <header className="bg-eg-brand-soft px-5 py-4.5">
-                <h3 className="font-(family-name:--eg-font-primary) text-[15.5px] font-semibold leading-snug text-eg-ink">
-                  {content.title}
-                </h3>
-              </header>
-              <p className={cn(priceRangeClassName, "border-y border-eg-border px-5 py-4")}>{price}</p>
-              <p className="border-b border-eg-border px-5 py-3 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
-                {content.label}
-              </p>
-              <ul className="list-none px-5">
-                {content.items.map((item) => (
-                  <li key={item} className="border-b border-eg-border py-3 text-[13.5px] leading-normal text-eg-ink last:border-b-0">{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-
+            <ul className="list-none px-5">
+              {content.items.map((item) => (
+                <li key={item} className="border-b border-eg-border py-3 text-[13.5px] leading-normal text-eg-ink last:border-b-0">{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
       </div>
-    </section>
+    </>
   );
 }

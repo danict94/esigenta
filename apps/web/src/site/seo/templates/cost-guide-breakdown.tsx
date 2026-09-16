@@ -32,9 +32,10 @@ export type CostBreakdownProps = {
   sourceLabel?: string;
   sourceYear?: string;
   electricalVariant?: boolean;
+  intro?: string;
 };
 
-export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear, electricalVariant = false }: CostBreakdownProps) {
+export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear, electricalVariant = false, intro }: CostBreakdownProps) {
   if (rows.length === 0) return null;
 
   const groups = groupPriceRowsByCategory(rows);
@@ -50,9 +51,9 @@ export function CostBreakdown({ rows, allRows, sourceLabel, sourceYear, electric
           </h2>
 
           <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
-            {electricalVariant
+            {intro ?? (electricalVariant
               ? "Alcune lavorazioni possono essere già comprese negli scenari indicati sopra: in questi casi non vanno sommate una seconda volta."
-              : "Alcune di queste lavorazioni sono già comprese nel prezzo standard più sopra: quando lo sono, la riga lo indica esplicitamente e non va sommata di nuovo."}
+              : "Alcune di queste lavorazioni sono già comprese nel prezzo standard più sopra: quando lo sono, la riga lo indica esplicitamente e non va sommata di nuovo.")}
           </p>
         </div>
 

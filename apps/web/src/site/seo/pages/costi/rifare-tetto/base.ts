@@ -46,10 +46,10 @@ export const rifareTettoBase: CostGuideBaseContent = {
   ],
   savingTips: [
     "Fai verificare la struttura prima di scegliere tra riparazione e rifacimento completo.",
-    "Valuta l'isolamento termico in fase di rifacimento: farlo dopo costa di più.",
+    "Valuta l’isolamento termico durante il rifacimento: aggiungerlo in un secondo momento può richiedere nuove lavorazioni.",
     "Chiedi preventivi con voci separate per smontaggio, struttura, isolamento e copertura.",
-    "Pianifica i lavori in un periodo con clima stabile per ridurre rischi e tempi.",
-    "Confronta imprese disponibili nella tua zona prima di fissare il sopralluogo.",
+    "Pianifica i lavori in un periodo con condizioni meteo favorevoli, quando possibile.",
+    "Confronta più imprese disponibili nella tua zona prima di affidare il lavoro.",
   ],
   // Revisione 2026-08 (audit + ricognizione Git): il "Costo complessivo"
   // fisso non aveva più senso una volta rimosso il totale assoluto
@@ -93,6 +93,7 @@ export const rifareTettoBase: CostGuideBaseContent = {
       slug: "impermeabilizzare-tetto",
       title: "Impermeabilizzare il tetto",
       description: "Per guaina e impermeabilizzazione senza rifare tutta la copertura.",
+      linkLabel: "Scopri costi e dettagli",
     },
     {
       slug: "isolare-o-coibentare-tetto",

@@ -60,7 +60,7 @@ export function InternalPageIntro({
               : undefined
           }
         >
-          <div className={cn("max-w-190", wideContent && "lg:mr-auto lg:max-w-[56rem]")}>
+          <div className={cn("max-w-190", wideContent && "lg:max-w-[56rem]")}>
             {eyebrow ? <p className="eg-eyebrow mb-4">{eyebrow}</p> : null}
             <h1 id={titleId} className="eg-h1 text-balance">
               {title}

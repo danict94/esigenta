@@ -30,6 +30,11 @@ export type CostFactorsProps = {
   factors: readonly string[];
   topicLabel: string;
   electricalVariant?: boolean;
+  compactContent?: {
+    title: string;
+    intro: string;
+    factors: readonly string[];
+  };
 };
 
 const electricalFactors = [
@@ -41,16 +46,20 @@ const electricalFactors = [
   "disponibilità e costi dei professionisti nella zona",
 ];
 
-export function CostFactors({ factors, topicLabel, electricalVariant = false }: CostFactorsProps) {
+export function CostFactors({ factors, topicLabel, electricalVariant = false, compactContent }: CostFactorsProps) {
   if (electricalVariant) {
     return <ElectricalFactors />;
+  }
+
+  if (compactContent) {
+    return <CompactFactors {...compactContent} />;
   }
 
   return (
     <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
         <div className="mb-8 max-w-170">
-          <p className={blueprintEyebrowClassName}>Cosa incide sul prezzo</p>
+          <p className={blueprintEyebrowClassName}>Fattori</p>
 
           <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
             Da cosa dipende il prezzo
@@ -102,20 +111,37 @@ export function CostFactors({ factors, topicLabel, electricalVariant = false }: 
 }
 
 function ElectricalFactors() {
+  return <CompactFactors
+    title="Altri fattori che possono incidere sul preventivo"
+    intro="Oltre alle caratteristiche dell’impianto, il preventivo può variare in base al contesto del cantiere e ad altre esigenze tecniche."
+    factors={electricalFactors}
+  />;
+}
+
+function CompactFactors({
+  title,
+  intro,
+  factors,
+}: {
+  title: string;
+  intro: string;
+  factors: readonly string[];
+}) {
   return (
     <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
         <div className="mb-6 max-w-170">
-          <h2 id="fattori-costo-title" className={sectionTitleClassName}>
-            Altri fattori che possono incidere sul preventivo
+          <p className={blueprintEyebrowClassName}>Fattori</p>
+          <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
+            {title}
           </h2>
           <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
-            Oltre alle caratteristiche dell’impianto, il preventivo può variare in base al contesto del cantiere e ad altre esigenze tecniche.
+            {intro}
           </p>
         </div>
 
         <ul className="grid max-w-170 gap-x-8 gap-y-2 md:grid-cols-2">
-          {electricalFactors.map((factor) => (
+          {factors.map((factor) => (
             <li key={factor} className="flex gap-2.5 text-[13.5px] leading-normal text-eg-ink">
               <span aria-hidden="true" className="mt-1.5 size-1.5 shrink-0 rounded-full bg-eg-brand" />
               <span>{factor}</span>

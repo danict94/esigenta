@@ -24,7 +24,6 @@ import { CostIncludedExcluded } from "./cost-guide-included-excluded";
 import { CostExtras } from "./cost-guide-extras";
 import { CostSizeExamples } from "./cost-guide-size-examples";
 import { CostBreakdown } from "./cost-guide-breakdown";
-import { CostReference } from "./cost-guide-reference";
 import { CostFactors } from "./cost-guide-factors";
 import { classifyPriceRows } from "./cost-guide-price-model";
 import { SeoFaq } from "./seo-faq";
@@ -111,7 +110,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             { label: guide.title },
           ]}
           title={guide.h1}
-          wideContent={guide.slug === "rifare-impianto-elettrico"}
+          wideContent
           // Fix UI review: il prezzo va SUBITO dopo l'H1 (afterTitle), prima
           // di descrizione/CTA — deve leggersi come risposta diretta alla
           // domanda del titolo, non come un blocco raggiunto dopo aver
@@ -119,7 +118,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           // riposizionato: nessun elemento nuovo, l'Hero non diventa più
           // pesante.
           afterTitle={
-            guide.slug === "rifare-impianto-elettrico" ? null : <>
+            guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" ? null : <>
               <CostGuideHero
                 nationalRange={guide.nationalRange}
                 nationalRangeLabel={guide.nationalRangeLabel}
@@ -133,27 +132,16 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           description={emphasizePriceRanges(
             guide.slug === "rifare-impianto-elettrico"
               ? "Il costo varia in base alla metratura, al numero di punti luce e prese, allo stato dell’impianto esistente, alla possibilità di riutilizzare le canalizzazioni e alla complessità delle opere murarie.\n\nIndicativamente, un rifacimento completo standard può costare da 55 a 90 €/mq. Se le canalizzazioni esistenti sono riutilizzabili, la fascia può scendere a 40–60 €/mq; per un impianto più articolato può invece arrivare mediamente a 80–110 €/mq."
+              : guide.slug === "rifare-tetto"
+                ? "Il costo dipende soprattutto dal tipo di intervento, dallo stato della copertura, dai materiali e dall’accessibilità del cantiere. Indicativamente, un rifacimento standard può costare 120–180 €/mq. La sola sostituzione del manto può avere costi inferiori, mentre isolamento termico, tetto ventilato o interventi sulla struttura portante possono portare il prezzo su fasce più alte."
               : guide.summary
           )}
-          actions={
-            guide.slug === "rifare-impianto-elettrico" ? undefined : <>
-              <Link href={requestHref} className="eg-button-primary eg-button-arrow">
-                Richiedi preventivi
-              </Link>
-
-              {interventionHref ? (
-                <Link href={interventionHref} className="eg-button-ghost">
-                  Scopri come funziona
-                </Link>
-              ) : null}
-            </>
-          }
         />
 
-        <div className={guide.slug === "rifare-impianto-elettrico" ? "[&_.eg-section-editorial]:border-t-0 lg:[&_.eg-section-editorial]:py-14" : undefined}>
+        <div className="[&_.eg-section-editorial]:border-t-0 lg:[&_.eg-section-editorial]:py-14">
         <CostScenarioCards rows={classification.scenarioCards} />
 
-        {guide.slug === "rifare-impianto-elettrico" ? null : (
+        {guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" ? null : (
           <CostIncludedExcluded primary={classification.primary} />
         )}
 
@@ -162,22 +150,34 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         <CostSizeExamples
           sizeExamples={guide.sizeExamples}
           sizeExamplesIntro={guide.sizeExamplesIntro}
-          electricalVariant={guide.slug === "rifare-impianto-elettrico"}
+          tableVariant={guide.slug === "rifare-impianto-elettrico" ? {
+            title: "Esempi di costo per metratura",
+            intro: "Stime calcolate sulla fascia 55–90 €/m² del rifacimento completo standard.",
+            sizeUnit: "m²",
+            notes: [
+              "Le stime per metratura sono ottenute applicando la fascia standard di 55–90 €/m² alla superficie: non sono rilevazioni di mercato indipendenti per ciascun taglio.",
+              "Negli appartamenti piccoli il costo al m² può risultare più alto, perché quadro elettrico, verifiche e alcune lavorazioni minime non diminuiscono in proporzione alla superficie.",
+            ],
+          } : guide.slug === "rifare-tetto" ? {
+            title: "Esempi di costo per metratura",
+            intro: <>Le stime sono calcolate sulla fascia <strong>120–180 €/mq</strong> del rifacimento standard. La superficie del tetto può differire da quella calpestabile dell’abitazione.</>,
+            notes: [
+              "Le stime derivano da superficie × fascia standard e non rappresentano preventivi indipendenti per ciascuna metratura. Pendenza, forma, accessibilità ed eventuali lavorazioni escluse possono modificare il totale.",
+            ],
+          } : undefined}
         />
 
-        {guide.slug === "rifare-impianto-elettrico" ? (
-          <MarketingFinalCta
-            title="Richiedi preventivi per il tuo lavoro"
-            description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
-            href={requestHref}
-            ctaLabel="Richiedi preventivi"
-            secondaryAction={{
-              href: "/interventi/rifare-impianto-elettrico",
-              label: "Scopri l’intervento",
-            }}
-            align="left"
-          />
-        ) : null}
+        <MarketingFinalCta
+          title="Richiedi preventivi per il tuo lavoro"
+          description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
+          href={requestHref}
+          ctaLabel="Richiedi preventivi"
+          secondaryAction={interventionHref ? {
+            href: interventionHref,
+            label: "Scopri l’intervento",
+          } : undefined}
+          variant="cost"
+        />
 
         <CostBreakdown
           rows={classification.breakdown}
@@ -185,16 +185,26 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           sourceLabel={guide.sourceLabel}
           sourceYear={guide.sourceYear}
           electricalVariant={guide.slug === "rifare-impianto-elettrico"}
+          intro={guide.slug === "rifare-tetto" ? "Alcune lavorazioni possono essere già comprese negli scenari indicati sopra: in questi casi non vanno sommate una seconda volta." : undefined}
         />
-
-        {guide.slug === "rifare-impianto-elettrico" ? null : (
-          <CostReference pricePerSquareMeter={guide.pricePerSquareMeter} rows={classification.references} />
-        )}
 
         <CostFactors
           factors={guide.factors}
           topicLabel={guide.topicLabel}
           electricalVariant={guide.slug === "rifare-impianto-elettrico"}
+          compactContent={guide.slug === "rifare-tetto" ? {
+            title: "Altri fattori che possono incidere sul preventivo",
+            intro: "Oltre al tipo di intervento e alle condizioni della copertura, il preventivo può variare in base alla configurazione del tetto e alla logistica del cantiere.",
+            factors: [
+              "altezza dell’edificio e modalità di accesso alla copertura",
+              "presenza di più falde, comignoli, lucernari, abbaini o altri elementi che rendono la posa più articolata",
+              "necessità di mezzi di sollevamento per materiali e attrezzature",
+              "spazio disponibile per carico, scarico e deposito temporaneo dei materiali",
+              "eventuali vincoli condominiali o limitazioni agli orari di lavoro",
+              "distanza, trasporto dei materiali e logistica dello smaltimento",
+              "disponibilità e costo dei professionisti nella zona",
+            ],
+          } : undefined}
         />
 
         <section aria-labelledby="approfondimenti-title" className="eg-section-editorial border-t border-eg-border">
@@ -230,7 +240,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                           </div>
 
                           <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-eg-brand-strong transition-[transform,color] duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-brand-hover">
-                            Richiedi un preventivo <span aria-hidden="true">&rarr;</span>
+                            {item.linkLabel ?? "Richiedi un preventivo"} <span aria-hidden="true">&rarr;</span>
                           </span>
                         </Link>
                       ))}
@@ -309,19 +319,15 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
 
         <section className="eg-section-editorial border-t border-eg-border">
           <div className="eg-container">
-            <SeoFaq faq={guide.faq} defaultOpenFirst />
+            <SeoFaq
+              faq={guide.faq}
+              defaultOpenFirst
+              emphasizePhrase={guide.slug === "rifare-tetto" ? "120–180 €/mq" : undefined}
+            />
           </div>
         </section>
         </div>
 
-        {guide.slug === "rifare-impianto-elettrico" ? null : (
-          <MarketingFinalCta
-            title="Richiedi preventivi per il tuo lavoro"
-            description="Confronta le proposte di professionisti disponibili nella tua zona e verifica il costo reale del tuo intervento."
-            href={requestHref}
-            ctaLabel="Richiedi preventivi"
-          />
-        )}
       </div>
     </PublicShell>
   );

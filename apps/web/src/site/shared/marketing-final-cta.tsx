@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+import { cn } from "@esigenta/ui";
+
+import { professionalCtaColorClassName } from "./cta-variants";
+
 type MarketingFinalCtaProps = {
   title: string;
   description: string;
@@ -10,6 +14,7 @@ type MarketingFinalCtaProps = {
     label: string;
   };
   align?: "center" | "left";
+  variant?: "default" | "cost";
 };
 
 export function MarketingFinalCta({
@@ -19,8 +24,10 @@ export function MarketingFinalCta({
   ctaLabel,
   secondaryAction,
   align = "center",
+  variant = "default",
 }: MarketingFinalCtaProps) {
-  const isLeftAligned = align === "left";
+  const isCostVariant = variant === "cost";
+  const isLeftAligned = isCostVariant || align === "left";
 
   return (
     <section className="eg-theme-ink eg-section-editorial">
@@ -35,7 +42,12 @@ export function MarketingFinalCta({
           <Link
             href={href}
             prefetch={false}
-            className="eg-button-primary eg-button-arrow w-full sm:w-auto"
+            className={cn(
+              "w-full sm:w-auto",
+              isCostVariant
+                ? `eg-button-primary eg-button-arrow ${professionalCtaColorClassName}`
+                : "eg-button-primary eg-button-arrow",
+            )}
           >
             {ctaLabel}
           </Link>
@@ -44,7 +56,10 @@ export function MarketingFinalCta({
             <Link
               href={secondaryAction.href}
               prefetch={false}
-              className="eg-button-ghost w-full sm:w-auto"
+              className={cn(
+                "w-full sm:w-auto",
+                isCostVariant ? "eg-button-primary eg-button-arrow" : "eg-button-ghost",
+              )}
             >
               {secondaryAction.label}
             </Link>

@@ -1,4 +1,5 @@
 import { cn } from "@esigenta/ui";
+import type { ReactNode } from "react";
 
 import type { SizeExample } from "../market-data/base-price-ranges";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
@@ -19,22 +20,27 @@ import { sizeExamplesGridClassName } from "./cost-guide-price-model";
 export type CostSizeExamplesProps = {
   sizeExamples: readonly SizeExample[];
   sizeExamplesIntro?: string;
-  electricalVariant?: boolean;
+  tableVariant?: {
+    title: string;
+    intro?: ReactNode;
+    notes?: readonly ReactNode[];
+    sizeUnit?: "mq" | "m²";
+  };
 };
 
-function formatElectricalSizeRange(sizeRange: string): string {
-  return sizeRange.replace(" mq", " m²");
+function formatSizeRange(sizeRange: string, sizeUnit: "mq" | "m²"): string {
+  return sizeUnit === "m²" ? sizeRange.replace(" mq", " m²") : sizeRange;
 }
 
-function formatElectricalExamplePrice(range: string): string {
+function formatExamplePrice(range: string): string {
   return range.replace(/^da (.+) € a (.+) €$/, "$1–$2 €");
 }
 
-export function CostSizeExamples({ sizeExamples, sizeExamplesIntro, electricalVariant = false }: CostSizeExamplesProps) {
+export function CostSizeExamples({ sizeExamples, sizeExamplesIntro, tableVariant }: CostSizeExamplesProps) {
   if (sizeExamples.length === 0) return null;
 
-  if (electricalVariant) {
-    return <ElectricalSizeExamples sizeExamples={sizeExamples} />;
+  if (tableVariant) {
+    return <SizeExamplesTable sizeExamples={sizeExamples} {...tableVariant} />;
   }
 
   return (
@@ -49,7 +55,7 @@ export function CostSizeExamples({ sizeExamples, sizeExamplesIntro, electricalVa
         </div>
 
         {sizeExamplesIntro ? (
-          <p className="mb-6 max-w-170 border border-eg-border bg-eg-surface px-5 py-4 text-[13.5px] leading-[1.6] text-eg-ink">
+          <p className="mb-6 max-w-170 text-[13.5px] leading-[1.6] text-eg-text-muted">
             {sizeExamplesIntro}
           </p>
         ) : null}
@@ -80,17 +86,28 @@ export function CostSizeExamples({ sizeExamples, sizeExamplesIntro, electricalVa
   );
 }
 
-function ElectricalSizeExamples({ sizeExamples }: { sizeExamples: readonly SizeExample[] }) {
+function SizeExamplesTable({
+  sizeExamples,
+  title,
+  intro,
+  notes,
+  sizeUnit = "mq",
+}: {
+  sizeExamples: readonly SizeExample[];
+  title: string;
+  intro?: ReactNode;
+  notes?: readonly ReactNode[];
+  sizeUnit?: "mq" | "m²";
+}) {
   return (
     <section aria-labelledby="esempi-costo-title" className="eg-section-editorial border-t border-eg-border">
       <div className="eg-container">
         <div className="mb-6 max-w-170">
-          <h2 id="esempi-costo-title" className={sectionTitleClassName}>
-            Esempi di costo per metratura
+          <p className={blueprintEyebrowClassName}>Esempi</p>
+          <h2 id="esempi-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
+            {title}
           </h2>
-          <p className="mt-3 text-[13.5px] leading-[1.6] text-eg-text-muted">
-            Stime calcolate sulla fascia 55–90 €/m² del rifacimento completo standard.
-          </p>
+          {intro ? <p className="mt-3 text-[13.5px] leading-[1.6] text-eg-text-muted">{intro}</p> : null}
         </div>
 
         <div className="max-w-170 overflow-hidden border border-eg-border bg-white">
@@ -105,22 +122,19 @@ function ElectricalSizeExamples({ sizeExamples }: { sizeExamples: readonly SizeE
 
           {sizeExamples.map((example) => (
             <div key={example.label} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] border-t border-eg-border">
-              <p className="px-5 py-4 text-[14px] font-medium text-eg-ink">{formatElectricalSizeRange(example.sizeRange ?? "")}</p>
+              <p className="px-5 py-4 text-[14px] font-medium text-eg-ink">{formatSizeRange(example.sizeRange ?? "", sizeUnit)}</p>
               <p className="border-l border-eg-border px-5 py-4 font-(family-name:--eg-font-primary) text-[16px] font-bold leading-tight text-eg-brand-strong [font-variant-numeric:tabular-nums]">
-                {formatElectricalExamplePrice(example.range)}
+                {formatExamplePrice(example.range)}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-5 max-w-170 space-y-2 text-[13px] leading-[1.6] text-eg-text-muted">
-          <p>
-            Le stime per metratura sono ottenute applicando la fascia standard di 55–90 €/m² alla superficie: non sono rilevazioni di mercato indipendenti per ciascun taglio.
-          </p>
-          <p>
-            Negli appartamenti piccoli il costo al m² può risultare più alto, perché quadro elettrico, verifiche e alcune lavorazioni minime non diminuiscono in proporzione alla superficie.
-          </p>
-        </div>
+        {notes && notes.length > 0 ? (
+          <div className="mt-5 max-w-170 space-y-2 text-[13px] leading-[1.6] text-eg-text-muted">
+            {notes.map((note, index) => <p key={index}>{note}</p>)}
+          </div>
+        ) : null}
       </div>
     </section>
   );

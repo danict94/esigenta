@@ -37,7 +37,7 @@ export function CostGuideHero({
 }: CostGuideHeroProps) {
   if (pricingTeaser) {
     return (
-      <div className="mt-4 max-w-170 border border-eg-border bg-eg-surface px-6.5 py-7">
+      <div className="mt-4 max-w-170">
         <p className="text-[14.5px] leading-[1.6] text-eg-ink">{pricingTeaser}</p>
       </div>
     );

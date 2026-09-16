@@ -5,7 +5,7 @@ import React from "react";
 // Un solo valore, riusato dalle sezioni editoriali via
 // eyebrowClassName/titleClassName — non duplicare questa stringa altrove.
 export const blueprintEyebrowClassName =
-  "font-(family-name:--eg-font-mono) tracking-[0.14em] text-eg-brand-strong";
+  "font-(family-name:--eg-font-mono) text-[11px] font-semibold uppercase tracking-[0.14em] text-eg-brand-strong";
 export const blueprintEyebrowOnDarkClassName =
   "font-(family-name:--eg-font-mono) text-xs uppercase tracking-[0.14em] text-eg-brand-on-dark";
 export const blueprintTitleClassName = "text-[clamp(24px,3.4vw,34px)] leading-[1.22]";

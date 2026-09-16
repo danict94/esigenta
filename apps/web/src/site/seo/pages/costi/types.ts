@@ -69,6 +69,7 @@ export type CostGuideRelatedWorkItem = {
   slug: string;
   title: string;
   description: string;
+  linkLabel?: string;
 };
 
 /**

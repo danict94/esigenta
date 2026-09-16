@@ -2,36 +2,36 @@ export const rifareTettoFaq = [
   {
     question: "Quanto costa rifare un tetto al mq?",
     answer:
-      "Dipende soprattutto dal tipo di intervento. La fascia principale è quella del rifacimento standard, indicativamente da 120 € a 180 € al mq: rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione e posa del nuovo manto, senza interventi importanti sulla struttura. La sola sostituzione del manto, quando la struttura è già utilizzabile, scende a 60–120 €/mq; un rifacimento con isolamento termico o tetto ventilato sale a 180–300 €/mq; un rifacimento con interventi sulla struttura (travi, orditura, solaio) sale ulteriormente a 280–500 €/mq. Sono stime elaborate confrontando le singole lavorazioni dei prezzari regionali ufficiali con le fasce di mercato nazionale, non una voce unica di un prezzario.",
+      "Per un rifacimento standard la fascia orientativa è 120–180 €/mq. La sola sostituzione del manto può costare meno, mentre isolamento, ventilazione o interventi sulla struttura possono portare il costo su fasce superiori. Il prezzo reale dipende dalle condizioni della copertura e dal sopralluogo.",
   },
   {
     question: "Quanto può costare un tetto da 70, 100, 150 o 200 mq?",
     answer:
-      "Applicando la fascia del rifacimento standard (120–180 €/mq) alla superficie: un tetto da 70 mq indicativamente 8.400–12.600 €, da 100 mq 12.000–18.000 €, da 150 mq 18.000–27.000 € e da 200 mq 24.000–36.000 €. Sono calcoli per il rifacimento standard, non un preventivo e non tutti i possibili scenari: la sola sostituzione del manto costa meno, mentre isolamento/ventilazione o interventi sulla struttura costano di più (vedi gli scenari nella tabella qui sopra).",
+      "Le stime per 70, 100, 150 e 200 mq sono calcolate applicando la fascia standard alla superficie del tetto. La superficie reale della copertura può differire da quella calpestabile dell’abitazione e pendenza, forma o lavorazioni aggiuntive possono modificare il totale.",
   },
   {
     question: "Cosa comprende normalmente il rifacimento e cosa può restare escluso?",
     answer:
-      "Il rifacimento standard comprende di norma rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione e posa del nuovo manto. Isolamento termico, tetto ventilato e interventi sulla struttura portante hanno fasce proprie più alte (vedi gli altri scenari), non sono compresi automaticamente nella fascia standard. Grondaie e ponteggio hanno anch'essi un prezzo indicativo a parte in questa guida. Restano invece da valutare con un professionista: amianto o eternit (richiedono una bonifica specifica), danni strutturali eccezionali, edifici storici o vincolati, lucernari particolari, pratiche edilizie e progettazione, e lavorazioni impreviste emerse dopo la rimozione del vecchio manto.",
+      "Il rifacimento standard comprende normalmente rimozione e smaltimento del vecchio manto, preparazione del supporto, impermeabilizzazione e posa della nuova copertura. Isolamento, tetto ventilato, interventi strutturali, grondaie e ponteggio possono restare esclusi o richiedere una valutazione separata. Amianto, danni eccezionali e pratiche tecniche vanno verificati con il professionista.",
   },
   {
     question: "Quando basta rifare il manto e quando servono interventi sulla struttura?",
     answer:
-      "Se il problema riguarda solo il manto — tegole o coppi da sostituire, con il supporto sottostante in condizioni accettabili — la sola sostituzione del manto ha una fascia indicativa di 60–120 €/mq. Quando servono anche consolidamento o sostituzione di travi e orditura, o un intervento più esteso sul solaio, il lavoro rientra nello scenario con interventi strutturali, indicativamente 280–500 €/mq: qui il professionista definisce il perimetro con una valutazione tecnica, e danni particolarmente importanti possono superare anche questa fascia.",
+      "Può bastare rifare il solo manto quando tegole o coppi sono deteriorati ma supporto e struttura portante sono in condizioni adeguate. Se travi, orditura o solaio richiedono consolidamento o sostituzione, serve invece un intervento strutturale definito dopo una valutazione tecnica.",
   },
   {
     question: "Conviene riparare o rifare completamente il tetto?",
     answer:
-      "Dipende dall'estensione del danno: infiltrazioni localizzate possono richiedere solo una riparazione, mentre una struttura datata o danneggiata in più punti rende spesso più sensato un rifacimento completo.",
+      "Una riparazione è adatta a danni localizzati, come poche tegole rotte o un’infiltrazione circoscritta. Se i problemi sono diffusi, la copertura è datata o emergono criticità del supporto, il rifacimento completo può essere più adatto.",
   },
   {
     question: "Che differenza c'è tra rifare il tetto e la sola impermeabilizzazione?",
     answer:
-      "Il rifacimento interviene sull'intera copertura: manto, preparazione del supporto ed eventualmente struttura e isolamento. Se il problema riguarda solo la tenuta all'acqua — una guaina da rifare o punti localizzati da impermeabilizzare, senza toccare il resto della copertura — la scelta più mirata è la guida dedicata all'impermeabilizzazione del tetto, con prezzi ufficiali per singola lavorazione.",
+      "Rifare il tetto interviene sulla copertura nel suo insieme: manto, supporto e, quando necessario, isolamento o struttura. La sola impermeabilizzazione riguarda invece la tenuta all’acqua, per esempio guaine o punti localizzati, senza rifare l’intera copertura.",
   },
   {
     question: "Come posso avere un preventivo più preciso?",
     answer:
-      "Descrivi superficie, tipo di copertura attuale, eventuali infiltrazioni e accessibilità del tetto. Il sopralluogo resta il modo migliore per confermare costi e tempi.",
+      "Indica superficie e forma della copertura, condizioni del tetto, eventuali infiltrazioni e lavorazioni desiderate. Un sopralluogo e un preventivo dettagliato permettono di verificare accessibilità, tempi e costi effettivi.",
   },
 ];
