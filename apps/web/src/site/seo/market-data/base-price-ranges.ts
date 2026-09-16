@@ -2021,7 +2021,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 2 € a 4 € al mq",
         plainExplanation:
-          "È il controllo manuale della facciata per individuare le zone di intonaco vuote, distaccate o non più aderenti — chiamata anche battitura o picchettatura di verifica.",
+          "Controllo manuale della facciata per individuare zone di intonaco vuote, distaccate o non più aderenti, chiamato anche battitura o picchettatura di verifica.",
         note: "Spesso è già compresa nel lavoro generale di ripristino, quando la stessa impresa esegue anche la rimozione e il rifacimento dell'intonaco: in quel caso può non comparire come voce a parte nel preventivo. Ponteggio escluso.",
         confidence: "media",
         costType: "work",
@@ -2033,7 +2033,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 4 € a 8 € al mq",
         plainExplanation:
-          "È la pulizia della superficie prima di intervenire: rimozione dello sporco e dei depositi superficiali, con idrolavaggio quando è compatibile con il supporto.",
+          "Pulizia della superficie da sporco e depositi prima delle lavorazioni successive, con idrolavaggio quando compatibile con il supporto.",
         note: "L'idrolavaggio non è sempre lo strumento più adatto: su supporti fragili o già ammalorati l'impresa può preferire un metodo di pulizia meno aggressivo. Non comprende il trattamento di muffe o degrado che richiede cicli specifici, né il ponteggio.",
         includes: "pulizia/idrolavaggio quando compatibile con il supporto, rimozione ordinaria di sporco e depositi superficiali",
         excludes: "ripristini, trattamento di muffe o degrado specialistico quando richiede cicli specifici, ponteggio",
@@ -2047,7 +2047,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 14 € a 20 € al mq",
         plainExplanation:
-          "È la rimozione delle parti di intonaco deteriorate o distaccate — in termini tecnici, la spicconatura — insieme alla pulizia del supporto sottostante.",
+          "Rimozione delle parti di intonaco deteriorate o distaccate, detta anche spicconatura, con pulizia del supporto sottostante.",
         note: "Comprende la normale gestione, il trasporto e lo smaltimento del materiale rimosso. Il costo si applica alla quantità reale di intonaco da rimuovere, non all'intera superficie della facciata: riguarda solo le zone ammalorate individuate nel controllo iniziale.",
         includes:
           "spicconatura/rimozione delle parti deteriorate, pulizia del supporto, gestione, trasporto e smaltimento ordinari del materiale rimosso",
@@ -2061,7 +2061,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         category: "Demolizione e ripristino dell'intonaco",
         unit: "al mq",
         range: "da 25 € a 40 € al mq",
-        plainExplanation: "È l'applicazione del nuovo intonaco nelle zone dove quello vecchio è stato rimosso: materiale e posa comprese.",
+        plainExplanation: "Realizzazione del nuovo intonaco nelle zone precedentemente rimosse, comprensiva di materiale e posa.",
         note: "Presuppone che la rimozione dell'intonaco ammalorato sia già stata eseguita: non la comprende (vedi la riga qui sopra). Non comprende la rasatura finale dell'intera facciata né la pittura: sono lavorazioni successive, con un prezzo proprio più sotto in tabella.",
         includes:
           "materiale, applicazione del nuovo intonaco nelle zone demolite, normale preparazione/aggrappo compatibile con il ciclo quando necessario",
@@ -2074,11 +2074,11 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         label: "Rasatura semplice in due mani",
         category: "Rasature",
         categoryNote:
-          "Rasatura semplice e rasatura armata sono due configurazioni diverse dello stesso passaggio, non due fasi da sommare sulla stessa superficie: si sceglie l'una o l'altra in base allo stato del fondo.",
+          "Rasatura semplice e rasatura armata sono alternative da scegliere in base alle condizioni del fondo, non lavorazioni da sommare sulla stessa superficie.",
         unit: "al mq",
         range: "da 15 € a 25 € al mq",
         plainExplanation:
-          "È la regolarizzazione della superficie con un rasante professionale applicato in due mani, su un fondo già idoneo — utile per uniformare l'intonaco prima della finitura.",
+          "Regolarizzazione della superficie con rasante applicato in due mani su un fondo già idoneo, prima della finitura.",
         note: "Presuppone un fondo già idoneo, non un intonaco appena rifatto su grandi superfici né molto irregolare: quando il fondo è più critico o la zona da regolarizzare è ampia, la scelta più adatta è di solito la rasatura armata qui sotto, non due rasature sommate sulla stessa parete.",
         includes: "rasante professionale, applicazione in due mani/passate, normale finitura del supporto",
         excludes:
@@ -2093,7 +2093,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 25 € a 40 € al mq",
         plainExplanation:
-          "È la stessa regolarizzazione della rasatura semplice qui sopra, con in più una rete in fibra di vetro annegata nel rasante: rende la superficie più resistente e uniforme, utile su fondi più critici o dopo un ripristino esteso dell'intonaco.",
+          "Rasatura con rete in fibra di vetro annegata nel rasante, indicata per fondi più critici o dopo ripristini estesi.",
         note: "Comprende l'annegamento della rete, le sovrapposizioni tra i teli e una seconda passata di rasatura di copertura. Non va sommata alla rasatura semplice qui sopra: sono due configurazioni diverse dello stesso passaggio, si sceglie quella più adatta al proprio caso, non entrambe sulla stessa superficie.",
         includes: "rasante, rete in fibra di vetro, annegamento e sovrapposizioni, seconda passata/rasatura di copertura",
         excludes: "finitura pittorica, demolizione, ponteggio",
@@ -2107,7 +2107,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 3 € a 7 € al mq",
         plainExplanation:
-          "Su un fondo assorbente o sfarinante può servire un fissativo o un consolidante prima della finitura; su alcuni supporti può servire invece un primer di adesione. Non è una lavorazione obbligatoria su ogni facciata.",
+          "Può essere necessario su fondi assorbenti, sfarinanti o con scarsa adesione prima della finitura. Il prodotto e il ciclo da utilizzare dipendono dalle condizioni del supporto.",
         note: "Da conteggiare separatamente solo quando non è già compreso nel ciclo successivo: alcuni cicli di pittura (in particolare alcune pitture silossaniche) comprendono già un fissativo compatibile nel proprio sistema. Non va sommato automaticamente alla tinteggiatura: verifica con l'impresa se il ciclo scelto lo comprende già.",
         confidence: "media",
         costType: "complete",
@@ -2125,7 +2125,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 16 € a 25 € al mq",
         plainExplanation:
-          "È la pittura esterna più diffusa, su una facciata già preparata: normalmente due mani, su un fondo pronto a riceverla.",
+          "Finitura pittorica esterna, normalmente in due mani, applicata su una facciata già preparata.",
         note: "Il fissativo, quando serve, non è compreso in questo prezzo (vedi \"Fissativo, consolidante o primer\" qui sopra) — non va comunque duplicato se il ciclo di pittura scelto lo comprende già.",
         includes: "preparazione ordinaria, due mani di pittura",
         excludes: "ponteggio, fissativo quando non già compreso nel ciclo",
@@ -2139,7 +2139,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 22 € a 35 € al mq",
         plainExplanation:
-          "È una finitura esterna traspirante e idrorepellente, più resistente agli agenti atmosferici della tinteggiatura standard qui sopra: normalmente un fondo idoneo, un fissativo compatibile quando previsto dal ciclo, e due mani.",
+          "Finitura esterna traspirante e idrorepellente, applicata su un fondo preparato con ciclo compatibile.",
         note: "Va chiaramente distinta dal rivestimento a spessore qui sotto: è una pittura a film sottile, non una finitura granulata o frattazzata. Il prezzo più alto rispetto alla tinteggiatura standard riflette la tecnologia del prodotto (traspirabilità, idrorepellenza), non solo l'aspetto estetico.",
         includes: "fondo idoneo, fissativo compatibile quando previsto dal ciclo, due mani",
         excludes: "ponteggio",
@@ -2153,7 +2153,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq",
         range: "da 25 € a 40 € al mq",
         plainExplanation:
-          "È una finitura granulata o frattazzata applicata a spessore, non una semplice pittura più costosa: cambia la texture e la protezione della superficie, non solo il colore.",
+          "Finitura granulata o frattazzata applicata a spessore, che modifica texture e protezione superficiale oltre al colore.",
         note: "Può essere a base silossanica o un'altra tecnologia compatibile con il sistema scelto: questa riga non si restringe a una sola tecnologia di rivestimento a spessore.",
         excludes: "ponteggio",
         confidence: "media",
@@ -2166,7 +2166,7 @@ export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
         unit: "al mq di facciata",
         range: "da 15 € a 30 € al mq di facciata",
         plainExplanation:
-          "È il costo del ponteggio necessario per lavorare in sicurezza sulla facciata, calcolato sulla superficie da ponteggiare — non sui mq di uno scenario o di una singola lavorazione qui sopra.",
+          "Ponteggio necessario per lavorare in sicurezza, calcolato sulla superficie della facciata da ponteggiare.",
         note: "Comprende orientativamente montaggio, un periodo iniziale di utilizzo/noleggio e smontaggio. Periodi di noleggio più lunghi possono far salire il costo. Resta sempre una voce separata dai range principali di questa guida, qualunque sia lo scenario o le lavorazioni scelte.",
         includes: "montaggio, periodo iniziale di utilizzo/noleggio, smontaggio",
         excludes:

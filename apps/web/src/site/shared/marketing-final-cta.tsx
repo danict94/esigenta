@@ -30,7 +30,10 @@ export function MarketingFinalCta({
   const isLeftAligned = isCostVariant || align === "left";
 
   return (
-    <section className="eg-theme-ink eg-section-editorial">
+    <section
+      data-cost-cta={isCostVariant || undefined}
+      className={cn("eg-theme-ink eg-section-editorial", isCostVariant && "py-10 md:py-11 lg:py-12")}
+    >
       <div className={isLeftAligned ? "eg-container" : "eg-container-narrow text-center"}>
         <h2 className="eg-h2">{title}</h2>
 

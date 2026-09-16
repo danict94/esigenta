@@ -25,6 +25,7 @@ export type CostSizeExamplesProps = {
     intro?: ReactNode;
     notes?: readonly ReactNode[];
     sizeUnit?: "mq" | "m²";
+    surfaceLabel?: string;
   };
 };
 
@@ -92,12 +93,14 @@ function SizeExamplesTable({
   intro,
   notes,
   sizeUnit = "mq",
+  surfaceLabel = "Superficie",
 }: {
   sizeExamples: readonly SizeExample[];
   title: string;
   intro?: ReactNode;
   notes?: readonly ReactNode[];
   sizeUnit?: "mq" | "m²";
+  surfaceLabel?: string;
 }) {
   return (
     <section aria-labelledby="esempi-costo-title" className="eg-section-editorial border-t border-eg-border">
@@ -113,7 +116,7 @@ function SizeExamplesTable({
         <div className="max-w-170 overflow-hidden border border-eg-border bg-white">
           <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
             <p className="px-5 py-3 text-[13px] font-semibold text-eg-ink">
-              Superficie
+              {surfaceLabel}
             </p>
             <p className="border-l border-eg-border px-5 py-3 text-[13px] font-semibold text-eg-ink">
               Costo indicativo

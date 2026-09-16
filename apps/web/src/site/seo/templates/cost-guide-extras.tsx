@@ -36,11 +36,19 @@ function isElectricalExtra(rows: PriceRow[]): boolean {
   return rows.length === 3 && rows.every((row) => row.id in electricalExtraContent);
 }
 
+function isFacadeExtra(rows: PriceRow[]): boolean {
+  return rows.length === 1 && rows[0]?.id === "facciata-fissativo-primer";
+}
+
 export function CostExtras({ rows, allRows }: CostExtrasProps) {
   if (rows.length === 0) return null;
 
   if (isElectricalExtra(rows)) {
     return <ElectricalExtrasSection rows={rows} />;
+  }
+
+  if (isFacadeExtra(rows)) {
+    return <FacadeExtrasSection row={rows[0]!} />;
   }
 
   return (
@@ -63,6 +71,39 @@ export function CostExtras({ rows, allRows }: CostExtrasProps) {
             <ExtraCard key={row.id} row={row} allRows={allRows} />
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function FacadeExtrasSection({ row }: { row: PriceRow }) {
+  return (
+    <section aria-labelledby="extra-title" className="eg-section-editorial border-t border-eg-border">
+      <div className="eg-container">
+        <div className="mb-8 max-w-170">
+          <p className={blueprintEyebrowClassName}>Extra</p>
+
+          <h2 id="extra-title" className={cn(sectionTitleClassName, "mt-3")}>
+            Cosa può far salire il prezzo
+          </h2>
+
+          <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
+            Alcune lavorazioni si aggiungono solo quando richieste dalle condizioni del supporto e non vanno considerate automaticamente.
+          </p>
+        </div>
+
+        <article className="border border-eg-warning-border bg-eg-warning-soft p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 className="font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink">
+              {row.simpleLabel ?? row.label}
+            </h3>
+            <p className="font-(family-name:--eg-font-primary) font-bold text-eg-ink [font-variant-numeric:tabular-nums]">
+              3–7 €/mq
+            </p>
+          </div>
+
+          <p className="mt-2 text-[13px] leading-normal text-eg-ink">{row.plainExplanation}</p>
+        </article>
       </div>
     </section>
   );

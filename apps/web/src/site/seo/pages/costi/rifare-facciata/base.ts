@@ -29,35 +29,48 @@ export const rifareFacciataBase: CostGuideBaseContent = {
     "Fasce orientative per rifare la facciata, dal semplice rinnovo della finitura al rifacimento esteso con ripristino dell'intonaco e rasatura.",
   topicLabel: "rifare la facciata",
   summary:
-    "Rifare la facciata segue un ciclo di lavorazioni, non un unico prezzo fisso: controllo delle parti distaccate, pulizia, rimozione dell'intonaco ammalorato, ripristino, rasatura, preparazione del fondo e nuova finitura. Un rifacimento esteso, con degrado significativo, costa indicativamente 70–120 € al mq (ponteggio escluso): interventi più leggeri — un semplice rinnovo della finitura o un ripristino solo delle zone ammalorate — costano meno. Questa guida non copre il cappotto termico, un intervento diverso con lavorazioni e costi propri.",
+    "Il costo dipende dallo stato della facciata, dall’estensione del degrado, dalle lavorazioni necessarie e dall’accessibilità del cantiere. Indicativamente, un rifacimento esteso con rimozione dell’intonaco ammalorato, ripristino, rasatura e nuova finitura può costare 70–120 €/mq. Un rinnovo della finitura o un ripristino localizzato può costare meno. Ponteggio e cappotto termico sono esclusi da questa fascia; consolidamenti strutturali importanti e restauri specialistici richiedono una valutazione separata.",
+  hideHeroPricing: true,
   factors: [
-    "superficie della facciata da trattare",
-    "estensione del degrado dell'intonaco: localizzato o diffuso",
-    "quantità di intonaco da rimuovere e da rifare",
-    "necessità e tipo di rasatura (semplice o armata con rete)",
-    "necessità di un fissativo o primer sul fondo esistente",
-    "tipo di finitura scelta (tinteggiatura standard, silossanica, rivestimento a spessore)",
-    "necessità e durata del ponteggio",
-    "accessibilità dell'edificio e vincoli condominiali",
+    "altezza dell’edificio e modalità di accesso alla facciata",
+    "presenza di balconi, aggetti, cornici, marcapiani o altri elementi che rendono le lavorazioni più articolate",
+    "estensione e continuità delle superfici da trattare",
+    "necessità di proteggere infissi, pavimentazioni, parti comuni o altre superfici durante i lavori",
+    "spazio disponibile per ponteggio, carico, scarico e deposito dei materiali",
+    "eventuali vincoli condominiali o limitazioni agli orari di cantiere",
+    "trasporto, movimentazione e smaltimento dei materiali",
+    "disponibilità e costo dei professionisti nella zona",
   ],
+  compactFactors: {
+    title: "Altri fattori che possono incidere sul preventivo",
+    intro: "Oltre al tipo di intervento e alle lavorazioni necessarie, il preventivo può variare in base alle caratteristiche dell’edificio e alla logistica del cantiere.",
+  },
   savingTips: [
-    "Fai verificare lo stato reale dell'intonaco prima di scegliere tra un semplice rinnovo della finitura e un rifacimento più esteso: sono lavori diversi, con prezzi molto diversi.",
-    "Chiedi preventivi con voci separate per ponteggio, rimozione e ripristino dell'intonaco, rasatura e finitura: capisci meglio cosa stai pagando.",
-    "Se l'edificio è condominiale, valuta insieme ad altri proprietari per dividere i costi del ponteggio.",
-    "Chiedi se il preventivo prevede una rasatura semplice o armata con rete: non sono la stessa lavorazione allo stesso prezzo.",
-    "Chiarisci il tipo di finitura previsto: tinteggiatura standard, silossanica e rivestimento a spessore hanno prezzi e caratteristiche diverse.",
-    "Verifica se sono necessarie pratiche edilizie o comunicazioni per lavori sulla facciata.",
+    "Fai verificare lo stato reale dell’intonaco prima di scegliere tra rinnovo della finitura, ripristino parziale e rifacimento esteso.",
+    "Chiedi preventivi con voci separate per ponteggio, rimozione e ripristino dell’intonaco, rasatura e finitura.",
+    "Se l’edificio è condominiale, valuta la possibilità di coordinare i lavori con gli altri proprietari per distribuire i costi fissi del cantiere.",
+    "Chiarisci nel preventivo quale rasatura e quale finitura sono previste: materiali e cicli diversi possono incidere sul costo.",
+    "Verifica prima dell’avvio se sono necessarie autorizzazioni, occupazione di suolo pubblico o altre comunicazioni per il cantiere.",
   ],
+  faqEmphasizePhrase: "70–120 €/mq",
   nationalRangeLabel: "Fascia orientativa",
   interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
   nationalRangeNote:
     "Indicativamente 70–120 € al mq per un rifacimento esteso della facciata, con degrado significativo: controllo delle parti distaccate, rimozione dell'intonaco ammalorato, ripristino, rasatura, preparazione e nuova finitura — non una semplice tinteggiatura. Il ponteggio e il cappotto termico sono sempre esclusi da questa fascia. Interventi più leggeri costano meno: un rinnovo della finitura su facciata sana parte da 25–40 €/mq, un ripristino solo delle zone ammalorate da 45–80 €/mq (vedi gli scenari più sotto). Consolidamenti strutturali importanti e restauro specialistico o storico non rientrano in nessuna di queste fasce.",
   priceTableIntro:
     "La tabella distingue tre scenari di ampiezza del lavoro — dal semplice rinnovo della finitura al rifacimento esteso — dalle singole lavorazioni del ciclo (controllo, pulizia, rimozione e ripristino dell'intonaco, rasatura, preparazione del fondo, finiture) e dal ponteggio, sempre una voce a parte.",
+  breakdownIntro:
+    "Alcune lavorazioni possono essere già comprese nello scenario di rifacimento scelto: in questi casi non vanno sommate una seconda volta.",
   priceTableNote:
     "Le fasce sono elaborazioni editoriali Esigenta, ancorate a prezzari regionali ufficiali, confronto tra lavorazioni comparabili e mercato privato come controllo secondario — non la voce di un singolo prezzario regionale: utili per farsi un'idea prima del preventivo, non per sostituirlo. Il cappotto termico non è compreso nei prezzi di questa guida: aggiunge isolamento esterno, pannelli e un ciclo di posa specifico (vedi \"Ti serve solo una parte del lavoro?\" più sotto).",
-  sizeExamplesIntro:
-    "Ogni valore nasce da un calcolo — superficie della facciata moltiplicata per la fascia 70–120 €/mq del rifacimento esteso, ponteggio escluso — non da un preventivo reale: sono mq di superficie della facciata esterna, non della superficie abitativa interna, e non sommano tutte le singole lavorazioni della tabella. Per uno scenario più leggero (rinnovo della finitura o ripristino parziale), il totale è inferiore a questi esempi.",
+  sizeExamplesTable: {
+    title: "Esempi di costo per metratura",
+    intro: "Le stime sono calcolate sulla fascia 70–120 €/mq del rifacimento esteso. Si riferiscono ai mq della superficie esterna della facciata, non alla superficie abitativa interna, e non comprendono il ponteggio.",
+    notes: [
+      "Le stime derivano da superficie × fascia del rifacimento esteso e non rappresentano preventivi indipendenti per ciascuna metratura. Un rinnovo della finitura o un ripristino parziale può avere un costo inferiore; stato della facciata, accessibilità e lavorazioni escluse possono modificare il totale.",
+    ],
+    surfaceLabel: "Superficie facciata",
+  },
   // Interventi specifici spesso confusi con un rifacimento della facciata:
   // slug reali del gruppo taxonomy "facciate-e-balconi" (verificati contro
   // project-groups/facciate-e-balconi.ts), tenuti distinti su richiesta
@@ -71,17 +84,17 @@ export const rifareFacciataBase: CostGuideBaseContent = {
       slug: "realizzare-cappotto-termico-facciata",
       title: "Realizzare il cappotto termico della facciata",
       description:
-        "Il cappotto termico non è compreso nei prezzi di questa guida: aggiunge isolamento esterno, pannelli e un ciclo di posa specifico.",
+        "Intervento distinto dal rifacimento della facciata, con isolamento esterno, pannelli e ciclo di posa specifico.",
     },
     {
       slug: "ripristinare-balconi-e-ballatoi",
       title: "Ripristinare balconi e ballatoi",
-      description: "Per distacchi di intonaco o cemento ammalorato su balconi e ballatoi, non sulla facciata.",
+      description: "Per distacchi di intonaco o calcestruzzo ammalorato su balconi e ballatoi.",
     },
     {
       slug: "ripristino-frontalino",
       title: "Ripristinare il frontalino del balcone",
-      description: "Per il frontalino del balcone, un intervento specifico e distinto dalla facciata.",
+      description: "Per il ripristino del frontalino del balcone, distinto dalle lavorazioni sulla facciata.",
     },
   ],
 };

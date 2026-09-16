@@ -99,6 +99,35 @@ const roofScenarioContent = {
   },
 } as const;
 const roofScenarioIds = Object.keys(roofScenarioContent);
+const facadeScenarioContent = {
+  "facciata-rinnovo-finitura": {
+    title: "Rinnovo della finitura",
+    label: "Quando può bastare",
+    items: [
+      "La facciata è sostanzialmente sana e non presenta un degrado diffuso dell’intonaco.",
+    ],
+  },
+  "facciata-ripristino-parziale": {
+    title: "Ripristino parziale e nuova finitura",
+    label: "Quando può bastare",
+    items: [
+      "Il degrado è localizzato: alcune zone richiedono il ripristino dell’intonaco, mentre il resto della facciata è ancora in condizioni accettabili.",
+    ],
+  },
+  "facciata-rifacimento-ordinario": {
+    title: "Rifacimento esteso della facciata",
+    label: "Comprende",
+    items: [
+      "controllo delle parti distaccate",
+      "rimozione significativa dell’intonaco ammalorato",
+      "ripristino dell’intonaco",
+      "rasatura",
+      "preparazione del fondo",
+      "nuova finitura",
+    ],
+  },
+} as const;
+const facadeScenarioIds = Object.keys(facadeScenarioContent);
 const priceRangeClassName = "font-(family-name:--eg-font-primary) text-[22px] font-bold leading-tight text-eg-brand-strong [font-variant-numeric:tabular-nums]";
 
 function isElectricalScenario(rows: PriceRow[]): boolean {
@@ -107,6 +136,10 @@ function isElectricalScenario(rows: PriceRow[]): boolean {
 
 function isRoofScenario(rows: PriceRow[]): boolean {
   return rows.length === roofScenarioIds.length && rows.every((row) => row.id in roofScenarioContent);
+}
+
+function isFacadeScenario(rows: PriceRow[]): boolean {
+  return rows.length === facadeScenarioIds.length && rows.every((row) => row.id in facadeScenarioContent);
 }
 
 function formatPriceRange(range: string): string {
@@ -122,6 +155,10 @@ export function CostScenarioCards({ rows }: CostScenarioCardsProps) {
 
   if (isRoofScenario(rows)) {
     return <RoofScenarioSection rows={rows} />;
+  }
+
+  if (isFacadeScenario(rows)) {
+    return <FacadeScenarioSection rows={rows} />;
   }
 
   return (
@@ -215,18 +252,41 @@ function RoofScenarioSection({ rows }: { rows: PriceRow[] }) {
 
         <ComparativeScenarioTable scenarios={scenarios} />
 
-        <div className="mt-5 border-t border-eg-border pt-4">
-          <h3 className="font-(family-name:--eg-font-primary) text-[15px] font-semibold text-eg-ink">
-            Nel rifacimento standard non sono compresi
-          </h3>
-          <ul className="mt-3 grid list-disc gap-x-8 gap-y-1.5 pl-5 text-[13px] leading-normal text-eg-text-muted sm:grid-cols-2">
-            <li>isolamento termico completo</li>
-            <li>tetto ventilato o stratigrafie più evolute</li>
-            <li>interventi sulla struttura portante</li>
-            <li>grondaie</li>
-            <li>ponteggio</li>
-          </ul>
-        </div>
+        <ScenarioExclusions
+          title="Nel rifacimento standard non sono compresi"
+          items={[
+            "isolamento termico completo",
+            "tetto ventilato o stratigrafie più evolute",
+            "interventi sulla struttura portante",
+            "grondaie",
+            "ponteggio",
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
+
+function FacadeScenarioSection({ rows }: { rows: PriceRow[] }) {
+  const scenarios = rows.map((row) => ({
+    content: facadeScenarioContent[row.id as keyof typeof facadeScenarioContent],
+    price: formatPriceRange(row.range),
+  }));
+
+  return (
+    <section aria-labelledby="scenari-title" className="eg-section-editorial border-t border-eg-border">
+      <div className="eg-container">
+        <p className={blueprintEyebrowClassName}>Scenari</p>
+        <h2 id="scenari-title" className={cn(sectionTitleClassName, "mt-3")}>
+          Tre scenari di intervento
+        </h2>
+
+        <ComparativeScenarioTable scenarios={scenarios} />
+
+        <ScenarioExclusions
+          title="Nel rifacimento esteso non sono compresi"
+          items={["ponteggio", "cappotto termico"]}
+        />
       </div>
     </section>
   );
@@ -242,40 +302,30 @@ type ComparativeScenario = {
 };
 
 function ComparativeScenarioTable({ scenarios }: { scenarios: readonly ComparativeScenario[] }) {
-  const rowCount = Math.max(...scenarios.map(({ content }) => content.items.length));
   const lastColumnIndex = scenarios.length - 1;
   const gridStyle = { gridTemplateColumns: `repeat(${scenarios.length}, minmax(0, 1fr))` };
 
   return (
     <>
       <div className="mt-8 hidden overflow-hidden border border-eg-border bg-white lg:grid" style={gridStyle}>
-        {scenarios.map(({ content }, index) => (
-          <header key={content.title} className={cn("px-5 py-4.5", index < lastColumnIndex && "border-r border-eg-border")}>
-            <h3 className="font-(family-name:--eg-font-primary) text-[15.5px] font-semibold leading-snug text-eg-ink">
-              {content.title}
-            </h3>
-          </header>
-        ))}
-
         {scenarios.map(({ content, price }, index) => (
-          <p key={content.title} className={cn(priceRangeClassName, "border-y border-eg-border px-5 py-4", index < lastColumnIndex && "border-r border-eg-border")}>
-            {price}
-          </p>
+          <article key={content.title} className={cn("flex flex-col", index < lastColumnIndex && "border-r border-eg-border")}>
+            <header className="flex min-h-14 items-start px-5 py-4.5">
+              <h3 className="font-(family-name:--eg-font-primary) text-[15.5px] font-semibold leading-snug text-eg-ink">
+                {content.title}
+              </h3>
+            </header>
+            <p className={cn(priceRangeClassName, "border-y border-eg-border px-5 py-4")}>{price}</p>
+            <p className="border-b border-eg-border px-5 py-3 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
+              {content.label}
+            </p>
+            <ul className="list-none px-5">
+              {content.items.map((item) => (
+                <li key={item} className="border-b border-eg-border py-3 text-[13.5px] leading-normal text-eg-ink last:border-b-0">{item}</li>
+              ))}
+            </ul>
+          </article>
         ))}
-
-        {scenarios.map(({ content }, index) => (
-          <p key={content.title} className={cn("border-b border-eg-border px-5 py-3 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted", index < lastColumnIndex && "border-r border-eg-border")}>
-            {content.label}
-          </p>
-        ))}
-
-        {Array.from({ length: rowCount }, (_, rowIndex) =>
-          scenarios.map(({ content }, columnIndex) => (
-            <div key={`${content.title}-${rowIndex}`} className={cn("min-h-12 border-b border-eg-border px-5 py-3 text-[13.5px] leading-normal text-eg-ink", columnIndex < lastColumnIndex && "border-r border-eg-border", rowIndex === rowCount - 1 && "border-b-0")}>
-              {content.items[rowIndex] ?? ""}
-            </div>
-          )),
-        )}
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:hidden">
@@ -299,5 +349,16 @@ function ComparativeScenarioTable({ scenarios }: { scenarios: readonly Comparati
         ))}
       </div>
     </>
+  );
+}
+
+function ScenarioExclusions({ title, items }: { title: string; items: readonly string[] }) {
+  return (
+    <div className="mt-5 border-t border-eg-border pt-4">
+      <h3 className="font-(family-name:--eg-font-primary) text-[15px] font-semibold text-eg-ink">{title}</h3>
+      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[13px] leading-normal text-eg-text-muted">
+        {items.map((item) => <li key={item}>{item}</li>)}
+      </ul>
+    </div>
   );
 }

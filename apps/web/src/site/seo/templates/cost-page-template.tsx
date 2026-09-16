@@ -102,6 +102,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         />
       ) : null}
       <div className="eg-page eg-page-bg">
+        <div className="eg-cost-guide">
         <InternalPageIntro
           breadcrumbs={[
             { label: "Home", href: "/" },
@@ -111,6 +112,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           ]}
           title={guide.h1}
           wideContent
+          bottomSpacing="inherited"
           // Fix UI review: il prezzo va SUBITO dopo l'H1 (afterTitle), prima
           // di descrizione/CTA — deve leggersi come risposta diretta alla
           // domanda del titolo, non come un blocco raggiunto dopo aver
@@ -118,7 +120,7 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           // riposizionato: nessun elemento nuovo, l'Hero non diventa più
           // pesante.
           afterTitle={
-            guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" ? null : <>
+            guide.hideHeroPricing || guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" ? null : <>
               <CostGuideHero
                 nationalRange={guide.nationalRange}
                 nationalRangeLabel={guide.nationalRangeLabel}
@@ -138,10 +140,10 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           )}
         />
 
-        <div className="[&_.eg-section-editorial]:border-t-0 lg:[&_.eg-section-editorial]:py-14">
+        <div className="eg-cost-guide-flow">
         <CostScenarioCards rows={classification.scenarioCards} />
 
-        {guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" ? null : (
+        {guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" || guide.slug === "rifare-facciata" ? null : (
           <CostIncludedExcluded primary={classification.primary} />
         )}
 
@@ -164,6 +166,12 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             notes: [
               "Le stime derivano da superficie × fascia standard e non rappresentano preventivi indipendenti per ciascuna metratura. Pendenza, forma, accessibilità ed eventuali lavorazioni escluse possono modificare il totale.",
             ],
+          } : guide.sizeExamplesTable ? {
+            title: guide.sizeExamplesTable.title,
+            intro: emphasizePriceRanges(guide.sizeExamplesTable.intro),
+            notes: guide.sizeExamplesTable.notes,
+            surfaceLabel: guide.sizeExamplesTable.surfaceLabel,
+            sizeUnit: guide.sizeExamplesTable.sizeUnit,
           } : undefined}
         />
 
@@ -185,14 +193,17 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           sourceLabel={guide.sourceLabel}
           sourceYear={guide.sourceYear}
           electricalVariant={guide.slug === "rifare-impianto-elettrico"}
-          intro={guide.slug === "rifare-tetto" ? "Alcune lavorazioni possono essere già comprese negli scenari indicati sopra: in questi casi non vanno sommate una seconda volta." : undefined}
+          intro={guide.breakdownIntro ?? (guide.slug === "rifare-tetto" ? "Alcune lavorazioni possono essere già comprese negli scenari indicati sopra: in questi casi non vanno sommate una seconda volta." : undefined)}
         />
 
         <CostFactors
           factors={guide.factors}
           topicLabel={guide.topicLabel}
           electricalVariant={guide.slug === "rifare-impianto-elettrico"}
-          compactContent={guide.slug === "rifare-tetto" ? {
+          compactContent={guide.compactFactors ? {
+            ...guide.compactFactors,
+            factors: guide.factors,
+          } : guide.slug === "rifare-tetto" ? {
             title: "Altri fattori che possono incidere sul preventivo",
             intro: "Oltre al tipo di intervento e alle condizioni della copertura, il preventivo può variare in base alla configurazione del tetto e alla logistica del cantiere.",
             factors: [
@@ -322,12 +333,13 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             <SeoFaq
               faq={guide.faq}
               defaultOpenFirst
-              emphasizePhrase={guide.slug === "rifare-tetto" ? "120–180 €/mq" : undefined}
+              emphasizePhrase={guide.faqEmphasizePhrase ?? (guide.slug === "rifare-tetto" ? "120–180 €/mq" : undefined)}
             />
           </div>
         </section>
         </div>
 
+        </div>
       </div>
     </PublicShell>
   );

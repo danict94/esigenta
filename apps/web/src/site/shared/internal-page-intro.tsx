@@ -23,6 +23,8 @@ type InternalPageIntroProps = {
   compact?: boolean;
   /** Amplia il contenuto della hero da desktop in su senza modificarne l'ordine. */
   wideContent?: boolean;
+  /** Usa il ritmo verticale ereditato dal contenitore padre, senza alterare il padding superiore della hero. */
+  bottomSpacing?: "default" | "inherited";
 };
 
 export function InternalPageIntro({
@@ -38,6 +40,7 @@ export function InternalPageIntro({
   titleId,
   compact = false,
   wideContent = false,
+  bottomSpacing = "default",
 }: InternalPageIntroProps) {
   return (
     <header
@@ -46,6 +49,7 @@ export function InternalPageIntro({
         "eg-internal-header",
         compact && "pt-[calc(var(--eg-nav-clear)+4px)] pb-7",
       )}
+      style={bottomSpacing === "inherited" ? { paddingBottom: "var(--eg-cost-section-gap)" } : undefined}
     >
       <div className="eg-container">
         <Breadcrumbs items={breadcrumbs} />

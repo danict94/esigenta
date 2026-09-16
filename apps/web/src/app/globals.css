@@ -2,3 +2,32 @@
 @import "@esigenta/ui/globals.css";
 
 @source "../../../../packages/ui/src";
+
+/* Il ritmo esterno delle macro-sezioni nelle guide costi è gestito qui, non
+   dai padding delle singole sezioni editoriali. */
+.eg-cost-guide {
+  --eg-cost-section-gap: 2rem;
+}
+
+.eg-cost-guide-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--eg-cost-section-gap);
+}
+
+.eg-cost-guide-flow > .eg-section-editorial:not([data-cost-cta]) {
+  padding-block: 0;
+  border-top: 0;
+}
+
+@media (min-width: 768px) {
+  .eg-cost-guide {
+    --eg-cost-section-gap: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .eg-cost-guide {
+    --eg-cost-section-gap: 3rem;
+  }
+}

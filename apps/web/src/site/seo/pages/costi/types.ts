@@ -106,6 +106,8 @@ export type CostGuideBaseContent = {
   hubCategory: CostGuideHubCategory;
   topicLabel: string;
   summary: string;
+  /** Nasconde il riepilogo prezzo standalone nella hero, quando la fascia è già integrata nel summary. */
+  hideHeroPricing?: boolean;
   factors: string[];
   savingTips: string[];
   /** Opzionale: solo per le guide che vogliono il blocco "Interventi specifici". */
@@ -124,6 +126,15 @@ export type CostGuideBaseContent = {
    * di sempre. Complementare a `priceTableNote`, che resta dopo la tabella.
    */
   priceTableIntro?: string;
+  /** Introduzione editoriale alternativa al listino delle singole lavorazioni. */
+  breakdownIntro?: string;
+  /** Variante compatta della sezione Fattori, senza sottosezioni duplicate. */
+  compactFactors?: {
+    title: string;
+    intro: string;
+  };
+  /** Fascia da evidenziare tipograficamente nella FAQ della guida. */
+  faqEmphasizePhrase?: string;
   /**
    * Etichetta alternativa per l'highlight "Costo complessivo" in Sintesi.
    * Usala quando quel testo fisso genererebbe una contraddizione con
@@ -159,6 +170,14 @@ export type CostGuideBaseContent = {
    * aggiuntivo, stesso comportamento di sempre.
    */
   sizeExamplesIntro?: string;
+  /** Variante tabellare per gli esempi: copy e intestazioni restano dati della guida. */
+  sizeExamplesTable?: {
+    title: string;
+    intro: string;
+    notes: readonly string[];
+    surfaceLabel?: string;
+    sizeUnit?: "mq" | "m²";
+  };
   /**
    * Quando presente, la guida non ha ancora prezzi verificati su prezzari
    * ufficiali: il composer salta del tutto la lookup in market-data (nessuna
@@ -226,6 +245,7 @@ export type CostGuide = {
    */
   topicLabel: string;
   summary: string;
+  hideHeroPricing?: boolean;
   /** Assente quando la guida è in modalità pricingTeaser (nessun prezzo ancora). */
   nationalRange?: string;
   pricePerSquareMeter?: string;
@@ -258,10 +278,23 @@ export type CostGuide = {
   relatedWork?: readonly CostGuideRelatedWorkItem[];
   priceTableNote?: string;
   priceTableIntro?: string;
+  breakdownIntro?: string;
+  compactFactors?: {
+    title: string;
+    intro: string;
+  };
+  faqEmphasizePhrase?: string;
   nationalRangeLabel?: string;
   interventionRangeLabel?: string;
   nationalRangeNote?: string;
   sizeExamplesIntro?: string;
+  sizeExamplesTable?: {
+    title: string;
+    intro: string;
+    notes: readonly string[];
+    surfaceLabel?: string;
+    sizeUnit?: "mq" | "m²";
+  };
   pricingTeaser?: string;
   hubDescription?: string;
   hubOrder?: number;
