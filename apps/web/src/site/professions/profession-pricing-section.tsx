@@ -17,7 +17,7 @@ export function ProfessionPricingSection({
   return (
     <section
       aria-labelledby="profession-pricing-title"
-      className="border-y border-eg-border py-5 sm:py-6"
+      className="py-5 sm:py-6"
       data-profession-pricing=""
     >
       <div className="eg-container">

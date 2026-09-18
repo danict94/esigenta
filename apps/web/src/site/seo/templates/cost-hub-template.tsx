@@ -189,7 +189,7 @@ function CostHubReadingGuide() {
   return (
     <section className="pb-12 sm:pb-14" aria-labelledby="cost-reading-title">
       <div className="eg-container">
-        <div className="border-t border-eg-border pt-6">
+        <div>
           <SectionHeader
             id="cost-reading-title"
             eyebrow="Prima di confrontare"
@@ -251,7 +251,7 @@ function CostHubFaq() {
   return (
     <section className="pb-12 sm:pb-14" aria-labelledby="cost-hub-faq-title">
       <div className="eg-container">
-        <div className="border-t border-eg-border pt-6">
+        <div>
           <SectionHeader
             id="cost-hub-faq-title"
             eyebrow="FAQ"

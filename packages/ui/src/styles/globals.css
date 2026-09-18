@@ -252,9 +252,11 @@ body {
     padding-block: 128px;
   }
 
-  /* Ritmo unico per pagine SEO lunghe: servizi, interventi e costi. */
+  /* Ritmo editoriale: ogni sezione possiede solo lo spazio che la segue.
+   * Due sezioni consecutive non sommano più padding superiore e inferiore. */
   .eg-section-editorial {
-    padding-block: 64px;
+    padding-top: 0;
+    padding-bottom: 64px;
   }
 
   .eg-container,
@@ -668,7 +670,8 @@ body {
   }
 
   .eg-section-editorial {
-    padding-block: 56px;
+    padding-top: 0;
+    padding-bottom: 56px;
   }
 
   .eg-container,

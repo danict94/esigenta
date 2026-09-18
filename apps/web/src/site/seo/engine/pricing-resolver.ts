@@ -1,7 +1,5 @@
-import {
-  getBasePriceRange,
-  type BasePriceRange,
-} from "../market-data/base-price-ranges";
+import { getBasePriceRange } from "../market-data/pricing/lookup";
+import type { BasePriceRange } from "../market-data/shared/types";
 import { getCityPriceModifier } from "../market-data/city-price-index";
 
 export function resolveFamilyPriceRange(

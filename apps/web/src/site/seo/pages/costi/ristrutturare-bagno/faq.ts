@@ -2,7 +2,7 @@ export const ristrutturareBagnoFaq = [
   {
     question: "Quanto costa ristrutturare un bagno completo?",
     answer:
-      "Per una ristrutturazione completa standard, su un bagno di circa 5–6 mq, considera orientativamente 4.500–8.000 €. Un intervento essenziale su un bagno piccolo può partire da circa 3.000 €, mentre spostamento degli scarichi, doccia a filo pavimento, materiali di pregio o problemi nascosti possono portare il costo oltre 10.000–12.000 €. Sono fasce orientative costruite confrontando prezzari regionali e stime di mercato nazionale, non un preventivo.",
+      "Per un bagno standard di circa 5–6 mq, una ristrutturazione completa si colloca indicativamente tra 4.500 e 8.000 €. Per intervento completo intendiamo normalmente demolizioni ordinarie, rifacimento dell’impianto idraulico interno, posa di pavimenti e rivestimenti e installazione di sanitari standard. Spostamenti degli impianti, lavorazioni più complesse e forniture di fascia superiore possono aumentare il costo.",
   },
   {
     question: "Quanto costa un bagno da 4, 6, 8 o 10 mq?",

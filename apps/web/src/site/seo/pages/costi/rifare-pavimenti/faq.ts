@@ -6,7 +6,7 @@ export const rifarePavimentiFaq = [
   {
     question: "Quanto costa rifare il pavimento al mq?",
     answer:
-      "Indicativamente da 60 € a 100 € al mq per il rifacimento standard: rimozione del vecchio pavimento, gestione ordinaria dello smaltimento, massetto esistente recuperabile, nuovo gres standard/medio e posa. È una fascia editoriale Esigenta, non il prezzo di un singolo prezzario: interventi più leggeri, come una posa sopra il pavimento esistente, costano meno (40–75 €/mq); un rifacimento con nuovo massetto, quando il sottofondo non è recuperabile, costa di più (90–140 €/mq).",
+      "Per un rifacimento standard considera indicativamente 60–100 €/m²: rimozione del vecchio pavimento, gestione ordinaria dello smaltimento, massetto esistente recuperabile, nuovo gres standard/medio e posa. Se si può posare sopra il pavimento esistente la fascia può scendere a circa 40–75 €/m²; quando deve essere rifatto anche il massetto può salire a circa 90–140 €/m².",
   },
   {
     question: "Quanto costa rifare il pavimento di una casa da 50, 80 o 100 mq?",

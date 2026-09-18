@@ -2,7 +2,7 @@ export const impermeabilizzareTerrazzoFaq = [
   {
     question: "Quanto costa impermeabilizzare un terrazzo al mq?",
     answer:
-      "Indicativamente da 30 € a 70 € al mq per un'impermeabilizzazione professionale standard della superficie, materiale e posa comprese, su un supporto in condizioni ragionevoli. Il prezzo cambia soprattutto in base al sistema scelto: soluzioni pensate per restare calpestabili a vista o sistemi ad alte prestazioni possono arrivare alle fasce superiori del listino di questa guida, fino a circa 120 €/mq, mentre le impermeabilizzazioni più semplici da ricoprire con una nuova pavimentazione possono costare meno di 30 €/mq.",
+      "Per un intervento ordinario considera indicativamente 30–70 €/m², materiale e posa compresi. È una fascia di riferimento, non il prezzo universale di qualsiasi sistema: un'impermeabilizzazione cementizia sotto pavimento può partire da circa 20–35 €/m², mentre sistemi calpestabili a vista o soluzioni specialistiche possono arrivare rispettivamente a circa 50–90 €/m² e 70–120 €/m². Demolizioni, ripristini del massetto e correzioni delle pendenze si valutano separatamente quando necessarie.",
   },
   {
     question: "Quanto costa impermeabilizzare 20, 50 o 100 mq?",

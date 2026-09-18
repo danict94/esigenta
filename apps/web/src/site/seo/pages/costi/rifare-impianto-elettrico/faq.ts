@@ -32,6 +32,6 @@ export const rifareImpiantoElettricoFaq = [
   {
     question: "La Dichiarazione di conformità e il progetto tecnico sono sempre necessari?",
     answer:
-      "La Dichiarazione di conformità va considerata nell’intervento eseguito da un’impresa abilitata. Il progetto tecnico non è richiesto in ogni situazione e dipende dalle caratteristiche dell’impianto e dai requisiti normativi applicabili al caso.",
+      "Il DM 37/08 disciplina l’installazione degli impianti e la Dichiarazione di conformità rilasciata dall’impresa abilitata. La CEI 64-8 è invece il riferimento tecnico per progettazione e realizzazione dell’impianto. Il progetto tecnico non è richiesto in ogni situazione e dipende dal caso e dai requisiti applicabili.",
   },
 ];

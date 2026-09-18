@@ -3,7 +3,10 @@ import type { ReactNode } from "react";
 
 import { cn } from "@esigenta/ui";
 
-import { getCostGuidePriceNote, type CostGuide } from "../pages/costi";
+import {
+  getCostGuideBySlug,
+  type CostGuide,
+} from "../pages/costi";
 import {
   resolveBestHrefForIntervention,
   resolveInterventionHrefForCostGuide,
@@ -11,6 +14,7 @@ import {
 import { resolveGroupBreadcrumbForCostGuide } from "../engine/resolve-group-page";
 import {
   buildBreadcrumbJsonLd,
+  buildCostGuideArticleJsonLd,
   buildFaqJsonLd,
   serializeJsonLd,
 } from "../engine/schema-builder";
@@ -18,9 +22,13 @@ import { PublicShell } from "../../shell/public-shell";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
 import { InternalPageIntro } from "../../shared/internal-page-intro";
 import { MarketingFinalCta } from "../../shared/marketing-final-cta";
-import { CostGuideHero } from "./cost-guide-hero";
-import { CostScenarioCards } from "./cost-guide-scenarios";
-import { CostIncludedExcluded } from "./cost-guide-included-excluded";
+import { resolveCostGuideEditorial } from "../editorial/cost-guide-editorial";
+import { resolveCostGuideToc } from "../editorial/cost-guide-toc";
+import { CostGuideEditorialMeta } from "./cost-guide-editorial-meta";
+import { CostGuideToc } from "./cost-guide-toc";
+import { CostGuideTechnicalReferences } from "./cost-guide-technical-references";
+import { GuideHelpfulness } from "./guide-helpfulness";
+import { ComparativeScenarioTable } from "./cost-guide-scenarios";
 import { CostExtras } from "./cost-guide-extras";
 import { CostSizeExamples } from "./cost-guide-size-examples";
 import { CostBreakdown } from "./cost-guide-breakdown";
@@ -62,19 +70,17 @@ function emphasizePriceRanges(text: string): ReactNode {
  * 5 guide, `breakdown` contiene semplicemente TUTTE le righe (comportamento
  * equivalente alla vecchia tabella), nessun contenuto perso.
  *
- * Fix UI review: il prezzo (`CostGuideHero`) è passato come `afterTitle` a
- * `InternalPageIntro`, quindi renderizzato SUBITO dopo l'H1 — non più in un
- * container separato dopo descrizione/CTA/immagine. Stesso Hero percepito
- * di prima, solo con il prezzo più vicino alla domanda del titolo.
+ * La hero usa un solo percorso editoriale: H1, introduzione della guida,
+ * metadata editoriale e TOC. Prezzi e relative note restano nelle sezioni
+ * dedicate, mai come blocchi concorrenti sopra l'introduzione.
  */
 export function CostGuidePage({ guide }: CostGuidePageProps) {
   const requestHref = `/richiesta/${guide.funnelSlug}`;
   const interventionHref = resolveInterventionHrefForCostGuide(
     guide.interventionSeoSlug,
   );
-  const priceNote = getCostGuidePriceNote();
   const groupCrumb = resolveGroupBreadcrumbForCostGuide(guide);
-  const classification = classifyPriceRows(guide.priceRows);
+  const classification = classifyPriceRows(guide.priceRows, guide.pricePresentation.breakdownRowIds);
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
@@ -83,8 +89,33 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
     { name: guide.h1, path: guide.canonicalPath },
   ]);
   const faqJsonLd = buildFaqJsonLd(guide.faq);
+  const editorial = resolveCostGuideEditorial(guide.editorial, guide.lastModified);
+  const articleJsonLd = editorial.datePublished && editorial.dateModified
+    ? buildCostGuideArticleJsonLd({
+        guide,
+        datePublished: editorial.datePublished,
+        dateModified: editorial.dateModified,
+      })
+    : null;
+  const relatedGuides = (editorial.relatedGuides ?? []).flatMap((item) => {
+    const relatedGuide = getCostGuideBySlug(item.slug);
+
+    return relatedGuide && relatedGuide.canonicalPath !== guide.canonicalPath
+      ? [{ ...item, href: relatedGuide.canonicalPath, title: relatedGuide.h1 }]
+      : [];
+  });
 
   const hasRelatedWork = Boolean(guide.relatedWork && guide.relatedWork.length > 0);
+  const sectionPresence = {
+    scenarios: guide.pricePresentation.scenarios.length > 0,
+    extras: classification.extras.length > 0,
+    examples: guide.sizeExamples.length > 0 && Boolean(guide.sizeExamplesTable),
+    breakdown: classification.breakdown.length > 0,
+    factors: guide.factors.length > 0 || (guide.locationFactors?.length ?? 0) > 0,
+    insights: true,
+    faq: guide.faq.length > 0,
+  };
+  const toc = resolveCostGuideToc(sectionPresence);
   // Agevolazioni fiscali è testo fisso, sempre presente: Approfondimenti
   // esiste sempre, relatedWork/savingTips sono sotto-blocchi opzionali al
   // suo interno.
@@ -95,6 +126,12 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
+      {articleJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
+        />
+      ) : null}
       {faqJsonLd ? (
         <script
           type="application/ld+json"
@@ -113,67 +150,38 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           title={guide.h1}
           wideContent
           bottomSpacing="inherited"
-          // Fix UI review: il prezzo va SUBITO dopo l'H1 (afterTitle), prima
-          // di descrizione/CTA — deve leggersi come risposta diretta alla
-          // domanda del titolo, non come un blocco raggiunto dopo aver
-          // attraversato testo e pulsanti. Stesso contenuto di prima, solo
-          // riposizionato: nessun elemento nuovo, l'Hero non diventa più
-          // pesante.
-          afterTitle={
-            guide.hideHeroPricing || guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" ? null : <>
-              <CostGuideHero
-                nationalRange={guide.nationalRange}
-                nationalRangeLabel={guide.nationalRangeLabel}
-                nationalRangeNote={guide.nationalRangeNote}
-                pricingTeaser={guide.pricingTeaser}
-              />
-
-              <p className="mt-4 max-w-155 text-[13px] leading-[1.6] text-eg-text-muted">{priceNote}</p>
-            </>
-          }
-          description={emphasizePriceRanges(
-            guide.slug === "rifare-impianto-elettrico"
-              ? "Il costo varia in base alla metratura, al numero di punti luce e prese, allo stato dell’impianto esistente, alla possibilità di riutilizzare le canalizzazioni e alla complessità delle opere murarie.\n\nIndicativamente, un rifacimento completo standard può costare da 55 a 90 €/mq. Se le canalizzazioni esistenti sono riutilizzabili, la fascia può scendere a 40–60 €/mq; per un impianto più articolato può invece arrivare mediamente a 80–110 €/mq."
-              : guide.slug === "rifare-tetto"
-                ? "Il costo dipende soprattutto dal tipo di intervento, dallo stato della copertura, dai materiali e dall’accessibilità del cantiere. Indicativamente, un rifacimento standard può costare 120–180 €/mq. La sola sostituzione del manto può avere costi inferiori, mentre isolamento termico, tetto ventilato o interventi sulla struttura portante possono portare il prezzo su fasce più alte."
-              : guide.summary
-          )}
+          note={<CostGuideEditorialMeta editorial={editorial} />}
+          description={emphasizePriceRanges(guide.summary)}
         />
+
+        <CostGuideToc sections={toc} />
 
         <div className="eg-cost-guide-flow">
-        <CostScenarioCards rows={classification.scenarioCards} />
+        {sectionPresence.scenarios ? (
+          <ComparativeScenarioTable scenarios={guide.pricePresentation.scenarios} exclusions={guide.scenarioExclusions} />
+        ) : null}
 
-        {guide.slug === "rifare-impianto-elettrico" || guide.slug === "rifare-tetto" || guide.slug === "rifare-facciata" ? null : (
-          <CostIncludedExcluded primary={classification.primary} />
-        )}
+        {sectionPresence.extras ? (
+          <CostExtras
+            rows={classification.extras}
+            allRows={guide.priceRows}
+            presentation={guide.extrasPresentation}
+            rowPresentation={guide.pricePresentation.extras}
+          />
+        ) : null}
 
-        <CostExtras rows={classification.extras} allRows={guide.priceRows} />
-
-        <CostSizeExamples
-          sizeExamples={guide.sizeExamples}
-          sizeExamplesIntro={guide.sizeExamplesIntro}
-          tableVariant={guide.slug === "rifare-impianto-elettrico" ? {
-            title: "Esempi di costo per metratura",
-            intro: "Stime calcolate sulla fascia 55–90 €/m² del rifacimento completo standard.",
-            sizeUnit: "m²",
-            notes: [
-              "Le stime per metratura sono ottenute applicando la fascia standard di 55–90 €/m² alla superficie: non sono rilevazioni di mercato indipendenti per ciascun taglio.",
-              "Negli appartamenti piccoli il costo al m² può risultare più alto, perché quadro elettrico, verifiche e alcune lavorazioni minime non diminuiscono in proporzione alla superficie.",
-            ],
-          } : guide.slug === "rifare-tetto" ? {
-            title: "Esempi di costo per metratura",
-            intro: <>Le stime sono calcolate sulla fascia <strong>120–180 €/mq</strong> del rifacimento standard. La superficie del tetto può differire da quella calpestabile dell’abitazione.</>,
-            notes: [
-              "Le stime derivano da superficie × fascia standard e non rappresentano preventivi indipendenti per ciascuna metratura. Pendenza, forma, accessibilità ed eventuali lavorazioni escluse possono modificare il totale.",
-            ],
-          } : guide.sizeExamplesTable ? {
-            title: guide.sizeExamplesTable.title,
-            intro: emphasizePriceRanges(guide.sizeExamplesTable.intro),
-            notes: guide.sizeExamplesTable.notes,
-            surfaceLabel: guide.sizeExamplesTable.surfaceLabel,
-            sizeUnit: guide.sizeExamplesTable.sizeUnit,
-          } : undefined}
-        />
+        {sectionPresence.examples && guide.sizeExamplesTable ? (
+          <CostSizeExamples
+            sizeExamples={guide.sizeExamples}
+            table={{
+              title: guide.sizeExamplesTable.title,
+              intro: emphasizePriceRanges(guide.sizeExamplesTable.intro),
+              notes: guide.sizeExamplesTable.notes,
+              surfaceLabel: guide.sizeExamplesTable.surfaceLabel,
+              sizeUnit: guide.sizeExamplesTable.sizeUnit,
+            }}
+          />
+        ) : null}
 
         <MarketingFinalCta
           title="Richiedi preventivi per il tuo lavoro"
@@ -187,38 +195,30 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           variant="cost"
         />
 
-        <CostBreakdown
-          rows={classification.breakdown}
-          allRows={guide.priceRows}
-          sourceLabel={guide.sourceLabel}
-          sourceYear={guide.sourceYear}
-          electricalVariant={guide.slug === "rifare-impianto-elettrico"}
-          intro={guide.breakdownIntro ?? (guide.slug === "rifare-tetto" ? "Alcune lavorazioni possono essere già comprese negli scenari indicati sopra: in questi casi non vanno sommate una seconda volta." : undefined)}
-        />
+        {sectionPresence.breakdown ? (
+          <CostBreakdown
+            rows={classification.breakdown}
+            allRows={guide.priceRows}
+            sourceLabel={guide.sourceLabel}
+            sourceYear={guide.sourceYear}
+            hideSourceNote={guide.hideBreakdownSourceNote}
+            intro={guide.breakdownIntro}
+          />
+        ) : null}
 
-        <CostFactors
-          factors={guide.factors}
-          topicLabel={guide.topicLabel}
-          electricalVariant={guide.slug === "rifare-impianto-elettrico"}
-          compactContent={guide.compactFactors ? {
-            ...guide.compactFactors,
-            factors: guide.factors,
-          } : guide.slug === "rifare-tetto" ? {
-            title: "Altri fattori che possono incidere sul preventivo",
-            intro: "Oltre al tipo di intervento e alle condizioni della copertura, il preventivo può variare in base alla configurazione del tetto e alla logistica del cantiere.",
-            factors: [
-              "altezza dell’edificio e modalità di accesso alla copertura",
-              "presenza di più falde, comignoli, lucernari, abbaini o altri elementi che rendono la posa più articolata",
-              "necessità di mezzi di sollevamento per materiali e attrezzature",
-              "spazio disponibile per carico, scarico e deposito temporaneo dei materiali",
-              "eventuali vincoli condominiali o limitazioni agli orari di lavoro",
-              "distanza, trasporto dei materiali e logistica dello smaltimento",
-              "disponibilità e costo dei professionisti nella zona",
-            ],
-          } : undefined}
-        />
+        {sectionPresence.factors ? (
+          <CostFactors
+            factors={guide.factors}
+            locationFactors={guide.locationFactors}
+            topicLabel={guide.topicLabel}
+            compactContent={guide.compactFactors ? {
+              ...guide.compactFactors,
+              factors: guide.factors,
+            } : undefined}
+          />
+        ) : null}
 
-        <section aria-labelledby="approfondimenti-title" className="eg-section-editorial border-t border-eg-border">
+        <section aria-labelledby="approfondimenti-title" className="eg-section-editorial">
           <div className="eg-container">
             <div className="mb-9 max-w-170">
               <p className={blueprintEyebrowClassName}>Approfondimenti</p>
@@ -236,20 +236,22 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     </h3>
 
                     <div className="border-t border-eg-border">
-                      {guide.relatedWork?.map((item) => (
-                        <Link
-                          key={item.slug}
-                          href={resolveBestHrefForIntervention(item.slug)}
-                          prefetch={false}
-                          className="group flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-eg-border py-4 no-underline transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2"
-                        >
+                      {guide.relatedWork?.map((item) => item.ctaOnly ? (
+                        <div key={item.slug} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-eg-border py-4">
                           <div className="min-w-0">
-                            <p className="font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink">
-                              {item.title}
-                            </p>
+                            <p className="font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink">{item.title}</p>
                             <p className="mt-1 text-[13px] leading-normal text-eg-text-muted">{item.description}</p>
                           </div>
-
+                          <Link href={resolveBestHrefForIntervention(item.slug)} prefetch={false} className="shrink-0 whitespace-nowrap text-xs font-semibold text-eg-brand-strong no-underline transition-[transform,color] duration-200 ease-(--eg-ease-brand) hover:translate-x-0.5 hover:text-eg-brand-hover">
+                            {item.linkLabel ?? "Richiedi un preventivo"} <span aria-hidden="true">&rarr;</span>
+                          </Link>
+                        </div>
+                      ) : (
+                        <Link key={item.slug} href={resolveBestHrefForIntervention(item.slug)} prefetch={false} className="group flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-eg-border py-4 no-underline transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2">
+                          <div className="min-w-0">
+                            <p className="font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink">{item.title}</p>
+                            <p className="mt-1 text-[13px] leading-normal text-eg-text-muted">{item.description}</p>
+                          </div>
                           <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-eg-brand-strong transition-[transform,color] duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-brand-hover">
                             {item.linkLabel ?? "Richiedi un preventivo"} <span aria-hidden="true">&rarr;</span>
                           </span>
@@ -258,6 +260,42 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
                     </div>
                   </div>
                 ) : null}
+
+                {relatedGuides.length > 0 ? (
+                  <div>
+                    <h3 className="mb-4 font-(family-name:--eg-font-primary) text-[16px] font-semibold text-eg-ink">
+                      Guide correlate
+                    </h3>
+
+                    <div className="border-t border-eg-border">
+                      {relatedGuides.map((item) => (
+                        <Link
+                          key={item.slug}
+                          href={item.href}
+                          prefetch={false}
+                          className="group flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-eg-border py-4 no-underline transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink">
+                              {item.title}
+                            </p>
+                            {item.description ? (
+                              <p className="mt-1 text-[13px] leading-normal text-eg-text-muted">
+                                {item.description}
+                              </p>
+                            ) : null}
+                          </div>
+
+                          <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-eg-brand-strong transition-[transform,color] duration-200 ease-(--eg-ease-brand) group-hover:translate-x-0.5 group-hover:text-eg-brand-hover">
+                            Leggi la guida <span aria-hidden="true">&rarr;</span>
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <CostGuideTechnicalReferences references={editorial.technicalReferences} />
 
                 {guide.savingTips.length > 0 ? (
                   <div>
@@ -328,15 +366,16 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
           </div>
         </section>
 
-        <section className="eg-section-editorial border-t border-eg-border">
+        <section className="eg-section-editorial">
           <div className="eg-container">
             <SeoFaq
               faq={guide.faq}
               defaultOpenFirst
-              emphasizePhrase={guide.faqEmphasizePhrase ?? (guide.slug === "rifare-tetto" ? "120–180 €/mq" : undefined)}
+              emphasizePhrase={guide.faqEmphasizePhrase}
             />
           </div>
         </section>
+        <GuideHelpfulness guideSlug={guide.slug} />
         </div>
 
         </div>

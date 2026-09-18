@@ -133,7 +133,7 @@ export function InterventionLandingPage({
           }
         />
 
-        <section aria-labelledby="cosa-puoi-richiedere-title" className="eg-section-editorial border-t border-eg-border">
+        <section aria-labelledby="cosa-puoi-richiedere-title" className="eg-section-editorial">
           <div className="eg-container">
             <div className="mb-9 max-w-160">
               <p className={blueprintEyebrowClassName}>Cosa puoi richiedere</p>
@@ -163,7 +163,7 @@ export function InterventionLandingPage({
         </section>
 
         {landing.scopeIncluded?.length || landing.scopeExcluded?.length ? (
-          <section aria-labelledby="perimetro-lavoro-title" className="eg-section-editorial border-t border-eg-border">
+          <section aria-labelledby="perimetro-lavoro-title" className="eg-section-editorial">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Perimetro del lavoro</p>
@@ -231,7 +231,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {landing.variants?.length ? (
-          <section aria-labelledby="varianti-title" className="eg-section-editorial border-t border-eg-border">
+          <section aria-labelledby="varianti-title" className="eg-section-editorial">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Livelli di intervento</p>
@@ -268,7 +268,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {landing.detailSections?.length ? (
-          <section aria-labelledby="approfondimento-title" className="eg-section-editorial border-t border-eg-border">
+          <section aria-labelledby="approfondimento-title" className="eg-section-editorial">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Come funziona nel dettaglio</p>
@@ -325,7 +325,7 @@ export function InterventionLandingPage({
         ) : null}
 
         {(landing.relatedInterventionSlugs.length > 0 || (landing.relatedFunnelWork?.length ?? 0) > 0) ? (
-          <section aria-labelledby="lavori-collegati-title" className="eg-section-editorial border-t border-eg-border">
+          <section aria-labelledby="lavori-collegati-title" className="eg-section-editorial">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Lavori collegati</p>
@@ -357,7 +357,7 @@ export function InterventionLandingPage({
           </section>
         ) : null}
 
-        <section className="eg-section-editorial border-t border-eg-border">
+        <section className="eg-section-editorial">
           <div className="eg-container">
             <GeoCostModule
               geoSection={landing.geoSection}
@@ -372,7 +372,7 @@ export function InterventionLandingPage({
         </section>
 
         {landing.preparationItems?.length ? (
-          <section aria-labelledby="prepara-richiesta-title" className="eg-section-editorial border-t border-eg-border">
+          <section aria-labelledby="prepara-richiesta-title" className="eg-section-editorial">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
                 <p className={blueprintEyebrowClassName}>Prima della richiesta</p>
@@ -414,11 +414,11 @@ export function InterventionLandingPage({
           </section>
         ) : null}
 
-        <section aria-labelledby="come-funziona-title" className="eg-section-editorial border-t border-eg-border">
+        <section aria-labelledby="come-funziona-title" className="eg-section-editorial">
           <HowItWorks />
         </section>
 
-        <section className="eg-section-editorial border-t border-eg-border">
+        <section className="eg-section-editorial">
           <div className="eg-container">
             <SeoFaq faq={landing.faq} />
           </div>

@@ -25,30 +25,30 @@ export function SeoFaq({
 
   return (
     <div aria-labelledby="seo-faq-title">
-      <div className="mb-9 max-w-160">
+      <div className="mb-7 max-w-160">
         <h2 id="seo-faq-title" className={sectionTitleClassName}>
           {title}
         </h2>
       </div>
 
-      <div className="max-w-190 border-t border-eg-border">
+      <div className="max-w-190">
         {faq.map((item, index) => (
           <details
             key={item.question}
             open={defaultOpenFirst && index === 0}
-            className="group border-b border-eg-border"
+            className="group border-b border-eg-border last:border-b-0"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-(family-name:--eg-font-primary) text-[14.5px] font-semibold text-eg-ink marker:content-none [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[15px] font-semibold text-eg-ink marker:content-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eg-brand-hover [&::-webkit-details-marker]:hidden">
               {item.question}
               <span
                 aria-hidden="true"
-                className="shrink-0 text-lg font-normal text-eg-brand-strong transition-transform duration-250 ease-(--eg-ease-brand) group-open:rotate-45"
+                className="flex size-6 shrink-0 items-center justify-center text-[18px] font-normal text-eg-brand-strong transition-transform duration-250 ease-(--eg-ease-brand) group-open:rotate-45"
               >
                 +
               </span>
             </summary>
 
-            <p className="max-w-165 pb-5 text-[14px] leading-[1.6] text-eg-ink">
+            <p className="max-w-165 pb-5 text-[14px] leading-[1.6] text-eg-text-muted">
               <FaqAnswer answer={item.answer} emphasizePhrase={emphasizePhrase} />
             </p>
           </details>

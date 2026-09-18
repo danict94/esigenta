@@ -15,7 +15,7 @@ export function InternalPageFinalCta({
   readonly ctaLabel: string;
 }) {
   return (
-    <section className="border-y border-eg-header-border bg-eg-header py-7 text-eg-header-text">
+    <section className="bg-eg-header py-7 text-eg-header-text">
       <div className="eg-container flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center sm:gap-8">
         <div className="max-w-[730px]">
           {eyebrow ? (

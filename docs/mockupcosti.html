@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Costi dei lavori per la casa — Esigenta</title>
+<meta name="description" content="Guide ai costi dei lavori per la casa: prezzi indicativi, voci di lavorazione, fonti e fattori che possono incidere sul preventivo." />
+<style>
+  :root{
+    --ink:#111a20;
+    --ink-2:#21323d;
+    --muted:#687782;
+    --muted-2:#87929a;
+    --line:#d9e2e7;
+    --line-strong:#bccbd3;
+    --blue:#8ed5ef;
+    --blue-strong:#1d789e;
+    --blue-soft:#eef8fc;
+    --lime:#c9f400;
+    --header:#11191f;
+    --paper:#fff;
+    --surface:#f8fbfc;
+    --max:1180px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  button{font:inherit}
+
+  .container{
+    width:min(var(--max),calc(100% - 40px));
+    margin:auto;
+  }
+
+  /* HEADER */
+  .header{
+    background:var(--header);
+    color:#fff;
+  }
+  .header__inner{
+    width:min(var(--max),calc(100% - 40px));
+    min-height:72px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:800;
+    font-size:17px;
+    letter-spacing:.12em;
+  }
+  .brand__mark{
+    width:30px;height:30px;position:relative;
+  }
+  .brand__mark:before,
+  .brand__mark:after{
+    content:"";
+    position:absolute;
+    inset:4px;
+    border:5px solid var(--blue);
+    transform:rotate(45deg);
+  }
+  .brand__mark:after{
+    inset:10px;
+    border-width:3px;
+    border-color:var(--header);
+    background:var(--header);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    font-size:13px;
+    font-weight:750;
+  }
+  .nav a[aria-current="page"]{color:var(--blue)}
+  .nav__pro{
+    padding:10px 13px;
+    border-radius:6px;
+    background:var(--lime);
+    color:#17200c!important;
+  }
+  .hamburger{
+    display:none;
+    width:34px;
+    height:26px;
+    position:relative;
+  }
+  .hamburger:before,.hamburger:after,.hamburger span{
+    content:"";position:absolute;left:0;right:0;height:2px;background:#fff;border-radius:999px;
+  }
+  .hamburger:before{top:2px}.hamburger span{top:12px}.hamburger:after{top:22px}
+
+  /* BREADCRUMB */
+  .breadcrumbs{
+    padding-top:21px;
+    font-size:12px;
+    color:#7a8790;
+  }
+  .breadcrumbs span{color:#a0a9af;margin:0 7px}
+
+  /* HERO */
+  .hero{
+    min-height:354px;
+    display:grid;
+    grid-template-columns:minmax(0,1.06fr) minmax(360px,.94fr);
+    gap:50px;
+    align-items:center;
+    padding:18px 0 32px;
+  }
+  .eyebrow{
+    margin:0 0 10px;
+    color:var(--blue-strong);
+    font-size:11px;
+    line-height:1.2;
+    font-weight:850;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+  }
+  .hero h1{
+    margin:0 0 15px;
+    max-width:680px;
+    font-size:clamp(42px,4.9vw,64px);
+    line-height:.98;
+    letter-spacing:-.046em;
+  }
+  .hero__lead{
+    max-width:650px;
+    margin:0;
+    color:#52626d;
+    font-size:17px;
+    line-height:1.68;
+  }
+  .hero__support{
+    max-width:600px;
+    margin:11px 0 0;
+    color:#74818a;
+    font-size:13px;
+    line-height:1.6;
+  }
+  .hero__meta{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+    color:#78858e;
+    font-size:12px;
+  }
+  .hero__meta strong{
+    color:var(--ink-2);
+    font-weight:850;
+  }
+  .hero__media{
+    height:290px;
+    overflow:hidden;
+    position:relative;
+    border-radius:18px 2px 18px 2px;
+    background:#dde6eb;
+  }
+  .hero__media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 48%;
+  }
+  .hero__media:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,rgba(17,25,31,.01),rgba(17,25,31,.12));
+    pointer-events:none;
+  }
+
+  /* SECTION HEADERS */
+  .section-head{
+    border-top:1px solid var(--line-strong);
+    padding:26px 0 15px;
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:28px;
+  }
+  .section-head h2{
+    margin:0;
+    font-size:31px;
+    line-height:1.08;
+    letter-spacing:-.035em;
+  }
+  .section-head p{
+    margin:7px 0 0;
+    color:var(--muted);
+    font-size:14px;
+    max-width:650px;
+  }
+  .section-head__count{
+    white-space:nowrap;
+    color:#859199;
+    font-size:12px;
+  }
+
+  /* FILTER + GROUPS / GUIDES */
+  .guide-filter{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    border-top:1px solid var(--line-strong);
+    border-bottom:1px solid var(--line);
+    padding:0;
+    margin-top:2px;
+  }
+  .guide-filter::-webkit-scrollbar{display:none}
+  .guide-filter button{
+    position:relative;
+    flex:0 0 auto;
+    appearance:none;
+    border:0;
+    background:transparent;
+    color:#697780;
+    padding:15px 0 13px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:760;
+    white-space:nowrap;
+  }
+  .guide-filter button:hover{color:var(--ink)}
+  .guide-filter button[aria-selected="true"]{
+    color:var(--ink);
+  }
+  .guide-filter button[aria-selected="true"]:after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:2px;
+    background:var(--blue-strong);
+  }
+
+  .catalog-intro{
+    padding:24px 0 8px;
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:28px;
+  }
+  .catalog-intro h2{
+    margin:0;
+    font-size:31px;
+    line-height:1.08;
+    letter-spacing:-.035em;
+  }
+  .catalog-intro p{
+    margin:7px 0 0;
+    color:var(--muted);
+    font-size:14px;
+    max-width:690px;
+  }
+  .catalog-intro__count{
+    color:#859199;
+    font-size:12px;
+    white-space:nowrap;
+  }
+
+  .cost-group{
+    padding:22px 0 8px;
+  }
+  .cost-group[hidden]{display:none}
+  .cost-group + .cost-group{
+    margin-top:4px;
+  }
+  .cost-group__head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:0 0 9px;
+  }
+  .cost-group__head:after{
+    content:"";
+    height:1px;
+    background:var(--line);
+    flex:1 1 auto;
+  }
+  .cost-group__title{
+    margin:0;
+    color:#50616c;
+    font-size:10.5px;
+    line-height:1.2;
+    font-weight:850;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .cost-group__count{
+    color:#96a0a7;
+    font-size:10.5px;
+    white-space:nowrap;
+    order:3;
+  }
+
+  .guide-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    column-gap:36px;
+    border-top:1px solid var(--line);
+  }
+  .guide{
+    position:relative;
+    min-width:0;
+    padding:20px 0 18px;
+    border-bottom:1px solid var(--line);
+    transition:transform .18s ease;
+  }
+  .guide:after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:-1px;
+    height:1px;
+    background:var(--blue-strong);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .18s ease;
+  }
+  .guide:hover{transform:translateY(-2px)}
+  .guide:hover:after{transform:scaleX(1)}
+  .guide h4{
+    margin:0;
+    font-size:21px;
+    line-height:1.22;
+    letter-spacing:-.026em;
+    max-width:540px;
+  }
+  .guide__source{
+    margin:7px 0 0;
+    color:#657680;
+    font-size:11px;
+    line-height:1.4;
+  }
+  .guide__source strong{
+    color:var(--blue-strong);
+    font-weight:820;
+  }
+  .guide__summary{
+    margin:8px 0 0;
+    max-width:555px;
+    color:#66757f;
+    font-size:13px;
+    line-height:1.58;
+  }
+  .guide__foot{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    margin-top:14px;
+    font-size:12px;
+  }
+  .guide__link{
+    color:var(--blue-strong);
+    font-weight:850;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  /* HOW TO READ */
+  .method{
+    margin-top:45px;
+  }
+  .method__grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .method__item{
+    min-width:0;
+    padding:21px 24px 20px 0;
+  }
+  .method__item + .method__item{
+    padding-left:24px;
+    border-left:1px solid var(--line);
+  }
+  .method__icon{
+    width:26px;
+    height:26px;
+    margin-bottom:12px;
+    color:var(--blue-strong);
+  }
+  .method__item h3{
+    margin:0 0 7px;
+    font-size:16px;
+    line-height:1.25;
+    letter-spacing:-.015em;
+  }
+  .method__item p{
+    margin:0;
+    color:#697780;
+    font-size:12.5px;
+    line-height:1.58;
+  }
+  .sources{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:15px 0 0;
+    color:#74818a;
+    font-size:12px;
+    line-height:1.6;
+  }
+  .sources svg{
+    width:17px;height:17px;flex:0 0 auto;margin-top:1px;color:var(--blue-strong);
+  }
+  .sources strong{color:#46545e}
+
+  /* FAQ */
+  .faq{
+    margin-top:45px;
+  }
+  .faq-list{
+    border-top:1px solid var(--line);
+  }
+  details{
+    border-bottom:1px solid var(--line);
+  }
+  summary{
+    list-style:none;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:22px;
+    padding:15px 0;
+    font-size:14px;
+    font-weight:780;
+  }
+  summary::-webkit-details-marker{display:none}
+  .faq__plus{
+    width:18px;height:18px;position:relative;flex:0 0 18px;
+  }
+  .faq__plus:before,.faq__plus:after{
+    content:"";position:absolute;background:var(--blue-strong);border-radius:99px;
+  }
+  .faq__plus:before{left:2px;right:2px;top:8px;height:1.5px}
+  .faq__plus:after{top:2px;bottom:2px;left:8px;width:1.5px}
+  details[open] .faq__plus:after{display:none}
+  details p{
+    margin:0;
+    padding:0 50px 16px 0;
+    max-width:900px;
+    color:#687680;
+    font-size:13px;
+    line-height:1.65;
+  }
+
+  /* FINAL CTA */
+  .final-cta{
+    margin:46px 0 12px;
+    padding:25px 0;
+    border-top:1px solid var(--line-strong);
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:26px;
+  }
+  .final-cta h2{
+    margin:0 0 5px;
+    font-size:27px;
+    letter-spacing:-.03em;
+  }
+  .final-cta p{
+    margin:0;
+    max-width:730px;
+    color:#687680;
+    font-size:14px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:11px 15px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:850;
+    white-space:nowrap;
+  }
+  .btn--lime{
+    background:var(--lime);
+    color:#17200c;
+  }
+
+  /* FOOTER */
+  footer{
+    margin-top:44px;
+    background:var(--header);
+    color:#d6dde1;
+  }
+  .footer__inner{
+    width:min(var(--max),calc(100% - 40px));
+    min-height:128px;
+    margin:auto;
+    padding:28px 0;
+    display:flex;
+    justify-content:space-between;
+    gap:30px;
+    align-items:flex-start;
+  }
+  .footer__copy{
+    color:#84929a;
+    font-size:12px;
+  }
+  .footer__links{
+    display:flex;gap:20px;flex-wrap:wrap;font-size:12px;
+  }
+
+  @media (max-width:980px){
+    .nav{display:none}
+    .hamburger{display:block}
+    .hero{
+      min-height:0;
+      grid-template-columns:1fr;
+      gap:18px;
+      padding:18px 0 25px;
+    }
+    .hero h1{font-size:46px}
+    .hero__lead{font-size:15px}
+    .hero__media{height:230px}
+    .method__grid{grid-template-columns:1fr}
+    .method__item{
+      padding:18px 0;
+    }
+    .method__item + .method__item{
+      padding-left:0;
+      border-left:0;
+      border-top:1px solid var(--line);
+    }
+  }
+
+  @media (max-width:680px){
+    .container,.header__inner,.footer__inner{
+      width:min(100% - 32px,var(--max));
+    }
+    .header__inner{min-height:66px}
+    .breadcrumbs{font-size:11px;padding-top:17px}
+    .hero{
+      gap:15px;
+      padding-top:15px;
+      padding-bottom:20px;
+    }
+    .eyebrow{font-size:9.5px;margin-bottom:8px}
+    .hero h1{
+      font-size:38px;
+      margin-bottom:10px;
+    }
+    .hero__lead{
+      font-size:14px;
+      line-height:1.58;
+    }
+    .hero__support{
+      font-size:12px;
+      line-height:1.55;
+      margin-top:8px;
+    }
+    .hero__meta{
+      margin-top:13px;
+      gap:10px 15px;
+      font-size:11px;
+    }
+    .hero__media{
+      height:185px;
+      border-radius:14px 2px 14px 2px;
+    }
+
+    .section-head{
+      padding:22px 0 12px;
+      display:block;
+    }
+    .section-head h2{font-size:27px}
+    .section-head p{font-size:13px}
+    .section-head__count{
+      display:block;
+      margin-top:6px;
+    }
+
+    .guide-filter{
+      gap:21px;
+      margin-left:-16px;
+      margin-right:-16px;
+      padding-left:16px;
+      padding-right:16px;
+    }
+    .guide-filter button{
+      padding:13px 0 11px;
+      font-size:11.5px;
+    }
+    .catalog-intro{
+      padding:20px 0 7px;
+      display:block;
+    }
+    .catalog-intro h2{font-size:27px}
+    .catalog-intro p{font-size:13px}
+    .catalog-intro__count{
+      display:block;
+      margin-top:6px;
+    }
+
+    .cost-group{padding-top:17px}
+    .cost-group__title{font-size:10px}
+    .guide-grid{
+      grid-template-columns:1fr;
+      column-gap:0;
+    }
+    .guide{padding:16px 0 15px}
+    .guide h4{
+      margin-top:7px;
+      font-size:19px;
+    }
+    .guide__summary{font-size:12.5px}
+    .guide__foot{margin-top:10px;font-size:11.5px}
+
+    .method,.faq{margin-top:36px}
+    .method__item{padding:16px 0}
+    .method__icon{width:23px;height:23px;margin-bottom:9px}
+    .method__item h3{font-size:15px}
+    .method__item p{font-size:12px}
+    .sources{font-size:11.5px}
+
+    summary{
+      padding:14px 0;
+      font-size:13px;
+    }
+    details p{
+      padding-right:0;
+      font-size:12px;
+    }
+
+    .final-cta{
+      margin-top:38px;
+      padding:22px 0;
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .final-cta h2{font-size:24px}
+    .final-cta p{font-size:13px}
+    .footer__inner{flex-direction:column}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{scroll-behavior:auto}
+    .guide,.guide:after{transition:none}
+    .guide:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header__inner">
+    <a class="brand" href="#">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span>esigenta</span>
+    </a>
+
+    <nav class="nav" aria-label="Navigazione principale">
+      <a href="#">Servizi</a>
+      <a href="#">Professionisti</a>
+      <a href="#" aria-current="page">Costi</a>
+      <a href="#">Le mie richieste</a>
+      <a href="#">Accedi</a>
+      <a class="nav__pro" href="#">Sei un professionista?</a>
+    </nav>
+
+    <div class="hamburger" aria-hidden="true"><span></span></div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="breadcrumbs">
+    Home <span>/</span> Guide ai costi
+  </div>
+
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="eyebrow">Guide ai costi</p>
+      <h1>Costi dei lavori per la casa</h1>
+      <p class="hero__lead">
+        Consulta prezzi indicativi, voci di lavorazione e fattori che possono incidere sul costo
+        prima di richiedere un preventivo.
+      </p>
+      <p class="hero__support">
+        Ogni guida distingue i riferimenti ufficiali dalle fasce orientative e spiega cosa verificare
+        per confrontare i prezzi in modo più consapevole.
+      </p>
+      <div class="hero__meta">
+        <span><strong>5 guide</strong> disponibili</span>
+        <span><strong>3 aree</strong> di lavoro</span>
+      </div>
+    </div>
+
+    <div class="hero__media">
+      <img
+        src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=82"
+        alt="Valutazione di un progetto e dei costi di un lavoro"
+      />
+    </div>
+  </section>
+
+  <section aria-labelledby="guide-title">
+
+    <nav class="guide-filter" aria-label="Filtra le guide per area">
+      <button type="button" data-filter="all" aria-selected="true">Tutte le guide</button>
+      <button type="button" data-filter="ristrutturazioni" aria-selected="false">Ristrutturazioni</button>
+      <button type="button" data-filter="tetti-facciate" aria-selected="false">Tetti e facciate</button>
+      <button type="button" data-filter="impianti-elettrici" aria-selected="false">Impianti elettrici</button>
+    </nav>
+
+    <div class="catalog-intro">
+      <div>
+        <h2 id="guide-title">Guide ai costi per intervento</h2>
+        <p>Parti dal lavoro che devi realizzare e approfondisci prezzi, lavorazioni e fattori che possono modificare il preventivo.</p>
+      </div>
+      <span class="catalog-intro__count" id="visible-guide-count">5 guide</span>
+    </div>
+
+    <section class="cost-group" data-group="ristrutturazioni">
+      <div class="cost-group__head">
+        <h3 class="cost-group__title">Ristrutturazioni</h3>
+        <span class="cost-group__count">1 guida</span>
+      </div>
+
+      <div class="guide-grid">
+        <article class="guide">
+          <a href="#">
+            <h4>Quanto costa ristrutturare un bagno?</h4>
+            <p class="guide__summary">
+              Prezzi delle principali lavorazioni, opere comprese e fattori che possono incidere sul preventivo.
+            </p>
+            <div class="guide__foot">
+              <span class="guide__link">Apri la guida <span aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section class="cost-group" data-group="tetti-facciate">
+      <div class="cost-group__head">
+        <h3 class="cost-group__title">Tetti e facciate</h3>
+        <span class="cost-group__count">3 guide</span>
+      </div>
+
+      <div class="guide-grid">
+        <article class="guide">
+          <a href="#">
+            <h4>Quanto costa rifare un tetto?</h4>
+            <p class="guide__summary">
+              Costi delle principali lavorazioni sul tetto e fattori tecnici che possono incidere sul preventivo.
+            </p>
+            <div class="guide__foot">
+              <span class="guide__link">Apri la guida <span aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        </article>
+
+        <article class="guide">
+          <a href="#">
+            <h4>Quanto costa impermeabilizzare un tetto?</h4>
+            <p class="guide__source"><strong>Fonte:</strong> prezzario ufficiale</p>
+            <p class="guide__summary">
+              Prezzi di membrane, guaine, riparazioni e preparazione del supporto ricavati da riferimenti ufficiali.
+            </p>
+            <div class="guide__foot">
+              <span class="guide__link">Apri la guida <span aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        </article>
+
+        <article class="guide">
+          <a href="#">
+            <h4>Quanto costa impermeabilizzare un terrazzo?</h4>
+            <p class="guide__summary">
+              Fasce indicative dalla riparazione localizzata al rifacimento del sistema impermeabilizzante.
+            </p>
+            <div class="guide__foot">
+              <span class="guide__link">Apri la guida <span aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section class="cost-group" data-group="impianti-elettrici">
+      <div class="cost-group__head">
+        <h3 class="cost-group__title">Impianti elettrici</h3>
+        <span class="cost-group__count">1 guida</span>
+      </div>
+
+      <div class="guide-grid">
+        <article class="guide">
+          <a href="#">
+            <h4>Quanto costa rifare un impianto elettrico?</h4>
+            <p class="guide__source"><strong>Fonte:</strong> prezzario ufficiale</p>
+            <p class="guide__summary">
+              Costi di punti luce, prese, linee, quadro elettrico e opere murarie spiegati in modo semplice.
+            </p>
+            <div class="guide__foot">
+              <span class="guide__link">Apri la guida <span aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        </article>
+      </div>
+    </section>
+  </section>
+
+  <section class="method" aria-labelledby="method-title">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Prima di confrontare</p>
+        <h2 id="method-title">Come leggere i prezzi</h2>
+        <p>Tre controlli semplici evitano di confrontare voci che indicano cose diverse.</p>
+      </div>
+    </div>
+
+    <div class="method__grid">
+      <article class="method__item">
+        <svg class="method__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0l-2.6-2.6a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/>
+          <path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/>
+        </svg>
+        <h3>Controlla l’unità di misura</h3>
+        <p>€/m², €/m, €/cad e prezzi a corpo indicano basi diverse: confronta soltanto voci espresse con la stessa unità.</p>
+      </article>
+
+      <article class="method__item">
+        <svg class="method__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m12.83 2.18 8 4a2 2 0 0 1 0 3.58l-8 4a2 2 0 0 1-1.66 0l-8-4a2 2 0 0 1 0-3.58l8-4a2 2 0 0 1 1.66 0Z"/>
+          <path d="m22 12.5-9.17 4.58a2 2 0 0 1-1.66 0L2 12.5"/>
+          <path d="m22 17.5-9.17 4.58a2 2 0 0 1-1.66 0L2 17.5"/>
+        </svg>
+        <h3>Non sommare automaticamente le voci</h3>
+        <p>Alcune lavorazioni sono alternative, altre complementari: il totale dipende da ciò che serve davvero al lavoro.</p>
+      </article>
+
+      <article class="method__item">
+        <svg class="method__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <path d="m9 15 2 2 4-4"/>
+        </svg>
+        <h3>Verifica cosa comprende il prezzo</h3>
+        <p>Quantità, materiali, accessibilità, opere accessorie e condizioni di cantiere possono cambiare il preventivo finale.</p>
+      </article>
+    </div>
+
+    <div class="sources">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+      <div>
+        <strong>Fonti:</strong> le guide utilizzano prezzari regionali dei lavori pubblici, fonti istituzionali e documenti tecnici ufficiali.
+        Gli eventuali confronti di mercato secondari sono indicati chiaramente come tali.
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title">Domande frequenti</h2>
+      </div>
+    </div>
+
+    <div class="faq-list">
+      <details>
+        <summary>
+          I prezzi mostrati sono preventivi finali?
+          <span class="faq__plus" aria-hidden="true"></span>
+        </summary>
+        <p>No. Sono riferimenti ufficiali o fasce indicative riferite a singole lavorazioni. Il preventivo reale dipende da sopralluogo, quantità, materiali e condizioni del cantiere.</p>
+      </details>
+
+      <details>
+        <summary>
+          Perché i prezzi cambiano tra una regione e l’altra?
+          <span class="faq__plus" aria-hidden="true"></span>
+        </summary>
+        <p>I prezzari regionali dei lavori pubblici possono utilizzare capitolati e voci differenti. Per questo non esiste un unico prezzo nazionale valido per ogni lavorazione.</p>
+      </details>
+
+      <details>
+        <summary>
+          Posso sommare tutte le voci di una guida per ottenere il totale?
+          <span class="faq__plus" aria-hidden="true"></span>
+        </summary>
+        <p>No. Alcune voci descrivono lavorazioni complete, altre componenti o opere accessorie che si aggiungono solo quando necessarie. Il totale dipende dal lavoro effettivo.</p>
+      </details>
+
+      <details>
+        <summary>
+          Cosa significa “prezzo per unità”?
+          <span class="faq__plus" aria-hidden="true"></span>
+        </summary>
+        <p>Il prezzo si riferisce a una misura precisa — per esempio €/m², €/m, €/cad oppure a corpo — e non necessariamente all’intero intervento.</p>
+      </details>
+
+      <details>
+        <summary>
+          Da dove provengono i prezzi delle guide?
+          <span class="faq__plus" aria-hidden="true"></span>
+        </summary>
+        <p>Da prezzari regionali dei lavori pubblici, fonti istituzionali e documenti tecnici ufficiali citati nelle singole guide. Gli eventuali confronti di mercato secondari vengono segnalati separatamente.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div>
+      <h2>Hai un lavoro da fare?</h2>
+      <p>Dopo aver consultato i costi indicativi, descrivi ciò che devi realizzare e confronta le proposte dei professionisti più adatti.</p>
+    </div>
+    <a class="btn btn--lime" href="#">Racconta il lavoro →</a>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer__inner">
+    <div>
+      <a class="brand" href="#">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>esigenta</span>
+      </a>
+      <p class="footer__copy">© 2026 Esigenta</p>
+    </div>
+    <div class="footer__links">
+      <a href="#">Servizi</a>
+      <a href="#">Professionisti</a>
+      <a href="#">Guide ai costi</a>
+      <a href="#">Privacy</a>
+      <a href="#">Termini</a>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  (function () {
+    const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+    const groups = Array.from(document.querySelectorAll("[data-group]"));
+    const count = document.getElementById("visible-guide-count");
+
+    const totals = {
+      all: 5,
+      ristrutturazioni: 1,
+      "tetti-facciate": 3,
+      "impianti-elettrici": 1
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const selected = button.dataset.filter;
+
+        buttons.forEach((item) => {
+          item.setAttribute("aria-selected", item === button ? "true" : "false");
+        });
+
+        groups.forEach((group) => {
+          group.hidden = selected !== "all" && group.dataset.group !== selected;
+        });
+
+        const total = totals[selected];
+        count.textContent = total === 1 ? "1 guida" : total + " guide";
+      });
+    });
+  }());
+</script>
+
+</body>
+</html>

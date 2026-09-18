@@ -33,3 +33,15 @@ export type {
   RecordFunnelEventInput,
   RecordFunnelEventOutcome,
 } from "./funnel/record-funnel-event"
+
+// GUIDE HELPFULNESS â€” write boundary intentionally separate from FunnelEvent.
+export { recordGuideHelpfulnessVote } from "./guides/record-guide-helpfulness-vote"
+export type {
+  RecordGuideHelpfulnessVoteInput,
+  RecordGuideHelpfulnessVoteOutcome,
+  UpdateGuideHelpfulnessVoteCommentInput,
+  UpdateGuideHelpfulnessVoteCommentOutcome,
+} from "./guides/record-guide-helpfulness-vote"
+export { updateGuideHelpfulnessVoteComment } from "./guides/record-guide-helpfulness-vote"
+export { getGuideHelpfulnessAggregates } from "./guides/get-guide-helpfulness-aggregates"
+export type { GuideHelpfulnessAggregates } from "./guides/get-guide-helpfulness-aggregates"

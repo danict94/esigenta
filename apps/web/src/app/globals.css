@@ -6,7 +6,8 @@
 /* Il ritmo esterno delle macro-sezioni nelle guide costi è gestito qui, non
    dai padding delle singole sezioni editoriali. */
 .eg-cost-guide {
-  --eg-cost-section-gap: 2rem;
+  --eg-cost-section-gap: 2.375rem;
+  --eg-cost-content-max: 920px;
 }
 
 .eg-cost-guide-flow {
@@ -17,17 +18,66 @@
 
 .eg-cost-guide-flow > .eg-section-editorial:not([data-cost-cta]) {
   padding-block: 0;
-  border-top: 0;
+}
+
+/* Il TOC chiude il proprio contenuto: la prima macro-sezione apre il suo
+   spazio, così il kicker non viene percepito come parte dell'indice. */
+.eg-cost-guide-flow > .eg-section-editorial:first-child:not([data-cost-cta]) {
+  padding-top: var(--eg-cost-section-gap);
+}
+
+.eg-cost-guide [id$="-title"] {
+  scroll-margin-top: calc(var(--eg-nav-height) + 1rem);
+}
+
+.eg-cost-guide .eg-internal-header h1 {
+  max-width: 19ch;
+  letter-spacing: -0.018em;
+}
+
+.eg-cost-guide .eg-page-lede {
+  max-width: 64ch;
+  color: var(--eg-color-text-muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.eg-cost-cta-secondary {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  color: var(--eg-color-on-brand);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--eg-color-on-brand) 38%, transparent);
+  text-underline-offset: 4px;
+}
+
+.eg-cost-cta-secondary::after {
+  content: " →";
+  margin-left: 0.25rem;
+}
+
+.eg-cost-cta-secondary:focus-visible {
+  outline: 2px solid var(--eg-color-brand);
+  outline-offset: 3px;
 }
 
 @media (min-width: 768px) {
   .eg-cost-guide {
-    --eg-cost-section-gap: 2.25rem;
+    --eg-cost-section-gap: 2.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .eg-cost-guide {
-    --eg-cost-section-gap: 3rem;
+    --eg-cost-section-gap: 3.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .eg-cost-guide .eg-page-lede {
+    font-size: 15.5px;
   }
 }

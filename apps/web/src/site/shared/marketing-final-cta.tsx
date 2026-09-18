@@ -32,23 +32,23 @@ export function MarketingFinalCta({
   return (
     <section
       data-cost-cta={isCostVariant || undefined}
-      className={cn("eg-theme-ink eg-section-editorial", isCostVariant && "py-10 md:py-11 lg:py-12")}
+      className={cn("eg-theme-ink eg-section-editorial", isCostVariant ? "py-11 md:py-12" : "py-12 md:py-16")}
     >
       <div className={isLeftAligned ? "eg-container" : "eg-container-narrow text-center"}>
-        <h2 className="eg-h2">{title}</h2>
+        <h2 className={cn("eg-h2", isCostVariant && "max-w-[30ch]")}>{title}</h2>
 
         <p className={isLeftAligned ? "eg-body mt-4 max-w-[58ch] text-eg-on-brand-muted" : "eg-body mx-auto mt-4 max-w-[58ch] text-eg-on-brand-muted"}>
           {description}
         </p>
 
-        <div className={isLeftAligned ? "mt-7 flex flex-col items-start gap-4 sm:flex-row" : "mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"}>
+        <div className={isLeftAligned ? "mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center" : "mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"}>
           <Link
             href={href}
             prefetch={false}
             className={cn(
               "w-full sm:w-auto",
               isCostVariant
-                ? `eg-button-primary eg-button-arrow ${professionalCtaColorClassName}`
+                ? `eg-button-primary eg-button-arrow rounded-eg-md ${professionalCtaColorClassName}`
                 : "eg-button-primary eg-button-arrow",
             )}
           >
@@ -61,7 +61,7 @@ export function MarketingFinalCta({
               prefetch={false}
               className={cn(
                 "w-full sm:w-auto",
-                isCostVariant ? "eg-button-primary eg-button-arrow" : "eg-button-ghost",
+                isCostVariant ? "eg-cost-cta-secondary" : "eg-button-ghost",
               )}
             >
               {secondaryAction.label}

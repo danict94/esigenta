@@ -3,12 +3,6 @@ import { cn } from "@esigenta/ui";
 import { blueprintEyebrowClassName } from "../../shared/section-header";
 import { sectionTitleClassName } from "./seo-section-title";
 
-/**
- * Fase 5.G — fattori generici (non specifici di una città, nessun link,
- * nessun prezzo locale) sul perché il preventivo può variare per zona. Le
- * pagine città sono disabilitate: vedi engine/static-params.ts. Spostato qui
- * (Scope 4B) da cost-page-template.tsx insieme al resto del blocco fattori.
- */
 const cityInfluenceFactors: readonly string[] = [
   "accesso al cantiere",
   "piano dell'immobile e disponibilità dell'ascensore",
@@ -20,89 +14,32 @@ const cityInfluenceFactors: readonly string[] = [
   "complessità e stato dell'immobile",
 ];
 
-/**
- * Scope 4B — "Da cosa dipende il prezzo": stesso contenuto di prima
- * (`factors` editoriali + fattori di zona condivisi), estratto in
- * componente dedicato e alleggerito nella presentazione (Task 11): titolo
- * generico, non più una sequenza di card tutte uguali.
- */
 export type CostFactorsProps = {
   factors: readonly string[];
+  locationFactors?: readonly string[];
   topicLabel: string;
-  electricalVariant?: boolean;
-  compactContent?: {
-    title: string;
-    intro: string;
-    factors: readonly string[];
-  };
+  compactContent?: { title: string; intro: string; factors: readonly string[] };
 };
 
-const electricalFactors = [
-  "piano dell’immobile e presenza dell’ascensore",
-  "facilità di accesso, parcheggio e carico/scarico",
-  "trasporto dei materiali e smaltimento delle macerie",
-  "eventuali vincoli condominiali sugli orari di lavoro",
-  "necessità di un progetto tecnico, quando previsto",
-  "disponibilità e costi dei professionisti nella zona",
-];
-
-export function CostFactors({ factors, topicLabel, electricalVariant = false, compactContent }: CostFactorsProps) {
-  if (electricalVariant) {
-    return <ElectricalFactors />;
-  }
-
-  if (compactContent) {
-    return <CompactFactors {...compactContent} />;
-  }
+export function CostFactors({ factors, topicLabel, locationFactors = cityInfluenceFactors, compactContent }: CostFactorsProps) {
+  if (compactContent) return <CompactFactors {...compactContent} />;
 
   return (
-    <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
+    <section aria-labelledby="fattori-costo-title" className="eg-section-editorial">
       <div className="eg-container">
-        <div className="mb-8 max-w-170">
+        <div className="mb-7 max-w-170">
           <p className={blueprintEyebrowClassName}>Fattori</p>
-
-          <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
-            Da cosa dipende il prezzo
-          </h2>
+          <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>Da cosa dipende il prezzo</h2>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid max-w-230 gap-9 md:grid-cols-2">
+          <FactorGroup title="Il lavoro in sé" items={factors} />
           <div>
-            <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
-              Il lavoro in s&eacute;
-            </p>
-
-            <ul className="flex flex-col gap-2">
-              {factors.map((factor) => (
-                <li key={factor} className="flex gap-2.5 text-[13.5px] leading-normal text-eg-ink">
-                  <span aria-hidden="true" className="mt-1.5 size-1.5 shrink-0 rounded-full bg-eg-brand" />
-                  <span>{factor}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
-              La tua zona e il tuo edificio
-            </p>
-
-            <p className="mb-4 max-w-160 text-[13.5px] leading-[1.6] text-eg-ink">
-              {/* Stringa unica via template literal: JSX collassa lo spazio tra
-                  {topicLabel} e il testo successivo quando sono su righe
-                  diverse, producendo "tettonella tua zona" invece di "tetto
-                  nella tua zona" — bug shared, un solo fix qui. */}
+            <h3 className="mb-3 text-[15px] font-semibold text-eg-ink">La tua zona e il tuo edificio</h3>
+            <p className="mb-4 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
               {`Le fasce di questa guida sono nazionali: ${topicLabel} nella tua zona può costare diversamente in base a fattori locali, non a un prezzo di città che oggi non abbiamo.`}
             </p>
-
-            <ul className="flex flex-col gap-2">
-              {cityInfluenceFactors.map((factor) => (
-                <li key={factor} className="flex gap-2.5 text-[13.5px] leading-normal text-eg-ink">
-                  <span aria-hidden="true" className="mt-1.5 size-1.5 shrink-0 rounded-full bg-eg-brand" />
-                  <span>{factor}</span>
-                </li>
-              ))}
-            </ul>
+            <FactorList items={locationFactors} />
           </div>
         </div>
       </div>
@@ -110,45 +47,38 @@ export function CostFactors({ factors, topicLabel, electricalVariant = false, co
   );
 }
 
-function ElectricalFactors() {
-  return <CompactFactors
-    title="Altri fattori che possono incidere sul preventivo"
-    intro="Oltre alle caratteristiche dell’impianto, il preventivo può variare in base al contesto del cantiere e ad altre esigenze tecniche."
-    factors={electricalFactors}
-  />;
-}
-
-function CompactFactors({
-  title,
-  intro,
-  factors,
-}: {
-  title: string;
-  intro: string;
-  factors: readonly string[];
-}) {
+function CompactFactors({ title, intro, factors }: { title: string; intro: string; factors: readonly string[] }) {
   return (
-    <section aria-labelledby="fattori-costo-title" className="eg-section-editorial border-t border-eg-border">
+    <section aria-labelledby="fattori-costo-title" className="eg-section-editorial">
       <div className="eg-container">
         <div className="mb-6 max-w-170">
           <p className={blueprintEyebrowClassName}>Fattori</p>
-          <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>
-            {title}
-          </h2>
-          <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">
-            {intro}
-          </p>
+          <h2 id="fattori-costo-title" className={cn(sectionTitleClassName, "mt-3")}>{title}</h2>
+          <p className="mt-3 max-w-160 text-[13.5px] leading-[1.6] text-eg-text-muted">{intro}</p>
         </div>
-
-        <ul className="grid max-w-170 gap-x-8 gap-y-2 md:grid-cols-2">
-          {factors.map((factor) => (
-            <li key={factor} className="flex gap-2.5 text-[13.5px] leading-normal text-eg-ink">
-              <span aria-hidden="true" className="mt-1.5 size-1.5 shrink-0 rounded-full bg-eg-brand" />
-              <span>{factor}</span>
-            </li>
-          ))}
-        </ul>
+        <FactorList items={factors} className="grid max-w-230 gap-x-8 md:grid-cols-2" />
       </div>
     </section>
+  );
+}
+
+function FactorGroup({ title, items }: { title: string; items: readonly string[] }) {
+  return (
+    <div>
+      <h3 className="mb-3 text-[15px] font-semibold text-eg-ink">{title}</h3>
+      <FactorList items={items} />
+    </div>
+  );
+}
+
+function FactorList({ items, className }: { items: readonly string[]; className?: string }) {
+  return (
+    <ul className={cn("grid gap-y-3", className)}>
+      {items.map((item) => (
+        <li key={item} className="relative pl-4 text-[13.5px] leading-normal text-eg-text-muted before:absolute before:left-0 before:top-[0.5em] before:size-1.25 before:rounded-full before:bg-eg-brand">
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }

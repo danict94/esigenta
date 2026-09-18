@@ -1,6 +1,6 @@
 // Revisione 2026-08: FAQ riviste per restare coerenti con il nuovo listino
 // (3 scenari di ampiezza + 10 lavorazioni del ciclo reale + ponteggio, vedi
-// market-data/base-price-ranges.ts). Copre i concetti esplicitamente
+// market-data/pricing/guides/rifare-facciata.ts). Copre i concetti esplicitamente
 // richiesti — quanto costa al mq, tinteggiatura vs rifacimento, intonaco
 // ammalorato, quando serve la rasatura, rasatura semplice vs armata, quando
 // serve il fissativo/primer, incidenza del ponteggio, pittura standard vs

@@ -19,7 +19,7 @@ site/seo/
     supported-cities.ts  — quali città sono "supportate" per QUALE famiglia SEO
                             (seoEnabled / contentStatus / uniquenessLevel)
   market-data/
-    base-price-ranges.ts — range prezzo nazionale per famiglia (UNICA fonte)
+    pricing/guides/        — range prezzo nazionale per guida (UNICA fonte)
     city-price-index.ts  — modificatore prezzo per città (oggi neutro, multiplier=1)
   engine/
     pricing-resolver.ts  — deriva il range finale (base + modificatore città)
@@ -76,7 +76,7 @@ Regola di fondo, da non violare mai: **un dato ha un solo posto dove vivere**.
 |---|---|
 | Nome/provincia/regione città | `geo/cities.ts` |
 | Quali città sono attive per una famiglia | `geo/supported-cities.ts` |
-| Range prezzo nazionale di una famiglia | `market-data/base-price-ranges.ts` |
+| Range prezzo nazionale di una famiglia | `market-data/pricing/guides/<slug>.ts` |
 | Unità/include/escluso/confidence/fonte di una voce costo | stesso file, campi del `PriceRow` — un numero entra SOLO con confidence alta/media (≥2 fonti coerenti); le voci con fonti deboli restano qualitative con nota utile |
 | Modificatore prezzo per città (oggi neutro) | `market-data/city-price-index.ts` |
 | Canonical di una pagina | calcolato da `engine/canonical.ts`, mai scritto a mano |
@@ -180,7 +180,7 @@ Esempio: aggiungere "Bari" alla guida `ristrutturare-bagno`.
      `engine/canonical.ts`.
    - **Non mettere mai un range di prezzo diverso da quello nazionale** dentro
      `summary`/`priceInterpretation` a meno che il prezzo nazionale stesso non
-     sia cambiato in `market-data/base-price-ranges.ts` — il testo può
+     sia cambiato nel modulo pricing della guida — il testo può
      riferirsi al range nazionale in prosa, ma non deve inventarne uno nuovo.
    - Il testo deve essere editoriale e specifico della città (non un
      copia-incolla con find&replace del nome): è l'unica parte di questo
@@ -231,7 +231,7 @@ Esempio: aggiungere "Bari" alla guida `ristrutturare-bagno`.
      build con un errore esplicito (market-data assente, tabella prezzi vuota,
      città non registrata, città dichiarata pronta senza contenuto locale).
 
-2. **`market-data/base-price-ranges.ts`** — aggiungi una entry con la chiave
+2. **`market-data/pricing/guides/installare-fotovoltaico.ts`** — aggiungi una entry con la chiave
    `"costGuide:installare-fotovoltaico"` (nationalRange, pricePerSquareMeter
    se ha senso per quell'intervento, priceRows, sizeExamples). Senza questa
    entry, o con `priceRows` vuoto, il build fallisce: una guida costi senza

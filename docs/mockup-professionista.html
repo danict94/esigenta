@@ -1,0 +1,760 @@
+from pathlib import Path
+
+html = r"""<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Esigenta — Elettricista</title>
+<style>
+  :root{
+    --ink:#121a20;
+    --ink-2:#263540;
+    --muted:#66737c;
+    --line:#d8e0e5;
+    --line-strong:#becbd2;
+    --blue:#8fd5ef;
+    --blue-strong:#247fa2;
+    --blue-soft:#eef8fc;
+    --lime:#c9f400;
+    --header:#11191f;
+    --paper:#ffffff;
+    --surface:#f8fbfc;
+    --max:1180px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    color:var(--ink);
+    background:var(--paper);
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+
+  .header{
+    background:var(--header);
+    color:#fff;
+  }
+  .header__inner{
+    width:min(var(--max), calc(100% - 40px));
+    min-height:72px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:28px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:760;
+    letter-spacing:.12em;
+    font-size:17px;
+  }
+  .brand__mark{
+    width:30px;
+    height:30px;
+    position:relative;
+  }
+  .brand__mark:before,
+  .brand__mark:after{
+    content:"";
+    position:absolute;
+    inset:4px;
+    border:5px solid var(--blue);
+    transform:rotate(45deg);
+  }
+  .brand__mark:after{
+    inset:10px;
+    border-width:3px;
+    border-color:var(--header);
+    background:var(--header);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    font-size:13px;
+    font-weight:700;
+  }
+  .nav__pro{
+    background:var(--lime);
+    color:#17200c;
+    padding:10px 13px;
+    border-radius:6px;
+  }
+  .hamburger{
+    display:none;
+    width:34px;
+    height:26px;
+    position:relative;
+  }
+  .hamburger span,
+  .hamburger:before,
+  .hamburger:after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    height:2px;
+    background:#fff;
+    border-radius:999px;
+  }
+  .hamburger:before{top:2px}
+  .hamburger span{top:12px}
+  .hamburger:after{top:22px}
+
+  .container{
+    width:min(var(--max), calc(100% - 40px));
+    margin:auto;
+  }
+
+  .breadcrumbs{
+    padding-top:22px;
+    font-size:12px;
+    color:#7a858d;
+  }
+
+  /* HERO */
+  .hero{
+    display:grid;
+    grid-template-columns:minmax(0,1.04fr) minmax(360px,.96fr);
+    gap:46px;
+    align-items:center;
+    padding:22px 0 34px;
+    min-height:350px;
+  }
+  .hero__copy{
+    max-width:650px;
+  }
+  .hero h1{
+    margin:0 0 14px;
+    font-size:clamp(42px,5vw,64px);
+    line-height:.98;
+    letter-spacing:-.045em;
+  }
+  .hero p{
+    margin:0;
+    max-width:650px;
+    color:#5e6b74;
+    font-size:17px;
+    line-height:1.7;
+  }
+  .hero__actions{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-top:22px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:800;
+    padding:11px 14px;
+  }
+  .btn--primary{
+    background:var(--blue);
+    color:#17394a;
+  }
+  .hero__micro{
+    color:#67747d;
+    font-size:12px;
+    font-weight:700;
+  }
+
+  .hero__media{
+    position:relative;
+    height:300px;
+    overflow:hidden;
+    border-radius:18px 2px 18px 2px;
+    background:#dde6eb;
+  }
+  .hero__media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .hero__media:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg, rgba(17,25,31,.02), rgba(17,25,31,.12));
+    pointer-events:none;
+  }
+
+  /* PRICING */
+  .pricing{
+    border-top:1px solid var(--line-strong);
+    border-bottom:1px solid var(--line);
+    padding:18px 0 17px;
+    display:grid;
+    grid-template-columns:minmax(260px,.9fr) minmax(0,1.1fr);
+    gap:34px;
+    align-items:center;
+  }
+  .pricing__label{
+    margin:0 0 3px;
+    color:var(--blue-strong);
+    font-size:11px;
+    font-weight:850;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+  }
+  .pricing__title{
+    margin:0 0 8px;
+    font-size:24px;
+    line-height:1.15;
+    letter-spacing:-.025em;
+  }
+  .pricing__price-line{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .pricing__icon{
+    width:24px;
+    height:24px;
+    color:var(--blue-strong);
+    flex:0 0 auto;
+  }
+  .pricing__price{
+    font-size:34px;
+    line-height:1;
+    letter-spacing:-.04em;
+    font-weight:850;
+    color:#15394b;
+    font-variant-numeric:tabular-nums;
+  }
+  .pricing__unit{
+    font-size:14px;
+    color:#56646d;
+    font-weight:800;
+  }
+  .pricing__context{
+    display:block;
+    margin-top:5px;
+    font-size:12px;
+    font-weight:750;
+    color:#5c6871;
+  }
+  .pricing__right{
+    min-width:0;
+  }
+  .pricing__summary{
+    margin:0 0 7px;
+    color:#5f6c75;
+    font-size:13px;
+  }
+  .pricing__factors{
+    margin:0;
+    color:#47555f;
+    font-size:12px;
+    line-height:1.7;
+  }
+  .pricing__factors strong{
+    color:#26343e;
+  }
+  .pricing__meta{
+    display:flex;
+    gap:14px 22px;
+    flex-wrap:wrap;
+    margin-top:8px;
+    color:#88939b;
+    font-size:11px;
+  }
+
+  /* GROUPS */
+  .group{
+    padding-top:36px;
+  }
+  .group + .group{
+    padding-top:42px;
+  }
+  .group__head{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:24px;
+    margin-bottom:10px;
+  }
+  .group h2{
+    margin:0;
+    font-size:30px;
+    line-height:1.12;
+    letter-spacing:-.032em;
+  }
+  .group__count{
+    color:#7b878f;
+    font-size:12px;
+    white-space:nowrap;
+  }
+
+  .service-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:38px;
+    border-top:1px solid var(--line);
+  }
+  .service{
+    position:relative;
+    padding:17px 0 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .service h3{
+    margin:0;
+    font-size:17px;
+    line-height:1.3;
+    letter-spacing:-.015em;
+  }
+  .service p{
+    margin:5px 0 0;
+    color:#69767f;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .service__actions{
+    display:flex;
+    align-items:center;
+    gap:9px 16px;
+    flex-wrap:wrap;
+    margin-top:10px;
+    font-size:12px;
+    font-weight:800;
+  }
+  .action-link{
+    color:var(--blue-strong);
+    padding-bottom:1px;
+    border-bottom:1px solid rgba(36,127,162,.35);
+  }
+  .action-primary{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:#183e50;
+    background:var(--blue-soft);
+    padding:6px 8px;
+    border-radius:5px;
+  }
+  .action-primary svg{
+    width:13px;height:13px;
+  }
+
+  /* EDITORIAL END */
+  .editorial{
+    margin-top:54px;
+    padding-top:28px;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:50px;
+  }
+  .editorial__block h2{
+    margin:0 0 10px;
+    font-size:24px;
+    line-height:1.15;
+    letter-spacing:-.025em;
+  }
+  .editorial__block p{
+    margin:0;
+    color:#66737c;
+    font-size:14px;
+    line-height:1.65;
+  }
+  .steps{
+    display:grid;
+    gap:10px;
+    margin-top:2px;
+  }
+  .step{
+    display:grid;
+    grid-template-columns:28px 1fr;
+    gap:10px;
+    align-items:start;
+  }
+  .step__n{
+    font-size:11px;
+    font-weight:850;
+    letter-spacing:.08em;
+    color:var(--blue-strong);
+    padding-top:2px;
+  }
+  .step p{
+    margin:0;
+    color:#66737c;
+    font-size:14px;
+  }
+
+  /* PRO CTA */
+  .pro-cta{
+    margin:46px 0 8px;
+    padding:24px 0;
+    border-top:1px solid var(--line-strong);
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:24px;
+  }
+  .pro-cta h2{
+    margin:0 0 4px;
+    font-size:25px;
+    letter-spacing:-.025em;
+  }
+  .pro-cta p{
+    margin:0;
+    color:#69767f;
+    font-size:14px;
+  }
+  .pro-cta .btn{
+    background:var(--lime);
+    color:#17200c;
+    flex:0 0 auto;
+  }
+
+  @media (max-width: 900px){
+    .nav{display:none}
+    .hamburger{display:block}
+    .hero{
+      grid-template-columns:1fr;
+      gap:18px;
+      min-height:0;
+      padding:20px 0 22px;
+    }
+    .hero h1{font-size:44px}
+    .hero p{font-size:15px}
+    .hero__media{
+      height:230px;
+      border-radius:14px 2px 14px 2px;
+    }
+    .pricing{
+      grid-template-columns:1fr;
+      gap:10px;
+      padding:15px 0;
+    }
+    .pricing__title{font-size:22px}
+    .pricing__price{font-size:31px}
+    .pricing__summary{margin-top:1px}
+    .service-grid{grid-template-columns:1fr}
+    .group__head{align-items:start}
+    .editorial{
+      grid-template-columns:1fr;
+      gap:30px;
+      margin-top:44px;
+    }
+  }
+
+  @media (max-width: 560px){
+    .header__inner,
+    .container{
+      width:min(100% - 32px, var(--max));
+    }
+    .header__inner{min-height:66px}
+    .breadcrumbs{padding-top:18px;font-size:11px}
+    .hero{
+      padding-top:16px;
+      gap:16px;
+    }
+    .hero h1{
+      font-size:38px;
+      margin-bottom:10px;
+    }
+    .hero p{
+      font-size:14px;
+      line-height:1.6;
+    }
+    .hero__actions{
+      margin-top:16px;
+      gap:12px;
+    }
+    .hero__media{height:190px}
+    .pricing{
+      margin-left:-16px;
+      margin-right:-16px;
+      padding-left:16px;
+      padding-right:16px;
+    }
+    .pricing__title{font-size:21px}
+    .pricing__price-line{gap:8px}
+    .pricing__price{font-size:30px}
+    .pricing__summary,
+    .pricing__factors{font-size:12px}
+    .pricing__meta{font-size:10px}
+    .group{padding-top:30px}
+    .group + .group{padding-top:36px}
+    .group h2{font-size:26px}
+    .group__count{display:none}
+    .service{
+      padding:15px 0 14px;
+    }
+    .service h3{font-size:16px}
+    .service p{font-size:12.5px}
+    .service__actions{margin-top:9px}
+    .editorial{
+      margin-top:38px;
+      padding-top:24px;
+    }
+    .pro-cta{
+      margin-top:38px;
+      align-items:flex-start;
+      flex-direction:column;
+      padding:22px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header__inner">
+    <a class="brand" href="#">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span>esigenta</span>
+    </a>
+
+    <nav class="nav" aria-label="Navigazione principale">
+      <a href="#">Servizi</a>
+      <a href="#">Professionisti</a>
+      <a href="#">Costi</a>
+      <a href="#">Le mie richieste</a>
+      <a href="#">Accedi</a>
+      <a class="nav__pro" href="#">Sei un professionista?</a>
+    </nav>
+
+    <div class="hamburger" aria-hidden="true"><span></span></div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="breadcrumbs">Home / Professionisti / Elettricista</div>
+
+  <section class="hero">
+    <div class="hero__copy">
+      <h1>Elettricista</h1>
+      <p>
+        Realizza, modifica e ripara impianti elettrici domestici e può intervenire su illuminazione,
+        prese, quadri elettrici, citofoni, sistemi di sicurezza e smart home. Su Esigenta puoi
+        individuare l’intervento di cui hai bisogno e richiedere preventivi a professionisti qualificati.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#">Richiedi preventivi <span aria-hidden="true">→</span></a>
+        <span class="hero__micro">Confronta soluzioni per il lavoro che ti serve</span>
+      </div>
+    </div>
+
+    <div class="hero__media" aria-label="Elettricista al lavoro su un quadro elettrico">
+      <img
+        src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=82"
+        alt="Elettricista al lavoro su un quadro elettrico"
+      />
+    </div>
+  </section>
+
+  <section class="pricing" aria-labelledby="pricing-title">
+    <div>
+      <p class="pricing__label">Tariffe indicative</p>
+      <h2 id="pricing-title" class="pricing__title">Quanto costa un elettricista?</h2>
+
+      <div class="pricing__price-line">
+        <svg class="pricing__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="8" cy="8" r="5"></circle>
+          <path d="M14.5 7.5A5 5 0 1 1 9.5 17"></path>
+          <path d="M6.7 6.3h3M6.7 9.7h3"></path>
+        </svg>
+        <span class="pricing__price">25–50 €</span>
+        <span class="pricing__unit">all’ora</span>
+      </div>
+
+      <span class="pricing__context">Tariffa indicativa per interventi ordinari</span>
+    </div>
+
+    <div class="pricing__right">
+      <p class="pricing__summary">
+        Il valore varia in base al lavoro richiesto e alle condizioni concordate nel preventivo.
+      </p>
+      <p class="pricing__factors">
+        <strong>Può incidere:</strong> zona · complessità · durata · materiali · eventuale uscita
+      </p>
+      <div class="pricing__meta">
+        <span>Valore orientativo di mercato, non tariffario vincolante.</span>
+        <span>IVA e costi aggiuntivi dipendono dal preventivo.</span>
+        <span>Aggiornato: settembre 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="group">
+    <div class="group__head">
+      <h2>Impianti e manutenzioni elettriche</h2>
+      <span class="group__count">6 interventi</span>
+    </div>
+
+    <div class="service-grid">
+      <article class="service">
+        <h3>Fare impianto elettrico nuovo</h3>
+        <p>Realizzazione completa di un nuovo impianto elettrico.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">
+            Richiedi preventivi
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Rifare impianto elettrico</h3>
+        <p>Adeguamento o rinnovo dell’impianto elettrico esistente.</p>
+        <div class="service__actions">
+          <a class="action-link" href="#">Scopri l’intervento</a>
+          <a class="action-link" href="#">Guida ai costi</a>
+          <a class="action-primary" href="#">
+            Richiedi preventivi
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Riparare guasto elettrico</h3>
+        <p>Ricerca e riparazione di guasti e malfunzionamenti.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Sistemare o sostituire quadro elettrico</h3>
+        <p>Adeguamento, sostituzione o verifica del quadro elettrico.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Installare illuminazione</h3>
+        <p>Nuovi punti luce, faretti e soluzioni per l’illuminazione.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Installare prese, interruttori o punti luce</h3>
+        <p>Aggiunta o sostituzione di prese, comandi e punti luce.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="group">
+    <div class="group__head">
+      <h2>Citofoni, sicurezza e smart home</h2>
+      <span class="group__count">5 interventi</span>
+    </div>
+
+    <div class="service-grid">
+      <article class="service">
+        <h3>Installare o sostituire citofono/videocitofono</h3>
+        <p>Installazione o sostituzione di sistemi audio e video.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Installare impianto allarme</h3>
+        <p>Sistemi di sicurezza per abitazioni e ambienti interni.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Installare videosorveglianza</h3>
+        <p>Telecamere e sistemi di controllo per la casa.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Automatizzare cancello</h3>
+        <p>Automazione e controllo elettrico di cancelli e accessi.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+
+      <article class="service">
+        <h3>Installare domotica e smart home</h3>
+        <p>Controllo di luci, dispositivi e funzioni della casa.</p>
+        <div class="service__actions">
+          <a class="action-primary" href="#">Richiedi preventivi →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="editorial">
+    <div class="editorial__block">
+      <h2>Quando rivolgersi a un elettricista</h2>
+      <p>
+        Quando devi realizzare o modificare un impianto, risolvere un guasto,
+        aggiungere nuovi punti elettrici o installare sistemi di sicurezza e automazione.
+      </p>
+    </div>
+
+    <div class="editorial__block">
+      <h2>Come scegliere un elettricista</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step__n">01</span>
+          <p>Verifica l’abilitazione dell’impresa quando prevista.</p>
+        </div>
+        <div class="step">
+          <span class="step__n">02</span>
+          <p>Confronta cosa comprende realmente il preventivo.</p>
+        </div>
+        <div class="step">
+          <span class="step__n">03</span>
+          <p>Chiedi materiali, tempi e documentazione prevista per il lavoro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pro-cta">
+    <div>
+      <h2>Sei un elettricista?</h2>
+      <p>Fai conoscere la tua attività su Esigenta e ricevi opportunità compatibili con i lavori che svolgi.</p>
+    </div>
+    <a class="btn" href="#">Registrati come professionista →</a>
+  </section>
+</main>
+
+</body>
+</html>
+"""
+
+path = Path("/mnt/data/esigenta-elettricista-premium-redesign.html")
+path.write_text(html, encoding="utf-8")
+print(f"Creato: {path}")

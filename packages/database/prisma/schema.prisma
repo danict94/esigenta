@@ -739,7 +739,6 @@ model Request {
    * carry a funnelSessionId — see createRequestFromDraft). Nullable +
    * UNIQUE: Postgres allows unlimited NULLs in a unique index, so requests
    * without a funnelSessionId never collide with each other.
-   *
    * Enforcement is at the database level (see
    * packages/domain/src/public/requests/create-request.ts, FASE 7B
    * report): a second Request.create() with the same submissionSessionId
@@ -910,7 +909,6 @@ model RequestPhoto {
  * FASE 6B (packages/domain/src/public/requests/funnel-session-id.ts) —
  * same value, copied here independently of whatever ends up (or not) in
  * Request.structuredData.funnelSessionId.
- *
  * Deliberately excludes: any form answer, contact detail, address,
  * coordinates, IP, full user agent, or free-form metadata. eventType is a
  * plain String (not a Prisma enum) so the wire value from the client
@@ -924,49 +922,45 @@ model RequestPhoto {
  * own transaction has committed (packages/domain/src/public/requests/
  * create-request.ts) — see FASE 6D report for why it must be
  * server-authoritative.
- *
  * stepKey/stepIndex are NOT NULL, reused with THREE distinct meanings
  * depending on eventType — chosen deliberately to reuse the single
  * @@unique below for every event type without a schema/migration change,
  * instead of introducing a second dedup mechanism:
- *   - step_viewed / step_completed / client_validation_failed /
- *     exit_feedback_submitted: the real RuntimeCapability id / its index
- *     in the funnel — "at most once per step" (FASE 6C;
- *     client_validation_failed added FASE 9E; exit_feedback_submitted
- *     added FASE 9H — see the exitFeedbackReasonCode-style comment below
- *     on why THIS eventType additionally needs a second, per-session
- *     — not per-step — uniqueness guarantee, enforced outside this
- *     @@unique via a raw partial index).
- *   - funnel_opened / funnel_started / request_created: sentinel ("" /
- *     -1), never a real step — "at most once per funnelSessionId" for
- *     that eventType (FASE 9A adds funnel_opened to this group, same
- *     sentinel treatment funnel_started already had). Two DIFFERENT
- *     eventTypes sharing the same sentinel never collide with each other
- *     (eventType is part of the same unique tuple).
- *   - submit_started / submit_failed: stepKey is the fixed literal
- *     "submit", stepIndex is a 0-based SUBMIT ATTEMPT COUNTER (not a
- *     funnel step) incremented client-side on every real submitDraft()
- *     call (apps/web/.../request-stepper.tsx). This is deliberate, NOT an
- *     oversight: the user can genuinely retry a failed submit more than
- *     once, and each real attempt must produce its own row — collapsing
- *     them under a single "at most once" key (like funnel_started) would
- *     silently discard real retry information. An accidental re-fire of
- *     the SAME attempt (identical attemptIndex) still correctly collides
- *     and is deduped; a genuinely new attempt (incremented index) never
- *     does.
- *
+ * - step_viewed / step_completed / client_validation_failed /
+ * exit_feedback_submitted: the real RuntimeCapability id / its index
+ * in the funnel — "at most once per step" (FASE 6C;
+ * client_validation_failed added FASE 9E; exit_feedback_submitted
+ * added FASE 9H — see the exitFeedbackReasonCode-style comment below
+ * on why THIS eventType additionally needs a second, per-session
+ * — not per-step — uniqueness guarantee, enforced outside this
+ * @@unique via a raw partial index).
+ * - funnel_opened / funnel_started / request_created: sentinel ("" /
+ * -1), never a real step — "at most once per funnelSessionId" for
+ * that eventType (FASE 9A adds funnel_opened to this group, same
+ * sentinel treatment funnel_started already had). Two DIFFERENT
+ * eventTypes sharing the same sentinel never collide with each other
+ * (eventType is part of the same unique tuple).
+ * - submit_started / submit_failed: stepKey is the fixed literal
+ * "submit", stepIndex is a 0-based SUBMIT ATTEMPT COUNTER (not a
+ * funnel step) incremented client-side on every real submitDraft()
+ * call (apps/web/.../request-stepper.tsx). This is deliberate, NOT an
+ * oversight: the user can genuinely retry a failed submit more than
+ * once, and each real attempt must produce its own row — collapsing
+ * them under a single "at most once" key (like funnel_started) would
+ * silently discard real retry information. An accidental re-fire of
+ * the SAME attempt (identical attemptIndex) still correctly collides
+ * and is deduped; a genuinely new attempt (incremented index) never
+ * does.
  * NOT NULL (not nullable) sentinels are used throughout instead of NULL
  * specifically so @@unique below dedupes correctly: Postgres treats
  * NULL <> NULL, so two rows with stepKey/stepIndex both NULL would NOT
  * collide on a unique constraint, silently defeating "at most one" for
  * funnel_started/request_created. Sentinels sidestep that without a
  * NULLS NOT DISTINCT index.
- *
  * errorCode (FASE 6D): only ever set for submit_failed, one of a closed
  * allow-list of known technical codes (real @esigenta/domain application
  * error codes, or "network_error"/"unexpected_error") — never
  * error.message, never a stack trace. Null for every other eventType.
- *
  * reasonCode (FASE 9H): only ever set for exit_feedback_submitted, one of
  * a closed allow-list of controlled codes (just_browsing/
  * too_many_questions/dont_know_what_to_choose/dont_want_to_share_contact/
@@ -976,8 +970,6 @@ model RequestPhoto {
  * this whole table already follows. No modal/trigger UI exists yet to
  * produce this eventType (see the FASE 9H report) — this is data-layer
  * readiness only.
- *
-
  * Attribution fields (FASE 6E; re-anchored in FASE 9A): gclid/gbraid/
  * wbraid/utm* — only ever set on the funnel_opened row (captured once per
  * session, on the landing page, before it is possible to know a
@@ -995,7 +987,6 @@ model RequestPhoto {
  * from" without storing the same 8 values N times. Every value here is
  * exactly what arrived in the URL query string (trimmed, length-capped),
  * never a parsed/derived classification.
- *
  * CONSENT DECISION REQUIRED (FASE 6E, not resolved by this codebase): the
  * capture into sessionStorage is unconditional (first-party, ephemeral,
  * no different technically from any other query-string read), but
@@ -1020,12 +1011,18 @@ model FunnelEvent {
   eventType        String
   stepKey          String
   stepIndex        Int
-  /** FASE 6D — only for submit_failed, always a known code, never free text. */
+  /**
+   * FASE 6D — only for submit_failed, always a known code, never free text.
+   */
   errorCode        String?
-  /** FASE 9H — only for exit_feedback_submitted, always a known code, never free text. See the model comment above. */
+  /**
+   * FASE 9H — only for exit_feedback_submitted, always a known code, never free text. See the model comment above.
+   */
   reasonCode       String?
 
-  /** FASE 6E — only for funnel_started, see model comment above (incl. CONSENT DECISION REQUIRED). */
+  /**
+   * FASE 6E — only for funnel_started, see model comment above (incl. CONSENT DECISION REQUIRED).
+   */
   gclid       String?
   gbraid      String?
   wbraid      String?
@@ -1078,25 +1075,12 @@ model FunnelEvent {
   createdAt DateTime @default(now())
 
   /**
-   * Dedup guard (FASE 6C, semantics extended in FASE 6D — see the model
-   * comment above for what stepKey/stepIndex mean per eventType): a
-   * client-side re-render/refresh/back-forward/retried-but-identical
-   * attempt that re-fires the same logical event hits this constraint and
-   * is ignored (see packages/database/src/funnel/record-funnel-event.ts)
-   * — never a second row for the same funnelSessionId+eventType+step (or
-   * +submit-attempt).
-   */
-  @@unique([funnelSessionId, eventType, stepKey, stepIndex])
-
-  /**
    * FASE 9H — NOT a Prisma attribute (Prisma's schema DSL has no WHERE
    * clause for @@unique/@@index — partial/filtered unique indexes cannot
    * be expressed here at all): a second, PARTIAL unique index exists in
    * the database, created directly in this phase's migration SQL —
-   *
-   *   CREATE UNIQUE INDEX ... ON "FunnelEvent" ("funnelSessionId")
-   *   WHERE "eventType" = 'exit_feedback_submitted';
-   *
+   * CREATE UNIQUE INDEX ... ON "FunnelEvent" ("funnelSessionId")
+   * WHERE "eventType" = 'exit_feedback_submitted';
    * — enforcing "at most one exit_feedback_submitted row per
    * funnelSessionId", REGARDLESS of stepKey/stepIndex. The @@unique above
    * cannot provide this alone: exit_feedback_submitted deliberately
@@ -1108,7 +1092,6 @@ model FunnelEvent {
    * (unique_violation), already caught generically as "duplicate" by
    * packages/database/src/funnel/record-funnel-event.ts's existing P2002
    * handling — no code change needed there for this to work.
-   *
    * Residual risk, stated plainly: because this index has no
    * representation in schema.prisma, `prisma migrate dev`/`deploy` will
    * never touch or drop it (they diff schema.prisma against applied
@@ -1118,6 +1101,40 @@ model FunnelEvent {
    * back). Do not run db pull against this database without accounting
    * for that; see the FASE 9H report.
    */
+
+  /**
+   * Dedup guard (FASE 6C, semantics extended in FASE 6D — see the model
+   * comment above for what stepKey/stepIndex mean per eventType): a
+   * client-side re-render/refresh/back-forward/retried-but-identical
+   * attempt that re-fires the same logical event hits this constraint and
+   * is ignored (see packages/database/src/funnel/record-funnel-event.ts)
+   * — never a second row for the same funnelSessionId+eventType+step (or
+   * +submit-attempt).
+   */
+  @@unique([funnelSessionId, eventType, stepKey, stepIndex])
+}
+
+enum GuideHelpfulnessResponse {
+  yes
+  no
+}
+
+/**
+ * Voto anonimo di utilità per una guida editoriale. È separato da
+ * FunnelEvent: non rappresenta un abbandono né modifica lo stato di un
+ * funnel o di una richiesta.
+ */
+model GuideHelpfulnessVote {
+  id String @id @default(cuid())
+
+  guideSlug          String
+  anonymousSessionId String
+  response           GuideHelpfulnessResponse
+  comment            String?
+  createdAt          DateTime                 @default(now())
+
+  @@unique([guideSlug, anonymousSessionId])
+  @@index([guideSlug, createdAt])
 }
 
 ///////////////////////////////////////////////////////////

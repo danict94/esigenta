@@ -1,4 +1,5 @@
-import { isAlternativeTo, type PriceRow } from "../market-data/base-price-ranges";
+import { isAlternativeTo } from "../market-data/shared/relations";
+import type { PriceRow } from "../market-data/shared/types";
 
 /**
  * Scope 4B — logica pura condivisa da tutte le sezioni della Cost Guide che
@@ -8,12 +9,9 @@ import { isAlternativeTo, type PriceRow } from "../market-data/base-price-ranges
  * Reference) usa la STESSA logica invece di reimplementarla e rischiare
  * incoerenze tra una sezione e l'altra.
  *
- * Principio di fallback (Scope 4B, "altre 5 Cost Guide"): SOLO il bagno ha
- * oggi `role`/`costType`/`relations` compilati. Le funzioni qui sotto non
- * inventano mai una classificazione: quando il campo è assente il
- * comportamento converge su quello di sempre (riga di dettaglio normale,
- * nessun badge, nessuna sezione "Scenari/Extra/Reference" per quella guida).
- */
+ * Le sezioni Scenari ed Extra usano configurazioni editoriali risolte per
+ * `rowId`; questa classificazione resta responsabile di selezionare le righe
+ * economiche per Extra e Listino senza introdurre riconoscimenti per slug. */
 
 /** Categorie legacy riconosciute come qualitative (nessun prezzo affidabile),
  * stesso criterio già usato da cost-page-template.tsx prima di questo Scope
@@ -31,29 +29,6 @@ const QUALITATIVE_CATEGORIES = new Set<string>([
  */
 export function isQuoteRequired(row: PriceRow): boolean {
   return row.priceStatus === "quoteRequired" || QUALITATIVE_CATEGORIES.has(row.category);
-}
-
-/**
- * `costType` effettivo per la resa in UI: usa il campo nuovo quando esiste,
- * altrimenti lo deriva dal legacy `priceType` con la corrispondenza già
- * documentata nel commento di deprecazione di `priceType` (manodopera→work,
- * fornitura→supply, corpo→complete). Non è una riclassificazione nuova: è
- * la stessa mappa concettuale già scritta in market-data/base-price-ranges.ts,
- * qui solo applicata per non lasciare le 5 guide non ancora auditate senza
- * alcuna etichetta.
- */
-export function effectiveCostType(row: PriceRow): "complete" | "work" | "supply" | undefined {
-  if (row.costType) return row.costType;
-  switch (row.priceType) {
-    case "manodopera":
-      return "work";
-    case "fornitura":
-      return "supply";
-    case "corpo":
-      return "complete";
-    default:
-      return undefined;
-  }
 }
 
 export type PriceRowClassification = {
@@ -89,7 +64,7 @@ export type PriceRowClassification = {
  * il RUOLO (role, "cosa significa questa riga per il preventivo") al
  * FORMATO del prezzo (unit, "come si esprime il numero") — due assi
  * distinti per contratto (vedi PriceRowRole/PriceRowCostType/`unit` in
- * market-data/base-price-ranges.ts), che questa funzione confondeva. Bug
+ * market-data/shared/types.ts), che questa funzione confondeva. Bug
  * verificato: rifare-tetto e rifare-facciata dichiarano `role: "primary"`/
  * `"scenario"` esplicitamente e correttamente sui propri scenari di
  * ampiezza, ma con `unit: "al mq"` (l'unità corretta: un tetto o una
@@ -130,7 +105,10 @@ function isGuideScenarioRow(row: PriceRow): boolean {
  * tutti vuoti e `breakdown` contiene semplicemente tutte le righe, nello
  * stesso ordine dell'SSOT: fallback conservativo esplicito (Scope 4B).
  */
-export function classifyPriceRows(rows: readonly PriceRow[]): PriceRowClassification {
+export function classifyPriceRows(
+  rows: readonly PriceRow[],
+  breakdownRowIds: readonly PriceRow["id"][] = [],
+): PriceRowClassification {
   const primary = rows.find((row) => row.role === "primary" && isGuideScenarioRow(row)) ?? null;
   const scenarios = rows.filter((row) => row.role === "scenario" && isGuideScenarioRow(row));
   const scenarioCards = rows.filter(
@@ -146,7 +124,8 @@ export function classifyPriceRows(rows: readonly PriceRow[]): PriceRowClassifica
     ...references.map((row) => row.id),
   ]);
 
-  const breakdown = rows.filter((row) => !promotedIds.has(row.id));
+  const breakdownIds = new Set(breakdownRowIds);
+  const breakdown = rows.filter((row) => !promotedIds.has(row.id) || breakdownIds.has(row.id));
 
   return { primary, scenarios, scenarioCards, extras, references, breakdown };
 }
@@ -266,20 +245,6 @@ export function splitVisibleAndRest(items: readonly string[], limit: number): Vi
   return { visible: items.slice(0, limit), rest: items.slice(limit) };
 }
 
-/**
- * Classe Tailwind per la griglia degli esempi per dimensione — evita
- * composizioni sbilanciate tipo "3 in una riga + 1 da solo sotto" scegliendo
- * il numero di colonne in base al conteggio reale degli esempi, non un
- * valore fisso. Le classi sono scritte per intero (mai interpolate) perché
- * il compilatore Tailwind scansiona solo stringhe statiche nel sorgente.
- */
-export function sizeExamplesGridClassName(count: number): string {
-  if (count <= 1) return "grid grid-cols-1 gap-4";
-  if (count === 2) return "grid grid-cols-1 gap-4 sm:grid-cols-2";
-  if (count === 3) return "grid grid-cols-1 gap-4 sm:grid-cols-3";
-  return "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4";
-}
-
 function labelOf(row: PriceRow): string {
   return row.simpleLabel ?? row.label;
 }
@@ -395,7 +360,7 @@ export function describeAlternative(row: PriceRow, allRows: readonly PriceRow[])
  * a confermarlo esplicitamente.
  */
 export function describeCostTypeBadge(row: PriceRow): string | null {
-  const costType = effectiveCostType(row);
+  const costType = row.costType;
   const excludesLower = (row.excludes ?? "").toLowerCase();
   const excludesMaterials = excludesLower.includes("fornitura") || excludesLower.includes("materiali");
   const excludesInstallation = excludesLower.includes("montaggio") || excludesLower.includes("posa");

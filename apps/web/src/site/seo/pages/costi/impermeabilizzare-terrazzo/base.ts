@@ -27,13 +27,16 @@ export const impermeabilizzareTerrazzoBase: CostGuideBaseContent = {
   title: "Costi impermeabilizzazione terrazzo",
   h1: "Quanto costa impermeabilizzare un terrazzo?",
   metaTitle: "Costo impermeabilizzazione terrazzo: prezzi al mq",
-  // Data reale dell'ultima revisione editoriale sostanziale, non del deploy:
-  // vedi engine/editorial-date.ts. Revisione 2026-08: la guida passa da una
+  // Ultima revisione editoriale sostanziale, non del deploy: vedi
+  // engine/editorial-date.ts. Revisione 2026-08: la guida passa da una
   // riga quotata "pacchetto misto" a 8 sistemi di impermeabilizzazione
   // paralleli + riparazione mirata + lavorazioni accessorie (vedi il
   // commento di revisione su "costGuide:impermeabilizzare-terrazzo" in
-  // market-data/base-price-ranges.ts per il dettaglio completo).
-  lastModified: "2026-08-18",
+  // market-data/pricing/guides/impermeabilizzare-terrazzo.ts per il dettaglio completo).
+  lastModified: "2026-09-18",
+  editorial: {
+    datePublished: "2026-08-08",
+  },
   metaDescription:
     "Quanto costa impermeabilizzare un terrazzo? Fasce orientative al mq, sistemi disponibili, cosa incide sul prezzo e cosa comprende il preventivo.",
   // Audit 2026-08: hubCategory NON deriva dalla taxonomy (deliberatamente
@@ -48,7 +51,21 @@ export const impermeabilizzareTerrazzoBase: CostGuideBaseContent = {
     "Fasce orientative per impermeabilizzare un terrazzo, dalla riparazione localizzata al rifacimento del sistema impermeabilizzante.",
   topicLabel: "impermeabilizzare un terrazzo",
   summary:
-    "Impermeabilizzare un terrazzo costa indicativamente da 30 € a 70 € al mq per un intervento standard, ma il prezzo dipende soprattutto dal sistema scelto: un'impermeabilizzazione cementizia da ricoprire con un pavimento, una soluzione trasparente sopra le piastrelle esistenti, un sistema realmente calpestabile a vista o un rivestimento pensato solo per un traffico leggero hanno prezzi e prestazioni molto diverse tra loro. Questa guida non copre il rifacimento completo del terrazzo (demolizione, nuovo massetto, nuova pavimentazione): per quel tipo di lavoro serve una valutazione più ampia.",
+    "Per impermeabilizzare un terrazzo considera indicativamente 30–70 €/m² come fascia di riferimento per un intervento ordinario, materiale e posa compresi. Il costo cambia soprattutto in base al sistema scelto, alle condizioni del supporto e alla possibilità di intervenire sopra o sotto la pavimentazione esistente; soluzioni calpestabili a vista o sistemi specialistici possono costare di più. Il rifacimento completo del terrazzo, con demolizione, nuovo massetto e nuova pavimentazione, è un intervento diverso e non rientra in questa fascia.",
+  extrasPresentation: {
+    title: "Cosa può far aumentare il prezzo",
+    intro: "Alcune lavorazioni possono aggiungersi al sistema impermeabilizzante quando le condizioni del terrazzo richiedono demolizioni, ripristini del fondo o correzioni delle pendenze.",
+  },
+  breakdownIntro:
+    "Le voci qui sotto descrivono sistemi alternativi di impermeabilizzazione e lavorazioni accessorie. I diversi sistemi non vanno sommati tra loro: il preventivo deve indicare quale soluzione viene utilizzata e quali eventuali lavorazioni aggiuntive sono necessarie.",
+  hideBreakdownSourceNote: true,
+  sizeExamplesTable: {
+    title: "Esempi di costo per metratura",
+    intro: "Stime ottenute applicando la fascia di riferimento 30–70 €/m² per un intervento ordinario di impermeabilizzazione.",
+    notes: ["Sono stime aritmetiche basate sulla fascia 30–70 €/m², non rilevazioni indipendenti per ciascuna metratura. Sistemi calpestabili, membrane specialistiche, demolizioni, ripristini del massetto o correzioni delle pendenze possono modificare il totale; nei terrazzi piccoli il costo al m² può inoltre risultare più alto per i costi minimi di cantiere."],
+    surfaceLabel: "Superficie",
+    sizeUnit: "m²",
+  },
   factors: [
     "superficie del terrazzo da trattare",
     "sistema impermeabilizzante scelto (sotto pavimento, sopra le piastrelle esistenti, calpestabile a vista o a traffico leggero)",
@@ -59,9 +76,16 @@ export const impermeabilizzareTerrazzoBase: CostGuideBaseContent = {
     "correzione delle pendenze e presenza di ristagni",
     "numero di scarichi e bocchettoni da trattare",
     "soglie e raccordi perimetrali",
-    "accessibilità del cantiere",
-    "smaltimento dei materiali rimossi",
     "eventuale nuova pavimentazione da posare in seguito",
+  ],
+  locationFactors: [
+    "accesso al cantiere",
+    "piano dell'immobile e disponibilità dell'ascensore",
+    "parcheggio e carico/scarico dei materiali",
+    "regole condominiali sugli orari di cantiere",
+    "trasporto dei materiali fino al cantiere",
+    "smaltimento delle macerie",
+    "disponibilità dei professionisti nella zona",
   ],
   savingTips: [
     "Chiedi sempre se il preventivo prevede una riparazione localizzata o un'impermeabilizzazione dell'intera superficie: sono lavori diversi, con prezzi diversi.",
@@ -71,17 +95,8 @@ export const impermeabilizzareTerrazzoBase: CostGuideBaseContent = {
     "Chiedi esplicitamente se il sistema proposto è compatibile con la pavimentazione esistente o richiede di rimuoverla.",
     "Se il preventivo supera nettamente la fascia orientativa, chiedi quali lavorazioni aggiuntive lo giustificano.",
   ],
-  nationalRangeLabel: "Fascia orientativa al mq",
   interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
   // Micro-fix 2026-08 (verifica esplicita): non più "fascia media tra i
   // sistemi" — non è stata calcolata alcuna media statistica degli 8
   // sistemi, è la fascia orientativa di un'impermeabilizzazione STANDARD.
-  nationalRangeNote:
-    "Indicativamente 30–70 € al mq per una normale impermeabilizzazione professionale del terrazzo — materiale e posa comprese — su una superficie in condizioni ragionevoli, senza rifacimento completo di massetto e pavimentazione. È la fascia orientativa di un intervento standard, non una media statistica tra i sistemi: alcune soluzioni partono più in basso, mentre quelle pensate per restare calpestabili a vista o i sistemi ad alte prestazioni possono costare di più, fino a circa 120 €/mq in questa guida; una riparazione localizzata ha invece un costo minimo indipendente dai mq.",
-  priceTableIntro:
-    "La tabella distingue gli otto sistemi di impermeabilizzazione disponibili — dalle soluzioni pensate per essere ricoperte da una nuova pavimentazione ai sistemi progettati per restare calpestabili a vista — più la riparazione localizzata di un'infiltrazione e le lavorazioni accessorie (demolizione del pavimento esistente, ripristino del massetto o delle pendenze), che si aggiungono solo quando il tuo caso lo richiede.",
-  priceTableNote:
-    "Le fasce sono elaborazioni editoriali per committenza privata: i prezzari pubblici quotano singoli sistemi e lavorazioni di impermeabilizzazione, non un pacchetto standard unico per ogni configurazione di terrazzo. Preparazione del supporto, eventuale demolizione della pavimentazione esistente, ripristino del massetto e nuova pavimentazione finale restano voci a parte quando non esplicitamente comprese nella singola riga.",
-  sizeExamplesIntro:
-    "Ogni valore nasce da un calcolo — superficie del terrazzo moltiplicata per la fascia 30–70 €/mq di un'impermeabilizzazione standard — non da un preventivo reale né da tre rilevazioni di mercato indipendenti. Non rappresenta una resina calpestabile, un sistema in poliurea, un rifacimento completo del terrazzo o un altro sistema specialistico tra quelli elencati in tabella: per quei sistemi il costo può essere più alto. Nei terrazzi piccoli il costo al mq può risultare più alto, perché preparazione, accesso, raccordi, scarichi e i costi minimi di cantiere non diminuiscono proporzionalmente alla superficie.",
 };

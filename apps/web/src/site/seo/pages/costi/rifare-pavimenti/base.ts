@@ -28,7 +28,10 @@ export const rifarePavimentiBase: CostGuideBaseContent = {
   title: "Costi rifacimento pavimento",
   h1: "Quanto costa rifare il pavimento?",
   metaTitle: "Quanto costa rifare il pavimento? Prezzi al mq",
-  lastModified: "2026-08-19",
+  lastModified: "2026-09-18",
+  editorial: {
+    datePublished: "2026-08-25",
+  },
   metaDescription:
     "Scopri quanto costa rifare il pavimento: fasce orientative al mq per la posa sopra il pavimento esistente, il rifacimento standard e il rifacimento con nuovo massetto, più i prezzi di gres, parquet, laminato e SPC.",
   hubCategory: { slug: "pavimenti-e-rivestimenti", name: "Pavimenti e rivestimenti" },
@@ -44,38 +47,49 @@ export const rifarePavimentiBase: CostGuideBaseContent = {
   // vecchio pavimento e gestione dello smaltimento), non una riga di sola
   // posa su fondo pronto.
   summary:
-    "Rifare il pavimento costa indicativamente da 60 € a 100 € al mq per un rifacimento standard — rimozione del vecchio pavimento, massetto esistente recuperabile, nuovo gres standard/medio e posa — ma il prezzo dipende soprattutto da quanto lavoro serve sul fondo: una semplice posa sopra il pavimento esistente costa meno (40–75 €/mq), mentre un rifacimento con nuovo massetto, quando il sottofondo non è recuperabile, costa di più (90–140 €/mq). La tabella distingue anche le singole lavorazioni — sola posa, materiale e posa, demolizione, massetto, livellamento, battiscopa — utili se ti serve solo una parte del lavoro o vuoi verificare un preventivo voce per voce.",
+    "Per rifare un pavimento in modo standard, considera indicativamente 60–100 €/m², comprendendo rimozione del vecchio pavimento, normale gestione dello smaltimento, fondo esistente recuperabile, nuovo gres standard/medio e posa. Se il pavimento esistente può essere mantenuto e si posa sopra, la fascia può scendere a circa 40–75 €/m²; quando invece è necessario rifare anche il massetto, il costo può salire a circa 90–140 €/m².",
+  extrasPresentation: {
+    title: "Cosa può far aumentare il prezzo",
+    intro: "Alcune lavorazioni possono aggiungersi al rifacimento del pavimento in base alle condizioni del fondo, agli spessori e alle caratteristiche dei materiali scelti.",
+  },
+  breakdownIntro:
+    "Le voci qui sotto servono a distinguere le singole lavorazioni, la sola posa e le soluzioni che comprendono anche il materiale. Le voci già comprese negli scenari sopra non vanno sommate una seconda volta quando fanno parte dello stesso preventivo.",
+  hideBreakdownSourceNote: true,
+  locationFactors: [
+    "accesso al cantiere",
+    "piano dell'immobile e disponibilità dell'ascensore",
+    "parcheggio e carico/scarico dei materiali",
+    "regole condominiali sugli orari di cantiere",
+    "trasporto dei materiali fino al cantiere",
+    "smaltimento delle macerie",
+    "disponibilità dei professionisti nella zona",
+  ],
+  sizeExamplesTable: {
+    title: "Esempi di costo per metratura",
+    intro: "Stime calcolate sulla fascia 60–100 €/m² del rifacimento standard, con massetto esistente recuperabile.",
+    notes: ["Le stime si riferiscono ai metri quadrati effettivamente interessati dal lavoro, non necessariamente alla superficie catastale dell’abitazione. La posa sopra il pavimento esistente può costare meno; il rifacimento con nuovo massetto può costare di più."],
+    surfaceLabel: "Superficie",
+    sizeUnit: "m²",
+  },
   factors: [
-    "superficie del pavimento da rifare",
-    "stato del pavimento e del massetto esistenti, e possibilità di conservarli",
-    "necessità di demolire il solo pavimento o anche il sottofondo",
-    "necessità di un nuovo massetto o di un semplice livellamento del fondo",
-    "materiale scelto: gres, parquet, laminato o SPC",
-    "formato delle piastrelle (standard, rettificato/medio, grande formato, lastre XXL)",
+    "superficie interessata",
+    "stato di pavimento e massetto esistenti e possibilità di conservare il sottofondo",
+    "demolizione del solo pavimento o anche del sottofondo",
+    "nuovo massetto oppure semplice livellamento",
+    "materiale scelto",
+    "formato delle piastrelle",
     "schema di posa e complessità dei tagli",
-    "necessità di sola posa (materiale già acquistato) o materiale e posa insieme",
-    "necessità di adattare porte, portoncini e soglie al nuovo spessore",
-    "battiscopa: sola posa o materiale e posa",
-    "accessibilità dell'abitazione e del cantiere",
+    "sola posa oppure materiale e posa",
+    "adattamento di porte e soglie",
+    "battiscopa",
   ],
   savingTips: [
-    "Fai verificare lo stato reale del massetto prima di scegliere tra posa sopra il pavimento esistente, rifacimento standard o rifacimento con nuovo massetto: sono lavori diversi, con prezzi diversi.",
-    "Chiedi preventivi con voci separate per demolizione, massetto/livellamento, materiale e posa: capisci meglio cosa stai pagando.",
-    "Se hai già scelto o acquistato il materiale, chiedi esplicitamente il prezzo di sola posa: è diverso da materiale e posa insieme.",
-    "Segnala il formato delle piastrelle scelte (standard, medio, grande formato o XXL): incide sul prezzo della posa più della semplice superficie.",
-    "Chiedi se l'adattamento di porte e soglie al nuovo spessore del pavimento è compreso nel preventivo o resta a parte.",
-    "Chiedi se il battiscopa è compreso, e se è sola posa o materiale e posa.",
+    "Fai verificare lo stato del massetto prima di scegliere il tipo di intervento.",
+    "Chiedi un preventivo con demolizione, fondo, materiale e posa indicati separatamente.",
+    "Se hai già acquistato il materiale, chiedi esplicitamente il prezzo di sola posa.",
+    "Segnala formato delle piastrelle, battiscopa e interventi su porte o soglie prima del preventivo.",
   ],
-  nationalRangeLabel: "Fascia orientativa al mq",
   interventionRangeLabel: "FASCIA ORIENTATIVA AL MQ",
-  nationalRangeNote:
-    "Indicativamente 60–100 € al mq per il rifacimento standard del pavimento: rimozione del vecchio pavimento, gestione ordinaria dello smaltimento, massetto esistente recuperabile, nuovo gres standard/medio e posa. Non è il prezzo della sola posa: una posa sopra il pavimento esistente, senza demolizione, costa indicativamente meno (40–75 €/mq); un rifacimento con nuovo massetto, quando il sottofondo non è recuperabile, costa indicativamente di più (90–140 €/mq). Le tre fasce non vanno sommate: rappresentano ampiezze diverse dello stesso tipo di intervento.",
-  priceTableIntro:
-    "La tabella distingue tre scenari di ampiezza del lavoro — dalla posa sopra il pavimento esistente al rifacimento con nuovo massetto — dalle singole lavorazioni (posa, materiale e posa, demolizione, massetto, livellamento, battiscopa), utili per capire nel dettaglio cosa contiene un preventivo o per stimare un intervento parziale.",
-  priceTableNote:
-    "Le fasce sono elaborazioni editoriali Esigenta da confronto di mercato nazionale, non la voce di un singolo prezzario regionale. Le voci di categorie diverse (scenari, posa, materiale e posa, demolizione, massetto, livellamento, battiscopa) non vanno sommate tra loro: sono letture parallele dello stesso lavoro, non prezzi cumulativi. Parquet, laminato e SPC sono alternative di materiale all'interno della stessa categoria (materiale e posa su fondo pronto), non scenari a sé della guida.",
-  sizeExamplesIntro:
-    "Ogni valore nasce da un calcolo — superficie del pavimento moltiplicata per la fascia 60–100 €/mq del rifacimento standard, nuovo massetto escluso — non da un preventivo reale: sono mq effettivi di pavimento interessato dal lavoro, non necessariamente la superficie catastale dell'abitazione. Una semplice posa sopra il pavimento esistente costa indicativamente meno di questi esempi; un rifacimento con nuovo massetto può costare di più.",
   // Interventi specifici spesso confusi con un rifacimento del pavimento:
   // slug reali del gruppo taxonomy "pavimentazioni" (verificati contro
   // project-groups/pavimentazioni.ts, tutti publicationStatus "published"),
@@ -87,16 +101,22 @@ export const rifarePavimentiBase: CostGuideBaseContent = {
       slug: "fare-massetto",
       title: "Realizzare o rifare il massetto",
       description: "Se ti serve solo il massetto, non l'intero rifacimento del pavimento.",
+      linkLabel: "Richiedi un preventivo per il massetto",
+      ctaOnly: true,
     },
     {
       slug: "posare-levigare-o-ripristinare-parquet",
       title: "Posare, levigare o ripristinare il parquet",
       description: "Per la levigatura o il ripristino di un parquet esistente, non una nuova posa.",
+      linkLabel: "Richiedi un preventivo per il parquet",
+      ctaOnly: true,
     },
     {
       slug: "riparare-pavimento",
       title: "Riparare piastrelle o pavimento rotto",
       description: "Se il problema è localizzato — piastrelle rotte, sollevate o fughe da rifare — non un rifacimento completo.",
+      linkLabel: "Richiedi un preventivo per una riparazione del pavimento",
+      ctaOnly: true,
     },
   ],
 };

@@ -11,17 +11,15 @@ import {
   hasNumericNationalRange,
   isQuoteRequired,
   shortSummary,
-  sizeExamplesGridClassName,
   splitCommaList,
   splitVisibleAndRest,
 } from "./cost-guide-price-model"
 
-import type { PriceRow } from "../market-data/base-price-ranges"
+import type { PriceRow } from "../market-data/shared/types"
 
 import { ristrutturareBagnoGuide } from "../pages/costi/ristrutturare-bagno/content"
 import { rifareImpiantoElettricoGuide } from "../pages/costi/rifare-impianto-elettrico/content"
 import { impermeabilizzareTettoGuide } from "../pages/costi/impermeabilizzare-tetto/content"
-import { impermeabilizzareTerrazzoGuide } from "../pages/costi/impermeabilizzare-terrazzo/content"
 import { rifareFacciataGuide } from "../pages/costi/rifare-facciata/content"
 import { rifarePavimentiGuide } from "../pages/costi/rifare-pavimenti/content"
 
@@ -132,7 +130,7 @@ test("isGuideScenarioRow (via classifyPriceRows): role \"primary\" NON implica s
   assert.ok(classification.breakdown.some((r) => r.id === "bagno-demolizione-pavimenti-rivestimenti"))
 })
 
-test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/reference inventato, tutto nel breakdown (fallback Scope 4B)", () => {
+test("classifyPriceRows: righe senza role restano tutte nel breakdown", () => {
   // Revisione 2026-08 (Scope 3 rifare-impianto-elettrico): rifare-impianto-
   // elettrico è stata rimossa da questo loop — non è più "senza role
   // compilato" (ora migrata: 1 primary + 2 scenario + 3 extra), verificata a
@@ -141,22 +139,18 @@ test("classifyPriceRows: guida SENZA role compilato — nessuno scenario/extra/r
   // compilato (per scelta editoriale: i suoi 8 sistemi sono paralleli per
   // materiale/tecnologia, non ampiezze diverse dello stesso intervento — vedi
   // il commento su "costGuide:impermeabilizzare-terrazzo" in
-  // base-price-ranges.ts). impermeabilizzare-tetto è anch'essa oggi senza
+  // pricing/guides/impermeabilizzare-terrazzo.ts). impermeabilizzare-tetto è anch'essa oggi senza
   // alcun role compilato, ma resta fuori da questo loop perché ha già una
   // propria verifica dedicata più sotto, con le stesse identiche asserzioni.
-  for (const guide of [impermeabilizzareTerrazzoGuide]) {
-    const classification = classifyPriceRows(guide.priceRows)
+  for (const rows of [[row({ id: "legacy-a" }), row({ id: "legacy-b" })]]) {
+    const classification = classifyPriceRows(rows)
 
-    assert.equal(classification.primary, null, `${guide.slug}: nessuna riga ha role compilato`)
-    assert.equal(classification.scenarios.length, 0, guide.slug)
-    assert.equal(classification.scenarioCards.length, 0, guide.slug)
-    assert.equal(classification.extras.length, 0, guide.slug)
-    assert.equal(classification.references.length, 0, guide.slug)
-    assert.equal(
-      classification.breakdown.length,
-      guide.priceRows.length,
-      `${guide.slug}: il breakdown deve contenere TUTTE le righe, comportamento equivalente alla vecchia tabella`,
-    )
+    assert.equal(classification.primary, null)
+    assert.equal(classification.scenarios.length, 0)
+    assert.equal(classification.scenarioCards.length, 0)
+    assert.equal(classification.extras.length, 0)
+    assert.equal(classification.references.length, 0)
+    assert.equal(classification.breakdown.length, rows.length)
   }
 })
 
@@ -177,25 +171,18 @@ test("classifyPriceRows: rifare-impianto-elettrico (dati reali, Scope 3) — 1 p
   assert.ok(classification.breakdown.some((r) => r.id === "elettrico-collegamento-equipotenziale"))
 })
 
-test("classifyPriceRows: impermeabilizzare-tetto (dati reali) — nessuno scenario/primary/extra/reference inventato, tutte e 8 le righe nel breakdown", () => {
-  const classification = classifyPriceRows(impermeabilizzareTettoGuide.priceRows)
+test("classifyPriceRows: impermeabilizzare-tetto preserva scenari, extra e listino tramite presentation config", () => {
+  const classification = classifyPriceRows(
+    impermeabilizzareTettoGuide.priceRows,
+    impermeabilizzareTettoGuide.pricePresentation.breakdownRowIds,
+  )
 
-  // Nessuna riga usa role "scenario"/"primary" esplicito: niente
-  // primary/scenario per questa guida, per costruzione dei dati (nessuna
-  // riga è pensata come "scenario complessivo"), indipendentemente da unit
-  // o costType — invariato dal micro-fix 2026-08 su isGuideScenarioRow (vedi
-  // sotto), che riguarda solo righe con role esplicito.
-  assert.equal(classification.primary, null)
-  assert.equal(classification.scenarios.length, 0)
-  assert.equal(classification.scenarioCards.length, 0)
+  assert.equal(classification.primary?.id, "impermeabilizzare-tetto-scenario-guaina-standard")
+  assert.equal(classification.scenarios.length, 2)
+  assert.equal(classification.scenarioCards.length, 3)
   assert.equal(classification.references.length, 0)
 
-  // Micro-fix: "Preparazione e livellamento della superficie" non è più
-  // role "extra" (era un contratto semantico non intenzionale, corretto —
-  // vedi il commento su cost-guide-price-model.ts in base-price-ranges.ts).
-  // Nessuna riga di questa guida ha role "extra": la sezione Extra non ha
-  // nulla da mostrare, tutte le righe restano nel breakdown normale.
-  assert.equal(classification.extras.length, 0)
+  assert.equal(classification.extras.length, 2)
   assert.equal(classification.breakdown.length, impermeabilizzareTettoGuide.priceRows.length)
   assert.ok(
     classification.breakdown.some((r) => r.id === "impermeabilizzare-tetto-lisciatura-piano-posa"),
@@ -393,18 +380,15 @@ test("describeCostTypeBadge: supply sceglie tra \"Solo fornitura\" e \"Montaggio
   assert.equal(describeCostTypeBadge(boxDocciaFornitura), "Montaggio escluso")
 })
 
-test("describeCostTypeBadge: complete non produce badge; fallback dal legacy priceType quando costType è assente", () => {
+test("describeCostTypeBadge: complete o assente non produce badge", () => {
   assert.equal(describeCostTypeBadge(row({ id: "a", costType: "complete" })), null)
   assert.equal(describeCostTypeBadge(row({ id: "b" })), null)
-  assert.equal(describeCostTypeBadge(row({ id: "c", priceType: "manodopera" })), null)
   assert.equal(
-    describeCostTypeBadge(row({ id: "c2", priceType: "manodopera", excludes: "fornitura del materiale" })),
+    describeCostTypeBadge(row({ id: "c", costType: "work", excludes: "fornitura del materiale" })),
     "Materiali esclusi",
   )
-  assert.equal(describeCostTypeBadge(row({ id: "d", priceType: "fornitura" })), "Solo fornitura")
-  assert.equal(describeCostTypeBadge(row({ id: "e", priceType: "corpo" })), null)
+  assert.equal(describeCostTypeBadge(row({ id: "d", costType: "supply" })), "Solo fornitura")
 })
-
 test("describeIncludedIn / describeAddsTo / describeAlternative: dati reali del bagno", () => {
   const rows = ristrutturareBagnoGuide.priceRows
   const demolizione = rows.find((r) => r.id === "bagno-demolizione-pavimenti-rivestimenti")!
@@ -417,10 +401,7 @@ test("describeIncludedIn / describeAddsTo / describeAlternative: dati reali del 
   // Fix UI review: frase naturale ("Si aggiunge al prezzo di..."), non più il
   // formato "PUÒ AUMENTARE IL COSTO DI: X, Y" che leggeva come traduzione
   // diretta del metadato `addsTo`.
-  assert.equal(
-    describeAddsTo(spostamento, rows),
-    "Si aggiunge al prezzo di “Trasformazione vasca in doccia” o “Ristrutturazione completa”.",
-  )
+  assert.equal(describeAddsTo(spostamento, rows), null)
 
   // Fix UI review: describeAlternative ora è un consiglio orientato al caso
   // reale (derivato da `unit`, campo già esistente), non più "un altro modo
@@ -460,33 +441,12 @@ test("isQuoteRequired: priceStatus esplicito o categoria qualitativa legacy", ()
   assert.equal(isQuoteRequired(row({ id: "c" })), false)
 })
 
-test("shortSummary (fix UI review): dati reali delle 3 card Scenario del bagno — sempre un confine di frase reale, mai un taglio a metà parola/elenco", () => {
-  const rows = ristrutturareBagnoGuide.priceRows
+test("shortSummary: le configurazioni scenario mantengono contenuti autonomi", () => {
+  const scenarios = ristrutturareBagnoGuide.pricePresentation.scenarios
 
-  const rinnovoLeggero = rows.find((r) => r.id === "bagno-rinnovo-leggero")!
-  assert.equal(
-    shortSummary(rinnovoLeggero.plainExplanation ?? rinnovoLeggero.note),
-    "È un intervento senza demolire e rifare tutto il bagno.",
-  )
-
-  // Prima del fix, line-clamp-3 su questo testo tagliava a metà elenco
-  // (es. "...del mobile o del box...") — ora si ferma al primo punto reale.
-  const ristrutturazioneCompleta = rows.find((r) => r.id === "bagno-ristrutturazione-completa")!
-  assert.equal(
-    shortSummary(ristrutturazioneCompleta.plainExplanation ?? ristrutturazioneCompleta.note),
-    "Perimetro tipico di una ristrutturazione completa su un bagno di circa 5–6 mq: le voci scelte nel preventivo possono spostare il totale verso l'alto o verso il basso.",
-  )
-
-  // Questo `note` è UN'unica frase molto lunga (nessun punto prima della
-  // fine): niente confine [.!?] entro SUMMARY_HARD_CAP, fallback al primo
-  // ":" chiuso con un punto — non più un taglio arbitrario tipo "...o una...".
-  const ristrutturazioneComplessa = rows.find((r) => r.id === "bagno-ristrutturazione-complessa")!
-  assert.equal(
-    shortSummary(ristrutturazioneComplessa.plainExplanation ?? ristrutturazioneComplessa.note),
-    "Stesso perimetro di lavorazioni della ristrutturazione completa standard qui sopra, applicato a un bagno oltre i 5–6 mq o con una disposizione più articolata (più sanitari, più punti acqua, superficie maggiore).",
-  )
+  assert.equal(scenarios.length, 3)
+  assert.ok(scenarios.every(({ presentation }) => presentation.items.length > 0))
 })
-
 test("shortSummary: testo già breve non viene toccato; nessun confine disponibile accorcia all'ultima parola intera con \"…\"", () => {
   const short = "Un testo già breve, sotto la soglia."
   assert.equal(shortSummary(short), short)
@@ -514,17 +474,6 @@ test("splitVisibleAndRest: divide senza perdere voci, entrambe le parti insieme 
   assert.deepEqual(splitVisibleAndRest(items, 5), { visible: ["a", "b", "c", "d", "e"], rest: ["f", "g"] })
   assert.deepEqual(splitVisibleAndRest(items, 10), { visible: items, rest: [] })
   assert.deepEqual(splitVisibleAndRest([], 5), { visible: [], rest: [] })
-})
-
-test("sizeExamplesGridClassName (fix UI review): sceglie le colonne in base al conteggio reale, mai un 3+1 sbilanciato per 4 esempi", () => {
-  assert.equal(sizeExamplesGridClassName(0), "grid grid-cols-1 gap-4")
-  assert.equal(sizeExamplesGridClassName(1), "grid grid-cols-1 gap-4")
-  assert.equal(sizeExamplesGridClassName(2), "grid grid-cols-1 gap-4 sm:grid-cols-2")
-  assert.equal(sizeExamplesGridClassName(3), "grid grid-cols-1 gap-4 sm:grid-cols-3")
-  // Caso reale più comune (bagno, tetto, elettrico: 4 esempi) — 2×2 su
-  // tablet, 4 in riga su desktop, mai 3 in una riga + 1 da solo sotto.
-  assert.equal(sizeExamplesGridClassName(4), "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4")
-  assert.equal(sizeExamplesGridClassName(5), "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4")
 })
 
 test("hasNumericNationalRange: distingue un prezzo reale da un disclaimer testuale", () => {

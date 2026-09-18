@@ -4,6 +4,7 @@ import { getCityBySlug } from "../geo/cities";
 import { getCitySupport } from "../geo/supported-cities";
 import { buildCanonicalPath } from "./canonical";
 import { resolveFamilyPriceRange } from "./pricing-resolver";
+import { resolveCostGuidePricePresentation } from "./cost-guide-price-presentation";
 import { isIndexableCityPage } from "./geo-policy";
 import type {
   CityLocalOverride,
@@ -161,6 +162,8 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     return cityPage;
   });
 
+  const pricePresentation = resolveCostGuidePricePresentation(base.slug, pricing.priceRows);
+
   return {
     slug: base.slug,
     funnelSlug: base.funnelSlug,
@@ -177,34 +180,26 @@ export function composeCostGuide(input: ComposeCostGuideInput): CostGuide {
     // centralizzato, engine/sitemap.ts, dove tutte e tre le fonti editoriali
     // (CostGuide, SeoInterventionLanding, SeoGroupLanding) confluiscono.
     lastModified: base.lastModified,
+    editorial: base.editorial,
     heroImage: base.heroImage,
     hubCategory: base.hubCategory,
     topicLabel: base.topicLabel,
     summary: base.summary,
-    hideHeroPricing: base.hideHeroPricing,
     ...pricing,
-    citySections: cityPages.map((cityPage) => ({
-      city: cityPage.city,
-      title: cityPage.h1,
-      summary: cityPage.summary,
-      localReading: cityPage.localReading,
-      typicalCases: cityPage.typicalCases,
-      factors: cityPage.localFactors,
-    })),
+    pricePresentation,
     cityPages,
     factors: base.factors,
+    locationFactors: base.locationFactors,
     savingTips: base.savingTips,
     faq,
     relatedWork: base.relatedWork,
-    priceTableNote: base.priceTableNote,
-    priceTableIntro: base.priceTableIntro,
     breakdownIntro: base.breakdownIntro,
+    hideBreakdownSourceNote: base.hideBreakdownSourceNote,
+    extrasPresentation: base.extrasPresentation,
+    scenarioExclusions: base.scenarioExclusions,
     compactFactors: base.compactFactors,
     faqEmphasizePhrase: base.faqEmphasizePhrase,
-    nationalRangeLabel: base.nationalRangeLabel,
     interventionRangeLabel: base.interventionRangeLabel,
-    nationalRangeNote: base.nationalRangeNote,
-    sizeExamplesIntro: base.sizeExamplesIntro,
     sizeExamplesTable: base.sizeExamplesTable,
     pricingTeaser: base.pricingTeaser,
     hubDescription: base.hubDescription,

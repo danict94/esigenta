@@ -2,7 +2,8 @@ import type {
   CostGuideSourceType,
   PriceRow,
   SizeExample,
-} from "../../market-data/base-price-ranges";
+} from "../../market-data/shared/types";
+import type { CostGuideEditorial } from "../../editorial/cost-guide-editorial";
 
 export type CityPageQualityStatus = "draft" | "ready";
 export type CityPageUniquenessLevel = "thin" | "acceptable" | "strong";
@@ -70,6 +71,40 @@ export type CostGuideRelatedWorkItem = {
   title: string;
   description: string;
   linkLabel?: string;
+  ctaOnly?: boolean;
+};
+
+export type CostGuideScenarioPresentation = {
+  rowId: PriceRow["id"];
+  title?: string;
+  label: "Comprende" | "Può comprendere" | "Quando può bastare";
+  items: readonly string[];
+};
+
+export type CostGuideExtraPresentation = {
+  rowId: PriceRow["id"];
+  title?: string;
+  description?: string;
+};
+
+export type CostGuideBreakdownPresentation = {
+  rowId: PriceRow["id"];
+  show: boolean;
+};
+
+export type CostGuidePricePresentation = {
+  scenarios?: readonly CostGuideScenarioPresentation[];
+  extras?: readonly CostGuideExtraPresentation[];
+  breakdown?: readonly CostGuideBreakdownPresentation[];
+};
+
+export type ResolvedCostGuidePricePresentation = {
+  scenarios: readonly {
+    row: PriceRow;
+    presentation: CostGuideScenarioPresentation;
+  }[];
+  extras: readonly CostGuideExtraPresentation[];
+  breakdownRowIds: readonly PriceRow["id"][];
 };
 
 /**
@@ -96,6 +131,12 @@ export type CostGuideBaseContent = {
    */
   lastModified?: string;
   /**
+   * Contratto editoriale comune. Opzionale solo durante la migrazione delle
+   * guide legacy; ogni nuova guida deve dichiararlo con i campi obbligatori
+   * definiti in CostGuideEditorial.
+   */
+  editorial?: CostGuideEditorial;
+  /**
    * Opzionale: una guida senza foto reale coerente renderizza senza il
    * blocco immagine invece di usare un path fittizio o un fallback
    * incoerente (stesso principio di SeoInterventionLanding.image). Vedi
@@ -106,28 +147,24 @@ export type CostGuideBaseContent = {
   hubCategory: CostGuideHubCategory;
   topicLabel: string;
   summary: string;
-  /** Nasconde il riepilogo prezzo standalone nella hero, quando la fascia è già integrata nel summary. */
-  hideHeroPricing?: boolean;
   factors: string[];
+  locationFactors?: readonly string[];
   savingTips: string[];
   /** Opzionale: solo per le guide che vogliono il blocco "Interventi specifici". */
   relatedWork?: readonly CostGuideRelatedWorkItem[];
-  /**
-   * Nota editoriale opzionale mostrata sotto la tabella prezzi, in aggiunta
-   * al paragrafo condiviso già presente per tutte le guide (es. per
-   * chiarire che più fasce della stessa tabella sono alternative e non
-   * cumulabili). Nessun effetto sulle guide che non la impostano.
-   */
-  priceTableNote?: string;
-  /**
-   * Messaggio opzionale mostrato PRIMA della tabella prezzi, in posizione
-   * immediatamente visibile (es. avviso che le voci non sono sempre
-   * cumulative). Assente = nessun paragrafo aggiuntivo, stesso comportamento
-   * di sempre. Complementare a `priceTableNote`, che resta dopo la tabella.
-   */
-  priceTableIntro?: string;
   /** Introduzione editoriale alternativa al listino delle singole lavorazioni. */
   breakdownIntro?: string;
+  hideBreakdownSourceNote?: boolean;
+  /** Copy opzionale del blocco condiviso degli extra condizionali. */
+  extrasPresentation?: {
+    title: string;
+    intro: string;
+    layout?: "cards" | "columns";
+  };
+  scenarioExclusions?: {
+    title: string;
+    items: readonly string[];
+  };
   /** Variante compatta della sezione Fattori, senza sottosezioni duplicate. */
   compactFactors?: {
     title: string;
@@ -136,40 +173,15 @@ export type CostGuideBaseContent = {
   /** Fascia da evidenziare tipograficamente nella FAQ della guida. */
   faqEmphasizePhrase?: string;
   /**
-   * Etichetta alternativa per l'highlight "Costo complessivo" in Sintesi.
-   * Usala quando quel testo fisso genererebbe una contraddizione con
-   * `nationalRange` (es. prezzi puntuali non cumulabili, senza un vero
-   * totale). Assente = "Costo complessivo" come sempre, nessun effetto sulle
-   * guide che non la impostano.
-   */
-  nationalRangeLabel?: string;
-  /**
    * Etichetta alternativa alla didascalia fissa "RANGE INDICATIVO
    * COMPLESSIVO" mostrata nel modulo Costi di /interventi/[slug]
    * (geo-cost-module.tsx), quando `nationalRange` non è un totale
-   * complessivo (es. una fascia al mq). Distinta da `nationalRangeLabel`,
-   * che vale solo per il box Sintesi della guida costi stessa: i due moduli
-   * vivono su pagine diverse e possono avere esigenze di etichetta diverse.
+   * complessivo (es. una fascia al mq). Il campo vale esclusivamente per il
+   * modulo Costi della landing intervento, non per la guida /costi.
    * Assente = didascalia fissa invariata, nessun effetto sulle guide che non
    * la impostano.
    */
   interventionRangeLabel?: string;
-  /**
-   * Paragrafo opzionale mostrato in Sintesi costo, subito sotto i due box
-   * (nationalRange/pricePerSquareMeter), per spiegare in prosa cosa comprende
-   * la fascia indicativa e cosa può farla salire — utile quando i due numeri
-   * da soli non bastano a comunicarlo (es. una fascia al mq senza un totale
-   * assoluto). Assente = nessun paragrafo aggiuntivo, stesso comportamento di
-   * sempre.
-   */
-  nationalRangeNote?: string;
-  /**
-   * Paragrafo opzionale mostrato sopra la griglia "Esempi per dimensione",
-   * per spiegare come sono calcolati gli esempi e i loro limiti (es. calcolo
-   * superficie × fascia al mq, non un preventivo). Assente = nessun paragrafo
-   * aggiuntivo, stesso comportamento di sempre.
-   */
-  sizeExamplesIntro?: string;
   /** Variante tabellare per gli esempi: copy e intestazioni restano dati della guida. */
   sizeExamplesTable?: {
     title: string;
@@ -227,6 +239,7 @@ export type CostGuide = {
   canonicalPath: string;
   /** Passato invariato da CostGuideBaseContent.lastModified — vedi lì. */
   lastModified?: string;
+  editorial?: CostGuideEditorial;
   /**
    * Categoria pubblica per il raggruppamento in /costi (Phase 20.2). Concetto
    * editoriale che vive solo qui: non importare da site/services né dalla taxonomy,
@@ -245,12 +258,12 @@ export type CostGuide = {
    */
   topicLabel: string;
   summary: string;
-  hideHeroPricing?: boolean;
   /** Assente quando la guida è in modalità pricingTeaser (nessun prezzo ancora). */
   nationalRange?: string;
   pricePerSquareMeter?: string;
   /** Righe tecniche da market-data (stessa shape, mai ridefinita qui). Vuoto se pricingTeaser è presente. */
   priceRows: PriceRow[];
+  pricePresentation: ResolvedCostGuidePricePresentation;
   /** Base dati mostrata sotto la tabella (da market-data, se dichiarata). */
   sourceLabel?: string;
   sourceYear?: string;
@@ -263,31 +276,29 @@ export type CostGuide = {
    */
   sourceType?: CostGuideSourceType;
   sizeExamples: SizeExample[];
-  citySections: {
-    city: string;
-    title: string;
-    summary: string;
-    localReading: string;
-    typicalCases: string[];
-    factors: string[];
-  }[];
   cityPages: CostGuideCityPage[];
   factors: string[];
+  locationFactors?: readonly string[];
   savingTips: string[];
   faq: { question: string; answer: string }[];
   relatedWork?: readonly CostGuideRelatedWorkItem[];
-  priceTableNote?: string;
-  priceTableIntro?: string;
   breakdownIntro?: string;
+  hideBreakdownSourceNote?: boolean;
+  extrasPresentation?: {
+    title: string;
+    intro: string;
+    layout?: "cards" | "columns";
+  };
+  scenarioExclusions?: {
+    title: string;
+    items: readonly string[];
+  };
   compactFactors?: {
     title: string;
     intro: string;
   };
   faqEmphasizePhrase?: string;
-  nationalRangeLabel?: string;
   interventionRangeLabel?: string;
-  nationalRangeNote?: string;
-  sizeExamplesIntro?: string;
   sizeExamplesTable?: {
     title: string;
     intro: string;

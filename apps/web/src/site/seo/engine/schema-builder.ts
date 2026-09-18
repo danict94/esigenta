@@ -1,9 +1,11 @@
 import { toAbsoluteUrl } from "./site-url";
+import { costGuideAuthor, costGuidePublisher } from "../editorial/cost-guide-editorial";
 
 /**
  * Unico punto che emette JSON-LD (Fase 5, estesa in Fase 2 Google con
  * WebSite/Organization). Solo schema derivati da dati reali: BreadcrumbList
- * dal breadcrumb reale, FAQPage dalle FAQ renderizzate, WebSite/Organization
+ * dal breadcrumb reale, FAQPage dalle FAQ renderizzate, Article dai metadata
+ * editoriali visibili, WebSite/Organization
  * dall'identità di marca già pubblicata (title, applicationName, home).
  * MAI rating, review, AggregateRating, offerte, disponibilità, prezzi
  * puntuali, LocalBusiness o SearchAction: se un futuro schema richiede dati
@@ -84,6 +86,43 @@ export function buildFaqJsonLd(
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer },
     })),
+  };
+}
+
+export function buildCostGuideArticleJsonLd({
+  guide,
+  datePublished,
+  dateModified,
+}: {
+  guide: { h1: string; metaDescription: string; canonicalPath: string };
+  datePublished: string;
+  dateModified: string;
+}): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": toAbsoluteUrl(guide.canonicalPath),
+    },
+    headline: guide.h1,
+    description: guide.metaDescription,
+    inLanguage: "it-IT",
+    author: {
+      "@type": "Person",
+      name: costGuideAuthor.name,
+      affiliation: {
+        "@type": "Organization",
+        name: costGuideAuthor.affiliation,
+      },
+    },
+    publisher: {
+      "@type": "Organization",
+      "@id": toAbsoluteUrl("/#organization"),
+      name: costGuidePublisher.name,
+    },
+    datePublished,
+    dateModified,
   };
 }
 
