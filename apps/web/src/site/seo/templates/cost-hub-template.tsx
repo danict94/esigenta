@@ -110,10 +110,10 @@ export function CostHubPage({ categories }: CostHubPageProps) {
         />
       ) : null}
 
-      <div className="eg-page eg-page-bg">
+      <div className="eg-page bg-eg-surface">
         <CostHubHero guideCount={guideCount} categoryCount={categories.length} />
 
-        <section className="pb-12 sm:pb-14" aria-label="Catalogo guide ai costi">
+        <section className="eg-cost-hub-catalog-section" aria-label="Catalogo guide ai costi">
           <div className="eg-container">
             <CostHubCatalog categories={catalogCategories} />
           </div>
@@ -140,7 +140,7 @@ function CostHubHero({
   readonly categoryCount: number;
 }) {
   return (
-    <header className="pt-[calc(var(--eg-nav-clear)+4px)] pb-7 sm:pb-9">
+    <header className="eg-cost-hub-hero">
       <div className="eg-container">
         <nav
           aria-label="Breadcrumb"
@@ -157,26 +157,32 @@ function CostHubHero({
           <span className="text-eg-ink">Guide ai costi</span>
         </nav>
 
-        <div className="max-w-[760px]">
+        <div className="max-w-[820px]">
           <p className="eg-eyebrow mb-2.5 text-eg-brand-strong">Guide ai costi</p>
-          <h1 className="eg-h1 text-balance">Costi dei lavori per la casa</h1>
-          <p className="mt-3 max-w-[650px] text-[15px] leading-[1.62] text-eg-ink sm:text-[17px]">
-            Consulta prezzi indicativi, voci di lavorazione e fattori che
-            possono incidere sul costo prima di richiedere un preventivo.
+          <h1 className="eg-h1 text-balance">
+            Guide ai costi per gli interventi di casa
+          </h1>
+          <p className="mt-3 max-w-[720px] text-[15px] leading-[1.62] text-eg-ink sm:text-[17px]">
+            Consulta prezzi indicativi, lavorazioni e fattori che possono
+            incidere sul preventivo. Scegli l&apos;intervento che ti interessa e
+            approfondisci cosa comprende il costo e cosa può farlo variare.
           </p>
-          <p className="mt-2 max-w-[610px] text-[12.5px] leading-[1.58] text-eg-text-muted sm:text-[13px]">
+          <p className="mt-2 max-w-[680px] text-[12.5px] leading-[1.58] text-eg-text-muted sm:text-[13px]">
             Ogni guida distingue i riferimenti ufficiali dalle fasce
             orientative e spiega cosa verificare per confrontare i prezzi in
             modo più consapevole.
           </p>
           <p className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 text-[11.5px] text-eg-text-muted sm:text-[12px]">
             <span>
-              <strong className="font-semibold text-eg-ink">{guideCount} guide</strong>{" "}
-              disponibili
+              <strong className="font-semibold text-eg-ink">
+                {guideCount} guide disponibili
+              </strong>
             </span>
+            <span aria-hidden="true">·</span>
             <span>
-              <strong className="font-semibold text-eg-ink">{categoryCount} aree</strong>{" "}
-              di lavoro
+              <strong className="font-semibold text-eg-ink">
+                {categoryCount} aree di lavoro
+              </strong>
             </span>
           </p>
         </div>

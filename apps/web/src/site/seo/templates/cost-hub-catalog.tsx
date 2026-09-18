@@ -1,17 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
-
-import {
-  DirectoryAction,
-  DirectoryGroupHeader,
-  DirectoryItemSummary,
-  DirectoryItemTitle,
-} from "../../shared/directory-primitives";
-import {
-  blueprintTitleClassName,
-  SectionHeader,
-} from "../../shared/section-header";
 
 export type CostHubCatalogGuide = {
   readonly slug: string;
@@ -51,11 +41,6 @@ export function CostHubCatalog({
     categories,
     selectedCategorySlug,
   );
-  const visibleGuideCount = visibleCategories.reduce(
-    (total, category) => total + category.guides.length,
-    0,
-  );
-
   if (categories.length === 0) {
     return (
       <p className="py-8 text-[14px] leading-[1.6] text-eg-text-muted">
@@ -65,10 +50,10 @@ export function CostHubCatalog({
   }
 
   return (
-    <>
+    <div className="eg-cost-hub-catalog">
       <nav
         aria-label="Filtra le guide per area"
-        className="-mx-[22px] flex gap-5 overflow-x-auto border-y border-eg-border px-[22px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6 min-[861px]:mx-0 min-[861px]:px-0"
+        className="eg-cost-hub-filters"
       >
         <CostHubFilterButton
           active={selectedCategorySlug === ALL_GUIDES_FILTER}
@@ -87,35 +72,17 @@ export function CostHubCatalog({
         ))}
       </nav>
 
-      <div className="flex flex-col gap-2 pt-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-        <div>
-          <SectionHeader
-            id="cost-guide-catalog-title"
-            title="Guide ai costi per intervento"
-            align="left"
-            titleClassName={blueprintTitleClassName}
-          />
-          <p className="mt-2 max-w-[690px] text-[13px] leading-[1.55] text-eg-text-muted sm:text-[14px]">
-            Parti dal lavoro che devi realizzare e approfondisci prezzi,
-            lavorazioni e fattori che possono modificare il preventivo.
-          </p>
-        </div>
-        <p aria-live="polite" className="shrink-0 text-[12px] text-eg-text-muted">
-          {visibleGuideCount} {visibleGuideCount === 1 ? "guida" : "guide"}
-        </p>
-      </div>
-
-      <div aria-labelledby="cost-guide-catalog-title">
+      <div className="eg-cost-hub-families" aria-label="Famiglie di guide ai costi">
         {visibleCategories.map((category) => (
-          <section key={category.slug} className="pt-5" data-cost-hub-group={category.slug}>
-            <DirectoryGroupHeader
-              title={category.name}
-              count={`${category.guides.length} ${
-                category.guides.length === 1 ? "guida" : "guide"
-              }`}
-            />
+          <section key={category.slug} className="eg-cost-hub-family" data-cost-hub-group={category.slug}>
+            <header className="eg-cost-hub-family-header">
+              <h3>{category.name}</h3>
+              <span>
+                {category.guides.length} {category.guides.length === 1 ? "guida" : "guide"}
+              </span>
+            </header>
 
-            <ul className="grid grid-cols-1 border-t border-eg-border min-[701px]:grid-cols-2 min-[701px]:gap-x-9">
+            <ul className="eg-cost-hub-guide-surface">
               {category.guides.map((guide) => (
                 <CostHubGuideItem key={guide.slug} guide={guide} />
               ))}
@@ -123,7 +90,7 @@ export function CostHubCatalog({
           </section>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -154,33 +121,23 @@ function CostHubFilterButton({
 
 function CostHubGuideItem({ guide }: { guide: CostHubCatalogGuide }) {
   return (
-    <li className="min-w-0 border-b border-eg-border">
-      <div className="group relative flex h-full min-w-0 flex-col py-4.5 text-eg-ink transition-[padding-left] duration-200 ease-(--eg-ease-brand) hover:pl-2">
-        <DirectoryItemTitle
-          headingLevel={4}
-          className="transition-colors group-hover:text-eg-brand-hover"
-        >
-          {guide.title}
-        </DirectoryItemTitle>
+    <li className="eg-cost-hub-guide-row">
+      <div className="eg-cost-hub-guide-copy">
+        <h4>{guide.title}</h4>
 
         {guide.sourceType === "official" ? (
-          <p className="mt-1.5 text-[11px] leading-[1.4] text-eg-text-muted">
+          <p className="eg-cost-hub-guide-source">
             <strong className="font-semibold text-eg-brand-strong">Fonte:</strong>{" "}
             prezzario ufficiale
           </p>
         ) : null}
 
-        <DirectoryItemSummary className="mt-2 flex-1">
-          {guide.summary}
-        </DirectoryItemSummary>
-
-        <DirectoryAction
-          href={guide.href}
-          className="mt-3.5 self-end after:absolute after:inset-0"
-        >
-          Apri la guida
-        </DirectoryAction>
+        <p className="eg-cost-hub-guide-summary">{guide.summary}</p>
       </div>
+
+      <Link href={guide.href} prefetch={false} className="eg-cost-hub-guide-link">
+        Apri la guida
+      </Link>
     </li>
   );
 }

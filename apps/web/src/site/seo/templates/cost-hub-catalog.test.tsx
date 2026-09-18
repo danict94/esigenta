@@ -77,3 +77,12 @@ test("il catalogo iniziale rende guide, href e fonte solo quando ufficiale", () 
   assert.equal((html.match(/prezzario ufficiale/g) ?? []).length, 1);
   assert.doesNotMatch(html, /Fascia orientativa/);
 });
+
+test("i filtri precedono le famiglie", () => {
+  const html = renderToStaticMarkup(<CostHubCatalog categories={categories} />);
+
+  const filtersPosition = html.indexOf('aria-label="Filtra le guide per area"');
+  const familyPosition = html.indexOf("Ristrutturazioni");
+
+  assert.ok(familyPosition > filtersPosition);
+});
