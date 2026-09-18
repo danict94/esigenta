@@ -26,6 +26,13 @@
   padding-top: var(--eg-cost-section-gap);
 }
 
+/* Le utility Tailwind della CTA condivisa non vengono incluse nel foglio
+   generato da questa app: qui la CTA costi conserva quindi sempre il proprio
+   respiro interno, anche su viewport mobile. */
+.eg-cost-guide-flow > [data-cost-cta] {
+  padding-block: 2.75rem;
+}
+
 .eg-cost-guide [id$="-title"] {
   scroll-margin-top: calc(var(--eg-nav-height) + 1rem);
 }
@@ -67,6 +74,10 @@
 @media (min-width: 768px) {
   .eg-cost-guide {
     --eg-cost-section-gap: 2.75rem;
+  }
+
+  .eg-cost-guide-flow > [data-cost-cta] {
+    padding-block: 3rem;
   }
 }
 
