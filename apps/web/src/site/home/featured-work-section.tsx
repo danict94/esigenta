@@ -36,7 +36,7 @@ export function FeaturedWorkSection() {
                   src={work.imageSrc}
                   alt={work.imageAlt}
                   fallbackLabel={work.fallbackLabel}
-                  sizes="(max-width: 600px) 100vw, (max-width: 860px) 50vw, 33vw"
+                  sizes="(min-width: 861px) calc((min(1180px, 100vw - 44px) - 96px) / 3), (min-width: 601px) calc((100vw - 92px) / 2), calc(100vw - 92px)"
                   className="h-full w-full"
                   imageClassName="object-cover contrast-105"
                 />
@@ -69,7 +69,7 @@ export function FeaturedWorkSection() {
             prefetch={false}
             className="group relative flex flex-col justify-center bg-eg-surface px-6 py-6 no-underline transition-shadow duration-250 ease-(--eg-ease-brand) hover:z-2 hover:shadow-eg-step"
           >
-            <span className="mb-2.5 block font-(family-name:--eg-font-mono) text-[10.5px] uppercase tracking-[0.07em] text-eg-text-muted">
+            <span className="mb-2.5 block font-(family-name:--eg-font-primary) text-[13px] font-medium text-eg-text-muted">
               Altri servizi
             </span>
             <h3 className="eg-h3 mb-2 text-base">Non trovi il lavoro che ti serve tra questi?</h3>

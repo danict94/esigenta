@@ -97,7 +97,7 @@ export function GeoCostModule({
                 {priceData.priceRange}
               </p>
 
-              <p className="mt-1.5 font-(family-name:--eg-font-mono) text-[11.5px] tracking-[0.03em] text-eg-on-brand-muted">
+              <p className="mt-1.5 font-(family-name:--eg-font-primary) text-[13px] text-eg-on-brand-muted [font-variant-numeric:tabular-nums]">
                 {priceData.priceRangeLabel}
               </p>
 

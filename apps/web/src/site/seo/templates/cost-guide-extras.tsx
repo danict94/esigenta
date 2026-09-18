@@ -59,7 +59,7 @@ function ExtraItem({ row, allRows, presentation }: {
   return (
     <article className="border-t border-eg-border pt-4">
       <h3 className="text-[15px] font-semibold leading-snug text-eg-ink">{title}</h3>
-      <p className="mt-2 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.06em] text-eg-text-muted">
+      <p className="mt-2 font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-text-muted [font-variant-numeric:tabular-nums]">
         {priceText}
       </p>
       {description ? <p className="mt-2.5 text-[13px] leading-[1.55] text-eg-text-muted">{description}</p> : null}

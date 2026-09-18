@@ -176,7 +176,7 @@ export function InterventionLandingPage({
               <div className="grid grid-cols-1 gap-px border border-eg-border bg-eg-border md:grid-cols-2">
                 {landing.scopeIncluded?.length ? (
                   <div className="bg-eg-surface px-6.5 py-7">
-                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-mono) text-[13px] font-bold uppercase tracking-[0.04em] text-eg-success">
+                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-primary) text-[14px] font-semibold text-eg-success">
                       <CheckGlyph className="size-3.5" />
                       Cosa pu&ograve; comprendere
                     </h3>
@@ -194,7 +194,7 @@ export function InterventionLandingPage({
 
                 {landing.scopeExcluded?.length ? (
                   <div className="bg-eg-surface px-6.5 py-7">
-                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-mono) text-[13px] font-bold uppercase tracking-[0.04em] text-eg-error">
+                    <h3 className="flex items-center gap-2 font-(family-name:--eg-font-primary) text-[14px] font-semibold text-eg-error">
                       <XGlyph className="size-3.5" />
                       Cosa spesso resta fuori
                     </h3>
@@ -217,7 +217,7 @@ export function InterventionLandingPage({
 
               {landing.professionalCategorySlugs.length > 0 ? (
                 <div className="mt-6 flex flex-wrap items-center gap-3.5 border-t border-dashed border-eg-border pt-5">
-                  <span className="font-(family-name:--eg-font-mono) text-xs text-eg-ink">
+                  <span className="font-(family-name:--eg-font-primary) text-[13px] font-medium text-eg-ink">
                     Professionisti coinvolti:
                   </span>
 
@@ -338,7 +338,7 @@ export function InterventionLandingPage({
               <div className="grid gap-8 md:grid-cols-2">
                 {landing.relatedInterventionSlugs.length > 0 ? (
                   <div>
-                    <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
+                    <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-brand-strong">
                       {landing.relatedInterventionsTitle ?? "Interventi più ampi"}
                     </p>
 

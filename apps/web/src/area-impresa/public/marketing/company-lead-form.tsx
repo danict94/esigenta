@@ -64,7 +64,7 @@ export function CompanyLeadForm({ categories }: CompanyLeadFormProps) {
     <form onSubmit={handleSubmit} className="border border-eg-border bg-eg-surface shadow-eg-slab">
       <div className="flex items-center justify-between gap-4 border-b border-eg-border px-6.5 py-5.5">
         <span className={blueprintEyebrowClassName}>Configura il tuo profilo</span>
-        <span className="font-(family-name:--eg-font-mono) text-xs text-eg-text-muted">2 passi</span>
+        <span className="font-(family-name:--eg-font-primary) text-xs text-eg-text-muted">2 passi</span>
       </div>
 
       <div className="px-[26px] py-7 max-[860px]:px-5">

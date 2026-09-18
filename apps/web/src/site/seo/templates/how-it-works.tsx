@@ -25,7 +25,7 @@ export function HowItWorks() {
         {processSteps.map((step, index) => (
           <Fragment key={step.title}>
             <div className="flex min-w-0 flex-1 items-center gap-3.5">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-eg-brand-strong bg-eg-surface font-(family-name:--eg-font-mono) text-sm font-bold text-eg-brand-strong">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-eg-brand-strong bg-eg-surface font-(family-name:--eg-font-primary) text-sm font-bold text-eg-brand-strong [font-variant-numeric:tabular-nums]">
                 {index + 1}
               </span>
 

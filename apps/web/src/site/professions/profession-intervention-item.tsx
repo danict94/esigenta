@@ -39,7 +39,7 @@ export function ProfessionInterventionItem({
 
   return (
     <li
-      className="flex min-w-0 flex-col border-b border-eg-border py-4.5"
+      className="flex min-w-0 flex-col"
       data-profession-intervention-item=""
     >
       <DirectoryItemTitle>{name}</DirectoryItemTitle>

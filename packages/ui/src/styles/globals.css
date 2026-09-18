@@ -290,19 +290,16 @@ body {
   .eg-table-label,
   .eg-scope-tag,
   .eg-list-index,
-  .eg-list-status,
   .eg-doc-meta,
   .eg-status-label,
   .eg-form-eyebrow {
-    font-family: var(--eg-font-mono), monospace;
-    text-transform: uppercase;
+    font-family: var(--eg-font-primary), sans-serif;
   }
 
   .eg-nav-link,
   .eg-action-link,
   .eg-shell-nav-link {
     font-family: var(--eg-font-primary), sans-serif;
-    text-transform: uppercase;
   }
 
   .eg-list-index {
@@ -334,8 +331,10 @@ body {
   .eg-status-label,
   .eg-form-eyebrow {
     color: var(--eg-color-text-muted);
-    font-size: 12px;
-    letter-spacing: 0.12em;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: normal;
+    line-height: 1.35;
   }
 
   .eg-h1 {
@@ -528,8 +527,9 @@ body {
   .eg-nav-link,
   .eg-action-link {
     color: var(--eg-color-text-muted);
-    font-size: 12px;
-    letter-spacing: 0.12em;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: normal;
     transition: color 220ms ease;
   }
 
@@ -541,22 +541,20 @@ body {
 
   .eg-footer {
     font-family: var(--eg-font-primary), sans-serif;
-    text-transform: uppercase;
     font-size: 0.75rem;
     line-height: 1rem;
     letter-spacing: 0.08em;
     color: var(--eg-color-text-muted);
   }
 
-  /* Etichetta di sezione non cliccabile: stessa ricetta mono-maiuscola di
-     .eg-eyebrow, ma in --eg-color-ink e semibold (come .eg-step-label) cosi'
-     da leggersi come intestazione statica e non come i link muted sotto. */
+  /* Intestazione di colonna editoriale, distinta dai link tramite gerarchia
+     tipografica e non tramite un trattamento tecnico/monospaziato. */
   .eg-footer-title {
-    font-family: var(--eg-font-mono), monospace;
-    text-transform: uppercase;
-    font-size: 12px;
+    font-family: var(--eg-font-primary), sans-serif;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: normal;
+    line-height: 1.35;
     color: var(--eg-color-ink);
   }
 
@@ -579,17 +577,17 @@ body {
   }
 
   .eg-step-label {
-    font-family: var(--eg-font-mono), monospace;
-    text-transform: uppercase;
-    font-size: 0.75rem;
+    font-family: var(--eg-font-primary), sans-serif;
+    font-size: 0.8125rem;
     line-height: 1rem;
-    letter-spacing: 0.04em;
+    font-weight: 600;
+    letter-spacing: normal;
     color: var(--eg-color-ink);
   }
 
   .eg-index-tag,
   .eg-field-caption {
-    font-family: var(--eg-font-mono), monospace;
+    font-family: var(--eg-font-primary), sans-serif;
     color: var(--eg-color-text-muted);
   }
 

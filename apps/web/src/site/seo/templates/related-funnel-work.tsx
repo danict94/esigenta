@@ -55,7 +55,7 @@ export function RelatedFunnelWork({
 
   return (
     <div>
-      <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-mono) text-[11.5px] uppercase tracking-widest text-eg-brand-strong">
+      <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-brand-strong">
         {title}
       </p>
 

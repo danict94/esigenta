@@ -22,7 +22,7 @@ export function ProSelector({
       <div className="border border-eg-border bg-eg-surface shadow-eg-slab">
         <div className="flex items-center justify-between gap-4 border-b border-eg-border px-6.5 py-5.5">
           <span className={blueprintEyebrowClassName}>Profilo trovato</span>
-          <span className="font-(family-name:--eg-font-mono) text-xs text-eg-text-muted">
+          <span className="font-(family-name:--eg-font-primary) text-xs text-eg-text-muted">
             riattiva
           </span>
         </div>

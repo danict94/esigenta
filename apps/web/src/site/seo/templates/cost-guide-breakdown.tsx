@@ -116,14 +116,14 @@ function BreakdownRow({ row, allRows, withDivider }: { row: PriceRow; allRows: r
           </p>
 
           {row.simpleLabel && row.simpleLabel !== row.label ? (
-            <p className="mt-0.5 font-(family-name:--eg-font-mono) text-[10.5px] text-eg-text-muted">
+            <p className="mt-0.5 font-(family-name:--eg-font-primary) text-[12px] text-eg-text-muted">
               {row.label}
               {row.technicalCode ? ` — ${row.technicalCode}` : null}
             </p>
           ) : null}
 
           {row.unit ? (
-            <p className="mt-0.5 font-(family-name:--eg-font-mono) text-[10.5px] text-eg-text-muted">
+            <p className="mt-0.5 font-(family-name:--eg-font-primary) text-[12px] text-eg-text-muted">
               {row.unitLabel ? `${row.unitLabel} (${row.unit})` : row.unit}
             </p>
           ) : null}
@@ -144,7 +144,7 @@ function BreakdownRow({ row, allRows, withDivider }: { row: PriceRow; allRows: r
       {costTypeBadge || includedInText || alternativeText ? (
         <div className="mt-2 flex flex-col items-start gap-1 sm:flex-row sm:flex-wrap sm:gap-x-4 sm:gap-y-1">
           {costTypeBadge ? (
-            <span className="inline-block border border-eg-border px-2 py-0.5 font-(family-name:--eg-font-mono) text-[10px] font-semibold uppercase tracking-wide text-eg-text-muted">
+            <span className="inline-block border border-eg-border px-2 py-0.5 font-(family-name:--eg-font-primary) text-[12px] font-semibold text-eg-text-muted">
               {costTypeBadge}
             </span>
           ) : null}

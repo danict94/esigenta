@@ -135,7 +135,7 @@ export function ServicesHubPage() {
 function StatCell({ value, label }: { value: number; label: string }) {
   return (
     <div className="bg-eg-surface px-6 py-8">
-      <p className="font-(family-name:--eg-font-mono) text-[clamp(32px,4vw,44px)] font-bold leading-none text-eg-brand-strong">
+      <p className="font-(family-name:--eg-font-primary) text-[clamp(32px,4vw,44px)] font-bold leading-none text-eg-brand-strong [font-variant-numeric:tabular-nums]">
         {value}
       </p>
       <p className="mt-2.5 max-w-45 leading-normal text-[12.5px] text-eg-text-muted">{label}</p>

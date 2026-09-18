@@ -19,7 +19,7 @@ export function InternalPageFinalCta({
       <div className="eg-container flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center sm:gap-8">
         <div className="max-w-[730px]">
           {eyebrow ? (
-            <p className="mb-2 font-(family-name:--eg-font-mono) text-[11.5px] font-medium uppercase tracking-widest text-eg-brand-on-dark">
+            <p className="mb-2 font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-brand-on-dark">
               {eyebrow}
             </p>
           ) : null}

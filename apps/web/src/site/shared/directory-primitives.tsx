@@ -29,7 +29,7 @@ export function DirectoryGroupHeader({
     >
       <Heading
         id={id}
-        className="min-w-0 flex-1 font-(family-name:--eg-font-mono) text-[11.5px] font-medium uppercase leading-tight tracking-widest text-eg-brand-strong"
+        className="min-w-0 flex-1 font-(family-name:--eg-font-primary) text-[13px] font-semibold leading-tight text-eg-brand-strong"
       >
         {title}
       </Heading>
@@ -101,7 +101,7 @@ export function DirectoryAction({
   readonly className?: string;
 }) {
   const classes = cn(
-    "font-(family-name:--eg-font-primary) text-[12px] font-semibold uppercase text-eg-accent transition-colors duration-200 ease-(--eg-ease-brand) hover:text-eg-brand-hover group-hover:text-eg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-eg-accent",
+    "font-(family-name:--eg-font-primary) text-[12px] font-semibold text-eg-accent transition-colors duration-200 ease-(--eg-ease-brand) hover:text-eg-brand-hover group-hover:text-eg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-eg-accent",
     className,
   );
 

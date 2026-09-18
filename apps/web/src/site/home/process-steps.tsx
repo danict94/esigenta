@@ -54,7 +54,7 @@ export function ProcessSteps() {
                   />
 
                   <div className="min-[861px]:max-w-[26ch]">
-                    <span className="mb-1.5 block font-(family-name:--eg-font-mono) text-[13px] font-bold uppercase tracking-[0.08em] text-eg-accent">
+                    <span className="mb-1.5 block font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-accent">
                       {step.marker}
                     </span>
                     <h3 className="eg-h3 mb-2 text-[17px]">{step.title}</h3>

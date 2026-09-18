@@ -16,7 +16,7 @@ export function HomeProfessionsSection({
     >
       <div className="eg-container">
         <Reveal>
-          <p className="mb-5 font-(family-name:--eg-font-mono) text-[10.5px] font-semibold uppercase tracking-[0.1em] text-eg-accent">
+          <p className="mb-5 font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-accent">
             Professionisti
           </p>
         </Reveal>
