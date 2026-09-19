@@ -131,7 +131,10 @@ export type InterventionCostSectionPriceData = {
 export function resolveInterventionCostSectionPriceData(
   landing: SeoInterventionLanding,
 ): InterventionCostSectionPriceData {
-  if (!landing.costSlug) return null;
+  // Un costSlug abilita il collegamento alla guida. I prezzi nella landing
+  // restano invece una scelta editoriale esplicita: senza costSection
+  // l'intervento rimanda alla guida senza duplicarne le fasce.
+  if (!landing.costSlug || !landing.costSection) return null;
 
   const guide = getCostGuideBySlug(landing.costSlug);
   if (!guide) return null;

@@ -111,6 +111,16 @@ export function GeoCostModule({
                 </Link>
               ) : null}
             </div>
+          ) : costGuideHref ? (
+            <div className="border border-eg-on-brand-border bg-white/8 px-6 py-5.5 text-center">
+              <Link
+                href={costGuideHref}
+                prefetch={false}
+                className="eg-button-primary eg-button-arrow w-full justify-center"
+              >
+                Guida completa ai costi
+              </Link>
+            </div>
           ) : null}
         </div>
       </section>

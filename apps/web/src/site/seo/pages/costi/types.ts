@@ -146,12 +146,16 @@ export type CostGuideBaseContent = {
   heroImage?: { src: string; alt: string };
   hubCategory: CostGuideHubCategory;
   topicLabel: string;
+  /** Eyebrow editoriale opzionale della hero. */
+  heroEyebrow?: string;
   summary: string;
   factors: string[];
   locationFactors?: readonly string[];
   savingTips: string[];
   /** Opzionale: solo per le guide che vogliono il blocco "Interventi specifici". */
   relatedWork?: readonly CostGuideRelatedWorkItem[];
+  /** Approfondimenti editoriali opzionali, resi dal blocco condiviso. */
+  editorialInsights?: readonly { title: string; content: string }[];
   /** Introduzione editoriale alternativa al listino delle singole lavorazioni. */
   breakdownIntro?: string;
   hideBreakdownSourceNote?: boolean;
@@ -257,6 +261,7 @@ export type CostGuide = {
    * hardcodare il tema della guida dentro cost-page-template.tsx.
    */
   topicLabel: string;
+  heroEyebrow?: string;
   summary: string;
   /** Assente quando la guida è in modalità pricingTeaser (nessun prezzo ancora). */
   nationalRange?: string;
@@ -282,6 +287,7 @@ export type CostGuide = {
   savingTips: string[];
   faq: { question: string; answer: string }[];
   relatedWork?: readonly CostGuideRelatedWorkItem[];
+  editorialInsights?: readonly { title: string; content: string }[];
   breakdownIntro?: string;
   hideBreakdownSourceNote?: boolean;
   extrasPresentation?: {

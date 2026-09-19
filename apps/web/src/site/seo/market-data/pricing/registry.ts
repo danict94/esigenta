@@ -1,6 +1,7 @@
 import type { BasePriceRange } from "../shared/types";
 import { validatePriceRowIntegrity } from "../shared/validation";
 import { ristrutturareBagnoPricing } from "./guides/ristrutturare-bagno";
+import { ristrutturareCucinaPricing } from "./guides/ristrutturare-cucina";
 import { rifareTettoPricing } from "./guides/rifare-tetto";
 import { rifareFacciataPricing } from "./guides/rifare-facciata";
 import { rifareImpiantoElettricoPricing } from "./guides/rifare-impianto-elettrico";
@@ -10,6 +11,7 @@ import { rifarePavimentiPricing } from "./guides/rifare-pavimenti";
 
 export const basePriceRangesByFamily: Record<string, BasePriceRange> = {
   "costGuide:ristrutturare-bagno": ristrutturareBagnoPricing,
+  "costGuide:ristrutturare-cucina": ristrutturareCucinaPricing,
   "costGuide:rifare-tetto": rifareTettoPricing,
   "costGuide:impermeabilizzare-tetto": impermeabilizzareTettoPricing,
   "costGuide:impermeabilizzare-terrazzo": impermeabilizzareTerrazzoPricing,

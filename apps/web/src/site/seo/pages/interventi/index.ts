@@ -1,4 +1,5 @@
 import { ristrutturareBagnoLanding } from "./ristrutturare-bagno/content";
+import { ristrutturareCucinaLanding } from "./ristrutturare-cucina/content";
 import { rifareImpiantoElettricoLanding } from "./rifare-impianto-elettrico/content";
 import { installareFotovoltaicoLanding } from "./installare-fotovoltaico/content";
 import { rifareTettoLanding } from "./rifare-tetto/content";
@@ -18,6 +19,7 @@ export type { SeoInterventionLanding } from "./types";
 // nessuna condizione qui, il registry resta identico per ogni landing.
 const all: readonly SeoInterventionLanding[] = [
   ristrutturareBagnoLanding,
+  ristrutturareCucinaLanding,
   rifareImpiantoElettricoLanding,
   installareFotovoltaicoLanding,
   rifareTettoLanding,

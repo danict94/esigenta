@@ -11,7 +11,7 @@ test("every cost guide has chronological editorial dates shared by metadata and 
   const sitemapLastModifiedByPath = new Map(
     listSeoIndexablePaths().map((entry) => [entry.path, entry.lastModified]),
   );
-  assert.equal(guides.length, 7);
+  assert.equal(guides.length, 8);
 
   for (const guide of guides) {
     const editorial = resolveCostGuideEditorial(guide.editorial, guide.lastModified);

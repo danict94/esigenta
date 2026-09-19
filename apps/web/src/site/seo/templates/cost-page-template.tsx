@@ -148,10 +148,15 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             { label: guide.title },
           ]}
           title={guide.h1}
+          eyebrow={guide.heroEyebrow}
           wideContent
           bottomSpacing="inherited"
           note={<CostGuideEditorialMeta editorial={editorial} />}
-          description={emphasizePriceRanges(guide.summary)}
+          description={guide.summary.split("\n\n").map((paragraph, index) => (
+            <span key={index} className={index > 0 ? "mt-3 block" : "block"}>
+              {emphasizePriceRanges(paragraph)}
+            </span>
+          ))}
         />
 
         <CostGuideToc sections={toc} />
@@ -229,6 +234,18 @@ export function CostGuidePage({ guide }: CostGuidePageProps) {
             </div>
 
             <div className="flex flex-col gap-10">
+                {guide.editorialInsights?.length ? (
+                  <div className="max-w-170">
+                    <div className="flex flex-col">
+                      {guide.editorialInsights.map((insight, index) => (
+                        <article key={insight.title} className={cn("py-4", index > 0 && "border-t border-eg-border")}>
+                          <h3 className="text-[16px] font-semibold text-eg-ink">{insight.title}</h3>
+                          <p className="mt-1.5 text-[13px] leading-[1.55] text-eg-text-muted">{insight.content}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
                 {hasRelatedWork ? (
                   <div>
                     <h3 className="mb-4 font-(family-name:--eg-font-primary) text-[16px] font-semibold text-eg-ink">

@@ -38,6 +38,32 @@ export const costGuidePricePresentationBySlug: Readonly<Record<string, CostGuide
       },
     ],
   },
+  "ristrutturare-cucina": {
+    scenarios: [
+      { rowId: "cucina-rinnovo-impianti-invariati", label: "Può comprendere", items: ["rivestimenti e ripristini locali", "piccoli adattamenti", "impianti principali mantenuti"] },
+      { rowId: "cucina-ristrutturazione-adeguamento-impianti", label: "Comprende", items: ["rinnovo di rivestimenti e pareti", "adeguamenti elettrici e idraulici ordinari", "ripristini e finiture", "pavimento, massetto e arredo non inclusi automaticamente"] },
+      { rowId: "cucina-ristrutturazione-modifica-disposizione", label: "Può comprendere", items: ["spostamenti più estesi di acqua e scarico", "nuove distribuzioni elettriche", "opere murarie", "eventuali lavori a terra quando necessari"] },
+    ],
+    extras: [
+      { rowId: "cucina-rifacimento-pavimento" },
+      { rowId: "cucina-demolizione-massetto" },
+      { rowId: "cucina-rifacimento-massetto" },
+      { rowId: "cucina-scarico-importante" },
+      { rowId: "cucina-tramezzo" },
+      { rowId: "cucina-gas" },
+      { rowId: "cucina-controsoffitto" },
+      { rowId: "cucina-isola-penisola" },
+    ],
+    breakdown: [
+      { rowId: "cucina-rimozione-rivestimenti", show: true }, { rowId: "cucina-smaltimento-materiali", show: true },
+      { rowId: "cucina-punto-presa", show: true }, { rowId: "cucina-adeguamento-elettrico", show: true }, { rowId: "cucina-linea-induzione", show: true },
+      { rowId: "cucina-punto-acqua", show: true }, { rowId: "cucina-adeguamento-acqua-scarico", show: true },
+      { rowId: "cucina-chiusura-tracce", show: true }, { rowId: "cucina-ripristino-intonaco", show: true }, { rowId: "cucina-rasatura-parete", show: true },
+      { rowId: "cucina-posa-rivestimento", show: true }, { rowId: "cucina-tinteggiatura", show: true },
+      { rowId: "cucina-rifacimento-pavimento", show: true }, { rowId: "cucina-demolizione-massetto", show: true }, { rowId: "cucina-rifacimento-massetto", show: true },
+      { rowId: "cucina-scarico-importante", show: true }, { rowId: "cucina-tramezzo", show: true }, { rowId: "cucina-gas", show: true }, { rowId: "cucina-controsoffitto", show: true }, { rowId: "cucina-isola-penisola", show: true }, { rowId: "cucina-arredo", show: true },
+    ],
+  },
   "rifare-tetto": {
     scenarios: [
       { rowId: "tetto-sostituzione-manto", title: "Sostituzione del solo manto", label: "Può comprendere", items: ["rimozione del vecchio manto", "posa di tegole, coppi o altra copertura standard", "lavorazioni ordinarie sul supporto esistente"] },

@@ -8,6 +8,7 @@ import {
   listSeoInterventionLandings,
   type SeoInterventionLanding,
 } from "../pages/interventi";
+import { getCostGuideBySlug } from "../pages/costi";
 import {
   resolveCostGuideHrefForIntervention,
   resolveInterventionCostSectionPriceData,
@@ -61,6 +62,12 @@ export function InterventionLandingPage({
   const costGuideHref = resolveCostGuideHrefForIntervention(landing.costSlug);
   const priceData = resolveInterventionCostSectionPriceData(landing);
   const groupCrumb = resolveGroupBreadcrumbForIntervention(landing);
+  const relatedGuideLinks = (landing.guideSlugs ?? []).flatMap((slug) => {
+    const guide = getCostGuideBySlug(slug);
+    return guide
+      ? [{ key: slug, label: guide.h1, href: `/costi/${guide.slug}` }]
+      : [];
+  });
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
@@ -324,7 +331,7 @@ export function InterventionLandingPage({
           </section>
         ) : null}
 
-        {(landing.relatedInterventionSlugs.length > 0 || (landing.relatedFunnelWork?.length ?? 0) > 0) ? (
+        {(landing.relatedInterventionSlugs.length > 0 || (landing.relatedFunnelWork?.length ?? 0) > 0 || relatedGuideLinks.length > 0) ? (
           <section aria-labelledby="lavori-collegati-title" className="eg-section-editorial">
             <div className="eg-container">
               <div className="mb-9 max-w-160">
@@ -351,6 +358,16 @@ export function InterventionLandingPage({
                     title="Lavori specifici da aggiungere"
                     taxonomyInterventionSlugs={landing.relatedFunnelWork}
                   />
+                ) : null}
+
+                {relatedGuideLinks.length > 0 ? (
+                  <div>
+                    <p className="mb-3.5 border-b border-eg-border pb-2.5 font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-brand-strong">
+                      Guide ai costi
+                    </p>
+
+                    <RelatedLinkList items={relatedGuideLinks} />
+                  </div>
                 ) : null}
               </div>
             </div>

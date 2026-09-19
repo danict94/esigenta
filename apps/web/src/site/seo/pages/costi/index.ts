@@ -1,4 +1,5 @@
 import { ristrutturareBagnoGuide } from "./ristrutturare-bagno/content";
+import { ristrutturareCucinaGuide } from "./ristrutturare-cucina/content";
 import { rifareTettoGuide } from "./rifare-tetto/content";
 import { impermeabilizzareTettoGuide } from "./impermeabilizzare-tetto/content";
 import { rifareImpiantoElettricoGuide } from "./rifare-impianto-elettrico/content";
@@ -34,6 +35,7 @@ export const costGuidePriceNote =
 // trattamento speciale necessario in questo file.
 const all: readonly CostGuide[] = [
   ristrutturareBagnoGuide,
+  ristrutturareCucinaGuide,
   rifareTettoGuide,
   impermeabilizzareTettoGuide,
   rifareImpiantoElettricoGuide,
