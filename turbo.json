@@ -25,7 +25,6 @@
                       "STRIPE_WEBHOOK_SECRET",
                       "ESIGENTA_SUPER_ADMIN_EMAIL",
                       "ESIGENTA_SUPER_ADMIN_PASSWORD",
-                      "QUOTIVO_PUBLIC_FUNCTION_URL",
                       "VERCEL",
                       "VERCEL_URL",
                       "VERCEL_PROJECT_PRODUCTION_URL"
