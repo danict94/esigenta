@@ -102,6 +102,34 @@ test("Meta Pixel: PageView è deduplicato per URL", async () => {
   assert.equal(pageViews.length, 2)
 })
 
+test("Meta Pixel: dopo il caricamento di fbevents.js Lead usa callMethod e non resta in coda", async () => {
+  installBrowser()
+  writeConsent({ marketing: true })
+
+  const { initializeMetaPixel, trackMetaLead, trackMetaPageView } = await freshModule()
+
+  initializeMetaPixel()
+  trackMetaPageView("/richiesta/rifare-tetto")
+
+  const fbq = (globalThis as unknown as {
+    fbq: {
+      callMethod?: (...args: unknown[]) => void
+      queue: unknown[][]
+    }
+  }).fbq
+  const queuedBeforeLoad = fbq.queue.length
+  const dispatched: unknown[][] = []
+
+  fbq.callMethod = (...args: unknown[]) => {
+    dispatched.push(args)
+  }
+
+  trackMetaLead()
+
+  assert.deepEqual(dispatched, [["track", "Lead"]])
+  assert.equal(fbq.queue.length, queuedBeforeLoad)
+})
+
 test("Meta Pixel: Lead non viene emesso dall'inizializzazione o dai PageView e parte solo alla chiamata di successo", async () => {
   installBrowser()
   writeConsent({ marketing: true })

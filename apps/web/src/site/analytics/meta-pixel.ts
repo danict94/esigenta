@@ -46,6 +46,11 @@ export function initializeMetaPixel(): boolean {
   if (!fbq) {
     const queue: unknown[][] = []
     const stub = ((...args: unknown[]) => {
+      if (stub.callMethod) {
+        stub.callMethod.call(stub, ...args)
+        return
+      }
+
       queue.push(args)
     }) as MetaPixelFunction
 
