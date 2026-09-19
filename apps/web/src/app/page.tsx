@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 import { HomePage } from "../site/home/home-page"
-import { Ga4MinimalLoader } from "../site/shell/ga4-minimal-loader"
+import { PublicAnalyticsLoader } from "../site/shell/public-analytics-loader"
 
 const homeTitle = "Esigenta | Trova professionisti e confronta preventivi"
 const homeDescription =
@@ -24,7 +24,7 @@ export default function Page() {
   return (
     <>
       <HomePage />
-      <Ga4MinimalLoader />
+      <PublicAnalyticsLoader />
     </>
   )
 }

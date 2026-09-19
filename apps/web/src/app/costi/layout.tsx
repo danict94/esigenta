@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { Ga4MinimalLoader } from "../../site/shell/ga4-minimal-loader"
+import { PublicAnalyticsLoader } from "../../site/shell/public-analytics-loader"
 
 export default function CostiLayout({
   children,
@@ -10,7 +10,7 @@ export default function CostiLayout({
   return (
     <>
       {children}
-      <Ga4MinimalLoader />
+      <PublicAnalyticsLoader />
     </>
   )
 }

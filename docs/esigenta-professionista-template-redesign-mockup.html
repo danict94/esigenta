@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Esigenta — Professionista interno redesign mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#171b1f;
+  --muted:#68727b;
+  --brand:#1c6e93;
+  --brand-dark:#12303d;
+  --line:#e8edf0;
+  --soft:rgba(28,110,147,.045);
+  --soft-strong:rgba(28,110,147,.065);
+  --action:#c8f11b;
+  --white:#fff;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:#fff;color:var(--ink);
+  font-family:"IBM Plex Sans",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.container{width:min(var(--max),calc(100% - 44px));margin-inline:auto}
+
+.site-header{background:var(--brand-dark);color:#fff;position:sticky;top:0;z-index:20}
+.nav{height:78px;display:flex;align-items:center;justify-content:space-between;gap:28px}
+.logo{font-size:24px;font-weight:700;letter-spacing:-.035em;text-decoration:none}
+.navlinks{display:flex;align-items:center;gap:28px;font-size:14px}
+.navlinks a{text-decoration:none;color:rgba(255,255,255,.86)}
+.navlinks .pro{background:var(--action);color:#14252c;padding:12px 17px;border-radius:8px;font-weight:700}
+
+.hero{padding:42px 0 54px}
+.breadcrumb{font-size:12.5px;color:var(--muted);margin-bottom:22px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,760px) auto;gap:70px;align-items:end}
+.hero h1{font-size:clamp(40px,5vw,60px);line-height:1.03;letter-spacing:-.045em;margin:0;font-weight:700}
+.hero .lead{font-size:18px;line-height:1.58;font-weight:500;margin:18px 0 0;max-width:720px}
+.hero .body{font-size:14px;line-height:1.65;color:var(--muted);margin:10px 0 0;max-width:720px}
+.hero .body + .body{margin-top:7px}
+.hero-cta{display:flex;justify-content:flex-end}
+.hero-cta a{display:inline-flex;align-items:center;justify-content:center;background:var(--brand);color:#fff;text-decoration:none;font-size:14px;font-weight:700;padding:13px 18px;border-radius:8px;white-space:nowrap}
+
+.catalog{padding:8px 0 84px}
+.catalog-intro{max-width:760px;margin-bottom:46px}
+.catalog-intro h2{font-size:clamp(27px,3.4vw,38px);line-height:1.14;letter-spacing:-.03em;margin:0;font-weight:700}
+.catalog-intro p{margin:11px 0 0;color:var(--muted);font-size:15px;line-height:1.6}
+
+.family{margin-top:58px}
+.family:first-of-type{margin-top:0}
+.family-head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:16px}
+.family-head h2{font-size:clamp(23px,2.5vw,30px);line-height:1.2;letter-spacing:-.025em;margin:0;font-weight:700}
+.family-head span{font-size:13px;color:var(--muted);white-space:nowrap}
+.family-surface{background:var(--soft);border-radius:12px;padding:24px}
+.intervention-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 52px}
+.intervention-item{min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:15px}
+.intervention-item h3{font-size:17px;line-height:1.35;letter-spacing:-.012em;margin:0;font-weight:650}
+.intervention-item p{font-size:13.5px;line-height:1.58;color:var(--muted);margin:7px 0 0;max-width:510px}
+.item-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:13px}
+.item-actions a{position:relative;z-index:1}
+.secondary-link{color:#56616a;text-underline-offset:3px;text-decoration-thickness:1px}
+.primary-link{margin-left:auto;color:var(--brand);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.primary-link span{font-size:17px;transition:transform .16s ease}
+.primary-link:hover span{transform:translateX(3px)}
+
+.editorial{background:rgba(18,48,61,.035);padding:72px 0}
+.editorial-grid{display:grid;grid-template-columns:1.15fr .9fr 1.15fr;gap:64px}
+.info-column h2{font-size:24px;line-height:1.25;letter-spacing:-.022em;margin:0;font-weight:700}
+.info-intro{font-size:14px;line-height:1.6;color:var(--muted);margin:12px 0 0}
+.info-column ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:20px}
+.info-column li h3{font-size:15px;line-height:1.35;margin:0;font-weight:650}
+.info-column li p{font-size:13.5px;line-height:1.58;color:var(--muted);margin:5px 0 0}
+.simple-item{font-size:14px;line-height:1.45;font-weight:500;color:#343b40;padding-left:18px;position:relative}
+.simple-item::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--brand)}
+
+.cta{background:var(--brand-dark);color:#fff;padding:38px 0}
+.cta-inner{display:flex;align-items:center;justify-content:space-between;gap:36px}
+.cta h2{font-size:clamp(24px,3vw,31px);line-height:1.2;letter-spacing:-.025em;margin:0;font-weight:700}
+.cta p{font-size:14px;line-height:1.58;color:rgba(255,255,255,.72);margin:8px 0 0;max-width:680px}
+.cta a{background:var(--action);color:#14252c;text-decoration:none;padding:13px 18px;border-radius:8px;font-weight:700;font-size:14px;white-space:nowrap}
+
+.footer{padding:36px 0 30px;color:var(--muted);font-size:13px}
+.footer strong{color:var(--ink);font-weight:600}
+
+@media(max-width:900px){
+  .navlinks a:not(.pro){display:none}
+  .hero-grid{grid-template-columns:1fr;gap:26px}
+  .hero-cta{justify-content:flex-start}
+  .intervention-grid{grid-template-columns:1fr}
+  .primary-link{margin-left:0}
+  .editorial-grid{grid-template-columns:1fr;gap:46px}
+  .cta-inner{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:560px){
+  .container{width:calc(100% - 34px)}
+  .nav{height:70px}
+  .logo{font-size:21px}
+  .navlinks .pro{font-size:12px;padding:10px 12px}
+  .hero{padding:30px 0 42px}
+  .hero h1{font-size:40px}
+  .hero .lead{font-size:16.5px}
+  .catalog{padding-bottom:64px}
+  .catalog-intro{margin-bottom:38px}
+  .family{margin-top:48px}
+  .family-head{margin-bottom:13px}
+  .family-head h2{font-size:24px}
+  .family-surface{margin-inline:-17px;border-radius:0;padding:22px 17px}
+  .intervention-grid{gap:30px}
+  .editorial{padding:58px 0}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="#">esigenta</a>
+    <nav class="navlinks" aria-label="Navigazione principale">
+      <a href="#">Servizi</a>
+      <a href="#">Professionisti</a>
+      <a href="#">Costi</a>
+      <a href="#">Le mie richieste</a>
+      <a class="pro" href="#">Sei un professionista?</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="breadcrumb">Home / Professionisti / Impresa edile</div>
+      <div class="hero-grid">
+        <div>
+          <h1>Impresa edile</h1>
+          <p class="lead">Un’impresa edile si occupa di lavori di costruzione, manutenzione e ristrutturazione degli edifici.</p>
+          <p class="body">Può eseguire opere murarie, ristrutturazioni, interventi su facciate e balconi, pavimentazioni, coperture e lavori di costruzione, direttamente o coordinando le diverse lavorazioni necessarie al cantiere.</p>
+          <p class="body">Le attività offerte possono variare da un’impresa all’altra. Su Esigenta puoi scegliere il lavoro che devi realizzare e richiedere preventivi per confrontare le proposte disponibili.</p>
+        </div>
+        <div class="hero-cta"><a href="#interventi">Richiedi preventivi</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog" id="interventi">
+    <div class="container">
+      <header class="catalog-intro">
+        <h2>Confronta imprese per il lavoro che devi realizzare</h2>
+        <p>Scegli l’intervento più vicino a ciò che devi fare. Quando disponibile puoi anche approfondire il lavoro o consultare la guida ai costi.</p>
+      </header>
+      
+      <section class="family" id="family-1">
+        <header class="family-head">
+          <h2>Ristrutturazioni</h2>
+          <span>4 interventi</span>
+        </header>
+        <div class="family-surface">
+          <div class="intervention-grid">
+            
+          <article class="intervention-item">
+            <div>
+              <h3>Ristrutturare bagno</h3>
+              <p>Demolizioni, impianti, rivestimenti e sanitari di una sola stanza: il percorso giusto quando il lavoro riguarda solo il bagno, dal rinnovo leggero al rifacimento completo.</p>
+            </div>
+            <div class="item-actions"><a class="secondary-link" href="http://localhost:3000/interventi/ristrutturare-bagno">Scopri</a><a class="secondary-link" href="http://localhost:3000/costi/ristrutturare-bagno">Guida ai costi</a><a class="primary-link" href="http://localhost:3000/richiesta/ristrutturare-bagno">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Ristrutturare cucina</h3>
+              <p>Dal nuovo layout alle predisposizioni per acqua, scarichi ed elettrico: scegli questo percorso se il lavoro si concentra sulla cucina, con o senza opere murarie.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/ristrutturare-cucina">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Ristrutturare casa</h3>
+              <p>La ristrutturazione di più ambienti o dell&#x27;intera abitazione: impianti, finiture e opere murarie in un unico cantiere coordinato. Utile quando il lavoro non riguarda una sola stanza.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/ristrutturare-casa">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Ristrutturare appartamento</h3>
+              <p>Il rifacimento completo o parziale di un appartamento, spesso in condominio, dove accessi, spazi comuni e organizzazione del cantiere vanno gestiti con più attenzione.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/ristrutturare-appartamento">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          </div>
+        </div>
+      </section>
+    
+      <section class="family" id="family-2">
+        <header class="family-head">
+          <h2>Facciate e balconi</h2>
+          <span>7 interventi</span>
+        </header>
+        <div class="family-surface">
+          <div class="intervention-grid">
+            
+          <article class="intervention-item">
+            <div>
+              <h3>Rifare facciata</h3>
+              <p>Il rifacimento completo della facciata esterna dell&#x27;edificio, comprese finiture e tinteggiatura.</p>
+            </div>
+            <div class="item-actions"><a class="secondary-link" href="http://localhost:3000/interventi/rifare-facciata">Scopri</a><a class="secondary-link" href="http://localhost:3000/costi/rifare-facciata">Guida ai costi</a><a class="primary-link" href="http://localhost:3000/richiesta/rifare-facciata">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Realizzare cappotto termico facciata</h3>
+              <p>Isolare la facciata dell&#x27;edificio con un cappotto termico, migliorando efficienza energetica e comfort.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/realizzare-cappotto-termico-facciata">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Ripristinare balconi e ballatoi</h3>
+              <p>Riparare distacchi di intonaco, cemento ammalorato o altri danni strutturali su balconi e ballatoi.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/ripristinare-balconi-e-ballatoi">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Rifare pavimentazione balcone o ballatoio</h3>
+              <p>Sostituire la pavimentazione di un balcone o ballatoio, anche in seguito a infiltrazioni o usura.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/rifare-pavimentazione-balcone-ballatoio">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Impermeabilizzare balcone o ballatoio</h3>
+              <p>Usa questo percorso se un balcone o ballatoio presenta infiltrazioni e va impermeabilizzato per evitare danni nel tempo.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/impermeabilizzare-balcone-ballatoio">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Impermeabilizzare terrazzo</h3>
+              <p>Usa questo percorso se un terrazzo o una terrazza calpestabile ha infiltrazioni o una guaina da rifare, senza necessariamente rifare tutta la pavimentazione.</p>
+            </div>
+            <div class="item-actions"><a class="secondary-link" href="http://localhost:3000/interventi/impermeabilizzare-terrazzo">Scopri</a><a class="secondary-link" href="http://localhost:3000/costi/impermeabilizzare-terrazzo">Guida ai costi</a><a class="primary-link" href="http://localhost:3000/richiesta/impermeabilizzare-terrazzo">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Ripristinare frontalino balcone</h3>
+              <p>Il ripristino del frontalino del balcone, spesso soggetto a distacchi e infiltrazioni visibili dall&#x27;esterno.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/ripristino-frontalino">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          </div>
+        </div>
+      </section>
+    
+      <section class="family" id="family-3">
+        <header class="family-head">
+          <h2>Pavimentazioni</h2>
+          <span>4 interventi</span>
+        </header>
+        <div class="family-surface">
+          <div class="intervention-grid">
+            
+          <article class="intervention-item">
+            <div>
+              <h3>Realizzare o rifare massetto</h3>
+              <p>Realizzare o rifare il massetto, la base necessaria prima di posare qualsiasi pavimento.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/fare-massetto">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Posare o rifare pavimento interno</h3>
+              <p>Posare un pavimento nuovo o sostituire quello esistente in una o più stanze.</p>
+            </div>
+            <div class="item-actions"><a class="secondary-link" href="http://localhost:3000/interventi/posare-o-rifare-pavimento-interno">Scopri</a><a class="secondary-link" href="http://localhost:3000/costi/rifare-pavimenti">Guida ai costi</a><a class="primary-link" href="http://localhost:3000/richiesta/posare-o-rifare-pavimento-interno">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Posare, levigare o ripristinare parquet</h3>
+              <p>Posare un parquet nuovo o per levigare e ripristinare un parquet esistente rovinato dal tempo.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/posare-levigare-o-ripristinare-parquet">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Riparare piastrelle o pavimento rotto</h3>
+              <p>Riparare piastrelle rotte o porzioni di pavimento danneggiate, senza un rifacimento completo.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/riparare-pavimento">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          </div>
+        </div>
+      </section>
+    
+      <section class="family" id="family-4">
+        <header class="family-head">
+          <h2>Tetti</h2>
+          <span>8 interventi</span>
+        </header>
+        <div class="family-surface">
+          <div class="intervention-grid">
+            
+          <article class="intervention-item">
+            <div>
+              <h3>Rifare tetto</h3>
+              <p>Il rifacimento completo della copertura, quando riparazioni localizzate non bastano più.</p>
+            </div>
+            <div class="item-actions"><a class="secondary-link" href="http://localhost:3000/interventi/rifare-tetto">Scopri</a><a class="secondary-link" href="http://localhost:3000/costi/rifare-tetto">Guida ai costi</a><a class="primary-link" href="http://localhost:3000/richiesta/rifare-tetto">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Riparare tetto</h3>
+              <p>Riparazioni localizzate.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/riparare-tetto">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Sistemare grondaie</h3>
+              <p>Riparare o sostituire grondaie e pluviali danneggiati, otturati o mal funzionanti.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/sistemare-grondaie">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Impermeabilizzare tetto</h3>
+              <p>Il percorso giusto quando il tetto presenta infiltrazioni e va impermeabilizzato, anche senza un rifacimento completo.</p>
+            </div>
+            <div class="item-actions"><a class="secondary-link" href="http://localhost:3000/interventi/impermeabilizzare-tetto">Scopri</a><a class="secondary-link" href="http://localhost:3000/costi/impermeabilizzare-tetto">Guida ai costi</a><a class="primary-link" href="http://localhost:3000/richiesta/impermeabilizzare-tetto">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Isolare o coibentare tetto</h3>
+              <p>Migliorare l&#x27;isolamento termico del tetto, riducendo dispersioni e migliorando il comfort degli ambienti sottostanti.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/isolare-o-coibentare-tetto">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Bonificare tetto in amianto o eternit</h3>
+              <p>Usa questo percorso se il tetto contiene amianto o eternit da bonificare: un tecnico specializzato valuta l&#x27;intervento necessario nel rispetto delle normative.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/bonificare-amianto-eternit-tetto">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Installare o sostituire lucernario</h3>
+              <p>Installare un lucernario nuovo o sostituire un lucernario esistente danneggiato o datato.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/installare-o-sostituire-lucernario">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Installare linea vita sul tetto</h3>
+              <p>Installare una linea vita sul tetto, il sistema di ancoraggio pensato per lavorare in sicurezza in quota: un tecnico verifica cosa serve per il tuo caso.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/installare-linea-vita">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          </div>
+        </div>
+      </section>
+    
+      <section class="family" id="family-5">
+        <header class="family-head">
+          <h2>Opere murarie e demolizioni</h2>
+          <span>5 interventi</span>
+        </header>
+        <div class="family-surface">
+          <div class="intervention-grid">
+            
+          <article class="intervention-item">
+            <div>
+              <h3>Aprire o chiudere un vano</h3>
+              <p>Aprire un nuovo passaggio in una parete esistente o per chiuderne uno già presente.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/aprire-o-chiudere-vano">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Demolire parete o tramezzo</h3>
+              <p>Demolire una parete o un tramezzo esistente, non portante, per unire due ambienti.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/demolire-parete-o-tramezzo">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Costruire parete o tramezzo in muratura</h3>
+              <p>Costruire una nuova parete o tramezzo in muratura.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/costruire-parete-o-tramezzo">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Demolizioni interne</h3>
+              <p>Demolizioni più estese all&#x27;interno dell&#x27;abitazione, in preparazione a una ristrutturazione.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/demolizioni-interne">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Piccole opere murarie e assistenze</h3>
+              <p>Piccoli lavori murari e assistenze.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/piccole-opere-murarie">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          </div>
+        </div>
+      </section>
+    
+      <section class="family" id="family-6">
+        <header class="family-head">
+          <h2>Costruzioni e ampliamenti</h2>
+          <span>5 interventi</span>
+        </header>
+        <div class="family-surface">
+          <div class="intervention-grid">
+            
+          <article class="intervention-item">
+            <div>
+              <h3>Costruire casa</h3>
+              <p>La costruzione di una casa nuova, dalle fondamenta alla struttura completa.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/costruire-casa">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Ampliare casa</h3>
+              <p>Usa questo percorso se vuoi aumentare la superficie della casa esistente con un ampliamento.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/ampliare-casa">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Fare una sopraelevazione</h3>
+              <p>Il percorso giusto se vuoi aggiungere un piano sopra la struttura esistente, aumentando la superficie in altezza invece che in pianta.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/fare-sopraelevazione">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Costruire garage o deposito</h3>
+              <p>Costruire un garage, un box auto o un deposito.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/costruire-garage-o-deposito">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          <article class="intervention-item">
+            <div>
+              <h3>Costruire dependance o annesso</h3>
+              <p>Costruire una dependance, un annesso o un piccolo edificio separato dall&#x27;abitazione principale.</p>
+            </div>
+            <div class="item-actions"><a class="primary-link" href="http://localhost:3000/richiesta/costruire-dependance-o-annesso">Richiedi preventivi<span aria-hidden="true">→</span></a></div>
+          </article>
+        
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </section>
+
+  <section class="editorial" aria-label="Approfondimenti sulla professione">
+    <div class="container editorial-grid">
+      
+      <article class="info-column">
+        <h2>Quando rivolgersi a un’impresa edile</h2>
+        
+        <ul>
+              <li>
+                <h3>Ristrutturazioni articolate</h3>
+                <p>Quando il lavoro comprende più fasi o diverse lavorazioni edili da organizzare nello stesso intervento.</p>
+              </li>
+            
+              <li>
+                <h3>Opere sull’edificio</h3>
+                <p>Per interventi su murature, facciate, balconi, pavimentazioni, coperture e altre parti dell’immobile.</p>
+              </li>
+            
+              <li>
+                <h3>Costruzioni e ampliamenti</h3>
+                <p>Per lavori più estesi che richiedono organizzazione del cantiere e il coordinamento delle attività necessarie.</p>
+              </li>
+            </ul>
+      </article>
+    
+      <article class="info-column">
+        <h2>Cosa incide sul preventivo</h2>
+        <p class="info-intro">Il costo di un lavoro edile dipende dal tipo di intervento e dalle condizioni specifiche del cantiere.</p>
+        <ul><li class="simple-item">tipo di intervento</li><li class="simple-item">dimensioni del lavoro</li><li class="simple-item">condizioni dell’immobile</li><li class="simple-item">materiali e finiture</li><li class="simple-item">numero di lavorazioni coinvolte</li><li class="simple-item">accessibilità del cantiere</li></ul>
+      </article>
+    
+      <article class="info-column">
+        <h2>Come scegliere un’impresa edile</h2>
+        
+        <ul>
+              <li>
+                <h3>Esperienza su lavori simili</h3>
+                <p>Valuta se l’impresa ha esperienza con interventi paragonabili a quello che devi realizzare.</p>
+              </li>
+            
+              <li>
+                <h3>Preventivo chiaro</h3>
+                <p>Confronta le lavorazioni comprese, i materiali, i tempi indicativi e le condizioni della proposta, non soltanto il totale.</p>
+              </li>
+            
+              <li>
+                <h3>Dati e documentazione</h3>
+                <p>Verifica i dati dell’impresa e la documentazione pertinente al tipo di lavoro da eseguire.</p>
+              </li>
+            </ul>
+      </article>
+    
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container cta-inner">
+      <div>
+        <h2>Sei un’impresa edile?</h2>
+        <p>Fai conoscere la tua attività su Esigenta e ricevi opportunità compatibili con i lavori che svolgi.</p>
+      </div>
+      <a href="#">Registrati come professionista</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container"><strong>Esigenta</strong> · mockup template professionista interno</div>
+</footer>
+</body>
+</html>

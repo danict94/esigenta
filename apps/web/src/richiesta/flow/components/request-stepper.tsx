@@ -20,6 +20,7 @@ import {
   trackGenerateLead,
   trackGoogleAdsLeadConversion,
 } from "../../../site/analytics/ga4-events";
+import { trackMetaLead } from "../../../site/analytics/meta-pixel";
 // FASE 6E: unica lettura di consenso in questo file, e solo per decidere
 // se allegare gclid/gbraid/wbraid a funnel_started (vedi applyAttributionConsent
 // più sotto — CONSENT DECISION REQUIRED, report FASE 6E). Non gated
@@ -184,6 +185,7 @@ export function RequestStepper({
     useState(false);
   const generateLeadFiredRef = useRef(false);
   const googleAdsConversionFiredRef = useRef(false);
+  const metaLeadFiredRef = useRef(false);
   // FASE 6D: 0-based, incrementato a ogni VERA chiamata di submitDraft()
   // (mai su un semplice re-render). Il bottone "Avanti"/"Prepara richiesta"
   // è già disabilitato durante isSubmitting, quindi due tentativi non
@@ -726,6 +728,15 @@ export function RequestStepper({
           conversionLabel: GOOGLE_ADS_CONVERSION_LABEL,
           requestId: submitted.request.requestId,
         });
+      }
+
+      // Meta Lead è semanticamente allineato a request_created/generate_lead:
+      // parte solo dopo la risposta 200 della Request già committata. Il ref
+      // è indipendente dagli altri canali perché il consenso marketing può
+      // differire da analytics, ma mantiene un solo Lead per questa risposta.
+      if (!metaLeadFiredRef.current) {
+        metaLeadFiredRef.current = true;
+        trackMetaLead();
       }
     } catch (error) {
       console.warn("[request-stepper] Request submit crashed", {

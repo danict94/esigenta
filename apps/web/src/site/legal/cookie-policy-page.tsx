@@ -26,7 +26,7 @@ const cookieCategories = [
     title: "Marketing",
     status: "Disattivati di default",
     description:
-      "Abilitano il tracciamento delle conversioni di Google Ads, se configurato per l'ambiente in uso.",
+      "Abilitano il tracciamento delle conversioni di Google Ads e Meta Pixel, se configurati per l'ambiente in uso.",
   },
 ];
 
@@ -114,15 +114,15 @@ export function CookiePolicyPage() {
                 <h2 className="eg-h3">Marketing e pubblicita</h2>
                 <p className="eg-body-muted mt-3">
                   Il codice include il tracciamento delle conversioni di
-                  Google Ads: viene attivato solo dopo che la categoria
-                  Marketing viene accettata dal banner o dalle preferenze
-                  cookie, e solo se una conversione Google Ads e configurata
-                  per l&apos;ambiente in uso. Nessun altro pixel di
-                  marketing, remarketing o strumento equivalente di
-                  profilazione pubblicitaria e presente nel codice attuale.
-                  Se in futuro saranno introdotti altri strumenti, dovranno
-                  essere dichiarati qui e bloccati fino al consenso della
-                  categoria Marketing.
+                  Google Ads, quando configurato, e Meta Pixel. Entrambi
+                  vengono attivati solo dopo che la categoria Marketing viene
+                  accettata dal banner o dalle preferenze cookie. Meta Pixel
+                  registra PageView dopo il consenso e Lead solo quando una
+                  richiesta viene creata con successo. Non sono attivi altri
+                  pixel di marketing, remarketing o strumenti equivalenti di
+                  profilazione pubblicitaria. Eventuali strumenti futuri
+                  dovranno essere dichiarati qui e bloccati fino al consenso
+                  della categoria Marketing.
                 </p>
               </section>
 

@@ -28,7 +28,7 @@ const optionalCategories: Array<{
     id: "marketing",
     label: "Marketing",
     description:
-      "Abilitano il tracciamento delle conversioni di Google Ads, se configurato.",
+      "Abilitano il tracciamento delle conversioni di Google Ads e Meta Pixel, se configurati.",
   },
 ];
 
