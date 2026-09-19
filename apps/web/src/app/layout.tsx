@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { fontVariables } from "@esigenta/ui/fonts"
+import { publicFontVariables } from "@esigenta/ui/fonts"
 
 import "./globals.css"
 import { CookieConsent } from "../site/shell/cookie-consent"
@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${fontVariables} h-full antialiased`}
+      className={`${publicFontVariables} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         {children}

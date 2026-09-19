@@ -44,19 +44,13 @@ export function ProcessSteps() {
                     />
                   ) : null}
 
-                  {/* Nodo: un punto, non un altro numero — "PASSO N" sotto
-                      gia' dice qual e' lo step, ripeterlo nel cerchio era
-                      rumore. L'alone ring-eg-page "interrompe" la linea
-                      dietro al punto invece di farla toccare il bordo. */}
+                  {/* Nodo decorativo che interrompe visivamente la linea. */}
                   <span
                     aria-hidden="true"
                     className="relative z-1 mt-1.5 h-3 w-3 shrink-0 rounded-full bg-eg-brand-hover ring-4 ring-eg-page min-[861px]:mt-0 min-[861px]:mb-5"
                   />
 
                   <div className="min-[861px]:max-w-[26ch]">
-                    <span className="mb-1.5 block font-(family-name:--eg-font-primary) text-[13px] font-semibold text-eg-accent">
-                      {step.marker}
-                    </span>
                     <h3 className="eg-h3 mb-2 text-[17px]">{step.title}</h3>
                     <p className="eg-body-muted text-[14.5px] leading-[1.55]">{step.description}</p>
                   </div>

@@ -6,7 +6,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./globals.css": "./src/styles/globals.css",
-    "./fonts": "./src/fonts/index.ts"
+    "./fonts": "./src/fonts/index.ts",
+    "./fonts/mono": "./src/fonts/mono-font.ts",
+    "./fonts/private": "./src/fonts/private.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

@@ -40,6 +40,8 @@
  */
 
 :root {
+  --default-mono-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
   /* ============================================================
    * SISTEMA COLORI SEMANTICO
    * Fonte: docs/color-system.md — non introdurre nuovi colori
@@ -142,7 +144,7 @@
 
 @theme inline {
   --font-sans: var(--eg-font-primary), sans-serif;
-  --font-mono: var(--eg-font-mono), monospace;
+  --font-mono: var(--eg-font-mono, var(--default-mono-font-family));
 
   /* ============================================================
    * SISTEMA COLORI SEMANTICO
@@ -592,14 +594,14 @@ body {
   }
 
   .eg-stat-value {
-    font-family: var(--eg-font-mono), monospace;
+    font-family: var(--eg-font-mono, var(--default-mono-font-family));
     font-size: 26px;
     letter-spacing: 0.02em;
     color: var(--eg-color-ink);
   }
 
   .eg-chip-text {
-    font-family: var(--eg-font-mono), monospace;
+    font-family: var(--eg-font-mono, var(--default-mono-font-family));
     font-size: 11px;
     line-height: 1;
   }
@@ -610,19 +612,19 @@ body {
   }
 
   .eg-metadata {
-    font-family: var(--eg-font-mono), monospace;
+    font-family: var(--eg-font-mono, var(--default-mono-font-family));
     color: var(--eg-color-text-muted);
   }
 
   .eg-kpi-value {
-    font-family: var(--eg-font-mono), monospace;
+    font-family: var(--eg-font-mono, var(--default-mono-font-family));
     font-size: 28px;
     font-weight: 500;
     line-height: 1.25;
   }
 
   .eg-panel-header {
-    font-family: var(--eg-font-mono), monospace;
+    font-family: var(--eg-font-mono, var(--default-mono-font-family));
     text-transform: uppercase;
     font-size: 11px;
     letter-spacing: 0.1em;

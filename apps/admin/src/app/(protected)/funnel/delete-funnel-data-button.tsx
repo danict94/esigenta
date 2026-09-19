@@ -129,7 +129,7 @@ export function DeleteFunnelDataButton({ onDelete }: DeleteFunnelDataButtonProps
         <label className="mt-5 grid gap-1.5 text-sm">
           <span className="font-medium text-eg-text-muted">
             Digita{" "}
-            <span className="font-(family-name:--eg-font-mono) text-eg-ink">
+            <span className="font-mono text-eg-ink">
               {DELETE_FUNNEL_DATA_CONFIRM_PHRASE}
             </span>{" "}
             per confermare

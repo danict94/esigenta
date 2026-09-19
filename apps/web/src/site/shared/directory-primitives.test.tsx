@@ -21,17 +21,23 @@ test("le primitive directory applicano un solo linguaggio tipografico", () => {
       />
       <DirectoryItemTitle>Cartongesso</DirectoryItemTitle>
       <DirectoryItemSummary>Descrizione sintetica.</DirectoryItemSummary>
-      <DirectoryAction href="/servizi/cartongesso">Apri</DirectoryAction>
+      <DirectoryAction
+        href="/servizi/cartongesso"
+        ariaLabel="Apri Cartongesso"
+      >
+        Apri
+      </DirectoryAction>
     </>,
   );
 
-  assert.match(html, /text-\[11\.5px\].*uppercase/);
+  assert.match(html, /text-\[clamp\(22px,2\.3vw,24px\)\].*text-eg-ink/);
   assert.match(html, /text-\[15px\].*font-semibold/);
   assert.match(html, /text-\[12\.5px\].*text-eg-text-muted/);
-  assert.match(html, /text-\[12px\].*uppercase/);
+  assert.match(html, /text-\[12px\].*font-semibold/);
   assert.match(html, /href="\/servizi\/cartongesso"/);
+  assert.match(html, /aria-label="Apri Cartongesso"/);
   assert.match(html, /text-eg-accent/);
-  assert.match(html, /border-b border-eg-border/);
+  assert.doesNotMatch(html, /border-b border-eg-border/);
   assert.doesNotMatch(html, /→|↗|lucide-arrow/i);
 });
 

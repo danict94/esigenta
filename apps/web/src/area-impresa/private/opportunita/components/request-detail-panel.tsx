@@ -65,7 +65,7 @@ const MAX_PANEL_PHOTOS = 3;
 
 function Chip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-eg-border bg-eg-surface px-[9px] py-1 font-(family-name:--eg-font-mono) text-[11px] leading-none text-eg-text-muted">
+    <span className="inline-flex items-center rounded-full border border-eg-border bg-eg-surface px-[9px] py-1 font-mono text-[11px] leading-none text-eg-text-muted">
       {children}
     </span>
   );
@@ -179,7 +179,7 @@ export function RequestDetailPanel({
 
   return (
     <div className="px-8 pb-24 pt-[26px] min-[900px]:pb-[30px]">
-      <p className="font-(family-name:--eg-font-mono) text-[11px] uppercase tracking-[0.08em] text-eg-text-muted">
+      <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-eg-text-muted">
         {requestCode ? `Richiesta ${requestCode}` : "Richiesta"} &middot; {createdAt}
       </p>
 
@@ -246,7 +246,7 @@ export function RequestDetailPanel({
         <div className="mb-[26px] grid grid-cols-2 gap-4">
           {formDetails.slice(0, 6).map((detail) => (
             <div key={`${detail.label}-${detail.value}`}>
-              <p className="mb-[5px] font-(family-name:--eg-font-mono) text-[10px] uppercase tracking-[0.06em] text-eg-text-muted">
+              <p className="mb-[5px] font-mono text-[10px] uppercase tracking-[0.06em] text-eg-text-muted">
                 {detail.label}
               </p>
               <p className="text-[15px] font-medium text-eg-ink">

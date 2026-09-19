@@ -368,7 +368,7 @@ function ErrorTable({ errors }: { errors: AdminFunnelErrorRow[] }) {
         <tbody>
           {errors.map((error) => (
             <tr key={error.errorCode} className="border-b border-eg-border last:border-b-0">
-              <td className="py-3 pr-4 font-(family-name:--eg-font-mono) text-xs text-eg-ink">
+              <td className="py-3 pr-4 font-mono text-xs text-eg-ink">
                 {error.errorCode}
               </td>
               <td className="py-3 text-eg-ink">{formatCount(error.count)}</td>
@@ -545,7 +545,7 @@ function RecentSessionsTable({ sessions }: { sessions: AdminFunnelSessionSummary
         <tbody>
           {sessions.map((session) => (
             <tr key={session.funnelSessionId} className="border-b border-eg-border last:border-b-0">
-              <td className="py-3 pr-4 font-(family-name:--eg-font-mono) text-xs text-eg-text-muted">
+              <td className="py-3 pr-4 font-mono text-xs text-eg-text-muted">
                 {session.funnelSessionId.slice(0, 8)}…
               </td>
               <td className="py-3 pr-4 text-eg-ink">{formatInterventionLabel(session.interventionSlug)}</td>

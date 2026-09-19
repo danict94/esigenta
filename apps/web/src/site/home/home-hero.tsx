@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -189,34 +191,12 @@ export function HomeHero() {
 
   return (
     <section
-      className="eg-theme-hero relative z-10 pt-28 pb-12 bg-[url('/assets/images/home/hero-mobile.webp')] text-eg-on-brand min-[861px]:pt-35 min-[861px]:pb-16 min-[861px]:bg-[url('/assets/images/home/hero-desktop.webp')]"
-      style={
-        {
-          backgroundColor: "var(--eg-color-brand-strong)",
-          // "top" e non "bottom": le teste stanno nella meta' superiore
-          // della foto, il pavimento/dettagli in basso contano meno. Con
-          // cover, ancorare in basso sacrifica la parte alta quando il
-          // contenitore e' piu' corto del rapporto naturale della foto —
-          // e' quello che tagliava le teste. Ancorare in alto protegge le
-          // teste a qualunque rapporto larghezza/altezza dello schermo.
-          backgroundPosition: "center top",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }
-      }
+      className="eg-theme-hero relative z-10 bg-eg-brand-strong bg-cover bg-top bg-no-repeat pt-28 pb-12 bg-[url('/assets/images/home/hero-mobile.webp')] text-eg-on-brand min-[861px]:pt-35 min-[861px]:pb-16 min-[861px]:bg-[url('/assets/images/home/hero-desktop.webp')]"
       aria-labelledby="home-title"
     >
-      {/* Velo di contrasto su tutta la foto (non solo dietro al testo):
-          un'unica tinta uniforme cosi' il bianco on-brand resta leggibile
-          ovunque cada sull'immagine, senza la "macchia" localizzata di
-          prima. Sotto al contenuto (z-[2]) ma sopra il background-image
-          della section. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-1"
-        style={{
-          backgroundColor: "color-mix(in srgb, var(--eg-color-ink) 42%, transparent)",
-        }}
+        className="pointer-events-none absolute inset-0 z-1 bg-[color-mix(in_srgb,var(--eg-color-ink)_42%,transparent)]"
       />
       <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[22px] min-[861px]:px-12">
         <div className="relative isolate w-full max-w-[800px] text-left">

@@ -23,13 +23,13 @@ export function DirectoryGroupHeader({
   return (
     <div
       className={cn(
-        "flex items-end gap-3 border-b border-eg-border pb-2.5",
+        "flex items-baseline gap-3",
         className,
       )}
     >
       <Heading
         id={id}
-        className="min-w-0 flex-1 font-(family-name:--eg-font-primary) text-[13px] font-semibold leading-tight text-eg-brand-strong"
+        className="min-w-0 flex-1 font-(family-name:--eg-font-primary) text-[clamp(22px,2.3vw,24px)] font-semibold leading-[1.2] tracking-[-0.02em] text-eg-ink"
       >
         {title}
       </Heading>
@@ -94,10 +94,12 @@ export function DirectoryItemSummary({
 export function DirectoryAction({
   children,
   href,
+  ariaLabel,
   className,
 }: {
   readonly children: ReactNode;
   readonly href: string;
+  readonly ariaLabel?: string;
   readonly className?: string;
 }) {
   const classes = cn(
@@ -106,7 +108,7 @@ export function DirectoryAction({
   );
 
   return (
-    <Link href={href} prefetch={false} className={classes}>
+    <Link href={href} prefetch={false} className={classes} aria-label={ariaLabel}>
       {children}
     </Link>
   );

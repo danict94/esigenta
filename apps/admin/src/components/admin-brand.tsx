@@ -24,7 +24,7 @@ function AdminBrandContent() {
       src={adminLogoSrc}
       className="block h-10 w-auto"
     />
-    <span className="font-(family-name:--eg-font-mono) text-xs font-medium uppercase tracking-widest text-eg-brand-strong">
+    <span className="font-mono text-xs font-medium uppercase tracking-widest text-eg-brand-strong">
       / admin
     </span>
     </>

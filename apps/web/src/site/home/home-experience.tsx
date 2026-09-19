@@ -1,5 +1,3 @@
-"use client";
-
 import ReactDOM from "react-dom";
 
 import type { PublicProfessionHubItem } from "@esigenta/taxonomy/public-professions";
